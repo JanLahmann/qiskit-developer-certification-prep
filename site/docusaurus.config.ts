@@ -78,6 +78,18 @@ const config: Config = {
               label: 'Start here',
               to: '/docs/intro',
             },
+            {
+              label: 'Guided path',
+              to: '/docs/path',
+            },
+            {
+              label: 'Mock exam',
+              to: '/mock-exam',
+            },
+            {
+              label: 'Settings & your data',
+              to: '/settings',
+            },
           ],
         },
         {

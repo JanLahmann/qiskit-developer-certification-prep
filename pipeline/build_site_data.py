@@ -153,6 +153,7 @@ description: "Exam section {num} ({weight}% of the exam): objectives, official r
 {generated_note}
 
 import PracticeSet from '@site/src/components/Quiz/PracticeSet';
+import DoqExtras from '@site/src/components/DoqExtras';
 
 # Section {num} — {title}
 
@@ -174,6 +175,8 @@ import PracticeSet from '@site/src/components/Quiz/PracticeSet';
 The exam is based on these official IBM materials. Study them first; the drills below tell you when you're done.
 
 {resources_block}
+
+<DoqExtras slugs={{{doq_slugs}}} />
 
 ## Drill — verified practice
 
@@ -220,6 +223,13 @@ def write_section_pages(syllabus: dict, stats: dict) -> None:
         bank_line = (
             f" · **{count} verified practice questions**" if count else ""
         )
+        doq_slugs = json.dumps(
+            [
+                r["url"].rstrip("/").rsplit("/", 1)[-1]
+                for r in sec.get("resources", [])
+                if r.get("url") and r.get("type") == "guide"
+            ]
+        )
         page = SECTION_TEMPLATE.format(
             pos=sec["num"],
             num=sec["num"],
@@ -231,6 +241,7 @@ def write_section_pages(syllabus: dict, stats: dict) -> None:
             scope_block=scope_block or "_See objectives above._",
             resources_block=resources_block,
             sid=sid,
+            doq_slugs=doq_slugs,
             generated_note=GENERATED_NOTE,
         )
         (DOCS_SECTIONS / f"{sid}.mdx").write_text(page)

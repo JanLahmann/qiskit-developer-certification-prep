@@ -1,6 +1,6 @@
-# Qiskit v2.x Certification Prep Platform
+# CertiQ — Qiskit v2.x Certification Prep
 
-> Working title: **Qiskit Certification Studio** — an unofficial, free, community-built guided learning platform for the IBM **C1000-179** exam ("Fundamentals of Quantum Computing Using Qiskit v2.X Developer").
+> **CertiQ** is an unofficial, free, community-built guided learning platform for the IBM **C1000-179** exam ("Fundamentals of Quantum Computing Using Qiskit v2.X Developer").
 
 **This is an independent community project. It is not affiliated with, endorsed by, or sponsored by IBM. Qiskit is a trademark of IBM. All practice content is generated from public exam objectives and open documentation — never from actual exam content.**
 

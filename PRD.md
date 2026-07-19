@@ -1,6 +1,6 @@
-# PRD — Qiskit v2.x Certification Prep Platform
+# PRD — CertiQ
 
-> Working title: **Qiskit Certification Studio** (final name chosen at v1 announcement — candidates in §9).
+> **CertiQ** — machine-verified prep for the Qiskit v2.x Developer certification. (Name chosen by the project owner 2026-07-20.)
 > Status: living document, created 2026-07-19. Origin: doQumentation `BUILD_TIME_AI_IDEAS.md` §2, built here as a standalone project.
 > **Unofficial community project — not affiliated with, endorsed by, or sponsored by IBM.**
 
@@ -144,18 +144,14 @@ The engine is **build-time AI, zero runtime AI**: every intelligent behavior (qu
 | 4 | F7 flashcards/Anki + F8 settings/doQ opt-in | |
 | 5 | F9 watchdogs + polish + name + announce | |
 
-## 9. Name candidates (decide at ship)
+## 9. Name — decided
 
-1. **Qiskit Certification Studio** — from the ideas doc; clear and searchable.
-2. **CertiQ** — short, brandable ("CertiQ — pass the Qiskit v2.x exam").
-3. **Q-Prep** / **QPrep Studio** — plain, friendly.
-4. **PauliPass** — playful, memorable, quantum-flavored.
-5. **47/68** — the pass line as a name; insider-y, bold.
-(Trademark note: names embedding "Qiskit" require the unofficial disclaimer to be extra prominent; consider "…for Qiskit" phrasing.)
+**CertiQ** (user decision 2026-07-20). Tagline references Qiskit descriptively; unofficial disclaimer stays prominent.
 
-## 10. Open questions for the user
+## 10. User decisions (2026-07-20)
 
-1. Human review of the question bank pre-launch: you, recruited advocates, or ship with "AI-generated, execution-verified" labels and review-in-public?
-2. Custom domain (e.g. cert.doqumentation.org or standalone) vs github.io URL?
-3. Community-exam validation reports: publish findings publicly from day 1, or share privately with authors first (grace period)?
-4. Multilingual later (doQumentation factory could translate the bank)?
+1. Question-bank review: **no human review required** — ship labeled "AI-generated, execution-verified"; actively welcome human feedback (per-question "report an issue" links to GitHub).
+2. Domain: **github.io for now**.
+3. Community-exam validation reports: **user reviews before the site highlights them** — reports live in the GitHub repo (data/), but the website shows only the neutral directory (links + credits + factual metadata, no quality findings) until explicit approval.
+4. Translations: **later** (not v1).
+5. Anki export: confirmed in scope.

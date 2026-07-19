@@ -5,9 +5,9 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'Qiskit Certification Studio',
+  title: 'CertiQ',
   tagline:
-    'Machine-verified, community-built prep for the IBM Qiskit v2.x Developer certification (C1000-179). Unofficial — not affiliated with IBM.',
+    'Machine-verified prep for the IBM Qiskit v2.x Developer certification (C1000-179). Unofficial — not affiliated with IBM.',
   favicon: 'img/favicon.ico',
 
   future: {
@@ -52,7 +52,7 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'Qiskit Certification Studio',
+      title: 'CertiQ',
       items: [
         {
           type: 'docSidebar',

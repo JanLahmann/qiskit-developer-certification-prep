@@ -1,0 +1,69 @@
+{
+  "id": "s5-q001",
+  "section": "s5",
+  "objectives": [
+    "s5o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You have transpiled a circuit for your backend, producing the ISA circuit `isa_qc`, and created `sampler = SamplerV2(mode=backend)`. Which call correctly submits the circuit for execution?",
+  "code": "from qiskit_ibm_runtime import SamplerV2\n\n# isa_qc: circuit already transpiled for `backend`\nsampler = SamplerV2(mode=backend)\njob = ...  # which call?",
+  "options": [
+    {
+      "key": "A",
+      "text": "`job = sampler.run([isa_qc])`"
+    },
+    {
+      "key": "B",
+      "text": "`job = sampler.run(isa_qc)`"
+    },
+    {
+      "key": "C",
+      "text": "`job = sampler.run([isa_qc], backend)`"
+    },
+    {
+      "key": "D",
+      "text": "`job = sampler.run([isa_qc], backend=backend)`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "SamplerV2.run() takes an iterable of PUBs (Primitive Unified Blocs). A bare ISA circuit is a valid PUB-like element, but it must be wrapped in a list: `sampler.run([isa_qc])`. The backend is not passed to run() — it was already bound via `mode=` when the primitive was constructed.",
+    "distractors": {
+      "B": "V1 primitives accepted bare circuits, but SamplerV2.run() requires an iterable of PUBs — passing the circuit unwrapped raises an error.",
+      "C": "run() has no positional backend parameter — execution target is fixed by `mode=` at construction time; this raises a TypeError.",
+      "D": "There is no `backend=` keyword on run() — that's a V1-migration misconception; the mode is set on the primitive itself."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-primitives",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q001.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\n\ntry:\n    from qiskit_ibm_runtime.fake_provider import FakeManilaV2 as _Fake\nexcept ImportError:\n    from qiskit_ibm_runtime.fake_provider import FakeBrisbane as _Fake\n\nbackend = _Fake()\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa_qc = pm.run(qc)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        job = fn()\n        result = job.result()\n        counts = result[0].data.meas.get_counts()\n        total = sum(counts.values())\n        evidence[key] = (\n            f\"call succeeded on {backend.name}: returned job, result()[0].data.meas \"\n            f\"gave counts over {len(counts)} bitstrings, {total} shots total\"\n        )\n        proven.append(key)\n        return counts\n    except Exception as e:\n        evidence[key] = f\"call raised {type(e).__name__}: {str(e)[:160]}\"\n        return None\n\nsampler = SamplerV2(mode=backend)\ncounts = attempt(\"A\", lambda: sampler.run([isa_qc]))\nattempt(\"B\", lambda: sampler.run(isa_qc))\nattempt(\"C\", lambda: sampler.run([isa_qc], backend))\nattempt(\"D\", lambda: sampler.run([isa_qc], backend=backend))\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"backend\": backend.name, \"counts_A\": counts},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude (orchestrator seed)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-19",
+    "stale": false
+  }
+}

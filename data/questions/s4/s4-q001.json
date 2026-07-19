@@ -1,0 +1,38 @@
+{
+  "id": "s4-q001",
+  "section": "s4",
+  "objectives": ["s4o1"],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "A researcher needs to run 30 circuits that are fully independent of each other (no circuit depends on another's results) on a busy IBM Quantum device, and wants to minimize total time spent waiting in the queue. Which execution mode fits best?",
+  "code": null,
+  "options": [
+    { "key": "A", "text": "Batch mode — submit the 30 jobs together as one batch" },
+    { "key": "B", "text": "Session mode — open a session and submit the 30 jobs inside it" },
+    { "key": "C", "text": "Job mode — submit 30 separate individual jobs" },
+    { "key": "D", "text": "One session per circuit — open 30 sessions, one job each" }
+  ],
+  "answer": ["A"],
+  "explanation": {
+    "correct": "Batch mode is designed exactly for collections of independent jobs: the jobs are scheduled as a group, can run back-to-back with parallelized classical processing, and the whole collection clears the queue faster than individually queued jobs — without reserving the device between jobs the way a session does.",
+    "distractors": {
+      "B": "Sessions give you dedicated, iterative access — useful when later jobs depend on earlier results (e.g. variational loops). For independent circuits the dedicated window buys nothing and typically costs more device time than batching.",
+      "C": "Individually queued jobs each wait in the fair-share queue separately — this maximizes, not minimizes, total queuing overhead.",
+      "D": "Opening a session per circuit multiplies session overhead thirty-fold and is the most wasteful option of all."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+      "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch"
+    ]
+  },
+  "proof": { "status": "conceptual", "artifact": null },
+  "verification": { "mode": "none" },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude (orchestrator seed)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank."
+  }
+}

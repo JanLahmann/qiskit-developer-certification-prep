@@ -1,0 +1,69 @@
+{
+  "id": "s1-q001",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "What is the statevector of the qubit after this circuit runs, in the computational basis `[amp(|0⟩), amp(|1⟩)]`?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)\n\nprint(Statevector.from_instruction(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`[0.7071, 0.7071]` — equal superposition with no relative phase"
+    },
+    {
+      "key": "B",
+      "text": "`[0.7071, 0.7071j]` — equal superposition with a relative phase of i on |1⟩"
+    },
+    {
+      "key": "C",
+      "text": "`[0.7071, -0.7071j]` — equal superposition with a relative phase of −i on |1⟩"
+    },
+    {
+      "key": "D",
+      "text": "`[0.7071j, 0.7071]` — phase i applied to the |0⟩ amplitude"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "H maps |0⟩ to (|0⟩+|1⟩)/√2. The S gate is the phase gate diag(1, i): it leaves |0⟩ alone and multiplies the |1⟩ amplitude by i, giving (|0⟩ + i|1⟩)/√2 = [0.7071, 0.7071j].",
+    "distractors": {
+      "A": "This is the state right after H, before the S gate acts — S adds the phase i to the |1⟩ component.",
+      "C": "A phase of −i would come from S† (the inverse phase gate, `sdg`), not S.",
+      "D": "S = diag(1, i) acts on the |1⟩ amplitude; the |0⟩ amplitude is untouched."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q001.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)\nobserved = Statevector.from_instruction(qc).data\n\ns = 1 / np.sqrt(2)\ncandidates = {\n    \"A\": np.array([s, s]),\n    \"B\": np.array([s, 1j * s]),\n    \"C\": np.array([s, -1j * s]),\n    \"D\": np.array([1j * s, s]),\n}\nevidence = {}\nproven = []\nfor key, vec in candidates.items():\n    match = bool(np.allclose(observed, vec))\n    evidence[key] = (\n        f\"executed circuit gives {np.round(observed, 4).tolist()}; \"\n        f\"option claims {np.round(vec, 4).tolist()} -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"statevector\": [str(x) for x in np.round(observed, 6)]},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude (orchestrator seed)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-19",
+    "stale": false
+  }
+}

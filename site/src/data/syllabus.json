@@ -1,0 +1,170 @@
+{
+  "exam": {
+    "code": "C1000-179",
+    "questions": 68,
+    "minutes": 90,
+    "passScore": 47
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "num": 1,
+      "title": "Perform quantum operations",
+      "weightPct": 16,
+      "objectives": [
+        {
+          "id": "s1o1",
+          "text": "Define Pauli Operators"
+        },
+        {
+          "id": "s1o2",
+          "text": "Apply quantum operations"
+        }
+      ],
+      "bankCount": 1
+    },
+    {
+      "id": "s2",
+      "num": 2,
+      "title": "Visualize quantum circuits, measurements, and states",
+      "weightPct": 11,
+      "objectives": [
+        {
+          "id": "s2o1",
+          "text": "Visualize quantum circuits"
+        },
+        {
+          "id": "s2o2",
+          "text": "Visualize quantum measurements"
+        },
+        {
+          "id": "s2o3",
+          "text": "Visualize quantum states"
+        }
+      ],
+      "bankCount": 0
+    },
+    {
+      "id": "s3",
+      "num": 3,
+      "title": "Create quantum circuits",
+      "weightPct": 18,
+      "objectives": [
+        {
+          "id": "s3o1",
+          "text": "Construct basic quantum circuits"
+        },
+        {
+          "id": "s3o2",
+          "text": "Construct dynamic circuits"
+        },
+        {
+          "id": "s3o3",
+          "text": "Construct parameterized circuits"
+        },
+        {
+          "id": "s3o4",
+          "text": "Transpile and optimize circuits"
+        }
+      ],
+      "bankCount": 0
+    },
+    {
+      "id": "s4",
+      "num": 4,
+      "title": "Run quantum circuits",
+      "weightPct": 15,
+      "objectives": [
+        {
+          "id": "s4o1",
+          "text": "Differentiate execution modes to optimize job queuing"
+        },
+        {
+          "id": "s4o2",
+          "text": "Run quantum circuits with a real hardware in the IBM Runtime provider"
+        }
+      ],
+      "bankCount": 1
+    },
+    {
+      "id": "s5",
+      "num": 5,
+      "title": "Use the sampler primitive",
+      "weightPct": 12,
+      "objectives": [
+        {
+          "id": "s5o1",
+          "text": "Set sampler primitive options such as resilience levels"
+        },
+        {
+          "id": "s5o2",
+          "text": "Bypass runtime error mitigations and implement your own"
+        },
+        {
+          "id": "s5o3",
+          "text": "Understand the theoretical background behind the sampler primitive"
+        }
+      ],
+      "bankCount": 1
+    },
+    {
+      "id": "s6",
+      "num": 6,
+      "title": "Use the estimator primitive",
+      "weightPct": 12,
+      "objectives": [
+        {
+          "id": "s6o1",
+          "text": "Set estimator primitive options such as resilience levels"
+        },
+        {
+          "id": "s6o2",
+          "text": "Understand the theoretical background behind the estimator primitive"
+        }
+      ],
+      "bankCount": 0
+    },
+    {
+      "id": "s7",
+      "num": 7,
+      "title": "Retrieve and analyze the results of quantum circuits",
+      "weightPct": 10,
+      "objectives": [
+        {
+          "id": "s7o1",
+          "text": "Retrieve previous experiment results (session/runtime)"
+        },
+        {
+          "id": "s7o2",
+          "text": "Monitor jobs"
+        }
+      ],
+      "bankCount": 0
+    },
+    {
+      "id": "s8",
+      "num": 8,
+      "title": "Operate with OpenQASM",
+      "weightPct": 6,
+      "objectives": [
+        {
+          "id": "s8o1",
+          "text": "Structure types in OpenQASM 3 programs"
+        },
+        {
+          "id": "s8o2",
+          "text": "Interpret OpenQASM semantics for versions 2 and 3"
+        },
+        {
+          "id": "s8o3",
+          "text": "Interoperate different versions of OpenQASM with Qiskit"
+        },
+        {
+          "id": "s8o4",
+          "text": "Interact with the Qiskit IBM Runtime REST API"
+        }
+      ],
+      "bankCount": 0
+    }
+  ]
+}

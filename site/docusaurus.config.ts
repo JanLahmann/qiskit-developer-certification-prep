@@ -60,6 +60,7 @@ const config: Config = {
           position: 'left',
           label: 'Study Guide',
         },
+        {to: '/mock-exam', label: 'Mock Exam', position: 'left'},
         {
           href: 'https://github.com/JanLahmann/qiskit-developer-certification-prep',
           label: 'GitHub',

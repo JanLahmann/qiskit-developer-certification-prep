@@ -1,0 +1,1 @@
+{"section": {"id": "s3", "num": 3, "title": "Create quantum circuits", "weightPct": 18, "objectives": [{"id": "s3o1", "text": "Construct basic quantum circuits"}, {"id": "s3o2", "text": "Construct dynamic circuits"}, {"id": "s3o3", "text": "Construct parameterized circuits"}, {"id": "s3o4", "text": "Transpile and optimize circuits"}]}, "questions": []}

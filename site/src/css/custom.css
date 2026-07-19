@@ -1,30 +1,60 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * CertiQ global styles. Infima variable overrides + small polish.
+ * Brand: deep indigo-violet (quantum-flavored, deliberately NOT IBM blue).
  */
 
-/* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #5a45d4;
+  --ifm-color-primary-dark: #4a35c9;
+  --ifm-color-primary-darker: #4432be;
+  --ifm-color-primary-darkest: #38299c;
+  --ifm-color-primary-light: #6d59da;
+  --ifm-color-primary-lighter: #7a67dd;
+  --ifm-color-primary-lightest: #9c8de6;
   --ifm-code-font-size: 95%;
+  --ifm-navbar-shadow: 0 1px 6px rgb(0 0 0 / 8%);
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-color-primary: #a698f0;
+  --ifm-color-primary-dark: #9382ec;
+  --ifm-color-primary-darker: #8977eb;
+  --ifm-color-primary-darkest: #6b54e5;
+  --ifm-color-primary-light: #b9aef3;
+  --ifm-color-primary-lighter: #c3b9f5;
+  --ifm-color-primary-lightest: #ded9f9;
+  --ifm-background-color: #15131f;
+  --ifm-background-surface-color: #1d1a2b;
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.08);
+}
+
+/* Hero: subtle quantum-interference gradient instead of flat primary. */
+.hero--primary {
+  --ifm-hero-background-color: transparent;
+  background:
+    radial-gradient(1200px 500px at 15% -10%, rgb(90 69 212 / 85%), transparent 60%),
+    radial-gradient(900px 420px at 85% 0%, rgb(56 41 156 / 90%), transparent 55%),
+    linear-gradient(160deg, #241d55 0%, #38299c 55%, #241d55 100%);
+  color: #fff;
+}
+
+.hero--primary .hero__subtitle {
+  max-width: 46rem;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.92;
+}
+
+/* Keep long code in question cards scrollable, never page-breaking. */
+.theme-code-block {
+  max-width: 100%;
+}
+
+/* Footer disclaimer readability */
+.footer__copyright {
+  font-size: 0.78rem;
+  opacity: 0.85;
+  max-width: 62rem;
+  margin: 0.5rem auto 0;
 }

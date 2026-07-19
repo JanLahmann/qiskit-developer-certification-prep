@@ -1,0 +1,35 @@
+{
+  "question": "s5-q010",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "option claims sum(counts.values())=1000; executed run gave 1000 -> match=True",
+      "B": "option claims sum(counts.values())=2; executed run gave 1000 -> match=False",
+      "C": "option claims sum(counts.values())=500; executed run gave 1000 -> match=False",
+      "D": "option claims sum(counts.values())=1024; executed run gave 1000 -> match=False"
+    },
+    "observed": {
+      "counts": {
+        "11": 439,
+        "00": 508,
+        "01": 17,
+        "10": 36
+      },
+      "sum": 1000,
+      "distinct_bitstrings": 4
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.26,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"option claims sum(counts.values())=1000; executed run gave 1000 -> match=True\", \"B\": \"option claims sum(counts.values())=2; executed run gave 1000 -> match=False\", \"C\": \"option claims sum(counts.values())=500; executed run gave 1000 -> match=False\", \"D\": \"option claims sum(counts.values())=1024; executed run gave 1000 -> match=False\"}, \"observed\": {\"counts\": {\"11\": 439, \"00\": 508, \"01\": 17, \"10\": 36}, \"sum\": 1000, \"distinct_bitstrings\": 4}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

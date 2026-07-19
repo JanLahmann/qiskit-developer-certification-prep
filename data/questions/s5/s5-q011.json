@@ -1,0 +1,68 @@
+{
+  "id": "s5-q011",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "After running a SamplerV2 job on a circuit that used `measure_all()`, you access `bits = result[0].data.meas`. Which statement about `bits` is correct?",
+  "code": "result = sampler.run([isa], shots=256).result()\nbits = result[0].data.meas",
+  "options": [
+    {
+      "key": "A",
+      "text": "`bits` is a `BitArray` holding the per-shot measurement outcomes; call `bits.get_counts()` to summarize them into a dict"
+    },
+    {
+      "key": "B",
+      "text": "`bits` is already a dict that maps each bitstring to its count"
+    },
+    {
+      "key": "C",
+      "text": "`bits` is a NumPy array of measurement probabilities, one per basis state"
+    },
+    {
+      "key": "D",
+      "text": "`bits` is a `Counts` object, exactly like `result.get_counts()` returned in Qiskit V1"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "SamplerV2 stores each register's outcomes in a BitArray inside the DataBin (`data.meas`). A BitArray keeps the raw per-shot bitstrings; you turn it into a summary histogram with `get_counts()` (dict) or read shots directly with `get_bitstrings()`. It is not itself the counts dict.",
+    "distractors": {
+      "B": "The counts dict is what `bits.get_counts()` *returns*; `bits` itself is the richer BitArray container of per-shot data, not the dict.",
+      "C": "The Sampler returns samples, not a probability vector. Frequencies must be estimated by counting shots yourself; nothing in `data.meas` is a probability array.",
+      "D": "This is a V1-migration misconception. V2 has no top-level `result.get_counts()`; results live in per-register BitArrays reached through `data.<register>`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q011.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nbits = SamplerV2(mode=backend).run([isa], shots=256).result()[0].data.meas\ntname = type(bits).__name__\nis_dict = isinstance(bits, dict)\ngc = bits.get_counts()\ngc_is_dict = isinstance(gc, dict)\n\nevidence, proven = {}, []\n# A: bits is a BitArray of per-shot outcomes; get_counts() returns a summary dict\nA = (tname == \"BitArray\") and gc_is_dict and (not is_dict)\n# B: bits itself is a dict mapping bitstrings->counts\nB = is_dict\n# C: bits is a NumPy array of probabilities\nC = (tname == \"ndarray\")\n# D: bits is a V1-style Counts object\nD = (tname == \"Counts\")\nfor k, val, desc in [(\"A\", A, f\"type(bits).__name__={tname!r}, isinstance(bits,dict)={is_dict}, get_counts() is dict={gc_is_dict}\"),\n                     (\"B\", B, f\"isinstance(bits,dict)={is_dict}\"),\n                     (\"C\", C, f\"type name is {tname!r}, not ndarray\"),\n                     (\"D\", D, f\"type name is {tname!r}, not Counts\")]:\n    evidence[k] = f\"claim holds={val} — {desc}\"\n    if val:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"type\": tname, \"get_counts_type\": type(gc).__name__, \"num_shots\": bits.num_shots}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-19",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

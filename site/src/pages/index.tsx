@@ -4,6 +4,7 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
+import ProgressOverview from '@site/src/components/Progress/ProgressOverview';
 import Heading from '@theme/Heading';
 
 import styles from './index.module.css';
@@ -38,6 +39,9 @@ export default function Home(): ReactNode {
       description="Unofficial, machine-verified prep platform for the IBM Qiskit v2.x Developer certification (C1000-179): guided study path, verified question bank, faithful mock exam.">
       <HomepageHeader />
       <main>
+        <div className="container">
+          <ProgressOverview compact />
+        </div>
         <HomepageFeatures />
       </main>
     </Layout>

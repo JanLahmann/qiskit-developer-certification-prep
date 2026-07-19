@@ -1,0 +1,35 @@
+---
+sidebar_position: 2
+title: Guided path
+description: The recommended route from zero to passing C1000-179 — learn, drill, check, per section.
+---
+
+import ProgressOverview from '@site/src/components/Progress/ProgressOverview';
+
+# Guided path
+
+The exam rewards **breadth with depth where the weight is**. This is the route we recommend — each stop is *learn → drill → check*, and your progress strip below tells you where you stand.
+
+<ProgressOverview />
+
+## The route
+
+1. **[Section 1 — Perform quantum operations](/docs/sections/s1)** (16%) — the mathematical bedrock: Pauli operators, gates, statevectors. Everything else builds on this.
+2. **[Section 2 — Visualize](/docs/sections/s2)** (11%) — cheap points if you can read a Bloch sphere, QSphere, and histogram at a glance.
+3. **[Section 3 — Create quantum circuits](/docs/sections/s3)** (18%) — the **biggest section**: construction, dynamic & parameterized circuits, and transpilation. Give it the most time.
+4. **[Section 4 — Run quantum circuits](/docs/sections/s4)** (15%) — execution modes (job/session/batch) and running on real hardware.
+5. **[Section 5 — Sampler](/docs/sections/s5)** (12%) and **[Section 6 — Estimator](/docs/sections/s6)** (12%) — the Runtime primitives V2. Learn them as a pair: same PUB idea, different outputs.
+6. **[Section 7 — Results](/docs/sections/s7)** (10%) — result data structures: DataBin, BitArray, expectation-value arrays.
+7. **[Section 8 — OpenQASM](/docs/sections/s8)** (6%) — small but easy to bank: types, QASM 2 vs 3, Qiskit interop.
+
+## When to take the mock exam
+
+- **First mock**: after drilling sections 1–4 — calibrate early, don't wait until you feel "ready".
+- Then loop: **mock → section diagnosis → strengthen weakest → mock again**. The [mock exam](/mock-exam) mirrors the real thing exactly (68 questions, 90 minutes, pass at 47, official section weights) and every attempt gives you a per-section diagnosis.
+- You're ready when you clear the pass line with margin on two consecutive fresh seeds.
+
+## Study tips from how the exam is built
+
+- Weights ≠ difficulty: sections 5–7 are mechanical once you've internalized the PUB model — drill until the patterns are reflexive.
+- Read code questions bottom-up: what's measured, what's returned, *then* what the circuit does.
+- The real exam is closed-book: when you drill here, answer before you peek at the explanations.

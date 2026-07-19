@@ -1,0 +1,68 @@
+{
+  "id": "s5-q012",
+  "section": "s5",
+  "objectives": [
+    "s5o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You build `sampler = SamplerV2(mode=backend)` and never touch its options, then call `sampler.run([isa])` with no `shots` argument. How many shots does the job run?",
+  "code": "sampler = SamplerV2(mode=backend)\njob = sampler.run([isa])   # no shots given, options untouched\nnum = job.result()[0].data.meas.num_shots",
+  "options": [
+    {
+      "key": "A",
+      "text": "1024 — the default value used when neither `shots` nor `default_shots` is set"
+    },
+    {
+      "key": "B",
+      "text": "4096 — the SamplerV2 default"
+    },
+    {
+      "key": "C",
+      "text": "1 — one shot unless you ask for more"
+    },
+    {
+      "key": "D",
+      "text": "It raises an error, because `shots` is a required argument"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "When you pass neither a per-run `shots` value nor set `options.default_shots`, SamplerV2 falls back to its built-in default of 1024 shots. `shots` is optional precisely because this default exists.",
+    "distractors": {
+      "B": "4096 is not the Sampler's default; the built-in fallback is 1024. This is a memorized-wrong-number distractor.",
+      "C": "A single shot is never the default — sampling needs many repetitions to estimate a distribution. The fallback is 1024.",
+      "D": "`shots` is optional. Omitting it is legal and simply uses the default (1024), so no error is raised."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-runtime-options",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q012.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(1); qc.h(0); qc.measure_all()\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)  # default_shots left Unset\nraised = False\nobserved = None\ntry:\n    observed = sampler.run([isa]).result()[0].data.meas.num_shots\nexcept Exception as e:\n    raised = True\n    err = f\"{type(e).__name__}: {e}\"\n\nevidence, proven = {}, []\n# A: 1024 shots run\nA = (not raised) and observed == 1024\n# B: 4096\nB = (not raised) and observed == 4096\n# C: 1\nC = (not raised) and observed == 1\n# D: raises because shots are mandatory\nD = raised\nfor k, val in [(\"A\", A), (\"B\", B), (\"C\", C), (\"D\", D)]:\n    evidence[k] = f\"claim holds={val} — observed num_shots={observed}, raised={raised}\"\n    if val:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"num_shots\": observed, \"raised\": raised}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-19",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

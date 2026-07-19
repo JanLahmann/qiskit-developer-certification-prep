@@ -1,0 +1,77 @@
+.panel {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  background: var(--ifm-background-surface-color);
+}
+
+.panelCompact {
+  max-width: 900px;
+  margin: 1.5rem auto;
+}
+
+.headRow {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.mockNote {
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr));
+  gap: 0.5rem;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  padding: 0.4rem 0.55rem;
+  text-decoration: none;
+  color: var(--ifm-font-color-base);
+  font-size: 0.78rem;
+}
+
+.cell:hover {
+  border-color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+.cellNum {
+  font-weight: 800;
+}
+
+.cellBar {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--ifm-color-emphasis-200);
+  overflow: hidden;
+}
+
+.cellFill {
+  display: block;
+  height: 100%;
+  background: var(--ifm-color-primary);
+}
+
+.cellPct {
+  font-variant-numeric: tabular-nums;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.legend {
+  margin-top: 0.6rem;
+  font-size: 0.72rem;
+  color: var(--ifm-color-emphasis-500);
+}

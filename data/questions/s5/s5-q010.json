@@ -1,0 +1,68 @@
+{
+  "id": "s5-q010",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "A Bell circuit is measured and submitted with `sampler.run([isa], shots=1000)`. What is the value of `sum(result[0].data.meas.get_counts().values())`?",
+  "code": "from qiskit_ibm_runtime import SamplerV2\n\n# isa: transpiled Bell circuit with measure_all()\nsampler = SamplerV2(mode=backend)\nresult = sampler.run([isa], shots=1000).result()\ncounts = result[0].data.meas.get_counts()\nprint(sum(counts.values()))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`1000` — the counts across all outcomes always add up to the number of shots"
+    },
+    {
+      "key": "B",
+      "text": "`2` — a Bell state only produces the outcomes `00` and `11`"
+    },
+    {
+      "key": "C",
+      "text": "`500` — the shots are split evenly between the two measured qubits"
+    },
+    {
+      "key": "D",
+      "text": "`1024` — the sampler always uses its 1024 default shots"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "get_counts() tallies every shot into its observed bitstring, so the counts sum to the total number of shots that were run. Here shots=1000 was passed explicitly, so the tallies sum to 1000 regardless of how many distinct bitstrings (2, 3, or 4) actually appear.",
+    "distractors": {
+      "B": "This confuses the number of *distinct outcomes* with the number of shots. get_counts() returns a dict whose keys are the distinct bitstrings but whose values sum to the shot count.",
+      "C": "Shots are not divided among qubits — every shot measures the full register once, producing one bitstring; all 1000 bitstrings are tallied.",
+      "D": "1024 is only the default when no shots are supplied. Here `shots=1000` overrides the default, so exactly 1000 shots run."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q010.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)\nresult = sampler.run([isa], shots=1000).result()\ncounts = result[0].data.meas.get_counts()\nobserved = sum(counts.values())\n\ncandidates = {\"A\": 1000, \"B\": 2, \"C\": 500, \"D\": 1024}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims sum(counts.values())={v}; executed run gave {observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"counts\": counts, \"sum\": observed, \"distinct_bitstrings\": len(counts)}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-19",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

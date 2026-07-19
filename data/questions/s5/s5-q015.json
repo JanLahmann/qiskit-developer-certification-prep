@@ -1,0 +1,68 @@
+{
+  "id": "s5-q015",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A 3-qubit circuit applies X to qubit 0 only, then measures qubit i into classical bit i. In the Sampler's counts, which bitstring dominates?",
+  "code": "qc = QuantumCircuit(3, 3)\nqc.x(0)                       # only qubit 0 is flipped\nqc.measure(0, 0)\nqc.measure(1, 1)\nqc.measure(2, 2)\n# ... transpile, then sampler.run([isa]) ...\ncounts = result[0].data.c.get_counts()",
+  "options": [
+    {
+      "key": "A",
+      "text": "`'001'` — Qiskit prints bitstrings little-endian, so classical bit 0 (qubit 0) is the rightmost character"
+    },
+    {
+      "key": "B",
+      "text": "`'100'` — qubit 0 is the leftmost character in the bitstring"
+    },
+    {
+      "key": "C",
+      "text": "`'111'` — flipping any qubit flips the whole register"
+    },
+    {
+      "key": "D",
+      "text": "`'000'` — X on qubit 0 has no effect on the measured bits"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Qiskit uses little-endian bit ordering: in the printed bitstring the classical bit with the highest index is on the left and bit 0 is on the right. Only qubit 0 is excited, and it is measured into classical bit 0, so the rightmost character is 1 and the rest are 0 -> '001'.",
+    "distractors": {
+      "B": "This assumes big-endian ordering (qubit 0 leftmost). Qiskit is little-endian, so qubit 0 lands in the rightmost position, giving '001', not '100'.",
+      "C": "X acts only on the qubit it targets; qubits 1 and 2 stay in |0>. The register does not collectively flip.",
+      "D": "X on qubit 0 flips it to |1>, so its measured bit is 1, not 0 — the outcome cannot be all zeros."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q015.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(3, 3)\nqc.x(0)                      # flip qubit 0 only\nqc.measure(0, 0); qc.measure(1, 1); qc.measure(2, 2)\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)\nsampler.options.simulator.seed_simulator = 123\ncounts = sampler.run([isa], shots=2000).result()[0].data.c.get_counts()\ntop = max(counts, key=counts.get)\n\ncandidates = {\"A\": \"001\", \"B\": \"100\", \"C\": \"111\", \"D\": \"000\"}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == top)\n    evidence[k] = f\"option claims dominant bitstring {v!r}; observed argmax={top!r} (counts[{v!r}]={counts.get(v,0)}) -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"counts\": counts, \"dominant\": top}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-19",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "question": "s7-q031",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "raised AttributeError: 'DataBin' object has no attribute 'registers'",
+      "B": "returned list=['ans']; list of reg names incl 'ans' -> True",
+      "C": "raised AttributeError: 'DataBin' object has no attribute 'get_counts'",
+      "D": "raised AttributeError: 'DataBin' object has no attribute 'num_bits'"
+    },
+    "observed": {
+      "keys": [
+        "ans"
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.15,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"raised AttributeError: 'DataBin' object has no attribute 'registers'\", \"B\": \"returned list=['ans']; list of reg names incl 'ans' -> True\", \"C\": \"raised AttributeError: 'DataBin' object has no attribute 'get_counts'\", \"D\": \"raised AttributeError: 'DataBin' object has no attribute 'num_bits'\"}, \"observed\": {\"keys\": [\"ans\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

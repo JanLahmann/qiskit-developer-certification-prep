@@ -1,0 +1,68 @@
+{
+  "id": "s7-q022",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "You ran an EstimatorV2 job and hold `result`. Which expression gives the estimated expectation value(s)?",
+  "code": "# result = estimator.run([(isa_circuit, observable)]).result()",
+  "options": [
+    {
+      "key": "A",
+      "text": "`result[0].data.meas.get_counts()`"
+    },
+    {
+      "key": "B",
+      "text": "`result[0].data.get_counts()`"
+    },
+    {
+      "key": "C",
+      "text": "`result[0].evs`"
+    },
+    {
+      "key": "D",
+      "text": "`result[0].data.evs`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "An estimator DataBin carries `evs` (expectation values) and `stds` (their standard errors). Access them via `result[0].data.evs`.",
+    "distractors": {
+      "A": "`meas`/`get_counts` are Sampler concepts; an estimator result has no BitArray register.",
+      "B": "A DataBin has no `get_counts()`, and an estimator produces no counts anyway.",
+      "C": "`evs` lives on the DataBin (`.data`), not directly on the PubResult."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/primitives",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q022.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\nimport numpy as np\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nresult = StatevectorEstimator(seed=0).run([(qc, SparsePauliOp(\"ZZ\"))]).result()\n\nevidence = {}; proven = []\ndef check(key, fn, numeric=False):\n    try:\n        r = fn()\n        if numeric:\n            ok = (np.ndim(r) == 0) or hasattr(r, \"shape\")\n            evidence[key] = f\"returned {type(r).__name__}={r}; is expectation value(s) -> {ok}\"\n            if ok: proven.append(key)\n        else:\n            evidence[key] = f\"returned {type(r).__name__}={str(r)[:50]} -> not the evs -> False\"\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\ncheck(\"A\", lambda: result[0].data.meas.get_counts())\ncheck(\"B\", lambda: result[0].data.get_counts())\ncheck(\"C\", lambda: result[0].evs)\ncheck(\"D\", lambda: result[0].data.evs, numeric=True)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": str(result[0].data.evs)}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

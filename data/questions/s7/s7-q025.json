@@ -1,0 +1,68 @@
+{
+  "id": "s7-q025",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "From the sampled `bits` of an ideal Bell state (H, CX, `measure_all`), you compute `bits.expectation_values('ZZ')`. What value results?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nbits = StatevectorSampler().run([qc], shots=1000).result()[0].data.meas\nprint(bits.expectation_values(\"ZZ\"))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`0.0`"
+    },
+    {
+      "key": "B",
+      "text": "`1.0`"
+    },
+    {
+      "key": "C",
+      "text": "`-1.0`"
+    },
+    {
+      "key": "D",
+      "text": "`0.5`"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "`BitArray.expectation_values` assigns +/-1 per bit and averages over shots. In a Bell state every shot is `00` or `11`, and both are +1 eigenvalues of ZZ (product of the two +/-1 bit values), so the average is exactly 1.0 regardless of the split.",
+    "distractors": {
+      "A": "0 would arise for an uncorrelated single-qubit Z average, not the correlated ZZ product.",
+      "C": "-1 has the wrong sign; correlated bits give ZZ = +1.",
+      "D": "0.5 confuses an expectation value with an outcome probability."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q025.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nbits = StatevectorSampler(seed=13).run([qc], shots=1000).result()[0].data.meas\nev = float(bits.expectation_values(\"ZZ\"))\ncand = {\"A\": 0.0, \"B\": 1.0, \"C\": -1.0, \"D\": 0.5}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = abs(ev - v) < 1e-9\n    evidence[k] = f\"expectation_values('ZZ')={round(ev,6)}; option claims {v} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"ev\": ev}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

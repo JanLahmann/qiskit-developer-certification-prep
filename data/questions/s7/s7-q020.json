@@ -1,0 +1,68 @@
+{
+  "id": "s7-q020",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "An EstimatorV2 evaluates the observable `ZZ` on an ideal Bell state (H then CX). What does `result[0].data.evs` hold?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\n\nresult = StatevectorEstimator().run([(qc, obs)]).result()\nprint(result[0].data.evs)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`{'00': 0.5, '11': 0.5}` -- a counts-like dict"
+    },
+    {
+      "key": "B",
+      "text": "`0.0` -- the observable averages to zero"
+    },
+    {
+      "key": "C",
+      "text": "`1.0` -- a scalar expectation value"
+    },
+    {
+      "key": "D",
+      "text": "`[0.5, 0.5]` -- outcome probabilities"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "EstimatorV2 returns expectation values, not samples. The Bell state is a +1 eigenstate of ZZ, so <ZZ> = 1.0. The estimator DataBin exposes `evs` (and `stds`), never counts or probabilities.",
+    "distractors": {
+      "A": "Counts/bitstrings are Sampler output; an estimator DataBin has no such dict.",
+      "B": "The Bell state is a +1 eigenstate of ZZ; the value is 1.0, not 0.",
+      "D": "The estimator returns an expectation value, not a probability vector."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/primitives",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q020.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\nimport numpy as np\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nevs = StatevectorEstimator(seed=0).run([(qc, SparsePauliOp(\"ZZ\"))]).result()[0].data.evs\nval = float(evs); scalar = (np.ndim(evs) == 0)\nnumeric_claim = {\"B\": 0.0, \"C\": 1.0}\nevidence = {}; proven = []\nevidence[\"A\"] = f\"evs is a scalar float {round(val,6)} (ndim={np.ndim(evs)}), not a counts dict -> False\"\nevidence[\"D\"] = f\"evs is a scalar float {round(val,6)}, not a probability list -> False\"\nfor k, claim in numeric_claim.items():\n    ok = scalar and abs(val - claim) < 1e-6\n    evidence[k] = f\"evs={round(val,6)}; option claims scalar {claim} -> match={ok}\"\n    if ok: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": val}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

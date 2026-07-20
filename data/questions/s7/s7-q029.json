@@ -1,0 +1,68 @@
+{
+  "id": "s7-q029",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "A 3-qubit GHZ circuit (`measure_all`) is sampled. Its `get_counts()` returns `{'000': a, '111': b}`. What KEYS does `bits.get_int_counts()` use for those same outcomes?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3); qc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\nbits = StatevectorSampler().run([qc], shots=800).result()[0].data.meas\nprint(bits.get_int_counts())",
+  "options": [
+    {
+      "key": "A",
+      "text": "`{0: a, 3: b}`"
+    },
+    {
+      "key": "B",
+      "text": "`{'000': a, '111': b}` -- same string keys"
+    },
+    {
+      "key": "C",
+      "text": "`{0: a, 7: b}` -- each bitstring read as a binary integer"
+    },
+    {
+      "key": "D",
+      "text": "`{0: a, 111: b}` -- `111` kept as the number 111"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "`get_int_counts()` converts each measured bitstring to its integer value in binary: `000` -> 0 and `111` -> 7.",
+    "distractors": {
+      "A": "3 is binary `011`, not `111`; all three bits are set here.",
+      "B": "Those are the string keys from `get_counts()`, not `get_int_counts()`.",
+      "D": "`111` is binary and equals 7, not the decimal number 111."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q029.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3); qc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\nbits = StatevectorSampler(seed=14).run([qc], shots=800).result()[0].data.meas\nobs = set(bits.get_int_counts().keys())\ncand = {\"A\": {0, 3}, \"B\": {\"000\", \"111\"}, \"C\": {0, 7}, \"D\": {0, 111}}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = f\"get_int_counts keys={sorted(obs)}; option claims {sorted(v, key=str)} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"int_counts\": bits.get_int_counts()}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

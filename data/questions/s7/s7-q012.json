@@ -11,11 +11,11 @@
   "options": [
     {
       "key": "A",
-      "text": "`(1024, 2)`"
+      "text": "`(1024, 10)`"
     },
     {
       "key": "B",
-      "text": "`(1024, 10)`"
+      "text": "`(1024, 2)`"
     },
     {
       "key": "C",
@@ -27,12 +27,12 @@
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
     "correct": "A BitArray stores shots as bit-PACKED bytes: each shot's `num_bits` bits are packed into `ceil(num_bits/8)` uint8 columns. Ten bits pack into 2 bytes, so the array shape is `(num_shots, 2)` = `(1024, 2)`. Use `get_counts()`/`get_bitstrings()` for readable output; `num_bits` (10) is separate from the byte width.",
     "distractors": {
-      "B": "This assumes one column per bit; the array is byte-packed, not one-hot per bit.",
+      "A": "This assumes one column per bit; the array is byte-packed, not one-hot per bit.",
       "C": "This transposes shots and bytes; the shot axis comes first.",
       "D": "This treats the array as 1-D; it is 2-D (shots x packed-bytes)."
     },
@@ -47,7 +47,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(10)\nfor q in range(10):\n    qc.h(q)\nqc.measure_all()\nbits = StatevectorSampler(seed=1).run([qc], shots=1024).result()[0].data.meas\nobs = tuple(bits.array.shape)\ncand = {\"A\": (1024, 2), \"B\": (1024, 10), \"C\": (10, 1024), \"D\": (1024,)}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = f\"array.shape={obs} (num_bits={bits.num_bits}); option claims {v} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"array_shape\": list(obs), \"num_bits\": bits.num_bits}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(10)\nfor q in range(10):\n    qc.h(q)\nqc.measure_all()\nbits = StatevectorSampler(seed=1).run([qc], shots=1024).result()[0].data.meas\nobs = tuple(bits.array.shape)\ncand = {\"A\": (1024, 10), \"B\": (1024, 2), \"C\": (10, 1024), \"D\": (1024,)}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = f\"array.shape={obs} (num_bits={bits.num_bits}); option claims {v} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"array_shape\": list(obs), \"num_bits\": bits.num_bits}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",

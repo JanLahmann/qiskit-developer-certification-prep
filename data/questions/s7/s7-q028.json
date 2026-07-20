@@ -1,0 +1,57 @@
+{
+  "id": "s7-q028",
+  "section": "s7",
+  "objectives": [
+    "s7o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "You submit a Sampler job on real hardware and immediately call `job.result()` on the next line. What happens?",
+  "code": "job = sampler.run([isa_circuit])\nresult = job.result()   # called right after submitting",
+  "options": [
+    {
+      "key": "A",
+      "text": "`job.result()` blocks until the job completes, then returns the PrimitiveResult"
+    },
+    {
+      "key": "B",
+      "text": "It raises immediately because the job is still queued; you must poll `job.status()` until DONE first"
+    },
+    {
+      "key": "C",
+      "text": "It returns whatever partial results have been collected so far"
+    },
+    {
+      "key": "D",
+      "text": "It returns `None` until you separately call `job.wait()`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`job.result()` is a BLOCKING call: it waits for the job to finish and then returns the stored result. You may independently call `job.status()` (returning states like `QUEUED`, `RUNNING`, `DONE`) to monitor progress, but you are not required to poll before calling `result()`.",
+    "distractors": {
+      "B": "`result()` does not raise on a queued job; it simply waits.",
+      "C": "There are no partial results; you get the full result once the job completes.",
+      "D": "`result()` does not return `None`, and there is no required `job.wait()` step."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/monitor-job",
+      "https://quantum.cloud.ibm.com/docs/guides/save-jobs"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

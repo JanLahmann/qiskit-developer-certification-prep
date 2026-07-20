@@ -11,11 +11,11 @@
   "options": [
     {
       "key": "A",
-      "text": "`bits.postselect([1], [0])`"
+      "text": "`bits.slice_bits([1])`"
     },
     {
       "key": "B",
-      "text": "`bits.slice_bits([1])`"
+      "text": "`bits.postselect([1], [0])`"
     },
     {
       "key": "C",
@@ -27,12 +27,12 @@
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
     "correct": "`postselect(indices, values)` filters SHOTS by the measured value at each index (here qubit 1 must equal 0) and returns a BitArray with the same `num_bits`.",
     "distractors": {
-      "B": "`slice_bits` selects which BITS to keep (dropping columns), not which shots; it would shrink `num_bits`.",
+      "A": "`slice_bits` selects which BITS to keep (dropping columns), not which shots; it would shrink `num_bits`.",
       "C": "`slice_shots` selects shots by POSITION index, not by their measured value.",
       "D": "`get_counts()` returns a dict; indexing it with the integer `0` is a KeyError, not a filter."
     },
@@ -47,7 +47,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.primitives.containers import BitArray\n\nqc = QuantumCircuit(2); qc.h(0); qc.h(1); qc.measure_all()\nbits = StatevectorSampler(seed=3).run([qc], shots=400).result()[0].data.meas\norig_bits = bits.num_bits\nref = sum(1 for b in bits.get_bitstrings() if b[-2] == \"0\")  # qubit 1 == 0\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        if isinstance(r, BitArray):\n            ok = (r.num_bits == orig_bits and r.num_shots == ref)\n            evidence[key] = f\"BitArray num_bits={r.num_bits}, num_shots={r.num_shots}; want bits={orig_bits}, shots={ref} -> {ok}\"\n        else:\n            ok = False\n            evidence[key] = f\"returned {type(r).__name__} (not a full-width BitArray) -> False\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\ncheck(\"A\", lambda: bits.postselect([1], [0]))\ncheck(\"B\", lambda: bits.slice_bits([1]))\ncheck(\"C\", lambda: bits.slice_shots([0]))\ncheck(\"D\", lambda: bits.get_counts()[0])\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"shots_with_q1_zero\": ref, \"num_bits\": orig_bits}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.primitives.containers import BitArray\n\nqc = QuantumCircuit(2); qc.h(0); qc.h(1); qc.measure_all()\nbits = StatevectorSampler(seed=3).run([qc], shots=400).result()[0].data.meas\norig_bits = bits.num_bits\nref = sum(1 for b in bits.get_bitstrings() if b[-2] == \"0\")  # qubit 1 == 0\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        if isinstance(r, BitArray):\n            ok = (r.num_bits == orig_bits and r.num_shots == ref)\n            evidence[key] = f\"BitArray num_bits={r.num_bits}, num_shots={r.num_shots}; want bits={orig_bits}, shots={ref} -> {ok}\"\n        else:\n            ok = False\n            evidence[key] = f\"returned {type(r).__name__} (not a full-width BitArray) -> False\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\ncheck(\"A\", lambda: bits.slice_bits([1]))\ncheck(\"B\", lambda: bits.postselect([1], [0]))\ncheck(\"C\", lambda: bits.slice_shots([0]))\ncheck(\"D\", lambda: bits.get_counts()[0])\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"shots_with_q1_zero\": ref, \"num_bits\": orig_bits}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",

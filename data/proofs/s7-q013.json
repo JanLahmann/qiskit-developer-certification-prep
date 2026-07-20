@@ -2,13 +2,13 @@
   "question": "s7-q013",
   "verdict": {
     "answer": [
-      "A"
+      "D"
     ],
     "evidence": {
-      "A": "returned dict={'11': 96, '00': 104}; valid counts=True",
-      "B": "raised AttributeError: 'DataBin' object has no attribute 'meas'",
-      "C": "raised AttributeError: 'DataBin' object has no attribute 'c'",
-      "D": "raised AttributeError: 'DataBin' object has no attribute 'get_counts'"
+      "A": "raised AttributeError: 'DataBin' object has no attribute 'meas'",
+      "B": "raised AttributeError: 'DataBin' object has no attribute 'c'",
+      "C": "raised AttributeError: 'DataBin' object has no attribute 'get_counts'",
+      "D": "returned dict={'11': 96, '00': 104}; valid counts=True"
     },
     "observed": {
       "register_names": [
@@ -22,9 +22,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.22,
+  "wall_seconds": 1.16,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"returned dict={'11': 96, '00': 104}; valid counts=True\", \"B\": \"raised AttributeError: 'DataBin' object has no attribute 'meas'\", \"C\": \"raised AttributeError: 'DataBin' object has no attribute 'c'\", \"D\": \"raised AttributeError: 'DataBin' object has no attribute 'get_counts'\"}, \"observed\": {\"register_names\": [\"ans\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"raised AttributeError: 'DataBin' object has no attribute 'meas'\", \"B\": \"raised AttributeError: 'DataBin' object has no attribute 'c'\", \"C\": \"raised AttributeError: 'DataBin' object has no attribute 'get_counts'\", \"D\": \"returned dict={'11': 96, '00': 104}; valid counts=True\"}, \"observed\": {\"register_names\": [\"ans\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

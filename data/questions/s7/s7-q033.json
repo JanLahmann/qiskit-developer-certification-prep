@@ -1,0 +1,57 @@
+{
+  "id": "s7-q033",
+  "section": "s7",
+  "objectives": [
+    "s7o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "In a script using Qiskit SDK 2.x and `qiskit-ibm-runtime`, you want to wait for a submitted `job` to finish and then read its results. Which approach is correct?",
+  "code": "job = sampler.run([isa_circuit])\n# wait for completion, then read results",
+  "options": [
+    {
+      "key": "A",
+      "text": "Call `qiskit.tools.job_monitor(job)` to block until it finishes"
+    },
+    {
+      "key": "B",
+      "text": "Loop on `job.done()` until it returns True, then call `job.output()`"
+    },
+    {
+      "key": "C",
+      "text": "Call `job.result()` -- it blocks until completion and returns the result; poll `job.status()` if you want progress"
+    },
+    {
+      "key": "D",
+      "text": "Call `job.wait()`, then `job.get_counts()`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "`job.result()` is the blocking call that returns the PrimitiveResult; `job.status()` reports the state if you want to monitor progress. That is the supported pattern in the current runtime.",
+    "distractors": {
+      "A": "`qiskit.tools.job_monitor` was part of Qiskit <= 0.x and was REMOVED in Qiskit 1.0+; it does not exist in 2.x.",
+      "B": "There are no `job.done()`/`job.output()` methods on a RuntimeJob.",
+      "D": "There is no `job.wait()`; and `get_counts()` is a BitArray method, not a job method."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/monitor-job",
+      "https://quantum.cloud.ibm.com/docs/guides/save-jobs"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

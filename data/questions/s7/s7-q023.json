@@ -1,0 +1,68 @@
+{
+  "id": "s7-q023",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "Two circuits are submitted in a single SamplerV2 call as two PUBs. What does `len(result)` return, and how do you access the second circuit's counts?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc_a = QuantumCircuit(1); qc_a.x(0); qc_a.measure_all()\nqc_b = QuantumCircuit(1); qc_b.measure_all()\n\nresult = StatevectorSampler().run([qc_a, qc_b], shots=100).result()",
+  "options": [
+    {
+      "key": "A",
+      "text": "`len(result)` is 2; second counts via `result[1].data.meas.get_counts()`"
+    },
+    {
+      "key": "B",
+      "text": "`len(result)` is 1; both circuits share `result[0]`"
+    },
+    {
+      "key": "C",
+      "text": "`len(result)` is 2; second counts via `result.data[1].meas.get_counts()`"
+    },
+    {
+      "key": "D",
+      "text": "`len(result)` is 100 (one entry per shot)"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "A PrimitiveResult holds one PubResult per PUB, in input order. Two PUBs give `len(result) == 2`; the second circuit's data is at `result[1].data.meas`. Shots live inside each pub's BitArray, not as top-level entries.",
+    "distractors": {
+      "B": "PUBs are not merged; each PUB gets its own PubResult.",
+      "C": "There is no top-level `result.data`; `.data` belongs to each indexed PubResult.",
+      "D": "`len(result)` counts PUBs (2), not shots; shots are inside the BitArray."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.PrimitiveResult",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q023.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc_a = QuantumCircuit(1); qc_a.x(0); qc_a.measure_all()\nqc_b = QuantumCircuit(1); qc_b.measure_all()\nresult = StatevectorSampler(seed=6).run([qc_a, qc_b], shots=100).result()\nL = len(result)\nevidence = {}; proven = []\ntry:\n    c1 = result[1].data.meas.get_counts()\n    A_ok = (L == 2 and isinstance(c1, dict))\n    evidence[\"A\"] = f\"len(result)={L}; result[1].data.meas.get_counts()={c1} -> {A_ok}\"\nexcept Exception as e:\n    A_ok = False\n    evidence[\"A\"] = f\"len(result)={L}; result[1] path raised {type(e).__name__}: {str(e)[:60]}\"\nif A_ok: proven.append(\"A\")\nB_ok = (L == 1); evidence[\"B\"] = f\"len(result)={L}; claim 1 -> {B_ok}\"\nif B_ok: proven.append(\"B\")\ntry:\n    _ = result.data[1].meas.get_counts(); C_ok = (L == 2)\n    evidence[\"C\"] = f\"result.data[1] path worked; len={L} -> {C_ok}\"\nexcept Exception as e:\n    C_ok = False\n    evidence[\"C\"] = f\"result.data[1] path raised {type(e).__name__}: {str(e)[:60]} -> False\"\nif C_ok: proven.append(\"C\")\nD_ok = (L == 100); evidence[\"D\"] = f\"len(result)={L}; claim 100 -> {D_ok}\"\nif D_ok: proven.append(\"D\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"len\": L}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

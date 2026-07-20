@@ -1,0 +1,68 @@
+{
+  "id": "s7-q031",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "You retrieved a result but don't remember the circuit's classical-register name, so `result[0].data.meas` fails. Which expression lists the register names available on the data bin so you can pick the right one?",
+  "code": "# result = sampler.run([isa]).result()\ndb = result[0].data",
+  "options": [
+    {
+      "key": "A",
+      "text": "`db.registers`"
+    },
+    {
+      "key": "B",
+      "text": "`list(db.keys())`"
+    },
+    {
+      "key": "C",
+      "text": "`db.get_counts().keys()`"
+    },
+    {
+      "key": "D",
+      "text": "`db.num_bits`"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "A DataBin behaves like a mapping of register-name -> BitArray. `db.keys()` enumerates the register-name fields, so you can see the correct name (e.g. `['ans']`).",
+    "distractors": {
+      "A": "DataBin has no `.registers` attribute.",
+      "C": "DataBin has no `get_counts()`; that method belongs to a BitArray (a register field).",
+      "D": "`num_bits` is a BitArray property, not a DataBin one, and would not list names anyway."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.DataBin",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q031.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(2, \"q\"); ans = ClassicalRegister(2, \"ans\")\nqc = QuantumCircuit(qr, ans); qc.h(0); qc.cx(0, 1); qc.measure(qr, ans)\ndb = StatevectorSampler(seed=15).run([qc], shots=100).result()[0].data\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        ok = isinstance(r, list) and \"ans\" in r\n        evidence[key] = f\"returned {type(r).__name__}={str(r)[:50]}; list of reg names incl 'ans' -> {ok}\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\ncheck(\"A\", lambda: db.registers)\ncheck(\"B\", lambda: list(db.keys()))\ncheck(\"C\", lambda: db.get_counts().keys())\ncheck(\"D\", lambda: db.num_bits)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"keys\": list(db.keys())}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

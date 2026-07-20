@@ -2,11 +2,11 @@
   "question": "s7-q012",
   "verdict": {
     "answer": [
-      "A"
+      "B"
     ],
     "evidence": {
-      "A": "array.shape=(1024, 2) (num_bits=10); option claims (1024, 2) -> match=True",
-      "B": "array.shape=(1024, 2) (num_bits=10); option claims (1024, 10) -> match=False",
+      "A": "array.shape=(1024, 2) (num_bits=10); option claims (1024, 10) -> match=False",
+      "B": "array.shape=(1024, 2) (num_bits=10); option claims (1024, 2) -> match=True",
       "C": "array.shape=(1024, 2) (num_bits=10); option claims (10, 1024) -> match=False",
       "D": "array.shape=(1024, 2) (num_bits=10); option claims (1024,) -> match=False"
     },
@@ -24,9 +24,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.25,
+  "wall_seconds": 1.15,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"array.shape=(1024, 2) (num_bits=10); option claims (1024, 2) -> match=True\", \"B\": \"array.shape=(1024, 2) (num_bits=10); option claims (1024, 10) -> match=False\", \"C\": \"array.shape=(1024, 2) (num_bits=10); option claims (10, 1024) -> match=False\", \"D\": \"array.shape=(1024, 2) (num_bits=10); option claims (1024,) -> match=False\"}, \"observed\": {\"array_shape\": [1024, 2], \"num_bits\": 10}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"array.shape=(1024, 2) (num_bits=10); option claims (1024, 10) -> match=False\", \"B\": \"array.shape=(1024, 2) (num_bits=10); option claims (1024, 2) -> match=True\", \"C\": \"array.shape=(1024, 2) (num_bits=10); option claims (10, 1024) -> match=False\", \"D\": \"array.shape=(1024, 2) (num_bits=10); option claims (1024,) -> match=False\"}, \"observed\": {\"array_shape\": [1024, 2], \"num_bits\": 10}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

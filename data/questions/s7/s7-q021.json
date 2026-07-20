@@ -1,0 +1,68 @@
+{
+  "id": "s7-q021",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "A one-parameter circuit is bound to four parameter values (array shape `(4, 1)`) and evaluated against a single observable by EstimatorV2. What is the shape of `result[0].data.evs`?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nt = Parameter(\"t\")\nqc = QuantumCircuit(1); qc.ry(t, 0)\nobs = SparsePauliOp(\"Z\")\nvals = np.array([[0.0], [np.pi/2], [np.pi], [3*np.pi/2]])  # shape (4, 1)\n\nresult = StatevectorEstimator().run([(qc, obs, vals)]).result()\nprint(result[0].data.evs.shape)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`(4, 1)`"
+    },
+    {
+      "key": "B",
+      "text": "`(4,)`"
+    },
+    {
+      "key": "C",
+      "text": "`(1,)`"
+    },
+    {
+      "key": "D",
+      "text": "`()` (a scalar)"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "The PUB broadcasts over the parameter array's leading shape. Four parameter sets against one observable give four expectation values, shape `(4,)`. The trailing parameter axis (size 1) is consumed by binding and does not appear in the evs shape.",
+    "distractors": {
+      "A": "The trailing parameter axis is bound away; it is not kept in the result shape.",
+      "C": "There are four parameter sets, not one; the result is not length 1.",
+      "D": "A scalar would be the single-PUB, single-parameter case; here four values broadcast."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/primitives",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q021.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nt = Parameter(\"t\"); qc = QuantumCircuit(1); qc.ry(t, 0)\nvals = np.array([[0.0], [np.pi/2], [np.pi], [3*np.pi/2]])\nshape = StatevectorEstimator(seed=0).run([(qc, SparsePauliOp(\"Z\"), vals)]).result()[0].data.evs.shape\ncand = {\"A\": (4, 1), \"B\": (4,), \"C\": (1,), \"D\": ()}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (tuple(shape) == v)\n    evidence[k] = f\"evs.shape={tuple(shape)}; option claims {v} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"shape\": list(shape)}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

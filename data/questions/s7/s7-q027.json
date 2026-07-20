@@ -1,0 +1,63 @@
+{
+  "id": "s7-q027",
+  "section": "s7",
+  "objectives": [
+    "s7o1",
+    "s7o2"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "You want to review results from jobs you ran last week but did not record their IDs. Which approaches let you locate and retrieve those past jobs? (Select all that apply.)",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Call `service.jobs(...)` with filters such as `backend_name` or `created_after` to list matching jobs"
+    },
+    {
+      "key": "B",
+      "text": "Iterate the returned jobs and call `.result()` on the one you want"
+    },
+    {
+      "key": "C",
+      "text": "Look up the job and its ID on the Workloads page of IBM Quantum Platform"
+    },
+    {
+      "key": "D",
+      "text": "Call `service.job()` with no arguments to get every past job at once"
+    },
+    {
+      "key": "E",
+      "text": "Nothing can be done -- results live only in local RAM and are lost on a kernel restart"
+    }
+  ],
+  "answer": [
+    "A",
+    "B",
+    "C"
+  ],
+  "explanation": {
+    "correct": "`service.jobs()` returns your recent jobs and can be filtered by backend, creation date, or state; you then call `.result()` on the chosen job. The Workloads page lists every submission with its ID. Because IBM Quantum persists results server-side, a kernel restart does not lose them.",
+    "distractors": {
+      "D": "`service.job()` requires a specific job ID argument; the plural `service.jobs()` is what lists many.",
+      "E": "Results are stored server-side by IBM Quantum, so they are recoverable after a restart."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/save-jobs",
+      "https://quantum.cloud.ibm.com/docs/guides/monitor-job"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

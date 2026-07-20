@@ -1,0 +1,68 @@
+{
+  "id": "s7-q032",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "spot-bug",
+  "difficulty": 2,
+  "stem": "The circuit measures into a register named `readout`, but this analysis code raises an `AttributeError`. Which corrected expression works?",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(2, \"q\")\nreadout = ClassicalRegister(2, \"readout\")\nqc = QuantumCircuit(qr, readout)\nqc.h(0); qc.cx(0, 1); qc.measure(qr, readout)\n\nresult = StatevectorSampler().run([qc], shots=512).result()\ncounts = result[0].data.meas.get_counts()   # AttributeError: no 'meas'",
+  "options": [
+    {
+      "key": "A",
+      "text": "`result[0].data.meas.get_counts()`"
+    },
+    {
+      "key": "B",
+      "text": "`result[0].data.c.get_counts()`"
+    },
+    {
+      "key": "C",
+      "text": "`result.data.readout.get_counts()`"
+    },
+    {
+      "key": "D",
+      "text": "`result[0].data.readout.get_counts()`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "The DataBin field is named after the classical register, here `readout`. `meas` is only auto-created by `measure_all()`, and `c` is only the default name for `QuantumCircuit(n, m)`; the pub index `[0]` is still required.",
+    "distractors": {
+      "A": "`meas` is the auto-name from `measure_all()`; this circuit's register is `readout`.",
+      "B": "`c` is the default register name only for `QuantumCircuit(n, m)`, not here.",
+      "C": "This drops the required pub index `[0]`; PrimitiveResult has no `.data`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.DataBin",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q032.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(2, \"q\"); readout = ClassicalRegister(2, \"readout\")\nqc = QuantumCircuit(qr, readout); qc.h(0); qc.cx(0, 1); qc.measure(qr, readout)\nresult = StatevectorSampler(seed=16).run([qc], shots=512).result()\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        ok = isinstance(r, dict) and sum(r.values()) == 512\n        evidence[key] = f\"returned {type(r).__name__}={str(r)[:45]}; valid counts -> {ok}\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ncheck(\"A\", lambda: result[0].data.meas.get_counts())\ncheck(\"B\", lambda: result[0].data.c.get_counts())\ncheck(\"C\", lambda: result.data.readout.get_counts())\ncheck(\"D\", lambda: result[0].data.readout.get_counts())\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"readout_counts\": result[0].data.readout.get_counts()}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

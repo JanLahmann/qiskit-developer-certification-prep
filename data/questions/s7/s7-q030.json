@@ -1,0 +1,67 @@
+{
+  "id": "s7-q030",
+  "section": "s7",
+  "objectives": [
+    "s7o2"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "Calling `session.details()` on a Runtime `Session` returns a dictionary. Which of the following are actual keys in that dictionary? (Select all that apply.)",
+  "code": "details = session.details()",
+  "options": [
+    {
+      "key": "A",
+      "text": "`state`"
+    },
+    {
+      "key": "B",
+      "text": "`queue_position`"
+    },
+    {
+      "key": "C",
+      "text": "`accepting_jobs`"
+    },
+    {
+      "key": "D",
+      "text": "`shots`"
+    },
+    {
+      "key": "E",
+      "text": "`last_job_completed`"
+    },
+    {
+      "key": "F",
+      "text": "`results`"
+    }
+  ],
+  "answer": [
+    "A",
+    "C",
+    "E"
+  ],
+  "explanation": {
+    "correct": "`session.details()` reports session-level lifecycle and usage metadata: `state` (open/active/inactive/closed), `accepting_jobs`, `last_job_started`/`last_job_completed`, plus `max_time`, `usage_time`, `mode`, and timestamps. Per-job data (a queue position, shot count, or the results themselves) is NOT part of it.",
+    "distractors": {
+      "B": "A queue position is a per-job property, not part of the session details.",
+      "D": "`shots` is a per-job execution setting, not a session-details key.",
+      "F": "Results belong to individual jobs (`job.result()`), not to `session.details()`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/session#details",
+      "https://quantum.cloud.ibm.com/docs/guides/monitor-job"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

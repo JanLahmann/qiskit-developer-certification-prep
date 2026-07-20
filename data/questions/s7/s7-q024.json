@@ -1,0 +1,69 @@
+{
+  "id": "s7-q024",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "spot-bug",
+  "difficulty": 2,
+  "stem": "This snippet should print the measurement counts of a completed SamplerV2 job, but it raises an error. What is the fix?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nresult = StatevectorSampler().run([qc], shots=1024).result()\n\ncounts = result.data.meas.get_counts()   # AttributeError\nprint(counts)",
+  "options": [
+    {
+      "key": "A",
+      "text": "Use `result.get_counts()` -- PrimitiveResult exposes counts directly"
+    },
+    {
+      "key": "B",
+      "text": "Use `result.data[0].meas.get_counts()`"
+    },
+    {
+      "key": "C",
+      "text": "Index the PUB first: `result[0].data.meas.get_counts()`"
+    },
+    {
+      "key": "D",
+      "text": "Use `result.quasi_dists[0]`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "`result` is a PrimitiveResult (a sequence of PubResults). You must select a pub with `result[0]` before reaching `.data`. PrimitiveResult itself has neither `.data` nor `.get_counts` nor V1's `.quasi_dists`.",
+    "distractors": {
+      "A": "PrimitiveResult has no `get_counts()`; that was the V1 `Result` API.",
+      "B": "`.data` is a per-pub attribute; `result.data` (before indexing) does not exist.",
+      "D": "`quasi_dists` was the V1 Sampler output; SamplerV2 returns a BitArray."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.PrimitiveResult",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/save-jobs"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q024.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nresult = StatevectorSampler(seed=8).run([qc], shots=1024).result()\ntry:\n    _ = result.data.meas.get_counts(); bug = \"no error (unexpected)\"\nexcept Exception as e:\n    bug = f\"{type(e).__name__}: {str(e)[:70]}\"\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        ok = isinstance(r, dict) and sum(r.values()) == 1024\n        evidence[key] = f\"returned {type(r).__name__}={str(r)[:45]}; valid counts -> {ok}\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ncheck(\"A\", lambda: result.get_counts())\ncheck(\"B\", lambda: result.data[0].meas.get_counts())\ncheck(\"C\", lambda: result[0].data.meas.get_counts())\ncheck(\"D\", lambda: result.quasi_dists[0])\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy_line_error\": bug}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

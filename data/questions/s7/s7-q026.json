@@ -1,0 +1,57 @@
+{
+  "id": "s7-q026",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "In an earlier session you ran a Sampler job and saved its ID string `job_id`. Your kernel has since restarted. Using a fresh `QiskitRuntimeService()` as `service`, how do you retrieve that job's results?",
+  "code": "from qiskit_ibm_runtime import QiskitRuntimeService\n\nservice = QiskitRuntimeService()\njob_id = \"d762omnq1anc738d2cj0\"   # saved earlier\n# retrieve the results ...",
+  "options": [
+    {
+      "key": "A",
+      "text": "`service.result(job_id)`"
+    },
+    {
+      "key": "B",
+      "text": "`QiskitRuntimeService.get_result(job_id)`"
+    },
+    {
+      "key": "C",
+      "text": "`service.jobs(job_id).result()`"
+    },
+    {
+      "key": "D",
+      "text": "`service.job(job_id).result()`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "IBM Quantum stores every job's results server-side. `service.job(job_id)` re-hydrates the RuntimeJobV2; calling `.result()` returns its stored PrimitiveResult, so work survives a kernel restart.",
+    "distractors": {
+      "A": "There is no `service.result()` method.",
+      "B": "There is no `get_result()` classmethod on the service.",
+      "C": "`service.jobs()` (plural) takes filters and returns a LIST of jobs, not a single job; use singular `service.job(id)`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/save-jobs",
+      "https://quantum.cloud.ibm.com/docs/guides/monitor-job"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

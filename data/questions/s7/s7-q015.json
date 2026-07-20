@@ -11,29 +11,29 @@
   "options": [
     {
       "key": "A",
-      "text": "Only the `111` outcomes survive: `{'111': n}`"
-    },
-    {
-      "key": "B",
       "text": "Only the `000` outcomes survive: `{'000': n}`"
     },
     {
-      "key": "C",
+      "key": "B",
       "text": "Unchanged: `{'000': a, '111': b}`"
     },
     {
+      "key": "C",
+      "text": "Only the `111` outcomes survive: `{'111': n}`"
+    },
+    {
       "key": "D",
-      "text": "Empty `{}` — postselection removes every shot"
+      "text": "Empty `{}` -- postselection removes every shot"
     }
   ],
   "answer": [
-    "A"
+    "C"
   ],
   "explanation": {
     "correct": "`postselect(indices, values)` keeps only the shots whose measured bits at `indices` equal `values`, preserving `num_bits`. Requiring qubits [0,1,2] to be [1,1,1] retains exactly the `111` shots.",
     "distractors": {
-      "B": "This inverts the selection: values `[1,1,1]` keep `111`, not `000`.",
-      "C": "Postselection filters shots; it does not leave the counts unchanged.",
+      "A": "This inverts the selection: values `[1,1,1]` keep `111`, not `000`.",
+      "B": "Postselection filters shots; it does not leave the counts unchanged.",
       "D": "The GHZ state produces `111` about half the time, so those shots remain."
     },
     "citations": [
@@ -47,7 +47,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3); qc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\nbits = StatevectorSampler(seed=11).run([qc], shots=1000).result()[0].data.meas\nkept = bits.postselect([0, 1, 2], [1, 1, 1])\nobs = set(kept.get_counts().keys())\ncand = {\"A\": {\"111\"}, \"B\": {\"000\"}, \"C\": {\"000\", \"111\"}, \"D\": set()}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = f\"postselected keys={sorted(obs)}; option claims keys={sorted(v)} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"kept_counts\": kept.get_counts(), \"num_bits\": kept.num_bits}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3); qc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\nbits = StatevectorSampler(seed=11).run([qc], shots=1000).result()[0].data.meas\nkept = bits.postselect([0, 1, 2], [1, 1, 1])\nobs = set(kept.get_counts().keys())\ncand = {\"A\": {\"000\"}, \"B\": {\"000\", \"111\"}, \"C\": {\"111\"}, \"D\": set()}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = f\"postselected keys={sorted(obs)}; option claims keys={sorted(v)} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"kept_counts\": kept.get_counts(), \"num_bits\": kept.num_bits}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",

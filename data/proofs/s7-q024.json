@@ -1,0 +1,28 @@
+{
+  "question": "s7-q024",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "A": "raised AttributeError: 'PrimitiveResult' object has no attribute 'get_counts'",
+      "B": "raised AttributeError: 'PrimitiveResult' object has no attribute 'data'",
+      "C": "returned dict={'00': 533, '11': 491}; valid counts -> True",
+      "D": "raised AttributeError: 'PrimitiveResult' object has no attribute 'quasi_dists'"
+    },
+    "observed": {
+      "buggy_line_error": "AttributeError: 'PrimitiveResult' object has no attribute 'data'"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.24,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'get_counts'\", \"B\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'data'\", \"C\": \"returned dict={'00': 533, '11': 491}; valid counts -> True\", \"D\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'quasi_dists'\"}, \"observed\": {\"buggy_line_error\": \"AttributeError: 'PrimitiveResult' object has no attribute 'data'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

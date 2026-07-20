@@ -20,7 +20,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.6,
+  "wall_seconds": 1.35,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"draw(output='mpl') -> Figure; is Figure=True\", \"B\": \"raised VisualizationError: 'Invalid output type figure selected. The only valid choices are text, latex, latex_source\", \"C\": \"raised VisualizationError: 'Invalid output type matplotlib selected. The only valid choices are text, latex, latex_so\", \"D\": \"draw(output='matplotlib') raised VisualizationError: 'Invalid output type matplotlib selected. The only valid choices are text, latex -> D's premise is false\"}, \"observed\": {\"valid_mpl_string\": \"mpl\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

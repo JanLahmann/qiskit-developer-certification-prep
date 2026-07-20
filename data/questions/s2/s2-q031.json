@@ -1,0 +1,68 @@
+{
+  "id": "s2-q031",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "multi",
+  "difficulty": 3,
+  "stem": "On a q-sphere, a node (marker) is drawn at every computational basis state whose amplitude is nonzero. For the state below, which basis states appear as nodes? (Select 2.)",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_state_qsphere\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.x(1)\nstate = Statevector.from_instruction(qc)\nfig = plot_state_qsphere(state)",
+  "options": [
+    {
+      "key": "A",
+      "text": "|00>"
+    },
+    {
+      "key": "B",
+      "text": "|01>"
+    },
+    {
+      "key": "C",
+      "text": "|10>"
+    },
+    {
+      "key": "D",
+      "text": "|11>"
+    }
+  ],
+  "answer": [
+    "C",
+    "D"
+  ],
+  "explanation": {
+    "correct": "H puts qubit 0 into a superposition and X sets qubit 1 to |1>. In Qiskit's little-endian labels (q1 q0) the state is (|10> + |11>)/√2, so only |10> and |11> have nonzero amplitude and appear as q-sphere nodes. Node size encodes each amplitude's magnitude and node color its phase.",
+    "distractors": {
+      "A": "|00> requires qubit 1 to be |0>, but the X gate flipped qubit 1 to |1>, so |00> has zero amplitude and no node.",
+      "B": "|01> also needs qubit 1 in |0>; since qubit 1 is |1>, this amplitude is zero and no node is drawn."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q031.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.x(1)\nsv = Statevector.from_instruction(qc)\nampl = {str(k): v for k, v in sv.to_dict().items()}\nnonzero = {k for k, v in ampl.items() if abs(v) > 1e-9}\n\nopt = {\"A\": \"00\", \"B\": \"01\", \"C\": \"10\", \"D\": \"11\"}\nevidence = {}\nproven = []\nfor k, b in opt.items():\n    mag = round(abs(ampl.get(b, 0)), 4)\n    present = b in nonzero\n    evidence[k] = f\"basis |{b}>: |amplitude|={mag} -> node present={present}\"\n    if present:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"nonzero_basis\": sorted(nonzero)},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

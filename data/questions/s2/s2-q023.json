@@ -1,0 +1,68 @@
+{
+  "id": "s2-q023",
+  "section": "s2",
+  "objectives": [
+    "s2o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "You ran the same circuit before and after error mitigation and want one histogram that overlays the two count dictionaries side by side, with a labeled legend. Which call does this?",
+  "code": "from qiskit.visualization import plot_histogram\n\nbefore = {\"00\": 480, \"11\": 300, \"01\": 120, \"10\": 124}\nafter  = {\"00\": 500, \"11\": 500, \"01\": 12, \"10\": 12}",
+  "options": [
+    {
+      "key": "A",
+      "text": "`plot_histogram(before + after, legend=[\"before\", \"after\"])`"
+    },
+    {
+      "key": "B",
+      "text": "`plot_histogram(before, after, legend=[\"before\", \"after\"])`"
+    },
+    {
+      "key": "C",
+      "text": "`plot_histogram({\"before\": before, \"after\": after})`"
+    },
+    {
+      "key": "D",
+      "text": "`plot_histogram([before, after], legend=[\"before\", \"after\"])`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "To overlay several result sets, pass a LIST of counts dicts as the single data argument and give a matching `legend` list. `plot_histogram([before, after], legend=[...])` draws grouped bars per bitstring with the two runs color-coded and labeled.",
+    "distractors": {
+      "A": "Two dicts cannot be combined with `+` (that raises `TypeError`); overlaying requires a list of dicts, not addition.",
+      "B": "`plot_histogram` takes one data argument; a second positional dict is consumed by the next parameter (`figsize`), which raises an error instead of overlaying.",
+      "C": "A dict-of-dicts is not a list of counts; `plot_histogram` tries to read the outer dict as counts and raises a `TypeError`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q023.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.visualization import plot_histogram\nimport matplotlib\n\nbefore = {\"00\": 480, \"11\": 300, \"01\": 120, \"10\": 124}\nafter = {\"00\": 500, \"11\": 500, \"01\": 12, \"10\": 12}\n\ndef legend_texts(fig):\n    leg = fig.axes[0].get_legend()\n    return [t.get_text() for t in leg.get_texts()] if leg else []\n\ncalls = {\n    \"A\": lambda: plot_histogram(before + after, legend=[\"before\", \"after\"]),\n    \"B\": lambda: plot_histogram(before, after, legend=[\"before\", \"after\"]),\n    \"C\": lambda: plot_histogram({\"before\": before, \"after\": after}),\n    \"D\": lambda: plot_histogram([before, after], legend=[\"before\", \"after\"]),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        fig = fn()\n        is_fig = isinstance(fig, matplotlib.figure.Figure)\n        leg = legend_texts(fig) if is_fig else []\n        overlays = is_fig and set(leg) == {\"before\", \"after\"}\n        evidence[k] = f\"returned {type(fig).__name__}; legend={leg}; overlays both runs={overlays}\"\n        if overlays:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"overlay_calls\": proven},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

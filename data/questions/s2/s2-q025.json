@@ -1,0 +1,68 @@
+{
+  "id": "s2-q025",
+  "section": "s2",
+  "objectives": [
+    "s2o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "The counts dictionary below is built in a scrambled order. With no extra arguments, how does `plot_histogram(counts)` arrange the bars, and what does it return?",
+  "code": "from qiskit.visualization import plot_histogram\n\ncounts = {\"11\": 10, \"00\": 40, \"10\": 5, \"01\": 7}\nfig = plot_histogram(counts)",
+  "options": [
+    {
+      "key": "A",
+      "text": "In the dictionary's insertion order ('11','00','10','01'); returns a matplotlib `Figure`."
+    },
+    {
+      "key": "B",
+      "text": "Sorted by count with the tallest bar first; returns a matplotlib `Figure`."
+    },
+    {
+      "key": "C",
+      "text": "Sorted in ascending bitstring order ('00','01','10','11'); returns a matplotlib `Figure`."
+    },
+    {
+      "key": "D",
+      "text": "Sorted ascending, but the call returns an `Axes` object rather than a `Figure`."
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "By default `plot_histogram` sorts the x-axis labels in ascending lexicographic (bitstring) order, independent of insertion order or bar height, and returns a `matplotlib.figure.Figure`. So the bars appear as '00','01','10','11'.",
+    "distractors": {
+      "A": "The bars are not left in insertion order; the default `sort='asc'` reorders them by bitstring value.",
+      "B": "Sorting by count is not the default — you would need `sort='value_desc'`; by default it sorts by the bitstring label.",
+      "D": "`plot_histogram` returns the whole `Figure`, not a bare `Axes`; returning the Figure is what lets you save or restyle it."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q025.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.visualization import plot_histogram\nimport matplotlib\n\ncounts = {\"11\": 10, \"00\": 40, \"10\": 5, \"01\": 7}\nfig = plot_histogram(counts)\nlabels = [t.get_text() for t in fig.axes[0].get_xticklabels()]\nis_fig = isinstance(fig, matplotlib.figure.Figure)\n\ninsertion = list(counts.keys())\ncount_desc = [k for k, _ in sorted(counts.items(), key=lambda kv: kv[1], reverse=True)]\nascending = sorted(counts.keys())\n\nevidence = {}\nproven = []\nmA = (labels == insertion) and is_fig\nevidence[\"A\"] = f\"observed labels {labels}, Figure={is_fig}; insertion order {insertion} -> match={mA}\"\nif mA:\n    proven.append(\"A\")\nmB = (labels == count_desc) and is_fig\nevidence[\"B\"] = f\"observed labels {labels}; count-descending order {count_desc} -> match={mB}\"\nif mB:\n    proven.append(\"B\")\nmC = (labels == ascending) and is_fig\nevidence[\"C\"] = f\"observed labels {labels}, returns matplotlib Figure={is_fig}; ascending order {ascending} -> match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = (labels == ascending) and (not is_fig)\nevidence[\"D\"] = f\"observed labels {labels}; return type is {type(fig).__name__} (Figure={is_fig}) -> Axes-not-Figure match={mD}\"\nif mD:\n    proven.append(\"D\")\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"labels\": labels, \"is_figure\": is_fig},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

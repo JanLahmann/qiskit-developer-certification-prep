@@ -1,0 +1,68 @@
+{
+  "id": "s2-q021",
+  "section": "s2",
+  "objectives": [
+    "s2o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The counts dict has four distinct bitstrings. What does `plot_histogram(counts, number_to_keep=2)` put on the x-axis?",
+  "code": "from qiskit.visualization import plot_histogram\n\ncounts = {\"01\": 20, \"00\": 500, \"10\": 4, \"11\": 500}\nfig = plot_histogram(counts, number_to_keep=2)",
+  "options": [
+    {
+      "key": "A",
+      "text": "The two highest-count bitstrings ('00' and '11') plus one aggregated bar labeled 'rest'."
+    },
+    {
+      "key": "B",
+      "text": "Only the two highest-count bitstrings ('00' and '11'); the other outcomes are dropped entirely."
+    },
+    {
+      "key": "C",
+      "text": "The first two bitstrings in insertion order ('01' and '00'), with no aggregation."
+    },
+    {
+      "key": "D",
+      "text": "All four bitstrings; `number_to_keep` only changes the figure width."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`number_to_keep=N` keeps the N bitstrings with the largest counts and folds every remaining outcome into a single bar labeled 'rest', so no probability weight is lost. Here the two largest are '00' and '11' (500 each), giving bars ['00', '11', 'rest'].",
+    "distractors": {
+      "B": "The remaining outcomes are not discarded — their combined weight is shown as the 'rest' bar, so the bars still account for all shots.",
+      "C": "Selection is by count magnitude (the largest bars), not by dictionary insertion order, and the remainder IS aggregated into 'rest'.",
+      "D": "`number_to_keep` controls how many individual bars are shown, not the figure size."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q021.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.visualization import plot_histogram\n\ncounts = {\"01\": 20, \"00\": 500, \"10\": 4, \"11\": 500}\nfig = plot_histogram(counts, number_to_keep=2)\nlabels = [t.get_text() for t in fig.axes[0].get_xticklabels()]\n\nhas_rest = \"rest\" in labels\nkept_top2 = (\"00\" in labels and \"11\" in labels)\nn_bars = len(labels)\ninsertion_first2 = (\"01\" in labels and \"00\" in labels)\nall_four = all(b in labels for b in (\"00\", \"01\", \"10\", \"11\"))\n\nresA = has_rest and kept_top2 and n_bars == 3\nevidence = {}\nevidence[\"A\"] = f\"x-axis labels = {labels}; top-2 counts kept + 'rest' bin, 3 bars total = {resA}\"\nevidence[\"B\"] = f\"labels={labels}; a 'rest' bar is present ({has_rest}) so remaining outcomes are NOT dropped\"\nevidence[\"C\"] = f\"labels={labels}; kept bars are the highest-count '00','11' not insertion-first '01','00'; aggregation present={has_rest}\"\nevidence[\"D\"] = f\"labels={labels}; only {n_bars} bars shown (not all four={all_four}) -> number_to_keep changes bars, not width\"\nproven = [\"A\"] if resA else []\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"xtick_labels\": labels},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

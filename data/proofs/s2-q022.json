@@ -1,0 +1,28 @@
+{
+  "question": "s2-q022",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "A": "raised TypeError: int() argument must be a string, a bytes-like object or a real number, not 'BitArray'",
+      "B": "raised AttributeError: 'SamplerPubResult' object has no attribute 'values'",
+      "C": "call returned Figure; is Figure=True",
+      "D": "raised TypeError: plot_histogram() got an unexpected keyword argument 'shots'"
+    },
+    "observed": {
+      "meas_type": "BitArray"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.49,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"raised TypeError: int() argument must be a string, a bytes-like object or a real number, not 'BitArray'\", \"B\": \"raised AttributeError: 'SamplerPubResult' object has no attribute 'values'\", \"C\": \"call returned Figure; is Figure=True\", \"D\": \"raised TypeError: plot_histogram() got an unexpected keyword argument 'shots'\"}, \"observed\": {\"meas_type\": \"BitArray\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

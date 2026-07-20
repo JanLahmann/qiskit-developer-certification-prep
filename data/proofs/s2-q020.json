@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.64,
+  "wall_seconds": 1.42,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"plot_histogram heights sum=1024.0 (shots=1024, ylabel='Count'); plot_distribution heights sum=1.0 (ylabel='Quasi-probability') -> hist=raw counts, dist=normalized: True\", \"B\": \"the two differ: histogram sum=1024.0 vs distribution sum=1.0, ylabels 'Count' vs 'Quasi-probability' -> not an alias\", \"C\": \"observed histogram is raw (sum=1024.0) and distribution is normalized (sum=1.0); the reversed claim is false\", \"D\": \"plot_distribution(counts_dict) succeeded=True (returned a Figure); it does not require a Statevector\"}, \"observed\": {\"histogram_sum\": 1024.0, \"distribution_sum\": 1.0, \"shots\": 1024}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

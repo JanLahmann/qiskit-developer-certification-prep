@@ -11,11 +11,11 @@
   "options": [
     {
       "key": "A",
-      "text": "`qc.draw(\"text\", idle_wires=False)`"
+      "text": "`qc.draw(\"text\", idle_wires=True)`"
     },
     {
       "key": "B",
-      "text": "`qc.draw(\"text\", idle_wires=True)`"
+      "text": "`qc.draw(\"text\", idle_wires=False)`"
     },
     {
       "key": "C",
@@ -27,12 +27,12 @@
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
     "correct": "`idle_wires=False` tells the drawer to omit any qubit (or clbit) wire that has no operations on it, so the qubit-1 line disappears and only qubits 0 and 2 are drawn. It works the same across the text, mpl, and latex renderers.",
     "distractors": {
-      "B": "`idle_wires=True` is the default value — it keeps every wire, so the empty qubit-1 line is still drawn.",
+      "A": "`idle_wires=True` is the default value — it keeps every wire, so the empty qubit-1 line is still drawn.",
       "C": "`plot_barriers` only toggles whether `barrier` instructions are shown; it has no effect on idle qubit wires.",
       "D": "`reverse_bits` only flips the top-to-bottom ordering of the wires; all three wires, including the idle one, are still rendered."
     },
@@ -47,7 +47,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\n\ndef build():\n    qc = QuantumCircuit(3)\n    qc.x(0)\n    qc.x(2)\n    return qc\n\ncalls = {\n    \"A\": lambda qc: qc.draw(\"text\", idle_wires=False),\n    \"B\": lambda qc: qc.draw(\"text\", idle_wires=True),\n    \"C\": lambda qc: qc.draw(\"text\", plot_barriers=False),\n    \"D\": lambda qc: qc.draw(\"text\", reverse_bits=True),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        txt = str(fn(build()))\n        q1_present = \"q_1\" in txt\n        hides_idle = not q1_present\n        evidence[k] = (\n            f\"rendered OK; qubit-1 wire present={q1_present}; \"\n            f\"hides idle q1={hides_idle}\"\n        )\n        if hides_idle:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"idle_false_drawing\": str(build().draw('text', idle_wires=False))},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\n\ndef build():\n    qc = QuantumCircuit(3)\n    qc.x(0)\n    qc.x(2)\n    return qc\n\ncalls = {\n    \"A\": lambda qc: qc.draw(\"text\", idle_wires=True),\n    \"B\": lambda qc: qc.draw(\"text\", idle_wires=False),\n    \"C\": lambda qc: qc.draw(\"text\", plot_barriers=False),\n    \"D\": lambda qc: qc.draw(\"text\", reverse_bits=True),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        txt = str(fn(build()))\n        q1_present = \"q_1\" in txt\n        hides_idle = not q1_present\n        evidence[k] = (\n            f\"rendered OK; qubit-1 wire present={q1_present}; \"\n            f\"hides idle q1={hides_idle}\"\n        )\n        if hides_idle:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"idle_false_drawing\": str(build().draw('text', idle_wires=False))},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",

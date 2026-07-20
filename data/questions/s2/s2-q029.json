@@ -1,0 +1,68 @@
+{
+  "id": "s2-q029",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You have a `Statevector` `sv` and want to render it as a q-sphere figure directly from the object. Which call does that?",
+  "code": "from qiskit.quantum_info import Statevector\n\nsv = Statevector.from_label(\"01\")",
+  "options": [
+    {
+      "key": "A",
+      "text": "`sv.qsphere()`"
+    },
+    {
+      "key": "B",
+      "text": "`plot_qsphere(sv)`"
+    },
+    {
+      "key": "C",
+      "text": "`sv.draw(\"qsphere\")`"
+    },
+    {
+      "key": "D",
+      "text": "`sv.draw(\"q_sphere\")`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "`Statevector.draw(output=...)` is the object's entry point to the state-visualization drawers. Passing `\"qsphere\"` returns the q-sphere `Figure` (equivalent to `plot_state_qsphere(sv)`). Other valid tokens include `\"bloch\"`, `\"city\"`, `\"hinton\"`, and `\"paulivec\"`.",
+    "distractors": {
+      "A": "`Statevector` has no `qsphere()` method; state drawing goes through `draw(output=...)`, so this raises `AttributeError`.",
+      "B": "There is no top-level `plot_qsphere`; the function is named `plot_state_qsphere`, so this import/name fails.",
+      "D": "`\"q_sphere\"` (with an underscore) is not a recognized output token; the correct spelling is `\"qsphere\"`, so this raises a `ValueError`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q029.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.quantum_info import Statevector\nimport matplotlib\n\nsv = Statevector.from_label(\"01\")\n\ndef is_fig(x):\n    return isinstance(x, matplotlib.figure.Figure)\n\nevidence = {}\nproven = []\n\ntry:\n    r = sv.qsphere()\n    ok = is_fig(r)\n    evidence[\"A\"] = f\"sv.qsphere() -> {type(r).__name__}; Figure={ok}\"\n    if ok:\n        proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:80]}\"\n\ntry:\n    from qiskit.visualization import plot_qsphere\n    r = plot_qsphere(sv)\n    ok = is_fig(r)\n    evidence[\"B\"] = f\"plot_qsphere -> Figure={ok}\"\n    if ok:\n        proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"raised {type(e).__name__}: {str(e)[:80]}\"\n\ntry:\n    r = sv.draw(\"qsphere\")\n    ok = is_fig(r)\n    evidence[\"C\"] = f\"sv.draw('qsphere') -> {type(r).__name__}; Figure={ok}\"\n    if ok:\n        proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"raised {type(e).__name__}: {str(e)[:80]}\"\n\ntry:\n    r = sv.draw(\"q_sphere\")\n    ok = is_fig(r)\n    evidence[\"D\"] = f\"sv.draw('q_sphere') -> Figure={ok}\"\n    if ok:\n        proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"raised {type(e).__name__}: {str(e)[:80]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"qsphere_call\": \"sv.draw('qsphere')\"},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

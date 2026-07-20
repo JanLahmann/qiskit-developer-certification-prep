@@ -1,0 +1,68 @@
+{
+  "id": "s2-q030",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "You prepare the Bell state (|00> + |11>)/√2 and call `plot_bloch_multivector(state)`. What do the two Bloch spheres show?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nstate = Statevector.from_instruction(qc)",
+  "options": [
+    {
+      "key": "A",
+      "text": "Both arrows point to the north pole — each qubit is in |0>."
+    },
+    {
+      "key": "B",
+      "text": "Both arrows point along +X — each qubit is in |+>."
+    },
+    {
+      "key": "C",
+      "text": "The two spheres are joined by a single shared arrow representing the entanglement."
+    },
+    {
+      "key": "D",
+      "text": "Each arrow shrinks to the center (zero length): each qubit's reduced state is maximally mixed."
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "`plot_bloch_multivector` draws each qubit's reduced (single-qubit) state, obtained by tracing out the other qubit. For a Bell pair each reduced state is the maximally mixed I/2, whose Bloch vector is (0,0,0). So both arrows collapse to the center — the visual signature of maximal entanglement.",
+    "distractors": {
+      "A": "North pole (0,0,+1) would mean each qubit is separately in |0>, but entangling with the CX destroys any definite single-qubit state.",
+      "B": "|+> is a pure equatorial state (length-1 vector); the reduced state of a Bell pair is not pure, so the vector is not on the surface.",
+      "C": "The multivector plot renders each qubit's reduced state independently — it cannot draw a shared arrow; entanglement instead appears as zero-length vectors."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q030.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, partial_trace, Pauli\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nst = Statevector.from_instruction(qc)\n\ndef bloch(rho):\n    return tuple(round(float(np.real(rho.expectation_value(Pauli(p)))), 4) for p in (\"X\", \"Y\", \"Z\"))\n\nr0 = partial_trace(st, [1])\nr1 = partial_trace(st, [0])\nb0 = bloch(r0)\nb1 = bloch(r1)\npur0 = round(float(np.real(r0.purity())), 4)\nlen0 = round(float(np.linalg.norm(b0)), 4)\n\ndef close(v, t):\n    return all(abs(a - b) < 1e-6 for a, b in zip(v, t))\n\nevidence = {}\nproven = []\nmA = close(b0, (0, 0, 1)) and close(b1, (0, 0, 1))\nevidence[\"A\"] = f\"reduced Bloch vectors b0={b0}, b1={b1}; north-pole (0,0,1) claim match={mA}\"\nif mA:\n    proven.append(\"A\")\nmB = close(b0, (1, 0, 0)) and close(b1, (1, 0, 0))\nevidence[\"B\"] = f\"b0={b0}, b1={b1}; +X (1,0,0) claim match={mB}\"\nif mB:\n    proven.append(\"B\")\nevidence[\"C\"] = f\"each qubit is rendered from its reduced state (b0={b0}, b1={b1}, length {len0}); no shared/entangled arrow is drawable\"\nmD = close(b0, (0, 0, 0)) and close(b1, (0, 0, 0))\nevidence[\"D\"] = f\"reduced states maximally mixed: b0={b0}, b1={b1} (length {len0}), purity={pur0} -> arrows at origin, match={mD}\"\nif mD:\n    proven.append(\"D\")\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"bloch_q0\": list(b0), \"bloch_q1\": list(b1), \"purity_q0\": pur0},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

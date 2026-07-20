@@ -1,0 +1,73 @@
+{
+  "id": "s2-q035",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "multi",
+  "difficulty": 3,
+  "stem": "Each snippet is applied to a fresh single-qubit circuit `qc = QuantumCircuit(1)`. For which TWO does `plot_bloch_multivector` place the arrow exactly on the equator of the Bloch sphere (⟨Z⟩ = 0)? (Select 2.)",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\n# each option acts on a fresh:  qc = QuantumCircuit(1)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`qc.h(0)`"
+    },
+    {
+      "key": "B",
+      "text": "`qc.x(0)`"
+    },
+    {
+      "key": "C",
+      "text": "`qc.ry(np.pi / 3, 0)`"
+    },
+    {
+      "key": "D",
+      "text": "`qc.h(0); qc.s(0)`"
+    },
+    {
+      "key": "E",
+      "text": "no gates at all (leave `qc` empty)"
+    }
+  ],
+  "answer": [
+    "A",
+    "D"
+  ],
+  "explanation": {
+    "correct": "A point is on the equator when ⟨Z⟩ = 0. `h(0)` makes |+> with Bloch (1,0,0), and `h(0); s(0)` makes (|0>+i|1>)/√2 with Bloch (0,1,0) — both have ⟨Z⟩ = 0, so their arrows lie on the equator.",
+    "distractors": {
+      "B": "`x(0)` makes |1>, Bloch (0,0,−1) — the south pole, ⟨Z⟩ = −1, not the equator.",
+      "C": "`ry(π/3, 0)` gives ⟨Z⟩ = cos(π/3) = 0.5, so the arrow sits in the northern hemisphere, off the equator.",
+      "E": "An empty circuit leaves the qubit in |0>, Bloch (0,0,+1) — the north pole, ⟨Z⟩ = +1."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q035.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\n\ndef z_expectation(build):\n    qc = QuantumCircuit(1)\n    build(qc)\n    sv = Statevector.from_instruction(qc)\n    return round(float(np.real(sv.expectation_value(Pauli(\"Z\")))), 4)\n\nbuilds = {\n    \"A\": lambda qc: qc.h(0),\n    \"B\": lambda qc: qc.x(0),\n    \"C\": lambda qc: qc.ry(np.pi / 3, 0),\n    \"D\": lambda qc: (qc.h(0), qc.s(0)),\n    \"E\": lambda qc: None,\n}\nevidence = {}\nproven = []\nz_by_opt = {}\nfor k, b in builds.items():\n    z = z_expectation(b)\n    z_by_opt[k] = z\n    on_equator = abs(z) < 1e-9\n    evidence[k] = f\"<Z> = {z} -> on equator (|<Z>|~0) = {on_equator}\"\n    if on_equator:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"z_expectation_by_option\": z_by_opt},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

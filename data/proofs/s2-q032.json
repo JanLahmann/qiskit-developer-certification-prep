@@ -1,0 +1,29 @@
+{
+  "question": "s2-q032",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "|amp(01)|=0.7071, |amp(10)|=0.7071; magnitudes equal=True; '01 larger magnitude' match=False",
+      "B": "phase(01)=3.1416 rad vs phase(10)=0.0 rad (differ by pi=True); magnitudes equal=True -> color encodes relative phase, match=True",
+      "C": "Hamming weights 01->1, 10->1 (equal); a color difference cannot encode Hamming weight, match=False",
+      "D": "amplitudes differ in phase (3.1416 vs 0.0); nodes are not identical, so not an artifact, match=False"
+    },
+    "observed": {
+      "amp_01": "(-0.7071+0j)",
+      "amp_10": "(0.7071+0j)"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.06,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"|amp(01)|=0.7071, |amp(10)|=0.7071; magnitudes equal=True; '01 larger magnitude' match=False\", \"B\": \"phase(01)=3.1416 rad vs phase(10)=0.0 rad (differ by pi=True); magnitudes equal=True -> color encodes relative phase, match=True\", \"C\": \"Hamming weights 01->1, 10->1 (equal); a color difference cannot encode Hamming weight, match=False\", \"D\": \"amplitudes differ in phase (3.1416 vs 0.0); nodes are not identical, so not an artifact, match=False\"}, \"observed\": {\"amp_01\": \"(-0.7071+0j)\", \"amp_10\": \"(0.7071+0j)\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

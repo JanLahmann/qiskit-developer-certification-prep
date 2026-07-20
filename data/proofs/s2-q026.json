@@ -1,0 +1,30 @@
+{
+  "question": "s2-q026",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "drew 3 Bloch sphere(s), Figure=True; single-sphere claim match=False",
+      "B": "drew 3 spheres for 3 qubits, returns matplotlib Figure=True; one-per-qubit match=True",
+      "C": "drew 3 spheres; 2^3=8 claim match=False",
+      "D": "return type is Figure (Figure=True); list-of-Axes claim match=False"
+    },
+    "observed": {
+      "num_spheres": 3,
+      "num_qubits": 3,
+      "is_figure": true
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.43,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"drew 3 Bloch sphere(s), Figure=True; single-sphere claim match=False\", \"B\": \"drew 3 spheres for 3 qubits, returns matplotlib Figure=True; one-per-qubit match=True\", \"C\": \"drew 3 spheres; 2^3=8 claim match=False\", \"D\": \"return type is Figure (Figure=True); list-of-Axes claim match=False\"}, \"observed\": {\"num_spheres\": 3, \"num_qubits\": 3, \"is_figure\": true}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

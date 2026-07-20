@@ -1,0 +1,68 @@
+{
+  "id": "s2-q026",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You call `plot_bloch_multivector(state)` on this 3-qubit statevector. How many Bloch spheres are drawn, and what does the call return?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_multivector\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.x(1)\nstate = Statevector.from_instruction(qc)\nfig = plot_bloch_multivector(state)",
+  "options": [
+    {
+      "key": "A",
+      "text": "A single Bloch sphere summarizing the whole 3-qubit state; returns a `Figure`."
+    },
+    {
+      "key": "B",
+      "text": "One Bloch sphere per qubit (3 spheres); returns a matplotlib `Figure`."
+    },
+    {
+      "key": "C",
+      "text": "2^3 = 8 Bloch spheres, one per computational basis state; returns a `Figure`."
+    },
+    {
+      "key": "D",
+      "text": "One sphere per qubit, but the call returns a list of `Axes` instead of a `Figure`."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "`plot_bloch_multivector` computes each qubit's reduced (single-qubit) state and draws one Bloch sphere per qubit, packed into a single `matplotlib.figure.Figure`. A 3-qubit state therefore yields 3 spheres.",
+    "distractors": {
+      "A": "It does not collapse the whole register into one sphere — a single sphere can only represent one qubit's reduced state.",
+      "C": "The number of spheres tracks the number of qubits (n), not the number of basis states (2^n).",
+      "D": "The function returns the whole `Figure`; the per-qubit axes live inside it."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q026.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_multivector\nimport matplotlib\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.x(1)\nstate = Statevector.from_instruction(qc)\nfig = plot_bloch_multivector(state)\nn_axes = len(fig.axes)\nis_fig = isinstance(fig, matplotlib.figure.Figure)\nn_qubits = state.num_qubits\n\nevidence = {}\nproven = []\nmA = (n_axes == 1) and is_fig\nevidence[\"A\"] = f\"drew {n_axes} Bloch sphere(s), Figure={is_fig}; single-sphere claim match={mA}\"\nif mA:\n    proven.append(\"A\")\nmB = (n_axes == n_qubits == 3) and is_fig\nevidence[\"B\"] = f\"drew {n_axes} spheres for {n_qubits} qubits, returns matplotlib Figure={is_fig}; one-per-qubit match={mB}\"\nif mB:\n    proven.append(\"B\")\nmC = (n_axes == 2 ** n_qubits) and is_fig\nevidence[\"C\"] = f\"drew {n_axes} spheres; 2^{n_qubits}={2 ** n_qubits} claim match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = (n_axes == n_qubits) and (not is_fig)\nevidence[\"D\"] = f\"return type is {type(fig).__name__} (Figure={is_fig}); list-of-Axes claim match={mD}\"\nif mD:\n    proven.append(\"D\")\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"num_spheres\": n_axes, \"num_qubits\": n_qubits, \"is_figure\": is_fig},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

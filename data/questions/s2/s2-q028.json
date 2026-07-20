@@ -1,0 +1,68 @@
+{
+  "id": "s2-q028",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "On a single-qubit Bloch sphere the arrow points along the −X axis, i.e. the Bloch vector is (−1, 0, 0). Which state does this visualization represent?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "|0>"
+    },
+    {
+      "key": "B",
+      "text": "|−> = (|0> − |1>)/√2"
+    },
+    {
+      "key": "C",
+      "text": "|1>"
+    },
+    {
+      "key": "D",
+      "text": "|+> = (|0> + |1>)/√2"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "The Bloch vector is (⟨X⟩,⟨Y⟩,⟨Z⟩). A vector on the −X axis, (−1,0,0), means ⟨X⟩ = −1: the state is the −1 eigenstate of X, which is |−> = (|0> − |1>)/√2.",
+    "distractors": {
+      "A": "|0> sits at the north pole, Bloch vector (0,0,+1), not on the −X axis.",
+      "C": "|1> sits at the south pole, Bloch vector (0,0,−1).",
+      "D": "|+> is the +1 eigenstate of X, Bloch vector (+1,0,0) — the opposite end of the X axis from the arrow shown."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q028.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Statevector, Pauli\n\ndef bloch(sv):\n    return tuple(round(float(np.real(sv.expectation_value(Pauli(p)))), 4) for p in (\"X\", \"Y\", \"Z\"))\n\nstates = {\n    \"A\": Statevector.from_label(\"0\"),\n    \"B\": Statevector.from_label(\"-\"),\n    \"C\": Statevector.from_label(\"1\"),\n    \"D\": Statevector.from_label(\"+\"),\n}\ntarget = (-1.0, 0.0, 0.0)\nevidence = {}\nproven = []\nfor k, sv in states.items():\n    b = bloch(sv)\n    match = all(abs(a - c) < 1e-6 for a, c in zip(b, target))\n    evidence[k] = f\"option state has Bloch vector {b}; target arrow is {target} (-X axis) -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"target\": list(target)},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

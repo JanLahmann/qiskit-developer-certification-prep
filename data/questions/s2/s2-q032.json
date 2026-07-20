@@ -1,0 +1,68 @@
+{
+  "id": "s2-q032",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "On the q-sphere of this state, the node for |01> is drawn in a different color from the node for |10>, and the two nodes are the same size. What does that color difference encode?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_state_qsphere\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.x(0)\nqc.z(0)\nstate = Statevector.from_instruction(qc)\nfig = plot_state_qsphere(state)",
+  "options": [
+    {
+      "key": "A",
+      "text": "The amplitude magnitude — the |01> node stands for a larger amplitude than |10>."
+    },
+    {
+      "key": "B",
+      "text": "The relative phase of the amplitude — the |01> branch carries phase π while |10> has phase 0."
+    },
+    {
+      "key": "C",
+      "text": "The Hamming weight (number of 1-bits) of the basis state."
+    },
+    {
+      "key": "D",
+      "text": "Nothing meaningful — q-sphere nodes are all the same color and any difference is a rendering artifact."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "On a q-sphere a node's SIZE encodes the amplitude magnitude and its COLOR encodes the amplitude's complex phase. Here |01> and |10> have equal magnitude (same size) but the Z gate multiplies the |01> branch by −1, giving it phase π versus phase 0 for |10> — so the colors differ.",
+    "distractors": {
+      "A": "The two amplitudes have equal magnitude (the nodes are the same size); magnitude is shown by size, not color.",
+      "C": "|01> and |10> have the same Hamming weight (one 1-bit each), so a color difference cannot be encoding Hamming weight — it is the phase that differs.",
+      "D": "q-sphere nodes ARE color-coded by phase; the difference is meaningful, not an artifact."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q032.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.x(0)\nqc.z(0)\nsv = Statevector.from_instruction(qc)\nampl = {str(k): v for k, v in sv.to_dict().items() if abs(v) > 1e-9}\n\na01 = ampl.get(\"01\", 0)\na10 = ampl.get(\"10\", 0)\nm01 = round(abs(a01), 4)\nm10 = round(abs(a10), 4)\np01 = round(float(np.angle(a01)), 4)\np10 = round(float(np.angle(a10)), 4)\nhw01 = \"01\".count(\"1\")\nhw10 = \"10\".count(\"1\")\n\nmag_equal = abs(m01 - m10) < 1e-6\nphase_diff_pi = abs(abs(p01 - p10) - np.pi) < 1e-3\n\nevidence = {}\nproven = []\nmA = m01 > m10\nevidence[\"A\"] = f\"|amp(01)|={m01}, |amp(10)|={m10}; magnitudes equal={mag_equal}; '01 larger magnitude' match={mA}\"\nif mA:\n    proven.append(\"A\")\nmB = mag_equal and phase_diff_pi\nevidence[\"B\"] = f\"phase(01)={p01} rad vs phase(10)={p10} rad (differ by pi={phase_diff_pi}); magnitudes equal={mag_equal} -> color encodes relative phase, match={mB}\"\nif mB:\n    proven.append(\"B\")\nmC = hw01 != hw10\nevidence[\"C\"] = f\"Hamming weights 01->{hw01}, 10->{hw10} (equal); a color difference cannot encode Hamming weight, match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = (not phase_diff_pi) and mag_equal and (p01 == p10)\nevidence[\"D\"] = f\"amplitudes differ in phase ({p01} vs {p10}); nodes are not identical, so not an artifact, match={mD}\"\nif mD:\n    proven.append(\"D\")\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"amp_01\": str(np.round(a01, 4)), \"amp_10\": str(np.round(a10, 4))},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

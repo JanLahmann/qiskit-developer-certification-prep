@@ -1,0 +1,68 @@
+{
+  "id": "s2-q034",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "spot-bug",
+  "difficulty": 2,
+  "stem": "You have the 2-qubit Bell state and want one Bloch sphere per qubit, but this line does not do that — `plot_bloch_vector` treats its argument as a raw [x, y, z] vector. Which call draws one sphere per qubit?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_vector, plot_bloch_multivector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nstate = Statevector.from_instruction(qc)\nfig = plot_bloch_vector(state)   # does NOT produce per-qubit spheres",
+  "options": [
+    {
+      "key": "A",
+      "text": "`plot_bloch_vector(state, coord_type=\"spherical\")` — reinterpret the same input as spherical coordinates."
+    },
+    {
+      "key": "B",
+      "text": "`plot_bloch_vector(state.data)` — pass the raw amplitude array instead."
+    },
+    {
+      "key": "C",
+      "text": "`plot_bloch_multivector([0, 0, 1])` — hand a Bloch vector to the multivector function."
+    },
+    {
+      "key": "D",
+      "text": "`plot_bloch_multivector(state)` — pass the quantum state to the multivector drawer."
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "`plot_bloch_multivector` is the function that takes a quantum state and renders one Bloch sphere per qubit (each from that qubit's reduced state). For the 2-qubit Bell state it produces two spheres. `plot_bloch_vector`, by contrast, only ever draws a single sphere from a 3-number vector.",
+    "distractors": {
+      "A": "`coord_type` only changes how the three numbers of a vector are interpreted (Cartesian vs spherical); it still cannot take a quantum state — the length-4 state fails to unpack into three coordinates and raises.",
+      "B": "`state.data` is the length-4 amplitude array, not a Bloch vector; `plot_bloch_vector` still expects exactly [x, y, z] and draws one meaningless sphere, not one per qubit.",
+      "C": "`plot_bloch_multivector` expects a quantum STATE, not a 3-number vector; passing [0, 0, 1] raises 'Input is not a multi-qubit quantum state'."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q034.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_vector, plot_bloch_multivector\nimport matplotlib\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nstate = Statevector.from_instruction(qc)\nn_qubits = state.num_qubits\n\ndef spheres(fn):\n    try:\n        r = fn()\n        if isinstance(r, matplotlib.figure.Figure):\n            return len(r.axes)\n        return f\"returned {type(r).__name__}\"\n    except Exception as e:\n        return f\"raised {type(e).__name__}\"\n\ncalls = {\n    \"A\": lambda: plot_bloch_vector(state, coord_type=\"spherical\"),\n    \"B\": lambda: plot_bloch_vector(state.data),\n    \"C\": lambda: plot_bloch_multivector([0, 0, 1]),\n    \"D\": lambda: plot_bloch_multivector(state),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    s = spheres(fn)\n    per_qubit = isinstance(s, int) and s == n_qubits\n    evidence[k] = f\"result: {s} Bloch-sphere axes (need {n_qubits}, one per qubit) -> correct={per_qubit}\"\n    if per_qubit:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"num_qubits\": n_qubits, \"correct_calls\": proven},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "id": "s2-q033",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "What input does each of `plot_bloch_vector` and `plot_bloch_multivector` expect?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Both take a quantum state; they differ only in the resulting figure size."
+    },
+    {
+      "key": "B",
+      "text": "`plot_bloch_vector` takes a quantum state; `plot_bloch_multivector` takes a 3-number vector [x, y, z]."
+    },
+    {
+      "key": "C",
+      "text": "`plot_bloch_vector` takes a 3-number Bloch vector [x, y, z]; `plot_bloch_multivector` takes a quantum state and draws one sphere per qubit."
+    },
+    {
+      "key": "D",
+      "text": "Both take a 3-number vector [x, y, z]; `plot_bloch_multivector` just repeats it on several spheres."
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "`plot_bloch_vector` draws a single sphere from an explicit Bloch vector [x, y, z] (Cartesian by default). `plot_bloch_multivector` takes a quantum state (Statevector or DensityMatrix), computes each qubit's reduced state, and draws one Bloch sphere per qubit. Their inputs are different kinds of object.",
+    "distractors": {
+      "A": "`plot_bloch_vector` does not accept a quantum state — it expects the three numbers of a Bloch vector — so the two functions differ in input type, not just size.",
+      "B": "This reverses the two: it is `plot_bloch_vector` that takes the 3-number vector and `plot_bloch_multivector` that takes a state.",
+      "D": "`plot_bloch_multivector` rejects a bare 3-number vector (it raises 'Input is not a multi-qubit quantum state'); it needs an actual state."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q033.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_vector, plot_bloch_multivector\nimport matplotlib\n\ndef accepts(fn):\n    try:\n        return isinstance(fn(), matplotlib.figure.Figure)\n    except Exception:\n        return False\n\nbv_vec = accepts(lambda: plot_bloch_vector([0, 0, 1]))\nbv_state = accepts(lambda: plot_bloch_vector(Statevector.from_label(\"+\")))\nmv_vec = accepts(lambda: plot_bloch_multivector([0, 0, 1]))\nmv_state = accepts(lambda: plot_bloch_multivector(Statevector.from_label(\"+\")))\n\nevidence = {}\nproven = []\nmA = bv_state and mv_state\nevidence[\"A\"] = f\"plot_bloch_vector accepts a state={bv_state}, plot_bloch_multivector accepts a state={mv_state}; 'both take a state' match={mA}\"\nif mA:\n    proven.append(\"A\")\nmB = bv_state and mv_vec\nevidence[\"B\"] = f\"plot_bloch_vector accepts a state={bv_state}, plot_bloch_multivector accepts a 3-vector={mv_vec}; reversed claim match={mB}\"\nif mB:\n    proven.append(\"B\")\nmC = bv_vec and mv_state and (not mv_vec)\nevidence[\"C\"] = f\"plot_bloch_vector accepts [x,y,z]={bv_vec}; plot_bloch_multivector accepts a state={mv_state} and rejects a 3-vector={not mv_vec}; match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = bv_vec and mv_vec\nevidence[\"D\"] = f\"plot_bloch_vector accepts [x,y,z]={bv_vec}, plot_bloch_multivector accepts [x,y,z]={mv_vec}; 'both take a 3-vector' match={mD}\"\nif mD:\n    proven.append(\"D\")\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"bv_vec\": bv_vec, \"bv_state\": bv_state, \"mv_vec\": mv_vec, \"mv_state\": mv_state},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

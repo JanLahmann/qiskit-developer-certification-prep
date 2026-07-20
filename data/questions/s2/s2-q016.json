@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "`qc.draw(\"text\", initial_state=True)`"
+      "text": "`qc.draw(\"text\", plot_barriers=True)`"
     },
     {
       "key": "B",
@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "`qc.draw(\"text\", plot_barriers=True)`"
+      "text": "`qc.draw(\"text\", initial_state=True)`"
     },
     {
       "key": "D",
@@ -27,13 +27,13 @@
     }
   ],
   "answer": [
-    "A"
+    "C"
   ],
   "explanation": {
     "correct": "The `initial_state` argument (default `False`) tells the drawer to prefix every qubit and clbit wire with its initial value, so each qubit line begins with a `|0>` label. It is accepted by all of the drawer's output backends.",
     "distractors": {
+      "A": "`plot_barriers` only controls whether `barrier` instructions are drawn; it adds no initial-state labels.",
       "B": "There is no `with_initial_state` parameter; the argument is named `initial_state`, so this spelling raises a `TypeError`.",
-      "C": "`plot_barriers` only controls whether `barrier` instructions are drawn; it adds no initial-state labels.",
       "D": "`vertical_compression` adjusts the vertical spacing of the text drawing; it does not add `|0>` labels."
     },
     "citations": [
@@ -47,7 +47,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\n\ndef build():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    return qc\n\ncalls = {\n    \"A\": lambda qc: qc.draw(\"text\", initial_state=True),\n    \"B\": lambda qc: qc.draw(\"text\", with_initial_state=True),\n    \"C\": lambda qc: qc.draw(\"text\", plot_barriers=True),\n    \"D\": lambda qc: qc.draw(\"text\", vertical_compression=\"high\"),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        txt = str(fn(build()))\n        has_label = \"|0>\" in txt\n        evidence[k] = f\"rendered OK; initial-state label '|0>' present={has_label}\"\n        if has_label:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"initial_state_drawing\": str(build().draw('text', initial_state=True))},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\n\ndef build():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    return qc\n\ncalls = {\n    \"A\": lambda qc: qc.draw(\"text\", plot_barriers=True),\n    \"B\": lambda qc: qc.draw(\"text\", with_initial_state=True),\n    \"C\": lambda qc: qc.draw(\"text\", initial_state=True),\n    \"D\": lambda qc: qc.draw(\"text\", vertical_compression=\"high\"),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        txt = str(fn(build()))\n        has_label = \"|0>\" in txt\n        evidence[k] = f\"rendered OK; initial-state label '|0>' present={has_label}\"\n        if has_label:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"initial_state_drawing\": str(build().draw('text', initial_state=True))},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",

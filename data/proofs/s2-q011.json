@@ -2,11 +2,11 @@
   "question": "s2-q011",
   "verdict": {
     "answer": [
-      "A"
+      "B"
     ],
     "evidence": {
-      "A": "rendered OK; qubit-1 wire present=False; hides idle q1=True",
-      "B": "rendered OK; qubit-1 wire present=True; hides idle q1=False",
+      "A": "rendered OK; qubit-1 wire present=True; hides idle q1=False",
+      "B": "rendered OK; qubit-1 wire present=False; hides idle q1=True",
       "C": "rendered OK; qubit-1 wire present=True; hides idle q1=False",
       "D": "rendered OK; qubit-1 wire present=True; hides idle q1=False"
     },
@@ -20,9 +20,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.29,
+  "wall_seconds": 1.6,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"rendered OK; qubit-1 wire present=False; hides idle q1=True\", \"B\": \"rendered OK; qubit-1 wire present=True; hides idle q1=False\", \"C\": \"rendered OK; qubit-1 wire present=True; hides idle q1=False\", \"D\": \"rendered OK; qubit-1 wire present=True; hides idle q1=False\"}, \"observed\": {\"idle_false_drawing\": \"     \\u250c\\u2500\\u2500\\u2500\\u2510\\nq_0: \\u2524 X \\u251c\\n     \\u251c\\u2500\\u2500\\u2500\\u2524\\nq_2: \\u2524 X \\u251c\\n     \\u2514\\u2500\\u2500\\u2500\\u2518\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"rendered OK; qubit-1 wire present=True; hides idle q1=False\", \"B\": \"rendered OK; qubit-1 wire present=False; hides idle q1=True\", \"C\": \"rendered OK; qubit-1 wire present=True; hides idle q1=False\", \"D\": \"rendered OK; qubit-1 wire present=True; hides idle q1=False\"}, \"observed\": {\"idle_false_drawing\": \"     \\u250c\\u2500\\u2500\\u2500\\u2510\\nq_0: \\u2524 X \\u251c\\n     \\u251c\\u2500\\u2500\\u2500\\u2524\\nq_2: \\u2524 X \\u251c\\n     \\u2514\\u2500\\u2500\\u2500\\u2518\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

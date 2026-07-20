@@ -1,0 +1,68 @@
+{
+  "id": "s2-q024",
+  "section": "s2",
+  "objectives": [
+    "s2o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Noiseless simulation. What outcome probabilities does this print — i.e., which bar dominates the histogram?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.ry(2 * np.pi / 3, 0)\nsv = Statevector.from_instruction(qc)\n\nprint({k: round(v, 3) for k, v in sv.probabilities_dict().items()})",
+  "options": [
+    {
+      "key": "A",
+      "text": "`{'0': 0.933, '1': 0.067}`"
+    },
+    {
+      "key": "B",
+      "text": "`{'0': 0.75, '1': 0.25}` — the '0' bar is taller."
+    },
+    {
+      "key": "C",
+      "text": "`{'0': 0.5, '1': 0.5}` — the two bars are equal."
+    },
+    {
+      "key": "D",
+      "text": "`{'0': 0.25, '1': 0.75}` — the '1' bar is three times taller."
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "RY(θ)|0> = cos(θ/2)|0> + sin(θ/2)|1>, so P(1) = sin²(θ/2). With θ = 2π/3, θ/2 = π/3 and sin²(π/3) = 3/4. Thus P(0) = 0.25 and P(1) = 0.75, and the histogram's '1' bar is three times the height of the '0' bar.",
+    "distractors": {
+      "A": "This uses the full angle (cos²θ / sin²θ) instead of the half-angle θ/2. RY's rotation is by θ/2 on the state, giving the 0.25 / 0.75 split, not 0.933 / 0.067.",
+      "B": "This swaps the two probabilities. P(1) = sin²(θ/2) = 0.75 is the larger one, so '1' dominates, not '0'.",
+      "C": "Equal bars would need θ = π/2 (a balanced superposition); at θ = 2π/3 the state is biased toward |1>."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q024.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.ry(2 * np.pi / 3, 0)\npd = Statevector.from_instruction(qc).probabilities_dict()\np0 = round(pd.get(\"0\", 0.0), 3)\np1 = round(pd.get(\"1\", 0.0), 3)\n\nclaims = {\n    \"A\": (0.933, 0.067),\n    \"B\": (0.75, 0.25),\n    \"C\": (0.5, 0.5),\n    \"D\": (0.25, 0.75),\n}\nevidence = {}\nproven = []\nfor k, (c0, c1) in claims.items():\n    match = abs(p0 - c0) < 0.01 and abs(p1 - c1) < 0.01\n    evidence[k] = f\"option claims P(0)={c0}, P(1)={c1}; executed P(0)={p0}, P(1)={p1} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"probabilities\": {\"0\": p0, \"1\": p1}},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

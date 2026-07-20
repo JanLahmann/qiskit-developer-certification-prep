@@ -1,0 +1,68 @@
+{
+  "id": "s2-q027",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "After this circuit, `plot_bloch_multivector` draws the single qubit's arrow along which axis, and which state does that arrow represent?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)",
+  "options": [
+    {
+      "key": "A",
+      "text": "The +X axis — the state |+> = (|0> + |1>)/√2."
+    },
+    {
+      "key": "B",
+      "text": "The −Z axis — the state |1>."
+    },
+    {
+      "key": "C",
+      "text": "The +Y axis — the state (|0> + i|1>)/√2."
+    },
+    {
+      "key": "D",
+      "text": "The +Z axis — the state |0>."
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "H sends |0> to |+> (Bloch +X). The S gate = diag(1, i) adds a phase i to the |1> amplitude, rotating the vector 90° about Z from +X to +Y. The resulting state (|0> + i|1>)/√2 has Bloch vector (⟨X⟩,⟨Y⟩,⟨Z⟩) = (0, 1, 0), so the arrow points along +Y.",
+    "distractors": {
+      "A": "+X is the state right after H, before S. Applying S rotates the vector off the X axis by 90° about Z.",
+      "B": "−Z (state |1>) would require flipping the qubit; H followed by S keeps it on the equator, not at a pole.",
+      "D": "+Z (state |0>) is the starting point before any gate; H already moved the vector to the equator."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q027.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)\nsv = Statevector.from_instruction(qc)\nbloch = tuple(round(float(np.real(sv.expectation_value(Pauli(p)))), 4) for p in (\"X\", \"Y\", \"Z\"))\n\ntargets = {\n    \"A\": (1.0, 0.0, 0.0),\n    \"B\": (0.0, 0.0, -1.0),\n    \"C\": (0.0, 1.0, 0.0),\n    \"D\": (0.0, 0.0, 1.0),\n}\nlabel = {\"A\": \"+X\", \"B\": \"-Z\", \"C\": \"+Y\", \"D\": \"+Z\"}\nevidence = {}\nproven = []\nfor k, t in targets.items():\n    match = all(abs(a - b) < 1e-6 for a, b in zip(bloch, t))\n    evidence[k] = f\"option claims axis {label[k]} -> Bloch {t}; executed state Bloch vector = {bloch} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"bloch_vector\": list(bloch), \"amplitudes\": [str(np.round(x, 4)) for x in sv.data]},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

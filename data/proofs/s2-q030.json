@@ -1,0 +1,38 @@
+{
+  "question": "s2-q030",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "reduced Bloch vectors b0=(0.0, 0.0, 0.0), b1=(0.0, 0.0, 0.0); north-pole (0,0,1) claim match=False",
+      "B": "b0=(0.0, 0.0, 0.0), b1=(0.0, 0.0, 0.0); +X (1,0,0) claim match=False",
+      "C": "each qubit is rendered from its reduced state (b0=(0.0, 0.0, 0.0), b1=(0.0, 0.0, 0.0), length 0.0); no shared/entangled arrow is drawable",
+      "D": "reduced states maximally mixed: b0=(0.0, 0.0, 0.0), b1=(0.0, 0.0, 0.0) (length 0.0), purity=0.5 -> arrows at origin, match=True"
+    },
+    "observed": {
+      "bloch_q0": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "bloch_q1": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "purity_q0": 0.5
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.03,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"reduced Bloch vectors b0=(0.0, 0.0, 0.0), b1=(0.0, 0.0, 0.0); north-pole (0,0,1) claim match=False\", \"B\": \"b0=(0.0, 0.0, 0.0), b1=(0.0, 0.0, 0.0); +X (1,0,0) claim match=False\", \"C\": \"each qubit is rendered from its reduced state (b0=(0.0, 0.0, 0.0), b1=(0.0, 0.0, 0.0), length 0.0); no shared/entangled arrow is drawable\", \"D\": \"reduced states maximally mixed: b0=(0.0, 0.0, 0.0), b1=(0.0, 0.0, 0.0) (length 0.0), purity=0.5 -> arrows at origin, match=True\"}, \"observed\": {\"bloch_q0\": [0.0, 0.0, 0.0], \"bloch_q1\": [0.0, 0.0, 0.0], \"purity_q0\": 0.5}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

@@ -27,7 +27,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.1,
+  "wall_seconds": 1.33,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\", \"B\", \"C\"], \"evidence\": {\"A\": \"twirling.enable_gates = True: accepted (real field)\", \"B\": \"twirling.enable_measure = True: accepted (real field)\", \"C\": \"twirling.num_randomizations = 8: accepted (real field)\", \"D\": \"twirling.twirling_level: rejected -> ValidationError: 1 validation error for TwirlingOptions\\ntwirling_level\\n  Object has no \", \"E\": \"twirling.readout: rejected -> ValidationError: 1 validation error for TwirlingOptions\\nreadout\\n  Object has no attribu\"}, \"observed\": {\"accepted\": [\"A\", \"B\", \"C\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

@@ -1,0 +1,67 @@
+{
+  "id": "s6-q037",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Using the default `StatevectorEstimator` (which computes exact expectation values), what does `result[0].data.stds` contain for a single-observable PUB?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nbell = QuantumCircuit(2)\nbell.h(0)\nbell.cx(0, 1)\ndata = StatevectorEstimator().run([(bell, SparsePauliOp(\"ZZ\"))]).result()[0].data\nprint(data.stds)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`0.0` — an exact calculation has no sampling uncertainty."
+    },
+    {
+      "key": "B",
+      "text": "The same value as `evs` (the expectation value)."
+    },
+    {
+      "key": "C",
+      "text": "`1.0` — the maximum possible standard deviation."
+    },
+    {
+      "key": "D",
+      "text": "It is undefined; `StatevectorEstimator` has no `stds` field."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The `stds` field reports the standard error of the estimate. `StatevectorEstimator` computes the expectation value exactly from the statevector (default precision 0, no shot sampling), so there is no statistical uncertainty and `stds` is 0.0.",
+    "distractors": {
+      "B": "`stds` is the uncertainty of the estimate, a separate quantity from the expectation value in `evs`; they are not the same number.",
+      "C": "1.0 is not a generic standard deviation here; an exact computation yields zero uncertainty, not the maximum.",
+      "D": "The Estimator DataBin does expose a `stds` field alongside `evs`; it is defined and here equals 0.0."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q037.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nbell = QuantumCircuit(2); bell.h(0); bell.cx(0, 1)\ndata = StatevectorEstimator().run([(bell, SparsePauliOp(\"ZZ\"))]).result()[0].data\nobserved_stds = float(np.asarray(data.stds))\nobserved_evs = float(np.asarray(data.evs))\n\nevidence = {}\nproven = []\n# A: 0.0 (exact -> no sampling uncertainty)\nmatchA = bool(np.isclose(observed_stds, 0.0))\nevidence[\"A\"] = f\"result[0].data.stds = {observed_stds} (exact calculation, evs = {observed_evs}); equals 0.0 -> {matchA}\"\nif matchA:\n    proven.append(\"A\")\n# B: same as evs\nevidence[\"B\"] = f\"stds ({observed_stds}) equals evs ({observed_evs})? {np.isclose(observed_stds, observed_evs) and observed_evs != 0.0}: stds is the uncertainty, not the value\"\n# C: 1.0\nevidence[\"C\"] = f\"stds ({observed_stds}) equals 1.0? {np.isclose(observed_stds, 1.0)}\"\n# D: undefined / no stds field\nevidence[\"D\"] = f\"StatevectorEstimator DataBin HAS a stds field (hasattr={hasattr(data, 'stds')}); it is defined, so 'undefined' is false\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"stds\": observed_stds, \"evs\": observed_evs}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

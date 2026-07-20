@@ -1,0 +1,57 @@
+{
+  "id": "s6-q018",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "In a variational algorithm you need the expectation value <O> of a `SparsePauliOp` observable for the state your circuit prepares, to use as a cost function. Which Runtime primitive is designed for this, and what does it return?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "SamplerV2 — it returns the expectation value(s) directly in `result[0].data.evs`."
+    },
+    {
+      "key": "B",
+      "text": "SamplerV2 — it returns quasi-probability distributions that already equal the expectation value."
+    },
+    {
+      "key": "C",
+      "text": "EstimatorV2 — it returns the expectation value(s) directly in `result[0].data.evs`."
+    },
+    {
+      "key": "D",
+      "text": "EstimatorV2 — but you must add `measure_all()` and average the bitstrings yourself."
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "The Estimator primitive is purpose-built to estimate expectation values of observables. You give it (circuit, observable) PUBs and it performs the necessary basis changes and averaging internally, returning the expectation values in `data.evs` (with standard errors in `data.stds`).",
+    "distractors": {
+      "A": "SamplerV2 returns per-shot bitstring samples (a BitArray), not expectation values; there is no `evs` field on Sampler output.",
+      "B": "`quasi_dists` is a retired V1 Sampler concept, and probability distributions are not themselves expectation values — you would still have to combine them with the observable.",
+      "D": "The Estimator measures the observable for you; estimator circuits carry no measurement instructions, and you do not average bitstrings manually — that would be re-implementing the Estimator."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-primitives"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

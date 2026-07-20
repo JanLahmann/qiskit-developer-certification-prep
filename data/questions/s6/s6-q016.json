@@ -1,0 +1,69 @@
+{
+  "id": "s6-q016",
+  "section": "s6",
+  "objectives": [
+    "s6o1",
+    "s6o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "You want a single EstimatorV2 job to target a tighter accuracy on its expectation value. Which call is valid?",
+  "code": "from qiskit_ibm_runtime import EstimatorV2\n\nest = EstimatorV2(mode=backend)\n# isa: ISA circuit, iobs: layout-aligned observable\njob = ...  # which call?",
+  "options": [
+    {
+      "key": "A",
+      "text": "`est.run([(isa, iobs)], shots=8000)`"
+    },
+    {
+      "key": "B",
+      "text": "`est.run([(isa, iobs)], resilience_level=2)`"
+    },
+    {
+      "key": "C",
+      "text": "`est.run([(isa, iobs)], precision=0.01)`"
+    },
+    {
+      "key": "D",
+      "text": "`est.run([(isa, iobs)], shots=8000, precision=0.01)`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "The Estimator's accuracy knob is `precision` — the target standard error of the estimate. It is the only run-time keyword `EstimatorV2.run()` accepts (besides the PUB list), overriding `default_precision` for that job. A smaller precision value means a more accurate (and more expensive) estimate.",
+    "distractors": {
+      "A": "`shots` is the Sampler's knob; EstimatorV2.run() has no `shots` keyword and raises a TypeError. The estimator internally chooses how many shots are needed to reach the requested precision.",
+      "B": "`resilience_level` is an option set on `est.options` before running, not a keyword of `run()`; passing it to run() raises a TypeError.",
+      "D": "Adding a valid `precision` does not rescue the call — the stray `shots` keyword is still unexpected, so run() raises a TypeError before executing."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-options",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q016.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\npm = generate_preset_pass_manager(backend=backend, optimization_level=1, seed_transpiler=42)\nisa = pm.run(qc)\niobs = SparsePauliOp(\"ZZ\").apply_layout(isa.layout)\nest = EstimatorV2(mode=backend)\n\nevidence = {}\nproven = []\ndef attempt(key, kwargs):\n    try:\n        est.run([(isa, iobs)], **kwargs).result()\n        evidence[key] = f\"est.run(..., {kwargs}) accepted and executed on {backend.name}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"est.run(..., {kwargs}) raises {type(e).__name__}: {str(e)[:120]}\"\n\nattempt(\"A\", {\"shots\": 8000})\nattempt(\"B\", {\"resilience_level\": 2})\nattempt(\"C\", {\"precision\": 0.01})\nattempt(\"D\", {\"shots\": 8000, \"precision\": 0.01})\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"backend\": backend.name}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

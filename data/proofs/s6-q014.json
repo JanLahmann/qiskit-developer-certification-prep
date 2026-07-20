@@ -2,13 +2,13 @@
   "question": "s6-q014",
   "verdict": {
     "answer": [
-      "A"
+      "D"
     ],
     "evidence": {
-      "A": "resilience_level = 2 accepted (EstimatorV2 supports levels 0, 1, 2)",
-      "B": "resilience_level = 3 raises ValidationError: value must be an integer in the range 0..2",
-      "C": "resilience_level = 5 raises ValidationError: value must be an integer in the range 0..2",
-      "D": "resilience_level = -1 raises ValidationError: value must be an integer in the range 0..2"
+      "A": "resilience_level = 3 raises ValidationError: value must be an integer in the range 0..2",
+      "B": "resilience_level = 5 raises ValidationError: value must be an integer in the range 0..2",
+      "C": "resilience_level = -1 raises ValidationError: value must be an integer in the range 0..2",
+      "D": "resilience_level = 2 accepted (EstimatorV2 supports levels 0, 1, 2)"
     },
     "observed": {}
   },
@@ -18,9 +18,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.26,
+  "wall_seconds": 1.36,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"resilience_level = 2 accepted (EstimatorV2 supports levels 0, 1, 2)\", \"B\": \"resilience_level = 3 raises ValidationError: value must be an integer in the range 0..2\", \"C\": \"resilience_level = 5 raises ValidationError: value must be an integer in the range 0..2\", \"D\": \"resilience_level = -1 raises ValidationError: value must be an integer in the range 0..2\"}, \"observed\": {}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"resilience_level = 3 raises ValidationError: value must be an integer in the range 0..2\", \"B\": \"resilience_level = 5 raises ValidationError: value must be an integer in the range 0..2\", \"C\": \"resilience_level = -1 raises ValidationError: value must be an integer in the range 0..2\", \"D\": \"resilience_level = 2 accepted (EstimatorV2 supports levels 0, 1, 2)\"}, \"observed\": {}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

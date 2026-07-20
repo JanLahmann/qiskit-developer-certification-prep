@@ -1,0 +1,30 @@
+{
+  "question": "s6-q030",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "A": "result[0].data.evs has shape (3,) (values [np.float64(1.0), np.float64(1.0), np.float64(-1.0)]); option claims () -> match=False",
+      "B": "result[0].data.evs has shape (3,) (values [np.float64(1.0), np.float64(1.0), np.float64(-1.0)]); option claims (1,) -> match=False",
+      "C": "result[0].data.evs has shape (3,) (values [np.float64(1.0), np.float64(1.0), np.float64(-1.0)]); option claims (3,) -> match=True",
+      "D": "result[0].data.evs has shape (3,) (values [np.float64(1.0), np.float64(1.0), np.float64(-1.0)]); option claims (3, 2) -> match=False"
+    },
+    "observed": {
+      "shape": [
+        3
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.28,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"result[0].data.evs has shape (3,) (values [np.float64(1.0), np.float64(1.0), np.float64(-1.0)]); option claims () -> match=False\", \"B\": \"result[0].data.evs has shape (3,) (values [np.float64(1.0), np.float64(1.0), np.float64(-1.0)]); option claims (1,) -> match=False\", \"C\": \"result[0].data.evs has shape (3,) (values [np.float64(1.0), np.float64(1.0), np.float64(-1.0)]); option claims (3,) -> match=True\", \"D\": \"result[0].data.evs has shape (3,) (values [np.float64(1.0), np.float64(1.0), np.float64(-1.0)]); option claims (3, 2) -> match=False\"}, \"observed\": {\"shape\": [3]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

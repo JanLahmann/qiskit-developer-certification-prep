@@ -1,0 +1,68 @@
+{
+  "id": "s6-q025",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "spot-bug",
+  "difficulty": 3,
+  "stem": "This code estimates a correlator on a 3-qubit GHZ state but raises `ValueError: The number of qubits of the circuit (3) does not match the number of qubits of the ()-th observable (2)`. What is the correct fix?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nghz = QuantumCircuit(3)\nghz.h(0)\nghz.cx(0, 1)\nghz.cx(1, 2)\nobs = SparsePauliOp(\"ZZ\")   # <-- intended to correlate all three qubits\n\nprint(StatevectorEstimator().run([(ghz, obs)]).result()[0].data.evs)",
+  "options": [
+    {
+      "key": "A",
+      "text": "Transpile the circuit with a preset pass manager before running."
+    },
+    {
+      "key": "B",
+      "text": "Add `ghz.measure_all()` before passing the circuit to the estimator."
+    },
+    {
+      "key": "C",
+      "text": "Use an observable whose label spans all three qubits, e.g. `SparsePauliOp(\"IZZ\")` or `\"ZZZ\"`."
+    },
+    {
+      "key": "D",
+      "text": "Pass `num_qubits=3` to `estimator.run(...)`."
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "An observable must act on exactly as many qubits as the circuit. The circuit has 3 qubits but 'ZZ' is a 2-qubit operator. Writing a 3-character label (e.g. 'IZZ' to correlate qubits 0 and 1, or 'ZZZ' for all three) makes the observable span all 3 qubits and the PUB becomes valid.",
+    "distractors": {
+      "A": "Transpiling does not change the observable's qubit count; it can even widen the circuit further (padding to the device size), leaving the same mismatch.",
+      "B": "Estimator circuits carry no measurements, and measure_all() does not alter the observable — the 2-vs-3 qubit mismatch remains.",
+      "D": "`run()` has no `num_qubits` keyword; you cannot resize the observable from the run call — the observable itself must be defined over 3 qubits."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q025.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nest = StatevectorEstimator()\nghz = QuantumCircuit(3); ghz.h(0); ghz.cx(0, 1); ghz.cx(1, 2)\nobs2 = SparsePauliOp(\"ZZ\")   # only 2 qubits -> the bug\n\nbuggy_err = None\ntry:\n    est.run([(ghz, obs2)]).result()\nexcept Exception as e:\n    buggy_err = f\"{type(e).__name__}: {str(e)[:90]}\"\n\nevidence = {}\nproven = []\n# A: transpile the circuit first\ntry:\n    pm = generate_preset_pass_manager(backend=FakeManilaV2(), optimization_level=1, seed_transpiler=42)\n    isa = pm.run(ghz)\n    est.run([(isa, obs2)]).result()\n    evidence[\"A\"] = \"transpiling made it run (unexpected)\"; proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"transpiling does NOT fix it: still {type(e).__name__} (the 2-qubit observable now mismatches an even wider ISA circuit)\"\n# B: add measure_all\ntry:\n    g2 = ghz.copy(); g2.measure_all()\n    est.run([(g2, obs2)]).result()\n    evidence[\"B\"] = \"measure_all made it run (unexpected)\"; proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"measure_all does NOT fix it: still {type(e).__name__} (observable still spans 2 of 3 qubits)\"\n# C: 3-qubit observable label\ntry:\n    ev = float(np.asarray(est.run([(ghz, SparsePauliOp(\"IZZ\"))]).result()[0].data.evs))\n    evidence[\"C\"] = f\"a 3-qubit label 'IZZ' runs: <IZZ> on GHZ = {ev:.3f} (buggy 2-qubit obs failed: {buggy_err})\"; proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"3-qubit observable still failed {type(e).__name__}\"\n# D: num_qubits kwarg to run\ntry:\n    est.run([(ghz, obs2)], num_qubits=3).result()\n    evidence[\"D\"] = \"run(num_qubits=3) accepted (unexpected)\"; proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"run(num_qubits=3) raises {type(e).__name__}: run() has no such kwarg and cannot resize the observable\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy_error\": buggy_err}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

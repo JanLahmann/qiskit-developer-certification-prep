@@ -1,0 +1,57 @@
+{
+  "id": "s6-q036",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "After transpiling a circuit to a backend, why must you call `observable.apply_layout(isa_circuit.layout)` before building the Estimator PUB?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "To convert the observable from a dense matrix into the Pauli basis."
+    },
+    {
+      "key": "B",
+      "text": "To expand and permute the observable onto the circuit's physical qubits so it spans the same qubits as the ISA circuit."
+    },
+    {
+      "key": "C",
+      "text": "To turn on error mitigation for that observable."
+    },
+    {
+      "key": "D",
+      "text": "To attach measurement instructions so the observable can be sampled."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "Transpilation maps logical qubits onto (and pads out to) the device's physical qubits, so the ISA circuit spans the backend's qubits in a possibly permuted order. `apply_layout` rewrites the observable with that same layout, so it acts on the correct physical qubits and has the same width as the ISA circuit; otherwise the PUB is invalid.",
+    "distractors": {
+      "A": "Converting a matrix to Paulis is done by `SparsePauliOp.from_operator`, not `apply_layout`; the observable is already a SparsePauliOp here.",
+      "C": "`apply_layout` only relocates the observable's qubits; error mitigation is configured through resilience options, unrelated to layout.",
+      "D": "The Estimator measures the observable itself; `apply_layout` adds no measurement instructions and estimator circuits carry none."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

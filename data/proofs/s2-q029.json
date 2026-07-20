@@ -20,7 +20,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.26,
+  "wall_seconds": 3.07,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"raised AttributeError: 'Statevector' object has no attribute 'qsphere'\", \"B\": \"raised ImportError: cannot import name 'plot_qsphere' from 'qiskit.visualization' (/Users/majl/GitHu\", \"C\": \"sv.draw('qsphere') -> Figure; Figure=True\", \"D\": \"raised ValueError: 'q_sphere' is not a valid option for drawing Statevector\\n             objects. P\"}, \"observed\": {\"qsphere_call\": \"sv.draw('qsphere')\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

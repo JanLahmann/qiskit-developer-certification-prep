@@ -5,13 +5,13 @@
       "A"
     ],
     "evidence": {
-      "A": "measured <ZZ>=0.8813 on the noisy backend; option A predicts 'close to +1 but below 1 (noisy)' -> match=True",
-      "B": "measured <ZZ>=0.8813 on the noisy backend; option B predicts 'close to 0' -> match=False",
-      "C": "measured <ZZ>=0.8813 on the noisy backend; option C predicts 'close to -1' -> match=False",
-      "D": "measured <ZZ>=0.8813 on the noisy backend; option D predicts 'exactly +1.0' -> match=False"
+      "A": "measured <ZZ>=0.8765 on the noisy backend; option A predicts 'close to +1 but below 1 (noisy)' -> match=True",
+      "B": "measured <ZZ>=0.8765 on the noisy backend; option B predicts 'close to 0' -> match=False",
+      "C": "measured <ZZ>=0.8765 on the noisy backend; option C predicts 'close to -1' -> match=False",
+      "D": "measured <ZZ>=0.8765 on the noisy backend; option D predicts 'exactly +1.0' -> match=False"
     },
     "observed": {
-      "evs": 0.88134765625
+      "evs": 0.87646484375
     }
   },
   "versions": {
@@ -20,9 +20,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.34,
+  "wall_seconds": 1.59,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"measured <ZZ>=0.8813 on the noisy backend; option A predicts 'close to +1 but below 1 (noisy)' -> match=True\", \"B\": \"measured <ZZ>=0.8813 on the noisy backend; option B predicts 'close to 0' -> match=False\", \"C\": \"measured <ZZ>=0.8813 on the noisy backend; option C predicts 'close to -1' -> match=False\", \"D\": \"measured <ZZ>=0.8813 on the noisy backend; option D predicts 'exactly +1.0' -> match=False\"}, \"observed\": {\"evs\": 0.88134765625}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"measured <ZZ>=0.8765 on the noisy backend; option A predicts 'close to +1 but below 1 (noisy)' -> match=True\", \"B\": \"measured <ZZ>=0.8765 on the noisy backend; option B predicts 'close to 0' -> match=False\", \"C\": \"measured <ZZ>=0.8765 on the noisy backend; option C predicts 'close to -1' -> match=False\", \"D\": \"measured <ZZ>=0.8765 on the noisy backend; option D predicts 'exactly +1.0' -> match=False\"}, \"observed\": {\"evs\": 0.87646484375}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

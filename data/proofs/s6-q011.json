@@ -2,12 +2,12 @@
   "question": "s6-q011",
   "verdict": {
     "answer": [
-      "A"
+      "C"
     ],
     "evidence": {
-      "A": "exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 1.0 -> match=True",
-      "B": "exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 0.5 -> match=False",
-      "C": "exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 0.0 -> match=False",
+      "A": "exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 0.5 -> match=False",
+      "B": "exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 0.0 -> match=False",
+      "C": "exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 1.0 -> match=True",
       "D": "exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 2.0 -> match=False"
     },
     "observed": {
@@ -20,9 +20,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.23,
+  "wall_seconds": 1.44,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 1.0 -> match=True\", \"B\": \"exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 0.5 -> match=False\", \"C\": \"exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 0.0 -> match=False\", \"D\": \"exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 2.0 -> match=False\"}, \"observed\": {\"expectation\": 0.9999999999999998}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 0.5 -> match=False\", \"B\": \"exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 0.0 -> match=False\", \"C\": \"exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 1.0 -> match=True\", \"D\": \"exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 2.0 -> match=False\"}, \"observed\": {\"expectation\": 0.9999999999999998}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

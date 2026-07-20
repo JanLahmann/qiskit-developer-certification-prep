@@ -1,0 +1,67 @@
+{
+  "id": "s6-q027",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Qubit 0 is rotated by `RY(pi/3)` (qubit 1 stays |0>). Using an exact estimator with `SparsePauliOp(['IZ', 'ZI'], coeffs=[1.0, 1.0])` (i.e. Z on qubit 0 plus Z on qubit 1), what expectation value is returned?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.ry(np.pi/3, 0)\nobs = SparsePauliOp([\"IZ\", \"ZI\"], coeffs=[1.0, 1.0])\nprint(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`0.5`"
+    },
+    {
+      "key": "B",
+      "text": "`1.0`"
+    },
+    {
+      "key": "C",
+      "text": "`2.0`"
+    },
+    {
+      "key": "D",
+      "text": "`1.5`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "Expectation is linear over the terms: <Z_q0 + Z_q1> = <Z_q0> + <Z_q1>. Qubit 0 is in RY(pi/3)|0>, so <Z_q0> = cos(pi/3) = 0.5; qubit 1 is |0>, so <Z_q1> = 1. The sum is 0.5 + 1 = 1.5.",
+    "distractors": {
+      "A": "0.5 is only the rotated qubit's contribution <Z_q0>; it omits the +1 from qubit 1 (which is still |0>).",
+      "B": "1.0 is only <Z_q1>; it drops the 0.5 contribution from the rotated qubit 0.",
+      "C": "2.0 assumes both qubits give <Z> = 1, ignoring that RY(pi/3) tilts qubit 0 so its <Z> is 0.5, not 1."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q027.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.ry(np.pi / 3, 0)   # qubit 0 rotated; qubit 1 stays |0>\nobs = SparsePauliOp([\"IZ\", \"ZI\"], coeffs=[1.0, 1.0])   # Z on qubit 0 + Z on qubit 1\nobserved = float(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs))\n\ncandidates = {\"A\": 0.5, \"B\": 1.0, \"C\": 2.0, \"D\": 1.5}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.isclose(observed, val))\n    evidence[k] = f\"exact <Z_q0 + Z_q1> = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

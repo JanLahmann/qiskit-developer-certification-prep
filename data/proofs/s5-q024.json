@@ -5,7 +5,7 @@
       "A"
     ],
     "evidence": {
-      "A": "result[0].data.alice.get_counts() -> {'0': 16, '1': 184}",
+      "A": "result[0].data.alice.get_counts() -> {'0': 12, '1': 188}",
       "B": "result[0].data.meas: raised AttributeError: 'DataBin' object has no attribute 'meas'",
       "C": "result[0].get_counts('alice'): raised AttributeError: 'SamplerPubResult' object has no attribute 'get_counts'",
       "D": "result.data (no [0]): raised AttributeError: 'PrimitiveResult' object has no attribute 'data'"
@@ -23,9 +23,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.25,
+  "wall_seconds": 1.49,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"result[0].data.alice.get_counts() -> {'0': 16, '1': 184}\", \"B\": \"result[0].data.meas: raised AttributeError: 'DataBin' object has no attribute 'meas'\", \"C\": \"result[0].get_counts('alice'): raised AttributeError: 'SamplerPubResult' object has no attribute 'get_counts'\", \"D\": \"result.data (no [0]): raised AttributeError: 'PrimitiveResult' object has no attribute 'data'\"}, \"observed\": {\"data_fields\": [\"alice\", \"bob\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"result[0].data.alice.get_counts() -> {'0': 12, '1': 188}\", \"B\": \"result[0].data.meas: raised AttributeError: 'DataBin' object has no attribute 'meas'\", \"C\": \"result[0].get_counts('alice'): raised AttributeError: 'SamplerPubResult' object has no attribute 'get_counts'\", \"D\": \"result.data (no [0]): raised AttributeError: 'PrimitiveResult' object has no attribute 'data'\"}, \"observed\": {\"data_fields\": [\"alice\", \"bob\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

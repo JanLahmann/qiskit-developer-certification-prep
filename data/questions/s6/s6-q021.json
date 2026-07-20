@@ -1,0 +1,56 @@
+{
+  "id": "s6-q021",
+  "section": "s6",
+  "objectives": [
+    "s6o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "How does zero-noise extrapolation (ZNE) produce a mitigated expectation value?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "It runs the circuit at several amplified noise levels, then extrapolates the results back to the zero-noise limit."
+    },
+    {
+      "key": "B",
+      "text": "It learns the readout-error transfer matrix from calibration circuits and inverts it."
+    },
+    {
+      "key": "C",
+      "text": "It inserts pulse sequences on idle qubits to cancel decoherence during execution."
+    },
+    {
+      "key": "D",
+      "text": "It expresses the ideal circuit as a quasi-probability combination of noisy circuits and samples from it."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "ZNE has two stages: noise amplification (running the circuit at several increased noise rates, e.g. by digital gate folding) and extrapolation (fitting those noisy expectation values and extrapolating to the zero-noise limit). It often improves results but is not guaranteed to be unbiased.",
+    "distractors": {
+      "B": "Learning and inverting the readout-error matrix describes TREX (measurement mitigation), not ZNE.",
+      "C": "Inserting pulses on idle qubits is dynamical decoupling — an error-suppression technique, not ZNE.",
+      "D": "Expressing the ideal circuit as a quasi-probability combination of noisy circuits describes probabilistic error cancellation (PEC), not ZNE."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

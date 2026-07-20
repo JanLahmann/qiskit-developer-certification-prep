@@ -1,0 +1,56 @@
+{
+  "id": "s6-q029",
+  "section": "s6",
+  "objectives": [
+    "s6o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You construct `EstimatorV2(mode=backend)` and never touch `resilience_level`. On real hardware, which error mitigation is applied by default?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "None — the default resilience level is 0 (raw, unmitigated results)."
+    },
+    {
+      "key": "B",
+      "text": "Readout-error mitigation (TREX), because the default resilience level is 1."
+    },
+    {
+      "key": "C",
+      "text": "Zero-noise extrapolation, because the default resilience level is 2."
+    },
+    {
+      "key": "D",
+      "text": "Every available technique, because the default enables maximum resilience."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "The default `resilience_level` for the Estimator is 1, which applies minimal-cost mitigation: readout-error mitigation via Twirled Readout Error eXtinction (TREX). You get some mitigation for free unless you explicitly lower the level to 0.",
+    "distractors": {
+      "A": "The default is level 1, not 0; you would have to set resilience_level = 0 explicitly to get raw, unmitigated results.",
+      "C": "ZNE is applied at level 2, but that is not the default — the default is level 1.",
+      "D": "The default is not the maximum; only level-1 (readout) mitigation runs unless you raise the level."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

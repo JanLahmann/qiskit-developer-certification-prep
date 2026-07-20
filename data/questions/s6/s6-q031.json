@@ -1,0 +1,68 @@
+{
+  "id": "s6-q031",
+  "section": "s6",
+  "objectives": [
+    "s6o1",
+    "s6o2"
+  ],
+  "type": "spot-bug",
+  "difficulty": 1,
+  "stem": "This snippet raises `ValidationError` on the last line. What is the problem and fix?",
+  "code": "from qiskit_ibm_runtime import EstimatorV2\n\nestimator = EstimatorV2(mode=backend)\nestimator.options.default_precision = 0   # <-- raises ValidationError",
+  "options": [
+    {
+      "key": "A",
+      "text": "`default_precision` must be a positive number (it is a target standard error, e.g. 0.01); 0 is invalid."
+    },
+    {
+      "key": "B",
+      "text": "`default_precision` must be an integer number of shots, so `0` should be `1000`."
+    },
+    {
+      "key": "C",
+      "text": "There is no `default_precision` option; you must set `default_shots` instead."
+    },
+    {
+      "key": "D",
+      "text": "Precision cannot be set on `options`; it can only be passed to `run()`."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`default_precision` is the target standard error for expectation values, so it must be a strictly positive real number. Zero (an impossible target with finite shots) fails validation; a positive value such as 0.01 is accepted.",
+    "distractors": {
+      "B": "Precision is a real-valued target standard error, not an integer shot count; a float like 0.01 is perfectly valid, so the fix is not to make it an integer.",
+      "C": "`default_precision` does exist on EstimatorOptions; `default_shots` is a separate option, not a substitute for the invalid value.",
+      "D": "You can set `default_precision` on `estimator.options`; you may also pass `precision` to `run()`, but setting it on options is valid — the value 0 is the actual problem."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q031.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit_ibm_runtime import EstimatorOptions\n\n# estimator.options is an EstimatorOptions instance; validation is identical.\nbuggy_err = None\ntry:\n    o = EstimatorOptions(); o.default_precision = 0\nexcept Exception as e:\n    buggy_err = type(e).__name__\n\nevidence = {}\nproven = []\n# A: use a positive value\ntry:\n    o = EstimatorOptions(); o.default_precision = 0.01\n    evidence[\"A\"] = f\"default_precision = 0.01 is accepted; the bug was default_precision = 0 ({buggy_err}: value must be > 0)\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"0.01 still failed {type(e).__name__}\"\n# B: 'must be an integer number of shots' -> refute (a float is accepted)\nevidence[\"B\"] = \"false: 0.01 (a non-integer float) is accepted as default_precision, so precision is not an integer shot count\"\n# C: 'there is no default_precision; use default_shots' -> refute\nhas_dp = hasattr(EstimatorOptions(), \"default_precision\")\nevidence[\"C\"] = f\"false: EstimatorOptions.default_precision exists (hasattr={has_dp}); default_shots is a separate option, not a replacement\"\n# D: 'precision cannot be set on options, only in run()' -> refute\nevidence[\"D\"] = \"false: default_precision was set on the options object (before any run() call) without error\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy_error\": buggy_err}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

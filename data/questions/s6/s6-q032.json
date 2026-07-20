@@ -1,0 +1,56 @@
+{
+  "id": "s6-q032",
+  "section": "s6",
+  "objectives": [
+    "s6o1"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "How do probabilistic error cancellation (PEC) and zero-noise extrapolation (ZNE) differ in the guarantee they give for the mitigated expectation value?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "ZNE returns an unbiased estimate, while PEC is biased but always cheaper."
+    },
+    {
+      "key": "B",
+      "text": "Both return provably unbiased estimates at the same sampling cost."
+    },
+    {
+      "key": "C",
+      "text": "PEC suppresses errors before execution, while ZNE post-processes the results afterward."
+    },
+    {
+      "key": "D",
+      "text": "PEC returns an unbiased estimate but generally incurs greater sampling overhead, whereas ZNE is cheaper but not guaranteed to be unbiased."
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "PEC represents the ideal result as a quasi-probability combination of noisy circuits, yielding an unbiased estimate, but the sampling overhead grows (quadratically in the quasi-probability norm, which scales exponentially with depth). ZNE amplifies noise and extrapolates to zero; it is cheaper but 'not guaranteed to produce an unbiased result.'",
+    "distractors": {
+      "A": "This reverses the guarantees: PEC (not ZNE) is the unbiased method, and PEC is generally more expensive, not cheaper.",
+      "B": "They do not have the same cost, and ZNE is not guaranteed unbiased — only PEC provides an unbiased estimate.",
+      "C": "Both PEC and ZNE are error-mitigation techniques that post-process an ensemble of executed circuits; neither is a pre-execution suppression method like dynamical decoupling."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

@@ -28,7 +28,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.02,
+  "wall_seconds": 1.36,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\", \"D\"], \"evidence\": {\"A\": \"<Z> = 0.0 -> on equator (|<Z>|~0) = True\", \"B\": \"<Z> = -1.0 -> on equator (|<Z>|~0) = False\", \"C\": \"<Z> = 0.5 -> on equator (|<Z>|~0) = False\", \"D\": \"<Z> = 0.0 -> on equator (|<Z>|~0) = True\", \"E\": \"<Z> = 1.0 -> on equator (|<Z>|~0) = False\"}, \"observed\": {\"z_expectation_by_option\": {\"A\": 0.0, \"B\": -1.0, \"C\": 0.5, \"D\": 0.0, \"E\": 1.0}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

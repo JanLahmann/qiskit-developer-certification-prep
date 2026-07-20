@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.32,
+  "wall_seconds": 1.56,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"SamplerV2(backend=backend) -> TypeError: SamplerV2.__init__() got an unexpected keyword argument 'backend'; SamplerV2(mode=backend) -> mode=backend ran (64 shots); bug is backend= and fix is mode= -> True\", \"B\": \"SamplerV2 imported from qiskit_ibm_runtime constructed and ran via mode= -> that import is valid, so B is false (False)\", \"C\": \"passing the circuit to run([isa]) works -> the circuit belongs in run(), not the constructor, so C is false (False)\", \"D\": \"SamplerV2(mode=backend).run([isa], backend) -> TypeError: SamplerV2.run() takes 2 positional arguments but 3 were given -> D's proposed fix is invalid (False)\"}, \"observed\": {\"backend_kw\": \"TypeError: SamplerV2.__init__() got an unexpected keyword argument 'backend'\", \"mode_note\": \"mode=backend ran (64 shots)\", \"d_note\": \"TypeError: SamplerV2.run() takes 2 positional arguments but 3 were given\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

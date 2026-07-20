@@ -1,0 +1,67 @@
+{
+  "id": "s6-q030",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A single PUB pairs one Bell-state circuit with a Python list of three separate observables. What is the shape of `result[0].data.evs`?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nbell = QuantumCircuit(2)\nbell.h(0)\nbell.cx(0, 1)\nobs = [SparsePauliOp(\"ZZ\"), SparsePauliOp(\"XX\"), SparsePauliOp(\"YY\")]\nprint(StatevectorEstimator().run([(bell, obs)]).result()[0].data.evs.shape)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`()` (a single scalar)"
+    },
+    {
+      "key": "B",
+      "text": "`(1,)`"
+    },
+    {
+      "key": "C",
+      "text": "`(3,)`"
+    },
+    {
+      "key": "D",
+      "text": "`(3, 2)`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "Each SparsePauliOp counts as one element, and a Python list of three of them has shape (3,). The Estimator returns one expectation value per observable, following that shape, so `evs` is a length-3 array.",
+    "distractors": {
+      "A": "A shape of () would result from passing a single SparsePauliOp (even a multi-term one counts as one element); here there are three separate observables in a list.",
+      "B": "(1,) would correspond to a single observable wrapped in a length-1 list; this list has three elements.",
+      "D": "(3, 2) confuses the number of qubits (2) with an output axis; the observable array shape (3,) determines the result shape, not the qubit count."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q030.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nbell = QuantumCircuit(2); bell.h(0); bell.cx(0, 1)\nobs = [SparsePauliOp(\"ZZ\"), SparsePauliOp(\"XX\"), SparsePauliOp(\"YY\")]\nres = StatevectorEstimator().run([(bell, obs)]).result()\nobserved = list(np.asarray(res[0].data.evs).shape)\n\ncandidates = {\"A\": [], \"B\": [1], \"C\": [3], \"D\": [3, 2]}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = (observed == val)\n    evidence[k] = f\"result[0].data.evs has shape {tuple(observed)} (values {list(np.round(res[0].data.evs,3))}); option claims {tuple(val)} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"shape\": observed}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.27,
+  "wall_seconds": 1.54,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"option claims 50 shots; with default_shots=1000 and PUB shots=50, observed num_shots=50 -> match=True\", \"B\": \"option claims 1000 shots; with default_shots=1000 and PUB shots=50, observed num_shots=50 -> match=False\", \"C\": \"option claims 1050 shots; with default_shots=1000 and PUB shots=50, observed num_shots=50 -> match=False\", \"D\": \"option claims 500 shots; with default_shots=1000 and PUB shots=50, observed num_shots=50 -> match=False\"}, \"observed\": {\"default_shots\": 1000, \"pub_shots\": 50, \"num_shots\": 50}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

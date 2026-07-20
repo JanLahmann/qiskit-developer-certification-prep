@@ -2,11 +2,11 @@
   "question": "s6-q012",
   "verdict": {
     "answer": [
-      "A"
+      "B"
     ],
     "evidence": {
-      "A": "call succeeded on fake_manila: returned a job; result()[0].data.evs = 0.880",
-      "B": "call raised ValueError: An invalid Estimator pub-like was given (<class 'qiskit.circuit.quantumcircuit.QuantumCircuit'>). If you want to run a single pub, you need to wrap it",
+      "A": "call raised ValueError: An invalid Estimator pub-like was given (<class 'qiskit.circuit.quantumcircuit.QuantumCircuit'>). If you want to run a single pub, you need to wrap it",
+      "B": "call succeeded on fake_manila: returned a job; result()[0].data.evs = 0.880",
       "C": "call raised ValueError: An invalid Estimator pub-like was given (<class 'qiskit.circuit.quantumcircuit.QuantumCircuit'>). If you want to run a single pub, you need to wrap it",
       "D": "call raised TypeError: EstimatorV2.run() takes 2 positional arguments but 3 were given"
     },
@@ -20,9 +20,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.38,
+  "wall_seconds": 1.67,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"call succeeded on fake_manila: returned a job; result()[0].data.evs = 0.880\", \"B\": \"call raised ValueError: An invalid Estimator pub-like was given (<class 'qiskit.circuit.quantumcircuit.QuantumCircuit'>). If you want to run a single pub, you need to wrap it\", \"C\": \"call raised ValueError: An invalid Estimator pub-like was given (<class 'qiskit.circuit.quantumcircuit.QuantumCircuit'>). If you want to run a single pub, you need to wrap it\", \"D\": \"call raised TypeError: EstimatorV2.run() takes 2 positional arguments but 3 were given\"}, \"observed\": {\"backend\": \"fake_manila\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"call raised ValueError: An invalid Estimator pub-like was given (<class 'qiskit.circuit.quantumcircuit.QuantumCircuit'>). If you want to run a single pub, you need to wrap it\", \"B\": \"call succeeded on fake_manila: returned a job; result()[0].data.evs = 0.880\", \"C\": \"call raised ValueError: An invalid Estimator pub-like was given (<class 'qiskit.circuit.quantumcircuit.QuantumCircuit'>). If you want to run a single pub, you need to wrap it\", \"D\": \"call raised TypeError: EstimatorV2.run() takes 2 positional arguments but 3 were given\"}, \"observed\": {\"backend\": \"fake_manila\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

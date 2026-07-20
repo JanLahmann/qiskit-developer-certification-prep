@@ -20,7 +20,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.05,
+  "wall_seconds": 1.28,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"D\": \"P(measure 1) = 0.2500; option D claims 0.25 -> match=True\", \"A\": \"P(measure 1) = 0.2500; option A claims 0.75 -> match=False\", \"B\": \"P(measure 1) = 0.2500; option B claims 0.5 -> match=False\", \"C\": \"P(measure 1) = 0.2500; option C claims 1.0 -> match=False\"}, \"observed\": {\"P1\": 0.24999999999999994}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

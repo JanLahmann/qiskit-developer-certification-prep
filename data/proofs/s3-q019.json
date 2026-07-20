@@ -20,7 +20,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.05,
+  "wall_seconds": 1.31,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"a length-2 list bound successfully (num_params after=0) -> 'list never allowed' is False\", \"B\": \"one value raised [ValueError: Mismatching number of values and parameters. For partial binding please pass a m]; [0.7,1.2] bound all (True); dict {a:0.7} left 1 free (True) -> True\", \"C\": \"binding is done via circuit.assign_parameters, not per-gate -> False\", \"D\": \"assignment worked with no transpilation -> False\"}, \"observed\": {\"bug\": \"ValueError: Mismatching number of values and parameters. For partial binding please pass a m\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

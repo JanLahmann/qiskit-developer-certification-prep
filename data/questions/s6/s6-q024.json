@@ -1,0 +1,67 @@
+{
+  "id": "s6-q024",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "Which call successfully constructs a two-qubit `SparsePauliOp` observable without raising an error?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "`SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"X\", 0.5)])`"
+    },
+    {
+      "key": "B",
+      "text": "`SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"XX\", 0.5)])`"
+    },
+    {
+      "key": "C",
+      "text": "`SparsePauliOp([\"ZZ\", \"XYZ\"])`"
+    },
+    {
+      "key": "D",
+      "text": "`SparsePauliOp(\"ZZ\", \"XX\")`"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "All Pauli terms in one SparsePauliOp must act on the same number of qubits. `from_list([('ZZ', 1.0), ('XX', 0.5)])` uses two consistent 2-qubit labels with their coefficients, producing 1.0*ZZ + 0.5*XX.",
+    "distractors": {
+      "A": "'ZZ' is 2 qubits but 'X' is 1 qubit; mixing label lengths in one operator raises a ValueError about the qubit count.",
+      "C": "'ZZ' is 2 qubits and 'XYZ' is 3 qubits — again inconsistent widths, so construction raises a ValueError.",
+      "D": "The second positional argument to SparsePauliOp is the coefficients, not a second label; passing 'XX' there is a malformed signature and raises."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q024.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit.quantum_info import SparsePauliOp\n\nevidence = {}\nproven = []\ndef attempt(key, fn):\n    try:\n        op = fn()\n        evidence[key] = f\"construction succeeded: {op.paulis.to_labels()} with coeffs {list(op.coeffs)}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"construction raises {type(e).__name__}: {str(e)[:110]}\"\n\nattempt(\"A\", lambda: SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"X\", 0.5)]))\nattempt(\"B\", lambda: SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"XX\", 0.5)]))\nattempt(\"C\", lambda: SparsePauliOp([\"ZZ\", \"XYZ\"]))\nattempt(\"D\", lambda: SparsePauliOp(\"ZZ\", \"XX\"))\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

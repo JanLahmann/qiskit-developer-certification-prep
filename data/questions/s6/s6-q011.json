@@ -11,15 +11,15 @@
   "options": [
     {
       "key": "A",
-      "text": "`1.0`"
-    },
-    {
-      "key": "B",
       "text": "`0.5`"
     },
     {
-      "key": "C",
+      "key": "B",
       "text": "`0.0`"
+    },
+    {
+      "key": "C",
+      "text": "`1.0`"
     },
     {
       "key": "D",
@@ -27,13 +27,13 @@
     }
   ],
   "answer": [
-    "A"
+    "C"
   ],
   "explanation": {
     "correct": "The expectation value of a weighted sum of Paulis is the same weighted sum of the individual expectation values. On the Bell state (|00>+|11>)/sqrt(2) both correlators are +1: <ZZ> = 1 and <XX> = 1. So <O> = 0.5*(1) + 0.5*(1) = 1.0.",
     "distractors": {
-      "B": "Counting only one term (e.g. assuming <XX> = 0) gives 0.5 — but the Bell state is perfectly correlated in the X basis too, so <XX> = 1.",
-      "C": "0.0 would require the two terms to cancel or the state to be uncorrelated; the Bell state is maximally correlated, so both terms are +1, not opposite in sign.",
+      "A": "Counting only one term (e.g. assuming <XX> = 0) gives 0.5 — but the Bell state is perfectly correlated in the X basis too, so <XX> = 1.",
+      "B": "0.0 would require the two terms to cancel or the state to be uncorrelated; the Bell state is maximally correlated, so both terms are +1, not opposite in sign.",
       "D": "2.0 ignores the 0.5 coefficients and simply adds <ZZ> + <XX>; the coefficients scale each term."
     },
     "citations": [
@@ -46,7 +46,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)   # Bell state (|00>+|11>)/sqrt(2)\nobs = SparsePauliOp([\"ZZ\", \"XX\"], coeffs=[0.5, 0.5])\nobserved = float(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs))\n\ncandidates = {\"A\": 1.0, \"B\": 0.5, \"C\": 0.0, \"D\": 2.0}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.isclose(observed, val))\n    evidence[k] = f\"exact <0.5*ZZ + 0.5*XX> on the Bell state = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)   # Bell state (|00>+|11>)/sqrt(2)\nobs = SparsePauliOp([\"ZZ\", \"XX\"], coeffs=[0.5, 0.5])\nobserved = float(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs))\n\ncandidates = {\"A\": 0.5, \"B\": 0.0, \"C\": 1.0, \"D\": 2.0}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.isclose(observed, val))\n    evidence[k] = f\"exact <0.5*ZZ + 0.5*XX> on the Bell state = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",

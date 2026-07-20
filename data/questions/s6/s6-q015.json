@@ -1,0 +1,67 @@
+{
+  "id": "s6-q015",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "The circuit applies X to qubit 0 only. Using an exact estimator with the two observables `SparsePauliOp('ZI')` and `SparsePauliOp('IZ')`, what is the returned `[<ZI>, <IZ>]`?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.x(0)\nobs = [SparsePauliOp(\"ZI\"), SparsePauliOp(\"IZ\")]\nprint(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`[-1.0, 1.0]`"
+    },
+    {
+      "key": "B",
+      "text": "`[1.0, -1.0]`"
+    },
+    {
+      "key": "C",
+      "text": "`[1.0, 1.0]`"
+    },
+    {
+      "key": "D",
+      "text": "`[-1.0, -1.0]`"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "Pauli-string labels are little-endian: the right-most character acts on qubit 0 and the left-most on the highest-indexed qubit. Only qubit 0 is flipped to |1>. In 'ZI' the Z is on qubit 1 (still |0>, eigenvalue +1); in 'IZ' the Z is on qubit 0 (|1>, eigenvalue -1). So [<ZI>, <IZ>] = [+1, -1].",
+    "distractors": {
+      "A": "[-1, +1] reads the labels left-to-right (big-endian), assigning Z to qubit 0 in 'ZI' — the reverse of Qiskit's convention where the last character is qubit 0.",
+      "C": "[+1, +1] treats the flipped qubit as still measuring +1, ignoring that X|0> = |1> gives Z-eigenvalue -1 on that qubit.",
+      "D": "[-1, -1] assumes both observables act on the flipped qubit; each string has its Z on a different qubit, so only one of them sees the |1>."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q015.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.x(0)   # qubit 0 -> |1>, qubit 1 -> |0>\nobs = [SparsePauliOp(\"ZI\"), SparsePauliOp(\"IZ\")]\nres = StatevectorEstimator().run([(qc, obs)]).result()\nobserved = [round(float(v), 4) for v in np.asarray(res[0].data.evs)]\n\ncandidates = {\"A\": [-1.0, 1.0], \"B\": [1.0, -1.0], \"C\": [1.0, 1.0], \"D\": [-1.0, -1.0]}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.allclose(observed, val))\n    evidence[k] = f\"executed [<ZI>, <IZ>] = {observed}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": observed}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

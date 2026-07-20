@@ -1,0 +1,68 @@
+{
+  "id": "s6-q033",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "You align a 2-qubit observable to physical qubits with an explicit index list. What label does `SparsePauliOp('ZZ').apply_layout([2, 0], num_qubits=4)` produce?",
+  "code": "from qiskit.quantum_info import SparsePauliOp\n\nobs = SparsePauliOp(\"ZZ\").apply_layout([2, 0], num_qubits=4)\nprint(obs.paulis[0])",
+  "options": [
+    {
+      "key": "A",
+      "text": "`IZIZ`"
+    },
+    {
+      "key": "B",
+      "text": "`ZIZI`"
+    },
+    {
+      "key": "C",
+      "text": "`ZZII`"
+    },
+    {
+      "key": "D",
+      "text": "`IIZZ`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`apply_layout([2, 0], num_qubits=4)` places the observable's logical qubit 0 on physical qubit 2 and logical qubit 1 on physical qubit 0, padding to 4 qubits. In little-endian labels (right-most char = qubit 0), Z sits at positions 2 and 0, giving 'IZIZ'.",
+    "distractors": {
+      "B": "'ZIZI' puts the Z operators at physical qubits 3 and 1 — shifted by one from the requested [2, 0].",
+      "C": "'ZZII' keeps the two Z's adjacent on the highest qubits (3 and 2), ignoring the layout list entirely.",
+      "D": "'IIZZ' is the observable padded to 4 qubits WITHOUT relocation (Z's still on qubits 1 and 0) — this is what you get if apply_layout is skipped."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q033.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit.quantum_info import SparsePauliOp\n\n# Map the 2-qubit observable ZZ onto physical qubits [2, 0] of a 4-qubit register.\nresult = SparsePauliOp(\"ZZ\").apply_layout([2, 0], num_qubits=4)\nobserved = str(result.paulis[0])\n\ncandidates = {\"A\": \"IZIZ\", \"B\": \"ZIZI\", \"C\": \"ZZII\", \"D\": \"IIZZ\"}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = (observed == val)\n    evidence[k] = f\"SparsePauliOp('ZZ').apply_layout([2,0], num_qubits=4) -> '{observed}'; option claims '{val}' -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": observed}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

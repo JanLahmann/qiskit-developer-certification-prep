@@ -1,0 +1,28 @@
+{
+  "question": "s6-q035",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> 'IIZ'; option claims 'ZII' -> match=False",
+      "B": "from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> 'IIZ'; option claims 'IZI' -> match=False",
+      "C": "from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> 'IIZ'; option claims 'ZZZ' -> match=False",
+      "D": "from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> 'IIZ'; option claims 'IIZ' -> match=True"
+    },
+    "observed": {
+      "label": "IIZ"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.53,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> 'IIZ'; option claims 'ZII' -> match=False\", \"B\": \"from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> 'IIZ'; option claims 'IZI' -> match=False\", \"C\": \"from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> 'IIZ'; option claims 'ZZZ' -> match=False\", \"D\": \"from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> 'IIZ'; option claims 'IIZ' -> match=True\"}, \"observed\": {\"label\": \"IIZ\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

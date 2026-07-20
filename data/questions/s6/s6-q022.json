@@ -1,0 +1,67 @@
+{
+  "id": "s6-q022",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "The circuit prepares |+>. Using an exact estimator with the observable `SparsePauliOp.from_list([('X', 3.0)])`, what expectation value is returned?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(1)\nqc.h(0)\nobs = SparsePauliOp.from_list([(\"X\", 3.0)])\nprint(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`1.0`"
+    },
+    {
+      "key": "B",
+      "text": "`0.0`"
+    },
+    {
+      "key": "C",
+      "text": "`-3.0`"
+    },
+    {
+      "key": "D",
+      "text": "`3.0`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "H|0> = |+> is the +1 eigenstate of X, so <X> = 1. The coefficient of the Pauli term scales the expectation value linearly, so <3*X> = 3 * 1 = 3.0.",
+    "distractors": {
+      "A": "1.0 is the bare <X>; it ignores the coefficient 3.0 that multiplies the Pauli term.",
+      "B": "0.0 would be <Z> on |+>, or the result of assuming X has zero expectation — but |+> is the +1 eigenstate of X.",
+      "C": "-3.0 has the right magnitude but the wrong sign; |+> is the +1 (not -1) eigenstate of X."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q022.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(1); qc.h(0)   # |+>, so <X> = 1\nobs = SparsePauliOp.from_list([(\"X\", 3.0)])\nobserved = float(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs))\n\ncandidates = {\"A\": 1.0, \"B\": 0.0, \"C\": -3.0, \"D\": 3.0}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.isclose(observed, val))\n    evidence[k] = f\"exact <3*X> on |+> = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

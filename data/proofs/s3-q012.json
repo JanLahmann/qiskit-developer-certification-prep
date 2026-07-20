@@ -23,7 +23,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.06,
+  "wall_seconds": 1.26,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"observed CX=(0,2); claim (0,1) -> False\", \"B\": \"observed CX=(0,2); claim (1,2) -> False\", \"C\": \"observed CX (control,target)=(0,2); claim (0,2) -> True\", \"D\": \"compose succeeded, comp ops={'h': 1, 'cx': 1}; no error -> False\"}, \"observed\": {\"cx_qubits\": [0, 2]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

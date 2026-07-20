@@ -25,7 +25,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.04,
+  "wall_seconds": 1.26,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"qc.parameters order=['phi', 'theta']; observed rx=1.5, rz=0.5; claim rx0.5/rz1.5 -> False\", \"B\": \"observed rx=1.5, rz=0.5; claim both 0.5 -> False\", \"C\": \"assign_parameters([0.5,1.5]) succeeded (no error); claim 'needs dict' -> False\", \"D\": \"parameters sorted=['phi', 'theta']; observed rx=1.5, rz=0.5; claim rx1.5/rz0.5 -> True\"}, \"observed\": {\"rx\": 1.5, \"rz\": 0.5, \"param_order\": [\"phi\", \"theta\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

@@ -20,7 +20,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.44,
+  "wall_seconds": 1.49,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"reshape to (5,2) so last axis = 2 params: SUCCESS, result shape (5,)\", \"B\": \"transpose to (3,5): raised ValueError: Length of ('p[0]', 'p[1]') inconsistent with last dimension of [[0. 0. 0. 0. 0.]\\n [0. 0. 0\", \"C\": \"flatten to 1-D length 15: raised ValueError: Length of ('p[0]', 'p[1]') inconsistent with last dimension of [0. 0. 0. 0. 0. 0. 0. 0. 0.\", \"D\": \"keeping (5,3) and adding shots: still raised ValueError: Length of ('p[0]', 'p[1]') inconsistent with last dimension of [[0. 0. 0.]\\n [0. \"}, \"observed\": {\"buggy_error\": \"ValueError: Length of ('p[0]', 'p[1]') inconsistent with last dimension of [[0. 0. 0.]\\n [0. 0. 0.]\\n [0. 0. 0.]\\n [0. 0. 0.]\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

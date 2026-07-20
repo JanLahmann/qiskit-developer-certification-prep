@@ -21,7 +21,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.24,
+  "wall_seconds": 1.44,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"qasm2 includes qelib1.inc=True; qasm3 includes stdgates.inc=True -> claim match=True\", \"B\": \"both include qelib1.inc? qasm2=True, qasm3=False -> False\", \"C\": \"both include stdgates.inc? qasm2=False, qasm3=True -> False\", \"D\": \"qasm2 stdgates.inc=False, qasm3 qelib1.inc=False -> False\"}, \"observed\": {\"qasm2_line2\": \"include \\\"qelib1.inc\\\";\", \"qasm3_line2\": \"include \\\"stdgates.inc\\\";\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

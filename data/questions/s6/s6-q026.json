@@ -1,0 +1,57 @@
+{
+  "id": "s6-q026",
+  "section": "s6",
+  "objectives": [
+    "s6o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "You want to explicitly turn on zero-noise extrapolation for an EstimatorV2 job by setting an individual option (not by choosing a resilience level). Which line does this?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "`estimator.options.dynamical_decoupling.enable = True`"
+    },
+    {
+      "key": "B",
+      "text": "`estimator.options.resilience.zne_mitigation = True`"
+    },
+    {
+      "key": "C",
+      "text": "`estimator.options.resilience_level = 1`"
+    },
+    {
+      "key": "D",
+      "text": "`estimator.run([(isa, obs)], zne=True)`"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "ZNE is controlled by the resilience sub-option `zne_mitigation`. Setting `estimator.options.resilience.zne_mitigation = True` enables zero-noise extrapolation directly; you can then tune `resilience.zne.noise_factors` and `resilience.zne.extrapolator`.",
+    "distractors": {
+      "A": "`dynamical_decoupling.enable` turns on dynamical decoupling (error suppression on idle qubits), not ZNE.",
+      "C": "Resilience level 1 enables only readout mitigation (TREX); ZNE is added at level 2, so level 1 does not turn on ZNE.",
+      "D": "`run()` accepts only the PUB list and `precision`; there is no `zne` keyword, so this raises a TypeError."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

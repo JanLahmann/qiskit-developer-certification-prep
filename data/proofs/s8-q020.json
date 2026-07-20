@@ -26,7 +26,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.18,
+  "wall_seconds": 1.16,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"line 'input float[64] theta;' present as an emitted OpenQASM 3 line? True\", \"B\": \"line 'float[64] theta;' present as an emitted OpenQASM 3 line? False\", \"C\": \"line 'input angle theta;' present as an emitted OpenQASM 3 line? False\", \"D\": \"line 'parameter theta;' present as an emitted OpenQASM 3 line? False\"}, \"observed\": {\"lines\": [\"OPENQASM 3.0;\", \"include \\\"stdgates.inc\\\";\", \"input float[64] theta;\", \"qubit[1] q;\", \"rx(theta) q[0];\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

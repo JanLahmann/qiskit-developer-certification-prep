@@ -21,7 +21,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.24,
+  "wall_seconds": 1.45,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"result[0].data.evs = 1.000000; equals the true <ZZ> = 1.0 -> holds the expectation value (match=True)\", \"B\": \"result[0].data.stds = 0.000000 is the standard error of the estimate, NOT the expectation value (1.0)\", \"C\": \"result[0].data.meas raises AttributeError: an Estimator DataBin has no bitstring counts (that is Sampler output)\", \"D\": \"result[0].data.quasi_dists raises AttributeError: quasi_dists was a retired V1 Sampler field, never on EstimatorV2\"}, \"observed\": {\"evs\": 0.9999999999999998, \"stds\": 0.0}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

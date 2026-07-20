@@ -27,7 +27,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.1,
+  "wall_seconds": 1.59,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\", \"B\", \"C\"], \"evidence\": {\"A\": \"X.dot(Y).to_label() = 'iZ'; option claims 'X\\u00b7Y = iZ' -> match=True\", \"B\": \"Y.dot(Z).to_label() = 'iX'; option claims 'Y\\u00b7Z = iX' -> match=True\", \"C\": \"Z.dot(X).to_label() = 'iY'; option claims 'Z\\u00b7X = iY' -> match=True\", \"D\": \"X.dot(Z).to_label() = '-iY'; option claims 'X\\u00b7Z = iY' -> match=False\", \"E\": \"Y.dot(X).to_label() = '-iZ'; option claims 'Y\\u00b7X = iZ' -> match=False\"}, \"observed\": {\"X.Y\": \"iZ\", \"Y.Z\": \"iX\", \"Z.X\": \"iY\", \"X.Z\": \"-iY\", \"Y.X\": \"-iZ\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

@@ -21,7 +21,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.17,
+  "wall_seconds": 1.31,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"session.backend() -> type=str, value='fake_manila'; option A predicts 'returns the backend name string 'fake_manila'' -> match=True\", \"B\": \"session.backend() -> type=str, value='fake_manila'; option B predicts 'returns the backend object' -> match=False\", \"C\": \"session.backend() -> type=str, value='fake_manila'; option C predicts 'returns None' -> match=False\", \"D\": \"session.backend() -> type=str, value='fake_manila'; option D predicts 'raises an error (no service)' -> match=False\"}, \"observed\": {\"type\": \"str\", \"value\": \"fake_manila\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

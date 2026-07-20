@@ -1,0 +1,31 @@
+{
+  "question": "s6-q015",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "executed [<ZI>, <IZ>] = [1.0, -1.0]; option claims [-1.0, 1.0] -> match=False",
+      "B": "executed [<ZI>, <IZ>] = [1.0, -1.0]; option claims [1.0, -1.0] -> match=True",
+      "C": "executed [<ZI>, <IZ>] = [1.0, -1.0]; option claims [1.0, 1.0] -> match=False",
+      "D": "executed [<ZI>, <IZ>] = [1.0, -1.0]; option claims [-1.0, -1.0] -> match=False"
+    },
+    "observed": {
+      "evs": [
+        1.0,
+        -1.0
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.4,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"executed [<ZI>, <IZ>] = [1.0, -1.0]; option claims [-1.0, 1.0] -> match=False\", \"B\": \"executed [<ZI>, <IZ>] = [1.0, -1.0]; option claims [1.0, -1.0] -> match=True\", \"C\": \"executed [<ZI>, <IZ>] = [1.0, -1.0]; option claims [1.0, 1.0] -> match=False\", \"D\": \"executed [<ZI>, <IZ>] = [1.0, -1.0]; option claims [-1.0, -1.0] -> match=False\"}, \"observed\": {\"evs\": [1.0, -1.0]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

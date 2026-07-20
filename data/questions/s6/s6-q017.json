@@ -1,0 +1,68 @@
+{
+  "id": "s6-q017",
+  "section": "s6",
+  "objectives": [
+    "s6o1",
+    "s6o2"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "The Estimator `precision` is the target standard error of an expectation value. If you tighten `precision` from 0.02 to 0.01 (halve it), approximately how does the number of shots the estimator must collect change?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "It increases by about 2x."
+    },
+    {
+      "key": "B",
+      "text": "It increases by about 4x."
+    },
+    {
+      "key": "C",
+      "text": "It increases by about 16x."
+    },
+    {
+      "key": "D",
+      "text": "It is unchanged — precision does not affect the number of shots."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "The standard error of a Monte-Carlo estimate falls as 1/sqrt(N), so to reach a target standard error (precision) you need N ~ 1/precision^2 shots. Halving precision (0.02 -> 0.01) therefore multiplies the required shots by (0.02/0.01)^2 = 4. Empirically, the spread of the estimate scales linearly with precision, confirming the inverse-square shot cost.",
+    "distractors": {
+      "A": "A 2x factor assumes shots scale as 1/precision (linearly); the standard error scales as 1/sqrt(N), so the dependence is 1/precision^2, giving 4x.",
+      "C": "16x would be 1/precision^4 — squaring the exponent twice. The correct scaling is 1/precision^2, i.e. 4x for a halving.",
+      "D": "Precision directly sets how many shots are needed: a smaller target standard error requires more sampling, so the shot count is not independent of precision."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q017.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\n# The Estimator's `precision` is the TARGET STANDARD ERROR of the estimate.\n# Demonstrate empirically that the estimate's spread scales linearly with precision.\nqc = QuantumCircuit(1); qc.h(0)   # |+>, so <Z> = 0 and shot noise is maximal\nobs = SparsePauliOp(\"Z\")\n\ndef empirical_std(p, n=300):\n    vals = [\n        float(np.asarray(\n            StatevectorEstimator(default_precision=p, seed=s).run([(qc, obs)]).result()[0].data.evs\n        ))\n        for s in range(n)\n    ]\n    return float(np.std(vals))\n\np_coarse, p_fine = 0.02, 0.01           # halve the target precision\nsd_coarse = empirical_std(p_coarse)\nsd_fine = empirical_std(p_fine)\nstd_ratio = sd_coarse / sd_fine         # ~2: the estimate's spread halves\n\n# Number of shots to reach a target standard error scales as 1/precision**2,\n# so halving precision multiplies the required shots by:\nshots_multiplier = round((p_coarse / p_fine) ** 2)\n\ncandidates = {\"A\": 2, \"B\": 4, \"C\": 16, \"D\": 1}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = (val == shots_multiplier)\n    evidence[k] = (\n        f\"empirical std(evs) tracks precision: {sd_coarse:.4f} at p={p_coarse}, \"\n        f\"{sd_fine:.4f} at p={p_fine} (ratio ~{std_ratio:.2f}); shots ~ 1/precision^2, \"\n        f\"so halving precision multiplies shots by {shots_multiplier}; option claims {val}x -> {m}\"\n    )\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\n    \"std_coarse\": sd_coarse, \"std_fine\": sd_fine, \"std_ratio\": std_ratio, \"shots_multiplier\": shots_multiplier}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

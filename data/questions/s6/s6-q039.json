@@ -1,0 +1,57 @@
+{
+  "id": "s6-q039",
+  "section": "s6",
+  "objectives": [
+    "s6o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "Your circuit leaves some qubits idle for long stretches, and you want to suppress decoherence on them during execution. Which EstimatorV2 option should you enable?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "`estimator.options.resilience.zne_mitigation = True`"
+    },
+    {
+      "key": "B",
+      "text": "`estimator.options.resilience.measure_mitigation = True`"
+    },
+    {
+      "key": "C",
+      "text": "`estimator.options.dynamical_decoupling.enable = True`"
+    },
+    {
+      "key": "D",
+      "text": "`estimator.options.resilience_level = 1`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "Dynamical decoupling inserts pulse sequences on idle qubits to approximately cancel decoherence while they wait — exactly the situation described. It is an error-suppression technique enabled via `options.dynamical_decoupling.enable = True`.",
+    "distractors": {
+      "A": "ZNE is a post-processing error-mitigation method for expectation values; it does not protect idle qubits during execution.",
+      "B": "`measure_mitigation` (TREX) corrects readout errors on measurement, not decoherence on idle qubits.",
+      "D": "Resilience level 1 enables readout mitigation (TREX), not dynamical decoupling; DD is configured through its own option group."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
+      "https://quantum.cloud.ibm.com/docs/guides/configure-error-suppression"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

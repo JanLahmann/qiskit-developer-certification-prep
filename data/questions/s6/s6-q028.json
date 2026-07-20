@@ -1,0 +1,62 @@
+{
+  "id": "s6-q028",
+  "section": "s6",
+  "objectives": [
+    "s6o1"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "Select all TRUE statements about the EstimatorV2 `resilience_level` option.",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Level 0 applies no error mitigation."
+    },
+    {
+      "key": "B",
+      "text": "Level 1 is the default and applies readout-error mitigation (TREX)."
+    },
+    {
+      "key": "C",
+      "text": "Higher resilience levels reduce total runtime because fewer circuits are executed."
+    },
+    {
+      "key": "D",
+      "text": "Level 2 additionally applies zero-noise extrapolation (on top of level 1)."
+    },
+    {
+      "key": "E",
+      "text": "The maximum supported resilience_level is 5."
+    }
+  ],
+  "answer": [
+    "A",
+    "B",
+    "D"
+  ],
+  "explanation": {
+    "correct": "The resilience level is a coarse cost/accuracy dial: level 0 = no mitigation, level 1 (the default) = readout-error mitigation via TREX, and level 2 = level 1 plus zero-noise extrapolation and gate twirling. Higher levels give more accurate (less biased) results at greater cost.",
+    "distractors": {
+      "C": "Higher levels run MORE circuits (an ensemble for mitigation) and take longer, not less — they trade runtime for accuracy.",
+      "E": "The supported values are 0, 1, and 2; there is no level 5 (setting it raises a validation error)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management",
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

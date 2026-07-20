@@ -1,0 +1,28 @@
+{
+  "question": "s6-q027",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "exact <Z_q0 + Z_q1> = 1.500000; option claims 0.5 -> match=False",
+      "B": "exact <Z_q0 + Z_q1> = 1.500000; option claims 1.0 -> match=False",
+      "C": "exact <Z_q0 + Z_q1> = 1.500000; option claims 2.0 -> match=False",
+      "D": "exact <Z_q0 + Z_q1> = 1.500000; option claims 1.5 -> match=True"
+    },
+    "observed": {
+      "expectation": 1.5000000000000002
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.32,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"exact <Z_q0 + Z_q1> = 1.500000; option claims 0.5 -> match=False\", \"B\": \"exact <Z_q0 + Z_q1> = 1.500000; option claims 1.0 -> match=False\", \"C\": \"exact <Z_q0 + Z_q1> = 1.500000; option claims 2.0 -> match=False\", \"D\": \"exact <Z_q0 + Z_q1> = 1.500000; option claims 1.5 -> match=True\"}, \"observed\": {\"expectation\": 1.5000000000000002}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

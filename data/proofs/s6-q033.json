@@ -1,0 +1,28 @@
+{
+  "question": "s6-q033",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "SparsePauliOp('ZZ').apply_layout([2,0], num_qubits=4) -> 'IZIZ'; option claims 'IZIZ' -> match=True",
+      "B": "SparsePauliOp('ZZ').apply_layout([2,0], num_qubits=4) -> 'IZIZ'; option claims 'ZIZI' -> match=False",
+      "C": "SparsePauliOp('ZZ').apply_layout([2,0], num_qubits=4) -> 'IZIZ'; option claims 'ZZII' -> match=False",
+      "D": "SparsePauliOp('ZZ').apply_layout([2,0], num_qubits=4) -> 'IZIZ'; option claims 'IIZZ' -> match=False"
+    },
+    "observed": {
+      "label": "IZIZ"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.56,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"SparsePauliOp('ZZ').apply_layout([2,0], num_qubits=4) -> 'IZIZ'; option claims 'IZIZ' -> match=True\", \"B\": \"SparsePauliOp('ZZ').apply_layout([2,0], num_qubits=4) -> 'IZIZ'; option claims 'ZIZI' -> match=False\", \"C\": \"SparsePauliOp('ZZ').apply_layout([2,0], num_qubits=4) -> 'IZIZ'; option claims 'ZZII' -> match=False\", \"D\": \"SparsePauliOp('ZZ').apply_layout([2,0], num_qubits=4) -> 'IZIZ'; option claims 'IIZZ' -> match=False\"}, \"observed\": {\"label\": \"IZIZ\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

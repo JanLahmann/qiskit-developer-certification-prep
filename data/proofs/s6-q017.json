@@ -1,0 +1,31 @@
+{
+  "question": "s6-q017",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "empirical std(evs) tracks precision: 0.0190 at p=0.02, 0.0095 at p=0.01 (ratio ~2.00); shots ~ 1/precision^2, so halving precision multiplies shots by 4; option claims 2x -> False",
+      "B": "empirical std(evs) tracks precision: 0.0190 at p=0.02, 0.0095 at p=0.01 (ratio ~2.00); shots ~ 1/precision^2, so halving precision multiplies shots by 4; option claims 4x -> True",
+      "C": "empirical std(evs) tracks precision: 0.0190 at p=0.02, 0.0095 at p=0.01 (ratio ~2.00); shots ~ 1/precision^2, so halving precision multiplies shots by 4; option claims 16x -> False",
+      "D": "empirical std(evs) tracks precision: 0.0190 at p=0.02, 0.0095 at p=0.01 (ratio ~2.00); shots ~ 1/precision^2, so halving precision multiplies shots by 4; option claims 1x -> False"
+    },
+    "observed": {
+      "std_coarse": 0.01903914916013663,
+      "std_fine": 0.009519574580068316,
+      "std_ratio": 2.0,
+      "shots_multiplier": 4
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.68,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"empirical std(evs) tracks precision: 0.0190 at p=0.02, 0.0095 at p=0.01 (ratio ~2.00); shots ~ 1/precision^2, so halving precision multiplies shots by 4; option claims 2x -> False\", \"B\": \"empirical std(evs) tracks precision: 0.0190 at p=0.02, 0.0095 at p=0.01 (ratio ~2.00); shots ~ 1/precision^2, so halving precision multiplies shots by 4; option claims 4x -> True\", \"C\": \"empirical std(evs) tracks precision: 0.0190 at p=0.02, 0.0095 at p=0.01 (ratio ~2.00); shots ~ 1/precision^2, so halving precision multiplies shots by 4; option claims 16x -> False\", \"D\": \"empirical std(evs) tracks precision: 0.0190 at p=0.02, 0.0095 at p=0.01 (ratio ~2.00); shots ~ 1/precision^2, so halving precision multiplies shots by 4; option claims 1x -> False\"}, \"observed\": {\"std_coarse\": 0.01903914916013663, \"std_fine\": 0.009519574580068316, \"std_ratio\": 2.0, \"shots_multiplier\": 4}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

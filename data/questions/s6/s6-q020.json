@@ -1,0 +1,57 @@
+{
+  "id": "s6-q020",
+  "section": "s6",
+  "objectives": [
+    "s6o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You are researching your own error-mitigation method and want EstimatorV2 to return raw, unmitigated expectation values (turning off all built-in error mitigation and suppression). Which setting does this?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "`estimator.options.resilience_level = 2`"
+    },
+    {
+      "key": "B",
+      "text": "`estimator.options.resilience_level = 1`"
+    },
+    {
+      "key": "C",
+      "text": "`estimator.options.resilience.zne_mitigation = True`"
+    },
+    {
+      "key": "D",
+      "text": "`estimator.options.resilience_level = 0`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "Resilience level 0 means 'no mitigation' — it turns off the built-in error mitigation and suppression so the Estimator returns raw expectation values. This is the documented way to disable everything when you plan to apply your own mitigation.",
+    "distractors": {
+      "A": "Level 2 is the most aggressive built-in setting (readout mitigation plus ZNE and gate twirling) — the opposite of turning mitigation off.",
+      "B": "Level 1 is the default and still applies readout-error mitigation (TREX); it does not give raw, unmitigated values.",
+      "C": "Enabling zne_mitigation adds zero-noise extrapolation — that is more mitigation, not less."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-options",
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

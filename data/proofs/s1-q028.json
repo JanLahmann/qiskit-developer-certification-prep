@@ -23,7 +23,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.07,
+  "wall_seconds": 1.29,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"D\": \"P(pi/2)|1> = [0j, 1j]; option D claims [0j, 1j] -> match=True\", \"A\": \"P(pi/2)|1> = [0j, 1j]; option A claims [0, 1] -> match=False\", \"B\": \"P(pi/2)|1> = [0j, 1j]; option B claims [0, -1] -> match=False\", \"C\": \"P(pi/2)|1> = [0j, 1j]; option C claims [1j, 0j] -> match=False\"}, \"observed\": {\"sv\": [\"0j\", \"1j\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

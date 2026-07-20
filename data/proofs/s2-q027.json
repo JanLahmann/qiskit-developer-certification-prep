@@ -28,7 +28,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.05,
+  "wall_seconds": 1.31,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"option claims axis +X -> Bloch (1.0, 0.0, 0.0); executed state Bloch vector = (0.0, 1.0, 0.0) -> match=False\", \"B\": \"option claims axis -Z -> Bloch (0.0, 0.0, -1.0); executed state Bloch vector = (0.0, 1.0, 0.0) -> match=False\", \"C\": \"option claims axis +Y -> Bloch (0.0, 1.0, 0.0); executed state Bloch vector = (0.0, 1.0, 0.0) -> match=True\", \"D\": \"option claims axis +Z -> Bloch (0.0, 0.0, 1.0); executed state Bloch vector = (0.0, 1.0, 0.0) -> match=False\"}, \"observed\": {\"bloch_vector\": [0.0, 1.0, 0.0], \"amplitudes\": [\"(0.7071+0j)\", \"0.7071j\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

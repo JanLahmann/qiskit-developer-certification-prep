@@ -1,0 +1,28 @@
+{
+  "question": "s6-q016",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "A": "est.run(..., {'shots': 8000}) raises TypeError: EstimatorV2.run() got an unexpected keyword argument 'shots'",
+      "B": "est.run(..., {'resilience_level': 2}) raises TypeError: EstimatorV2.run() got an unexpected keyword argument 'resilience_level'",
+      "C": "est.run(..., {'precision': 0.01}) accepted and executed on fake_manila",
+      "D": "est.run(..., {'shots': 8000, 'precision': 0.01}) raises TypeError: EstimatorV2.run() got an unexpected keyword argument 'shots'"
+    },
+    "observed": {
+      "backend": "fake_manila"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.58,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"est.run(..., {'shots': 8000}) raises TypeError: EstimatorV2.run() got an unexpected keyword argument 'shots'\", \"B\": \"est.run(..., {'resilience_level': 2}) raises TypeError: EstimatorV2.run() got an unexpected keyword argument 'resilience_level'\", \"C\": \"est.run(..., {'precision': 0.01}) accepted and executed on fake_manila\", \"D\": \"est.run(..., {'shots': 8000, 'precision': 0.01}) raises TypeError: EstimatorV2.run() got an unexpected keyword argument 'shots'\"}, \"observed\": {\"backend\": \"fake_manila\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

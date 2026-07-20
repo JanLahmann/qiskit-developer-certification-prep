@@ -24,7 +24,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.05,
+  "wall_seconds": 1.35,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"observed order=['alpha', 'beta', 'gamma']; claim alphabetical -> True\", \"B\": \"observed order=['alpha', 'beta', 'gamma']; claim insertion order -> False\", \"C\": \"observed order=['alpha', 'beta', 'gamma']; claim reverse insertion -> False\", \"D\": \"observed order=['alpha', 'beta', 'gamma'] is deterministic across runs; claim 'unspecified' -> False\"}, \"observed\": {\"order\": [\"alpha\", \"beta\", \"gamma\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

@@ -25,7 +25,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.14,
+  "wall_seconds": 1.61,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"D\": \"per-qubit factors {0: 'Z', 1: 'Y', 2: 'X'}; Z is on qubit 0; option D claims qubit 0 -> match=True\", \"A\": \"per-qubit factors {0: 'Z', 1: 'Y', 2: 'X'}; Z is on qubit 0; option A claims qubit 2 -> match=False\", \"B\": \"per-qubit factors {0: 'Z', 1: 'Y', 2: 'X'}; Z is on qubit 0; option B claims qubit 1 -> match=False\", \"C\": \"Z is one tensor factor on qubit 0 only, not all three qubits -> claim False\"}, \"observed\": {\"factors\": {\"0\": \"Z\", \"1\": \"Y\", \"2\": \"X\"}, \"z_qubit\": 0}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

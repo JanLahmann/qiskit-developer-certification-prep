@@ -1,0 +1,62 @@
+{
+  "id": "s6-q019",
+  "section": "s6",
+  "objectives": [
+    "s6o1"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "Select all of the following that are error MITIGATION techniques for the Estimator — methods that post-process results from an ensemble of circuits to reduce bias in expectation values (as opposed to error suppression, which prevents errors before/during execution).",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Dynamical decoupling"
+    },
+    {
+      "key": "B",
+      "text": "Probabilistic error cancellation (PEC)"
+    },
+    {
+      "key": "C",
+      "text": "Twirled Readout Error eXtinction (TREX)"
+    },
+    {
+      "key": "D",
+      "text": "Raising the transpiler `optimization_level`"
+    },
+    {
+      "key": "E",
+      "text": "Zero-noise extrapolation (ZNE)"
+    }
+  ],
+  "answer": [
+    "B",
+    "C",
+    "E"
+  ],
+  "explanation": {
+    "correct": "Error mitigation runs an ensemble of related circuits and post-processes their outputs to reduce bias in expectation values. TREX mitigates readout error, ZNE amplifies noise then extrapolates to the zero-noise limit, and PEC expresses the ideal result as a quasi-probabilistic combination of noisy circuits (unbiased, but with sampling overhead). All three are mitigation.",
+    "distractors": {
+      "A": "Dynamical decoupling is error SUPPRESSION: it inserts pulse sequences on idle qubits to prevent decoherence before it happens — it does not post-process results.",
+      "D": "Choosing a higher transpiler optimization_level reduces gate count during compilation; it is a circuit-optimization setting, not a runtime error-mitigation post-processing method."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

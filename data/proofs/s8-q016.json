@@ -26,7 +26,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.28,
+  "wall_seconds": 1.44,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"both of ['bit[3] c;', 'qubit[2] q;'] present as emitted lines? True\", \"B\": \"both of ['bit[2] c;', 'qubit[3] q;'] present as emitted lines? False\", \"C\": \"both of ['creg c[3];', 'qreg q[2];'] present as emitted lines? False\", \"D\": \"both of ['bit c[3];', 'qubit q[2];'] present as emitted lines? False\"}, \"observed\": {\"lines\": [\"OPENQASM 3.0;\", \"include \\\"stdgates.inc\\\";\", \"bit[3] c;\", \"qubit[2] q;\", \"h q[0];\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

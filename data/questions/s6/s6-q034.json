@@ -1,0 +1,56 @@
+{
+  "id": "s6-q034",
+  "section": "s6",
+  "objectives": [
+    "s6o1"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "On a deep circuit run on real hardware, you raise the Estimator `resilience_level` from 0 to 2. What is the expected effect?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Jobs finish faster, because mitigation lets the estimator use fewer shots."
+    },
+    {
+      "key": "B",
+      "text": "No change in runtime; resilience level only selects which physical qubits are used."
+    },
+    {
+      "key": "C",
+      "text": "More accurate (less biased) expectation values, at the cost of longer runtime and more QPU usage."
+    },
+    {
+      "key": "D",
+      "text": "The circuit is automatically simplified to fewer gates before execution."
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "Higher resilience levels build more resilience against errors by running and post-processing larger ensembles of circuits (e.g. ZNE's noise-amplified copies at level 2). This yields more accurate, less biased expectation values but takes longer and consumes more QPU time — a cost/accuracy trade-off.",
+    "distractors": {
+      "A": "Mitigation adds overhead (extra circuits and shots), so higher levels are slower, not faster.",
+      "B": "Resilience level controls error mitigation, not qubit selection, and it clearly changes runtime.",
+      "D": "Gate-count reduction is the transpiler's job (optimization_level); resilience level does not simplify the circuit."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

@@ -24,7 +24,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.17,
+  "wall_seconds": 1.46,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"observed=('exception', 'ValueError', 'A backend or session must be specified.'); option A predicts 'ValueError: a backend or session must be specified' -> match=True\", \"B\": \"observed=('exception', 'ValueError', 'A backend or session must be specified.'); option B predicts 'runs on a default local simulator' -> match=False\", \"C\": \"observed=('exception', 'ValueError', 'A backend or session must be specified.'); option C predicts 'TypeError: mode is a required positional argument' -> match=False\", \"D\": \"observed=('exception', 'ValueError', 'A backend or session must be specified.'); option D predicts 'auto-selects the least busy backend' -> match=False\"}, \"observed\": {\"outcome\": [\"exception\", \"ValueError\", \"A backend or session must be specified.\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

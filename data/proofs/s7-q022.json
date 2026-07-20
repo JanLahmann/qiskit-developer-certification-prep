@@ -20,7 +20,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.08,
+  "wall_seconds": 1.59,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"raised AttributeError: 'DataBin' object has no attribute 'meas'\", \"B\": \"raised AttributeError: 'DataBin' object has no attribute 'get_counts'\", \"C\": \"raised AttributeError: 'PubResult' object has no attribute 'evs'\", \"D\": \"returned ndarray=0.9999999999999998; is expectation value(s) -> True\"}, \"observed\": {\"evs\": \"0.9999999999999998\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

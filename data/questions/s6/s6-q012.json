@@ -11,11 +11,11 @@
   "options": [
     {
       "key": "A",
-      "text": "`job = est.run([(isa, iobs)])`"
+      "text": "`job = est.run((isa, iobs))`"
     },
     {
       "key": "B",
-      "text": "`job = est.run((isa, iobs))`"
+      "text": "`job = est.run([(isa, iobs)])`"
     },
     {
       "key": "C",
@@ -27,12 +27,12 @@
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
     "correct": "EstimatorV2.run() takes a list of PUBs; each PUB is a tuple whose first two elements are the circuit and its observable(s). The single task must therefore be wrapped as `[(isa, iobs)]` — a list containing one (circuit, observable) tuple.",
     "distractors": {
-      "B": "A bare tuple `(isa, iobs)` is iterated by run() as if it were the list of PUBs, so `isa` is read as the first PUB — a circuit with no observable — and it raises 'invalid Estimator pub-like'.",
+      "A": "A bare tuple `(isa, iobs)` is iterated by run() as if it were the list of PUBs, so `isa` is read as the first PUB — a circuit with no observable — and it raises 'invalid Estimator pub-like'.",
       "C": "`[isa, iobs]` is a list of two elements, so run() treats each as a separate PUB; a bare circuit is not a valid Estimator PUB (an observable is required), and it raises.",
       "D": "Passing circuit and observable as separate positional arguments is the V1 style; EstimatorV2.run() takes a single positional PUB list, so this raises a TypeError."
     },
@@ -47,7 +47,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1, seed_transpiler=42)\nisa = pm.run(qc)\niobs = obs.apply_layout(isa.layout)\nest = EstimatorV2(mode=backend)\n\nevidence = {}\nproven = []\ndef attempt(key, fn):\n    try:\n        res = fn().result()\n        ev = float(res[0].data.evs)\n        evidence[key] = f\"call succeeded on {backend.name}: returned a job; result()[0].data.evs = {ev:.3f}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"call raised {type(e).__name__}: {str(e)[:150]}\"\n\nattempt(\"A\", lambda: est.run([(isa, iobs)]))\nattempt(\"B\", lambda: est.run((isa, iobs)))\nattempt(\"C\", lambda: est.run([isa, iobs]))\nattempt(\"D\", lambda: est.run(isa, iobs))\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"backend\": backend.name}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1, seed_transpiler=42)\nisa = pm.run(qc)\niobs = obs.apply_layout(isa.layout)\nest = EstimatorV2(mode=backend)\n\nevidence = {}\nproven = []\ndef attempt(key, fn):\n    try:\n        res = fn().result()\n        ev = float(res[0].data.evs)\n        evidence[key] = f\"call succeeded on {backend.name}: returned a job; result()[0].data.evs = {ev:.3f}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"call raised {type(e).__name__}: {str(e)[:150]}\"\n\nattempt(\"A\", lambda: est.run((isa, iobs)))\nattempt(\"B\", lambda: est.run([(isa, iobs)]))\nattempt(\"C\", lambda: est.run([isa, iobs]))\nattempt(\"D\", lambda: est.run(isa, iobs))\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"backend\": backend.name}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",

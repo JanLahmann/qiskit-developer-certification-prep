@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.1,
+  "wall_seconds": 1.75,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"raised AttributeError: 'StagedPassManager' object has no attribute 'transpile'\", \"B\": \"returned QuantumCircuit; is a transpiled circuit=True\", \"C\": \"raised TypeError: 'StagedPassManager' object is not callable\", \"D\": \"raised AttributeError: 'StagedPassManager' object has no attribute 'num_qubits'\"}, \"observed\": {\"proven\": [\"B\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

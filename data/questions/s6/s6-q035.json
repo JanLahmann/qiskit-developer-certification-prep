@@ -1,0 +1,67 @@
+{
+  "id": "s6-q035",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "What single-term Pauli label does `SparsePauliOp.from_sparse_list([('Z', [0], 1.0)], num_qubits=3)` produce?",
+  "code": "from qiskit.quantum_info import SparsePauliOp\n\nop = SparsePauliOp.from_sparse_list([(\"Z\", [0], 1.0)], num_qubits=3)\nprint(op.paulis[0])",
+  "options": [
+    {
+      "key": "A",
+      "text": "`ZII`"
+    },
+    {
+      "key": "B",
+      "text": "`IZI`"
+    },
+    {
+      "key": "C",
+      "text": "`ZZZ`"
+    },
+    {
+      "key": "D",
+      "text": "`IIZ`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "`from_sparse_list` places the operator 'Z' on qubit index 0 of a 3-qubit register. Labels are little-endian: qubit 0 is the right-most character. So the Z lands on the right-most position, giving 'IIZ'.",
+    "distractors": {
+      "A": "'ZII' would put the Z on the left-most character, i.e. qubit 2 (big-endian reading), not qubit 0.",
+      "B": "'IZI' places the Z on qubit 1 (the middle character), off by one from index 0.",
+      "C": "'ZZZ' applies Z to all three qubits; the sparse entry specifies only qubit index 0."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q035.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit.quantum_info import SparsePauliOp\n\n# \"Z on qubit index 0\" of a 3-qubit operator\nop = SparsePauliOp.from_sparse_list([(\"Z\", [0], 1.0)], num_qubits=3)\nobserved = str(op.paulis[0])\n\ncandidates = {\"A\": \"ZII\", \"B\": \"IZI\", \"C\": \"ZZZ\", \"D\": \"IIZ\"}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = (observed == val)\n    evidence[k] = f\"from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> '{observed}'; option claims '{val}' -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": observed}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

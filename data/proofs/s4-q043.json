@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.35,
+  "wall_seconds": 1.57,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"ran, returned 2 pub result(s) in one job\", \"B\": \"raised TypeError: SamplerV2.run() takes 2 positional arguments but 3 were given\", \"C\": \"raised TypeError: SamplerV2.run() takes 2 positional arguments but 3 were given\", \"D\": \"raised ValueError: setting an array element with a sequence. The requested array has an inhomogeneous shape after 2 dimensions. The detecte\"}, \"observed\": {\"proven\": [\"A\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "/Users/majl/GitHub/qiskit-developer-certification-prep/.venv/lib/python3.12/site-packages/qiskit/circuit/_utils.py:111: ComplexWarning: Casting complex values to real discards the imaginary part\n  return numpy.array(nonwritable, dtype=dtype, copy=copy)\n",

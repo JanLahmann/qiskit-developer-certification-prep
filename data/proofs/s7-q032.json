@@ -23,7 +23,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.05,
+  "wall_seconds": 1.32,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"raised AttributeError: 'DataBin' object has no attribute 'meas'\", \"B\": \"raised AttributeError: 'DataBin' object has no attribute 'c'\", \"C\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'data'\", \"D\": \"returned dict={'11': 265, '00': 247}; valid counts -> True\"}, \"observed\": {\"readout_counts\": {\"11\": 265, \"00\": 247}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

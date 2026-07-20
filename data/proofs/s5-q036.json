@@ -32,7 +32,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.33,
+  "wall_seconds": 1.7,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"option claims dominant get_int_counts() key 3 (int); observed 3 (int) -> match=True\", \"B\": \"option claims dominant get_int_counts() key '11' (str); observed 3 (int) -> match=False\", \"C\": \"option claims dominant get_int_counts() key 11 (int); observed 3 (int) -> match=False\", \"D\": \"option claims dominant get_int_counts() key 2 (int); observed 3 (int) -> match=False\"}, \"observed\": {\"get_counts\": {\"11\": 2731, \"10\": 164, \"01\": 100, \"00\": 5}, \"get_int_counts\": {\"3\": 2731, \"2\": 164, \"1\": 100, \"0\": 5}, \"dominant_int\": 3}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

@@ -18,12 +18,12 @@
           "0": 125
         },
         {
-          "1": 236,
-          "0": 20
+          "1": 244,
+          "0": 12
         },
         {
-          "0": 250,
-          "1": 6
+          "0": 252,
+          "1": 4
         }
       ]
     }
@@ -34,9 +34,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.31,
+  "wall_seconds": 1.65,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"option claims len(result)=3; run([isaA,isaB,isaC]) gave len(result)=3 -> match=True\", \"B\": \"option claims len(result)=1; run([isaA,isaB,isaC]) gave len(result)=3 -> match=False\", \"C\": \"option claims len(result)=256; run([isaA,isaB,isaC]) gave len(result)=3 -> match=False\", \"D\": \"option claims len(result)=768; run([isaA,isaB,isaC]) gave len(result)=3 -> match=False\"}, \"observed\": {\"len_result\": 3, \"per_pub_counts\": [{\"1\": 131, \"0\": 125}, {\"1\": 236, \"0\": 20}, {\"0\": 250, \"1\": 6}]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"option claims len(result)=3; run([isaA,isaB,isaC]) gave len(result)=3 -> match=True\", \"B\": \"option claims len(result)=1; run([isaA,isaB,isaC]) gave len(result)=3 -> match=False\", \"C\": \"option claims len(result)=256; run([isaA,isaB,isaC]) gave len(result)=3 -> match=False\", \"D\": \"option claims len(result)=768; run([isaA,isaB,isaC]) gave len(result)=3 -> match=False\"}, \"observed\": {\"len_result\": 3, \"per_pub_counts\": [{\"1\": 131, \"0\": 125}, {\"1\": 244, \"0\": 12}, {\"0\": 252, \"1\": 4}]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

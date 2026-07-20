@@ -29,7 +29,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.95,
+  "wall_seconds": 1.44,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"option claims dominant bitstring '001'; observed argmax='001' (counts['001']=1706) -> match=True\", \"B\": \"option claims dominant bitstring '100'; observed argmax='001' (counts['100']=11) -> match=False\", \"C\": \"option claims dominant bitstring '111'; observed argmax='001' (counts['111']=0) -> match=False\", \"D\": \"option claims dominant bitstring '000'; observed argmax='001' (counts['000']=111) -> match=False\"}, \"observed\": {\"counts\": {\"001\": 1706, \"101\": 141, \"011\": 26, \"000\": 111, \"010\": 4, \"100\": 11, \"110\": 1}, \"dominant\": \"001\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

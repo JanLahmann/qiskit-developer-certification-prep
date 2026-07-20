@@ -1,0 +1,67 @@
+{
+  "id": "s6-q023",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "A parameterized circuit applies `RY(theta)` to |0>, and the PUB binds `theta` to the three values `[0, pi/2, pi]` against the observable `Z`. What array of expectation values is returned?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\nobs = SparsePauliOp(\"Z\")\nvalues = [[0.0], [np.pi/2], [np.pi]]\nprint(StatevectorEstimator().run([(qc, obs, values)]).result()[0].data.evs)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`[1.0, 0.0, -1.0]`"
+    },
+    {
+      "key": "B",
+      "text": "`[0.0, 1.0, 0.0]`"
+    },
+    {
+      "key": "C",
+      "text": "`[1.0, -1.0, 1.0]`"
+    },
+    {
+      "key": "D",
+      "text": "`[-1.0, 0.0, 1.0]`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "RY(theta)|0> = cos(theta/2)|0> + sin(theta/2)|1>, whose Z expectation is <Z> = cos(theta). Binding theta to [0, pi/2, pi] gives [cos 0, cos(pi/2), cos(pi)] = [1, 0, -1]. The three parameter rows broadcast to a length-3 array of expectation values.",
+    "distractors": {
+      "B": "[0, 1, 0] is sin(theta), which would be <X> or <Y>-type behavior, not <Z> = cos(theta).",
+      "C": "[1, -1, 1] jumps straight to +/-1 and ignores that at theta = pi/2 the state is an equal superposition with <Z> = 0.",
+      "D": "[-1, 0, 1] is -cos(theta); the sign is inverted, as if RY rotated toward |0> as theta increases."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q023.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1); qc.ry(theta, 0)\nobs = SparsePauliOp(\"Z\")\nvalues = [[0.0], [np.pi / 2], [np.pi]]\nres = StatevectorEstimator().run([(qc, obs, values)]).result()\nobserved = [round(float(v), 4) for v in np.asarray(res[0].data.evs)]\n\ncandidates = {\"A\": [1.0, 0.0, -1.0], \"B\": [0.0, 1.0, 0.0], \"C\": [1.0, -1.0, 1.0], \"D\": [-1.0, 0.0, 1.0]}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.allclose(observed, val))\n    evidence[k] = f\"executed <Z> for RY(theta), theta in [0, pi/2, pi] = {observed}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": observed}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

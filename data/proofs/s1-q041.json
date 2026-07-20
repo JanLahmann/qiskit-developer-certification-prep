@@ -23,7 +23,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.06,
+  "wall_seconds": 1.31,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"probabilities_dict() = {'00': 0.5, '11': 0.5}; option A claims {'00': 0.5, '11': 0.5} -> match=True\", \"B\": \"probabilities_dict() = {'00': 0.5, '11': 0.5}; option B claims {'00': 0.25, '01': 0.25, '10': 0.25, '11': 0.25} -> match=False\", \"C\": \"probabilities_dict() = {'00': 0.5, '11': 0.5}; option C claims {'01': 0.5, '10': 0.5} -> match=False\", \"D\": \"probabilities_dict() = {'00': 0.5, '11': 0.5}; option D claims {'00': 1.0} -> match=False\"}, \"observed\": {\"dict\": {\"00\": 0.5, \"11\": 0.5}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

@@ -20,7 +20,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.41,
+  "wall_seconds": 1.58,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"obs.apply_layout(isa.layout) -> run SUCCEEDS, evs=0.889 (buggy run had failed with ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).)\", \"B\": \"adding measure_all() does NOT fix it: still ValueError (the 2-qubit observable still does not span the 5-qubit ISA circuit)\", \"C\": \"run(..., backend=) raises TypeError: run() has no backend kwarg, and it would not align the observable anyway\", \"D\": \"the string 'ZZ' is still a 2-qubit observable, so it still raises ValueError: switching type does not fix the width\"}, \"observed\": {\"buggy_error\": \"ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

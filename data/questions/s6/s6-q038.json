@@ -1,0 +1,61 @@
+{
+  "id": "s6-q038",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "multi",
+  "difficulty": 3,
+  "stem": "Select all TRUE statements about the EstimatorV2 `precision` parameter.",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "It specifies the target standard error of the estimated expectation value."
+    },
+    {
+      "key": "B",
+      "text": "A larger `precision` value requests a more accurate result."
+    },
+    {
+      "key": "C",
+      "text": "Reaching a smaller `precision` generally requires more shots (roughly as 1/precision^2)."
+    },
+    {
+      "key": "D",
+      "text": "It is supplied to `run()` under the keyword name `shots`."
+    },
+    {
+      "key": "E",
+      "text": "If no precision is set in the PUB or in `run()`, the estimator falls back to the options (e.g. `default_precision`)."
+    }
+  ],
+  "answer": [
+    "A",
+    "C",
+    "E"
+  ],
+  "explanation": {
+    "correct": "`precision` is the target standard error of the expectation value. Because the standard error falls as 1/sqrt(shots), reaching a smaller precision needs roughly 1/precision^2 shots. It can be given per-PUB or as the `precision` keyword of run(); if omitted everywhere, the estimator uses the options value (default_precision, or shots/twirling settings).",
+    "distractors": {
+      "B": "A smaller precision value is the more accurate (and more expensive) request; a larger value is a looser target, so 'larger = more accurate' is backwards.",
+      "D": "The keyword is `precision`, not `shots`; `shots` belongs to the Sampler. Passing `shots` to EstimatorV2.run() raises a TypeError."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

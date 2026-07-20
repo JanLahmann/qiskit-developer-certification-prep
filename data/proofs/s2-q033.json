@@ -23,7 +23,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.39,
+  "wall_seconds": 1.73,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"plot_bloch_vector accepts a state=False, plot_bloch_multivector accepts a state=True; 'both take a state' match=False\", \"B\": \"plot_bloch_vector accepts a state=False, plot_bloch_multivector accepts a 3-vector=False; reversed claim match=False\", \"C\": \"plot_bloch_vector accepts [x,y,z]=True; plot_bloch_multivector accepts a state=True and rejects a 3-vector=True; match=True\", \"D\": \"plot_bloch_vector accepts [x,y,z]=True, plot_bloch_multivector accepts [x,y,z]=False; 'both take a 3-vector' match=False\"}, \"observed\": {\"bv_vec\": true, \"bv_state\": false, \"mv_vec\": false, \"mv_state\": true}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

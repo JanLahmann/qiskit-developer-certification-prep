@@ -21,7 +21,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.26,
+  "wall_seconds": 1.8,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"qasm2.loads(3.0 program) -> raised QASM2ParseError ('<input>:1,9: can only handle OpenQASM 2.0, but given 3.0'); claim=QASM2ParseError on version -> match=True\", \"B\": \"claim=loads, version ignored; actually loaded=False\", \"C\": \"claim=loads with silent downgrade; actually loaded=False\", \"D\": \"claim=ModuleNotFoundError for stdgates.inc; actual exception=QASM2ParseError; match=False\"}, \"observed\": {\"outcome\": \"raised\", \"exception\": \"QASM2ParseError\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

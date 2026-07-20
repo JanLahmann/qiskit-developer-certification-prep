@@ -20,7 +20,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.09,
+  "wall_seconds": 1.63,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"B\": \"Pauli('X').dot(Pauli('Y')).to_label() = 'iZ'; option B claims 'iZ' -> match=True  (cross-check: matrix == iZ? True)\", \"C\": \"Pauli('X').dot(Pauli('Y')).to_label() = 'iZ'; option C claims '-iZ' -> match=False\", \"D\": \"Pauli('X').dot(Pauli('Y')).to_label() = 'iZ'; option D claims 'Z' -> match=False\", \"A\": \"Pauli('X').dot(Pauli('Y')).to_label() = 'iZ'; option A claims 'iY' -> match=False\"}, \"observed\": {\"label\": \"iZ\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

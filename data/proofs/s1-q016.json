@@ -20,7 +20,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.14,
+  "wall_seconds": 1.61,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"X.tensor(Y).to_label()='XY'; option A matrix match=True\", \"B\": \"X.tensor(Y).to_label()='XY'; option B matrix match=False\", \"C\": \"X.tensor(Y).to_label()='XY'; option C matrix match=False\", \"D\": \"X.tensor(Y).to_label()='XY'; option D matrix match=False\"}, \"observed\": {\"label\": \"XY\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

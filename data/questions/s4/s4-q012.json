@@ -11,11 +11,11 @@
   "options": [
     {
       "key": "A",
-      "text": "It raises an error: the circuit's instructions do not match the backend's ISA (the `h` gate is not in the target's instruction set), so the primitive rejects it."
+      "text": "It prints counts split roughly 50/50 between `'00'` and `'11'` — the primitive transpiles the circuit automatically before running."
     },
     {
       "key": "B",
-      "text": "It prints counts split roughly 50/50 between `'00'` and `'11'` — the primitive transpiles the circuit automatically before running."
+      "text": "It raises an error: the circuit's instructions do not match the backend's ISA (the `h` gate is not in the target's instruction set), so the primitive rejects it."
     },
     {
       "key": "C",
@@ -27,12 +27,12 @@
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
     "correct": "Runtime primitives require ISA circuits: the circuit must already conform to the backend's instruction set architecture (native basis gates and qubit connectivity). Passing an un-transpiled circuit raises `IBMInputValueError` (`the instruction h on qubits (0,) is not supported by the target system`). You must build a preset pass manager and transpile first.",
     "distractors": {
-      "B": "V2 primitives do NOT auto-transpile for the target; you must produce an ISA circuit yourself. This is a common V1-to-V2 migration misconception.",
+      "A": "V2 primitives do NOT auto-transpile for the target; you must produce an ISA circuit yourself. This is a common V1-to-V2 migration misconception.",
       "C": "The error is not a `TranspilerError` — nothing is being transpiled. The primitive itself rejects the non-ISA circuit with `IBMInputValueError`.",
       "D": "Unsupported instructions are never silently dropped; that would change the computation. The circuit is rejected outright."
     },
@@ -48,12 +48,12 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\nsampler = SamplerV2(mode=backend)\n\ntry:\n    counts = sampler.run([qc]).result()[0].data.meas.get_counts()\n    outcome = (\"success\", str(counts))\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nflags = {\n    \"A\": is_exc and name == \"IBMInputValueError\",\n    \"B\": outcome[0] == \"success\",\n    \"C\": is_exc and name == \"TranspilerError\",\n    \"D\": outcome[0] == \"success\",\n}\nlabels = {\"A\": \"raises: circuit not an ISA circuit\", \"B\": \"runs, counts over 00/11\",\n          \"C\": \"raises TranspilerError\", \"D\": \"runs, counts over only 00\"}\nevidence = {k: f\"executed snippet -> outcome={outcome}; option {k} predicts '{labels[k]}' -> match={v}\"\n            for k, v in flags.items()}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": list(outcome)}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\nsampler = SamplerV2(mode=backend)\n\ntry:\n    counts = sampler.run([qc]).result()[0].data.meas.get_counts()\n    outcome = (\"success\", str(counts))\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nflags = {\n    \"B\": is_exc and name == \"IBMInputValueError\",\n    \"A\": outcome[0] == \"success\",\n    \"C\": is_exc and name == \"TranspilerError\",\n    \"D\": outcome[0] == \"success\",\n}\nlabels = {\"B\": \"raises: circuit not an ISA circuit\", \"A\": \"runs, counts over 00/11\",\n          \"C\": \"raises TranspilerError\", \"D\": \"runs, counts over only 00\"}\nevidence = {k: f\"executed snippet -> outcome={outcome}; option {k} predicts '{labels[k]}' -> match={v}\"\n            for k, v in flags.items()}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": list(outcome)}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   },
   "freshness": {

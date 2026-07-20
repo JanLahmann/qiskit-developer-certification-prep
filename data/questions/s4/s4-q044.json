@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "A value close to `+1` but slightly below it (roughly `+0.9`), because the two qubits are strongly Z-correlated and noise only slightly reduces the correlation."
+      "text": "Exactly `+1.0`, with no effect from device noise."
     },
     {
       "key": "B",
@@ -23,18 +23,18 @@
     },
     {
       "key": "D",
-      "text": "Exactly `+1.0`, with no effect from device noise."
+      "text": "A value close to `+1` but slightly below it (roughly `+0.9`), because the two qubits are strongly Z-correlated and noise only slightly reduces the correlation."
     }
   ],
   "answer": [
-    "A"
+    "D"
   ],
   "explanation": {
     "correct": "In the Bell state the two qubits' Z outcomes are perfectly correlated, so `<ZZ>` is `+1` ideally. On a noisy device the measured value is close to but a bit below `+1` (about `+0.9` here), reflecting the small reduction from noise.",
     "distractors": {
+      "A": "Real device noise reduces the magnitude below 1; you should not expect exactly +1.0 from hardware.",
       "B": "`<ZZ>` near 0 would mean the qubits are uncorrelated in Z, which is not true for a Bell state.",
-      "C": "`<ZZ>` near -1 would mean anti-correlation (outcomes like 01/10 dominating); the Bell state gives 00/11, i.e. positive correlation.",
-      "D": "Real device noise reduces the magnitude below 1; you should not expect exactly +1.0 from hardware."
+      "C": "`<ZZ>` near -1 would mean anti-correlation (outcomes like 01/10 dominating); the Bell state gives 00/11, i.e. positive correlation."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/hello-world",
@@ -47,12 +47,12 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)     # Bell state\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa = pm.run(qc)\nmapped = obs.apply_layout(isa.layout)\nevs = float(EstimatorV2(mode=backend).run([(isa, mapped)]).result()[0].data.evs)\n\nflags = {\n    \"A\": 0.7 < evs < 1.0,\n    \"B\": abs(evs) < 0.2,\n    \"C\": evs < -0.7,\n    \"D\": evs == 1.0,\n}\nlabels = {\"A\": \"close to +1 but below 1 (noisy)\", \"B\": \"close to 0\", \"C\": \"close to -1\", \"D\": \"exactly +1.0\"}\nevidence = {k: f\"measured <ZZ>={round(evs, 4)} on the noisy backend; option {k} predicts '{labels[k]}' -> match={v}\"\n            for k, v in flags.items()}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": evs}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)     # Bell state\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa = pm.run(qc)\nmapped = obs.apply_layout(isa.layout)\nevs = float(EstimatorV2(mode=backend).run([(isa, mapped)]).result()[0].data.evs)\n\nflags = {\n    \"D\": 0.7 < evs < 1.0,\n    \"B\": abs(evs) < 0.2,\n    \"C\": evs < -0.7,\n    \"A\": evs == 1.0,\n}\nlabels = {\"D\": \"close to +1 but below 1 (noisy)\", \"B\": \"close to 0\", \"C\": \"close to -1\", \"A\": \"exactly +1.0\"}\nevidence = {k: f\"measured <ZZ>={round(evs, 4)} on the noisy backend; option {k} predicts '{labels[k]}' -> match={v}\"\n            for k, v in flags.items()}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": evs}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   },
   "freshness": {

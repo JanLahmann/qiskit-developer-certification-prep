@@ -11,11 +11,11 @@
   "options": [
     {
       "key": "A",
-      "text": "The jobs run in job mode, not batch mode — setting the mode to a backend bypasses the surrounding batch context."
+      "text": "The jobs run in batch mode because they are lexically inside the `with Batch(...)` block."
     },
     {
       "key": "B",
-      "text": "The jobs run in batch mode because they are lexically inside the `with Batch(...)` block."
+      "text": "The jobs run in job mode, not batch mode — setting the mode to a backend bypasses the surrounding batch context."
     },
     {
       "key": "C",
@@ -27,12 +27,12 @@
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
     "correct": "The execution mode is determined by the `mode` argument, not by lexical position. If you set the mode to a backend object, the program runs in job mode even inside a batch or session context. To run inside the batch, pass the batch (`mode=batch`) or construct the primitive with no mode inside the context so it inherits the batch.",
     "distractors": {
-      "B": "Being inside the `with` block is not enough; passing a backend as the mode overrides the context and forces job mode.",
+      "A": "Being inside the `with` block is not enough; passing a backend as the mode overrides the context and forces job mode.",
       "C": "It does not raise — it runs, just in job mode. A warning is logged that the job is running in job mode.",
       "D": "Nothing converts a batch to a session; the batch context is simply bypassed for that primitive."
     },
@@ -51,7 +51,7 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   }
 }

@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "Sessions are generally more expensive than batches, so you should use batch whenever you do not need a session's dedicated exclusive access."
+      "text": "Batch mode guarantees your jobs run before any other user's jobs."
     },
     {
       "key": "B",
@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "Batch mode guarantees your jobs run before any other user's jobs."
+      "text": "Sessions are generally more expensive than batches, so you should use batch whenever you do not need a session's dedicated exclusive access."
     },
     {
       "key": "D",
@@ -27,13 +27,13 @@
     }
   ],
   "answer": [
-    "A"
+    "C"
   ],
   "explanation": {
     "correct": "Sessions provide dedicated, exclusive access but at higher usage cost. The docs recommend using batch whenever you don't need that dedicated access — as with a set of independent jobs — because batch delivers the same parallel classical processing and single queue wait more cheaply.",
     "distractors": {
+      "A": "Batch jobs do not get priority over other users; they are not even exclusive. It is sessions that reserve the QPU.",
       "B": "Sessions are explicitly designed for multi-job workloads; a session can run many jobs.",
-      "C": "Batch jobs do not get priority over other users; they are not even exclusive. It is sessions that reserve the QPU.",
       "D": "Both primitives run in sessions (and in batches and job mode); the mode is passed via `mode=`."
     },
     "citations": [
@@ -51,7 +51,7 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   }
 }

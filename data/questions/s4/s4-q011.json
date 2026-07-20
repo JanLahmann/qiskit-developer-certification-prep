@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "Batch mode"
+      "text": "Job mode, submitting all jobs and hoping the scheduler groups them"
     },
     {
       "key": "B",
@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "Job mode, submitting all jobs and hoping the scheduler groups them"
+      "text": "Batch mode"
     },
     {
       "key": "D",
@@ -27,13 +27,13 @@
     }
   ],
   "answer": [
-    "A"
+    "C"
   ],
   "explanation": {
     "correct": "All jobs are independent and available at the outset, so they can be scheduled collectively in a batch: you wait through the queue only once, the classical pre-processing runs in parallel, and the jobs run closely together to limit drift, while you still get each job's result individually. Because sessions are generally more expensive, batch is preferred whenever dedicated access is not required.",
     "distractors": {
+      "A": "Plain job mode creates no scheduling relationship between jobs — each waits in the queue separately with no guarantee they run close together.",
       "B": "A session would work but is generally more expensive; the docs recommend batch whenever you do not need a session's dedicated exclusive access.",
-      "C": "Plain job mode creates no scheduling relationship between jobs — each waits in the queue separately with no guarantee they run close together.",
       "D": "Opening a session per setting multiplies session overhead and cost while giving independent jobs no benefit."
     },
     "citations": [
@@ -52,7 +52,7 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   }
 }

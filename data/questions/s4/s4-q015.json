@@ -11,11 +11,11 @@
   "options": [
     {
       "key": "A",
-      "text": "Open Plan users cannot submit session jobs; the workload must run in job mode or batch mode instead."
+      "text": "The session runs normally — the Open Plan supports all three execution modes."
     },
     {
       "key": "B",
-      "text": "The session runs normally — the Open Plan supports all three execution modes."
+      "text": "Open Plan users cannot submit session jobs; the workload must run in job mode or batch mode instead."
     },
     {
       "key": "C",
@@ -27,12 +27,12 @@
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
     "correct": "The documentation states explicitly that Open Plan users cannot submit session jobs; their workloads must run in job mode or batch mode. Sessions (dedicated, exclusive access) are reserved for paid plans.",
     "distractors": {
-      "B": "The Open Plan does NOT support sessions; only job and batch mode are available to it.",
+      "A": "The Open Plan does NOT support sessions; only job and batch mode are available to it.",
       "C": "Sessions are not merely limited on the Open Plan — they cannot be submitted at all.",
       "D": "It is the reverse: batch mode IS available on the Open Plan (with a 10-minute max TTL); sessions are not."
     },
@@ -52,7 +52,7 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   }
 }

@@ -2,17 +2,17 @@
   "question": "s4-q034",
   "verdict": {
     "answer": [
-      "A"
+      "D"
     ],
     "evidence": {
-      "A": "constructed and ran in job mode: 64 shots",
+      "D": "constructed and ran in job mode: 64 shots",
       "B": "raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'backend'",
       "C": "raised ValueError: mode must be of type Backend, Session, Batch or None",
-      "D": "raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'session'"
+      "A": "raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'session'"
     },
     "observed": {
       "proven": [
-        "A"
+        "D"
       ]
     }
   },
@@ -22,9 +22,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.48,
+  "wall_seconds": 1.21,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"constructed and ran in job mode: 64 shots\", \"B\": \"raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'backend'\", \"C\": \"raised ValueError: mode must be of type Backend, Session, Batch or None\", \"D\": \"raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'session'\"}, \"observed\": {\"proven\": [\"A\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"D\": \"constructed and ran in job mode: 64 shots\", \"B\": \"raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'backend'\", \"C\": \"raised ValueError: mode must be of type Backend, Session, Batch or None\", \"A\": \"raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'session'\"}, \"observed\": {\"proven\": [\"D\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

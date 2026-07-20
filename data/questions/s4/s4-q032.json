@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "It raises `ValueError` — `mode` must be a `Backend`, `Session`, or `Batch` object (or `None`), not a string."
+      "text": "It works only if a `QiskitRuntimeService` has already been initialized in the session."
     },
     {
       "key": "B",
@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "It works only if a `QiskitRuntimeService` has already been initialized in the session."
+      "text": "It raises `ValueError` — `mode` must be a `Backend`, `Session`, or `Batch` object (or `None`), not a string."
     },
     {
       "key": "D",
@@ -27,13 +27,13 @@
     }
   ],
   "answer": [
-    "A"
+    "C"
   ],
   "explanation": {
     "correct": "SamplerV2's `mode` accepts a Backend, Session, or Batch object (or None). A string is rejected at construction with `ValueError: mode must be of type Backend, Session, Batch or None`. You must pass the resolved backend object (for example from `service.backend(\"ibm_manila\")` or `service.least_busy(...)`).",
     "distractors": {
+      "A": "The type check on `mode` runs at construction regardless of whether a service exists, so a string always raises — a service does not make it valid.",
       "B": "The primitive does not resolve backend names; that is the service's job. A string is never a valid `mode`.",
-      "C": "The type check on `mode` runs at construction regardless of whether a service exists, so a string always raises — a service does not make it valid.",
       "D": "No name lookup is attempted, so there is no `KeyError`; the type check rejects the string first with `ValueError`."
     },
     "citations": [
@@ -47,12 +47,12 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\n\ntry:\n    SamplerV2(mode=\"ibm_manila\")\n    outcome = (\"success\",)\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nflags = {\n    \"A\": is_exc and name == \"ValueError\",\n    \"B\": outcome[0] == \"success\",\n    \"C\": outcome[0] == \"success\",\n    \"D\": is_exc and name == \"KeyError\",\n}\nlabels = {\"A\": \"ValueError: mode must be Backend/Session/Batch or None\", \"B\": \"works, looks up by name\",\n          \"C\": \"works only if a service exists\", \"D\": \"KeyError: no such backend\"}\nevidence = {k: f\"observed={outcome}; option {k} predicts '{labels[k]}' -> match={v}\" for k, v in flags.items()}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": list(outcome)}})\n"
+    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\n\ntry:\n    SamplerV2(mode=\"ibm_manila\")\n    outcome = (\"success\",)\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nflags = {\n    \"C\": is_exc and name == \"ValueError\",\n    \"B\": outcome[0] == \"success\",\n    \"A\": outcome[0] == \"success\",\n    \"D\": is_exc and name == \"KeyError\",\n}\nlabels = {\"C\": \"ValueError: mode must be Backend/Session/Batch or None\", \"B\": \"works, looks up by name\",\n          \"A\": \"works only if a service exists\", \"D\": \"KeyError: no such backend\"}\nevidence = {k: f\"observed={outcome}; option {k} predicts '{labels[k]}' -> match={v}\" for k, v in flags.items()}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": list(outcome)}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   },
   "freshness": {

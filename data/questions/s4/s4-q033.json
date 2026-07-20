@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "The maximum TTL caps the session's total lifetime from when it starts; the interactive TTL is the idle gap allowed between consecutive jobs before the session is temporarily deactivated."
+      "text": "The interactive TTL is what you configure with `max_time`; the maximum TTL cannot be set."
     },
     {
       "key": "B",
@@ -23,18 +23,18 @@
     },
     {
       "key": "D",
-      "text": "The interactive TTL is what you configure with `max_time`; the maximum TTL cannot be set."
+      "text": "The maximum TTL caps the session's total lifetime from when it starts; the interactive TTL is the idle gap allowed between consecutive jobs before the session is temporarily deactivated."
     }
   ],
   "answer": [
-    "A"
+    "D"
   ],
   "explanation": {
     "correct": "The maximum TTL is the total time the session may run, measured from when the first job starts; you set it with `max_time`. The interactive TTL is the allowed idle time between jobs — if no job is queued within that window, the session is temporarily deactivated (and must be reactivated through the normal queue). The interactive TTL cannot be configured.",
     "distractors": {
+      "A": "It is the MAXIMUM TTL that you set with `max_time`; the interactive TTL is fixed and not configurable — the opposite of this statement.",
       "B": "This reverses the two: the maximum TTL is the total lifetime, not a per-job limit, and the interactive TTL is the inter-job idle gap.",
-      "C": "They are distinct timers with different roles; 'interactive' is not an alias for the maximum TTL.",
-      "D": "It is the MAXIMUM TTL that you set with `max_time`; the interactive TTL is fixed and not configurable — the opposite of this statement."
+      "C": "They are distinct timers with different roles; 'interactive' is not an alias for the maximum TTL."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
@@ -51,7 +51,7 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   }
 }

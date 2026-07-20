@@ -11,11 +11,11 @@
   "options": [
     {
       "key": "A",
-      "text": "Session mode"
+      "text": "Batch mode"
     },
     {
       "key": "B",
-      "text": "Batch mode"
+      "text": "Session mode"
     },
     {
       "key": "C",
@@ -27,12 +27,12 @@
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
     "correct": "A session gives dedicated, exclusive access to the QPU for a window, so an iterative workload whose next input depends on the previous result runs back-to-back without each job re-entering the fair-share queue. This is the documented use case for sessions: iterative workloads requiring frequent classical-quantum communication.",
     "distractors": {
-      "B": "Batch mode is for independent jobs that are all available at the outset; here each iteration's parameters depend on the previous result, so the jobs cannot be submitted together and batching provides no benefit.",
+      "A": "Batch mode is for independent jobs that are all available at the outset; here each iteration's parameters depend on the previous result, so the jobs cannot be submitted together and batching provides no benefit.",
       "C": "Submitting each iteration as a separate job sends every iteration back through the queue, maximizing wall-clock time and device drift — the opposite of the goal.",
       "D": "The iterations cannot be one job: iteration n+1's parameters are computed classically from iteration n's result, so they are unknown when the job would be submitted."
     },
@@ -52,7 +52,7 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   }
 }

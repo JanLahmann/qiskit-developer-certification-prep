@@ -6,12 +6,12 @@
   ],
   "type": "mcq",
   "difficulty": 3,
-  "stem": "You saved two accounts named `my_open` and `my_premium` without marking a default, then run `service = QiskitRuntimeService()` with no arguments. According to the documented behavior, which account's credentials are used?",
+  "stem": "You saved two accounts named `open_acct` and `premium_acct` without marking a default, then run `service = QiskitRuntimeService()` with no arguments. According to the documented behavior, which account's credentials are used?",
   "code": null,
   "options": [
     {
       "key": "A",
-      "text": "The account whose name comes last alphabetically — here `my_premium`."
+      "text": "It raises an error because no default account is set."
     },
     {
       "key": "B",
@@ -19,22 +19,22 @@
     },
     {
       "key": "C",
-      "text": "`my_open`, because free (Open) plans are always preferred."
+      "text": "`open_acct`, because free (Open) plans are always preferred."
     },
     {
       "key": "D",
-      "text": "It raises an error because no default account is set."
+      "text": "The account whose name comes last alphabetically — here `premium_acct`."
     }
   ],
   "answer": [
-    "A"
+    "D"
   ],
   "explanation": {
-    "correct": "When multiple credential sets are saved, none is marked default, and none is specified at initialization, the service uses the one whose name comes last alphabetically. `my_premium` sorts after `my_open`, so `my_premium` is used.",
+    "correct": "When multiple credential sets are saved, none is marked default, and none is specified at initialization, the service uses the one whose name comes last alphabetically. `premium_acct` sorts after `open_acct`, so `premium_acct` is used.",
     "distractors": {
+      "A": "It does not raise — the alphabetical-last account is selected as the fallback.",
       "B": "Save order is not the tiebreaker; alphabetical name order is.",
-      "C": "There is no automatic preference for Open/free plans when choosing among SAVED named accounts; the alphabetical rule applies.",
-      "D": "It does not raise — the alphabetical-last account is selected as the fallback."
+      "C": "There is no automatic preference for Open/free plans when choosing among SAVED named accounts; the alphabetical rule applies."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/initialize-account"
@@ -50,7 +50,7 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   }
 }

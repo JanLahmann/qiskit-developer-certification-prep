@@ -11,11 +11,11 @@
   "options": [
     {
       "key": "A",
-      "text": "It raises a `ValueError`: the 2-qubit observable does not match the transpiled circuit's qubit count — the observable must be mapped with `obs.apply_layout(isa.layout)` first."
+      "text": "It prints an expectation value close to `+1`."
     },
     {
       "key": "B",
-      "text": "It prints an expectation value close to `+1`."
+      "text": "It raises a `ValueError`: the 2-qubit observable does not match the transpiled circuit's qubit count — the observable must be mapped with `obs.apply_layout(isa.layout)` first."
     },
     {
       "key": "C",
@@ -27,12 +27,12 @@
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
     "correct": "Transpiling to the device maps the 2-qubit circuit onto the 5-qubit target, so the circuit now has 5 qubits while the observable still has 2. The Estimator raises `ValueError` (`the number of qubits of the circuit ... does not match the number of qubits of the ...-th observable`). You must align the observable with `obs.apply_layout(isa.layout)`.",
     "distractors": {
-      "B": "No value is produced — the mismatch is caught before any expectation value is computed.",
+      "A": "No value is produced — the mismatch is caught before any expectation value is computed.",
       "C": "The observable is not silently ignored; a mismatched observable is a hard error.",
       "D": "The error is a plain `ValueError` about qubit counts, not `IBMInputValueError`; the failure is the observable/circuit size mismatch, not an ISA-instruction problem."
     },
@@ -48,12 +48,12 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa = pm.run(qc)          # padded to the 5-qubit device\nestimator = EstimatorV2(mode=backend)\ntry:\n    evs = float(estimator.run([(isa, obs)]).result()[0].data.evs)\n    outcome = (\"success\", evs)\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nflags = {\n    \"A\": is_exc and name == \"ValueError\",\n    \"B\": outcome[0] == \"success\" and abs(outcome[1] - 1.0) < 0.2,\n    \"C\": outcome[0] == \"success\" and abs(outcome[1]) < 0.2,\n    \"D\": is_exc and name == \"IBMInputValueError\",\n}\nlabels = {\"A\": \"ValueError: observable/circuit qubit-count mismatch\", \"B\": \"prints evs ~ +1\",\n          \"C\": \"prints evs ~ 0\", \"D\": \"IBMInputValueError\"}\nevidence = {k: f\"observed={outcome}; option {k} predicts '{labels[k]}' -> match={v}\" for k, v in flags.items()}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": list(outcome)}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa = pm.run(qc)          # padded to the 5-qubit device\nestimator = EstimatorV2(mode=backend)\ntry:\n    evs = float(estimator.run([(isa, obs)]).result()[0].data.evs)\n    outcome = (\"success\", evs)\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nflags = {\n    \"B\": is_exc and name == \"ValueError\",\n    \"A\": outcome[0] == \"success\" and abs(outcome[1] - 1.0) < 0.2,\n    \"C\": outcome[0] == \"success\" and abs(outcome[1]) < 0.2,\n    \"D\": is_exc and name == \"IBMInputValueError\",\n}\nlabels = {\"B\": \"ValueError: observable/circuit qubit-count mismatch\", \"A\": \"prints evs ~ +1\",\n          \"C\": \"prints evs ~ 0\", \"D\": \"IBMInputValueError\"}\nevidence = {k: f\"observed={outcome}; option {k} predicts '{labels[k]}' -> match={v}\" for k, v in flags.items()}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": list(outcome)}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   },
   "freshness": {

@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "`SamplerV2(mode=backend)`"
+      "text": "`SamplerV2(session=backend)`"
     },
     {
       "key": "B",
@@ -23,18 +23,18 @@
     },
     {
       "key": "D",
-      "text": "`SamplerV2(session=backend)`"
+      "text": "`SamplerV2(mode=backend)`"
     }
   ],
   "answer": [
-    "A"
+    "D"
   ],
   "explanation": {
     "correct": "Job mode is achieved by giving the primitive a backend as its mode: `SamplerV2(mode=backend)`. A primitive whose mode is a backend (rather than a Session or Batch) submits a single standalone job.",
     "distractors": {
+      "A": "`session=` is a removed pre-0.24 keyword and raises `TypeError`; job mode uses `mode=backend`, not a session anyway.",
       "B": "`backend=` was removed from the V2 constructors; it raises `TypeError`. Use `mode=`.",
-      "C": "`mode` needs the backend object, not its name as a string; a string raises `ValueError`.",
-      "D": "`session=` is a removed pre-0.24 keyword and raises `TypeError`; job mode uses `mode=backend`, not a session anyway."
+      "C": "`mode` needs the backend object, not its name as a string; a string raises `ValueError`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
@@ -47,12 +47,12 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        counts = fn().run([isa], shots=64).result()[0].data.meas.get_counts()\n        evidence[key] = f\"constructed and ran in job mode: {sum(counts.values())} shots\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nattempt(\"A\", lambda: SamplerV2(mode=backend))\nattempt(\"B\", lambda: SamplerV2(backend=backend))\nattempt(\"C\", lambda: SamplerV2(mode=\"ibm_manila\"))\nattempt(\"D\", lambda: SamplerV2(session=backend))\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        counts = fn().run([isa], shots=64).result()[0].data.meas.get_counts()\n        evidence[key] = f\"constructed and ran in job mode: {sum(counts.values())} shots\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nattempt(\"D\", lambda: SamplerV2(mode=backend))\nattempt(\"B\", lambda: SamplerV2(backend=backend))\nattempt(\"C\", lambda: SamplerV2(mode=\"ibm_manila\"))\nattempt(\"A\", lambda: SamplerV2(session=backend))\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   },
   "freshness": {

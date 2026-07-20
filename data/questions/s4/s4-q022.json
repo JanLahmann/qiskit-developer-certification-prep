@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "The session stops accepting new jobs."
+      "text": "Closing resets the session's maximum TTL back to zero and reopens it."
     },
     {
       "key": "B",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "Closing resets the session's maximum TTL back to zero and reopens it."
+      "text": "The session stops accepting new jobs."
     },
     {
       "key": "E",
@@ -31,14 +31,14 @@
     }
   ],
   "answer": [
-    "A",
-    "B"
+    "B",
+    "D"
   ],
   "explanation": {
     "correct": "Closing a session puts it into 'In progress, not accepting new jobs': it stops accepting new submissions but finishes processing jobs that are already running or queued, and you can still retrieve their results. Exiting the context manager is equivalent to `session.close()`.",
     "distractors": {
+      "A": "Closing does not reset the TTL or reopen the session; a closed session cannot accept new jobs.",
       "C": "Immediate cancellation of queued jobs is what CANCELLING a session (or hitting the maximum TTL) does — not closing it.",
-      "D": "Closing does not reset the TTL or reopen the session; a closed session cannot accept new jobs.",
       "E": "Closing a session has no effect on the backend object or the service."
     },
     "citations": [
@@ -56,7 +56,7 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   }
 }

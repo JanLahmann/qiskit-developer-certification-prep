@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "The queuing time does not decrease for the first job submitted within a batch (or session), so wrapping a single job in a batch provides no queuing benefit."
+      "text": "Single jobs submitted in a batch are always redirected to a simulator."
     },
     {
       "key": "B",
@@ -23,18 +23,18 @@
     },
     {
       "key": "D",
-      "text": "Single jobs submitted in a batch are always redirected to a simulator."
+      "text": "The queuing time does not decrease for the first job submitted within a batch (or session), so wrapping a single job in a batch provides no queuing benefit."
     }
   ],
   "answer": [
-    "A"
+    "D"
   ],
   "explanation": {
     "correct": "Batching helps by scheduling multiple jobs together and parallelizing their classical processing. But the first job in a batch still waits in the normal queue, so a batch (or session) provides no benefit when there is only one job.",
     "distractors": {
+      "A": "Execution target is set by the mode/backend, not by whether a job is in a batch; nothing redirects it to a simulator.",
       "B": "Batch benefits come from parallel scheduling across jobs, not from circuit size; there is no gate-count threshold.",
-      "C": "A batch does not require or enforce a minimum of two jobs, and it does not cancel a lone job.",
-      "D": "Execution target is set by the mode/backend, not by whether a job is in a batch; nothing redirects it to a simulator."
+      "C": "A batch does not require or enforce a minimum of two jobs, and it does not cancel a lone job."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
@@ -52,7 +52,7 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   }
 }

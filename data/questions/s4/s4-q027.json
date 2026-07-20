@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "Jobs that are already running finish, but jobs still queued are failed/cancelled."
+      "text": "The session is automatically extended until the queue empties."
     },
     {
       "key": "B",
@@ -23,18 +23,18 @@
     },
     {
       "key": "D",
-      "text": "The session is automatically extended until the queue empties."
+      "text": "Jobs that are already running finish, but jobs still queued are failed/cancelled."
     }
   ],
   "answer": [
-    "A"
+    "D"
   ],
   "explanation": {
     "correct": "When the maximum TTL is reached the session/batch is closed. Jobs that are already running are allowed to finish, but any jobs still queued are failed. The max TTL timer starts when the first job starts and does not pause.",
     "distractors": {
+      "A": "There is no automatic extension; you set the limit with `max_time`, and reaching it ends the workload.",
       "B": "Running jobs are not killed mid-execution; only the still-queued jobs are failed.",
-      "C": "The max TTL timer does not pause or stop once started; it runs to the configured limit.",
-      "D": "There is no automatic extension; you set the limit with `max_time`, and reaching it ends the workload."
+      "C": "The max TTL timer does not pause or stop once started; it runs to the configured limit."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
@@ -52,7 +52,7 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   }
 }

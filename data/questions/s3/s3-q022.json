@@ -1,0 +1,73 @@
+{
+  "id": "s3-q022",
+  "section": "s3",
+  "objectives": [
+    "s3o3"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "A circuit is built with a `ParameterVector`. Select ALL true statements.",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import ParameterVector\n\nx = ParameterVector('x', 3)\nqc = QuantumCircuit(3)\nfor i in range(3):\n    qc.ry(x[i], i)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`qc.num_parameters` is 3."
+    },
+    {
+      "key": "B",
+      "text": "The parameters are named `x[0]`, `x[1]`, `x[2]`."
+    },
+    {
+      "key": "C",
+      "text": "`qc.assign_parameters({x: [0.1, 0.2, 0.3]})` binds the entire vector in one call."
+    },
+    {
+      "key": "D",
+      "text": "`x[0]` and `x[1]` are the same `Parameter` object."
+    },
+    {
+      "key": "E",
+      "text": "A `ParameterVector` can only be bound one element at a time, never as a whole."
+    }
+  ],
+  "answer": [
+    "A",
+    "B",
+    "C"
+  ],
+  "explanation": {
+    "correct": "A `ParameterVector('x', 3)` creates 3 distinct parameters named `x[0..2]` (A, B). You can bind the whole vector at once by using it as a single dict key mapped to a list of values (C).",
+    "distractors": {
+      "D": "Each index is a distinct `Parameter`; `x[0]` and `x[1]` are different objects that bind to different values.",
+      "E": "A `ParameterVector` can be bound in one call (`{x: [...]}`) OR element by element — not only element-by-element."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.ParameterVector"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q022.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import ParameterVector\n\nx = ParameterVector('x', 3)\nqc = QuantumCircuit(3)\nfor i in range(3):\n    qc.ry(x[i], i)\nnames = [p.name for p in qc.parameters]\nnp_ = qc.num_parameters\nwhole = qc.assign_parameters({x: [0.1, 0.2, 0.3]})\nwhole_free = whole.num_parameters\nsame = x[0] is x[1]\nclaims = {\n    \"A\": np_ == 3,\n    \"B\": names == [\"x[0]\", \"x[1]\", \"x[2]\"],\n    \"C\": whole_free == 0,\n    \"D\": same,\n    \"E\": False,\n}\nevidence = {\n    \"A\": f\"num_parameters={np_} -> {claims['A']}\",\n    \"B\": f\"parameter names={names} -> {claims['B']}\",\n    \"C\": f\"assign_parameters({{x:[...]}}) left {whole_free} free -> whole-vector bind works {claims['C']}\",\n    \"D\": f\"x[0] is x[1] -> {same}\",\n    \"E\": f\"whole-vector bind succeeded (free={whole_free}) so element-by-element is NOT the only way -> {claims['E']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"names\": names, \"num_parameters\": np_}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

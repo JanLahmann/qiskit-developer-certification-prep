@@ -1,0 +1,69 @@
+{
+  "id": "s8-q016",
+  "section": "s8",
+  "objectives": [
+    "s8o1",
+    "s8o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A `QuantumCircuit` with 2 qubits and 3 classical bits is exported with `qiskit.qasm3.dumps`. Which pair of declaration lines does the OpenQASM 3 output contain?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(2, 3)  # 2 qubits, 3 clbits\nqc.h(0)\n\nprint(qasm3.dumps(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`bit[3] c;` and `qubit[2] q;`"
+    },
+    {
+      "key": "B",
+      "text": "`bit[2] c;` and `qubit[3] q;`"
+    },
+    {
+      "key": "C",
+      "text": "`creg c[3];` and `qreg q[2];`"
+    },
+    {
+      "key": "D",
+      "text": "`bit c[3];` and `qubit q[2];`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "OpenQASM 3 sizes a register by putting the width in brackets right after the type name: `bit[3] c;` for the 3-bit `ClassicalRegister` and `qubit[2] q;` for the 2-qubit `QuantumRegister`.",
+    "distractors": {
+      "B": "The widths are swapped: there are 3 classical bits and 2 qubits, so it must be `bit[3]` and `qubit[2]`.",
+      "C": "`creg`/`qreg` with the size after the name is OpenQASM 2 syntax, not OpenQASM 3.",
+      "D": "`bit c[3];` uses C-style array syntax. In OpenQASM 3 the width goes on the type (`bit[3] c;`), not on the identifier."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3",
+      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s8-q016.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(2, 3)   # 2 qubits, 3 classical bits\nqc.h(0)\nlines = qasm3.dumps(qc).splitlines()\n\ncandidates = {\n    \"A\": [\"bit[3] c;\", \"qubit[2] q;\"],\n    \"B\": [\"bit[2] c;\", \"qubit[3] q;\"],\n    \"C\": [\"creg c[3];\", \"qreg q[2];\"],\n    \"D\": [\"bit c[3];\", \"qubit q[2];\"],\n}\nevidence = {}\nproven = []\nfor key, pair in candidates.items():\n    ok = all(line in lines for line in pair)\n    evidence[key] = f\"both of {pair} present as emitted lines? {ok}\"\n    if ok:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"lines\": lines}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

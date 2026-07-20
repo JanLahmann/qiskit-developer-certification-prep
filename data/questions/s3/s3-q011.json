@@ -1,0 +1,68 @@
+{
+  "id": "s3-q011",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "A 2-qubit circuit is created with `QuantumCircuit(2)` (no classical register). Which statement correctly describes what `qc.measure_all()` does to it?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()",
+  "options": [
+    {
+      "key": "A",
+      "text": "It raises an error because the circuit has no classical bits to measure into."
+    },
+    {
+      "key": "B",
+      "text": "It adds a new 2-bit classical register named `meas` plus a barrier, then measures each qubit into the matching new bit."
+    },
+    {
+      "key": "C",
+      "text": "It adds 2 classical bits to a register named `c` and inserts no barrier."
+    },
+    {
+      "key": "D",
+      "text": "It measures only qubits that already carry gates, adding a single classical bit."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "`measure_all()` creates a fresh `ClassicalRegister` named `meas` sized to the number of qubits, inserts a `barrier` across all qubits, and measures qubit i into `meas[i]`. It is the convenient one-call way to read out an entire circuit.",
+    "distractors": {
+      "A": "`measure_all()` never errors on a register-less circuit — it creates the classical bits for you (unlike `measure`, which needs existing bits).",
+      "C": "The auto-created register is named `meas`, not `c`, and `measure_all()` DOES insert a barrier before the measurements by default.",
+      "D": "Measuring only active qubits is what `measure_active()` does; `measure_all()` measures every qubit."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/guides/measure-qubits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q011.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1)\nqc.measure_all()\nnames = [c.name for c in qc.cregs]\nops = dict(qc.count_ops())\nnclb = qc.num_clbits\nhas_barrier = \"barrier\" in ops\nraised = False  # measure_all executed without raising\n\nclaims = {\n    \"A\": raised,\n    \"B\": (\"meas\" in names) and (nclb == 2) and has_barrier and ops.get(\"measure\") == 2,\n    \"C\": (\"c\" in names) and (not has_barrier),\n    \"D\": (nclb == 1),\n}\nfacts = f\"cregs={names}, num_clbits={nclb}, barrier={has_barrier}, ops={ops}\"\nevidence = {\n    \"A\": f\"{facts}: measure_all did not raise -> claim(error) is {claims['A']}\",\n    \"B\": f\"{facts}: register 'meas' size2 + barrier + 2 measures -> {claims['B']}\",\n    \"C\": f\"{facts}: register is 'meas' not 'c' and barrier present -> {claims['C']}\",\n    \"D\": f\"{facts}: all qubits measured, num_clbits=2 not 1 -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"cregs\": names, \"ops\": ops}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

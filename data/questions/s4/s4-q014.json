@@ -1,0 +1,63 @@
+{
+  "id": "s4-q014",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "Which of the following statements about batch mode are TRUE? (Select two.)",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "The classical pre-processing (for example, compilation) of the jobs is run in parallel, so a batch finishes significantly faster than running the same jobs serially."
+    },
+    {
+      "key": "B",
+      "text": "Jobs in a batch are not guaranteed to run in the order they were submitted, and they do not get exclusive access to the QPU."
+    },
+    {
+      "key": "C",
+      "text": "Batch mode reserves the QPU exclusively, so no other users' jobs or calibration jobs can run during the batch."
+    },
+    {
+      "key": "D",
+      "text": "Running a single job in a batch reduces that job's queuing time compared with job mode."
+    },
+    {
+      "key": "E",
+      "text": "Batch mode is only available on paid plans; Open Plan users cannot submit batch jobs."
+    }
+  ],
+  "answer": [
+    "A",
+    "B"
+  ],
+  "explanation": {
+    "correct": "Batch parallelizes the classical processing of independent jobs and packs their quantum execution tightly, so a batch completes faster than serial submission. However, batched jobs are not guaranteed to run in submission order and do NOT get exclusive access — other users' jobs and calibration jobs may run in between if there is capacity.",
+    "distractors": {
+      "C": "Exclusive access (no other users' jobs, no calibration jobs) is the defining feature of SESSION mode, not batch. Batch jobs share the QPU.",
+      "D": "The queuing time does not decrease for the first job submitted within a batch, so batching gives no benefit for a single job.",
+      "E": "It is SESSION mode that Open Plan users cannot use. Batch mode is available on the Open Plan (with a shorter maximum TTL)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+      "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

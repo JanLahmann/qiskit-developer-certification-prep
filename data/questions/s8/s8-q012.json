@@ -1,0 +1,68 @@
+{
+  "id": "s8-q012",
+  "section": "s8",
+  "objectives": [
+    "s8o3"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The variable `program` holds a complete OpenQASM 2 program as a Python string. Which call parses it into a `QuantumCircuit`?",
+  "code": "from qiskit import qasm2\n\nprogram = '''OPENQASM 2.0;\ninclude \"qelib1.inc\";\nqreg q[2];\ncreg c[2];\nh q[0];\ncx q[0], q[1];\nmeasure q -> c;\n'''\n\ncircuit = ...  # which call?",
+  "options": [
+    {
+      "key": "A",
+      "text": "`circuit = qasm2.loads(program)`"
+    },
+    {
+      "key": "B",
+      "text": "`circuit = qasm2.load(program)`"
+    },
+    {
+      "key": "C",
+      "text": "`circuit = qasm2.parse(program)`"
+    },
+    {
+      "key": "D",
+      "text": "`circuit = qasm2.dumps(program)`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`qasm2.loads` (string-'s') parses an OpenQASM 2 program supplied as a string and returns a `QuantumCircuit`. Its file-based counterpart is `qasm2.load`, which takes a filename.",
+    "distractors": {
+      "B": "`qasm2.load` expects a file name/path, not the program text. Given the program string it tries to open a file with that name and raises `FileNotFoundError`.",
+      "C": "`qasm2.parse` is a submodule, not a callable function; `qasm2.parse(program)` raises `TypeError: 'module' object is not callable`.",
+      "D": "`dumps` is the exporter (circuit -> string), the opposite direction. Passing a string where a circuit is expected raises `AttributeError`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm2",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm2"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s8-q012.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm2\n\nprogram = (\n    'OPENQASM 2.0;\\n'\n    'include \"qelib1.inc\";\\n'\n    'qreg q[2];\\n'\n    'creg c[2];\\n'\n    'h q[0];\\n'\n    'cx q[0], q[1];\\n'\n    'measure q -> c;\\n'\n)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        r = fn()\n        ok = isinstance(r, QuantumCircuit)\n        detail = f\"num_qubits={r.num_qubits}, num_clbits={r.num_clbits}\" if ok else \"\"\n        evidence[key] = f\"returned {type(r).__name__} (QuantumCircuit={ok}) {detail}\".strip()\n        if ok:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nattempt(\"A\", lambda: qasm2.loads(program))\nattempt(\"B\", lambda: qasm2.load(program))\nattempt(\"C\", lambda: qasm2.parse(program))\nattempt(\"D\", lambda: qasm2.dumps(program))\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

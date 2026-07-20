@@ -1,0 +1,68 @@
+{
+  "id": "s8-q018",
+  "section": "s8",
+  "objectives": [
+    "s8o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "The same circuit is exported both ways: `s2 = qasm2.dumps(qc)` and `s3 = qasm3.dumps(qc)`. Which statement about the `include` directive in each output is correct?",
+  "code": "from qiskit import qasm2, qasm3\n\ns2 = qasm2.dumps(qc)\ns3 = qasm3.dumps(qc)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`s2` includes `\"qelib1.inc\"`; `s3` includes `\"stdgates.inc\"`."
+    },
+    {
+      "key": "B",
+      "text": "Both `s2` and `s3` include `\"qelib1.inc\"`."
+    },
+    {
+      "key": "C",
+      "text": "Both `s2` and `s3` include `\"stdgates.inc\"`."
+    },
+    {
+      "key": "D",
+      "text": "`s2` includes `\"stdgates.inc\"`; `s3` includes `\"qelib1.inc\"`."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Each OpenQASM version ships its own standard-gate include file. OpenQASM 2 output references `qelib1.inc` (the library from the original OpenQASM 2 paper), while OpenQASM 3 output references `stdgates.inc`.",
+    "distractors": {
+      "B": "`qelib1.inc` is specific to OpenQASM 2; the v3 exporter does not emit it.",
+      "C": "`stdgates.inc` is the OpenQASM 3 standard library; the v2 exporter does not emit it.",
+      "D": "The include files are correct but assigned to the wrong versions; it is v2->qelib1, v3->stdgates."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm2",
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s8-q018.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm2, qasm3\n\nqc = QuantumCircuit(2, 2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure([0, 1], [0, 1])\n\ns2 = qasm2.dumps(qc)\ns3 = qasm3.dumps(qc)\ns2_qelib = 'include \"qelib1.inc\";' in s2\ns2_std = 'include \"stdgates.inc\";' in s2\ns3_qelib = 'include \"qelib1.inc\";' in s3\ns3_std = 'include \"stdgates.inc\";' in s3\n\nclaim = {\n    \"A\": (s2_qelib and s3_std),\n    \"B\": (s2_qelib and s3_qelib),\n    \"C\": (s2_std and s3_std),\n    \"D\": (s2_std and s3_qelib),\n}\nevidence = {\n    \"A\": f\"qasm2 includes qelib1.inc={s2_qelib}; qasm3 includes stdgates.inc={s3_std} -> claim match={claim['A']}\",\n    \"B\": f\"both include qelib1.inc? qasm2={s2_qelib}, qasm3={s3_qelib} -> {claim['B']}\",\n    \"C\": f\"both include stdgates.inc? qasm2={s2_std}, qasm3={s3_std} -> {claim['C']}\",\n    \"D\": f\"qasm2 stdgates.inc={s2_std}, qasm3 qelib1.inc={s3_qelib} -> {claim['D']}\",\n}\nproven = [k for k, v in claim.items() if v]\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"qasm2_line2\": s2.splitlines()[1], \"qasm3_line2\": s3.splitlines()[1]}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

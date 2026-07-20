@@ -1,0 +1,68 @@
+{
+  "id": "s3-q025",
+  "section": "s3",
+  "objectives": [
+    "s3o2"
+  ],
+  "type": "spot-bug",
+  "difficulty": 2,
+  "stem": "This conditional code was written for an older Qiskit release and now fails with `AttributeError` on Qiskit 2.x. What is the correct fix?",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(1, 'q')\ncr = ClassicalRegister(1, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0)\nqc.measure(0, 0)\nqc.x(0).c_if(cr, 1)   # AttributeError on Qiskit 2.x",
+  "options": [
+    {
+      "key": "A",
+      "text": "Replace it with a context manager: `with qc.if_test((cr, 1)):` then `qc.x(0)`. `.c_if()` was removed in Qiskit 2.0."
+    },
+    {
+      "key": "B",
+      "text": "Change `c_if(cr, 1)` to `c_if(cr[0], 1)`; the condition must reference a single bit."
+    },
+    {
+      "key": "C",
+      "text": "Call `qc = qc.decompose()` before the conditional so `.c_if()` becomes available."
+    },
+    {
+      "key": "D",
+      "text": "Use `qc.x(0, condition=(cr, 1))`; the `condition` keyword replaces `.c_if()`."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The `InstructionSet.c_if` method was removed in Qiskit 2.0. Conditionals are now built with the control-flow context manager `with qc.if_test((cr, 1)):`, whose body holds the conditioned gates.",
+    "distractors": {
+      "B": "`.c_if()` no longer exists at all — indexing the register to `cr[0]` still raises `AttributeError`; the method itself is gone.",
+      "C": "`decompose()` expands composite gates and has nothing to do with conditionals; it does not restore `.c_if()`.",
+      "D": "Gate methods like `x()` have no `condition` keyword; passing one raises a `TypeError`. Conditions go through `if_test`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q025.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\ndef base():\n    qr = QuantumRegister(1, 'q'); cr = ClassicalRegister(1, 'c')\n    qc = QuantumCircuit(qr, cr); qc.h(0); qc.measure(0, 0)\n    return qc, cr\n\n# reproduce the bug\nqc, cr = base()\ntry:\n    qc.x(0).c_if(cr, 1)\n    bug = \"no error\"\nexcept AttributeError as e:\n    bug = f\"AttributeError: {str(e)[:70]}\"\n\n# candidate fixes\ndef try_fix(fn):\n    try:\n        qc, cr = base()\n        fn(qc, cr)\n        return (\"if_else\" in qc.count_ops()), f\"ops={dict(qc.count_ops())}\"\n    except Exception as e:\n        return False, f\"raised {type(e).__name__}: {str(e)[:80]}\"\n\ndef fixA(qc, cr):\n    with qc.if_test((cr, 1)):\n        qc.x(0)\ndef fixB(qc, cr):\n    qc.x(0).c_if(cr[0], 1)\ndef fixC(qc, cr):\n    qc2 = qc.decompose(); qc2.x(0).c_if(cr, 1)\ndef fixD(qc, cr):\n    qc.x(0, condition=(cr, 1))\n\na_ok, a_msg = try_fix(fixA)\nb_ok, b_msg = try_fix(fixB)\nc_ok, c_msg = try_fix(fixC)\nd_ok, d_msg = try_fix(fixD)\nclaims = {\"A\": a_ok, \"B\": b_ok, \"C\": c_ok, \"D\": d_ok}\nevidence = {\n    \"A\": f\"bug={bug}; fix with if_test -> {a_msg} -> valid conditional {a_ok}\",\n    \"B\": f\"c_if(cr[0],1) -> {b_msg} -> {b_ok}\",\n    \"C\": f\"decompose then c_if -> {c_msg} -> {c_ok}\",\n    \"D\": f\"x(0, condition=...) -> {d_msg} -> {d_ok}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug\": bug}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

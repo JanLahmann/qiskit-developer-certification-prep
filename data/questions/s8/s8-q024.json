@@ -1,0 +1,57 @@
+{
+  "id": "s8-q024",
+  "section": "s8",
+  "objectives": [
+    "s8o4"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "Using the Qiskit Runtime REST API, how do you submit a Sampler primitive job to run a circuit?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Send an HTTP `POST` to the `/api/v1/jobs` endpoint with a JSON body whose `program_id` is `\"sampler\"`."
+    },
+    {
+      "key": "B",
+      "text": "Send an HTTP `GET` to `/api/v1/jobs?primitive=SamplerV2`."
+    },
+    {
+      "key": "C",
+      "text": "Send an HTTP `POST` to a dedicated `/api/v1/sampler` endpoint."
+    },
+    {
+      "key": "D",
+      "text": "Send an HTTP `POST` to `/api/v1/jobs` with `program_id` set to the class name `\"SamplerV2\"`."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Primitive jobs are created with a `POST` to the `/api/v1/jobs` endpoint. The primitive is selected by the `program_id` field in the JSON body, whose valid values are the lowercase strings `\"sampler\"` and `\"estimator\"`. The circuits are passed as OpenQASM 3 strings inside `params.pubs`.",
+    "distractors": {
+      "B": "Job creation is a `POST` (it changes state), not a `GET`, and the primitive is chosen via the `program_id` body field, not a query parameter.",
+      "C": "There is no per-primitive endpoint; all primitive jobs go through the single `/api/v1/jobs` endpoint, differentiated by `program_id`.",
+      "D": "`program_id` takes the lowercase service names `\"sampler\"`/`\"estimator\"`, not the Python class names such as `\"SamplerV2\"`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-runtime-rest",
+      "https://quantum.cloud.ibm.com/docs/guides/primitives-rest-api"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

@@ -1,0 +1,377 @@
+[
+  {
+    "n": 1,
+    "stem": "What is the primary package for circuit construction?",
+    "code": null,
+    "options": {
+      "A": "`qiskit.providers`",
+      "B": "`qiskit.circuit`",
+      "C": "`qiskit.quantum_info`",
+      "D": "`qiskit.algorithms`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 2,
+    "stem": "Which method is used to add a Hadamard gate to a quantum circuit?",
+    "code": null,
+    "options": {
+      "A": "`circuit.hadamard()`",
+      "B": "`circuit.h()`",
+      "C": "`circuit.add_h()`",
+      "D": "`circuit.apply_hadamard()`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 3,
+    "stem": "What does the `QuantumCircuit.measure()` method do?",
+    "code": null,
+    "options": {
+      "A": "Measures all qubits automatically",
+      "B": "Adds a measurement operation to specified qubits",
+      "C": "Returns measurement results",
+      "D": "Initializes classical bits"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 4,
+    "stem": "What is the correct way to create a 3-qubit quantum circuit?",
+    "code": null,
+    "options": {
+      "A": "`QuantumCircuit(3)`",
+      "B": "`Circuit(qubits=3)`",
+      "C": "`QCircuit(3)`",
+      "D": "`create_circuit(3)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 5,
+    "stem": "Which V2 primitive is used for running circuits and getting quasi-probability distributions?",
+    "code": null,
+    "options": {
+      "A": "`Executor`",
+      "B": "`SamplerV2`",
+      "C": "`Runner`",
+      "D": "`EstimatorV2`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 6,
+    "stem": "What does the `EstimatorV2` primitive calculate?",
+    "code": null,
+    "options": {
+      "A": "Circuit depth",
+      "B": "Expectation values of observables",
+      "C": "Probability distributions",
+      "D": "Gate fidelity"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 7,
+    "stem": "Which method applies a CNOT gate with control qubit 0 and target qubit 1?",
+    "code": null,
+    "options": {
+      "A": "`circuit.cnot(0, 1)`",
+      "B": "`circuit.cx(0, 1)`",
+      "C": "`circuit.controlled_x(0, 1)`",
+      "D": "`circuit.c_not(0, 1)`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 8,
+    "stem": "What is the purpose of `transpile()` in Qiskit?",
+    "code": null,
+    "options": {
+      "A": "To execute quantum circuits",
+      "B": "To convert circuits to be compatible with specific backend hardware",
+      "C": "To simulate quantum noise",
+      "D": "To visualize circuits"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 9,
+    "stem": "Which class represents a quantum gate?",
+    "code": null,
+    "options": {
+      "A": "`QuantumGate`",
+      "B": "`Gate`",
+      "C": "`QGate`",
+      "D": "`Instruction`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 10,
+    "stem": "How do you create a classical register with 3 bits?",
+    "code": null,
+    "options": {
+      "A": "`ClassicalRegister(3)`",
+      "B": "`CBit(3)`",
+      "C": "`ClassicBits(3)`",
+      "D": "`CRegister(3)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 11,
+    "stem": "What does the `qiskit.quantum_info.Statevector` class represent?",
+    "code": null,
+    "options": {
+      "A": "A quantum circuit",
+      "B": "A quantum state as a state vector",
+      "C": "A measurement outcome",
+      "D": "A quantum operator"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 12,
+    "stem": "Which method is used to draw/visualize a quantum circuit?",
+    "code": null,
+    "options": {
+      "A": "`circuit.show()`",
+      "B": "`circuit.display()`",
+      "C": "`circuit.draw()`",
+      "D": "`circuit.visualize()`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 13,
+    "stem": "What is the purpose of the `qiskit.primitives` module?",
+    "code": null,
+    "options": {
+      "A": "To provide basic quantum gates",
+      "B": "To offer simplified interfaces for running quantum computations",
+      "C": "To create primitive quantum circuits",
+      "D": "To define elementary quantum states"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 14,
+    "stem": "Which rotation gate rotates a qubit around the X-axis by angle θ?",
+    "code": null,
+    "options": {
+      "A": "`rx(θ)`",
+      "B": "`rotx(θ)`",
+      "C": "`x_rotation(θ)`",
+      "D": "`rotate_x(θ)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 15,
+    "stem": "What does the `barrier()` method do in a quantum circuit?",
+    "code": null,
+    "options": {
+      "A": "Prevents qubits from being measured",
+      "B": "Acts as a visual separator and prevents certain optimizations across it",
+      "C": "Creates an error correction barrier",
+      "D": "Blocks gate application"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 16,
+    "stem": "In Qiskit Aer, what is the default simulator backend called?",
+    "code": null,
+    "options": {
+      "A": "`qasm_simulator`",
+      "B": "`AerSimulator`",
+      "C": "`statevector_simulator`",
+      "D": "`BasicSimulator`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 17,
+    "stem": "Which method adds a Pauli-Z gate to qubit 2 in a circuit?",
+    "code": null,
+    "options": {
+      "A": "`circuit.z(2)`",
+      "B": "`circuit.pauli_z(2)`",
+      "C": "`circuit.pz(2)`",
+      "D": "`circuit.apply_z(2)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 18,
+    "stem": "What does `QuantumCircuit.compose()` do?",
+    "code": null,
+    "options": {
+      "A": "Decomposes a circuit into basic gates",
+      "B": "Combines two quantum circuits",
+      "C": "Compiles a circuit",
+      "D": "Creates a composite gate"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 19,
+    "stem": "Which package contains the `Operator` class for representing quantum operators?",
+    "code": null,
+    "options": {
+      "A": "`qiskit.circuit`",
+      "B": "`qiskit.operators`",
+      "C": "`qiskit.quantum_info`",
+      "D": "`qiskit.extensions`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 20,
+    "stem": "What is the recommended way to get intermediate statevectors?",
+    "code": null,
+    "options": {
+      "A": "Use `circuit.save_statevector()` from Qiskit Aer for simulation",
+      "B": "Use the `Statevector.from_instruction()` method",
+      "C": "Use the reference `StatevectorSampler` primitive",
+      "D": "All of the above are valid approaches"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 21,
+    "stem": "How do you retrieve a previously submitted job using its job ID?",
+    "code": null,
+    "options": {
+      "A": "`service.get_job(job_id)`",
+      "B": "`service.retrieve_job(job_id)`",
+      "C": "`service.job(job_id)`",
+      "D": "`service.load_job(job_id)`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 22,
+    "stem": "Which execution mode should you use for running multiple related jobs with reduced queue times?",
+    "code": null,
+    "options": {
+      "A": "Job mode",
+      "B": "Session mode",
+      "C": "Batch mode",
+      "D": "Runtime mode"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 23,
+    "stem": "In OpenQASM 3, how do you declare a classical bit register with 5 bits?",
+    "code": null,
+    "options": {
+      "A": "`creg myregister[5];`",
+      "B": "`bit[5] myregister;`",
+      "C": "`classical[5] myregister;`",
+      "D": "`register bit myregister[5];`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 24,
+    "stem": "How do you set the resilience level to 1 for error mitigation in the Sampler primitive?",
+    "code": null,
+    "options": {
+      "A": "`sampler.set_resilience(1)`",
+      "B": "`sampler.options.resilience_level = 1`",
+      "C": "`sampler.resilience = 1`",
+      "D": "`sampler.error_mitigation(level=1)`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 25,
+    "stem": "Which method correctly implements classical feedforward in a dynamic circuit?",
+    "code": null,
+    "options": {
+      "A": "`circuit.if_test((clbit, 1), true_body)`",
+      "B": "`circuit.conditional(clbit, true_body)`",
+      "C": "`circuit.if_clause(clbit == 1, true_body)`",
+      "D": "`circuit.measure_and_branch(clbit, true_body)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  }
+]

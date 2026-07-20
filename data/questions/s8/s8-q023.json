@@ -1,0 +1,57 @@
+{
+  "id": "s8-q023",
+  "section": "s8",
+  "objectives": [
+    "s8o4"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You are calling the Qiskit Runtime REST API directly (for example, with curl). How must your credential be supplied on each request?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "In an HTTP header `Authorization: Bearer <TOKEN>`, where `<TOKEN>` is an IBM Cloud IAM access (bearer) token."
+    },
+    {
+      "key": "B",
+      "text": "In an `X-API-Key: <API_KEY>` header containing your raw IBM Cloud API key."
+    },
+    {
+      "key": "C",
+      "text": "With HTTP Basic authentication: `Authorization: Basic <base64(username:password)>`."
+    },
+    {
+      "key": "D",
+      "text": "As a URL query parameter, e.g. `...?apikey=<API_KEY>`."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Every Qiskit Runtime REST API call must carry an IBM Cloud Identity and Access Management (IAM) bearer token in the `Authorization: Bearer <TOKEN>` header (alongside a `Service-CRN` header identifying the instance and an `IBM-API-Version` header). The bearer token is obtained by exchanging your API key at the IAM token endpoint.",
+    "distractors": {
+      "B": "The raw API key is not sent on API calls; it is first exchanged for a short-lived IAM bearer token, which travels in the `Authorization` header (not an `X-API-Key` header).",
+      "C": "The Runtime REST API uses bearer-token auth, not HTTP Basic auth with username/password.",
+      "D": "Credentials go in the `Authorization` header, not as a query-string parameter; putting secrets in the URL is neither required nor supported here."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-runtime-rest",
+      "https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

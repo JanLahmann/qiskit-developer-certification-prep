@@ -1,0 +1,68 @@
+{
+  "id": "s1-q022",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A qubit is prepared in |1⟩, then a T gate is applied. What is the resulting statevector `[amp(|0⟩), amp(|1⟩)]`?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.x(0)\nqc.t(0)\nprint(Statevector.from_instruction(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": "[0, e^{iπ/4}] ≈ [0, 0.7071+0.7071j] — T multiplies the |1⟩ amplitude by e^{iπ/4}"
+    },
+    {
+      "key": "B",
+      "text": "[0, 1] — T leaves |1⟩ unchanged because it is a phase gate"
+    },
+    {
+      "key": "C",
+      "text": "[0, i] — T applies a phase of i to |1⟩"
+    },
+    {
+      "key": "D",
+      "text": "[0.7071, 0.7071j] — T turns |1⟩ into a superposition"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "T = diag(1, e^{iπ/4}). Acting on |1⟩ it multiplies the amplitude by e^{iπ/4} = 0.7071 + 0.7071j, giving [0, e^{iπ/4}]. This is a physical (relative-to-|0⟩) phase because the |0⟩ amplitude is 0 here.",
+    "distractors": {
+      "B": "A phase gate does change |1⟩ — it multiplies it by e^{iπ/4}. Only |0⟩ is left untouched by T.",
+      "C": "A phase of i = e^{iπ/2} is the S gate. T applies half that angle, e^{iπ/4}.",
+      "D": "T is diagonal; it never creates a superposition. It only adjusts the phase of |1⟩."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q022.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.x(0)\nqc.t(0)\nobserved = Statevector.from_instruction(qc).data\ns = 1 / np.sqrt(2)\ncands = {\"A\": np.array([0, np.exp(1j * np.pi / 4)]), \"B\": np.array([0, 1]),\n         \"C\": np.array([0, 1j]), \"D\": np.array([s, 1j * s])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"T|1> = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"sv\": [str(x) for x in np.round(observed, 6)]}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

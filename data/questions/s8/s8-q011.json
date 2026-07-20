@@ -1,0 +1,68 @@
+{
+  "id": "s8-q011",
+  "section": "s8",
+  "objectives": [
+    "s8o3"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You have an open, writable text file object `f` and want to write the OpenQASM 3 representation of `qc` into that file. Which call does this correctly?",
+  "code": "from qiskit import qasm3\n\n# f is an open text file object, e.g. f = open(\"circuit.qasm\", \"w\")\n# qc is a QuantumCircuit\n...  # which call?",
+  "options": [
+    {
+      "key": "A",
+      "text": "`qasm3.dump(qc, f)`"
+    },
+    {
+      "key": "B",
+      "text": "`qasm3.dumps(qc, f)`"
+    },
+    {
+      "key": "C",
+      "text": "`f.write(qasm3.dump(qc))`"
+    },
+    {
+      "key": "D",
+      "text": "`qasm3.dump(f, qc)`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`qasm3.dump(circuit, stream)` serializes the circuit and writes it to the given file-like object, returning `None`. The circuit comes first, the stream second.",
+    "distractors": {
+      "B": "`dumps` (with the trailing 's', for 'string') returns the program as a `str` and takes only the circuit; passing a file object raises `TypeError: dumps() takes 1 positional argument but 2 were given`.",
+      "C": "`dump` requires a stream argument, so `qasm3.dump(qc)` alone raises `TypeError` (missing 'stream'); `dump` also returns `None`, so it never yields text to hand to `f.write`.",
+      "D": "The argument order is reversed. `dump(circuit, stream)` expects the circuit first; passing the file object as the circuit raises `AttributeError` because the stream has no `.qubits`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm3"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s8-q011.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm3\nimport io\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    buf = io.StringIO()\n    try:\n        ret = fn(buf)\n        content = buf.getvalue()\n        ok = content.startswith(\"OPENQASM 3.0\")\n        evidence[key] = (\n            f\"no error; return={type(ret).__name__}; file object received \"\n            f\"{len(content)} chars, valid OpenQASM 3 (starts with 'OPENQASM 3.0')={ok}\"\n        )\n        if ok:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nattempt(\"A\", lambda f: qasm3.dump(qc, f))\nattempt(\"B\", lambda f: qasm3.dumps(qc, f))\nattempt(\"C\", lambda f: f.write(qasm3.dump(qc)))\nattempt(\"D\", lambda f: qasm3.dump(f, qc))\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

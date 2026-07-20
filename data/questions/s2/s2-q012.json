@@ -1,0 +1,68 @@
+{
+  "id": "s2-q012",
+  "section": "s2",
+  "objectives": [
+    "s2o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "In the default text drawing of this circuit, qubit `q_0` is on the top wire. What does passing `reverse_bits=True` to `draw()` change?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.x(0)\n\nprint(qc.draw(\"text\", reverse_bits=True))",
+  "options": [
+    {
+      "key": "A",
+      "text": "The wires are reordered so `q_1` is drawn on top and `q_0` on the bottom."
+    },
+    {
+      "key": "B",
+      "text": "The control and target roles of two-qubit gates such as CX are swapped."
+    },
+    {
+      "key": "C",
+      "text": "Only the classical bits are relabeled; the qubit wire order is unchanged."
+    },
+    {
+      "key": "D",
+      "text": "The endianness of the measurement counts produced by the circuit is reversed."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`reverse_bits` is a rendering-only option: it flips the top-to-bottom order in which the qubit (and clbit) wires are drawn. By default Qiskit puts qubit 0 on top; with `reverse_bits=True` the highest-index qubit goes on top, so `q_1` moves above `q_0`. The circuit's operations and its results are untouched.",
+    "distractors": {
+      "B": "Reversing the drawing order never changes gate semantics — the control and target qubits of a CX keep their roles; only their vertical positions in the picture move.",
+      "C": "It reorders the qubit wires themselves (and clbits too), not merely classical-bit labels.",
+      "D": "`draw()` only produces a picture; it does not execute the circuit, so it cannot change any measurement counts or their endianness."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q012.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.x(0)\ndefault = str(qc.draw(\"text\"))\nrev = str(qc.draw(\"text\", reverse_bits=True))\n\ndef top_qubit(txt):\n    i0 = txt.find(\"q_0\")\n    i1 = txt.find(\"q_1\")\n    return \"q0_top\" if i0 < i1 else \"q1_top\"\n\nd_order = top_qubit(default)\nr_order = top_qubit(rev)\nops_default = [ci.operation.name for ci in qc.data]\n\nevidence = {}\n# A: reverse flips q0-top to q1-top\nresA = (d_order == \"q0_top\" and r_order == \"q1_top\")\nevidence[\"A\"] = (\n    f\"default drawing puts {d_order}, reverse_bits=True puts {r_order} -> \"\n    f\"wire order flips (q1 on top) = {resA}\"\n)\n# B: operations unchanged by the render option\nevidence[\"B\"] = (\n    f\"circuit operations are {ops_default} both before and after drawing; \"\n    \"reverse_bits does not alter gate control/target roles\"\n)\n# C: it is a qubit reorder; there are no classical bits here\nevidence[\"C\"] = (\n    f\"num_clbits={qc.num_clbits}; the reordering moves qubit wires \"\n    f\"({d_order} -> {r_order}), not classical-bit labels\"\n)\n# D: draw returns a picture, not counts\nevidence[\"D\"] = (\n    f\"qc.draw returns {type(qc.draw('text')).__name__} (a rendering), \"\n    \"no execution occurs, so no counts/endianness change\"\n)\nproven = [\"A\"] if resA else []\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"default_order\": d_order, \"reversed_order\": r_order},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

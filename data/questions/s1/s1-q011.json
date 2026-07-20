@@ -1,0 +1,68 @@
+{
+  "id": "s1-q011",
+  "section": "s1",
+  "objectives": [
+    "s1o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "What matrix does `Pauli('Y').to_matrix()` return?",
+  "code": "from qiskit.quantum_info import Pauli\n\nprint(Pauli('Y').to_matrix())",
+  "options": [
+    {
+      "key": "A",
+      "text": "[[0, -i], [i, 0]]"
+    },
+    {
+      "key": "B",
+      "text": "[[0, i], [-i, 0]]"
+    },
+    {
+      "key": "C",
+      "text": "[[0, 1], [1, 0]]"
+    },
+    {
+      "key": "D",
+      "text": "[[1, 0], [0, -1]]"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The Pauli Y matrix is [[0, -i], [i, 0]]: the upper-right entry is −i and the lower-left is +i. It is Hermitian (Y† = Y) and unitary.",
+    "distractors": {
+      "B": "This is −Y (the signs of the imaginary entries are swapped). Y has −i in the top-right, not +i.",
+      "C": "This is the Pauli X matrix. A common slip is to treat Y as a plain bit-flip; Y also carries the imaginary phases.",
+      "D": "This is the Pauli Z matrix (diagonal ±1), not Y."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q011.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nobserved = Pauli('Y').to_matrix()\ncands = {\n    \"A\": np.array([[0, -1j], [1j, 0]]),\n    \"B\": np.array([[0, 1j], [-1j, 0]]),\n    \"C\": np.array([[0, 1], [1, 0]]),\n    \"D\": np.array([[1, 0], [0, -1]]),\n}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    match = bool(np.allclose(observed, v))\n    evidence[k] = f\"Pauli('Y') = {observed.tolist()}; option {k} claims {np.array(v, dtype=complex).tolist()} -> match={match}\"\n    if match:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"matrix\": [str(x) for x in observed.ravel()]}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "id": "s1-q013",
+  "section": "s1",
+  "objectives": [
+    "s1o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "The `.dot` method returns the operator product A·B and tracks the resulting phase. What does this print?",
+  "code": "from qiskit.quantum_info import Pauli\n\nresult = Pauli('X').dot(Pauli('Y'))\nprint(result.to_label())",
+  "options": [
+    {
+      "key": "A",
+      "text": "`iZ` — X·Y = iZ"
+    },
+    {
+      "key": "B",
+      "text": "`-iZ` — X·Y = −iZ"
+    },
+    {
+      "key": "C",
+      "text": "`Z` — the product is Z and the phase is discarded"
+    },
+    {
+      "key": "D",
+      "text": "`iY` — the product stays on the letter Y"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The Pauli matrices obey X·Y = iZ. The Pauli class keeps track of the ± i phase factor, so `.to_label()` returns 'iZ'.",
+    "distractors": {
+      "B": "'-iZ' is Y·X (or, equivalently, `Pauli('X').compose(Pauli('Y'))`, which applies X first then Y). `.dot(B)` means self·B = X·Y, giving +iZ.",
+      "C": "The Pauli class does not drop the phase — that is exactly what distinguishes X·Y (= iZ) from Z. The label keeps the leading 'i'.",
+      "D": "The product of X and Y lands on Z, not Y; only the phase is imaginary."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q013.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nres = Pauli('X').dot(Pauli('Y'))\nlbl = res.to_label()\nZ = np.array([[1, 0], [0, -1]], dtype=complex)\nclaims = {\"A\": \"iZ\", \"B\": \"-iZ\", \"C\": \"Z\", \"D\": \"iY\"}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    match = (lbl == c)\n    evidence[k] = f\"Pauli('X').dot(Pauli('Y')).to_label() = '{lbl}'; option {k} claims '{c}' -> match={match}\"\n    if match:\n        proven.append(k)\nevidence[\"A\"] += f\"  (cross-check: matrix == iZ? {bool(np.allclose(res.to_matrix(), 1j * Z))})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": lbl}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

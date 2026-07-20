@@ -1,0 +1,73 @@
+{
+  "id": "s7-q019",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "multi",
+  "difficulty": 3,
+  "stem": "A SamplerV2 result's BitArray `bits` came from a 5-qubit circuit that measured only qubits 0,1,2 into a 3-bit register, run for 256 shots. Which statements are TRUE? (Select all that apply.)",
+  "code": "# bits = result[0].data.<register>   # 3-bit register, 256 shots, 5-qubit circuit",
+  "options": [
+    {
+      "key": "A",
+      "text": "`bits.num_shots` equals the number of times the circuit was executed (256)"
+    },
+    {
+      "key": "B",
+      "text": "`len(bits.get_bitstrings())` equals `bits.num_shots`"
+    },
+    {
+      "key": "C",
+      "text": "`bits.array.shape[1]` equals `bits.num_bits`"
+    },
+    {
+      "key": "D",
+      "text": "`bits.get_counts()` values sum to `bits.num_shots`"
+    },
+    {
+      "key": "E",
+      "text": "`bits.num_bits` always equals the number of qubits in the circuit"
+    }
+  ],
+  "answer": [
+    "A",
+    "B",
+    "D"
+  ],
+  "explanation": {
+    "correct": "`num_shots` counts executions (256). `get_bitstrings()` returns one string per shot, so its length equals `num_shots`, and `get_counts()` values sum to `num_shots`. `num_bits` is the width of the measured register (3), independent of the total qubit count (5) and of the packed byte width (`array.shape[1]` is `ceil(num_bits/8)`).",
+    "distractors": {
+      "C": "The array is bit-PACKED into bytes, so `array.shape[1]` is `ceil(num_bits/8)` (here 1), not `num_bits` (3).",
+      "E": "`num_bits` is the number of measured classical bits in that register (3); a circuit can have more qubits (5) than measured bits."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q019.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(5, \"q\"); cr = ClassicalRegister(3, \"m\")\nqc = QuantumCircuit(qr, cr)\nqc.h(0); qc.h(1); qc.h(2)\nqc.measure([0, 1, 2], [0, 1, 2])\nbits = StatevectorSampler(seed=4).run([qc], shots=256).result()[0].data.m\nnq = qc.num_qubits\nsA = (bits.num_shots == 256)\nsB = (len(bits.get_bitstrings()) == bits.num_shots)\nsC = (bits.array.shape[1] == bits.num_bits)\nsD = (sum(bits.get_counts().values()) == bits.num_shots)\nsE = (bits.num_bits == nq)\nevidence = {\n  \"A\": f\"num_shots={bits.num_shots} vs 256 -> {sA}\",\n  \"B\": f\"len(get_bitstrings())={len(bits.get_bitstrings())} vs num_shots={bits.num_shots} -> {sB}\",\n  \"C\": f\"array.shape={bits.array.shape}, shape[1]={bits.array.shape[1]} vs num_bits={bits.num_bits} -> {sC}\",\n  \"D\": f\"sum(counts.values())={sum(bits.get_counts().values())} vs num_shots={bits.num_shots} -> {sD}\",\n  \"E\": f\"num_bits={bits.num_bits} vs num_qubits={nq} -> {sE}\",\n}\nproven = [k for k, v in {\"A\": sA, \"B\": sB, \"C\": sC, \"D\": sD, \"E\": sE}.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"num_shots\": bits.num_shots, \"num_bits\": bits.num_bits,\n                           \"array_shape\": list(bits.array.shape), \"num_qubits\": nq}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": "s8-q025",
+  "section": "s8",
+  "objectives": [
+    "s8o4"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "You are authenticating to the Qiskit Runtime REST API. Regarding the IBM Cloud IAM bearer token used in the `Authorization` header, select the TWO correct statements.",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "You obtain the token by sending a `POST` to the IAM token endpoint (`https://iam.cloud.ibm.com/identity/token`) with `grant_type=urn:ibm:params:oauth:grant-type:apikey` and your API key."
+    },
+    {
+      "key": "B",
+      "text": "The bearer token is simply your permanent IBM Cloud API key, sent verbatim."
+    },
+    {
+      "key": "C",
+      "text": "The token is temporary (it expires, for example after about one hour); once it expires you must request a new one."
+    },
+    {
+      "key": "D",
+      "text": "The token never expires and can be reused indefinitely across sessions."
+    },
+    {
+      "key": "E",
+      "text": "The token is returned to you in the response body of your first `POST /api/v1/jobs` call."
+    }
+  ],
+  "answer": [
+    "A",
+    "C"
+  ],
+  "explanation": {
+    "correct": "The bearer token is minted by exchanging your API key at the IAM token endpoint (a `POST` with the apikey grant type), and it is short-lived -- the response's `expires_in` is on the order of an hour, after which you must obtain a fresh token. These are the two correct statements.",
+    "distractors": {
+      "B": "The API key and the bearer token are different: the key is long-lived and is exchanged for the temporary token; the raw key is not used as the bearer token.",
+      "D": "Bearer tokens expire (see `expires_in`, typically ~3600 seconds); they cannot be reused indefinitely.",
+      "E": "The token comes from the IAM token endpoint, not from the job-submission endpoint; you must already hold a valid token to call `/api/v1/jobs`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-runtime-rest",
+      "https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

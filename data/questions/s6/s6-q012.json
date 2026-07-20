@@ -1,0 +1,68 @@
+{
+  "id": "s6-q012",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "You have an ISA circuit `isa` and a layout-aligned observable `iobs`, and `est = EstimatorV2(mode=backend)`. Which call correctly submits this single estimation task?",
+  "code": "from qiskit_ibm_runtime import EstimatorV2\n\nest = EstimatorV2(mode=backend)\n# isa: transpiled circuit, iobs: observable after apply_layout\njob = ...  # which call?",
+  "options": [
+    {
+      "key": "A",
+      "text": "`job = est.run([(isa, iobs)])`"
+    },
+    {
+      "key": "B",
+      "text": "`job = est.run((isa, iobs))`"
+    },
+    {
+      "key": "C",
+      "text": "`job = est.run([isa, iobs])`"
+    },
+    {
+      "key": "D",
+      "text": "`job = est.run(isa, iobs)`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "EstimatorV2.run() takes a list of PUBs; each PUB is a tuple whose first two elements are the circuit and its observable(s). The single task must therefore be wrapped as `[(isa, iobs)]` — a list containing one (circuit, observable) tuple.",
+    "distractors": {
+      "B": "A bare tuple `(isa, iobs)` is iterated by run() as if it were the list of PUBs, so `isa` is read as the first PUB — a circuit with no observable — and it raises 'invalid Estimator pub-like'.",
+      "C": "`[isa, iobs]` is a list of two elements, so run() treats each as a separate PUB; a bare circuit is not a valid Estimator PUB (an observable is required), and it raises.",
+      "D": "Passing circuit and observable as separate positional arguments is the V1 style; EstimatorV2.run() takes a single positional PUB list, so this raises a TypeError."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q012.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1, seed_transpiler=42)\nisa = pm.run(qc)\niobs = obs.apply_layout(isa.layout)\nest = EstimatorV2(mode=backend)\n\nevidence = {}\nproven = []\ndef attempt(key, fn):\n    try:\n        res = fn().result()\n        ev = float(res[0].data.evs)\n        evidence[key] = f\"call succeeded on {backend.name}: returned a job; result()[0].data.evs = {ev:.3f}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"call raised {type(e).__name__}: {str(e)[:150]}\"\n\nattempt(\"A\", lambda: est.run([(isa, iobs)]))\nattempt(\"B\", lambda: est.run((isa, iobs)))\nattempt(\"C\", lambda: est.run([isa, iobs]))\nattempt(\"D\", lambda: est.run(isa, iobs))\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"backend\": backend.name}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

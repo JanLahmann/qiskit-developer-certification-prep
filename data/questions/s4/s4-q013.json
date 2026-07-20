@@ -1,0 +1,69 @@
+{
+  "id": "s4-q013",
+  "section": "s4",
+  "objectives": [
+    "s4o1",
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "You have opened a batch with `batch = Batch(backend=backend)` and want to create a SamplerV2 that submits its jobs inside that batch. Which construction is correct?",
+  "code": "from qiskit_ibm_runtime import SamplerV2, Batch\n\nbatch = Batch(backend=backend)\nsampler = ...  # which one?",
+  "options": [
+    {
+      "key": "A",
+      "text": "`SamplerV2(mode=batch)`"
+    },
+    {
+      "key": "B",
+      "text": "`SamplerV2(batch=batch)`"
+    },
+    {
+      "key": "C",
+      "text": "`SamplerV2(session=batch)`"
+    },
+    {
+      "key": "D",
+      "text": "`SamplerV2(mode=\"batch\")`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "In V2, the execution mode is passed through the single `mode=` parameter, which accepts a Backend, Session, or Batch object. `SamplerV2(mode=batch)` binds the primitive to the batch so its jobs are scheduled together.",
+    "distractors": {
+      "B": "There is no `batch=` keyword on the V2 primitives; it raises `TypeError`. The mode (backend/session/batch) always goes through `mode=`.",
+      "C": "`session=` was the pre-0.24 keyword and no longer exists on V2 primitives (raises `TypeError`); even if it did, you would not pass a Batch to a `session` argument.",
+      "D": "`mode=` needs the actual Batch object, not the string `\"batch\"`; a string raises `ValueError: mode must be of type Backend, Session, Batch or None`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q013.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2, Batch\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        sampler = fn()\n        counts = sampler.run([isa], shots=64).result()[0].data.meas.get_counts()\n        evidence[key] = f\"constructed and ran: {sum(counts.values())} shots over {len(counts)} bitstrings\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:140]}\"\n\nwith Batch(backend=backend) as batch:\n    attempt(\"A\", lambda: SamplerV2(mode=batch))\n    attempt(\"B\", lambda: SamplerV2(batch=batch))\n    attempt(\"C\", lambda: SamplerV2(session=batch))\n    attempt(\"D\", lambda: SamplerV2(mode=\"batch\"))\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

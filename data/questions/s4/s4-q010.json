@@ -1,0 +1,58 @@
+{
+  "id": "s4-q010",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You are running a variational algorithm: each iteration submits one Estimator job whose circuit parameters are chosen by a classical optimizer from the previous iteration's expectation value. You want to avoid re-queuing between iterations and keep the QPU responsive to the tight classical-quantum feedback loop. Which execution mode is the best fit?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Session mode"
+    },
+    {
+      "key": "B",
+      "text": "Batch mode"
+    },
+    {
+      "key": "C",
+      "text": "Job mode (submit each iteration as a separate individual job)"
+    },
+    {
+      "key": "D",
+      "text": "Combine all iterations into a single primitive job"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "A session gives dedicated, exclusive access to the QPU for a window, so iterative workloads whose next input depends on the previous result run back-to-back without each job re-entering the fair-share queue. This is exactly the recommended use case for sessions: iterative workloads that require frequent classical-quantum communication.",
+    "distractors": {
+      "B": "Batch mode is for independent jobs that are all available at the outset; here each iteration's parameters depend on the previous result, so the jobs cannot be submitted together and batching provides no benefit.",
+      "C": "Submitting each iteration as a separate job sends every iteration back through the queue, which maximizes wall-clock time and device drift — the opposite of the goal.",
+      "D": "The iterations cannot be a single job: the parameters for iteration n+1 are computed classically from iteration n's result, so they are not known when the job would be submitted."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

@@ -1,0 +1,1038 @@
+[
+  {
+    "n": 1,
+    "stem": "You are asked to build a two-qubit Bell-state circuit: apply H on qubit 0, apply CX with qubit 0 as control and qubit 1 as target, then measure qubits 0 and 1 into classical bits 0 and 1. Which code does that?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit import QuantumCircuit\nqc = QuantumCircuit(2, 2)\nqc.x(0)\nqc.cx(0, 1)\nqc.measure_all()\n```",
+      "B": "```python\nfrom qiskit import QuantumCircuit\nqc = QuantumCircuit(2, 2)\nqc.h(1)\nqc.cx(1, 0)\nqc.measure([0, 1], [0, 1])\n```",
+      "C": "```python\nfrom qiskit import QuantumCircuit\nqc = QuantumCircuit(2, 2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure([0, 1], [0, 1])\n```",
+      "D": "```python\nfrom qiskit import QuantumCircuit\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure([0, 1], [0, 1])\n```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 2,
+    "stem": "Which code creates a circuit with 3 qubits and 2 classical bits, then measures qubit 1 into classical bit 0?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit import QuantumCircuit\nqc = QuantumCircuit(3)\nqc.measure(1, 0)\n```",
+      "B": "```python\nfrom qiskit import QuantumCircuit\nqc = QuantumCircuit(2, 3)\nqc.measure(1, 0)\n```",
+      "C": "```python\nfrom qiskit import QuantumCircuit\nqc = QuantumCircuit(3, 2)\nqc.measure(1, 0)\n```",
+      "D": "```python\nfrom qiskit import QuantumCircuit\nqc = QuantumCircuit(3, 2)\nqc.measure(0, 1)\n```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 3,
+    "stem": "After this code runs, what does `qc.count_ops().get(\"cx\", 0)` return?\n\n```python\nfrom qiskit import QuantumCircuit\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.cx(1, 2)\nqc.x(2)\n```",
+    "code": "from qiskit import QuantumCircuit\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.cx(1, 2)\nqc.x(2)",
+    "options": {
+      "A": "`0`",
+      "B": "`2`",
+      "C": "`3`",
+      "D": "`1`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 4,
+    "stem": "Which line correctly applies an S-dagger gate to qubit 0?",
+    "code": null,
+    "options": {
+      "A": "`qc.s_dagger(0)`",
+      "B": "`qc.s(-1, 0)`",
+      "C": "`qc.sx(0).inverse()`",
+      "D": "`qc.sdg(0)`"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 5,
+    "stem": "**Select all correct answers.** You have a measurement-free circuit `qc`. Which snippets correctly obtain either the operator object or its matrix representation?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit.quantum_info import Operator\nU = Operator(qc)\n```",
+      "B": "```python\nU = qc.operator()\n```",
+      "C": "```python\nfrom qiskit.quantum_info import Operator\nU_matrix = Operator(qc).data\n```",
+      "D": "```python\nfrom qiskit import Operator\nU = Operator.from_circuit(qc)\n```"
+    },
+    "stated_answer": [
+      "A",
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 6,
+    "stem": "You want the final statevector for a circuit that has no measurements. Which code is correct?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit.quantum_info import Statevector\npsi = Statevector.from_instruction(qc)\n```",
+      "B": "```python\npsi = qc.run_statevector()\n```",
+      "C": "```python\nfrom qiskit import Statevector\npsi = qc.statevector()\n```",
+      "D": "```python\npsi = qc.measure_all()\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 7,
+    "stem": "This circuit is prepared:\n\n```python\nfrom qiskit import QuantumCircuit\nqc = QuantumCircuit(1)\nqc.x(0)\nqc.h(0)\n```\n\nWhich state should `Statevector.from_instruction(qc)` represent?",
+    "code": "from qiskit import QuantumCircuit\nqc = QuantumCircuit(1)\nqc.x(0)\nqc.h(0)",
+    "options": {
+      "A": "`|0>`",
+      "B": "`(|0> + |1>)/sqrt(2)`",
+      "C": "`(|0> - |1>)/sqrt(2)`",
+      "D": "`|1>`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 8,
+    "stem": "Which code correctly creates a Pauli operator for the observable `0.5 * ZZ - 1.2 * IX`?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit import SparsePauliOp\nobs = SparsePauliOp([(\"ZZ\", 0.5), (\"IX\", -1.2)])\n```",
+      "B": "```python\nfrom qiskit.quantum_info import SparsePauliOp\nobs = SparsePauliOp.from_list([(\"ZZ\", 0.5), (\"IX\", -1.2)])\n```",
+      "C": "```python\nobs = PauliSumOp(\"0.5 ZZ - 1.2 IX\")\n```",
+      "D": "```python\nobs = SparsePauliOp.from_list([(0.5, \"ZZ\"), (-1.2, \"IX\")])\n```"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 9,
+    "stem": "Which code calculates the expectation value of `ZZ` on a Bell circuit `qc` that has no final measurements?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit.primitives import StatevectorSampler\nvalue = StatevectorSampler().run([(qc, \"ZZ\")]).result()[0]\n```",
+      "B": "```python\nvalue = qc.measure(\"ZZ\")\n```",
+      "C": "```python\nfrom qiskit.quantum_info import Statevector, SparsePauliOp\npsi = Statevector.from_instruction(qc)\nobs = SparsePauliOp.from_list([(\"ZZ\", 1.0)])\nvalue = psi.expectation_value(obs)\n```",
+      "D": "```python\nfrom qiskit.quantum_info import SparsePauliOp\nobs = SparsePauliOp.from_list([(\"ZZ\", 1.0)])\nvalue = qc.expectation_value(obs)\n```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 10,
+    "stem": "**Select all correct answers.** A circuit `qc` already contains final measurements. You want a measurement-free copy while keeping the original `qc` unchanged. Which snippets accomplish that?",
+    "code": null,
+    "options": {
+      "A": "```python\nqc_nom = qc.remove_final_measurements(inplace=False)\n```",
+      "B": "```python\nqc.remove_final_measurements(inplace=True)\nqc_nom = qc\n```",
+      "C": "```python\nqc_nom = qc.measure_all(inplace=False)\n```",
+      "D": "```python\nqc_nom = qc.copy()\nqc_nom.remove_final_measurements(inplace=True)\n```"
+    },
+    "stated_answer": [
+      "A",
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 11,
+    "stem": "What is the correct Qiskit bitstring meaning for this one-qubit circuit?\n\n```python\nqc = QuantumCircuit(1, 1)\nqc.x(0)\nqc.measure(0, 0)\n```\n\nIf sampled ideally, the dominant count key is:",
+    "code": "qc = QuantumCircuit(1, 1)\nqc.x(0)\nqc.measure(0, 0)",
+    "options": {
+      "A": "`1` as an integer only",
+      "B": "`'10'`",
+      "C": "`'1'`",
+      "D": "`'0'`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 12,
+    "stem": "Which line draws a circuit as a Matplotlib figure?",
+    "code": null,
+    "options": {
+      "A": "`qc.plot(output=\"mpl\")`",
+      "B": "`qc.draw(style=\"matplotlib\")`",
+      "C": "`qc.mpl()`",
+      "D": "`qc.draw(output=\"mpl\")`"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 13,
+    "stem": "Which code gets a text drawing string for a circuit?",
+    "code": null,
+    "options": {
+      "A": "```python\ndrawing = qc.text_diagram()\n```",
+      "B": "```python\ndrawing = qc.draw(\"ascii=False\")\n```",
+      "C": "```python\ndrawing = qc.draw(output=\"text\")\n```",
+      "D": "```python\ndrawing = str(qc.draw(output=\"mpl\"))\n```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 14,
+    "stem": "Which code plots a histogram from a counts dictionary named `counts`?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit.visualization import plot_state_qsphere\nplot_state_qsphere(counts)\n```",
+      "B": "```python\nfrom qiskit import plot_histogram\nplot_histogram(qc)\n```",
+      "C": "```python\nfrom qiskit.visualization import plot_histogram\nplot_histogram(counts)\n```",
+      "D": "```python\ncounts.plot_histogram()\n```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 15,
+    "stem": "What does the following code return ideally?\n\n```python\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.h(0)\nStatevector.from_instruction(qc).probabilities_dict()\n```",
+    "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.h(0)\nStatevector.from_instruction(qc).probabilities_dict()",
+    "options": {
+      "A": "`{'0': 1.0}`",
+      "B": "`{'1': 1.0}`",
+      "C": "`{'0': 0.5, '1': 0.5}`",
+      "D": "`{'00': 0.5, '11': 0.5}`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 16,
+    "stem": "Which code gets the exact probabilities of all computational-basis outcomes from a measurement-free circuit `qc`?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit.quantum_info import Statevector\nprobs = Statevector.from_instruction(qc).probabilities_dict()\n```",
+      "B": "```python\nfrom qiskit.visualization import plot_histogram\nprobs = plot_histogram(qc)\n```",
+      "C": "```python\nprobs = qc.get_counts()\n```",
+      "D": "```python\nprobs = qc.probabilities_dict()\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 17,
+    "stem": "For this circuit, what is the ideal statevector probability dictionary?\n\n```python\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.x(0)\nStatevector.from_instruction(qc).probabilities_dict()\n```",
+    "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.x(0)\nStatevector.from_instruction(qc).probabilities_dict()",
+    "options": {
+      "A": "`{'10': 1.0}`",
+      "B": "`{'01': 1.0}`",
+      "C": "`{'00': 1.0}`",
+      "D": "`{'1': 1.0}`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 18,
+    "stem": "Which code visualizes the statevector `psi` on a Bloch sphere for each qubit?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit.visualization import plot_bloch_multivector\nplot_bloch_multivector(psi)\n```",
+      "B": "```python\npsi.draw(output=\"bloch\")\n```",
+      "C": "```python\nfrom qiskit.visualization import plot_histogram\nplot_histogram(psi)\n```",
+      "D": "```python\nfrom qiskit.visualization import circuit_drawer\ncircuit_drawer(psi)\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 19,
+    "stem": "Which code adds a measurement to every qubit and creates a classical register automatically?",
+    "code": null,
+    "options": {
+      "A": "```python\nqc.add_measurements()\n```",
+      "B": "```python\nqc.measure(qc.qubits)\n```",
+      "C": "```python\nqc.measure_all()\n```",
+      "D": "```python\nqc.measure_each()\n```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 20,
+    "stem": "Which code creates a one-parameter RX circuit?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit import QuantumCircuit\nqc = QuantumCircuit(1)\nqc.rx(Parameter(\"theta\"))\n```",
+      "B": "```python\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\n```",
+      "C": "```python\nfrom qiskit import QuantumCircuit\ntheta = \"theta\"\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\n```",
+      "D": "```python\nqc = QuantumCircuit(Parameter(\"theta\"), 1)\nqc.rx(theta, 0)\n```"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 21,
+    "stem": "You have this circuit:\n\n```python\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\n```\n\nWhich code returns a new circuit with `theta = 0.3` while leaving `qc` unchanged?",
+    "code": "theta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)",
+    "options": {
+      "A": "```python\nbound = qc.assign_parameters(theta=0.3)\n```",
+      "B": "```python\nqc.assign_parameters({theta: 0.3}, inplace=True)\nbound = qc\n```",
+      "C": "```python\nbound = qc.assign_parameters({theta: 0.3}, inplace=False)\n```",
+      "D": "```python\nbound = qc.bind({theta: 0.3})\n```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 22,
+    "stem": "Which code creates three independent parameters named `x[0]`, `x[1]`, and `x[2]` and uses them in RX gates?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit.circuit import ParameterVector\nx = ParameterVector(\"x\", 3)\nqc = QuantumCircuit(3)\nfor i in range(3):\n    qc.rx(x[i], i)\n```",
+      "B": "```python\nx = Parameter(\"x\", 3)\nqc = QuantumCircuit(3)\nqc.rx(x, [0, 1, 2])\n```",
+      "C": "```python\nx = ParameterVector(\"x\")\nqc = QuantumCircuit(3)\nqc.rx(x, range(3))\n```",
+      "D": "```python\nx = [\"x0\", \"x1\", \"x2\"]\nqc = QuantumCircuit(3)\nfor i in range(3):\n    qc.rx(x[i], i)\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 23,
+    "stem": "**Select all correct answers.** You have a two-qubit subcircuit `sub` and a three-qubit circuit `qc`. Which snippets correctly insert the subcircuit operations onto qubits 1 and 2 of `qc`?",
+    "code": null,
+    "options": {
+      "A": "```python\nqc.compose(sub, wires=[1, 2], inplace=True)\n```",
+      "B": "```python\nqc.compose(sub, qubits=[1, 2], inplace=True)\n```",
+      "C": "```python\nqc.append(sub, control=1, target=2)\n```",
+      "D": "```python\ngate = sub.to_gate()\nqc.append(gate, [1, 2])\n```"
+    },
+    "stated_answer": [
+      "B",
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 24,
+    "stem": "Which code composes `block` onto qubits `[2, 0]` of `qc` in place?",
+    "code": null,
+    "options": {
+      "A": "```python\nqc.append(block, qubits=[2, 0], inplace=True)\n```",
+      "B": "```python\nqc.merge(block, qubits=[2, 0])\n```",
+      "C": "```python\nqc.compose(block, qubits=[2, 0], inplace=True)\n```",
+      "D": "```python\nqc.compose(block, wires=[2, 0])\n```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 25,
+    "stem": "Which code creates a controlled version of a one-qubit gate object `g` and appends it with control qubit 0 and target qubit 1?",
+    "code": null,
+    "options": {
+      "A": "```python\nqc.append(g.controlled, [0, 1])\n```",
+      "B": "```python\ncg = g.make_controlled()\nqc.append(cg, control=0, target=1)\n```",
+      "C": "```python\nqc.control(g, 0, 1)\n```",
+      "D": "```python\ncg = g.control(1)\nqc.append(cg, [0, 1])\n```"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 26,
+    "stem": "Which code resets qubit 0 before reusing it?",
+    "code": null,
+    "options": {
+      "A": "`qc.measure(0)`",
+      "B": "`qc.reset(0)`",
+      "C": "`qc.reinitialize(0)`",
+      "D": "`qc.clear_qubit(0)`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 27,
+    "stem": "Which code creates the inverse of a measurement-free circuit `qc`?",
+    "code": null,
+    "options": {
+      "A": "`qc_inv = qc.dagger()`",
+      "B": "`qc_inv = inverse(qc)`",
+      "C": "`qc_inv = qc.inverse()`",
+      "D": "`qc_inv = qc.adjoint(inplace=False)`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 28,
+    "stem": "**Select all correct answers.** Which snippets build a dynamic circuit that measures qubit 0 and applies `X` to qubit 1 only when the one-bit classical result is 1?",
+    "code": null,
+    "options": {
+      "A": "```python\nq = QuantumRegister(2, \"q\")\nc = ClassicalRegister(1, \"c\")\nqc = QuantumCircuit(q, c)\nqc.h(q[0])\nqc.measure(q[0], c[0])\nwith qc.if_test((c, 1)):\n    qc.x(q[1])\n```",
+      "B": "```python\nqc = QuantumCircuit(2, 1)\nqc.h(0)\nqc.measure(0, 0)\nif qc.clbits[0] == 1:\n    qc.x(1)\n```",
+      "C": "```python\nqc = QuantumCircuit(2, 1)\nqc.h(0)\nqc.measure(0, 0)\nqc.x(1).c_if(0, 1)\n```",
+      "D": "```python\nq = QuantumRegister(2, \"q\")\nc = ClassicalRegister(1, \"c\")\nqc = QuantumCircuit(q, c)\nqc.h(q[0])\nqc.measure(q[0], c[0])\nwith qc.if_test((c[0], 1)):\n    qc.x(q[1])\n```"
+    },
+    "stated_answer": [
+      "A",
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 29,
+    "stem": "Which code correctly creates an if/else block: apply `X(0)` when classical register `c == 1`; otherwise apply `Z(0)`?",
+    "code": null,
+    "options": {
+      "A": "```python\nif c == 1:\n    qc.x(0)\nelse:\n    qc.z(0)\n```",
+      "B": "```python\nwith qc.if_test((c, 1)) as else_:\n    qc.x(0)\nwith else_:\n    qc.z(0)\n```",
+      "C": "```python\nwith qc.if_else((c, 1)):\n    qc.x(0)\nelse:\n    qc.z(0)\n```",
+      "D": "```python\nqc.if_test(c == 1, qc.x(0), qc.z(0))\n```"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 30,
+    "stem": "**Select all correct answers.** Which `switch`/`case` snippets are valid Qiskit circuit-builder patterns?",
+    "code": null,
+    "options": {
+      "A": "```python\nwith qc.switch(c) as case:\n    with case(0):\n        qc.x(0)\n    with case(1):\n        qc.z(0)\n    with case(case.DEFAULT):\n        qc.h(0)\n```",
+      "B": "```python\nwith qc.switch(c) as case:\n    with case(0, 3):\n        qc.x(0)\n    with case(1):\n        qc.z(0)\n    with case(case.DEFAULT):\n        qc.h(0)\n```",
+      "C": "```python\nswitch c:\n    case 0:\n        qc.x(0)\n```",
+      "D": "```python\nqc.switch(c, {0: qc.x(0), 1: qc.z(0)})\n```"
+    },
+    "stated_answer": [
+      "A",
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 31,
+    "stem": "Which code repeats `X(0)` three times as a circuit-level `for_loop` operation?",
+    "code": null,
+    "options": {
+      "A": "```python\nfor _ in range(3):\n    qc.for_loop(qc.x(0))\n```",
+      "B": "```python\nwith qc.loop(3):\n    qc.x(0)\n```",
+      "C": "```python\nqc.repeat(3, qc.x(0))\n```",
+      "D": "```python\nwith qc.for_loop(range(3)):\n    qc.x(0)\n```"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 32,
+    "stem": "**Select all correct answers.** You want a backend-compatible circuit before using Runtime V2 primitives on IBM hardware. Which snippets are reasonable Qiskit SDK patterns?",
+    "code": null,
+    "options": {
+      "A": "```python\nisa_circuit = backend.compile(qc, isa=True)\n```",
+      "B": "```python\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa_circuit = pm.run(qc)\n```",
+      "C": "```python\nfrom qiskit import transpile\n\nisa_circuit = transpile(qc, backend=backend, optimization_level=1)\n```",
+      "D": "```python\nisa_circuit = qc.to_isa(backend)\n```"
+    },
+    "stated_answer": [
+      "B",
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 33,
+    "stem": "Which import is correct for IBM Runtime Sampler V2?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit import SamplerV2 as Sampler\n```",
+      "B": "```python\nfrom qiskit_ibm_runtime import SamplerV2 as Sampler\n```",
+      "C": "```python\nfrom qiskit.runtime import IBMRuntimeSampler\n```",
+      "D": "```python\nfrom qiskit.providers.ibm import SamplerV2\n```"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 34,
+    "stem": "Which code submits two already-transpiled circuits to a Runtime Sampler V2 object `sampler` with 1024 shots each?",
+    "code": null,
+    "options": {
+      "A": "```python\njob = sampler.submit([isa_circuit1, isa_circuit2], shots=1024)\n```",
+      "B": "```python\njob = sampler.run([isa_circuit1, isa_circuit2], shots=1024)\n```",
+      "C": "```python\njob = sampler.run(isa_circuit1, isa_circuit2, shots=1024)\n```",
+      "D": "```python\njob = sampler.run(circuits=[isa_circuit1, isa_circuit2], nshots=1024)\n```"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 35,
+    "stem": "Which code uses different shot counts for two Sampler V2 PUBs that have no parameter values?",
+    "code": null,
+    "options": {
+      "A": "```python\njob = sampler.run([\n    (isa_circuit1, None, 512),\n    (isa_circuit2, None, 2048),\n])\n```",
+      "B": "```python\njob = sampler.run([isa_circuit1, isa_circuit2], shots=[512, 2048])\n```",
+      "C": "```python\njob = sampler.run([(512, isa_circuit1), (2048, isa_circuit2)])\n```",
+      "D": "```python\njob = sampler.run([\n    (isa_circuit1, 512),\n    (isa_circuit2, 2048),\n])\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 36,
+    "stem": "Which code selects the least-busy operational non-simulator backend from a configured IBM Quantum service?",
+    "code": null,
+    "options": {
+      "A": "```python\nbackend = service.least_busy(operational=True, simulator=False)\n```",
+      "B": "```python\nbackend = service.get_least_busy(device=True)\n```",
+      "C": "```python\nbackend = least_busy(service.backends())\n```",
+      "D": "```python\nbackend = service.backend(\"least_busy\")\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 37,
+    "stem": "You have a parameterized circuit `qc` with parameter `theta`. Which Sampler V2 PUB gives two parameter values and 1000 shots?",
+    "code": null,
+    "options": {
+      "A": "```python\npub = (qc, 1000, [[0.1], [0.2]])\n```",
+      "B": "```python\npub = (qc, [theta], [0.1, 0.2], 1000)\n```",
+      "C": "```python\npub = (qc, [[0.1], [0.2]], 1000)\n```",
+      "D": "```python\npub = (qc, {\"theta\": [0.1, 0.2]}, 1000)\n```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 38,
+    "stem": "Which code pattern is preferred in Qiskit 2.x instead of old-style `execute(qc, backend)`?",
+    "code": null,
+    "options": {
+      "A": "```python\njob = qc.execute(backend, shots=1024)\n```",
+      "B": "```python\njob = backend.execute(qc, shots=1024)\n```",
+      "C": "```python\nfrom qiskit import execute\njob = execute(qc, backend, shots=1024)\n```",
+      "D": "```python\n# Use primitives or backend.run on transpiled circuits, depending on workflow.\njob = sampler.run([isa_circuit], shots=1024)\n```"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 39,
+    "stem": "**Select all correct answers.** Which snippets correctly create or configure a Runtime Estimator V2 object with resilience level 1?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit_ibm_runtime import EstimatorV2 as Estimator\n\nestimator = Estimator(mode=backend)\nestimator.options.resilience_level = 1\n```",
+      "B": "```python\nfrom qiskit import EstimatorV2\n\nestimator = EstimatorV2(backend)\nestimator.set_resilience(1)\n```",
+      "C": "```python\nestimator = backend.estimator()\nestimator.resilience = True\n```",
+      "D": "```python\nfrom qiskit_ibm_runtime import EstimatorV2 as Estimator\n\nestimator = Estimator(mode=backend, options={\"resilience_level\": 1})\n```"
+    },
+    "stated_answer": [
+      "A",
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 40,
+    "stem": "For a circuit `qc` containing dynamic control flow, which statement is the best programming check before running it on hardware?",
+    "code": null,
+    "options": {
+      "A": "`Check that the selected backend target supports the instructions/control flow used by the circuit, then transpile appropriately.`",
+      "B": "`Dynamic circuits never require backend support checks.`",
+      "C": "`Remove all classical registers, because hardware only accepts quantum bits.`",
+      "D": "`Convert every if/else into Python if/else before submission.`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 41,
+    "stem": "**Select all correct answers.** Which snippets use a Runtime `Session` so several primitive calls can share the same execution context?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit_ibm_runtime import Session, SamplerV2 as Sampler\n\nwith Session(backend=backend) as session:\n    sampler = Sampler(mode=session)\n    job = sampler.run([isa_circuit], shots=1024)\n```",
+      "B": "```python\nsampler = Sampler(session=True, backend=backend)\njob = sampler.run(qc)\n```",
+      "C": "```python\nwith backend.session() as session:\n    job = session.run(qc)\n```",
+      "D": "```python\nfrom qiskit_ibm_runtime import Session, EstimatorV2 as Estimator\n\nwith Session(backend=backend) as session:\n    estimator = Estimator(mode=session)\n    job = estimator.run([(isa_circuit, isa_observable)])\n```"
+    },
+    "stated_answer": [
+      "A",
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 42,
+    "stem": "Which code uses the local `StatevectorSampler` to sample a measured circuit `qc`?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit.primitives import Sampler\n\nsampler = Sampler()\nresult = sampler(qc, shots=1024)\n```",
+      "B": "```python\nfrom qiskit.primitives import StatevectorSampler\n\nsampler = StatevectorSampler()\njob = sampler.run([qc], shots=1024)\nresult = job.result()\n```",
+      "C": "```python\nfrom qiskit.quantum_info import Statevector\n\nresult = StatevectorSampler(qc, shots=1024)\n```",
+      "D": "```python\nsampler = qc.sampler()\nresult = sampler.run(shots=1024)\n```"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 43,
+    "stem": "**Select all correct answers.** A measured circuit used the default register created by `measure_all()`. Which snippets get counts from the first Sampler V2 result?",
+    "code": null,
+    "options": {
+      "A": "```python\npub_result = job.result()[0]\ncounts = pub_result.data.meas.get_counts()\n```",
+      "B": "```python\nresult = job.result()\ncounts = result[0].data.meas.get_counts()\n```",
+      "C": "```python\ncounts = job.result().get_counts(qc)\n```",
+      "D": "```python\ncounts = job.result()[0].quasi_dists[0]\n```"
+    },
+    "stated_answer": [
+      "A",
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 44,
+    "stem": "Your circuit has an explicit classical register named `alpha`. Which code is the most likely Sampler V2 result-access pattern?",
+    "code": null,
+    "options": {
+      "A": "```python\ncounts = job.result()[0].data.alpha.get_counts()\n```",
+      "B": "```python\ncounts = job.result()[0].get_counts(\"alpha\")\n```",
+      "C": "```python\ncounts = job.result().alpha_counts()\n```",
+      "D": "```python\ncounts = job.result()[0].data.meas.get_counts()\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 45,
+    "stem": "Which Sampler V2 code requests per-shot bitstrings instead of aggregated counts, assuming the register name is `meas`?",
+    "code": null,
+    "options": {
+      "A": "```python\nbitstrings = job.result().get_bitstrings(qc)\n```",
+      "B": "```python\nbitstrings = job.result()[0].data.meas.get_bitstrings()\n```",
+      "C": "```python\nbitstrings = job.result()[0].get_memory()\n```",
+      "D": "```python\nbitstrings = job.result()[0].data.meas.bitstrings\n```"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 46,
+    "stem": "You want to sample three circuits with the same shot count using `StatevectorSampler`. Which code is correct?",
+    "code": null,
+    "options": {
+      "A": "```python\nsampler = StatevectorSampler()\njob = sampler.run([qc1, qc2, qc3], shots=500)\n```",
+      "B": "```python\nsampler = StatevectorSampler()\njob = sampler.run(qc1, qc2, qc3, shots=500)\n```",
+      "C": "```python\nsampler = StatevectorSampler(shots=500)\njob = sampler.run(qc1 + qc2 + qc3)\n```",
+      "D": "```python\njob = StatevectorSampler.run([qc1, qc2, qc3], 500)\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 47,
+    "stem": "Which code correctly samples a parameterized circuit `qc` with two parameter-value rows using `StatevectorSampler`?",
+    "code": null,
+    "options": {
+      "A": "```python\njob = StatevectorSampler().run(qc, [[0.0], [3.14159]], 1000)\n```",
+      "B": "```python\nsampler = StatevectorSampler()\njob = sampler.run([qc], parameters=[0.0, 3.14159], shots=1000)\n```",
+      "C": "```python\njob = StatevectorSampler().run([(qc, 1000, [[0.0], [3.14159]])])\n```",
+      "D": "```python\nsampler = StatevectorSampler()\njob = sampler.run([(qc, [[0.0], [3.14159]])], shots=1000)\n```"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 48,
+    "stem": "Which statement best describes the Sampler V2 output style in code?",
+    "code": null,
+    "options": {
+      "A": "`It returns only a statevector and never includes counts.`",
+      "B": "`It returns V1-style quasi-probability dictionaries only.`",
+      "C": "`It returns shot samples organized by classical register names, with helpers such as get_counts().`",
+      "D": "`It returns expectation values in data.evs.`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 49,
+    "stem": "A circuit has no measurements. You want Sampler-style bitstring counts. What is the most direct fix?",
+    "code": null,
+    "options": {
+      "A": "`Add measurements, for example with qc.measure_all(), before using the sampler.`",
+      "B": "`Use SparsePauliOp.from_list first.`",
+      "C": "`Call qc.remove_final_measurements(inplace=True).`",
+      "D": "`Use EstimatorV2, because it automatically adds measurements and returns counts.`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 50,
+    "stem": "**Select all correct answers.** Which snippets can compute the expectation value of `Z` for a measurement-free one-qubit circuit `qc`?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nestimator = StatevectorEstimator()\nobs = SparsePauliOp.from_list([(\"Z\", 1.0)])\njob = estimator.run([(qc, obs)])\nev = job.result()[0].data.evs\n```",
+      "B": "```python\nfrom qiskit.quantum_info import Statevector, SparsePauliOp\n\npsi = Statevector.from_instruction(qc)\nobs = SparsePauliOp.from_list([(\"Z\", 1.0)])\nev = psi.expectation_value(obs)\n```",
+      "C": "```python\nfrom qiskit.primitives import StatevectorSampler\n\nev = StatevectorSampler().run([(qc, \"Z\")]).result()[0].data.evs\n```",
+      "D": "```python\nev = qc.get_counts(\"Z\")\n```"
+    },
+    "stated_answer": [
+      "A",
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 51,
+    "stem": "Which Estimator V2 PUB format is correct for a parameterized circuit?",
+    "code": null,
+    "options": {
+      "A": "`(parameter_values, circuit, observables, shots)`",
+      "B": "`(circuit, observables, parameter_values)`",
+      "C": "`(circuit, shots, observables)`",
+      "D": "`(observables, circuit, parameter_values)`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 52,
+    "stem": "**Select all correct answers.** You transpiled a circuit to `isa_circuit` before Estimator V2 execution. Which snippets correctly address observable layout alignment?",
+    "code": null,
+    "options": {
+      "A": "```python\nisa_obs = obs.apply_layout(isa_circuit.layout)\n```",
+      "B": "```python\nisa_obs = obs.transpile(isa_circuit)\n```",
+      "C": "```python\nisa_obs = obs.apply_layout(isa_circuit.layout, num_qubits=isa_circuit.num_qubits)\n```",
+      "D": "```python\nisa_obs = isa_circuit.layout.apply(obs)\n```"
+    },
+    "stated_answer": [
+      "A",
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 53,
+    "stem": "Which code asks Runtime Estimator V2 for expectation values with target precision `0.05`?",
+    "code": null,
+    "options": {
+      "A": "```python\njob = estimator.estimate(isa_circuit, isa_observable, precision=0.05)\n```",
+      "B": "```python\njob = estimator.run(isa_circuit, isa_observable, error=0.05)\n```",
+      "C": "```python\njob = estimator.run([(isa_circuit, isa_observable)], precision=0.05)\n```",
+      "D": "```python\njob = estimator.run([(isa_circuit, isa_observable)], shots=0.05)\n```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 54,
+    "stem": "Which code constructs a Hamiltonian `H = 0.7 * ZZ + 0.2 * IX - 1.1 * ZI`?",
+    "code": null,
+    "options": {
+      "A": "```python\nH = PauliHamiltonian({\"ZZ\": 0.7, \"IX\": 0.2, \"ZI\": -1.1})\n```",
+      "B": "```python\nH = 0.7 * \"ZZ\" + 0.2 * \"IX\" - 1.1 * \"ZI\"\n```",
+      "C": "```python\nH = SparsePauliOp.from_list([\n    (0.7, \"ZZ\"),\n    (0.2, \"IX\"),\n    (-1.1, \"ZI\"),\n])\n```",
+      "D": "```python\nfrom qiskit.quantum_info import SparsePauliOp\nH = SparsePauliOp.from_list([\n    (\"ZZ\", 0.7),\n    (\"IX\", 0.2),\n    (\"ZI\", -1.1),\n])\n```"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 55,
+    "stem": "This circuit is prepared:\n\n```python\nqc = QuantumCircuit(1)\nqc.x(0)\n```\n\nWhich Estimator observable should give an ideal expectation value of `-1`?",
+    "code": "qc = QuantumCircuit(1)\nqc.x(0)",
+    "options": {
+      "A": "`SparsePauliOp.from_list([(\"Z\", 1.0)])`",
+      "B": "`SparsePauliOp.from_list([(\"I\", 1.0)])`",
+      "C": "`SparsePauliOp.from_list([(\"X\", 1.0)])`",
+      "D": "`SparsePauliOp.from_list([(\"Z\", -1.0)])`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 56,
+    "stem": "**Select all correct answers.** Which snippets enable dynamical decoupling for Runtime Estimator V2 and select the `XpXm` sequence?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit_ibm_runtime import EstimatorV2 as Estimator\n\nestimator = Estimator(mode=backend)\nestimator.options.dynamical_decoupling.enable = True\nestimator.options.dynamical_decoupling.sequence_type = \"XpXm\"\n```",
+      "B": "```python\nfrom qiskit_ibm_runtime import SamplerV2 as Sampler\n\nsampler = Sampler(mode=backend)\nsampler.options.dynamical_decoupling = \"XpXm\"\n```",
+      "C": "```python\nfrom qiskit_ibm_runtime import EstimatorV2 as Estimator\n\nestimator = Estimator(\n    mode=backend,\n    options={\"dynamical_decoupling\": {\"enable\": True, \"sequence_type\": \"XpXm\"}},\n)\n```",
+      "D": "```python\nestimator.options.resilience.zne.sequence_type = \"XpXm\"\n```"
+    },
+    "stated_answer": [
+      "A",
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 57,
+    "stem": "**Select all correct answers.** Which snippets enable Pauli gate twirling for Runtime Estimator V2 and request 32 randomizations with 100 shots per randomization?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit_ibm_runtime import EstimatorV2 as Estimator\n\nestimator = Estimator(mode=backend)\nestimator.options.twirling.enable_gates = True\nestimator.options.twirling.num_randomizations = 32\nestimator.options.twirling.shots_per_randomization = 100\n```",
+      "B": "```python\nestimator.options.resilience.pauli_twirling = (32, 100)\n```",
+      "C": "```python\nfrom qiskit_ibm_runtime import EstimatorV2 as Estimator\n\nestimator = Estimator(\n    mode=backend,\n    options={\"twirling\": {\"enable_gates\": True,\n                          \"num_randomizations\": 32,\n                          \"shots_per_randomization\": 100}},\n)\n```",
+      "D": "```python\nestimator.options.resilience.zne.noise_factors = (32, 100)\n```"
+    },
+    "stated_answer": [
+      "A",
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 58,
+    "stem": "**Select all correct answers.** Which snippets correctly enable Runtime Estimator measurement-error mitigation, with or without custom noise-learning settings?",
+    "code": null,
+    "options": {
+      "A": "```python\nestimator.options.resilience_level = 1\n```",
+      "B": "```python\nestimator.options.measurement_error_mitigation = \"trex\"\nestimator.options.measurement_shots = 100\n```",
+      "C": "```python\nestimator.options.resilience.zne_mitigation = True\nestimator.options.resilience.zne.noise_factors = (1, 3, 5)\n```",
+      "D": "```python\nestimator.options.resilience.measure_mitigation = True\nestimator.options.resilience.measure_noise_learning.num_randomizations = 32\nestimator.options.resilience.measure_noise_learning.shots_per_randomization = 100\n```"
+    },
+    "stated_answer": [
+      "A",
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 59,
+    "stem": "**Select all correct answers.** Which snippets enable zero-noise extrapolation with noise factors `(1, 3, 5)` and an exponential extrapolator?",
+    "code": null,
+    "options": {
+      "A": "```python\nestimator.options.zne = True\nestimator.options.noise_factors = [1, 3, 5]\nestimator.options.fit = \"exp\"\n```",
+      "B": "```python\nestimator.options.twirling.enable_gates = True\nestimator.options.twirling.noise_factors = (1, 3, 5)\n```",
+      "C": "```python\nestimator.options.resilience.zne_mitigation = True\nestimator.options.resilience.zne.noise_factors = (1, 3, 5)\nestimator.options.resilience.zne.extrapolator = \"exponential\"\n```",
+      "D": "```python\nestimator.options.update(\n    resilience={\n        \"zne_mitigation\": True,\n        \"zne\": {\"noise_factors\": (1, 3, 5), \"extrapolator\": \"exponential\"},\n    }\n)\n```"
+    },
+    "stated_answer": [
+      "C",
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 60,
+    "stem": "You are testing your own mitigation method and want to turn off all built-in Runtime Estimator error mitigation and suppression. Which code is correct?",
+    "code": null,
+    "options": {
+      "A": "```python\nestimator.options.disable_mitigation = True\n```",
+      "B": "```python\nestimator.options.resilience_level = 0\n```",
+      "C": "```python\nestimator.options.resilience.measure_mitigation = None\nestimator.options.resilience.zne_mitigation = None\n```",
+      "D": "```python\nestimator.options.twirling.enable_gates = False\n```"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 61,
+    "stem": "Which code creates a Runtime Estimator V2 configured with resilience level 2?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit_ibm_runtime import EstimatorV2 as Estimator\n\nestimator = Estimator(mode=backend, options={\"resilience_level\": 2})\n```",
+      "B": "```python\nfrom qiskit_ibm_runtime import SamplerV2 as Sampler\n\nestimator = Sampler(mode=backend, options={\"resilience_level\": 2})\n```",
+      "C": "```python\nfrom qiskit_ibm_runtime import EstimatorV2 as Estimator\n\nestimator = Estimator(mode=backend)\nestimator.resilience_level(2)\n```",
+      "D": "```python\nfrom qiskit_ibm_runtime import EstimatorV2 as Estimator\n\nestimator = Estimator(mode=backend, mitigation=2)\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 62,
+    "stem": "Which code requests Probabilistic Error Amplification (PEA) as the ZNE noise amplifier?",
+    "code": null,
+    "options": {
+      "A": "```python\nestimator.options.resilience.pea_mitigation = True\n```",
+      "B": "```python\nestimator.options.twirling.amplifier = \"pea\"\n```",
+      "C": "```python\nestimator.options.resilience.zne_mitigation = True\nestimator.options.resilience.zne.amplifier = \"pea\"\n```",
+      "D": "```python\nestimator.options.resilience.measure_mitigation = True\nestimator.options.resilience.measure_noise_learning.amplifier = \"pea\"\n```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 63,
+    "stem": "When ZNE is enabled, which code reads the extra ZNE data from the first Estimator V2 result?",
+    "code": null,
+    "options": {
+      "A": "```python\nzne_values = job.result().zne_values\nzne_stds = job.result().zne_stds\n```",
+      "B": "```python\npub_result = job.result()[0]\nraw_by_factor = pub_result.data.evs_noise_factors\nextrapolated = pub_result.data.evs_extrapolated\n```",
+      "C": "```python\npub_result = job.result()[0]\nraw_by_factor = pub_result.data.counts_noise_factors\nextrapolated = pub_result.data.quasi_dists_extrapolated\n```",
+      "D": "```python\nraw_by_factor, extrapolated = estimator.get_zne_result(job)\n```"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 64,
+    "stem": "Which code enables Probabilistic Error Cancellation (PEC) and sets a maximum overhead of 50?",
+    "code": null,
+    "options": {
+      "A": "```python\nestimator.options.resilience.zne_mitigation = True\nestimator.options.resilience.zne.max_overhead = 50\n```",
+      "B": "```python\nestimator.options.pec = True\nestimator.options.pec_overhead = 50\n```",
+      "C": "```python\nestimator.options.resilience_level = 3\nestimator.options.resilience.max_overhead = 50\n```",
+      "D": "```python\nestimator.options.resilience.pec_mitigation = True\nestimator.options.resilience.pec.max_overhead = 50\n```"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 65,
+    "stem": "**Select all correct answers.** Which snippets export a Qiskit circuit `qc` to OpenQASM 3?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit import qasm3\nqasm_text = qasm3.dumps(qc)\n```",
+      "B": "```python\nfrom qiskit import qasm3\nwith open(\"circuit.qasm\", \"w\") as f:\n    qasm3.dump(qc, f)\n```",
+      "C": "```python\nqasm_text = qc.qasm()\n```",
+      "D": "```python\nfrom qiskit.qasm2 import dumps\nqasm_text = dumps(qc, version=3)\n```"
+    },
+    "stated_answer": [
+      "A",
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 66,
+    "stem": "Which code loads an OpenQASM 3 program string into a `QuantumCircuit` using Qiskit's qasm3 module?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit import qasm3\nqc = qasm3.loads(program)\n```",
+      "B": "```python\nqc = QuantumCircuit.loads_qasm3(program)\n```",
+      "C": "```python\nqc = qasm3.load_string(program)\n```",
+      "D": "```python\nqc = QuantumCircuit.from_qasm_str(program, version=3)\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 67,
+    "stem": "Which OpenQASM 3 snippet applies H to qubit 0 and CX from qubit 0 to qubit 1 using physical qubits?",
+    "code": null,
+    "options": {
+      "A": "```qasm\nOPENQASM 3.0;\nh 0;\ncx 0, 1;\n```",
+      "B": "```qasm\nOPENQASM 3.0;\ninclude \"stdgates.inc\";\nH(0);\nCX(0, 1);\n```",
+      "C": "```qasm\nOPENQASM 3.0;\ninclude \"stdgates.inc\";\nh $0;\ncx $0, $1;\n```",
+      "D": "```qasm\nOPENQASM 2.0;\ninclude \"qelib1.inc\";\nh q[0];\ncx q[0], q[1];\n```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 68,
+    "stem": "Which Qiskit code creates a circuit-level while loop that repeats a body while classical register `c` equals 0?",
+    "code": null,
+    "options": {
+      "A": "```python\nwith qc.while_loop((c, 0)):\n    qc.h(0)\n    qc.measure(0, c[0])\n```",
+      "B": "```python\nqc.while_loop(c == 0, body=[qc.h(0), qc.measure(0, c[0])])\n```",
+      "C": "```python\nwith qc.loop_while(c, 0):\n    qc.h(0)\n    qc.measure(0, c[0])\n```",
+      "D": "```python\nwhile c == 0:\n    qc.h(0)\n    qc.measure(0, c[0])\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  }
+]

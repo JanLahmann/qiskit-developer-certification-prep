@@ -1,0 +1,68 @@
+{
+  "id": "s5-q023",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A 1-parameter circuit is broadcast over 4 parameter values at 500 shots each. What does `sum(result[0].data.meas.get_counts().values())` return when `get_counts()` is called with no index?",
+  "code": "import numpy as np\n\nvals = np.array([[0.0], [np.pi/3], [np.pi/2], [np.pi]])   # 4 parameter sets\nba = sampler.run([(isa, vals)], shots=500).result()[0].data.meas\nprint(sum(ba.get_counts().values()))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`2000` — with no index, `get_counts()` aggregates the shots from all 4 parameter sets (4 x 500)"
+    },
+    {
+      "key": "B",
+      "text": "`500` — it returns the counts for just the first parameter set"
+    },
+    {
+      "key": "C",
+      "text": "`4` — one entry per parameter set"
+    },
+    {
+      "key": "D",
+      "text": "`125` — the 500 shots are divided among the 4 parameter sets"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "On a broadcast (non-scalar) BitArray, `get_counts()` with no index flattens across every broadcast entry and tallies all of their shots together: 4 parameter sets x 500 shots = 2000. To get the histogram for a single parameter set you must index, e.g. `get_counts(0)`.",
+    "distractors": {
+      "B": "Without an index it does not pick the first set; it aggregates all of them. `get_counts(0)` would be needed to isolate the first set's 500 shots.",
+      "C": "get_counts() returns a histogram dict (bitstring -> count), not one entry per parameter set. The 4 is the broadcast length, not the aggregate total.",
+      "D": "Each parameter set runs the full 500 shots independently; shots are not split across the sweep. The aggregate is 4 x 500 = 2000."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q023.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nt = Parameter(\"t\"); qc = QuantumCircuit(1); qc.ry(t, 0); qc.measure_all()\nisa = pm.run(qc)\n\nvals = np.array([[0.0], [np.pi / 3], [np.pi / 2], [np.pi]])   # 4 parameter sets\nba = SamplerV2(mode=backend).run([(isa, vals)], shots=500).result()[0].data.meas\nobserved = sum(ba.get_counts().values())   # no index -> aggregate\n\ncandidates = {\"A\": 2000, \"B\": 500, \"C\": 4, \"D\": 125}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims {v}; ba.get_counts() (no index) totalled {observed} over shape {tuple(ba.shape)} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"shape\": list(ba.shape), \"aggregate_total\": observed}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

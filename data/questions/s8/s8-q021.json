@@ -1,0 +1,57 @@
+{
+  "id": "s8-q021",
+  "section": "s8",
+  "objectives": [
+    "s8o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "In OpenQASM 3, how do the declarations `bit[4] c;` and `int[4] n;` differ, and how does Qiskit's OpenQASM 3 importer (`qiskit.qasm3.loads`) handle each?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "`bit[4]` is a register of four classical bits (imported as a `ClassicalRegister`); `int[4]` is a single 4-bit signed integer, which the Qiskit importer does not currently support parsing."
+    },
+    {
+      "key": "B",
+      "text": "Both declare 4-bit signed integers and are interchangeable; the importer maps each to a Python `int`."
+    },
+    {
+      "key": "C",
+      "text": "`bit[4]` is a 4-bit signed integer and `int[4]` is a register of four bits; the importer treats them the other way around."
+    },
+    {
+      "key": "D",
+      "text": "Both are imported as `ClassicalRegister` objects of length 4."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`bit` is the classical-bit type: `bit[4]` is an array of four bits, which Qiskit represents as a `ClassicalRegister` (and `bit` as a single `Clbit`). `int[n]` is a distinct scalar type -- an n-bit signed integer. Qiskit's OpenQASM 3 importer supports `bit`/`bit[n]` register declarations but does not currently parse `int` variable declarations (feature table: `int` is unsupported for import).",
+    "distractors": {
+      "B": "`bit` and `int` are different types: one is an array of bits, the other a signed integer. They are not interchangeable, and `int` declarations are not importable at all.",
+      "C": "The roles are reversed. `bit[4]` is the bit array (-> `ClassicalRegister`); `int[4]` is the integer scalar.",
+      "D": "Only `bit[4]` maps to a `ClassicalRegister`. `int[4]` is a scalar integer type and is not imported as a register (in fact it is not parsed by the importer)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

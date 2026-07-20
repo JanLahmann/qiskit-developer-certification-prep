@@ -1,0 +1,28 @@
+{
+  "question": "s8-q010",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "option A equals qasm3.dumps output? True (option repr='OPENQASM 3.0;\\ninclude \"stdgates.inc\";\\nbit[1] c;\\nqubit[1] q;\\nh q[0];\\nc[0] = measure q[0];\\n')",
+      "B": "option B equals qasm3.dumps output? False (option repr='OPENQASM 3.0;\\ninclude \"stdgates.inc\";\\ncreg c[1];\\nqreg q[1];\\nh q[0];\\nc[0] = measure q[0];\\n')",
+      "C": "option C equals qasm3.dumps output? False (option repr='OPENQASM 3.0;\\ninclude \"stdgates.inc\";\\nbit[1] c;\\nqubit[1] q;\\nh q[0];\\nmeasure q[0] -> c[0];\\n')",
+      "D": "option D equals qasm3.dumps output? False (option repr='OPENQASM 3.0;\\ninclude \"qelib1.inc\";\\nbit[1] c;\\nqubit[1] q;\\nh q[0];\\nc[0] = measure q[0];\\n')"
+    },
+    "observed": {
+      "dumps": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit[1] c;\nqubit[1] q;\nh q[0];\nc[0] = measure q[0];\n"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.31,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"option A equals qasm3.dumps output? True (option repr='OPENQASM 3.0;\\\\ninclude \\\"stdgates.inc\\\";\\\\nbit[1] c;\\\\nqubit[1] q;\\\\nh q[0];\\\\nc[0] = measure q[0];\\\\n')\", \"B\": \"option B equals qasm3.dumps output? False (option repr='OPENQASM 3.0;\\\\ninclude \\\"stdgates.inc\\\";\\\\ncreg c[1];\\\\nqreg q[1];\\\\nh q[0];\\\\nc[0] = measure q[0];\\\\n')\", \"C\": \"option C equals qasm3.dumps output? False (option repr='OPENQASM 3.0;\\\\ninclude \\\"stdgates.inc\\\";\\\\nbit[1] c;\\\\nqubit[1] q;\\\\nh q[0];\\\\nmeasure q[0] -> c[0];\\\\n')\", \"D\": \"option D equals qasm3.dumps output? False (option repr='OPENQASM 3.0;\\\\ninclude \\\"qelib1.inc\\\";\\\\nbit[1] c;\\\\nqubit[1] q;\\\\nh q[0];\\\\nc[0] = measure q[0];\\\\n')\"}, \"observed\": {\"dumps\": \"OPENQASM 3.0;\\ninclude \\\"stdgates.inc\\\";\\nbit[1] c;\\nqubit[1] q;\\nh q[0];\\nc[0] = measure q[0];\\n\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

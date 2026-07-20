@@ -1,0 +1,67 @@
+{
+  "id": "s6-q011",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "The circuit prepares a Bell state. Using an exact estimator, what is the expectation value of the observable `O = 0.5*ZZ + 0.5*XX`?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nobs = SparsePauliOp([\"ZZ\", \"XX\"], coeffs=[0.5, 0.5])\nprint(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`1.0`"
+    },
+    {
+      "key": "B",
+      "text": "`0.5`"
+    },
+    {
+      "key": "C",
+      "text": "`0.0`"
+    },
+    {
+      "key": "D",
+      "text": "`2.0`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The expectation value of a weighted sum of Paulis is the same weighted sum of the individual expectation values. On the Bell state (|00>+|11>)/sqrt(2) both correlators are +1: <ZZ> = 1 and <XX> = 1. So <O> = 0.5*(1) + 0.5*(1) = 1.0.",
+    "distractors": {
+      "B": "Counting only one term (e.g. assuming <XX> = 0) gives 0.5 — but the Bell state is perfectly correlated in the X basis too, so <XX> = 1.",
+      "C": "0.0 would require the two terms to cancel or the state to be uncorrelated; the Bell state is maximally correlated, so both terms are +1, not opposite in sign.",
+      "D": "2.0 ignores the 0.5 coefficients and simply adds <ZZ> + <XX>; the coefficients scale each term."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q011.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)   # Bell state (|00>+|11>)/sqrt(2)\nobs = SparsePauliOp([\"ZZ\", \"XX\"], coeffs=[0.5, 0.5])\nobserved = float(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs))\n\ncandidates = {\"A\": 1.0, \"B\": 0.5, \"C\": 0.0, \"D\": 2.0}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.isclose(observed, val))\n    evidence[k] = f\"exact <0.5*ZZ + 0.5*XX> on the Bell state = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

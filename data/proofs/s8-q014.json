@@ -1,0 +1,37 @@
+{
+  "question": "s8-q014",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "line 'c[0] = measure q[0];' present as an emitted OpenQASM 3 line? True",
+      "B": "line 'measure q[0] -> c[0];' present as an emitted OpenQASM 3 line? False",
+      "C": "line 'c[0] = measure(q[0]);' present as an emitted OpenQASM 3 line? False",
+      "D": "line 'measure q[0], c[0];' present as an emitted OpenQASM 3 line? False"
+    },
+    "observed": {
+      "lines": [
+        "OPENQASM 3.0;",
+        "include \"stdgates.inc\";",
+        "bit[2] c;",
+        "qubit[2] q;",
+        "h q[0];",
+        "cx q[0], q[1];",
+        "c[0] = measure q[0];",
+        "c[1] = measure q[1];"
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.29,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"line 'c[0] = measure q[0];' present as an emitted OpenQASM 3 line? True\", \"B\": \"line 'measure q[0] -> c[0];' present as an emitted OpenQASM 3 line? False\", \"C\": \"line 'c[0] = measure(q[0]);' present as an emitted OpenQASM 3 line? False\", \"D\": \"line 'measure q[0], c[0];' present as an emitted OpenQASM 3 line? False\"}, \"observed\": {\"lines\": [\"OPENQASM 3.0;\", \"include \\\"stdgates.inc\\\";\", \"bit[2] c;\", \"qubit[2] q;\", \"h q[0];\", \"cx q[0], q[1];\", \"c[0] = measure q[0];\", \"c[1] = measure q[1];\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

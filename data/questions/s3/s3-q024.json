@@ -1,0 +1,68 @@
+{
+  "id": "s3-q024",
+  "section": "s3",
+  "objectives": [
+    "s3o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "After measuring qubit 0 into `cr[0]`, you want to apply X to qubit 1 only when that bit equals 1. Which snippet is valid in Qiskit 2.x and produces a conditional (`if_else`) operation?",
+  "code": "# qr = QuantumRegister(2,'q'); cr = ClassicalRegister(2,'c')\n# qc has already done: qc.h(0); qc.measure(0, 0)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`qc.x(1).c_if(cr[0], 1)`"
+    },
+    {
+      "key": "B",
+      "text": "`with qc.if_test(cr[0], 1):`\n    `qc.x(1)`"
+    },
+    {
+      "key": "C",
+      "text": "`with qc.if_test((cr[0], 1)):`\n    `qc.x(1)`"
+    },
+    {
+      "key": "D",
+      "text": "`qc.if_test((cr[0], 1), qc.x, [1])`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "The modern control-flow API is a context manager whose single argument is a `(classical_resource, value)` TUPLE: `with qc.if_test((cr[0], 1)):`. Gates added inside the block become the conditional body, producing an `if_else` operation.",
+    "distractors": {
+      "A": "`.c_if()` was REMOVED in Qiskit 2.0; calling it raises `AttributeError`. This is the classic v1-to-v2 migration trap.",
+      "B": "`if_test` takes ONE positional argument (the condition tuple); passing `cr[0], 1` as two arguments raises a `TypeError`.",
+      "D": "There is no `(condition, callable, qubits)` form; used without a `with` block and body qubits it raises a `CircuitError`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q024.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\ndef fresh():\n    qr = QuantumRegister(2, 'q'); cr = ClassicalRegister(2, 'c')\n    qc = QuantumCircuit(qr, cr); qc.h(0); qc.measure(0, 0)\n    return qc, cr\n\nevidence = {}\nproven = []\n\ndef check(key, fn):\n    try:\n        qc = fn()\n        has_if = \"if_else\" in qc.count_ops()\n        evidence[key] = f\"built successfully; ops={dict(qc.count_ops())}; has if_else={has_if}\"\n        if has_if:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\ndef A():\n    qc, cr = fresh(); qc.x(1).c_if(cr[0], 1); return qc\ndef B():\n    qc, cr = fresh()\n    with qc.if_test(cr[0], 1):\n        qc.x(1)\n    return qc\ndef C():\n    qc, cr = fresh()\n    with qc.if_test((cr[0], 1)):\n        qc.x(1)\n    return qc\ndef D():\n    qc, cr = fresh(); qc.if_test((cr[0], 1), qc.x, [1]); return qc\n\ncheck(\"A\", A); check(\"B\", B); check(\"C\", C); check(\"D\", D)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

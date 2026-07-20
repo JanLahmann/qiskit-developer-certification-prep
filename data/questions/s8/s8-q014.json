@@ -1,0 +1,68 @@
+{
+  "id": "s8-q014",
+  "section": "s8",
+  "objectives": [
+    "s8o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "The circuit below is exported with `qiskit.qasm3.dumps(qc)`. Which line appears in the emitted program to record the measurement of qubit 0 into classical bit 0?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(2, 2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure(0, 0)\nqc.measure(1, 1)\n\nprint(qasm3.dumps(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`c[0] = measure q[0];`"
+    },
+    {
+      "key": "B",
+      "text": "`measure q[0] -> c[0];`"
+    },
+    {
+      "key": "C",
+      "text": "`c[0] = measure(q[0]);`"
+    },
+    {
+      "key": "D",
+      "text": "`measure q[0], c[0];`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "In OpenQASM 3, `measure` is an expression whose result is assigned to a classical bit: `c[0] = measure q[0];`. This assignment form replaces the OpenQASM 2 arrow syntax.",
+    "distractors": {
+      "B": "`measure q[0] -> c[0];` is the OpenQASM 2 syntax. OpenQASM 3 uses assignment, not the arrow.",
+      "C": "`measure` is a quantum instruction keyword applied to a qubit operand, not a function call; there are no parentheses around the qubit.",
+      "D": "OpenQASM 3 does not use a comma to pair qubit and clbit; the target bit is written on the left of an assignment."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm3"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s8-q014.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(2, 2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure(0, 0)\nqc.measure(1, 1)\nout = qasm3.dumps(qc)\nlines = out.splitlines()\n\ncandidates = {\n    \"A\": \"c[0] = measure q[0];\",\n    \"B\": \"measure q[0] -> c[0];\",\n    \"C\": \"c[0] = measure(q[0]);\",\n    \"D\": \"measure q[0], c[0];\",\n}\nevidence = {}\nproven = []\nfor key, line in candidates.items():\n    present = line in lines\n    evidence[key] = f\"line {line!r} present as an emitted OpenQASM 3 line? {present}\"\n    if present:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"lines\": lines}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

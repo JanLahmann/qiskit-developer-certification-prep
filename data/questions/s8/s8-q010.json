@@ -1,0 +1,68 @@
+{
+  "id": "s8-q010",
+  "section": "s8",
+  "objectives": [
+    "s8o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "You export a small circuit to OpenQASM 3 with `qiskit.qasm3.dumps(qc)`. Which string is returned exactly?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\n\nprint(qasm3.dumps(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": "```\nOPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit[1] c;\nqubit[1] q;\nh q[0];\nc[0] = measure q[0];\n```"
+    },
+    {
+      "key": "B",
+      "text": "```\nOPENQASM 3.0;\ninclude \"stdgates.inc\";\ncreg c[1];\nqreg q[1];\nh q[0];\nc[0] = measure q[0];\n```"
+    },
+    {
+      "key": "C",
+      "text": "```\nOPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit[1] c;\nqubit[1] q;\nh q[0];\nmeasure q[0] -> c[0];\n```"
+    },
+    {
+      "key": "D",
+      "text": "```\nOPENQASM 3.0;\ninclude \"qelib1.inc\";\nbit[1] c;\nqubit[1] q;\nh q[0];\nc[0] = measure q[0];\n```"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "OpenQASM 3 declares classical and quantum data with the `bit[n]`/`qubit[n]` keywords (not `creg`/`qreg`), pulls its standard gates from `stdgates.inc`, and writes measurement as an assignment `c[0] = measure q[0];`. Qiskit's exporter lists the classical `bit` declaration before the `qubit` declaration, exactly matching option A.",
+    "distractors": {
+      "B": "`creg`/`qreg` are the OpenQASM 2 register keywords. OpenQASM 3 replaced them with `bit[n]` and `qubit[n]`; mixing the v2 keywords under a `3.0` header is invalid.",
+      "C": "`measure q[0] -> c[0];` is the OpenQASM 2 measurement arrow syntax. OpenQASM 3 uses an assignment, `c[0] = measure q[0];`.",
+      "D": "`qelib1.inc` is the OpenQASM 2 include file. OpenQASM 3 programs include `stdgates.inc` for the standard gate set."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm3"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s8-q010.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nobserved = qasm3.dumps(qc)\n\ncandidates = {\n    \"A\": 'OPENQASM 3.0;\\ninclude \"stdgates.inc\";\\nbit[1] c;\\nqubit[1] q;\\nh q[0];\\nc[0] = measure q[0];\\n',\n    \"B\": 'OPENQASM 3.0;\\ninclude \"stdgates.inc\";\\ncreg c[1];\\nqreg q[1];\\nh q[0];\\nc[0] = measure q[0];\\n',\n    \"C\": 'OPENQASM 3.0;\\ninclude \"stdgates.inc\";\\nbit[1] c;\\nqubit[1] q;\\nh q[0];\\nmeasure q[0] -> c[0];\\n',\n    \"D\": 'OPENQASM 3.0;\\ninclude \"qelib1.inc\";\\nbit[1] c;\\nqubit[1] q;\\nh q[0];\\nc[0] = measure q[0];\\n',\n}\nevidence = {}\nproven = []\nfor key, text in candidates.items():\n    match = (observed == text)\n    evidence[key] = f\"option {key} equals qasm3.dumps output? {match} (option repr={text!r})\"\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"dumps\": observed}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

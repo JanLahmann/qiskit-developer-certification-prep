@@ -1,0 +1,73 @@
+{
+  "id": "s3-q015",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "Consider the circuit below. Select ALL statements that are TRUE about its structural properties. (Recall `width()` counts qubits + classical bits.)",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(3, 'q')\ncr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0)\nqc.cx(0, 1)\nqc.cx(1, 2)\nqc.measure(0, 0)\nqc.measure(2, 1)",
+  "options": [
+    {
+      "key": "A",
+      "text": "The circuit has 3 qubits and 2 classical bits."
+    },
+    {
+      "key": "B",
+      "text": "`qc.width()` returns 3."
+    },
+    {
+      "key": "C",
+      "text": "`qc.size()` returns 5 (the total number of operations)."
+    },
+    {
+      "key": "D",
+      "text": "`qc.depth()` equals `qc.size()`."
+    },
+    {
+      "key": "E",
+      "text": "`qc.num_qubits + qc.num_clbits` equals `qc.width()`."
+    }
+  ],
+  "answer": [
+    "A",
+    "C",
+    "E"
+  ],
+  "explanation": {
+    "correct": "`num_qubits`=3 and `num_clbits`=2 (A). `size()` counts all 5 operations: 1 H + 2 CX + 2 measures (C). `width()` returns qubits + classical bits = 3 + 2 = 5, so it equals `num_qubits + num_clbits` (E).",
+    "distractors": {
+      "B": "`width()` returns qubits PLUS classical bits (5 here), not the qubit count. Confusing `width()` with `num_qubits` is a common slip.",
+      "D": "`depth()` is the longest gate path (4 here), while `size()` is the total operation count (5); they are different metrics and are not equal for this circuit."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q015.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(3, 'q'); cr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0); qc.cx(0, 1); qc.cx(1, 2)\nqc.measure(0, 0); qc.measure(2, 1)\n\nnq, ncl = qc.num_qubits, qc.num_clbits\nw, s, d = qc.width(), qc.size(), qc.depth()\nclaims = {\n    \"A\": nq == 3 and ncl == 2,\n    \"B\": w == 3,\n    \"C\": s == 5,\n    \"D\": d == s,\n    \"E\": (nq + ncl) == w,\n}\nfacts = f\"num_qubits={nq}, num_clbits={ncl}, width={w}, size={s}, depth={d}\"\nevidence = {\n    \"A\": f\"{facts}: qubits=3 & clbits=2 -> {claims['A']}\",\n    \"B\": f\"{facts}: width()={w} (qubits+clbits), not 3 -> {claims['B']}\",\n    \"C\": f\"{facts}: size()={s} operations -> {claims['C']}\",\n    \"D\": f\"{facts}: depth={d} vs size={s} -> equal? {claims['D']}\",\n    \"E\": f\"{facts}: num_qubits+num_clbits={nq+ncl} vs width={w} -> {claims['E']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"width\": w, \"size\": s, \"depth\": d}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

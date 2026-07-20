@@ -1,0 +1,68 @@
+{
+  "id": "s3-q014",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You want a circuit with a 2-qubit register `q` and a 2-bit register `c`, both qubits in superposition, measuring `q[i]` into `c[i]`. Which snippet builds AND runs on `AerSimulator` without raising, producing 2-bit outcomes?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "`qc=QuantumCircuit(2); qc.h([0,1]); qc.measure([0,1],[0,1])`"
+    },
+    {
+      "key": "B",
+      "text": "`q=QuantumRegister(2,'q'); qc=QuantumCircuit(q); qc.h(q); qc.measure(q,q)`"
+    },
+    {
+      "key": "C",
+      "text": "`q=QuantumRegister(2,'q'); c=ClassicalRegister(2,'c'); qc=QuantumCircuit(q,c); qc.h(q); qc.measure(c,q)`"
+    },
+    {
+      "key": "D",
+      "text": "`q=QuantumRegister(2,'q'); c=ClassicalRegister(2,'c'); qc=QuantumCircuit(q,c); qc.h(q[0]); qc.h(q[1]); qc.measure(q[0],c[0]); qc.measure(q[1],c[1])`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "You must declare classical bits before measuring into them. Option D creates both registers, passes them to `QuantumCircuit`, and calls `measure(qubit, clbit)` in the correct argument order, so it builds and runs, giving 2-bit outcomes.",
+    "distractors": {
+      "A": "`QuantumCircuit(2)` has NO classical bits, so `measure([0,1],[0,1])` has nowhere to store results and raises a `CircuitError`.",
+      "B": "`measure(q, q)` passes qubits as the classical-bit argument; measurement targets must be classical bits, so this raises.",
+      "C": "`measure(c, q)` swaps the argument order — `measure` expects `(qubit, clbit)`, not `(clbit, qubit)` — and raises."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/guides/measure-qubits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q014.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\nsim = AerSimulator(seed_simulator=42)\nevidence = {}\nproven = []\n\ndef attempt(key, build):\n    try:\n        qc = build()\n        counts = sim.run(qc, shots=200).result().get_counts()\n        width = len(next(iter(counts)))\n        ok = (width == 2)\n        evidence[key] = f\"built and ran; outcome bit-width={width}, sample counts={counts} -> valid={ok}\"\n        if ok:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:130]}\"\n\ndef build_A():\n    qc = QuantumCircuit(2); qc.h([0, 1]); qc.measure([0, 1], [0, 1]); return qc\ndef build_B():\n    q = QuantumRegister(2, \"q\"); qc = QuantumCircuit(q); qc.h(q); qc.measure(q, q); return qc\ndef build_C():\n    q = QuantumRegister(2, \"q\"); c = ClassicalRegister(2, \"c\")\n    qc = QuantumCircuit(q, c); qc.h(q); qc.measure(c, q); return qc\ndef build_D():\n    q = QuantumRegister(2, \"q\"); c = ClassicalRegister(2, \"c\")\n    qc = QuantumCircuit(q, c); qc.h(q[0]); qc.h(q[1])\n    qc.measure(q[0], c[0]); qc.measure(q[1], c[1]); return qc\n\nattempt(\"A\", build_A)\nattempt(\"B\", build_B)\nattempt(\"C\", build_C)\nattempt(\"D\", build_D)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

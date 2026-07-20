@@ -1,0 +1,68 @@
+{
+  "id": "s1-q015",
+  "section": "s1",
+  "objectives": [
+    "s1o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "For the three-qubit operator `Pauli('XYZ')`, which qubit does the Z factor act on?",
+  "code": "from qiskit.quantum_info import Pauli\n\np = Pauli('XYZ')\nprint(p.to_matrix().shape)",
+  "options": [
+    {
+      "key": "A",
+      "text": "Qubit 0 — the rightmost label character maps to the lowest-index qubit"
+    },
+    {
+      "key": "B",
+      "text": "Qubit 2 — the leftmost label character maps to the lowest-index qubit"
+    },
+    {
+      "key": "C",
+      "text": "Qubit 1 — Z is the middle factor"
+    },
+    {
+      "key": "D",
+      "text": "All three qubits — Z is applied globally"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Qiskit reads Pauli labels right-to-left. In 'XYZ' the rightmost character (Z) is qubit 0, Y is qubit 1, and X is qubit 2. So Z acts on qubit 0.",
+    "distractors": {
+      "B": "Reverses the little-endian convention. The leftmost character (X) is the highest-index qubit (qubit 2), so Z — the rightmost — is qubit 0, not qubit 2.",
+      "C": "Y is the middle factor (qubit 1); Z is the rightmost factor and acts on qubit 0.",
+      "D": "Each character is a separate tensor factor acting on one qubit; Z acts on a single qubit, not all three."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q015.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.quantum_info import Pauli\np = Pauli('XYZ')\nfactors = {i: p[i].to_label() for i in range(p.num_qubits)}\ntrue_q = next(i for i, lbl in factors.items() if lbl == \"Z\")\nclaims = {\"A\": 0, \"B\": 2, \"C\": 1}\nevidence = {}\nproven = []\nfor k, qi in claims.items():\n    match = (true_q == qi)\n    evidence[k] = f\"per-qubit factors {factors}; Z is on qubit {true_q}; option {k} claims qubit {qi} -> match={match}\"\n    if match:\n        proven.append(k)\nevidence[\"D\"] = f\"Z is one tensor factor on qubit {true_q} only, not all three qubits -> claim False\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"factors\": factors, \"z_qubit\": true_q}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

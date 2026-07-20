@@ -1,0 +1,73 @@
+{
+  "id": "s1-q017",
+  "section": "s1",
+  "objectives": [
+    "s1o1"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "Two Pauli operators commute when reordering them leaves the product unchanged. Which of the following pairs COMMUTE? Select all that apply.",
+  "code": "from qiskit.quantum_info import Pauli\n# e.g. Pauli('XX').commutes(Pauli('ZZ'))",
+  "options": [
+    {
+      "key": "A",
+      "text": "X⊗X and Z⊗Z"
+    },
+    {
+      "key": "B",
+      "text": "X⊗I and Z⊗Z"
+    },
+    {
+      "key": "C",
+      "text": "X⊗Z and Z⊗X"
+    },
+    {
+      "key": "D",
+      "text": "I⊗X and Z⊗I"
+    },
+    {
+      "key": "E",
+      "text": "X and Z (single qubit)"
+    }
+  ],
+  "answer": [
+    "A",
+    "C",
+    "D"
+  ],
+  "explanation": {
+    "correct": "Two multi-qubit Paulis commute when they anticommute on an EVEN number of qubits. A⊗B and C⊗D commute iff (an even count of the single-qubit factor pairs anticommute). X⊗X vs Z⊗Z: X,Z anticommute on both qubits (even) -> commute. X⊗Z vs Z⊗X: anticommute on both (even) -> commute. I⊗X vs Z⊗I: factors act on disjoint qubits, no anticommuting pair -> commute.",
+    "distractors": {
+      "B": "X⊗I vs Z⊗Z: they anticommute only on qubit 1 (X vs Z), an ODD count, so the pair anticommutes.",
+      "E": "Single-qubit X and Z anticommute (XZ = −ZX), so they do not commute."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q017.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.quantum_info import Pauli\nopts = {\"A\": (\"XX\", \"ZZ\"), \"B\": (\"XI\", \"ZZ\"), \"C\": (\"XZ\", \"ZX\"), \"D\": (\"IX\", \"ZI\"), \"E\": (\"X\", \"Z\")}\nevidence = {}\nproven = []\nfor k, (a, b) in opts.items():\n    c = bool(Pauli(a).commutes(Pauli(b)))\n    evidence[k] = f\"Pauli('{a}').commutes(Pauli('{b}')) = {c}\"\n    if c:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {k: bool(Pauli(a).commutes(Pauli(b))) for k, (a, b) in opts.items()}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

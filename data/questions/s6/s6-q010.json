@@ -1,0 +1,67 @@
+{
+  "id": "s6-q010",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You ran an `EstimatorV2` job and stored `result = job.result()`. Which expression returns the estimated expectation value(s) for the first PUB?",
+  "code": "from qiskit_ibm_runtime import EstimatorV2\n# job = estimator.run([(isa_circuit, isa_observable)])\nresult = job.result()\nvalue = ...  # which expression?",
+  "options": [
+    {
+      "key": "A",
+      "text": "`result[0].data.evs`"
+    },
+    {
+      "key": "B",
+      "text": "`result[0].data.stds`"
+    },
+    {
+      "key": "C",
+      "text": "`result[0].data.meas.get_counts()`"
+    },
+    {
+      "key": "D",
+      "text": "`result[0].quasi_dists`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "An EstimatorV2 PubResult carries a DataBin whose `evs` field holds the estimated expectation value(s) for that PUB (with the shape of the broadcasted observable/parameter arrays); `stds` holds the accompanying standard errors. `result[0]` selects the first PUB's result.",
+    "distractors": {
+      "B": "`stds` is a real field, but it holds the standard error of each estimate, not the expectation value itself — confusing the estimate with its uncertainty.",
+      "C": "`data.meas.get_counts()` is the Sampler output path (bitstring counts). The Estimator returns expectation values, not counts, so its DataBin has no `meas` register.",
+      "D": "`quasi_dists` belonged to the retired V1 Sampler interface; it never existed on EstimatorV2 results — a V1-to-V2 migration habit."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q010.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)   # Bell state\nobs = SparsePauliOp(\"ZZ\")\ntrue_ev = 1.0  # <ZZ> on the Bell state\nresult = StatevectorEstimator().run([(qc, obs)]).result()\ndata = result[0].data\n\nevidence = {}\nproven = []\nevs = float(np.asarray(data.evs))\nmatchA = bool(np.isclose(evs, true_ev))\nevidence[\"A\"] = f\"result[0].data.evs = {evs:.6f}; equals the true <ZZ> = {true_ev} -> holds the expectation value (match={matchA})\"\nif matchA:\n    proven.append(\"A\")\nstds = float(np.asarray(data.stds))\nevidence[\"B\"] = f\"result[0].data.stds = {stds:.6f} is the standard error of the estimate, NOT the expectation value ({true_ev})\"\ntry:\n    _ = data.meas.get_counts()\n    evidence[\"C\"] = \"data.meas exists (unexpected for Estimator)\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"result[0].data.meas raises {type(e).__name__}: an Estimator DataBin has no bitstring counts (that is Sampler output)\"\ntry:\n    _ = data.quasi_dists\n    evidence[\"D\"] = \"data.quasi_dists exists (unexpected)\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"result[0].data.quasi_dists raises {type(e).__name__}: quasi_dists was a retired V1 Sampler field, never on EstimatorV2\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": evs, \"stds\": stds}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

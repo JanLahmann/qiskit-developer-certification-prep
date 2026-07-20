@@ -1,0 +1,306 @@
+[
+  {
+    "n": 1,
+    "stem": "Given an instance of `qiskit_ibm_runtime.EstimatorV2` called `estimator`, which resilience level enables Zero Noise Extrapolation (ZNE) and gate twirling as an error mitigation method?",
+    "code": null,
+    "options": {
+      "A": "`estimator.options.resilience_level = 1`",
+      "B": "`estimator.options.resilience_level = 0`",
+      "C": "`estimator.options.resilience_level = 2`",
+      "D": "`estimator.options.resilience_level = 3`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 2,
+    "stem": "Which one of the following patterns, expressed in terms of array broadcasting primitives, is represented by the given image?  \n![Broadcasting Visualization](../Images/broadcasting.png)",
+    "code": null,
+    "options": {
+      "A": "Standard nd generalization",
+      "B": "Outer/Product",
+      "C": "Broadcast single observable",
+      "D": "Zip"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 3,
+    "stem": "Applying the Qiskit `SdgGate` to a qubit in state `|1⟩` introduces which global phase?",
+    "code": null,
+    "options": {
+      "A": "π/2 phase",
+      "B": "π/4 phase",
+      "C": "-π/4 phase",
+      "D": "-π/2 phase"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 4,
+    "stem": "Which one of the following code fragments will convert a `QuantumCircuit` object, named `circuit`, into an OpenQASM 3 **file output** in Qiskit?",
+    "code": null,
+    "options": {
+      "A": "`qiskit.qasm3.dumps(circuit)`",
+      "B": "`qiskit.qasm3.dump(circuit, file)`",
+      "C": "`qiskit.qasm3.to_qasm(circuit)`",
+      "D": "`qiskit.qasm3.export(circuit)`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 5,
+    "stem": "Given the following code fragment, what is the approximate probability that a measurement would result in a bit value of `0`?\n\n```python\nfrom qiskit import QuantumCircuit\nimport numpy as np\n\nqc = QuantumCircuit(1)\nqc.reset(0)\nqc.rx(3 * np.pi / 4, 0)\nqc.measure_all()\n```",
+    "code": "from qiskit import QuantumCircuit\nimport numpy as np\n\nqc = QuantumCircuit(1)\nqc.reset(0)\nqc.rx(3 * np.pi / 4, 0)\nqc.measure_all()",
+    "options": {
+      "A": "0.1464",
+      "B": "0.5",
+      "C": "0.8536",
+      "D": "1.0"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 6,
+    "stem": "Which two of the following code fragments create a `QuantumCircuit` with 2 classical bits and 3 qubits?",
+    "code": null,
+    "options": {
+      "A": "`QuantumCircuit(2,3)`",
+      "B": "`QuantumCircuit(QuantumRegister(3, 'qr0'), QuantumRegister(2, 'qr1'))`",
+      "C": "`QuantumCircuit(QuantumRegister(3), ClassicalRegister(2))`",
+      "D": "`QuantumCircuit(3,2)`",
+      "E": "`QuantumCircuit(QuantumRegister(2, 'qr0'), QuantumRegister(3, 'qr1'))`"
+    },
+    "stated_answer": [
+      "C",
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 7,
+    "stem": "Looking at the Bloch sphere visualization showing `|01⟩` and `|10⟩` states, which code would produce this quantum state?  \n![QSphere State](../Images/qsphere.png)",
+    "code": null,
+    "options": {
+      "A": "`qc = QuantumCircuit(2)`  \n`qc.x(1)`  \n`qc.h(0)`  \n`qc.cx(0, 1)`  \n`state = Statevector(qc)`  \n`plot_state_qsphere(state)`",
+      "B": "`qc = QuantumCircuit(2)`  \n`qc.h(0)`  \n`qc.cx(0, 1)`  \n`state = Statevector(qc)`  \n`plot_state_qsphere(state)`",
+      "C": "`qc = QuantumCircuit(2)`  \n`qc.h(0)`  \n`qc.z(0)`  \n`qc.cx(0, 1)`  \n`state = Statevector(qc)`  \n`plot_state_qsphere(state)`",
+      "D": "`qc = QuantumCircuit(2)`  \n`qc.x(0)`  \n`qc.x(1)`  \n`qc.h(0)`  \n`qc.cx(0, 1)`  \n`state = Statevector(qc)`  \n`plot_state_qsphere(state)`"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 8,
+    "stem": "Which statement describes the expected behavior of the `QiskitRuntimeService.jobs` method?",
+    "code": null,
+    "options": {
+      "A": "It returns no jobs unless filtered by a specific criteria",
+      "B": "It retrieves all runtime jobs, subject to optional filtering",
+      "C": "It always retrieves all jobs submitted in the last 30 days (720 hours)",
+      "D": "It only returns all jobs submitted to the `ibm_foo` backend"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 9,
+    "stem": "Which statement describes what the following line of OpenQASM 3 code does?\n\n```qasm\nuint[8] my_int;\n```",
+    "code": "uint[8] my_int;",
+    "options": {
+      "A": "Declare an unsigned 8-bit integer named my_int",
+      "B": "Declare a signed 8-bit integer named my_int",
+      "C": "Assign the 8th value of the list int to variable my_int",
+      "D": "Declare an integer named my_int with value 8"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 10,
+    "stem": "A quantum circuit `qc` is initialized as follows:\n\n```python\nvector = np.sqrt([1/2, 1/2])\nqc.initialize(vector, 0)\n```",
+    "code": "vector = np.sqrt([1/2, 1/2])\nqc.initialize(vector, 0)",
+    "options": {
+      "A": "plot_bloch_vector([1, np.pi/2, 0],coord_type='spherical')",
+      "B": "plot_bloch_vector([0, 1, 0])",
+      "C": "plot_bloch_vector([0, 0, 1])",
+      "D": "plot_bloch_vector([1, 0, np.pi/2],coord_type='spherical')"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 11,
+    "stem": "In which quantum state will the qubit be as a result of the following code?\n\n```python\nqc = QuantumCircuit(1)\nqc.reset(0)\nqc.h(0)\n```",
+    "code": "qc = QuantumCircuit(1)\nqc.reset(0)\nqc.h(0)",
+    "options": {
+      "A": "|−⟩",
+      "B": "|+⟩",
+      "C": "|0⟩",
+      "D": "|1⟩"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 12,
+    "stem": "To which module do the following classes belong?\n\n- `RemoveFinalReset`\n- `SabreLayout`\n- `BasisTranslator`",
+    "code": null,
+    "options": {
+      "A": "`qiskit.scheduler`",
+      "B": "`qiskit.circuit.library`",
+      "C": "`qiskit.transpiler.passes`",
+      "D": "`qiskit.providers.models`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 13,
+    "stem": "Which method should be used to retrieve the error message when debugging a failed Qiskit Runtime job?",
+    "code": null,
+    "options": {
+      "A": "`job.get_error()`",
+      "B": "`job.retrieve_error()`",
+      "C": "`job.error_message()`",
+      "D": "`job.error()`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 14,
+    "stem": "Given the code snippet, which one of the following is a valid way to invoke the `run` method on an instance of `SamplerV2`?\n\n```python\nfrom qiskit_ibm_runtime import SamplerV2\n...\nsampler = SamplerV2(...)\n```",
+    "code": "from qiskit_ibm_runtime import SamplerV2\n...\nsampler = SamplerV2(...)",
+    "options": {
+      "A": "sampler.run(isa_circuit, observable)",
+      "B": "sampler.run(isa_circuit, backend, parameter)",
+      "C": "sampler.run([isa_circuit])",
+      "D": "sampler.run(backend, isa_circuit)"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 15,
+    "stem": "Given the code fragment, which one of the following correctly connects to the `\"ibm_foo\"` backend?\n\n```python\nfrom qiskit_ibm_runtime import QiskitRuntimeService\nservice = QiskitRuntimeService()\n```",
+    "code": "from qiskit_ibm_runtime import QiskitRuntimeService\nservice = QiskitRuntimeService()",
+    "options": {
+      "A": "backend = service.get(\"ibm_foo\")",
+      "B": "backend = \"ibm_foo\"",
+      "C": "backend = service.fetch_backend(\"ibm_foo\")",
+      "D": "backend = service.backend(\"ibm_foo\")"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 16,
+    "stem": "Given a `ParameterVector` as defined below, which one of the following would find the position of `x` within `v`?\n\n```python\nfrom qiskit.circuit import ParameterVector\nv = ParameterVector(\"v\", 3)\nx = v[1]\n```",
+    "code": "from qiskit.circuit import ParameterVector\nv = ParameterVector(\"v\", 3)\nx = v[1]",
+    "options": {
+      "A": "v.find(x)",
+      "B": "v.index(x)",
+      "C": "x.find_in(v)",
+      "D": "v.locate(x)"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 17,
+    "stem": "Which one of the following code fragments will generate the given output?\n[[0.+0.j 1.+0.j 0.+0.j 0.+0.j]\n[ 1.+0.j 0.+0.j 0.+0.j 0.+0.j]\n[ 0.+0.j 0.+0.j 0.+0.j -1.+0.j]\n[ 0.+0.j 0.+0.j -1.+0.j 0.+0.j]]",
+    "code": null,
+    "options": {
+      "A": "`p = Pauli('ZX')`  \n  `print(p.to_matrix())`",
+      "B": "`p = Pauli('-IX')`  \n  `print(p.to_matrix())`",
+      "C": "`p = Pauli('-XX')`  \n  `print(p.to_matrix())`",
+      "D": "`p = Pauli('-XI')`  \n  `print(p.to_matrix())`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 18,
+    "stem": "Given the following code fragment, which statement describes the `SamplerOptions` parameter `options.default_shots`?\n\n```python\nfrom qiskit_ibm_runtime import Sampler\nsampler = Sampler(mode=backend)\nsampler.options.default_shots = ...\n```",
+    "code": "from qiskit_ibm_runtime import Sampler\nsampler = Sampler(mode=backend)\nsampler.options.default_shots = ...",
+    "options": {
+      "A": "The number of randomizations we apply to the circuit",
+      "B": "The number of times that we run the circuit",
+      "C": "The sum of the number of measurements in each qubit",
+      "D": "The number of sequences in dynamical decoupling"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 19,
+    "stem": "**(Select 2)**  \nWhich two of the following Python objects are valid input to `plot_distribution`?",
+    "code": null,
+    "options": {
+      "A": "`[0, 1, 2], [500, 500, 500]`",
+      "B": "`{ 0: 500, 3: 500 }`",
+      "C": "`[(0, 500), (3, 500)]`",
+      "D": "`[{ 0: 500, 3: 500}, { 0: 500, 1: 500 }]`",
+      "E": "`{ 0: [300, 500], 1: [400, 500] }`"
+    },
+    "stated_answer": [
+      "B",
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 20,
+    "stem": "Assuming all necessary imports have been completed, which one of the following is the shape of a `PubResult` named `result`?\n\n```python\nparameter_values = np.random.uniform(size=(5, ))\nobservables = [SparsePauliOp(pauli) for pauli in [\"III\", \"XXX\", \"YYY\", \"ZZZ\", \"XYZ\"]]\njob = Estimator(mode=session).run([(circuit, observables, parameter_values)])\nresult = job.result()[0].data.evs\nprint(result.shape())\n```",
+    "code": "parameter_values = np.random.uniform(size=(5, ))\nobservables = [SparsePauliOp(pauli) for pauli in [\"III\", \"XXX\", \"YYY\", \"ZZZ\", \"XYZ\"]]\njob = Estimator(mode=session).run([(circuit, observables, parameter_values)])\nresult = job.result()[0].data.evs\nprint(result.shape())",
+    "options": {
+      "A": "(5, 1)",
+      "B": "(5, 5)",
+      "C": "(1, 5)",
+      "D": "(5,)"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  }
+]

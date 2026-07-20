@@ -1,0 +1,68 @@
+{
+  "id": "s5-q024",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "A circuit measures into two named classical registers, `alice` and `bob`. After running the Sampler, how do you read the counts for the `alice` register?",
+  "code": "qr = QuantumRegister(2, 'q')\nalice = ClassicalRegister(1, 'alice')\nbob   = ClassicalRegister(1, 'bob')\nqc = QuantumCircuit(qr, alice, bob)\n# ... measure into alice and bob, transpile, run ...\nresult = sampler.run([isa]).result()",
+  "options": [
+    {
+      "key": "A",
+      "text": "`result[0].data.alice.get_counts()`"
+    },
+    {
+      "key": "B",
+      "text": "`result[0].data.meas.get_counts()['alice']`"
+    },
+    {
+      "key": "C",
+      "text": "`result[0].get_counts('alice')`"
+    },
+    {
+      "key": "D",
+      "text": "`result.data.alice.get_counts()`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Each classical register becomes its own field in the result's DataBin, named after the register. With registers `alice` and `bob`, the DataBin has `.alice` and `.bob` BitArrays, so `result[0].data.alice.get_counts()` returns that register's histogram.",
+    "distractors": {
+      "B": "There is no `meas` field here — `meas` only appears when you use `measure_all()`. With named registers the fields are `alice` and `bob`, so `data.meas` raises AttributeError.",
+      "C": "The PUB result has no `get_counts()` method that takes a register name; counts live on the per-register BitArray reached via `.data.<register>`.",
+      "D": "`result` is a PrimitiveResult (a sequence of PUB results). You must index the PUB first with `result[0]` before reaching `.data`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q024.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqr = QuantumRegister(2, \"q\")\nalice = ClassicalRegister(1, \"alice\"); bob = ClassicalRegister(1, \"bob\")\nqc = QuantumCircuit(qr, alice, bob)\nqc.x(0); qc.measure(0, alice[0]); qc.measure(1, bob[0])\nisa = pm.run(qc)\n\nresult = SamplerV2(mode=backend).run([isa], shots=200).result()\nevidence, proven = {}, []\n\n# A: result[0].data.alice.get_counts()\ntry:\n    c = result[0].data.alice.get_counts()\n    evidence[\"A\"] = f\"result[0].data.alice.get_counts() -> {c}\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:80]}\"\n\n# B: result[0].data.meas.get_counts()['alice']\ntry:\n    _ = result[0].data.meas.get_counts()[\"alice\"]\n    evidence[\"B\"] = \"result[0].data.meas...: unexpectedly succeeded\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"result[0].data.meas: raised {type(e).__name__}: {str(e)[:80]}\"\n\n# C: result[0].get_counts('alice')\ntry:\n    _ = result[0].get_counts(\"alice\")\n    evidence[\"C\"] = \"result[0].get_counts('alice'): unexpectedly succeeded\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"result[0].get_counts('alice'): raised {type(e).__name__}: {str(e)[:80]}\"\n\n# D: result.data.alice.get_counts() (missing [0])\ntry:\n    _ = result.data.alice.get_counts()\n    evidence[\"D\"] = \"result.data...: unexpectedly succeeded\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"result.data (no [0]): raised {type(e).__name__}: {str(e)[:80]}\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"data_fields\": list(result[0].data.keys())}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

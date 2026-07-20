@@ -1,0 +1,68 @@
+{
+  "id": "s3-q010",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "The circuit below flips only qubit 0 of a 3-qubit register and then measures every qubit with `measure_all()`. Running it on the default `AerSimulator`, which single bitstring is returned for every shot?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.measure_all()",
+  "options": [
+    {
+      "key": "A",
+      "text": "`100`"
+    },
+    {
+      "key": "B",
+      "text": "`010`"
+    },
+    {
+      "key": "C",
+      "text": "`001`"
+    },
+    {
+      "key": "D",
+      "text": "`111`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "Qiskit prints bitstrings in little-endian order: the rightmost character is the classical bit holding qubit 0, and the index increases leftward. Only qubit 0 is excited, so the outcome is `001` (q2 q1 q0 = 0 0 1).",
+    "distractors": {
+      "A": "`100` treats the leftmost character as qubit 0 (big-endian). Qiskit is little-endian, so qubit 0 is the RIGHTMOST bit.",
+      "B": "`010` is the outcome you would get if qubit 1 were flipped; the X acts on qubit 0.",
+      "D": "`111` would require all three qubits to be excited; only qubit 0 has an X gate."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/guides/measure-qubits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q010.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit_aer import AerSimulator\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.measure_all()\nsim = AerSimulator(seed_simulator=42)\ncounts = sim.run(qc, shots=1000).result().get_counts()\ntotal = sum(counts.values())\noptions = {\"A\": \"100\", \"B\": \"010\", \"C\": \"001\", \"D\": \"111\"}\nevidence = {}\nproven = []\nfor k, bs in options.items():\n    got = counts.get(bs, 0)\n    is_all = (got == total)\n    evidence[k] = f\"option claims {bs!r}; observed {got}/{total} shots gave {bs!r}; full counts={counts}\"\n    if is_all:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": counts}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

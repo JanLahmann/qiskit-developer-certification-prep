@@ -1,0 +1,68 @@
+{
+  "id": "s3-q019",
+  "section": "s3",
+  "objectives": [
+    "s3o3"
+  ],
+  "type": "spot-bug",
+  "difficulty": 2,
+  "stem": "This code is meant to bind both parameters but raises a `ValueError`. What is the problem and the correct fix?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\na = Parameter('a'); b = Parameter('b')\nqc = QuantumCircuit(1)\nqc.rx(a, 0)\nqc.rz(b, 0)\n\nbound = qc.assign_parameters([0.7])   # intended to bind a and b",
+  "options": [
+    {
+      "key": "A",
+      "text": "`assign_parameters` only accepts a dictionary; a list is never allowed."
+    },
+    {
+      "key": "B",
+      "text": "A list must provide a value for EVERY parameter; supply `[0.7, <b_value>]`, or use a dict like `{a: 0.7}` for partial binding."
+    },
+    {
+      "key": "C",
+      "text": "Parameters must be bound individually with `gate.assign()`."
+    },
+    {
+      "key": "D",
+      "text": "The circuit must be transpiled before any parameters can be assigned."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "A list binds positionally to ALL of `qc.parameters`, so its length must equal the number of parameters (2 here). Passing one value raises `ValueError`. Provide both values in a list, or pass a dict to bind a subset.",
+    "distractors": {
+      "A": "A list IS accepted when its length matches the parameter count; the error is the wrong length, not the list type.",
+      "C": "There is no per-gate `gate.assign()` workflow; binding is done on the circuit via `assign_parameters`.",
+      "D": "Parameter assignment is independent of transpilation; you can (and usually do) bind before transpiling."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q019.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\na = Parameter('a'); b = Parameter('b')\nqc = QuantumCircuit(1)\nqc.rx(a, 0); qc.rz(b, 0)\n\n# reproduce the bug\ntry:\n    qc.assign_parameters([0.7])\n    bug = \"no error\"\nexcept ValueError as e:\n    bug = f\"ValueError: {str(e)[:80]}\"\n\n# fix B: full list, and dict partial\nfull = qc.assign_parameters([0.7, 1.2])\nfull_ok = full.num_parameters == 0\npartial = qc.assign_parameters({a: 0.7})\npartial_ok = partial.num_parameters == 1\n\n# distractor checks\nlist_accepted = full_ok            # a list IS accepted when length matches -> A false\nhas_gate_assign = hasattr(qc.data[0].operation, \"assign\")  # informational\n\nclaims = {\n    \"A\": not list_accepted,\n    \"B\": bug.startswith(\"ValueError\") and full_ok and partial_ok,\n    \"C\": False,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"a length-2 list bound successfully (num_params after={full.num_parameters}) -> 'list never allowed' is {claims['A']}\",\n    \"B\": f\"one value raised [{bug}]; [0.7,1.2] bound all ({full_ok}); dict {{a:0.7}} left 1 free ({partial_ok}) -> {claims['B']}\",\n    \"C\": f\"binding is done via circuit.assign_parameters, not per-gate -> {claims['C']}\",\n    \"D\": f\"assignment worked with no transpilation -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug\": bug}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

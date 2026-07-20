@@ -1,0 +1,28 @@
+{
+  "question": "s2-q014",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "import + call OK; returned TextDrawing",
+      "B": "raised ModuleNotFoundError: No module named 'qiskit.tools'",
+      "C": "raised ImportError: cannot import name 'circuit_drawer' from 'qiskit' (/Users/majl/GitHub/qiskit-developer-cer",
+      "D": "raised ImportError: cannot import name 'draw_circuit' from 'qiskit.visualization' (/Users/majl/GitHub/qiskit-d"
+    },
+    "observed": {
+      "drawer_import": "qiskit.visualization.circuit_drawer"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.26,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"import + call OK; returned TextDrawing\", \"B\": \"raised ModuleNotFoundError: No module named 'qiskit.tools'\", \"C\": \"raised ImportError: cannot import name 'circuit_drawer' from 'qiskit' (/Users/majl/GitHub/qiskit-developer-cer\", \"D\": \"raised ImportError: cannot import name 'draw_circuit' from 'qiskit.visualization' (/Users/majl/GitHub/qiskit-d\"}, \"observed\": {\"drawer_import\": \"qiskit.visualization.circuit_drawer\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

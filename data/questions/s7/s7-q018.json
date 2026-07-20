@@ -1,0 +1,68 @@
+{
+  "id": "s7-q018",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "You ran the same circuit in two separate SamplerV2 jobs and now hold two `BitArray`s, `a` and `b`, with equal `num_bits`. You want a single BitArray pooling ALL shots from both. Which call produces it?",
+  "code": "from qiskit.primitives.containers import BitArray\n# a, b: BitArrays with equal num_bits, from two jobs",
+  "options": [
+    {
+      "key": "A",
+      "text": "`BitArray.concatenate_shots([a, b])`"
+    },
+    {
+      "key": "B",
+      "text": "`BitArray.concatenate_bits([a, b])`"
+    },
+    {
+      "key": "C",
+      "text": "`a.get_counts() + b.get_counts()`"
+    },
+    {
+      "key": "D",
+      "text": "`a + b`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`concatenate_shots` stacks the shot axes: the result has `num_shots = a.num_shots + b.num_shots` and unchanged `num_bits` -- exactly pooling repeated runs.",
+    "distractors": {
+      "B": "`concatenate_bits` widens `num_bits` (for joining registers side by side), keeping shots fixed -- that is not pooling shots.",
+      "C": "`get_counts()` returns dicts; the `+` operator does not merge two dicts.",
+      "D": "BitArray does not define `__add__`; `a + b` raises a TypeError."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q018.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.primitives.containers import BitArray\n\nqc = QuantumCircuit(3); qc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\na = StatevectorSampler(seed=1).run([qc], shots=200).result()[0].data.meas\nb = StatevectorSampler(seed=2).run([qc], shots=200).result()[0].data.meas\ntgt_shots = a.num_shots + b.num_shots\ntgt_bits = a.num_bits\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        if isinstance(r, BitArray):\n            ok = (r.num_shots == tgt_shots and r.num_bits == tgt_bits)\n            evidence[key] = f\"BitArray num_shots={r.num_shots}, num_bits={r.num_bits}; want shots={tgt_shots}, bits={tgt_bits} -> {ok}\"\n        else:\n            ok = False\n            evidence[key] = f\"returned {type(r).__name__} (not a pooled BitArray) -> False\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\ncheck(\"A\", lambda: BitArray.concatenate_shots([a, b]))\ncheck(\"B\", lambda: BitArray.concatenate_bits([a, b]))\ncheck(\"C\", lambda: a.get_counts() + b.get_counts())\ncheck(\"D\", lambda: a + b)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"target_shots\": tgt_shots, \"target_bits\": tgt_bits}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

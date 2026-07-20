@@ -1,0 +1,29 @@
+{
+  "question": "s7-q016",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "BitArray num_bits=2, num_shots=191; want bits=2, shots=191 -> True",
+      "B": "BitArray num_bits=1, num_shots=400; want bits=2, shots=191 -> False",
+      "C": "BitArray num_bits=2, num_shots=1; want bits=2, shots=191 -> False",
+      "D": "raised KeyError: 0"
+    },
+    "observed": {
+      "shots_with_q1_zero": 191,
+      "num_bits": 2
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.26,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"BitArray num_bits=2, num_shots=191; want bits=2, shots=191 -> True\", \"B\": \"BitArray num_bits=1, num_shots=400; want bits=2, shots=191 -> False\", \"C\": \"BitArray num_bits=2, num_shots=1; want bits=2, shots=191 -> False\", \"D\": \"raised KeyError: 0\"}, \"observed\": {\"shots_with_q1_zero\": 191, \"num_bits\": 2}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

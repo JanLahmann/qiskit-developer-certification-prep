@@ -1,0 +1,30 @@
+{
+  "question": "s5-q032",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "reading bs[-1] gives '1' in 94.50% of shots vs bs[0] only 1.27% -> qubit 0 is the last char = True",
+      "B": "after explicit measure(0,0), bs[0]=='1' in 1.27% of shots -> still not qubit 0 at index 0 = False",
+      "C": "with 9000 shots, bs[0]=='1' in 1.06% -> more shots does not move qubit 0 to index 0 = False",
+      "D": "dominant bitstring is '01'; its index-0 char is '0' -> get_counts/dominant[0] reads qubit 0 = False"
+    },
+    "observed": {
+      "frac1_at_0": 0.012666666666666666,
+      "frac1_at_last": 0.945,
+      "dominant": "01"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.7,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"reading bs[-1] gives '1' in 94.50% of shots vs bs[0] only 1.27% -> qubit 0 is the last char = True\", \"B\": \"after explicit measure(0,0), bs[0]=='1' in 1.27% of shots -> still not qubit 0 at index 0 = False\", \"C\": \"with 9000 shots, bs[0]=='1' in 1.06% -> more shots does not move qubit 0 to index 0 = False\", \"D\": \"dominant bitstring is '01'; its index-0 char is '0' -> get_counts/dominant[0] reads qubit 0 = False\"}, \"observed\": {\"frac1_at_0\": 0.012666666666666666, \"frac1_at_last\": 0.945, \"dominant\": \"01\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

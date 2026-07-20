@@ -1,0 +1,68 @@
+{
+  "id": "s5-q029",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "A 2-qubit circuit is run with `shots=777`. What is `len(result[0].data.meas.get_bitstrings())`?",
+  "code": "ba = sampler.run([isa], shots=777).result()[0].data.meas\nprint(len(ba.get_bitstrings()))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`777` — `get_bitstrings()` returns one entry per shot"
+    },
+    {
+      "key": "B",
+      "text": "`2` — one entry per qubit"
+    },
+    {
+      "key": "C",
+      "text": "`4` — one entry per possible 2-bit outcome"
+    },
+    {
+      "key": "D",
+      "text": "`1` — a single concatenated string of all shots"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`get_bitstrings()` returns the raw per-shot record: a list with exactly one bitstring for every shot, in order. With 777 shots you get a list of length 777. (`get_counts()` is the summarized view; `get_bitstrings()` is the un-aggregated one.)",
+    "distractors": {
+      "B": "The length is per-shot, not per-qubit. Each entry is a full 2-character bitstring; there are as many entries as shots.",
+      "C": "4 is the number of *possible* outcomes; `get_bitstrings()` lists actual shots (with repeats), so its length is the shot count.",
+      "D": "It returns a list of separate bitstrings (one per shot), not one giant concatenated string."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q029.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nba = SamplerV2(mode=backend).run([isa], shots=777).result()[0].data.meas\nobserved = len(ba.get_bitstrings())\n\ncandidates = {\"A\": 777, \"B\": 2, \"C\": 4, \"D\": 1}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims len={v}; len(get_bitstrings())={observed} (num_shots={ba.num_shots}) -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"len_bitstrings\": observed, \"num_shots\": ba.num_shots}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "question": "s8-q011",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "no error; return=NoneType; file object received 89 chars, valid OpenQASM 3 (starts with 'OPENQASM 3.0')=True",
+      "B": "raised TypeError: dumps() takes 1 positional argument but 2 were given",
+      "C": "raised TypeError: dump() missing 1 required positional argument: 'stream'",
+      "D": "raised AttributeError: '_io.StringIO' object has no attribute 'qubits'"
+    },
+    "observed": {
+      "proven": [
+        "A"
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.31,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"no error; return=NoneType; file object received 89 chars, valid OpenQASM 3 (starts with 'OPENQASM 3.0')=True\", \"B\": \"raised TypeError: dumps() takes 1 positional argument but 2 were given\", \"C\": \"raised TypeError: dump() missing 1 required positional argument: 'stream'\", \"D\": \"raised AttributeError: '_io.StringIO' object has no attribute 'qubits'\"}, \"observed\": {\"proven\": [\"A\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

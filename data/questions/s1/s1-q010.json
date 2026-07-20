@@ -1,0 +1,68 @@
+{
+  "id": "s1-q010",
+  "section": "s1",
+  "objectives": [
+    "s1o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "In Qiskit, which two-qubit operator does `Pauli('XZ')` represent?",
+  "code": "from qiskit.quantum_info import Pauli\n\np = Pauli('XZ')\nprint(p.to_matrix())",
+  "options": [
+    {
+      "key": "A",
+      "text": "X ⊗ Z — Pauli X acts on qubit 1 and Pauli Z acts on qubit 0"
+    },
+    {
+      "key": "B",
+      "text": "Z ⊗ X — Pauli X acts on qubit 0 and Pauli Z acts on qubit 1"
+    },
+    {
+      "key": "C",
+      "text": "The 4×4 identity, because X and Z appear in different tensor factors"
+    },
+    {
+      "key": "D",
+      "text": "A single-qubit matrix X·Z = −iY; the label is a matrix product, not a tensor product"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "A Pauli label is read right-to-left: the rightmost character is qubit 0 and the leftmost is the highest-index qubit. So `Pauli('XZ')` is X on qubit 1 tensored with Z on qubit 0, i.e. the 4×4 matrix np.kron(X, Z).",
+    "distractors": {
+      "B": "Reverses Qiskit's little-endian label convention. The leftmost character is the highest-index qubit, not qubit 0, so X is on qubit 1 and Z is on qubit 0.",
+      "C": "A tensor product of X and Z is not the identity; the label builds a 4×4 operator, and neither factor is the identity here.",
+      "D": "Confuses a tensor product with a single-qubit matrix product. A two-character label is a 2-qubit (4×4) operator, not a 2×2 product of the letters."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q010.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nX = np.array([[0, 1], [1, 0]], dtype=complex)\nZ = np.array([[1, 0], [0, -1]], dtype=complex)\nY = np.array([[0, -1j], [1j, 0]], dtype=complex)\nobserved = Pauli('XZ').to_matrix()\ncands = {\"A\": np.kron(X, Z), \"B\": np.kron(Z, X), \"C\": np.eye(4, dtype=complex), \"D\": -1j * Y}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    match = observed.shape == v.shape and bool(np.allclose(observed, v))\n    evidence[k] = (f\"Pauli('XZ').to_matrix() is a {observed.shape} matrix; \"\n                   f\"option {k} claims a {v.shape} matrix -> match={match}\")\n    if match:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"shape\": list(observed.shape), \"real_part\": observed.real.tolist()}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

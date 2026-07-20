@@ -1,0 +1,753 @@
+[
+  {
+    "n": 1,
+    "stem": "Which code fragment constructs the Pauli operator $Z\\otimes X$ (-Z on qubit 1, X on qubit 0) for a two-qubit system?",
+    "code": null,
+    "options": {
+      "A": "`p = Pauli('ZX')`",
+      "B": "`p = Pauli('XZ')`",
+      "C": "`p = Pauli('IZ')`",
+      "D": "`p = Pauli('XI')`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 2,
+    "stem": "A qubit is initialised in $|0\\rangle$. The following Qiskit program is run:\n\n```python\nqc = QuantumCircuit(1)\nqc.sx(0)\nqc.sx(0)\nqc.measure_all()\n```\n\nWhich final *computational* state does this sequence prepare (ignoring global phase)?",
+    "code": "qc = QuantumCircuit(1)\nqc.sx(0)\nqc.sx(0)\nqc.measure_all()",
+    "options": {
+      "A": "$|+\\rangle$",
+      "B": "$i\\,|1\\rangle$",
+      "C": "$|1\\rangle$",
+      "D": "$|0\\rangle$"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 3,
+    "stem": "Applying `SGate` (`qc.s(0)`) to a qubit in state $|1\\rangle$ introduces which global phase?",
+    "code": null,
+    "options": {
+      "A": "$+\\frac{\\pi}{2}$",
+      "B": "$-\\frac{\\pi}{2}$",
+      "C": "$+\\pi$",
+      "D": "$-\\pi$"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 4,
+    "stem": "Consider\n\n```python\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.z(0)\nqc.measure_all()\n```\n\nWhat is the probability of measuring the classical bit `1`?",
+    "code": "qc = QuantumCircuit(1)\nqc.h(0)\nqc.z(0)\nqc.measure_all()",
+    "options": {
+      "A": "0.25",
+      "B": "0.50",
+      "C": "0.75",
+      "D": "1.00"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 5,
+    "stem": "```python\nqc = QuantumCircuit(1)\nqc.rx(np.pi/3, 0)\nqc.measure_all()\n```\n\nApproximately what is the probability of obtaining outcome `1`?",
+    "code": "qc = QuantumCircuit(1)\nqc.rx(np.pi/3, 0)\nqc.measure_all()",
+    "options": {
+      "A": "0.25",
+      "B": "0.50",
+      "C": "0.75",
+      "D": "0.866"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 6,
+    "stem": "Which of the following code fragments prepares the Bell state $|\\Phi^{+}\\rangle = (|00\\rangle+|11\\rangle)/\\sqrt{2}$?",
+    "code": null,
+    "options": {
+      "A": "`qc.h(0); qc.cx(0,1)`",
+      "B": "`qc.h(1); qc.cx(1,0)`",
+      "C": "`qc.x(0); qc.h(1); qc.cx(1,0)`",
+      "D": "`qc.h(0); qc.cz(0,1)`"
+    },
+    "stated_answer": [
+      "A",
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 7,
+    "stem": "Which pair of single-qubit Pauli operations **commute** with each other?",
+    "code": null,
+    "options": {
+      "A": "X and Z",
+      "B": "Y and Z",
+      "C": "X and X",
+      "D": "X and Y"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 8,
+    "stem": "Which code fragment applies a Pauli-Y operation to qubit 0 of an existing circuit `qc`?",
+    "code": null,
+    "options": {
+      "A": "`qc.sx(0)`",
+      "B": "`qc.y(0)`",
+      "C": "`qc.t(0)`",
+      "D": "`qc.rz(np.pi, 0)`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 9,
+    "stem": "Which call renders a `QuantumCircuit` named `qc` using Matplotlib?",
+    "code": null,
+    "options": {
+      "A": "`qc.draw(output=\"mpl\")`",
+      "B": "`qc.plot(\"mpl\")`",
+      "C": "`plot_circuit(qc, backend=\"mpl\")`",
+      "D": "`qc.draw_mpl()`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 10,
+    "stem": "Which snippet correctly saves a Matplotlib circuit diagram to `circuit.png`?",
+    "code": null,
+    "options": {
+      "A": "`from qiskit.visualization import circuit_drawer; circuit_drawer(qc, output=\"mpl\", filename=\"circuit.png\")`",
+      "B": "`qc.draw(filename=\"circuit.png\")`",
+      "C": "`qc.save(output=\"mpl\", file=\"circuit.png\")`",
+      "D": "`from qiskit.visualization import plot_histogram; plot_histogram(qc, filename=\"circuit.png\")`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 11,
+    "stem": "Given `counts = {\"00\": 520, \"01\": 504}`, which function produces a bar chart of these results?",
+    "code": null,
+    "options": {
+      "A": "`plot_state_city(counts)`",
+      "B": "`plot_histogram(counts)`",
+      "C": "`plot_bloch_multivector(counts)`",
+      "D": "`plot_state_qsphere(counts)`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 12,
+    "stem": "You have `counts_a` and `counts_b` from two circuits. Which call overlays them in one figure with a legend?",
+    "code": null,
+    "options": {
+      "A": "`plot_histogram(counts_a, counts_b, legend=[\"A\",\"B\"])`",
+      "B": "`plot_histogram([counts_a, counts_b], legend=[\"A\",\"B\"])`",
+      "C": "`plot_state_city([counts_a, counts_b], labels=[\"A\",\"B\"])`",
+      "D": "`plot_bloch_multivector([counts_a, counts_b], legend=[\"A\",\"B\"])`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 13,
+    "stem": "You computed `state = Statevector.from_label(\"0\")`. Which call plots the state on a Bloch sphere?",
+    "code": null,
+    "options": {
+      "A": "`plot_state_qsphere(state)`",
+      "B": "`plot_state_city(state)`",
+      "C": "`plot_bloch_multivector(state)`",
+      "D": "`plot_histogram(state)`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 14,
+    "stem": "Which code produces a Qsphere with **four equally sized points of the same color** (equal amplitudes, zero relative phase)?",
+    "code": null,
+    "options": {
+      "A": "```python\nqc = QuantumCircuit(2); qc.h(0); qc.h(1)\nstate = Statevector.from_instruction(qc)\nplot_state_qsphere(state)\n```",
+      "B": "```python\nqc = QuantumCircuit(2); qc.h(0); qc.z(0); qc.h(1)\nstate = Statevector.from_instruction(qc)\nplot_state_qsphere(state)\n```",
+      "C": "```python\nqc = QuantumCircuit(2); qc.h(0); qc.h(1); qc.z(1)\nstate = Statevector.from_instruction(qc)\nplot_state_qsphere(state)\n```",
+      "D": "```python\nqc = QuantumCircuit(2); qc.x(0); qc.x(1); qc.h(0); qc.h(1)\nstate = Statevector.from_instruction(qc)\nplot_state_qsphere(state)\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 15,
+    "stem": "Which fragment applies an X gate on qubit 0 *only* when classical bit `c0` equals 1?",
+    "code": null,
+    "options": {
+      "A": "```python\nwith qc.if_test((c0, 1)):\n    qc.x(0)\n```",
+      "B": "```python\nqc.x(0).c_if(c0, 1)\n```",
+      "C": "```python\nif c0 == 1:\n    qc.x(0)\n```",
+      "D": "```python\nqc.if_else(c0 == 1, qc.x(0))\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 16,
+    "stem": "How do you create three independent symbolic parameters all named θ?",
+    "code": null,
+    "options": {
+      "A": "`theta = Parameter('theta', 3)`",
+      "B": "`theta = ParameterVector('theta', 3)`",
+      "C": "`theta = ParameterVector(3, 'theta')`",
+      "D": "`theta = ParameterExpression('theta', 3)`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 17,
+    "stem": "Given `theta = Parameter('θ')` and a circuit `qc` containing `rx(theta, 0)`, which call returns a **new** circuit with θ = π/4?",
+    "code": null,
+    "options": {
+      "A": "`qc.assign_parameters({theta: np.pi/4}, inplace=False)`",
+      "B": "`qc.bind_parameters({theta: np.pi/4})`",
+      "C": "`qc.assign(theta, np.pi/4)`",
+      "D": "`theta.bind(qc, np.pi/4)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 18,
+    "stem": "Which construct correctly repeats the enclosed operations five times in a dynamic circuit?",
+    "code": null,
+    "options": {
+      "A": "```python\nwith qc.for_loop(range(5)):\n    qc.cx(0, 1)\n```",
+      "B": "```python\nfor _ in range(5):\n    qc.cx(0, 1)\n```",
+      "C": "```python\nqc.repeat(5):\n    qc.cx(0, 1)\n```",
+      "D": "```python\nqc.loop(5).cx(0, 1)\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 19,
+    "stem": "What single-line call compiles `qc` for a backend `backend` using the **highest built-in optimisation** level?",
+    "code": null,
+    "options": {
+      "A": "`transpile(qc, backend, optimization_level=3)`",
+      "B": "`qc.transpile(backend, 3)`",
+      "C": "`run_transpile(qc, backend, level='max')`",
+      "D": "`generate_preset_pass_manager(level=3).run(qc)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 20,
+    "stem": "Which function directly returns a pass manager equivalent to transpiler optimisation level 2 for a target backend?",
+    "code": null,
+    "options": {
+      "A": "`generate_preset_pass_manager(optimization_level=2, target=backend.target)`",
+      "B": "`PassManager.preset(backend, level=2)`",
+      "C": "`PresetPassManager(backend, 2)`",
+      "D": "`transpile(qc, backend, opt_level=2, return_passmanager=True)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 21,
+    "stem": "While building a circuit for a five-qubit device with coupling map `coupling`, which `transpile` argument lets you **fix physical qubit placement**?",
+    "code": null,
+    "options": {
+      "A": "`layout_method='trivial'`",
+      "B": "`initial_layout=[0,1,2,3,4]`",
+      "C": "`routing_method='sabre'`",
+      "D": "`backend_properties=coupling`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 22,
+    "stem": "Which snippet repeats the `foo` sub-circuit until the classical bit `flag` equals 1?",
+    "code": null,
+    "options": {
+      "A": "```python\nqc.while_loop((flag, 0), foo)\n```",
+      "B": "```python\nwhile flag == 0:\n    qc.append(foo, qc.qubits)\n```",
+      "C": "```python\nwith qc.while_loop((flag, 1)):\n    qc.append(foo, qc.qubits)\n```",
+      "D": "```python\nqc.do_while(foo, until=(flag,1))\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 23,
+    "stem": "After executing\n\n```python\ntqc = transpile(qc, backend, optimization_level=3)\n```\n\nyou notice the depth is much smaller because consecutive single-qubit rotations were merged. Which **pass family** is mainly responsible?",
+    "code": "tqc = transpile(qc, backend, optimization_level=3)",
+    "options": {
+      "A": "**BasisTranslation** passes",
+      "B": "**CXCancellation** passes",
+      "C": "**Optimize1qGatesDecomposition** passes",
+      "D": "**CommutationAnalysis** passes"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 24,
+    "stem": "Which option is an official job-execution mode in Qiskit Runtime?",
+    "code": null,
+    "options": {
+      "A": "*stream*",
+      "B": "*batch*",
+      "C": "*parallel*",
+      "D": "*single-shot*"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 25,
+    "stem": "Choose the call that opens a **dedicated** session on a backend stored in `backend`:",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit_ibm_runtime import Session\nsession = Session(backend=backend)\n```",
+      "B": "```python\nsession = Session(backend, mode=\"dedicated\")\n```",
+      "C": "```python\nsession = Session(backend); session.mode = \"dedicated\"\n```",
+      "D": "```python\nwith Session(backend, dedicated=True) as session:\n    ...\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 26,
+    "stem": "When you construct a `Batch` to run jobs in batch mode, which **keyword argument** lets you set the maximum time before the batch is forcibly closed?",
+    "code": null,
+    "options": {
+      "A": "`timeout`",
+      "B": "`max_time`",
+      "C": "`session_time`",
+      "D": "`runtime_limit`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 27,
+    "stem": "In *batch* mode, how are jobs queued?",
+    "code": null,
+    "options": {
+      "A": "Each job executes immediately in arrival order.",
+      "B": "Jobs wait and execute **only after you close the session or it times out**.",
+      "C": "Jobs are distributed across multiple backends simultaneously.",
+      "D": "Jobs execute one-by-one but with elevated priority."
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 28,
+    "stem": "Which snippet correctly runs a list `circuits` on real hardware using **Sampler** inside an existing session `session`?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit_ibm_runtime import Sampler\nsampler = Sampler(session=session)\njob = sampler.run(circuits)\n```",
+      "B": "```python\nsampler = Sampler()\njob = session.run(sampler, circuits)\n```",
+      "C": "```python\njob = Sampler.run(session, circuits)\n```",
+      "D": "```python\njob = session.sampler(circuits)\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 29,
+    "stem": "`circuits` contains two parameterised circuits. Which `parameter_values` array will **broadcast correctly** under Runtime rules?",
+    "code": null,
+    "options": {
+      "A": "shape (2, 3)",
+      "B": "shape (1, 3)",
+      "C": "shape (3, 2)",
+      "D": "shape (3, 3)  \n\n*(Assume each circuit has three Parameters.)*"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 30,
+    "stem": "What is the recommended way to end a session so that *batch* jobs are released to the queue?",
+    "code": null,
+    "options": {
+      "A": "`session.stop()`",
+      "B": "Exiting the `with Session(...):` context block",
+      "C": "`session.end_batch()`",
+      "D": "You do not need to do anything; sessions close automatically after 24 h"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 31,
+    "stem": "",
+    "code": null,
+    "options": {
+      "A": "The sum of measurement results on every qubit",
+      "B": "The number of randomisations applied to the circuit",
+      "C": "The number of times the circuit is executed (shots)",
+      "D": "The number of dynamical-decoupling sequences"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 32,
+    "stem": "",
+    "code": null,
+    "options": {
+      "A": "`options.dynamical_decoupling`",
+      "B": "`options.resilience_level`",
+      "C": "`options.meas_level`",
+      "D": "`options.optimization_level`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 33,
+    "stem": "",
+    "code": null,
+    "options": {
+      "A": "`options.dynamical_decoupling`",
+      "B": "`options.resilience_level`",
+      "C": "`options.default_shots`",
+      "D": "`options.bias_mitigation`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 34,
+    "stem": "",
+    "code": null,
+    "options": {
+      "A": "`sampler.run([circuit1, circuit2])` — returns a job object",
+      "B": "`sampler.run(distribution, circuit1)`",
+      "C": "`sampler.run(circuit1, distribution=\"gauss\")`",
+      "D": "`sampler.run(shots=1024)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 35,
+    "stem": "",
+    "code": null,
+    "options": {
+      "A": "It falls back to the backend’s default shots",
+      "B": "It is auto-determined from circuit depth",
+      "C": "It uses the value of `options.default_shots` set on the `Sampler` instance",
+      "D": "It is fixed at 1024 shots"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 36,
+    "stem": "",
+    "code": null,
+    "options": {
+      "A": "A list of expectation values of observables",
+      "B": "Raw state-vector amplitudes",
+      "C": "A list of quasi-probability distributions over measured bit-strings",
+      "D": "Pulse-level schedules for each circuit"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 37,
+    "stem": "Which `EstimatorOptions` field lets you pick one of Qiskit’s preset error-mitigation bundles (level 0, 1 or 2)?",
+    "code": null,
+    "options": {
+      "A": "`dynamical_decoupling`",
+      "B": "`default_precision`",
+      "C": "`resilience_level`",
+      "D": "`seed_estimator`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 38,
+    "stem": "When you set `estimator.options.default_shots`, what *immediate* consequence does the documentation state?",
+    "code": null,
+    "options": {
+      "A": "It ignores `resilience_level`",
+      "B": "It overrides any `default_precision` value",
+      "C": "It disables Pauli-twirling",
+      "D": "It forces precision to 1 / √shots"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 39,
+    "stem": "For any Estimator PUB, which source of precision has the **highest** precedence if all four are supplied?",
+    "code": null,
+    "options": {
+      "A": "`estimator.options.default_precision`",
+      "B": "A `precision` keyword in `run()`",
+      "C": "The product `num_randomizations × shots_per_randomization` from twirling",
+      "D": "A precision value embedded directly in the PUB"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 40,
+    "stem": "The Estimator broadcasts observables and parameter sets like NumPy. Which pair below *will* broadcast? (O = observables shape, P = parameter\\_values shape.)",
+    "code": null,
+    "options": {
+      "A": "O (3 × 1), P (100 × 2)",
+      "B": "O (3 × 1), P (1 × 100 × 2)",
+      "C": "O (5), P (3)",
+      "D": "O (2 × 1), P (6 × 5 × 4)"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 41,
+    "stem": "Which call is **valid** for Estimator V2 according to the interface?",
+    "code": null,
+    "options": {
+      "A": "`estimator.run(pubs, precision=0.02)`",
+      "B": "`estimator.run(pubs, shots=4096)`",
+      "C": "`estimator.run(pubs, mode=\"priority\")`",
+      "D": "`estimator.run(pubs, max_execution_time=60)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 42,
+    "stem": "After the job completes, you write\n\n```python\npub_result = job.result()[0]      # Estimator V2\n```\n\nWhich attribute gives the array of expectation-value estimates?",
+    "code": "pub_result = job.result()[0]      # Estimator V2",
+    "options": {
+      "A": "`pub_result.evs`",
+      "B": "`pub_result.values`",
+      "C": "`pub_result.data.evs`",
+      "D": "`pub_result.data.values`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 43,
+    "stem": "Which one-liner returns **all runtime jobs that belong to a given session** whose ID is stored in the variable `sid`?",
+    "code": null,
+    "options": {
+      "A": "`service.jobs(session_id=sid)`",
+      "B": "`service.job(sid)`",
+      "C": "`service.jobs(filter_session=sid)`",
+      "D": "`service.jobs().filter(session=sid)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 44,
+    "stem": "If `job.status()` returns `JobStatus.DONE`, what does this indicate?",
+    "code": null,
+    "options": {
+      "A": "The job is still queued.",
+      "B": "The job has run successfully, and results can be retrieved.",
+      "C": "The job was cancelled by the user.",
+      "D": "The job failed with an error."
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 45,
+    "stem": "Which RuntimeJob method **blocks until the job finishes and then returns the result object**?",
+    "code": null,
+    "options": {
+      "A": "`job.result()`",
+      "B": "`job.queue_position()`",
+      "C": "`job.metrics()`",
+      "D": "`job.backend()`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 46,
+    "stem": "After a `Sampler` run, you have\n\n```python\nqpd = result.quasi_dists[0]  # a QuasiDistribution\n```\n\nWhich call converts `qpd` to the *nearest* valid probability distribution?",
+    "code": "qpd = result.quasi_dists[0]  # a QuasiDistribution",
+    "options": {
+      "A": "`qpd.nearest_probability_distribution()`",
+      "B": "`qpd.to_counts()`",
+      "C": "`qpd.binary_probabilities()`",
+      "D": "`qpd.normalize()`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 47,
+    "stem": "According to the IBM guide, which import pair should you use with Python’s `json` module when writing a Runtime result to disk?",
+    "code": null,
+    "options": {
+      "A": "`from qiskit_ibm_runtime import RuntimeEncoder, RuntimeDecoder`",
+      "B": "`from qiskit_ibm_runtime import ResultEncoder, ResultDecoder`",
+      "C": "`from qiskit.result import ResultEncoder, ResultDecoder`",
+      "D": "`import pickle as RuntimeEncoder`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 48,
+    "stem": "Which line is **valid** syntax?",
+    "code": null,
+    "options": {
+      "A": "`bit[8] c;`",
+      "B": "`creg c[8];`",
+      "C": "`bit c[8];`",
+      "D": "`uint8 c;`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 49,
+    "stem": "Which function does Qiskit 2.x provide for this task?",
+    "code": null,
+    "options": {
+      "A": "`QuantumCircuit.qasm()`",
+      "B": "`qiskit.qasm3.dumps()`",
+      "C": "`qiskit.qasm3.export_string()`",
+      "D": "`qiskit.qasm2.dumps()`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 50,
+    "stem": "According to the official REST spec, which HTTP verb and endpoint starts a new Runtime job?",
+    "code": null,
+    "options": {
+      "A": "`GET /v1/jobs`",
+      "B": "`POST /v1/jobs`",
+      "C": "`PUT /v1/job/run`",
+      "D": "`PATCH /v1/jobs/{id}`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  }
+]

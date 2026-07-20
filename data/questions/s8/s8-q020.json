@@ -1,0 +1,69 @@
+{
+  "id": "s8-q020",
+  "section": "s8",
+  "objectives": [
+    "s8o1",
+    "s8o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A circuit uses an unbound `Parameter` named `theta` and is exported with `qiskit.qasm3.dumps`. Which declaration line does the OpenQASM 3 output contain for `theta`?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit import qasm3\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\n\nprint(qasm3.dumps(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`input float[64] theta;`"
+    },
+    {
+      "key": "B",
+      "text": "`float[64] theta;`"
+    },
+    {
+      "key": "C",
+      "text": "`input angle theta;`"
+    },
+    {
+      "key": "D",
+      "text": "`parameter theta;`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Qiskit's OpenQASM 3 exporter represents an unbound `Parameter` as a program `input` of type `float[64]`, emitting `input float[64] theta;`. `input` marks a value supplied at run time, and `float[64]` is a classical scalar type.",
+    "distractors": {
+      "B": "Omitting the `input` modifier would declare an ordinary (uninitialized) local variable, not a run-time input. The exporter marks unbound parameters as `input`.",
+      "C": "Although gate rotation angles are conceptually angles, Qiskit exports unbound parameters as `float[64]`, not the `angle` type.",
+      "D": "`parameter` is not an OpenQASM 3 keyword; run-time-supplied values use the `input` modifier."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm3"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s8-q020.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit import qasm3\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\nlines = qasm3.dumps(qc).splitlines()\n\ncandidates = {\n    \"A\": \"input float[64] theta;\",\n    \"B\": \"float[64] theta;\",\n    \"C\": \"input angle theta;\",\n    \"D\": \"parameter theta;\",\n}\nevidence = {}\nproven = []\nfor key, line in candidates.items():\n    present = line in lines\n    evidence[key] = f\"line {line!r} present as an emitted OpenQASM 3 line? {present}\"\n    if present:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"lines\": lines}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "id": "s3-q027",
+  "section": "s3",
+  "objectives": [
+    "s3o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "Which scenario genuinely REQUIRES a dynamic circuit (a mid-circuit measurement whose classical result feeds forward to control a later gate), rather than a plain static circuit?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Applying a fixed sequence of gates to all qubits and measuring only at the very end."
+    },
+    {
+      "key": "B",
+      "text": "Sweeping a rotation angle across many values to plot an expectation curve."
+    },
+    {
+      "key": "C",
+      "text": "Reducing two-qubit gate count by letting the transpiler cancel adjacent gates."
+    },
+    {
+      "key": "D",
+      "text": "Measuring an ancilla mid-circuit and applying a correction gate to a data qubit only when that measurement is 1."
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "Dynamic circuits exist precisely for real-time classical feedforward: measure a qubit partway through, then condition subsequent quantum operations on that classical outcome (as in teleportation corrections or error-correction syndrome handling). Option D is exactly that pattern.",
+    "distractors": {
+      "A": "Measuring only at the end with a fixed gate sequence is a static circuit — no feedforward is involved.",
+      "B": "Parameter sweeps are handled by parameterized circuits and array broadcasting, not by classical feedforward.",
+      "C": "Cancelling adjacent gates is a transpiler optimization; it needs no measurement-conditioned control flow."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow#control-flow"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

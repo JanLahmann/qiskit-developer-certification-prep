@@ -1,0 +1,1041 @@
+[
+  {
+    "n": 1,
+    "stem": "A primitive is needed for sampled measurement data rather than expectation values. What does `SamplerV2` return from measured circuits?",
+    "code": null,
+    "options": {
+      "A": "Observable expectation values",
+      "B": "A final statevector",
+      "C": "A backend configuration document",
+      "D": "Classical-register bitstring samples/count-access data"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 2,
+    "stem": "Which line changes a `ParameterVector` named `theta` from length 2 to length 6?",
+    "code": null,
+    "options": {
+      "A": "`theta.extend(6)`",
+      "B": "`theta.adjust(6)`",
+      "C": "`theta.resize(6)`",
+      "D": "`theta.length = 6`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 3,
+    "stem": "**Select 3.**\n\nA usage report is being interpreted for Runtime work. Which statements are accurate?",
+    "code": null,
+    "options": {
+      "A": "Batch usage is local Python CPU time.",
+      "B": "`batch.usage_time()` is the documented SDK call.",
+      "C": "The API token changes how usage time is computed.",
+      "D": "Single-job usage is quantum time charged for processing that job.",
+      "E": "Session usage is tied to the active session workload window under Runtime accounting.",
+      "F": "Reported details data can include a `usage_time` field."
+    },
+    "stated_answer": [
+      "D",
+      "E",
+      "F"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 4,
+    "stem": "Using Qiskit's displayed state-label ordering, what final basis state is prepared by this circuit?\n\n```python\nfrom qiskit import QuantumCircuit\n\nqc = QuantumCircuit(3)\nqc.x(2)\nqc.cx(2, 0)\nqc.x(1)\nqc.cx(1, 2)\n```",
+    "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(3)\nqc.x(2)\nqc.cx(2, 0)\nqc.x(1)\nqc.cx(1, 2)",
+    "options": {
+      "A": "`|011>`",
+      "B": "`|110>`",
+      "C": "`|101>`",
+      "D": "`|111>`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 5,
+    "stem": "**Select 2.**\n\nWhich `SamplerV2` option groups configure suppression or mitigation behavior?",
+    "code": null,
+    "options": {
+      "A": "`sampler.options.twirling`",
+      "B": "`sampler.options.dynamical_decoupling`",
+      "C": "`sampler.options.surface_codes`",
+      "D": "`sampler.options.max_execution_time`",
+      "E": "`sampler.options.account_token`"
+    },
+    "stated_answer": [
+      "A",
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 6,
+    "stem": "A qubit is initialized with amplitudes `[sqrt(3)/2, 1/2]`. Which Bloch-vector panel represents the state?\n\n![Question figure](../assets/visuals/bloch_panels.png)",
+    "code": null,
+    "options": {
+      "A": "Panel A",
+      "B": "Panel B",
+      "C": "Panel C",
+      "D": "Panel D"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 7,
+    "stem": "In a `CircuitInstruction`, which object is the operation component?",
+    "code": null,
+    "options": {
+      "A": "A backend options dictionary",
+      "B": "A `Gate` or `Instruction` applied to bits",
+      "C": "A `SamplerV2` primitive object",
+      "D": "A Runtime session identifier"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 8,
+    "stem": "Which code fragment is valid and applies the `Unroll3qOrMore` transpiler pass to a circuit named `qc`?",
+    "code": null,
+    "options": {
+      "A": "```python\n    from qiskit.transpiler import PassManager\n    from qiskit.transpiler.passes import Unroll3qOrMore\n    qc = PassManager([Unroll3qOrMore()]).run(qc)\n    ```",
+      "B": "`qc = qc.unroll3qOrMore()`",
+      "C": "`qc = Unroll3qOrMore().execute(qc)`",
+      "D": "`qc.apply_pass(Unroll3qOrMore())`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 9,
+    "stem": "A sampler PUB is submitted without its own shot override. The notebook contains this setup:\n\n```python\nsampler = SamplerV2(mode=backend)\nsampler.options.default_shots = 2048\n```",
+    "code": "sampler = SamplerV2(mode=backend)\nsampler.options.default_shots = 2048",
+    "options": {
+      "A": "The primitive creates 2048 twirled circuits before sampling.",
+      "B": "Each measured qubit is read 2048 times before circuit execution begins.",
+      "C": "The backend is reserved for exactly 2048 seconds.",
+      "D": "The PUB is sampled with 2048 shots unless the PUB supplies a different shot count."
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 10,
+    "stem": "A Runtime session is being opened for hardware work. Which value belongs in the session setup rather than in circuit construction or authentication?",
+    "code": null,
+    "options": {
+      "A": "The account password in plain text",
+      "B": "An infinite maximum lifetime",
+      "C": "The backend or execution mode",
+      "D": "The circuit's qubit count"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 11,
+    "stem": "Which construction line puts `EstimatorV2` in a valid execution context?",
+    "code": null,
+    "options": {
+      "A": "`estimator = EstimatorV2(mode=sampler)`",
+      "B": "`estimator = EstimatorV2(mode=backend)`",
+      "C": "`estimator = EstimatorV2(mode=observable)`",
+      "D": "`estimator = EstimatorV2(mode=circuit)`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 12,
+    "stem": "Given a pass manager with basis gates `['ecr', 'rz', 'sx', 'x']`, which panel is a plausible transpiled drawing of an H-CX circuit?\n\n![Question figure](../assets/visuals/transpiled_panels.png)",
+    "code": null,
+    "options": {
+      "A": "Panel A",
+      "B": "Panel B",
+      "C": "Panel C",
+      "D": "Panel D"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 13,
+    "stem": "A ZNE configuration is being reviewed. Which assignment uses the expected value type for noise amplification factors?",
+    "code": null,
+    "options": {
+      "A": "`estimator.options.resilience.zne.noise_factors = 'linear'`",
+      "B": "`estimator.options.resilience.zne.noise_factors = (-1, 1, 3)`",
+      "C": "`estimator.options.resilience.zne.noise_factors = {'low': 1, 'high': 3}`",
+      "D": "`estimator.options.resilience.zne.noise_factors = (1, 2, 4)`"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 14,
+    "stem": "A workload should use the preset mitigation behavior that includes ZNE. Which assignment selects that resilience level?",
+    "code": null,
+    "options": {
+      "A": "`estimator.options.resilience_level = 0`",
+      "B": "`estimator.options.resilience_level = -1`",
+      "C": "`estimator.options.resilience_level = 2`",
+      "D": "`estimator.options.resilience_level = 1`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 15,
+    "stem": "A sampler job was run for a circuit that measured classical register `creg`. Which line can return a counts dictionary from the first PUB result?",
+    "code": null,
+    "options": {
+      "A": "`job.result().metadata.counts(creg)`",
+      "B": "`job.result()[0].data.creg.get_counts()`",
+      "C": "`job.get_counts(creg)`",
+      "D": "`job.result(creg).to_counts_dict()`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 16,
+    "stem": "**Select 2.**\n\nWhich fragments create a circuit with 5 qubits and 2 classical bits?",
+    "code": null,
+    "options": {
+      "A": "`QuantumCircuit(QuantumRegister(5, 'q'), ClassicalRegister(2, 'c'))`",
+      "B": "`QuantumCircuit(2, 5)`",
+      "C": "`QuantumCircuit(QuantumRegister(5), QuantumRegister(2))`",
+      "D": "`QuantumCircuit(ClassicalRegister(2), QuantumRegister(5))`",
+      "E": "`QuantumCircuit(5, 2)`"
+    },
+    "stated_answer": [
+      "A",
+      "E"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 17,
+    "stem": "For Estimator, which tuple has the shape of a primitive unified bloc rather than a local plotting or serialization object?",
+    "code": null,
+    "options": {
+      "A": "`(counts, legend, title)`",
+      "B": "`(qasm_source, filename)`",
+      "C": "`(backend_name, api_token)`",
+      "D": "`(isa_circuit, isa_observables, parameter_values)`"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 18,
+    "stem": "The following one-qubit circuit is sampled many times. What is the expected probability of bit value 0?\n\n```python\nfrom qiskit import QuantumCircuit\nimport numpy as np\n\nqc = QuantumCircuit(1)\nqc.reset(0)\nqc.ry(2 * np.pi / 3, 0)\nqc.measure_all()\n```",
+    "code": "from qiskit import QuantumCircuit\nimport numpy as np\n\nqc = QuantumCircuit(1)\nqc.reset(0)\nqc.ry(2 * np.pi / 3, 0)\nqc.measure_all()",
+    "options": {
+      "A": "`0.50`",
+      "B": "`1.00`",
+      "C": "`0.25`",
+      "D": "`0.75`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 19,
+    "stem": "Which object category can be passed as `mode` when constructing a `SamplerV2` primitive?",
+    "code": null,
+    "options": {
+      "A": "A raw Pauli string such as `'ZZ'`",
+      "B": "A backend, session, or batch execution context",
+      "C": "A `QuantumCircuit` to be sampled",
+      "D": "A `SparsePauliOp` observable"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 20,
+    "stem": "Ignoring global phase, which Pauli operator matches the one-qubit unitary below?\n\n```python\nqc = QuantumCircuit(1)\nqc.z(0)\nqc.x(0)\nqc.z(0)\n```",
+    "code": "qc = QuantumCircuit(1)\nqc.z(0)\nqc.x(0)\nqc.z(0)",
+    "options": {
+      "A": "`Pauli('X')`",
+      "B": "`Pauli('Z')`",
+      "C": "`Pauli('Y')`",
+      "D": "No valid Pauli operator"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 21,
+    "stem": "The circuit below stores samples in a two-bit classical register. Which count dictionary has the correct key width for this workload?\n\n```python\nq = QuantumRegister(2, 'q')\nc = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(q, c)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.while_loop((c[0], 1)):\n    qc.x(1)\n    qc.measure(1, 1)\n    qc.measure(0, 0)\n```",
+    "code": "q = QuantumRegister(2, 'q')\nc = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(q, c)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.while_loop((c[0], 1)):\n    qc.x(1)\n    qc.measure(1, 1)\n    qc.measure(0, 0)",
+    "options": {
+      "A": "`{'000': 1024}`",
+      "B": "`{'0': 512, '1': 512}`",
+      "C": "`NameError: name 'while_loop' is not defined`",
+      "D": "`{'00': 430, '10': 594}`"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 22,
+    "stem": "A hardware workload shows coherent over-rotation effects. Which option names the noise class that Pauli twirling is designed to reshape statistically?",
+    "code": null,
+    "options": {
+      "A": "HTTP retry noise",
+      "B": "Classical register overflow",
+      "C": "Coherent gate noise",
+      "D": "Finite-shot sampling noise"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 23,
+    "stem": "Which import path is correct for transpiler passes such as `SabreLayout` and `RemoveFinalReset`?",
+    "code": null,
+    "options": {
+      "A": "`from qiskit.scheduler import SabreLayout, RemoveFinalReset`",
+      "B": "`from qiskit.transpiler.passes import SabreLayout, RemoveFinalReset`",
+      "C": "`from qiskit.circuit.library import SabreLayout, RemoveFinalReset`",
+      "D": "`from qiskit.providers.models import SabreLayout, RemoveFinalReset`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 24,
+    "stem": "What does this OpenQASM 3 declaration create?\n\n```qasm\nuint[16] counter;\n```",
+    "code": "uint[16] counter;",
+    "options": {
+      "A": "It declares a unsigned 16-bit integer.",
+      "B": "It indexes the eighth element of an array.",
+      "C": "It assigns the value inside brackets to the identifier.",
+      "D": "It declares a Python integer and exports it to Qiskit."
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 25,
+    "stem": "Which code fragment is valid and creates a one-qubit Pauli Z operator?",
+    "code": null,
+    "options": {
+      "A": "`p = Pauli('2Z')`",
+      "B": "`p = Pauli(QuantumCircuit(1).z(0))`",
+      "C": "`p = Pauli('ZY') @ Pauli('Y')`",
+      "D": "`p = Pauli('Z')`"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 26,
+    "stem": "A transpiler fence is needed between two groups of gates. Which circuit call expresses that boundary?",
+    "code": null,
+    "options": {
+      "A": "`qc.section()`",
+      "B": "`qc.session()`",
+      "C": "`qc.barrier()`",
+      "D": "`qc.partition()`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 27,
+    "stem": "The diagram below omits the row names. In Qiskit Runtime Estimator broadcasting terminology, what is row B called?\n\n![Question figure](../assets/visuals/broadcasting_panels.png)",
+    "code": null,
+    "options": {
+      "A": "Broadcast single observable",
+      "B": "Zip",
+      "C": "Outer/Product",
+      "D": "Standard n-D generalization"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 28,
+    "stem": "`pubs` is a list of Estimator PUBs. Which line submits them?",
+    "code": null,
+    "options": {
+      "A": "`job = estimator.run(pubs)`",
+      "B": "`job = estimator.compute(pubs)`",
+      "C": "`job = estimator.execute(pubs)`",
+      "D": "`job = estimator.evaluate(pubs)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 29,
+    "stem": "Which object shape best represents a Runtime primitive unified bloc?",
+    "code": null,
+    "options": {
+      "A": "A list of gates appended directly to a circuit",
+      "B": "A pair containing only an observable and a backend name",
+      "C": "A REST-only JSON object that the Python SDK never uses",
+      "D": "A tuple-like workload unit that includes a circuit and data associated with that circuit"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 30,
+    "stem": "Dynamical decoupling is enabled for a scheduled circuit. Which error source is it meant to suppress?",
+    "code": null,
+    "options": {
+      "A": "REST authentication failures",
+      "B": "Incorrect Python imports",
+      "C": "Idle/decoherence effects during gaps",
+      "D": "Readout assignment errors only"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 31,
+    "stem": "A mitigation setting randomizes circuit-level operations so coherent errors are converted into easier-to-average stochastic behavior. Which workload element is being randomized?",
+    "code": null,
+    "options": {
+      "A": "The local Python module cache",
+      "B": "Gates or measurements in the submitted circuits",
+      "C": "Runtime job tags",
+      "D": "Session IDs"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 32,
+    "stem": "**Select 2.**\n\nWhich Python objects are valid inputs for `plot_distribution`?",
+    "code": null,
+    "options": {
+      "A": "`{0: [500, 250], 1: [500, 750]}`",
+      "B": "`[(0, 500), (3, 500)]`",
+      "C": "`[0, 1, 2], [500, 250, 250]`",
+      "D": "`{0: 500, 3: 500}`",
+      "E": "`[{0: 500, 3: 500}, {0: 250, 1: 750}]`"
+    },
+    "stated_answer": [
+      "D",
+      "E"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 33,
+    "stem": "Which two-operation sequence prepares `|1>` even if the qubit's previous state is unknown?",
+    "code": null,
+    "options": {
+      "A": "`z` followed by `measure`",
+      "B": "`reset` followed by `h`",
+      "C": "A nonexistent `set_state(1)` instruction",
+      "D": "`reset` followed by `x`"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 34,
+    "stem": "A `StatevectorEstimator` PUB contains a two-parameter circuit, one observable, and three parameter rows:\n\n```python\nalpha = Parameter('alpha')\nbeta = Parameter('beta')\nqc = QuantumCircuit(1)\nqc.ry(alpha, 0)\nqc.rz(beta, 0)\nobservable = SparsePauliOp('X')\nvalues = np.array([[0.0, 0.0], [np.pi / 3, np.pi / 5], [np.pi / 2, np.pi / 7]])\njob = StatevectorEstimator().run([(qc, observable, values)])\n```",
+    "code": "alpha = Parameter('alpha')\nbeta = Parameter('beta')\nqc = QuantumCircuit(1)\nqc.ry(alpha, 0)\nqc.rz(beta, 0)\nobservable = SparsePauliOp('X')\nvalues = np.array([[0.0, 0.0], [np.pi / 3, np.pi / 5], [np.pi / 2, np.pi / 7]])\njob = StatevectorEstimator().run([(qc, observable, values)])",
+    "options": {
+      "A": "The job fails because Estimator PUBs cannot contain parameter arrays.",
+      "B": "The primitive transpiles the circuit but does not evaluate the observable.",
+      "C": "The result contains one expectation-value estimate for each supplied parameter row.",
+      "D": "Only the first parameter row is evaluated."
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 35,
+    "stem": "The circuit below is still symbolic. Which line returns a circuit with `angle` bound to a numeric value?\n\n```python\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\nangle = Parameter('angle')\nqc = QuantumCircuit(1)\nqc.rz(angle, 0)\n```",
+    "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\nangle = Parameter('angle')\nqc = QuantumCircuit(1)\nqc.rz(angle, 0)",
+    "options": {
+      "A": "`bound = qc.parameters.assign({angle: 0.75})`",
+      "B": "`bound = qc.assign_parameters({angle: 0.75})`",
+      "C": "`bound = qc.set_parameters({angle: 0.75})`",
+      "D": "`bound = qc.update_parameters({angle: 0.75})`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 36,
+    "stem": "A state has amplitude only on `|1>`. What relative phase does `TdgGate` apply to that component?",
+    "code": null,
+    "options": {
+      "A": "`exp(-i*pi/4)`",
+      "B": "`exp(i*pi/4)`",
+      "C": "`exp(i*pi/2)`",
+      "D": "`-1`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 37,
+    "stem": "Which expression returns an OpenQASM 3 string for a circuit object named `circuit`?",
+    "code": null,
+    "options": {
+      "A": "`qiskit.qasm3.to_qasm(circuit)`",
+      "B": "`qiskit.qasm3.export(circuit)`",
+      "C": "`qiskit.qasm3.write_string(circuit)`",
+      "D": "`qiskit.qasm3.dumps(circuit)`"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 38,
+    "stem": "Which line creates a two-qubit Pauli with Z on qubit 1 and X on qubit 0, using Qiskit's Pauli-label ordering?",
+    "code": null,
+    "options": {
+      "A": "`p = Pauli('ZI')`",
+      "B": "`p = Pauli('IX')`",
+      "C": "`p = Pauli('ZX')`",
+      "D": "`p = Pauli('XZ')`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 39,
+    "stem": "A submitted Runtime job failed. Which call retrieves the failure text from the job object?",
+    "code": null,
+    "options": {
+      "A": "`job.exception_text()`",
+      "B": "`job.error_message()`",
+      "C": "`job.get_error()`",
+      "D": "`job.retrieve_error()`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 40,
+    "stem": "Which array is returned by this Pauli object?\n\n```python\nfrom qiskit.quantum_info import Pauli\n\nprint(Pauli('Y').to_matrix())\n```",
+    "code": "from qiskit.quantum_info import Pauli\n\nprint(Pauli('Y').to_matrix())",
+    "options": {
+      "A": "```text\n    [[0.+0.j 0.-1.j]\n     [0.+1.j 0.+0.j]]\n    ```",
+      "B": "```text\n    [[0.+0.j 1.+0.j]\n     [1.+0.j 0.+0.j]]\n    ```",
+      "C": "```text\n    [[ 1.+0.j  0.+0.j]\n     [ 0.+0.j -1.+0.j]]\n    ```",
+      "D": "A sampled counts dictionary"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 41,
+    "stem": "A session object has been created but no workload has started yet. Which lifecycle statement is accurate?",
+    "code": null,
+    "options": {
+      "A": "The session has an unlimited active lifetime.",
+      "B": "The session can run only Sampler jobs or only Estimator jobs, never both.",
+      "C": "The session always closes exactly 10 minutes after construction.",
+      "D": "The session starts when its first job starts."
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 42,
+    "stem": "Which option path controls the number of randomized circuits/samples used by twirling?",
+    "code": null,
+    "options": {
+      "A": "`estimator.options.twirling.default_shots`",
+      "B": "`estimator.options.twirling.enable_gates`",
+      "C": "`estimator.options.twirling.num_randomizations`",
+      "D": "`estimator.options.twirling.strategy`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 43,
+    "stem": "After transpilation, `isa_circuit.layout` is available. Which line maps observables to the same layout before Estimator execution?",
+    "code": null,
+    "options": {
+      "A": "`isa_observables = [isa_circuit.set_layout(op) for op in observables]`",
+      "B": "`isa_observables = [op.apply_layout(isa_circuit.layout) for op in observables]`",
+      "C": "`isa_observables = [isa_circuit.layout(op) for op in observables]`",
+      "D": "`isa_observables = [op(isa_circuit.layout) for op in observables]`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 44,
+    "stem": "Which pair of PUB array shapes is broadcast-compatible under the primitive input rules?",
+    "code": null,
+    "options": {
+      "A": "`(2, 1, 3)` and `(1, 5, 1)`",
+      "B": "`(2, 3)` and `(4, 3)`",
+      "C": "`(5,)` and `(4,)`",
+      "D": "`(2, 0)` and `(2, 3)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 45,
+    "stem": "**Select 3.**\n\nA parameterized Estimator workload is packaged as one PUB. Which items can be part of that PUB?",
+    "code": null,
+    "options": {
+      "A": "The user's API token",
+      "B": "The backend queue position",
+      "C": "A histogram legend",
+      "D": "The quantum circuit",
+      "E": "The observable or observable array",
+      "F": "The parameter-value array"
+    },
+    "stated_answer": [
+      "D",
+      "E",
+      "F"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 46,
+    "stem": "Which code fragment completes the logic: measure qubit 1 into classical bit 1, apply X to qubit 2 if that bit is 1, then measure qubit 2 into classical bit 2?",
+    "code": null,
+    "options": {
+      "A": "```python\n    qc.measure(1, 1)\n    if clbits[1] == 1:\n        qc.x(2)\n    qc.measure(2, 2)\n    ```",
+      "B": "```python\n    qc.measure(1, 2)\n    with qc.if_test((clbits[2], 1)):\n        qc.x(1)\n    ```",
+      "C": "```python\n    qc.measure(1, 1)\n    with qc.if_test((clbits[1], 1)):\n        qc.x(2)\n    qc.measure(2, 2)\n    ```",
+      "D": "```python\n    with qc.if_test((clbits[1], 1)):\n        qc.x(2)\n    qc.measure(1, 1)\n    qc.measure(2, 2)\n    ```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 47,
+    "stem": "Which use of `QiskitRuntimeService` is intended for listing previously submitted Runtime jobs?",
+    "code": null,
+    "options": {
+      "A": "`service.backend().jobs()` only for a backend named `ibm_foo`",
+      "B": "`service.jobs()` with optional filters such as backend, status, or time",
+      "C": "`service.jobs()` only after every possible filter is supplied",
+      "D": "`service.jobs()` only for the hard-coded last 30 days"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 48,
+    "stem": "A direct Runtime REST request is made outside the Python SDK. Where should the API token be placed?",
+    "code": null,
+    "options": {
+      "A": "In the HTTP `Authorization` header as a Bearer token",
+      "B": "In the URL query string",
+      "C": "In the JSON body under `token`",
+      "D": "In an HTTP `CONNECT` header"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 49,
+    "stem": "Which panel matches the qsphere-style state that would be produced by a Bell-like state with populated `|00>` and `|11>` basis states and a relative phase?\n\n![Question figure](../assets/visuals/qsphere_panels.png)",
+    "code": null,
+    "options": {
+      "A": "Panel A",
+      "B": "Panel B",
+      "C": "Panel C",
+      "D": "Panel D"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 50,
+    "stem": "Which Qiskit fragment implements the same operations and classical-bit mapping as this OpenQASM 3 program?\n\n```qasm\nOPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit[3] c;\nqubit[3] q;\nh q[1];\ncx q[1], q[2];\nc[2] = measure q[1];\nc[0] = measure q[2];\n```",
+    "code": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit[3] c;\nqubit[3] q;\nh q[1];\ncx q[1], q[2];\nc[2] = measure q[1];\nc[0] = measure q[2];",
+    "options": {
+      "A": "```python\n    qc = QuantumCircuit(3, 3)\n    qc.h(1)\n    qc.cx(1, 2)\n    qc.measure([1, 2], [0, 2])\n    ```",
+      "B": "```python\n    qc = QuantumCircuit(2, 2)\n    qc.h(0)\n    qc.cx(0, 1)\n    qc.measure([0, 1], [0, 1])\n    ```",
+      "C": "```python\n    qc = QuantumCircuit(3, 3)\n    qc.h(1)\n    qc.cx(1, 2)\n    qc.measure([1, 2], [2, 0])\n    ```",
+      "D": "```python\n    qc = QuantumCircuit(3, 3)\n    qc.h(2)\n    qc.cx(2, 1)\n    qc.measure([1, 2], [2, 0])\n    ```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 51,
+    "stem": "An Estimator PUB uses parameter values with shape `(3, 1, 2)` and observables with shape `(1, 4, 1)`. What shape should the expectation-value array have?",
+    "code": null,
+    "options": {
+      "A": "`(12, 2)`",
+      "B": "`(3, 4, 2)`",
+      "C": "`(4, 3, 2)`",
+      "D": "`(3, 1, 1)`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 52,
+    "stem": "A notebook process exits after submitting a Runtime job. Later, the user still has the job ID and account access. What is the expected retrieval model?",
+    "code": null,
+    "options": {
+      "A": "The job record can be looked up later through Runtime job/service APIs, subject to access and retention limits.",
+      "B": "The result is lost unless the original notebook called `job.save()` before exiting.",
+      "C": "The result can be read only from the Python object that originally submitted the job.",
+      "D": "The SDK cannot retrieve stored results; only direct REST calls can."
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 53,
+    "stem": "Which line creates a four-qubit Pauli operator with `Y` on qubit 0 and identity on qubits 1, 2, and 3?",
+    "code": null,
+    "options": {
+      "A": "`p = Pauli('YIII')`",
+      "B": "`p = Pauli('IIYI')`",
+      "C": "`p = Pauli('Y')`",
+      "D": "`p = Pauli('IIIY')`"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 54,
+    "stem": "Which panel could be produced by `plot_histogram([ideal_counts, hardware_counts])` when the ideal simulator is mostly `00` and the hardware result has visible counts in both `00` and `11`?\n\n![Question figure](../assets/visuals/histogram_panels.png)",
+    "code": null,
+    "options": {
+      "A": "Panel A",
+      "B": "Panel B",
+      "C": "Panel C",
+      "D": "Panel D"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 55,
+    "stem": "A Runtime job is still active and should be stopped. Which line requests that action?",
+    "code": null,
+    "options": {
+      "A": "`job.in_final_state()`",
+      "B": "`job.cancel()`",
+      "C": "`job.complete()`",
+      "D": "`job.done()`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 56,
+    "stem": "A Runtime workload has classical orchestration plus QPU execution. Which processing statement is accurate?",
+    "code": null,
+    "options": {
+      "A": "Some classical job processing can overlap, while QPU execution is still governed by hardware scheduling.",
+      "B": "Runtime jobs skip classical processing entirely.",
+      "C": "A QPU executes independent jobs simultaneously by putting jobs in superposition.",
+      "D": "Putting every circuit into one huge job is always the fastest strategy."
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 57,
+    "stem": "A circuit has already been transpiled to ISA form. Which call uses the Sampler v2 input shape?",
+    "code": null,
+    "options": {
+      "A": "`job = sampler.run(isa_circuit, SparsePauliOp('Z'))`",
+      "B": "`job = sampler.run(backend, isa_circuit)`",
+      "C": "`job = sampler.run(circuit=isa_circuit, mode=backend)`",
+      "D": "`job = sampler.run([isa_circuit])`"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 58,
+    "stem": "A circuit must measure `q[0]` into `c[0]`, then apply `X` to `q[1]` only when that measured bit is 1. Which fragment uses Qiskit's dynamic-circuit API correctly?\n\n```python\nfrom qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister\n\nq = QuantumRegister(2, 'q')\nc = ClassicalRegister(1, 'c')\n```",
+    "code": "from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister\n\nq = QuantumRegister(2, 'q')\nc = ClassicalRegister(1, 'c')",
+    "options": {
+      "A": "```python\n    qc = QuantumCircuit(q, c)\n    qc.h(q[0])\n    with qc.if_test((c[0], 1)):\n        qc.x(q[1])\n    ```",
+      "B": "```python\n    qc = QuantumCircuit(q, c)\n    qc.h(q[0])\n    qc.measure(q[0], c[0])\n    if c[0] == 1:\n        qc.x(q[1])\n    ```",
+      "C": "```python\n    qc = QuantumCircuit(q, c)\n    qc.h(q[0])\n    qc.measure(q[0], c[0])\n    with qc.if_test((c[0], 1)):\n        qc.x(q[1])\n    ```",
+      "D": "```python\n    qc = DynamicCircuit(q, c)\n    qc.h(q[0])\n    qc.measure(q[0], c[0])\n    if qc.test((c[0], 1)):\n        qc.x(q[1])\n    ```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 59,
+    "stem": "Why is broadcasting useful when building Estimator PUBs?",
+    "code": null,
+    "options": {
+      "A": "It creates a new Runtime session for each parameter value.",
+      "B": "It combines compatible observable and parameter arrays without manually writing every pair.",
+      "C": "It decomposes two-qubit gates into the backend basis.",
+      "D": "It increases the number of shots automatically."
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 60,
+    "stem": "After this one-qubit circuit is built, which state has been prepared?\n\n```python\nfrom qiskit import QuantumCircuit\n\nqc = QuantumCircuit(1)\nqc.reset(0)\nqc.x(0)\nqc.h(0)\n```",
+    "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(1)\nqc.reset(0)\nqc.x(0)\nqc.h(0)",
+    "options": {
+      "A": "|->",
+      "B": "|0>",
+      "C": "|1>",
+      "D": "|+>"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 61,
+    "stem": "What is the approximate probability of measuring bit value 1 after this circuit?\n\n```python\nfrom qiskit import QuantumCircuit\nimport numpy as np\n\nqc = QuantumCircuit(1)\nqc.reset(0)\nqc.rx(2 * np.pi / 3, 0)\nqc.measure_all()\n```",
+    "code": "from qiskit import QuantumCircuit\nimport numpy as np\n\nqc = QuantumCircuit(1)\nqc.reset(0)\nqc.rx(2 * np.pi / 3, 0)\nqc.measure_all()",
+    "options": {
+      "A": "`0.25`",
+      "B": "`0.50`",
+      "C": "`1.00`",
+      "D": "`0.75`"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 62,
+    "stem": "**Select 2.**\n\nIn a circuit-control code review, which two names are actual `QuantumCircuit` control-flow builders?",
+    "code": null,
+    "options": {
+      "A": "`QuantumCircuit.repeat_until(...)`",
+      "B": "`QuantumCircuit.replace(...)`",
+      "C": "`QuantumCircuit.branch(...)`",
+      "D": "`QuantumCircuit.while_loop(...)`",
+      "E": "`QuantumCircuit.for_loop(...)`"
+    },
+    "stated_answer": [
+      "D",
+      "E"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 63,
+    "stem": "Several Runtime jobs appear in a dashboard with the same `session_id`. What does that ID indicate?",
+    "code": null,
+    "options": {
+      "A": "Those jobs are automatically first in the backend queue.",
+      "B": "Those jobs are associated with the same Runtime session.",
+      "C": "Those jobs must have used the same physical qubit layout.",
+      "D": "Those jobs share the user's API token."
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 64,
+    "stem": "What does the final line print?\n\n```python\nfrom qiskit.circuit import ParameterVector\n\nweights = ParameterVector('w', 5)\nselected = weights[3]\nprint(weights.index(selected))\n```",
+    "code": "from qiskit.circuit import ParameterVector\n\nweights = ParameterVector('w', 5)\nselected = weights[3]\nprint(weights.index(selected))",
+    "options": {
+      "A": "`3`",
+      "B": "`w[3]`",
+      "C": "`4`",
+      "D": "`ParameterVectorElement(3)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 65,
+    "stem": "Which line retrieves a backend object from a `QiskitRuntimeService` named `service`?",
+    "code": null,
+    "options": {
+      "A": "`backend = service.fetch_backend(\"ibm_test_backend\")`",
+      "B": "`backend = service.get(\"ibm_test_backend\")`",
+      "C": "`backend = \"ibm_test_backend\"`",
+      "D": "`backend = service.backend(\"ibm_test_backend\")`"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 66,
+    "stem": "**Order the options.**\n\nPut these Estimator workflow steps in the correct order for a hardware-oriented run.",
+    "code": null,
+    "options": {
+      "A": "Create the Estimator primitive in the selected execution mode.",
+      "B": "Submit the PUBs with estimator.run(...) and retrieve the result.",
+      "C": "Define the quantum circuit and observable operator.",
+      "D": "Transpile the circuit to the target ISA and apply the layout to the observables."
+    },
+    "stated_answer": [
+      "C",
+      "D",
+      "A",
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 67,
+    "stem": "Which setting category is used to bound how much Runtime quantum execution time a workload can consume?",
+    "code": null,
+    "options": {
+      "A": "Only default transpiler settings",
+      "B": "Execution-time limits where supported",
+      "C": "More shots and more iterations",
+      "D": "Long sleeps between submitted jobs"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 68,
+    "stem": "Which circuit drawing panel is produced by the code below?\n\n```python\nfrom qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister\n\nq = QuantumRegister(2, 'q')\nc = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(q, c)\nqc.h(q[0])\nqc.measure(q[0], c[0])\nwith qc.switch(c[0]) as case:\n    with case(0):\n        qc.z(q[1])\n    with case(1):\n        qc.x(q[1])\nqc.measure(q[1], c[1])\nqc.draw(output='mpl')\n```\n\n![Question figure](../assets/visuals/dynamic_switch_panels.png)",
+    "code": "from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister\n\nq = QuantumRegister(2, 'q')\nc = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(q, c)\nqc.h(q[0])\nqc.measure(q[0], c[0])\nwith qc.switch(c[0]) as case:\n    with case(0):\n        qc.z(q[1])\n    with case(1):\n        qc.x(q[1])\nqc.measure(q[1], c[1])\nqc.draw(output='mpl')",
+    "options": {
+      "A": "Panel A",
+      "B": "Panel B",
+      "C": "Panel C",
+      "D": "Panel D"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  }
+]

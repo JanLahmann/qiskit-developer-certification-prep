@@ -1,0 +1,68 @@
+{
+  "id": "s7-q017",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "A 3-qubit circuit applies `X` to qubit 0 (qubits 1 and 2 stay |0>), then `measure_all()`. From the resulting `bits` you call `bits.slice_bits([2])`. What does the sliced array's `get_counts()` return?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.measure_all()\n\nbits = StatevectorSampler().run([qc], shots=300).result()[0].data.meas\nprint(bits.slice_bits([2]).get_counts())",
+  "options": [
+    {
+      "key": "A",
+      "text": "`{'0': 300}`"
+    },
+    {
+      "key": "B",
+      "text": "`{'1': 300}`"
+    },
+    {
+      "key": "C",
+      "text": "`{'001': 300}`"
+    },
+    {
+      "key": "D",
+      "text": "`{'100': 300}`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`slice_bits([2])` keeps only bit index 2, which is qubit 2 (measured 0), and returns a 1-bit BitArray. Bit indices match qubit indices (little-endian), so index 2 is NOT the flipped qubit 0.",
+    "distractors": {
+      "B": "This assumes index 2 refers to the flipped qubit; bit index 2 is qubit 2, which is 0.",
+      "C": "`slice_bits` reduces the width to the selected bit(s); it does not keep all three bits.",
+      "D": "This both keeps full width and mis-reads endianness."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q017.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3); qc.x(0); qc.measure_all()\nbits = StatevectorSampler(seed=9).run([qc], shots=300).result()[0].data.meas\nobs = bits.slice_bits([2]).get_counts()\ncand = {\"A\": {\"0\": 300}, \"B\": {\"1\": 300}, \"C\": {\"001\": 300}, \"D\": {\"100\": 300}}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = f\"slice_bits([2]) counts={obs}; option claims {v} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"full_counts\": bits.get_counts(), \"sliced_counts\": obs}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

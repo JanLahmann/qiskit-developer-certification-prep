@@ -1,0 +1,68 @@
+{
+  "id": "s8-q019",
+  "section": "s8",
+  "objectives": [
+    "s8o3"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "A circuit contains a user-defined gate `mygate` (built from a named sub-circuit and appended with `to_gate()`). When you call `qiskit.qasm3.dumps(qc)`, how is `mygate` represented in the output?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nsub = QuantumCircuit(1, name=\"mygate\")\nsub.rz(0.5, 0)\nsub.h(0)\n\nqc = QuantumCircuit(1)\nqc.append(sub.to_gate(), [0])\n\nprint(qasm3.dumps(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": "A `gate mygate ... { ... }` definition is emitted, and the circuit body then invokes `mygate q[0];`."
+    },
+    {
+      "key": "B",
+      "text": "The gate is inlined as its constituent `rz`/`h` operations, with no `gate` definition."
+    },
+    {
+      "key": "C",
+      "text": "The export raises an error, because only gates from `stdgates.inc` can be exported."
+    },
+    {
+      "key": "D",
+      "text": "`mygate` is treated as a standard gate from `stdgates.inc`, so no definition is written."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "OpenQASM 3 supports user `gate` definitions, and Qiskit's exporter writes a `gate mygate ... { ... }` block for the custom instruction and then calls it by name in the body. The definition preserves the sub-circuit structure rather than flattening it.",
+    "distractors": {
+      "B": "The exporter keeps the abstraction: it writes a named `gate` definition instead of inlining the `rz`/`h` operations.",
+      "C": "Custom gate definitions are valid OpenQASM 3 (not restricted to `stdgates.inc`), so the export does not raise. (Such gates must still be transpiled to an ISA before hardware execution.)",
+      "D": "`mygate` is not part of `stdgates.inc`; it is a user gate, so a definition must be, and is, emitted."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm3"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s8-q019.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nsub = QuantumCircuit(1, name=\"mygate\")\nsub.rz(0.5, 0)\nsub.h(0)\nqc = QuantumCircuit(1)\nqc.append(sub.to_gate(), [0])\n\nraised = False\nerr = \"\"\nout = \"\"\ntry:\n    out = qasm3.dumps(qc)\nexcept Exception as e:\n    raised = True\n    err = f\"{type(e).__name__}: {str(e)[:100]}\"\n\nlines = [l.strip() for l in out.splitlines()]\nhas_gate_def = any(l.startswith(\"gate mygate\") for l in lines)\nuses_gate = any(l.startswith(\"mygate \") for l in lines)\ninlined = (not has_gate_def) and any(l.startswith(\"rz(\") for l in lines)\n\nclaim = {\n    \"A\": (has_gate_def and uses_gate and not raised),\n    \"B\": inlined,\n    \"C\": raised,\n    \"D\": (not has_gate_def and not raised),\n}\nevidence = {\n    \"A\": f\"export raised={raised}; a 'gate mygate ...' definition is emitted={has_gate_def}; then invoked={uses_gate}\",\n    \"B\": f\"custom gate inlined as its constituent gates with no definition={inlined}\",\n    \"C\": f\"export raised an exception={raised} {err}\",\n    \"D\": f\"no definition written (i.e. treated as built-in/stdgates)={not has_gate_def and not raised}; definition actually present={has_gate_def}\",\n}\nproven = [k for k, v in claim.items() if v]\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"dumps\": out}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

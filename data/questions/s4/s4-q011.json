@@ -1,0 +1,58 @@
+{
+  "id": "s4-q011",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "You want to compare the effect of several different error-mitigation settings on one circuit and observable. All the jobs are independent, are known at the outset, and you want them to run as closely together in time as possible (to minimize device drift) while still being able to inspect each job's result separately. Which execution mode does the documentation recommend here?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Batch mode"
+    },
+    {
+      "key": "B",
+      "text": "Session mode"
+    },
+    {
+      "key": "C",
+      "text": "Job mode, submitting all jobs and hoping the scheduler groups them"
+    },
+    {
+      "key": "D",
+      "text": "A separate session per mitigation setting"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "All the jobs are independent and available at the outset, so they can be scheduled collectively in a batch: you wait through the queue only once, the classical pre-processing runs in parallel, and the jobs run closely together to limit drift. You still get each job's result individually. Because sessions are generally more expensive, batch is preferred whenever you do not need a session's dedicated access.",
+    "distractors": {
+      "B": "A session would work but is generally more expensive than batch; the docs recommend using batch whenever you do not need the dedicated exclusive access a session provides.",
+      "C": "Plain job mode gives no scheduling relationship between the jobs — each waits in the queue separately and there is no guarantee they run close together.",
+      "D": "Opening a session per setting multiplies session overhead and cost while providing no benefit for independent jobs."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "id": "s2-q020",
+  "section": "s2",
+  "objectives": [
+    "s2o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "You have a raw counts dictionary from 1024 shots. Compared with `plot_histogram(counts)`, what does `plot_distribution(counts)` display for the same data?",
+  "code": "from qiskit.visualization import plot_histogram, plot_distribution\n\ncounts = {\"00\": 500, \"11\": 500, \"01\": 20, \"10\": 4}\n# plot_histogram(counts)  vs  plot_distribution(counts)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`plot_distribution` normalizes the bars into a distribution summing to 1, whereas `plot_histogram` shows the raw integer counts (summing to the shot total)."
+    },
+    {
+      "key": "B",
+      "text": "They are identical; `plot_distribution` is a deprecated alias of `plot_histogram`."
+    },
+    {
+      "key": "C",
+      "text": "`plot_distribution` shows raw counts and `plot_histogram` normalizes to probabilities — the roles are reversed."
+    },
+    {
+      "key": "D",
+      "text": "`plot_distribution` requires a `Statevector` rather than a counts dict, so it raises a `TypeError` here."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`plot_histogram` plots the raw counts (its y-axis is labeled Count and the bar heights add up to the number of shots). `plot_distribution` plots a normalized (quasi-)probability distribution, so its bar heights add up to 1. Both accept the same counts dict.",
+    "distractors": {
+      "B": "They are separate functions with different y-axes; `plot_distribution` is neither an alias nor deprecated.",
+      "C": "This reverses reality — `plot_histogram` shows raw counts and `plot_distribution` shows normalized probabilities, not the other way around.",
+      "D": "`plot_distribution` accepts a counts / quasi-probability dict directly; it does not require a `Statevector`, so it does not raise here."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q020.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.visualization import plot_histogram, plot_distribution\nimport matplotlib\n\ncounts = {\"00\": 500, \"11\": 500, \"01\": 20, \"10\": 4}\nshots = sum(counts.values())\n\nfh = plot_histogram(counts)\nah = fh.axes[0]\nsum_h = float(sum(p.get_height() for p in ah.patches))\nyl_h = ah.get_ylabel()\n\nevidence = {}\nproven = []\n\n# D checked as an attempt: does plot_distribution accept the dict?\ntry:\n    fd = plot_distribution(counts)\n    ad = fd.axes[0]\n    sum_d = float(sum(p.get_height() for p in ad.patches))\n    yl_d = ad.get_ylabel()\n    dist_ok = True\nexcept Exception as e:\n    sum_d = None\n    yl_d = f\"raised {type(e).__name__}\"\n    dist_ok = False\n\nhist_is_raw = abs(sum_h - shots) < 1e-6\ndist_is_norm = dist_ok and abs(sum_d - 1.0) < 1e-6\n\nresA = hist_is_raw and dist_is_norm\nevidence[\"A\"] = (\n    f\"plot_histogram heights sum={sum_h} (shots={shots}, ylabel={yl_h!r}); \"\n    f\"plot_distribution heights sum={sum_d} (ylabel={yl_d!r}) -> hist=raw counts, dist=normalized: {resA}\"\n)\nevidence[\"B\"] = (\n    f\"the two differ: histogram sum={sum_h} vs distribution sum={sum_d}, \"\n    f\"ylabels {yl_h!r} vs {yl_d!r} -> not an alias\"\n)\nevidence[\"C\"] = (\n    f\"observed histogram is raw (sum={sum_h}) and distribution is normalized (sum={sum_d}); \"\n    \"the reversed claim is false\"\n)\nevidence[\"D\"] = (\n    f\"plot_distribution(counts_dict) succeeded={dist_ok} (returned a Figure); \"\n    \"it does not require a Statevector\"\n)\nif resA:\n    proven.append(\"A\")\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"histogram_sum\": sum_h, \"distribution_sum\": sum_d, \"shots\": shots},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -13,10 +13,10 @@
     "observed": {
       "backend": "fake_manila",
       "counts_A": {
-        "00": 484,
-        "11": 463,
-        "10": 50,
-        "01": 27
+        "00": 516,
+        "11": 439,
+        "10": 48,
+        "01": 21
       }
     }
   },
@@ -26,9 +26,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.27,
+  "wall_seconds": 1.41,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"call succeeded on fake_manila: returned job, result()[0].data.meas gave counts over 4 bitstrings, 1024 shots total\", \"B\": \"call raised ValueError: An invalid Sampler pub-like was given (<class 'qiskit._accelerate.circuit.CircuitInstruction'>). If you want to run a single circuit, you need to wrap it with `\", \"C\": \"call raised TypeError: SamplerV2.run() takes 2 positional arguments but 3 were given\", \"D\": \"call raised TypeError: SamplerV2.run() got an unexpected keyword argument 'backend'\"}, \"observed\": {\"backend\": \"fake_manila\", \"counts_A\": {\"00\": 484, \"11\": 463, \"10\": 50, \"01\": 27}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"call succeeded on fake_manila: returned job, result()[0].data.meas gave counts over 4 bitstrings, 1024 shots total\", \"B\": \"call raised ValueError: An invalid Sampler pub-like was given (<class 'qiskit._accelerate.circuit.CircuitInstruction'>). If you want to run a single circuit, you need to wrap it with `\", \"C\": \"call raised TypeError: SamplerV2.run() takes 2 positional arguments but 3 were given\", \"D\": \"call raised TypeError: SamplerV2.run() got an unexpected keyword argument 'backend'\"}, \"observed\": {\"backend\": \"fake_manila\", \"counts_A\": {\"00\": 516, \"11\": 439, \"10\": 48, \"01\": 21}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

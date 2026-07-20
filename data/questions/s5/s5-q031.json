@@ -1,0 +1,68 @@
+{
+  "id": "s5-q031",
+  "section": "s5",
+  "objectives": [
+    "s5o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "To make a SamplerV2 run on a fake/simulated backend reproducible — identical counts every time — which assignment sets the random seed correctly?",
+  "code": "sampler = SamplerV2(mode=fake_backend)\n# make results reproducible:",
+  "options": [
+    {
+      "key": "A",
+      "text": "`sampler.options.simulator.seed_simulator = 42`"
+    },
+    {
+      "key": "B",
+      "text": "`sampler.options.seed = 42`"
+    },
+    {
+      "key": "C",
+      "text": "`sampler.run([isa], seed=42)`"
+    },
+    {
+      "key": "D",
+      "text": "`sampler.options.execution.seed_simulator = 42`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The simulator seed lives in the `simulator` options group: `options.simulator.seed_simulator`. Fixing it makes the (fake) backend's internal simulator deterministic, so repeated runs return identical counts. Without it, each run draws fresh randomness.",
+    "distractors": {
+      "B": "There is no top-level `options.seed`; the seed is nested under the `simulator` group. This assignment fails validation.",
+      "C": "`run()` has no `seed` keyword — seeding is an option on the primitive, not a run argument, so this raises a TypeError.",
+      "D": "`seed_simulator` is a field of the `simulator` group, not `execution`. `options.execution` holds `init_qubits`/`rep_delay`/`meas_type`, and rejects `seed_simulator`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-runtime-options",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q031.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(1); qc.h(0); qc.measure_all()\nisa = pm.run(qc)\n\nevidence, proven = {}, []\n\n# A: options.simulator.seed_simulator -> two runs identical\ntry:\n    a = SamplerV2(mode=backend); a.options.simulator.seed_simulator = 42\n    b = SamplerV2(mode=backend); b.options.simulator.seed_simulator = 42\n    c1 = a.run([isa], shots=2000).result()[0].data.meas.get_counts()\n    c2 = b.run([isa], shots=2000).result()[0].data.meas.get_counts()\n    A_ok = (c1 == c2)\n    evidence[\"A\"] = f\"two samplers with simulator.seed_simulator=42 -> counts identical = {A_ok} ({c1} vs {c2})\"\n    if A_ok:\n        proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:80]}\"\n\n# B: options.seed = 42\ntry:\n    s = SamplerV2(mode=backend); s.options.seed = 42\n    evidence[\"B\"] = \"options.seed = 42 accepted (unexpected)\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"options.seed: raised {type(e).__name__}: {str(e)[:70]} (no such option)\"\n\n# C: run(seed=42)\ntry:\n    SamplerV2(mode=backend).run([isa], seed=42)\n    evidence[\"C\"] = \"run(seed=42) accepted (unexpected)\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"run(seed=42): raised {type(e).__name__}: {str(e)[:70]} (no seed kwarg)\"\n\n# D: options.execution.seed_simulator = 42\ntry:\n    s = SamplerV2(mode=backend); s.options.execution.seed_simulator = 42\n    evidence[\"D\"] = \"options.execution.seed_simulator accepted (unexpected)\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"options.execution.seed_simulator: raised {type(e).__name__}: {str(e)[:60]} (seed lives under simulator)\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

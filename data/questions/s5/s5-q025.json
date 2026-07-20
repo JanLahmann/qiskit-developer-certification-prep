@@ -1,0 +1,68 @@
+{
+  "id": "s5-q025",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "spot-bug",
+  "difficulty": 2,
+  "stem": "This code raises `AttributeError: 'DataBin' object has no attribute 'meas'` on the last line. What is the correct fix?",
+  "code": "qc = QuantumCircuit(2, 2)\nqc.h(0); qc.cx(0, 1)\nqc.measure([0, 1], [0, 1])\n# ... transpile to isa, run ...\nresult = sampler.run([isa]).result()\ncounts = result[0].data.meas.get_counts()   # AttributeError",
+  "options": [
+    {
+      "key": "A",
+      "text": "The register created by `QuantumCircuit(2, 2)` is named `c`, so use `result[0].data.c.get_counts()`"
+    },
+    {
+      "key": "B",
+      "text": "Replace the explicit measurement with `qc.measure_all()` — `data.meas` only works alongside `measure(...)`"
+    },
+    {
+      "key": "C",
+      "text": "`BitArray` has no `get_counts()`; iterate `get_bitstrings()` and tally them yourself"
+    },
+    {
+      "key": "D",
+      "text": "You must pass `shots=` to `run()` so the `meas` field gets created"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The DataBin field name comes from the classical register's name. `QuantumCircuit(2, 2)` creates a default register named `c`, so the outcomes are in `data.c`, not `data.meas`. The name `meas` only exists if the circuit used `measure_all()`, which auto-creates a register called `meas`.",
+    "distractors": {
+      "B": "This inverts the truth: `measure_all()` is exactly what creates a `meas` register. With the explicit `measure(...)` here, the field is `c`. Rewriting the circuit is unnecessary — just use `data.c`.",
+      "C": "`BitArray.get_counts()` does exist and works fine; the error is only about the field name, not a missing method.",
+      "D": "Shots were run regardless; the field name depends on the register name (`c`), not on the shot count. Passing shots does not create a `meas` field."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q025.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n\ndef build():\n    qc = QuantumCircuit(2, 2)\n    qc.h(0); qc.cx(0, 1)\n    qc.measure([0, 1], [0, 1])\n    return pm.run(qc)\n\nresult = SamplerV2(mode=backend).run([build()], shots=200).result()\nfields = list(result[0].data.keys())\n\n# Show the bug\nbuggy = None\ntry:\n    result[0].data.meas.get_counts()\nexcept Exception as e:\n    buggy = f\"{type(e).__name__}: {str(e)[:80]}\"\n\nevidence, proven = {}, []\n\n# A: register is named 'c'; use data.c\ntry:\n    c = result[0].data.c.get_counts()\n    evidence[\"A\"] = f\"data.c.get_counts() -> {c} (fields present: {fields})\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"data.c raised {type(e).__name__}: {str(e)[:70]}\"\n\n# B: 'the fix is to call measure_all()' -> still no 'meas' the original way; but this claim is that\n# data.meas works after measure_all. We test that the *stated fix* does not repair data.meas on THIS circuit.\nevidence[\"B\"] = f\"circuit uses QuantumCircuit(2,2); its register is 'c' not 'meas'. data.meas -> {buggy}\"\n\n# C: 'BitArray has no get_counts, use get_bitstrings'\ntry:\n    _ = result[0].data.c.get_counts()\n    has_gc = True\nexcept Exception:\n    has_gc = False\nevidence[\"C\"] = f\"BitArray.get_counts() exists and works = {has_gc}; claim that get_counts is unavailable is false\"\n\n# D: 'must pass shots to create meas'\nevidence[\"D\"] = f\"shots=200 was passed yet field is 'c', not 'meas'; fields={fields}\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"data_fields\": fields, \"buggy_data_meas\": buggy}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

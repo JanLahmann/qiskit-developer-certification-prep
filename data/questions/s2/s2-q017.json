@@ -1,0 +1,73 @@
+{
+  "id": "s2-q017",
+  "section": "s2",
+  "objectives": [
+    "s2o1"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "Select the TWO calls that each return a `matplotlib.figure.Figure` for circuit `qc`. (Select 2.)",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.visualization import circuit_drawer\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`qc.draw(\"mpl\")`"
+    },
+    {
+      "key": "B",
+      "text": "`circuit_drawer(qc, output=\"mpl\")`"
+    },
+    {
+      "key": "C",
+      "text": "`qc.draw(\"matplotlib\")`"
+    },
+    {
+      "key": "D",
+      "text": "`qc.draw()`"
+    },
+    {
+      "key": "E",
+      "text": "`circuit_drawer(qc, output=\"figure\")`"
+    }
+  ],
+  "answer": [
+    "A",
+    "B"
+  ],
+  "explanation": {
+    "correct": "The Matplotlib renderer is selected by the output name `\"mpl\"`, and it is available both as the method `qc.draw(\"mpl\")` and as the function `circuit_drawer(qc, output=\"mpl\")`. Both return a `matplotlib.figure.Figure`.",
+    "distractors": {
+      "C": "`\"matplotlib\"` is not a valid output value — only `\"mpl\"` selects that renderer — so this raises `VisualizationError`.",
+      "D": "With no output argument, `draw()` defaults to the text renderer and returns a `TextDrawing`, not a `Figure`.",
+      "E": "`\"figure\"` is not a recognized output value; the Matplotlib output is `\"mpl\"`, so this raises `VisualizationError`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q017.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.visualization import circuit_drawer\nimport matplotlib\n\ndef build():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    qc.cx(0, 1)\n    return qc\n\ndef is_fig(x):\n    return isinstance(x, matplotlib.figure.Figure)\n\ncalls = {\n    \"A\": lambda: build().draw(\"mpl\"),\n    \"B\": lambda: circuit_drawer(build(), output=\"mpl\"),\n    \"C\": lambda: build().draw(\"matplotlib\"),\n    \"D\": lambda: build().draw(),\n    \"E\": lambda: circuit_drawer(build(), output=\"figure\"),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        r = fn()\n        ok = is_fig(r)\n        evidence[k] = f\"returned {type(r).__name__}; is matplotlib Figure={ok}\"\n        if ok:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"figure_returning_calls\": proven},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

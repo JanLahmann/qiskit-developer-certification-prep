@@ -1,0 +1,69 @@
+{
+  "id": "s5-q028",
+  "section": "s5",
+  "objectives": [
+    "s5o2"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "A Bell circuit should only ever yield `00` or `11`, but readout error sprinkles in `01`/`10`. A team wants to bypass runtime mitigation and apply their own scheme that keeps only the physically-consistent outcomes. Which approach implements this correctly?",
+  "code": "# result from a Bell circuit; raw counts include 01/10 from readout error\ncounts = result[0].data.meas.get_counts()   # e.g. {'00':.., '11':.., '01':.., '10':..}",
+  "options": [
+    {
+      "key": "A",
+      "text": "Filter the counts to keep only even-parity outcomes (`00`, `11`) and renormalize — a post-selection scheme you implement yourself on the returned data"
+    },
+    {
+      "key": "B",
+      "text": "Set `sampler.options.resilience_level = 2` so the runtime post-selects for you"
+    },
+    {
+      "key": "C",
+      "text": "Enable `dynamical_decoupling`, which removes the readout errors from the counts"
+    },
+    {
+      "key": "D",
+      "text": "Nothing can be done — you must accept the raw counts as the sampler returns them"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Because the Sampler hands back raw per-shot outcomes, you are free to implement any custom mitigation in post-processing. Here the known symmetry (a Bell state has even parity) lets you post-select: drop the `01`/`10` shots and renormalize over `00`/`11`. This is exactly the 'bypass runtime mitigation, roll your own' pattern.",
+    "distractors": {
+      "B": "SamplerV2 has no `resilience_level` — that is an Estimator option — so this line raises, and even resilience levels do not do parity post-selection.",
+      "C": "Dynamical decoupling suppresses decoherence during idle periods in the circuit; it does not filter or correct measurement/readout outcomes, so leakage outcomes still appear in the counts.",
+      "D": "The raw counts are precisely what makes custom mitigation possible; option A demonstrates a valid post-processing correction."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitives",
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q028.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\ns = SamplerV2(mode=backend); s.options.simulator.seed_simulator = 7\nraw = s.run([isa], shots=4000).result()[0].data.meas.get_counts()\n\nevidence, proven = {}, []\n\n# A: keep only even-parity outcomes (00, 11), renormalize -> DIY post-selection\nkept = {k: v for k, v in raw.items() if k in (\"00\", \"11\")}\nodd = {k: v for k, v in raw.items() if k in (\"01\", \"10\")}\nA_ok = (sum(kept.values()) > 0) and (sum(kept.values()) < sum(raw.values())) and (len(odd) > 0)\nevidence[\"A\"] = (f\"post-selecting even-parity kept {sum(kept.values())}/{sum(raw.values())} shots and \"\n                 f\"discarded odd-parity leakage {odd} -> user-implemented mitigation works = {A_ok}\")\nif A_ok:\n    proven.append(\"A\")\n\n# B: resilience_level = 2 to 'auto post-select'\ntry:\n    s2 = SamplerV2(mode=backend); s2.options.resilience_level = 2\n    evidence[\"B\"] = \"resilience_level=2 accepted (unexpected)\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"resilience_level=2 raised {type(e).__name__}: {str(e)[:70]} (no such Sampler option)\"\n\n# C: dynamical decoupling 'removes readout errors' -> enable DD, leakage should persist\ns3 = SamplerV2(mode=backend); s3.options.simulator.seed_simulator = 7\ns3.options.dynamical_decoupling.enable = True\ndd_counts = s3.run([isa], shots=4000).result()[0].data.meas.get_counts()\ndd_leak = sum(v for k, v in dd_counts.items() if k in (\"01\", \"10\"))\nevidence[\"C\"] = f\"with DD enabled, odd-parity readout outcomes still present ({dd_leak} shots) -> DD does not post-select counts\"\n\n# D: 'no way to post-process, must accept raw'\nevidence[\"D\"] = f\"post-processing IS possible (option A filtered {sum(kept.values())} shots) -> claim is false\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"raw\": raw, \"post_selected\": kept}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

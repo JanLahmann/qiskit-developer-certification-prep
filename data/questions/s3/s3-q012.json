@@ -1,0 +1,68 @@
+{
+  "id": "s3-q012",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "`sub` (a 2-qubit circuit whose only gate is `cx(0, 1)`) is composed onto the 3-qubit circuit `qc` with the mapping `qubits=[0, 2]`. In the resulting circuit `comp`, which qubits does the CX act on?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(3)\nqc.h(0)\n\nsub = QuantumCircuit(2)\nsub.cx(0, 1)\n\ncomp = qc.compose(sub, qubits=[0, 2])",
+  "options": [
+    {
+      "key": "A",
+      "text": "Control = qubit 0, target = qubit 1"
+    },
+    {
+      "key": "B",
+      "text": "Control = qubit 1, target = qubit 2"
+    },
+    {
+      "key": "C",
+      "text": "Control = qubit 0, target = qubit 2"
+    },
+    {
+      "key": "D",
+      "text": "`compose` raises an error because `sub` has fewer qubits than `qc`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "`compose(sub, qubits=[0, 2])` maps `sub`'s qubit 0 to `qc`'s qubit 0 and `sub`'s qubit 1 to `qc`'s qubit 2. The CX `sub.cx(0, 1)` therefore becomes a CX with control qubit 0 and target qubit 2 in `comp`.",
+    "distractors": {
+      "A": "Target qubit 1 ignores the `qubits=[0, 2]` mapping and assumes the sub-circuit lands on qubits 0 and 1.",
+      "B": "This misreads the mapping as shifting both qubits up by one; the mapping sends sub-qubit 0 to physical qubit 0.",
+      "D": "Composing a smaller circuit onto a subset of a larger one is exactly what the `qubits` argument is for — no error occurs."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q012.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(3)\nqc.h(0)\nsub = QuantumCircuit(2)\nsub.cx(0, 1)\ncomp = qc.compose(sub, qubits=[0, 2])\n\ncx = [ins for ins in comp.data if ins.operation.name == \"cx\"][0]\nidx = [comp.find_bit(q).index for q in cx.qubits]\nctrl, tgt = idx[0], idx[1]\nclaims = {\n    \"A\": ctrl == 0 and tgt == 1,\n    \"B\": ctrl == 1 and tgt == 2,\n    \"C\": ctrl == 0 and tgt == 2,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"observed CX=({ctrl},{tgt}); claim (0,1) -> {claims['A']}\",\n    \"B\": f\"observed CX=({ctrl},{tgt}); claim (1,2) -> {claims['B']}\",\n    \"C\": f\"observed CX (control,target)=({ctrl},{tgt}); claim (0,2) -> {claims['C']}\",\n    \"D\": f\"compose succeeded, comp ops={dict(comp.count_ops())}; no error -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"cx_qubits\": [ctrl, tgt]}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

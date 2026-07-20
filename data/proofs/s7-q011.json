@@ -1,0 +1,29 @@
+{
+  "question": "s7-q011",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "observed (num_shots,num_bits)=(2000, 3); option claims (2000, 3) -> match=True",
+      "B": "observed (num_shots,num_bits)=(2000, 3); option claims (3, 2000) -> match=False",
+      "C": "observed (num_shots,num_bits)=(2000, 3); option claims (2000, 8) -> match=False",
+      "D": "observed (num_shots,num_bits)=(2000, 3); option claims (2000, 1) -> match=False"
+    },
+    "observed": {
+      "num_shots": 2000,
+      "num_bits": 3
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.21,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"observed (num_shots,num_bits)=(2000, 3); option claims (2000, 3) -> match=True\", \"B\": \"observed (num_shots,num_bits)=(2000, 3); option claims (3, 2000) -> match=False\", \"C\": \"observed (num_shots,num_bits)=(2000, 3); option claims (2000, 8) -> match=False\", \"D\": \"observed (num_shots,num_bits)=(2000, 3); option claims (2000, 1) -> match=False\"}, \"observed\": {\"num_shots\": 2000, \"num_bits\": 3}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

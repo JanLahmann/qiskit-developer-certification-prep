@@ -1,0 +1,377 @@
+[
+  {
+    "n": 1,
+    "stem": "You use a circuit-library state preparation routine that outputs a specific n-qubit state $|ψ⟩$. How is this typically integrated into a larger circuit?",
+    "code": null,
+    "options": {
+      "A": "You must manually copy all of its gates into your circuit definition",
+      "B": "You can append it as a subcircuit or instruction at the beginning of your main circuit",
+      "C": "You must convert it to OpenQASM text and paste it into your code",
+      "D": "It can only be used as a standalone circuit and not combined"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 2,
+    "stem": "You have a parameterized circuit and want to visualize how the parameters appear in the diagram. What behavior should you expect from qc.draw(\"mpl\")?",
+    "code": null,
+    "options": {
+      "A": "Parameters will be hidden; only gate types will be shown",
+      "B": "The diagram will show symbolic parameter names (like $θ_0$, $θ_1$) as labels on the gates",
+      "C": "The drawer will fail unless all parameters are numerically bound",
+      "D": "All parameters will be treated as 0 during drawing"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 3,
+    "stem": "You are building a variational algorithm with layers of parameterized Ry and CNOT gates. Which practice best leverages the circuit library and parameterization features?",
+    "code": null,
+    "options": {
+      "A": "Transpile the circuit first and then try to introduce parameters into the transpiled output",
+      "B": "Manually code every Ry and CNOT gate for each layer in plain QuantumCircuit",
+      "C": "Use a TwoLocal or EfficientSU2-style template from the circuit library with symbolic parameters",
+      "D": "Avoid symbolic parameters and bake fixed angles into the circuit"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 4,
+    "stem": "In Qiskit visualization, what is a typical use of a style dictionary when drawing a circuit with the Matplotlib-based drawer?",
+    "code": null,
+    "options": {
+      "A": "To control colors, fonts, and gate shapes in the circuit diagram",
+      "B": "To define parameter values for parameterized gates",
+      "C": "To specify initial qubit states $|0⟩$ or $|1⟩$",
+      "D": "To change backend-specific transpilation settings"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 5,
+    "stem": "You want to compare two Qiskit circuits to check if they implement the same unitary (up to global phase). Which workflow is most appropriate?",
+    "code": null,
+    "options": {
+      "A": "Compare their text diagrams produced by qc.draw(\"text\")",
+      "B": "Check that they have the same number of gates and qubits",
+      "C": "Convert both to Operator objects and compare the matrices",
+      "D": "Run both on a simulator for a few random input states and compare outputs"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 6,
+    "stem": "Which best describes the relationship between QuantumCircuit and Operator in Qiskit?",
+    "code": null,
+    "options": {
+      "A": "Operators can only be created from measurement results, not from circuits",
+      "B": "QuantumCircuit and Operator are unrelated; they live in different namespaces",
+      "C": "QuantumCircuit is a subclass of Operator",
+      "D": "Operator provides a mathematical representation of the linear map implemented by a circuit"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 7,
+    "stem": "You are working with Qiskit operators and want to represent the Hamiltonian $H=0.5Z_0Z_1$+$X_1$ for use with primitives. What is the most appropriate Qiskit class to represent this operator compactly?",
+    "code": null,
+    "options": {
+      "A": "DensityMatrix from qiskit.quantum_info",
+      "B": "Operator from qiskit.quantum_info with a full 4×4 matrix",
+      "C": "PauliList from qiskit.quantum_info without coefficients",
+      "D": "SparsePauliOp from qiskit.quantum_info built from Pauli strings and coefficients"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 8,
+    "stem": "You create a 3-qubit circuit and want to visualize the statevector after applying some gates using the state_city visualization. Which Qiskit toolchain correctly produces this visualization?",
+    "code": null,
+    "options": {
+      "A": "Simulate the circuit with AerSimulator(method='statevector'), get the final statevector, and pass it to plot_state_city",
+      "B": "Use Statevector.from_int only, because visualizations are created automatically when constructing the object",
+      "C": "Call circuit.draw('mpl') and interpret the diagram as a state-city plot",
+      "D": "Use the Sampler primitive and directly pass its quasi-distribution to plot_state_city"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 9,
+    "stem": "You need to visualize how the layout and gate structure of a circuit changes after transpilation at a certain optimization level. Which pair of visualizations best helps you compare pre- and post-transpilation circuits on a specific backend?",
+    "code": null,
+    "options": {
+      "A": "Use plot_state_city before and after transpilation to compare amplitude distributions",
+      "B": "Use plot_histogram on simulated results of both circuits to compare measurement distributions",
+      "C": "Use plot_error_map for the backend and plot_histogram of circuit counts",
+      "D": "Use circuit.draw('mpl') before and circuit.draw('mpl') after calling transpile, with the same reverse_bits and fold settings"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 10,
+    "stem": "You are optimizing a circuit for a specific hardware backend with limited connectivity. Which transpiler pass or configuration most directly addresses qubit routing to satisfy the coupling map?",
+    "code": null,
+    "options": {
+      "A": "Increasing optimization_level in transpile to 3",
+      "B": "Using layout and routing passes, such as SetLayout and StochasticSwap, in a custom PassManager",
+      "C": "Changing the basis_gates to match the backend's native gate set",
+      "D": "Using RemoveBarriers to minimize unnecessary barriers"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 11,
+    "stem": "You submit multiple jobs to a runtime session to run parameter sweeps using the Sampler primitive. You want to track all jobs and handle failures. Which Qiskit pattern best supports job management in this context?",
+    "code": null,
+    "options": {
+      "A": "Avoid tracking jobs because runtime guarantees completion for all submitted tasks",
+      "B": "Use a runtime Session with Sampler, collecting the returned job handles, and periodically query their statuses via job.status()",
+      "C": "Use only blocking calls like result = sampler.run(...).result() and ignore job handles",
+      "D": "Use backend.run for all tasks and manually store job IDs in a list for later inspection"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 12,
+    "stem": "You are designing a parameterized circuit using Qiskit and want to express it in OpenQASM 3 syntax, including classical control based on measurement outcomes. Which Qiskit component most directly helps generate OpenQASM 3 code from your circuit?",
+    "code": null,
+    "options": {
+      "A": "qiskit.qasm3 exporter to convert a QuantumCircuit with classical control into OpenQASM 3",
+      "B": "qiskit.qasm2 exporter to produce OpenQASM 2 code, then manually edit it to OpenQASM 3",
+      "C": "Only the QuantumCircuit.draw() method, which can output OpenQASM 3 when using the 'qasm3' style",
+      "D": "Qiskit does not yet provide any support for OpenQASM 3 export"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 13,
+    "stem": "Consider the following OpenQASM 3 fragment:\n```python\nbit[1] c;\nqubit[1] q;\nreset q[0];\nrx(1.5708) q[0];\nmeasure q[0] -> c[0];\nif (c[0] == 1) {\n    z q[0];\n}\n```\nWhat behavior should a corresponding Qiskit circuit reproduce?",
+    "code": "bit[1] c;\nqubit[1] q;\nreset q[0];\nrx(1.5708) q[0];\nmeasure q[0] -> c[0];\nif (c[0] == 1) {\n    z q[0];\n}",
+    "options": {
+      "A": "Reset the qubit, apply $R_x(π/2)$, measure, and conditionally apply $Z$ gate only when the outcome is 1",
+      "B": "Apply $R_x(π/2)$ measure, and then conditionally reset based on the classical bit",
+      "C": "Apply an $R_x(π/2)$ rotation, always apply a $Z$ gate, then measure into a classical bit",
+      "D": "Prepare $|1⟩$, measure, then always apply $Z$ gate after measurement"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 14,
+    "stem": "You are using Qiskit’s Sampler primitive to estimate outcome probabilities for a list of circuits. Which statement best describes how the primitive reports these probabilities and how they differ from raw counts?",
+    "code": null,
+    "options": {
+      "A": "Sampler returns raw counts per bitstring with no normalization",
+      "B": "Sampler returns only expectation values of Pauli observables",
+      "C": "Sampler returns quasi-probabilities per bitstring that may not be exactly non-negative or normalized",
+      "D": "Sampler returns exact probabilities with infinite precision, independent of the number of shots"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 15,
+    "stem": "You have a QuantumCircuit with custom Gate and Instruction objects and want to run it on a real device that only supports a limited set of basis gates. What is the main role of the transpiler in this context?",
+    "code": null,
+    "options": {
+      "A": "It only optimizes the visual layout of the circuit diagram",
+      "B": "It decomposes high-level and custom gates into the device's basis gates while respecting connectivity and constraints",
+      "C": "It automatically chooses the best quantum algorithm for you",
+      "D": "It replaces all two-qubit gates with single-qubit gates to reduce error"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 16,
+    "stem": "You are using the IBM Quantum runtime to run an iterative algorithm with many calls to Estimator. What is the main advantage of using a single long-lived Session for these calls instead of creating a new session each time?",
+    "code": null,
+    "options": {
+      "A": "Multiple sessions are always faster because they parallelize across different backends",
+      "B": "A single session guarantees zero queue time for all jobs",
+      "C": "Sessions only affect billing, not technical behavior",
+      "D": "A single session groups related jobs, reduces overhead, and can provide priority handling compared to many short sessions"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 17,
+    "stem": "You are reviewing a transpiled circuit and see many inserted swap gates between certain qubits. What is the primary reason the transpiler added these swap gates?",
+    "code": null,
+    "options": {
+      "A": "To change the measurement basis of the final measurements",
+      "B": "To increase the circuit depth for benchmarking purposes",
+      "C": "To satisfy the device’s coupling map by moving logical qubits so that two-qubit gates act only on connected qubit pairs",
+      "D": "To reduce the overall number of two-qubit gates by replacing them with swaps"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 18,
+    "stem": "You are using Qiskit’s qasm3 exporter on a circuit that includes mid-circuit measurements and classical conditions. How does this relate to the notion of dynamic circuits in Qiskit and OpenQASM 3?",
+    "code": null,
+    "options": {
+      "A": "OpenQASM 3 only supports static circuits without measurements",
+      "B": "Dynamic circuits are not supported in OpenQASM 3, so the exporter will fail",
+      "C": "The exporter can express many dynamic-circuit features, such as mid-circuit measurement and classical branching, as OpenQASM 3 control constructs",
+      "D": "Dynamic circuits in Qiskit are fundamentally incompatible with any text-based representation"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 19,
+    "stem": "You are building an intermediate-level Qiskit application and want to structure your workflow using primitives and the runtime. Which of the following is a recommended design pattern?",
+    "code": null,
+    "options": {
+      "A": "Use primitives like Sampler and Estimator inside a runtime Session to implement algorithm-specific logic on the client side",
+      "B": "Use backend.run for everything and ignore primitives, since they add unnecessary complexity",
+      "C": "Implement your entire algorithm as a monolithic runtime program to avoid client-side iteration",
+      "D": "Avoid sessions and submit each primitive call as an isolated job to maximize flexibility"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 20,
+    "stem": "You are translating a simple Qiskit circuit into OpenQASM 3 by hand and want to ensure that it matches Qiskit's qubit and classical bit indexing conventions. Which principle should you follow?",
+    "code": null,
+    "options": {
+      "A": "Always reverse the qubit order in OpenQASM 3 because Qiskit uses the opposite convention",
+      "B": "Ensure that qubits and bits are declared in OpenQASM 3 arrays with consistent indexing starting at 0, and map Qiskit’s register and bit ordering directly to these indices",
+      "C": "Ignore indexing details because simulators automatically correct ordering mismatches",
+      "D": "Use 1-based indexing in OpenQASM 3 for both qubits and bits"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 21,
+    "stem": "In Qiskit which description best characterizes an \"execution mode\" for running circuits on backends?",
+    "code": null,
+    "options": {
+      "A": "It is a hardware parameter describing qubit coherence time",
+      "B": "It refers to how jobs are scheduled and run, such as synchronous versus asynchronous interactions with the backend",
+      "C": "It is a setting that adjusts optimization level during transpilation",
+      "D": "It defines the measurement basis used for all qubits in a circuit"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 22,
+    "stem": "After submitting a circuit to run on a hardware backend in Qiskit you receive a job object. Which method or approach best allows you to monitor the job’s progress until completion?",
+    "code": null,
+    "options": {
+      "A": "Resubmit the same job repeatedly until results appear",
+      "B": "Ignore the job object and wait for an email notification from the provider",
+      "C": "Directly access the backend’s internal scheduler logs",
+      "D": "Use job status methods or a job monitor utility to poll the job’s state"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 23,
+    "stem": "You submitted a long-running experiment to a hardware backend in Qiskit but then realize a bug in your circuit. How can you responsibly stop the experiment to avoid wasting hardware time?",
+    "code": null,
+    "options": {
+      "A": "Manually power down the backend if you have access",
+      "B": "Submit an empty job to overwrite the old one",
+      "C": "Use the job object’s cancel method (or equivalent) to request job cancellation",
+      "D": "Close your Python session and hope the job stops automatically"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 24,
+    "stem": "In Qiskit which practice is most appropriate for saving a job so that you can retrieve its results later, even from a different session or machine?",
+    "code": null,
+    "options": {
+      "A": "Store the job’s unique job ID or use built-in job history mechanisms provided by the account or provider",
+      "B": "Copy the circuit’s source code; the provider will automatically find the matching job",
+      "C": "Screenshot the output of the run call and reconstruct results manually",
+      "D": "Memorize the job’s status message, which is enough to reload it later"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 25,
+    "stem": "In a dynamic circuit, what is the best description of classical feedforward?",
+    "code": null,
+    "options": {
+      "A": "A measurement result is used to decide later operations.",
+      "B": "A gate is automatically decomposed into single-qubit gates.",
+      "C": "The transpiler chooses the backend based on the measurement result.",
+      "D": "The circuit is converted to a density matrix."
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false
+  }
+]

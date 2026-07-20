@@ -1,0 +1,68 @@
+{
+  "id": "s2-q013",
+  "section": "s2",
+  "objectives": [
+    "s2o1"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "You want a circuit in which an `X` on qubit 0 runs only when the earlier measurement stored a 1 in `c[0]`, and you want it to render with a classical-control (If) block when drawn. In Qiskit SDK 2.x, which line correctly adds that conditional operation?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\n# ... add the conditional X here, then qc.draw(\"text\")",
+  "options": [
+    {
+      "key": "A",
+      "text": "`with qc.if_test((qc.clbits[0], 1)):` then `qc.x(0)` inside the block"
+    },
+    {
+      "key": "B",
+      "text": "`qc.x(0).c_if(qc.clbits[0], 1)`"
+    },
+    {
+      "key": "C",
+      "text": "`qc.x(0).condition = (qc.clbits[0], 1)`"
+    },
+    {
+      "key": "D",
+      "text": "`qc.x(0, condition=(qc.clbits[0], 1))`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "In Qiskit 2.x classical feedforward is expressed with the `if_test` context manager. Operations added inside the `with qc.if_test((clbit, value)):` block run only when the condition holds, and the drawer renders them inside a boxed `If-0 ... End-0` block attached to the classical wire.",
+    "distractors": {
+      "B": "`InstructionSet.c_if` was the v0.x/v1 way to attach a condition, but it was removed in Qiskit 2.0 — calling it now raises `AttributeError`, so nothing is added to the circuit.",
+      "C": "`InstructionSet` (what `qc.x(0)` returns) has no assignable `condition` attribute; this raises `AttributeError` and builds no conditional.",
+      "D": "`QuantumCircuit.x()` accepts no `condition` keyword; passing one raises a `TypeError`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q013.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\n\ndef base():\n    qc = QuantumCircuit(1, 1)\n    qc.h(0)\n    qc.measure(0, 0)\n    return qc\n\nevidence = {}\nproven = []\n\n# A: if_test context manager\ntry:\n    qc = base()\n    with qc.if_test((qc.clbits[0], 1)):\n        qc.x(0)\n    txt = str(qc.draw(\"text\"))\n    shows_if = \"If\" in txt\n    evidence[\"A\"] = f\"built OK; rendered circuit shows an If-block = {shows_if}\"\n    if shows_if:\n        proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\n# B: c_if (removed in 2.0)\ntry:\n    qc = base()\n    qc.x(0).c_if(qc.clbits[0], 1)\n    txt = str(qc.draw(\"text\"))\n    evidence[\"B\"] = f\"no error; If-block present = {'If' in txt}\"\n    if \"If\" in txt:\n        proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\n# C: .condition assignment\ntry:\n    qc = base()\n    iset = qc.x(0)\n    iset.condition = (qc.clbits[0], 1)\n    txt = str(qc.draw(\"text\"))\n    evidence[\"C\"] = f\"no error; If-block present = {'If' in txt}\"\n    if \"If\" in txt:\n        proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\n# D: condition= keyword\ntry:\n    qc = base()\n    qc.x(0, condition=(qc.clbits[0], 1))\n    txt = str(qc.draw(\"text\"))\n    evidence[\"D\"] = f\"no error; If-block present = {'If' in txt}\"\n    if \"If\" in txt:\n        proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"proven_conditional_render\": proven},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

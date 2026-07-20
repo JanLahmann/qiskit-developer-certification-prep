@@ -1,0 +1,68 @@
+{
+  "id": "s3-q013",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "spot-bug",
+  "difficulty": 2,
+  "stem": "A developer expects `base` to contain its H followed by the X from `add_on`, but after this code `base` still shows only the H gate. What is the bug and the correct fix?",
+  "code": "from qiskit import QuantumCircuit\n\nbase = QuantumCircuit(1)\nbase.h(0)\n\nadd_on = QuantumCircuit(1)\nadd_on.x(0)\n\nbase.compose(add_on)   # intended to append X onto base\nprint(base.count_ops())",
+  "options": [
+    {
+      "key": "A",
+      "text": "`compose` cannot be used for single-qubit gates; `base.append` must be used instead."
+    },
+    {
+      "key": "B",
+      "text": "`compose` returns a new circuit and does not modify `base` in place; fix with `base = base.compose(add_on)` or `base.compose(add_on, inplace=True)`."
+    },
+    {
+      "key": "C",
+      "text": "`add_on` must be converted with `add_on.to_gate()` before it can be composed."
+    },
+    {
+      "key": "D",
+      "text": "`base` needs a classical register before `compose` takes effect."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "By default `compose` is functional: it RETURNS a new circuit and leaves the caller untouched (`inplace=False`). Discarding the return value loses the X. Assign the result back, or pass `inplace=True` to mutate `base`.",
+    "distractors": {
+      "A": "`compose` works fine for single-qubit gates — the problem is only that the returned circuit was discarded; `append` is not required.",
+      "C": "`to_gate()` is optional; you can compose whole circuits directly. It is unrelated to the in-place behavior.",
+      "D": "Classical registers have nothing to do with composing gates; the X is lost purely because the return value was ignored."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q013.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\n\nadd_on = QuantumCircuit(1)\nadd_on.x(0)\ntarget = {\"h\", \"x\"}\n\nb0 = QuantumCircuit(1); b0.h(0)\nb0.compose(add_on)                      # bug: return value discarded\nbug_ops = set(b0.count_ops())\n\nb1 = QuantumCircuit(1); b1.h(0)\nb1 = b1.compose(add_on)                 # fix: reassign\na_reassign = set(b1.count_ops())\nb2 = QuantumCircuit(1); b2.h(0)\nb2.compose(add_on, inplace=True)        # fix: inplace\na_inplace = set(b2.count_ops())\ncompose_worked = (a_reassign == target)\n\nclaims = {\n    \"A\": (not compose_worked),\n    \"B\": (a_reassign == target) and (a_inplace == target) and (bug_ops == {\"h\"}),\n    \"C\": False,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"compose produced {a_reassign} without append -> 'must use append' is {claims['A']}\",\n    \"B\": f\"buggy base ops={bug_ops}; after reassign={a_reassign}; after inplace=True={a_inplace} -> {claims['B']}\",\n    \"C\": f\"compose succeeded without to_gate() (ops={a_reassign}) -> {claims['C']}\",\n    \"D\": f\"no classical register was added; ops={a_reassign} -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug_ops\": sorted(bug_ops), \"fixed_ops\": sorted(a_reassign)}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

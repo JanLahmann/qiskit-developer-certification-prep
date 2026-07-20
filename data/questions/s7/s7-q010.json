@@ -1,0 +1,69 @@
+{
+  "id": "s7-q010",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "A SamplerV2 job whose circuit ended with `measure_all()` has completed, and you hold the returned `result` object. Which expression returns the measurement counts as a Python dict such as `{'00': 512, '11': 512}`?",
+  "code": "# the executed circuit ended with qc.measure_all()\n# result = sampler.run([isa_circuit]).result()",
+  "options": [
+    {
+      "key": "A",
+      "text": "`result[0].data.meas.get_counts()`"
+    },
+    {
+      "key": "B",
+      "text": "`result.get_counts()`"
+    },
+    {
+      "key": "C",
+      "text": "`result[0].get_counts()`"
+    },
+    {
+      "key": "D",
+      "text": "`result.quasi_dists[0]`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "A SamplerV2 job returns a PrimitiveResult: a sequence of one PubResult per PUB. Index the pub with `result[0]`, reach its `.data` (a DataBin), select the register field (`meas`, auto-named by `measure_all()`), then call `BitArray.get_counts()`.",
+    "distractors": {
+      "B": "`get_counts()` on the top-level result is the Qiskit V1 `Result` API; a V2 PrimitiveResult has no such method.",
+      "C": "`SamplerPubResult` (what `result[0]` is) has no `get_counts`; counts live one level deeper, inside `.data.<register>`.",
+      "D": "`quasi_dists` is the V1 `Sampler` output; SamplerV2 returns per-shot bitstrings in a BitArray, not quasi-probability dicts."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.PrimitiveResult",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q010.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nresult = StatevectorSampler(seed=42).run([qc], shots=1000).result()\n\nevidence = {}; proven = []\ndef attempt(key, fn):\n    try:\n        v = fn()\n        ok = isinstance(v, dict) and sum(v.values()) == 1000\n        evidence[key] = f\"returned {type(v).__name__}={str(v)[:60]}; counts-dict summing to shots={ok}\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\nattempt(\"A\", lambda: result[0].data.meas.get_counts())\nattempt(\"B\", lambda: result.get_counts())\nattempt(\"C\", lambda: result[0].get_counts())\nattempt(\"D\", lambda: result.quasi_dists[0])\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"A_counts\": result[0].data.meas.get_counts()}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

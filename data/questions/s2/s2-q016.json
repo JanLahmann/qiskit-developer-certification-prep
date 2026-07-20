@@ -1,0 +1,68 @@
+{
+  "id": "s2-q016",
+  "section": "s2",
+  "objectives": [
+    "s2o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "When drawing this circuit you want each qubit wire annotated at its left edge with its starting state |0⟩. Which `draw()` call adds those initial-state labels?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`qc.draw(\"text\", initial_state=True)`"
+    },
+    {
+      "key": "B",
+      "text": "`qc.draw(\"text\", with_initial_state=True)`"
+    },
+    {
+      "key": "C",
+      "text": "`qc.draw(\"text\", plot_barriers=True)`"
+    },
+    {
+      "key": "D",
+      "text": "`qc.draw(\"text\", vertical_compression=\"high\")`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The `initial_state` argument (default `False`) tells the drawer to prefix every qubit and clbit wire with its initial value, so each qubit line begins with a `|0>` label. It is accepted by all of the drawer's output backends.",
+    "distractors": {
+      "B": "There is no `with_initial_state` parameter; the argument is named `initial_state`, so this spelling raises a `TypeError`.",
+      "C": "`plot_barriers` only controls whether `barrier` instructions are drawn; it adds no initial-state labels.",
+      "D": "`vertical_compression` adjusts the vertical spacing of the text drawing; it does not add `|0>` labels."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q016.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\n\ndef build():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    return qc\n\ncalls = {\n    \"A\": lambda qc: qc.draw(\"text\", initial_state=True),\n    \"B\": lambda qc: qc.draw(\"text\", with_initial_state=True),\n    \"C\": lambda qc: qc.draw(\"text\", plot_barriers=True),\n    \"D\": lambda qc: qc.draw(\"text\", vertical_compression=\"high\"),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        txt = str(fn(build()))\n        has_label = \"|0>\" in txt\n        evidence[k] = f\"rendered OK; initial-state label '|0>' present={has_label}\"\n        if has_label:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"initial_state_drawing\": str(build().draw('text', initial_state=True))},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

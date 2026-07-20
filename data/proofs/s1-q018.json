@@ -1,0 +1,32 @@
+{
+  "question": "s1-q018",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "simplify() -> {'Z': 3.0, 'X': 1.0} (2 terms); option A claims {'Z':3,'X':1} -> match=True",
+      "B": "simplify() produced 2 terms; option B claims 3 unmerged terms -> match=False",
+      "C": "option C claims Z coeff 2 (dedup); actual {'Z': 3.0, 'X': 1.0} -> match=False",
+      "D": "option D claims {'Z':3,'X':2}; actual {'Z': 3.0, 'X': 1.0} -> match=False"
+    },
+    "observed": {
+      "simplified": {
+        "Z": 3.0,
+        "X": 1.0
+      },
+      "n_terms": 2
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.33,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"simplify() -> {'Z': 3.0, 'X': 1.0} (2 terms); option A claims {'Z':3,'X':1} -> match=True\", \"B\": \"simplify() produced 2 terms; option B claims 3 unmerged terms -> match=False\", \"C\": \"option C claims Z coeff 2 (dedup); actual {'Z': 3.0, 'X': 1.0} -> match=False\", \"D\": \"option D claims {'Z':3,'X':2}; actual {'Z': 3.0, 'X': 1.0} -> match=False\"}, \"observed\": {\"simplified\": {\"Z\": 3.0, \"X\": 1.0}, \"n_terms\": 2}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

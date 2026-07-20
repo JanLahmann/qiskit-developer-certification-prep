@@ -1,0 +1,68 @@
+{
+  "id": "s7-q014",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A 3-qubit circuit applies `X` to qubit 0 only, then `measure_all()`, and is sampled for 500 shots. What does `get_counts()` return?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.measure_all()\n\nresult = StatevectorSampler().run([qc], shots=500).result()\nprint(result[0].data.meas.get_counts())",
+  "options": [
+    {
+      "key": "A",
+      "text": "`{'001': 500}`"
+    },
+    {
+      "key": "B",
+      "text": "`{'100': 500}`"
+    },
+    {
+      "key": "C",
+      "text": "`{'010': 500}`"
+    },
+    {
+      "key": "D",
+      "text": "`{'000': 500}`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Qiskit uses little-endian bit ordering: qubit 0 is the RIGHTMOST character of the bitstring. Only qubit 0 is flipped, so every shot reads `001`.",
+    "distractors": {
+      "B": "`100` reads the string big-endian (qubit 0 leftmost); Qiskit puts qubit 0 on the right.",
+      "C": "`010` would mean qubit 1 was flipped; the X was on qubit 0.",
+      "D": "`000` ignores the X gate entirely."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q014.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3); qc.x(0); qc.measure_all()\nobs = StatevectorSampler(seed=5).run([qc], shots=500).result()[0].data.meas.get_counts()\ncand = {\"A\": {\"001\": 500}, \"B\": {\"100\": 500}, \"C\": {\"010\": 500}, \"D\": {\"000\": 500}}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = f\"observed counts={obs}; option claims {v} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": obs}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

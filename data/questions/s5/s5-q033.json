@@ -1,0 +1,68 @@
+{
+  "id": "s5-q033",
+  "section": "s5",
+  "objectives": [
+    "s5o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You want every job from a sampler to use 4096 shots by default, without passing `shots` on each `run()`. Which construction sets this up correctly?",
+  "code": "from qiskit_ibm_runtime import SamplerV2\n# want default_shots = 4096 for all runs",
+  "options": [
+    {
+      "key": "A",
+      "text": "`SamplerV2(mode=backend, options={\"default_shots\": 4096})`"
+    },
+    {
+      "key": "B",
+      "text": "`SamplerV2(mode=backend, shots=4096)`"
+    },
+    {
+      "key": "C",
+      "text": "`SamplerV2(mode=backend, default_shots=4096)`"
+    },
+    {
+      "key": "D",
+      "text": "`s = SamplerV2(mode=backend); s.shots = 4096`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The primitive constructor takes an `options` mapping (or a `SamplerOptions` object); `default_shots` is a key inside it. `SamplerV2(mode=backend, options={\"default_shots\": 4096})` makes every subsequent no-shots run use 4096. A per-run `shots=` argument would still override it.",
+    "distractors": {
+      "B": "There is no `shots` parameter on the SamplerV2 constructor; shots are a run argument or the `default_shots` option. This raises a TypeError.",
+      "C": "`default_shots` is not a top-level constructor keyword either — it lives inside the `options` mapping. Passing it directly raises a TypeError.",
+      "D": "SamplerV2 has no `shots` attribute controlling defaults; assigning `s.shots` just sets an unused Python attribute, so no-shots runs still fall back to 1024."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-runtime-options",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q033.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(1); qc.h(0); qc.measure_all()\nisa = pm.run(qc)\n\nevidence, proven = {}, []\n\n# A: options dict at construction\ntry:\n    s = SamplerV2(mode=backend, options={\"default_shots\": 4096})\n    n = s.run([isa]).result()[0].data.meas.num_shots\n    A_ok = (n == 4096)\n    evidence[\"A\"] = f'SamplerV2(mode=backend, options={{\"default_shots\":4096}}) -> a no-shots run used {n} shots = {A_ok}'\n    if A_ok:\n        proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:80]}\"\n\n# B: shots= kwarg on constructor\ntry:\n    SamplerV2(mode=backend, shots=4096)\n    evidence[\"B\"] = \"SamplerV2(mode=backend, shots=4096) accepted (unexpected)\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"SamplerV2(shots=4096): raised {type(e).__name__}: {str(e)[:70]}\"\n\n# C: default_shots= kwarg on constructor\ntry:\n    SamplerV2(mode=backend, default_shots=4096)\n    evidence[\"C\"] = \"SamplerV2(mode=backend, default_shots=4096) accepted (unexpected)\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"SamplerV2(default_shots=4096): raised {type(e).__name__}: {str(e)[:70]}\"\n\n# D: .shots attribute\ntry:\n    s = SamplerV2(mode=backend); s.shots = 4096\n    n = s.run([isa]).result()[0].data.meas.num_shots\n    D_ok = (n == 4096)\n    evidence[\"D\"] = f\"setting sampler.shots=4096 then no-shots run used {n} shots -> took effect = {D_ok}\"\n    if D_ok:\n        proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"sampler.shots=4096: raised {type(e).__name__}: {str(e)[:70]}\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

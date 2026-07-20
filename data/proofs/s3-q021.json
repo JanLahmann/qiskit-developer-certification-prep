@@ -1,0 +1,29 @@
+{
+  "question": "s3-q021",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "observed rx=6.2832, rz=4.7124; expect 2pi=6.2832, 3pi/2=4.7124 -> True",
+      "B": "observed rx=6.2832, rz=4.7124; claim both=pi -> False",
+      "C": "observed rz=4.7124; claim rz=pi/2=1.5708 (constant dropped) -> False",
+      "D": "binding expressions succeeded (rx=6.2832, rz=4.7124); claim 'error' -> False"
+    },
+    "observed": {
+      "rx": 6.283185307179586,
+      "rz": 4.71238898038469
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.29,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"observed rx=6.2832, rz=4.7124; expect 2pi=6.2832, 3pi/2=4.7124 -> True\", \"B\": \"observed rx=6.2832, rz=4.7124; claim both=pi -> False\", \"C\": \"observed rz=4.7124; claim rz=pi/2=1.5708 (constant dropped) -> False\", \"D\": \"binding expressions succeeded (rx=6.2832, rz=4.7124); claim 'error' -> False\"}, \"observed\": {\"rx\": 6.283185307179586, \"rz\": 4.71238898038469}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

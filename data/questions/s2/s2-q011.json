@@ -1,0 +1,68 @@
+{
+  "id": "s2-q011",
+  "section": "s2",
+  "objectives": [
+    "s2o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "This 3-qubit circuit has operations only on qubits 0 and 2; qubit 1 is untouched. Which `draw()` call removes the empty qubit-1 wire from the rendering, so only the active qubits are shown?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.x(2)\n# qubit 1 carries no operations",
+  "options": [
+    {
+      "key": "A",
+      "text": "`qc.draw(\"text\", idle_wires=False)`"
+    },
+    {
+      "key": "B",
+      "text": "`qc.draw(\"text\", idle_wires=True)`"
+    },
+    {
+      "key": "C",
+      "text": "`qc.draw(\"text\", plot_barriers=False)`"
+    },
+    {
+      "key": "D",
+      "text": "`qc.draw(\"text\", reverse_bits=True)`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`idle_wires=False` tells the drawer to omit any qubit (or clbit) wire that has no operations on it, so the qubit-1 line disappears and only qubits 0 and 2 are drawn. It works the same across the text, mpl, and latex renderers.",
+    "distractors": {
+      "B": "`idle_wires=True` is the default value — it keeps every wire, so the empty qubit-1 line is still drawn.",
+      "C": "`plot_barriers` only toggles whether `barrier` instructions are shown; it has no effect on idle qubit wires.",
+      "D": "`reverse_bits` only flips the top-to-bottom ordering of the wires; all three wires, including the idle one, are still rendered."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q011.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\n\ndef build():\n    qc = QuantumCircuit(3)\n    qc.x(0)\n    qc.x(2)\n    return qc\n\ncalls = {\n    \"A\": lambda qc: qc.draw(\"text\", idle_wires=False),\n    \"B\": lambda qc: qc.draw(\"text\", idle_wires=True),\n    \"C\": lambda qc: qc.draw(\"text\", plot_barriers=False),\n    \"D\": lambda qc: qc.draw(\"text\", reverse_bits=True),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        txt = str(fn(build()))\n        q1_present = \"q_1\" in txt\n        hides_idle = not q1_present\n        evidence[k] = (\n            f\"rendered OK; qubit-1 wire present={q1_present}; \"\n            f\"hides idle q1={hides_idle}\"\n        )\n        if hides_idle:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"idle_false_drawing\": str(build().draw('text', idle_wires=False))},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

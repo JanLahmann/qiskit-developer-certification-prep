@@ -1,0 +1,68 @@
+{
+  "id": "s3-q021",
+  "section": "s3",
+  "objectives": [
+    "s3o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "The gates use parameter EXPRESSIONS. After binding `t = π`, what numeric angles do `rx` and `rz` receive?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\nt = Parameter('t')\nqc = QuantumCircuit(1)\nqc.rx(2 * t, 0)\nqc.rz(t + np.pi / 2, 0)\n\nbound = qc.assign_parameters({t: np.pi})",
+  "options": [
+    {
+      "key": "A",
+      "text": "`rx = 2π ≈ 6.283`, `rz = 3π/2 ≈ 4.712`."
+    },
+    {
+      "key": "B",
+      "text": "`rx = π ≈ 3.142`, `rz = π ≈ 3.142` — the expressions are ignored and `t` is substituted directly."
+    },
+    {
+      "key": "C",
+      "text": "`rx = 2π ≈ 6.283`, `rz = π/2 ≈ 1.571` — only the coefficient is applied; the added constant is dropped."
+    },
+    {
+      "key": "D",
+      "text": "It raises an error because gate angles must be plain `Parameter`s, not expressions."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Parameter expressions are evaluated at bind time. With `t = π`: `2*t = 2π ≈ 6.283`, and `t + π/2 = 3π/2 ≈ 4.712`. Qiskit fully supports arithmetic on `Parameter` objects inside gate arguments.",
+    "distractors": {
+      "B": "The coefficient and additive constant are part of the expression and ARE applied; `t` is not substituted raw.",
+      "C": "The additive constant `π/2` is not dropped — `rz` gets `π + π/2 = 3π/2`.",
+      "D": "Expressions like `2*t` and `t + π/2` are valid gate arguments; no error occurs."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q021.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\nt = Parameter('t')\nqc = QuantumCircuit(1)\nqc.rx(2 * t, 0)\nqc.rz(t + np.pi / 2, 0)\nbound = qc.assign_parameters({t: np.pi})\nang = {ins.operation.name: float(ins.operation.params[0]) for ins in bound.data}\nrx_a, rz_a = ang[\"rx\"], ang[\"rz\"]\nclaims = {\n    \"A\": np.isclose(rx_a, 2*np.pi) and np.isclose(rz_a, 3*np.pi/2),\n    \"B\": np.isclose(rx_a, np.pi) and np.isclose(rz_a, np.pi),\n    \"C\": np.isclose(rx_a, 2*np.pi) and np.isclose(rz_a, np.pi/2),\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"observed rx={rx_a:.4f}, rz={rz_a:.4f}; expect 2pi={2*np.pi:.4f}, 3pi/2={3*np.pi/2:.4f} -> {claims['A']}\",\n    \"B\": f\"observed rx={rx_a:.4f}, rz={rz_a:.4f}; claim both=pi -> {claims['B']}\",\n    \"C\": f\"observed rz={rz_a:.4f}; claim rz=pi/2={np.pi/2:.4f} (constant dropped) -> {claims['C']}\",\n    \"D\": f\"binding expressions succeeded (rx={rx_a:.4f}, rz={rz_a:.4f}); claim 'error' -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"rx\": rx_a, \"rz\": rz_a}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "id": "s3-q026",
+  "section": "s3",
+  "objectives": [
+    "s3o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "This dynamic circuit branches on `cr[0]`: if it is 0 it applies X to qubit 1, ELSE it applies Z to qubit 1; then it measures qubit 1. Which outcomes appear (bit order `c1 c0`)?",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(2, 'q')\ncr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.if_test((cr[0], 0)) as else_:\n    qc.x(1)\nwith else_:\n    qc.z(1)\nqc.measure(1, 1)",
+  "options": [
+    {
+      "key": "A",
+      "text": "Only `00` and `11`, roughly 50/50."
+    },
+    {
+      "key": "B",
+      "text": "Only `10` and `01`, roughly 50/50."
+    },
+    {
+      "key": "C",
+      "text": "Only `11` and `01`, roughly 50/50."
+    },
+    {
+      "key": "D",
+      "text": "All four outcomes, roughly 25% each."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "When `c0`=0 the X flips qubit 1 to `|1⟩`, so `c1`=1 → `10`. When `c0`=1 the Z acts on `|0⟩` and leaves it unchanged, so `c1`=0 → `01`. The two branches give `10` and `01`, each ~50%.",
+    "distractors": {
+      "A": "`00`/`11` would require the two bits to match; here the X-branch makes them differ and the Z-branch leaves qubit 1 at 0 while `c0`=1, so they always differ.",
+      "C": "`11` never occurs: qubit 1 becomes 1 only in the `c0`=0 branch, which pairs with `c0`=0, giving `10`.",
+      "D": "The outcome of qubit 1 is fully determined by `c0`, so only two of the four combinations occur."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q026.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\nqr = QuantumRegister(2, 'q'); cr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0); qc.measure(0, 0)\nwith qc.if_test((cr[0], 0)) as else_:\n    qc.x(1)\nwith else_:\n    qc.z(1)\nqc.measure(1, 1)\nsim = AerSimulator(seed_simulator=42)\ncounts = sim.run(qc, shots=4000).result().get_counts()\ntotal = sum(counts.values())\nseen = set(counts)\n\ndef near(bs, tol=0.06):\n    return abs(counts.get(bs, 0)/total - 0.5) <= tol\n\nclaims = {\n    \"A\": seen == {\"00\", \"11\"},\n    \"B\": seen == {\"10\", \"01\"} and near(\"10\") and near(\"01\"),\n    \"C\": seen == {\"11\", \"01\"},\n    \"D\": seen == {\"00\", \"01\", \"10\", \"11\"},\n}\nevidence = {\n    \"A\": f\"observed={dict(counts)}; claim {{00,11}} -> {claims['A']}\",\n    \"B\": f\"observed={dict(counts)}; only {{10,01}} ~50/50 -> {claims['B']}\",\n    \"C\": f\"observed={dict(counts)}; claim {{11,01}} -> {claims['C']}\",\n    \"D\": f\"observed={dict(counts)}; claim all four -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": dict(counts)}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

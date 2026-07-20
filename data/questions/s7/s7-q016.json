@@ -1,0 +1,68 @@
+{
+  "id": "s7-q016",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "From a `BitArray` of shots you want a NEW BitArray containing only the shots in which qubit 1 was measured as 0, keeping all bits. Which call does this?",
+  "code": "# bits: a BitArray of measured shots (all bits retained)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`bits.postselect([1], [0])`"
+    },
+    {
+      "key": "B",
+      "text": "`bits.slice_bits([1])`"
+    },
+    {
+      "key": "C",
+      "text": "`bits.slice_shots([0])`"
+    },
+    {
+      "key": "D",
+      "text": "`bits.get_counts()[0]`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`postselect(indices, values)` filters SHOTS by the measured value at each index (here qubit 1 must equal 0) and returns a BitArray with the same `num_bits`.",
+    "distractors": {
+      "B": "`slice_bits` selects which BITS to keep (dropping columns), not which shots; it would shrink `num_bits`.",
+      "C": "`slice_shots` selects shots by POSITION index, not by their measured value.",
+      "D": "`get_counts()` returns a dict; indexing it with the integer `0` is a KeyError, not a filter."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q016.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.primitives.containers import BitArray\n\nqc = QuantumCircuit(2); qc.h(0); qc.h(1); qc.measure_all()\nbits = StatevectorSampler(seed=3).run([qc], shots=400).result()[0].data.meas\norig_bits = bits.num_bits\nref = sum(1 for b in bits.get_bitstrings() if b[-2] == \"0\")  # qubit 1 == 0\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        if isinstance(r, BitArray):\n            ok = (r.num_bits == orig_bits and r.num_shots == ref)\n            evidence[key] = f\"BitArray num_bits={r.num_bits}, num_shots={r.num_shots}; want bits={orig_bits}, shots={ref} -> {ok}\"\n        else:\n            ok = False\n            evidence[key] = f\"returned {type(r).__name__} (not a full-width BitArray) -> False\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\ncheck(\"A\", lambda: bits.postselect([1], [0]))\ncheck(\"B\", lambda: bits.slice_bits([1]))\ncheck(\"C\", lambda: bits.slice_shots([0]))\ncheck(\"D\", lambda: bits.get_counts()[0])\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"shots_with_q1_zero\": ref, \"num_bits\": orig_bits}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

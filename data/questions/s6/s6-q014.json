@@ -1,0 +1,68 @@
+{
+  "id": "s6-q014",
+  "section": "s6",
+  "objectives": [
+    "s6o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "Which assignment to `estimator.options.resilience_level` is accepted by `EstimatorV2` without raising a validation error?",
+  "code": "from qiskit_ibm_runtime import EstimatorV2\n\nestimator = EstimatorV2(mode=backend)\nestimator.options.resilience_level = ...  # which value?",
+  "options": [
+    {
+      "key": "A",
+      "text": "`2`"
+    },
+    {
+      "key": "B",
+      "text": "`3`"
+    },
+    {
+      "key": "C",
+      "text": "`5`"
+    },
+    {
+      "key": "D",
+      "text": "`-1`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The Estimator `resilience_level` is defined only for the values 0, 1, and 2 (0 = no mitigation, 1 = readout/TREX, 2 = adds ZNE and gate twirling). Higher levels mean more accuracy at more cost. 2 is the maximum, so it validates; any value outside 0..2 raises a pydantic ValidationError.",
+    "distractors": {
+      "B": "There is no resilience_level 3 for EstimatorV2 (that value existed under some older V1 resilience schemes); the current maximum is 2, so it raises a ValidationError.",
+      "C": "5 is far outside the supported 0..2 range and raises a ValidationError — the level is not an arbitrary 'more is better' dial.",
+      "D": "Negative levels are invalid; resilience_level is a non-negative integer bounded above by 2, so -1 raises a ValidationError."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
+      "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q014.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit_ibm_runtime import EstimatorOptions\n\ncandidates = {\"A\": 2, \"B\": 3, \"C\": 5, \"D\": -1}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    try:\n        o = EstimatorOptions()\n        o.resilience_level = val\n        evidence[k] = f\"resilience_level = {val} accepted (EstimatorV2 supports levels 0, 1, 2)\"\n        proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"resilience_level = {val} raises {type(e).__name__}: value must be an integer in the range 0..2\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "id": "s8-q022",
+  "section": "s8",
+  "objectives": [
+    "s8o1",
+    "s8o3"
+  ],
+  "type": "multi",
+  "difficulty": 3,
+  "stem": "You rely on Qiskit's OpenQASM 3 importer (`qiskit.qasm3.loads`, via the `qiskit-qasm3-import` extension) to parse programs that declare classical data. Based on the OpenQASM 3 feature support in the Qiskit SDK, select the TWO statements that are correct.",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "A `bit[n]` declaration is supported and is imported as a `ClassicalRegister`."
+    },
+    {
+      "key": "B",
+      "text": "An `int[n]` declaration is parsed into a native Python integer variable."
+    },
+    {
+      "key": "C",
+      "text": "A `complex` declaration is not supported: the Qiskit SDK cannot represent or parse it."
+    },
+    {
+      "key": "D",
+      "text": "An `angle` declaration is parsed into a Qiskit `Parameter` object."
+    },
+    {
+      "key": "E",
+      "text": "Every OpenQASM 3 scalar type, including `duration` and `stretch`, can be parsed by the importer."
+    }
+  ],
+  "answer": [
+    "A",
+    "C"
+  ],
+  "explanation": {
+    "correct": "Per the OpenQASM 3 feature table, `bit`/`bit[n]` is fully supported and maps to `Clbit`/`ClassicalRegister`, while `complex` is unsupported in the Qiskit SDK (it can be neither parsed nor represented). Those are the two accurate statements.",
+    "distractors": {
+      "B": "`int` declarations are marked unsupported for parsing by the Qiskit SDK importer; they are not turned into Python integers.",
+      "D": "`angle` appears in Qiskit only implicitly as a gate parameter; the importer does not parse standalone `angle` declarations into `Parameter` objects.",
+      "E": "`duration` and `stretch` declarations are not parseable by the importer, so it is not true that every scalar type can be parsed."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

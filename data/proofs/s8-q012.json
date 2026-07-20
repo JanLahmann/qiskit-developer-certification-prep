@@ -1,0 +1,30 @@
+{
+  "question": "s8-q012",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "returned QuantumCircuit (QuantumCircuit=True) num_qubits=2, num_clbits=2",
+      "B": "raised FileNotFoundError: /private/var/folders/tv/mcg343g558z01xp833vtdj3h0000gn/T/qcs-s8-q012-yiy9vmy7/OPENQASM 2.0;\ninclude \"qelib1.inc\";\nqreg q",
+      "C": "raised TypeError: 'module' object is not callable",
+      "D": "raised AttributeError: 'str' object has no attribute 'num_parameters'"
+    },
+    "observed": {
+      "proven": [
+        "A"
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.31,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"returned QuantumCircuit (QuantumCircuit=True) num_qubits=2, num_clbits=2\", \"B\": \"raised FileNotFoundError: /private/var/folders/tv/mcg343g558z01xp833vtdj3h0000gn/T/qcs-s8-q012-yiy9vmy7/OPENQASM 2.0;\\ninclude \\\"qelib1.inc\\\";\\nqreg q\", \"C\": \"raised TypeError: 'module' object is not callable\", \"D\": \"raised AttributeError: 'str' object has no attribute 'num_parameters'\"}, \"observed\": {\"proven\": [\"A\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

@@ -1,0 +1,68 @@
+{
+  "id": "s3-q028",
+  "section": "s3",
+  "objectives": [
+    "s3o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "The `for_loop` below repeats its body over `range(3)`, applying X to qubit 0 three times, then measures. What does the measurement return?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(1, 1)\nwith qc.for_loop(range(3)):\n    qc.x(0)\nqc.measure(0, 0)",
+  "options": [
+    {
+      "key": "A",
+      "text": "Always `0` — the repeated X gates cancel out to the identity."
+    },
+    {
+      "key": "B",
+      "text": "It raises an error because `for_loop` requires a classical register argument."
+    },
+    {
+      "key": "C",
+      "text": "Always `1` — X is applied an odd number of times (3), flipping `|0⟩` to `|1⟩`."
+    },
+    {
+      "key": "D",
+      "text": "`0` and `1` with roughly 50% probability each."
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "The loop body runs 3 times, so X is applied 3 times. Three X gates equal a single X (odd count), flipping `|0⟩` to `|1⟩`, so every shot measures `1`.",
+    "distractors": {
+      "A": "Three X gates do not cancel — an even count cancels to identity, but 3 is odd, leaving one net flip.",
+      "B": "`for_loop` takes an index set like `range(3)`; it does not require a classical register.",
+      "D": "There is no superposition here — X is deterministic, so the outcome is a definite `1`, not 50/50."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q028.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit_aer import AerSimulator\n\nqc = QuantumCircuit(1, 1)\nwith qc.for_loop(range(3)):\n    qc.x(0)\nqc.measure(0, 0)\nsim = AerSimulator(seed_simulator=42)\ncounts = sim.run(qc, shots=1000).result().get_counts()\ntotal = sum(counts.values())\nall_one = counts.get(\"1\", 0) == total\nall_zero = counts.get(\"0\", 0) == total\nmixed = (0 < counts.get(\"1\", 0) < total)\nclaims = {\n    \"A\": all_zero,\n    \"B\": False,\n    \"C\": all_one,\n    \"D\": mixed,\n}\nevidence = {\n    \"A\": f\"observed counts={dict(counts)}; claim always 0 -> {claims['A']}\",\n    \"B\": f\"for_loop(range(3)) built and ran without error -> claim 'error' is {claims['B']}\",\n    \"C\": f\"observed counts={dict(counts)}; all shots = '1' -> {claims['C']}\",\n    \"D\": f\"observed counts={dict(counts)}; claim ~50/50 -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": dict(counts)}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

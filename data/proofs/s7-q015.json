@@ -1,0 +1,31 @@
+{
+  "question": "s7-q015",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "postselected keys=['111']; option claims keys=['111'] -> match=True",
+      "B": "postselected keys=['111']; option claims keys=['000'] -> match=False",
+      "C": "postselected keys=['111']; option claims keys=['000', '111'] -> match=False",
+      "D": "postselected keys=['111']; option claims keys=[] -> match=False"
+    },
+    "observed": {
+      "kept_counts": {
+        "111": 480
+      },
+      "num_bits": 3
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.25,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"postselected keys=['111']; option claims keys=['111'] -> match=True\", \"B\": \"postselected keys=['111']; option claims keys=['000'] -> match=False\", \"C\": \"postselected keys=['111']; option claims keys=['000', '111'] -> match=False\", \"D\": \"postselected keys=['111']; option claims keys=[] -> match=False\"}, \"observed\": {\"kept_counts\": {\"111\": 480}, \"num_bits\": 3}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

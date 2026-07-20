@@ -1,0 +1,68 @@
+{
+  "id": "s3-q020",
+  "section": "s3",
+  "objectives": [
+    "s3o3"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "After this binding step, which statement about `qc` and `bound` is correct?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter('theta')\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\n\nbound = qc.assign_parameters({theta: 3.14})",
+  "options": [
+    {
+      "key": "A",
+      "text": "`qc` is now fully bound (0 free parameters), and `bound` is the same object as `qc`."
+    },
+    {
+      "key": "B",
+      "text": "`assign_parameters` returns `None`; the bound circuit must be read back from `qc`."
+    },
+    {
+      "key": "C",
+      "text": "`qc` still has 1 free parameter, and `bound` is a new circuit with 0 free parameters."
+    },
+    {
+      "key": "D",
+      "text": "Both `qc` and `bound` have 0 free parameters, because `assign_parameters` mutates in place by default."
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "`assign_parameters` is functional by default (`inplace=False`): it returns a NEW circuit with the values substituted and leaves the original untouched. So `qc` keeps its 1 free parameter while `bound` has 0.",
+    "distractors": {
+      "A": "`bound` is a distinct new circuit, not the same object as `qc`; and `qc` is not modified.",
+      "B": "`assign_parameters` returns the bound circuit, not `None` — that is why you capture it in `bound`.",
+      "D": "The default is `inplace=False`, so `qc` is NOT mutated; you would need `inplace=True` for that."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q020.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter('theta')\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\nbound = qc.assign_parameters({theta: 3.14})\n\nqc_free = qc.num_parameters\nbound_free = bound.num_parameters\nsame_obj = bound is qc\nreturned_none = bound is None\nclaims = {\n    \"A\": (qc_free == 0) and same_obj,\n    \"B\": returned_none,\n    \"C\": (qc_free == 1) and (bound_free == 0) and (not same_obj),\n    \"D\": (qc_free == 0) and (bound_free == 0),\n}\nfacts = f\"qc.num_parameters={qc_free}, bound.num_parameters={bound_free}, bound is qc={same_obj}\"\nevidence = {\n    \"A\": f\"{facts}: bound is a separate object and qc keeps its parameter -> {claims['A']}\",\n    \"B\": f\"assign_parameters returned a circuit (is None={returned_none}) -> {claims['B']}\",\n    \"C\": f\"{facts}: original unchanged, new circuit fully bound -> {claims['C']}\",\n    \"D\": f\"{facts}: qc was NOT mutated (default inplace=False) -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": facts})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

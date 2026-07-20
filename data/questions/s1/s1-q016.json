@@ -1,0 +1,68 @@
+{
+  "id": "s1-q016",
+  "section": "s1",
+  "objectives": [
+    "s1o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "What matrix does `Pauli('X').tensor(Pauli('Y'))` produce?",
+  "code": "from qiskit.quantum_info import Pauli\n\nop = Pauli('X').tensor(Pauli('Y'))\nprint(op.to_label())",
+  "options": [
+    {
+      "key": "A",
+      "text": "X ⊗ Y (label 'XY') — `tensor` places the first operand on the higher-index qubit"
+    },
+    {
+      "key": "B",
+      "text": "Y ⊗ X (label 'YX') — `tensor` places the first operand on qubit 0"
+    },
+    {
+      "key": "C",
+      "text": "X ⊗ X (label 'XX')"
+    },
+    {
+      "key": "D",
+      "text": "The 4×4 identity"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`a.tensor(b)` returns a ⊗ b, with `a` on the higher-index qubit and `b` on qubit 0. So `Pauli('X').tensor(Pauli('Y'))` is X ⊗ Y, label 'XY'.",
+    "distractors": {
+      "B": "This is what `.expand` does (`a.expand(b)` = b ⊗ a). `tensor` keeps the caller `a` on the left/high qubit, giving 'XY', not 'YX'.",
+      "C": "The second operand is Y, not X; the result carries Y on qubit 0.",
+      "D": "A tensor product of two non-identity Paulis is not the identity."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q016.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nX = np.array([[0, 1], [1, 0]], dtype=complex)\nY = np.array([[0, -1j], [1j, 0]], dtype=complex)\nobserved = Pauli('X').tensor(Pauli('Y')).to_matrix()\ncands = {\"A\": np.kron(X, Y), \"B\": np.kron(Y, X), \"C\": np.kron(X, X), \"D\": np.eye(4, dtype=complex)}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    match = bool(np.allclose(observed, v))\n    evidence[k] = f\"X.tensor(Y).to_label()='{Pauli('X').tensor(Pauli('Y')).to_label()}'; option {k} matrix match={match}\"\n    if match:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": Pauli('X').tensor(Pauli('Y')).to_label()}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

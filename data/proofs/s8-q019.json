@@ -1,0 +1,28 @@
+{
+  "question": "s8-q019",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "export raised=False; a 'gate mygate ...' definition is emitted=True; then invoked=True",
+      "B": "custom gate inlined as its constituent gates with no definition=False",
+      "C": "export raised an exception=False ",
+      "D": "no definition written (i.e. treated as built-in/stdgates)=False; definition actually present=True"
+    },
+    "observed": {
+      "dumps": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\ngate mygate _gate_q_0 {\n  rz(0.5) _gate_q_0;\n  h _gate_q_0;\n}\nqubit[1] q;\nmygate q[0];\n"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.23,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"export raised=False; a 'gate mygate ...' definition is emitted=True; then invoked=True\", \"B\": \"custom gate inlined as its constituent gates with no definition=False\", \"C\": \"export raised an exception=False \", \"D\": \"no definition written (i.e. treated as built-in/stdgates)=False; definition actually present=True\"}, \"observed\": {\"dumps\": \"OPENQASM 3.0;\\ninclude \\\"stdgates.inc\\\";\\ngate mygate _gate_q_0 {\\n  rz(0.5) _gate_q_0;\\n  h _gate_q_0;\\n}\\nqubit[1] q;\\nmygate q[0];\\n\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

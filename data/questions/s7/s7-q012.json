@@ -1,0 +1,68 @@
+{
+  "id": "s7-q012",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "A 10-qubit circuit ends with `measure_all()` and is sampled for 1024 shots. What is the shape of the raw packed array `bits.array`?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(10)\nfor q in range(10):\n    qc.h(q)\nqc.measure_all()\n\nresult = StatevectorSampler().run([qc], shots=1024).result()\nbits = result[0].data.meas\nprint(bits.array.shape)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`(1024, 2)`"
+    },
+    {
+      "key": "B",
+      "text": "`(1024, 10)`"
+    },
+    {
+      "key": "C",
+      "text": "`(10, 1024)`"
+    },
+    {
+      "key": "D",
+      "text": "`(1024,)`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "A BitArray stores shots as bit-PACKED bytes: each shot's `num_bits` bits are packed into `ceil(num_bits/8)` uint8 columns. Ten bits pack into 2 bytes, so the array shape is `(num_shots, 2)` = `(1024, 2)`. Use `get_counts()`/`get_bitstrings()` for readable output; `num_bits` (10) is separate from the byte width.",
+    "distractors": {
+      "B": "This assumes one column per bit; the array is byte-packed, not one-hot per bit.",
+      "C": "This transposes shots and bytes; the shot axis comes first.",
+      "D": "This treats the array as 1-D; it is 2-D (shots x packed-bytes)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q012.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(10)\nfor q in range(10):\n    qc.h(q)\nqc.measure_all()\nbits = StatevectorSampler(seed=1).run([qc], shots=1024).result()[0].data.meas\nobs = tuple(bits.array.shape)\ncand = {\"A\": (1024, 2), \"B\": (1024, 10), \"C\": (10, 1024), \"D\": (1024,)}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = f\"array.shape={obs} (num_bits={bits.num_bits}); option claims {v} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"array_shape\": list(obs), \"num_bits\": bits.num_bits}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

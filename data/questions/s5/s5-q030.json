@@ -1,0 +1,57 @@
+{
+  "id": "s5-q030",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "In the primitives model, what does the Sampler primitive fundamentally return for a circuit that ends in measurements?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Samples drawn from the circuit's output probability distribution — per-shot measurement bitstrings that you can histogram into (quasi-)probabilities"
+    },
+    {
+      "key": "B",
+      "text": "The exact complex amplitudes of the circuit's output statevector"
+    },
+    {
+      "key": "C",
+      "text": "Expectation values of a set of observables"
+    },
+    {
+      "key": "D",
+      "text": "The single most-likely measurement outcome of the circuit"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "'Sampling' means repeatedly executing the circuit and recording the measured bitstring each shot — draws from the distribution the circuit defines over computational-basis states. The Sampler returns those per-shot samples (as a BitArray); estimating probabilities is then just counting frequencies. It never returns amplitudes or expectation values.",
+    "distractors": {
+      "B": "Amplitudes are hidden by measurement — sampling only sees classical outcomes with probabilities |amplitude|^2. Statevectors are available from simulators (quantum_info), not from a hardware Sampler.",
+      "C": "Expectation values of observables are the job of the Estimator primitive, not the Sampler.",
+      "D": "The Sampler returns the full collection of shot outcomes, not a single winner; a distribution over many shots is the whole point."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitives",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

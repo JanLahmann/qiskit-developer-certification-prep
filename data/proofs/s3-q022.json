@@ -1,0 +1,36 @@
+{
+  "question": "s3-q022",
+  "verdict": {
+    "answer": [
+      "A",
+      "B",
+      "C"
+    ],
+    "evidence": {
+      "A": "num_parameters=3 -> True",
+      "B": "parameter names=['x[0]', 'x[1]', 'x[2]'] -> True",
+      "C": "assign_parameters({x:[...]}) left 0 free -> whole-vector bind works True",
+      "D": "x[0] is x[1] -> False",
+      "E": "whole-vector bind succeeded (free=0) so element-by-element is NOT the only way -> False"
+    },
+    "observed": {
+      "names": [
+        "x[0]",
+        "x[1]",
+        "x[2]"
+      ],
+      "num_parameters": 3
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.26,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\", \"B\", \"C\"], \"evidence\": {\"A\": \"num_parameters=3 -> True\", \"B\": \"parameter names=['x[0]', 'x[1]', 'x[2]'] -> True\", \"C\": \"assign_parameters({x:[...]}) left 0 free -> whole-vector bind works True\", \"D\": \"x[0] is x[1] -> False\", \"E\": \"whole-vector bind succeeded (free=0) so element-by-element is NOT the only way -> False\"}, \"observed\": {\"names\": [\"x[0]\", \"x[1]\", \"x[2]\"], \"num_parameters\": 3}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

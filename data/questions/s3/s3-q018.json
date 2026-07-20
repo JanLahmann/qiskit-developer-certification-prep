@@ -1,0 +1,68 @@
+{
+  "id": "s3-q018",
+  "section": "s3",
+  "objectives": [
+    "s3o3"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "Three parameters are created and added to a circuit in the order `gamma`, `alpha`, `beta`. What does `[p.name for p in qc.parameters]` return?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ng = Parameter('gamma'); a = Parameter('alpha'); b = Parameter('beta')\nqc = QuantumCircuit(1)\nqc.rz(g, 0)\nqc.rx(a, 0)\nqc.ry(b, 0)\n\nprint([p.name for p in qc.parameters])",
+  "options": [
+    {
+      "key": "A",
+      "text": "`['alpha', 'beta', 'gamma']` — sorted alphabetically by name."
+    },
+    {
+      "key": "B",
+      "text": "`['gamma', 'alpha', 'beta']` — the order the parameters were added."
+    },
+    {
+      "key": "C",
+      "text": "`['beta', 'alpha', 'gamma']` — reverse insertion order."
+    },
+    {
+      "key": "D",
+      "text": "The order is unspecified and can vary between runs."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`QuantumCircuit.parameters` returns a `ParameterView` sorted alphabetically by parameter name, so it is `['alpha', 'beta', 'gamma']`. This deterministic ordering is exactly why passing a bare list to `assign_parameters` can surprise you.",
+    "distractors": {
+      "B": "Parameters are NOT kept in insertion order; they are sorted by name.",
+      "C": "The ordering is alphabetical ascending, not reverse insertion order.",
+      "D": "The order is fully deterministic (alphabetical), not run-dependent."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q018.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ng = Parameter('gamma'); a = Parameter('alpha'); b = Parameter('beta')\nqc = QuantumCircuit(1)\nqc.rz(g, 0); qc.rx(a, 0); qc.ry(b, 0)\norder = [p.name for p in qc.parameters]\nclaims = {\n    \"A\": order == ['alpha', 'beta', 'gamma'],\n    \"B\": order == ['gamma', 'alpha', 'beta'],\n    \"C\": order == ['beta', 'alpha', 'gamma'],\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"observed order={order}; claim alphabetical -> {claims['A']}\",\n    \"B\": f\"observed order={order}; claim insertion order -> {claims['B']}\",\n    \"C\": f\"observed order={order}; claim reverse insertion -> {claims['C']}\",\n    \"D\": f\"observed order={order} is deterministic across runs; claim 'unspecified' -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"order\": order}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "id": "s5-q017",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "A 2-parameter circuit is bound with a parameter array of shape (3, 4, 2) in a single PUB. What is the shape of `result[0].data.meas`?",
+  "code": "import numpy as np\n\n# isa has 2 free parameters\nvals = np.zeros((3, 4, 2))   # a 3x4 grid of 2-parameter sets\nresult = sampler.run([(isa, vals)]).result()\nprint(result[0].data.meas.shape)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`(3, 4)` — the last axis (size 2) binds the parameters; the leading (3, 4) is the broadcast grid"
+    },
+    {
+      "key": "B",
+      "text": "`(3, 4, 2)` — the result mirrors the full input array shape"
+    },
+    {
+      "key": "C",
+      "text": "`(12,)` — broadcast results are always flattened to 1-D"
+    },
+    {
+      "key": "D",
+      "text": "`(2,)` — one result per parameter"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The trailing axis of a parameter array is reserved for the parameter values (here length 2 = the 2 parameters) and is consumed during binding. Everything before it is the broadcast shape, so a (3, 4, 2) array over a 2-parameter circuit produces a (3, 4) array of results, each indexable as data.meas[i, j].",
+    "distractors": {
+      "B": "The parameter axis is consumed, not retained. The result drops the trailing 2, leaving (3, 4).",
+      "C": "Broadcast results preserve their multidimensional shape; they are not flattened. The grid stays (3, 4).",
+      "D": "2 is the number of parameters (the consumed axis), not the result count. There are 3x4 = 12 results arranged as (3, 4)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q017.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import ParameterVector\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\np = ParameterVector(\"p\", 2)\nqc = QuantumCircuit(1); qc.ry(p[0], 0); qc.rz(p[1], 0); qc.measure_all()\nisa = pm.run(qc)\n\nvals = np.zeros((3, 4, 2))   # a 3x4 grid of 2-parameter sets\nshape = tuple(SamplerV2(mode=backend).run([(isa, vals)], shots=64).result()[0].data.meas.shape)\n\ncandidates = {\"A\": (3, 4), \"B\": (3, 4, 2), \"C\": (12,), \"D\": (2,)}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == shape)\n    evidence[k] = f\"option claims shape={v}; executed run gave {shape} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"params_shape\": list(vals.shape), \"result_shape\": list(shape)}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

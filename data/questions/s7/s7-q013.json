@@ -1,0 +1,68 @@
+{
+  "id": "s7-q013",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "The circuit measures into a `ClassicalRegister` named `ans`. After running it with a SamplerV2, which expression returns the counts for that register?",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(2, \"q\")\nans = ClassicalRegister(2, \"ans\")\nqc = QuantumCircuit(qr, ans)\nqc.h(0); qc.cx(0, 1)\nqc.measure(qr, ans)\n\n# result = sampler.run([isa]).result()",
+  "options": [
+    {
+      "key": "A",
+      "text": "`result[0].data.ans.get_counts()`"
+    },
+    {
+      "key": "B",
+      "text": "`result[0].data.meas.get_counts()`"
+    },
+    {
+      "key": "C",
+      "text": "`result[0].data.c.get_counts()`"
+    },
+    {
+      "key": "D",
+      "text": "`result[0].data.get_counts()`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The DataBin exposes one field per classical register, named after the register. Here the register is `ans`, so the BitArray lives at `data.ans`.",
+    "distractors": {
+      "B": "`meas` is the auto-generated field name only when you use `measure_all()`; it does not exist here.",
+      "C": "`c` is the default register name only for `QuantumCircuit(n, m)`; this circuit named its register `ans`.",
+      "D": "A DataBin has no `get_counts()`; you must select a register field first."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.DataBin",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q013.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(2, \"q\"); ans = ClassicalRegister(2, \"ans\")\nqc = QuantumCircuit(qr, ans); qc.h(0); qc.cx(0, 1); qc.measure(qr, ans)\nresult = StatevectorSampler(seed=42).run([qc], shots=200).result()\n\nevidence = {}; proven = []\ndef attempt(key, fn):\n    try:\n        v = fn()\n        ok = isinstance(v, dict) and sum(v.values()) == 200\n        evidence[key] = f\"returned {type(v).__name__}={str(v)[:50]}; valid counts={ok}\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\nattempt(\"A\", lambda: result[0].data.ans.get_counts())\nattempt(\"B\", lambda: result[0].data.meas.get_counts())\nattempt(\"C\", lambda: result[0].data.c.get_counts())\nattempt(\"D\", lambda: result[0].data.get_counts())\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"register_names\": list(result[0].data.keys())}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

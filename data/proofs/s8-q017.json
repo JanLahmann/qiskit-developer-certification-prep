@@ -1,0 +1,31 @@
+{
+  "question": "s8-q017",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "gates preserved=True; global_phase 1.5708 -> 0.0 (lost=True); qc2==qc=False",
+      "B": "qc2 exactly equals qc (incl. global phase)? False",
+      "C": "qasm2.dumps raised? False ",
+      "D": "global phase preserved and h dropped? False (h count in qc2=1)"
+    },
+    "observed": {
+      "gp_orig": 1.5707963267948966,
+      "gp_rt": 0.0,
+      "ops_equal": true,
+      "circ_equal": false
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.23,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"gates preserved=True; global_phase 1.5708 -> 0.0 (lost=True); qc2==qc=False\", \"B\": \"qc2 exactly equals qc (incl. global phase)? False\", \"C\": \"qasm2.dumps raised? False \", \"D\": \"global phase preserved and h dropped? False (h count in qc2=1)\"}, \"observed\": {\"gp_orig\": 1.5707963267948966, \"gp_rt\": 0.0, \"ops_equal\": true, \"circ_equal\": false}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

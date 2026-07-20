@@ -1,0 +1,28 @@
+{
+  "question": "s1-q019",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "<00|O|00> = 1.0000; option A claims 1.0 -> match=True",
+      "B": "<00|O|00> = 1.0000; option B claims 1.5 -> match=False",
+      "C": "<00|O|00> = 1.0000; option C claims 0.0 -> match=False",
+      "D": "<00|O|00> = 1.0000; option D claims 0.5 -> match=False"
+    },
+    "observed": {
+      "expectation": 1.0
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.33,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"<00|O|00> = 1.0000; option A claims 1.0 -> match=True\", \"B\": \"<00|O|00> = 1.0000; option B claims 1.5 -> match=False\", \"C\": \"<00|O|00> = 1.0000; option C claims 0.0 -> match=False\", \"D\": \"<00|O|00> = 1.0000; option D claims 0.5 -> match=False\"}, \"observed\": {\"expectation\": 1.0}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

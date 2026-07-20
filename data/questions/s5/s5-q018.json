@@ -1,0 +1,68 @@
+{
+  "id": "s5-q018",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "spot-bug",
+  "difficulty": 2,
+  "stem": "The circuit `isa` has exactly 2 free parameters. This call raises a `ValueError`. What fixes it?",
+  "code": "import numpy as np\n\n# isa has 2 free parameters (p[0], p[1])\nvals = np.zeros((5, 3))\njob = sampler.run([(isa, vals)])   # ValueError: inconsistent with last dimension",
+  "options": [
+    {
+      "key": "A",
+      "text": "Give the array shape (5, 2) — the last axis must equal the number of parameters (2), producing 5 results"
+    },
+    {
+      "key": "B",
+      "text": "Transpose it to shape (3, 5)"
+    },
+    {
+      "key": "C",
+      "text": "Flatten it to a 1-D array of length 15"
+    },
+    {
+      "key": "D",
+      "text": "The array is fine; the real fix is to also pass a `shots` value"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "For a parameter array, the trailing axis is matched against the circuit's free parameters, so its length must equal the number of parameters. The circuit has 2 parameters but the array's last axis is 3, hence the ValueError. Reshaping to (5, 2) makes the last axis 2 and binds 5 parameter sets, giving 5 results.",
+    "distractors": {
+      "B": "(3, 5) has a last axis of 5, still not equal to 2 parameters, so it raises the same error.",
+      "C": "A flat length-15 array has last axis 15 != 2; it does not encode 2-parameter sets and still fails.",
+      "D": "The error is about the parameter-axis length, not shots. Adding shots leaves the (5, 3) shape mismatch in place."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q018.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import ParameterVector\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\np = ParameterVector(\"p\", 2)\nqc = QuantumCircuit(1); qc.ry(p[0], 0); qc.rz(p[1], 0); qc.measure_all()\nisa = pm.run(qc)\n\n# The bug: last axis is 3 but the circuit has 2 parameters\nbuggy = None\ntry:\n    SamplerV2(mode=backend).run([(isa, np.zeros((5, 3)))], shots=32).result()\nexcept Exception as e:\n    buggy = f\"{type(e).__name__}: {str(e)[:110]}\"\n\nevidence, proven = {}, []\n\ndef attempt(key, arr, label):\n    try:\n        shp = tuple(SamplerV2(mode=backend).run([(isa, arr)], shots=32).result()[0].data.meas.shape)\n        evidence[key] = f\"{label}: SUCCESS, result shape {shp}\"\n        return True\n    except Exception as e:\n        evidence[key] = f\"{label}: raised {type(e).__name__}: {str(e)[:90]}\"\n        return False\n\nif attempt(\"A\", np.zeros((5, 2)), \"reshape to (5,2) so last axis = 2 params\"):\n    proven.append(\"A\")\nif attempt(\"B\", np.zeros((3, 5)), \"transpose to (3,5)\"):\n    proven.append(\"B\")\nif attempt(\"C\", np.zeros(15), \"flatten to 1-D length 15\"):\n    proven.append(\"C\")\n# D: 'array is fine, just add shots' -> re-run the buggy shape, still fails\ntry:\n    SamplerV2(mode=backend).run([(isa, np.zeros((5, 3)))], shots=1024).result()\n    evidence[\"D\"] = \"keeping (5,3) and adding shots: unexpectedly succeeded\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"keeping (5,3) and adding shots: still raised {type(e).__name__}: {str(e)[:80]}\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy_error\": buggy}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

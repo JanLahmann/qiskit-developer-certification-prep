@@ -1,0 +1,68 @@
+{
+  "id": "s1-q021",
+  "section": "s1",
+  "objectives": [
+    "s1o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "What does `Pauli('Z').dot(Pauli('X'))` evaluate to (`.dot` is the product Z·X, keeping the phase)?",
+  "code": "from qiskit.quantum_info import Pauli\n\nprint(Pauli('Z').dot(Pauli('X')).to_label())",
+  "options": [
+    {
+      "key": "A",
+      "text": "`iY` — Z·X = iY"
+    },
+    {
+      "key": "B",
+      "text": "`-iY` — Z·X = −iY"
+    },
+    {
+      "key": "C",
+      "text": "`iX` — the product stays on the letter X"
+    },
+    {
+      "key": "D",
+      "text": "`Y` — the product is Y with no phase"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The cyclic Pauli products carry +i: X·Y = iZ, Y·Z = iX, and Z·X = iY. So `Pauli('Z').dot(Pauli('X'))` returns 'iY'.",
+    "distractors": {
+      "B": "−iY is X·Z (the reversed order). Z·X is the cyclic direction, giving +iY. This is the classic sign trap.",
+      "C": "The product of Z and X lands on Y, not X; only the phase is imaginary.",
+      "D": "The Pauli class keeps the phase, so the result is iY, not a bare Y."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q021.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nres = Pauli('Z').dot(Pauli('X'))\nlbl = res.to_label()\nY = np.array([[0, -1j], [1j, 0]], dtype=complex)\nclaims = {\"A\": \"iY\", \"B\": \"-iY\", \"C\": \"iX\", \"D\": \"Y\"}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = (lbl == c)\n    evidence[k] = f\"Pauli('Z').dot(Pauli('X')).to_label() = '{lbl}'; option {k} claims '{c}' -> match={m}\"\n    if m:\n        proven.append(k)\nevidence[\"A\"] += f\"  (cross-check: matrix == iY? {bool(np.allclose(res.to_matrix(), 1j * Y))})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": lbl}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

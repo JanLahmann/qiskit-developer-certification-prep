@@ -1,0 +1,68 @@
+{
+  "id": "s7-q015",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "You sample a 3-qubit GHZ circuit (outcomes are only `000` and `111`), then postselect on all three qubits reading 1. What does `kept.get_counts()` contain?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3)\nqc.h(0); qc.cx(0, 1); qc.cx(1, 2)\nqc.measure_all()\n\nbits = StatevectorSampler().run([qc], shots=1000).result()[0].data.meas\nkept = bits.postselect([0, 1, 2], [1, 1, 1])\nprint(kept.get_counts())",
+  "options": [
+    {
+      "key": "A",
+      "text": "Only the `111` outcomes survive: `{'111': n}`"
+    },
+    {
+      "key": "B",
+      "text": "Only the `000` outcomes survive: `{'000': n}`"
+    },
+    {
+      "key": "C",
+      "text": "Unchanged: `{'000': a, '111': b}`"
+    },
+    {
+      "key": "D",
+      "text": "Empty `{}` — postselection removes every shot"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`postselect(indices, values)` keeps only the shots whose measured bits at `indices` equal `values`, preserving `num_bits`. Requiring qubits [0,1,2] to be [1,1,1] retains exactly the `111` shots.",
+    "distractors": {
+      "B": "This inverts the selection: values `[1,1,1]` keep `111`, not `000`.",
+      "C": "Postselection filters shots; it does not leave the counts unchanged.",
+      "D": "The GHZ state produces `111` about half the time, so those shots remain."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q015.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3); qc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\nbits = StatevectorSampler(seed=11).run([qc], shots=1000).result()[0].data.meas\nkept = bits.postselect([0, 1, 2], [1, 1, 1])\nobs = set(kept.get_counts().keys())\ncand = {\"A\": {\"111\"}, \"B\": {\"000\"}, \"C\": {\"000\", \"111\"}, \"D\": set()}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = f\"postselected keys={sorted(obs)}; option claims keys={sorted(v)} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"kept_counts\": kept.get_counts(), \"num_bits\": kept.num_bits}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

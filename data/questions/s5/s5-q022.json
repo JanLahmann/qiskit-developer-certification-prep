@@ -1,0 +1,68 @@
+{
+  "id": "s5-q022",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You have a parameterized ISA circuit `isa`, a NumPy array `vals` of parameter values, and want 256 shots. Which call passes a correctly-structured SamplerV2 PUB?",
+  "code": "# isa: parameterized ISA circuit ; vals: array of parameter values\nsampler = SamplerV2(mode=backend)\njob = sampler.run( ??? )",
+  "options": [
+    {
+      "key": "A",
+      "text": "`sampler.run([(isa, vals, 256)])`"
+    },
+    {
+      "key": "B",
+      "text": "`sampler.run([(isa, 256, vals)])`"
+    },
+    {
+      "key": "C",
+      "text": "`sampler.run([(isa, observable, vals, 0.02)])`"
+    },
+    {
+      "key": "D",
+      "text": "`sampler.run((isa, vals))`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "A SamplerV2 PUB is a tuple `(circuit, parameter_values, shots)` where the last two are optional, and the run() argument is a *list* of such PUBs. `(isa, vals, 256)` places parameter values in slot 2 and shots in slot 3, wrapped in a list — the correct form.",
+    "distractors": {
+      "B": "This swaps the order: slot 2 is parameter_values and slot 3 is shots, so `(isa, 256, vals)` tries to use the array as the shot count and raises a TypeError ('shots must be an integer').",
+      "C": "A 4-element tuple with an observable is the *Estimator* PUB `(circuit, observable, params, precision)`. The Sampler takes no observable; a PUB length of 4 is rejected ('length of pub must be 1, 2 or 3').",
+      "D": "run() expects a list of PUBs. Passing a bare tuple makes run() iterate it as if `isa` and `vals` were two separate PUBs, which fails. The PUB must be wrapped: `run([(isa, vals)])`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q022.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nt = Parameter(\"t\"); qc = QuantumCircuit(1); qc.ry(t, 0); qc.measure_all()\nisa = pm.run(qc)\nvals = np.array([[0.0], [np.pi / 2], [np.pi]])\nobs = SparsePauliOp(\"Z\" * isa.num_qubits)   # width-matched observable for the estimator-style tuple\n\nevidence, proven = {}, []\n\n# A: (circuit, parameter_values, shots)\ntry:\n    r = SamplerV2(mode=backend).run([(isa, vals, 256)]).result()[0]\n    evidence[\"A\"] = f\"(isa, vals, 256): SUCCESS, shape={tuple(r.data.meas.shape)}, num_shots={r.data.meas.num_shots}\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\n# B: (circuit, shots, parameter_values) -- swapped order\ntry:\n    SamplerV2(mode=backend).run([(isa, 256, vals)]).result()\n    evidence[\"B\"] = \"(isa, 256, vals): unexpectedly succeeded\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"(isa, 256, vals): raised {type(e).__name__}: {str(e)[:80]}\"\n\n# C: estimator-style 4-tuple (circuit, observable, params, precision)\ntry:\n    SamplerV2(mode=backend).run([(isa, obs, vals, 0.02)]).result()\n    evidence[\"C\"] = \"(isa, obs, vals, 0.02): unexpectedly succeeded\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"(isa, obs, vals, 0.02): raised {type(e).__name__}: {str(e)[:80]}\"\n\n# D: PUB not wrapped in a list\ntry:\n    SamplerV2(mode=backend).run((isa, vals)).result()\n    evidence[\"D\"] = \"run((isa, vals)) not in a list: unexpectedly succeeded\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"run((isa, vals)): raised {type(e).__name__}: {str(e)[:80]}\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

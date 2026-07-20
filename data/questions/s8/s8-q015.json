@@ -1,0 +1,68 @@
+{
+  "id": "s8-q015",
+  "section": "s8",
+  "objectives": [
+    "s8o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "A file begins with the line `OPENQASM 3.0;` and uses `qubit`/`bit` declarations. A teammate tries to load it with `qiskit.qasm2.loads(program)`. What is the result?",
+  "code": "from qiskit import qasm2\n\n# program starts with 'OPENQASM 3.0;' and declares qubit[2] q; bit[2] c; ...\ncircuit = qasm2.loads(program)",
+  "options": [
+    {
+      "key": "A",
+      "text": "It raises `QASM2ParseError`: `qasm2.loads` handles only OpenQASM 2.0, and the version statement declares 3.0."
+    },
+    {
+      "key": "B",
+      "text": "It loads successfully; the version statement is ignored and the rest is parsed as OpenQASM 2."
+    },
+    {
+      "key": "C",
+      "text": "It loads, silently downgrading the OpenQASM 3 features to their OpenQASM 2 equivalents."
+    },
+    {
+      "key": "D",
+      "text": "It raises `ModuleNotFoundError` because `stdgates.inc` cannot be located."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The OpenQASM 2 parser checks the version statement and accepts only `OPENQASM 2.0`. A `3.0` header makes `qasm2.loads` raise `QASM2ParseError` ('can only handle OpenQASM 2.0, but given 3.0'). The two language versions have separate importers: use `qiskit.qasm3.loads` for OpenQASM 3.",
+    "distractors": {
+      "B": "The version line is not ignored; the v2 parser validates it and rejects anything other than 2.0.",
+      "C": "There is no automatic v3->v2 downgrade. The importers are version-specific and the v2 parser stops at the header.",
+      "D": "The failure happens at the version check, before any include resolution, and it is a `QASM2ParseError`, not a missing-module error."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm2",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm2"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s8-q015.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import qasm2\n\nprogram = (\n    'OPENQASM 3.0;\\n'\n    'include \"stdgates.inc\";\\n'\n    'qubit[2] q;\\n'\n    'bit[2] c;\\n'\n    'h q[0];\\n'\n    'c[0] = measure q[0];\\n'\n)\n\noutcome, exc_name, msg = \"loaded\", None, \"\"\ntry:\n    qasm2.loads(program)\nexcept Exception as e:\n    outcome, exc_name, msg = \"raised\", type(e).__name__, str(e)[:140]\n\nis_parse_error = (outcome == \"raised\" and exc_name == \"QASM2ParseError\")\nloaded = (outcome == \"loaded\")\nis_modnotfound = (outcome == \"raised\" and exc_name == \"ModuleNotFoundError\")\n\nevidence = {\n    \"A\": f\"qasm2.loads(3.0 program) -> {outcome} {exc_name or ''} ({msg}); claim=QASM2ParseError on version -> match={is_parse_error}\",\n    \"B\": f\"claim=loads, version ignored; actually loaded={loaded}\",\n    \"C\": f\"claim=loads with silent downgrade; actually loaded={loaded}\",\n    \"D\": f\"claim=ModuleNotFoundError for stdgates.inc; actual exception={exc_name}; match={is_modnotfound}\",\n}\nproven = []\nif is_parse_error:\n    proven.append(\"A\")\nif loaded:\n    proven.extend([\"B\", \"C\"])\nif is_modnotfound:\n    proven.append(\"D\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": outcome, \"exception\": exc_name}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "id": "s3-q023",
+  "section": "s3",
+  "objectives": [
+    "s3o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "This dynamic circuit measures qubit 0 and, only if that result is 1, applies X to qubit 1; then it measures qubit 1. Over many shots (bit order `c1 c0`), which outcomes appear?",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(2, 'q')\ncr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.if_test((cr[0], 1)):\n    qc.x(1)\nqc.measure(1, 1)",
+  "options": [
+    {
+      "key": "A",
+      "text": "Only `01` and `00`, roughly 50/50."
+    },
+    {
+      "key": "B",
+      "text": "All four of `00`, `01`, `10`, `11`, roughly 25% each."
+    },
+    {
+      "key": "C",
+      "text": "Only `10` and `11`, roughly 50/50."
+    },
+    {
+      "key": "D",
+      "text": "Only `00` and `11`, roughly 50/50 — qubit 1 always ends up matching qubit 0."
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "The H puts qubit 0 into an equal superposition, so its measurement `c0` is 0 or 1 with ~50% each. The feedforward flips qubit 1 exactly when `c0`=1, so `c1` always equals `c0`. The only outcomes are `00` and `11`.",
+    "distractors": {
+      "A": "`01` would need `c1 != c0`; the X is applied precisely when `c0`=1, keeping the two bits equal.",
+      "B": "Qubit 1 is not independent — it is conditioned on qubit 0's result, so the outcomes are correlated, not uniform.",
+      "C": "`10` requires qubit 1 to be 1 while qubit 0 is 0, but X is only applied when `c0`=1."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q023.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\nqr = QuantumRegister(2, 'q'); cr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0); qc.measure(0, 0)\nwith qc.if_test((cr[0], 1)):\n    qc.x(1)\nqc.measure(1, 1)\nsim = AerSimulator(seed_simulator=42)\ncounts = sim.run(qc, shots=4000).result().get_counts()\ntotal = sum(counts.values())\nseen = set(counts)\n\ndef near(bs, frac, tol=0.06):\n    return abs(counts.get(bs, 0)/total - frac) <= tol\n\nclaims = {\n    \"A\": seen == {\"01\", \"00\"},\n    \"B\": seen == {\"00\", \"01\", \"10\", \"11\"},\n    \"C\": seen == {\"10\", \"11\"},\n    \"D\": seen == {\"00\", \"11\"} and near(\"00\", 0.5) and near(\"11\", 0.5),\n}\nevidence = {\n    \"A\": f\"observed outcomes={dict(counts)}; claim {{01,00}} -> {claims['A']}\",\n    \"B\": f\"observed outcomes={dict(counts)}; claim all four -> {claims['B']}\",\n    \"C\": f\"observed outcomes={dict(counts)}; claim {{10,11}} -> {claims['C']}\",\n    \"D\": f\"observed outcomes={dict(counts)}; only {{00,11}} ~50/50 -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": dict(counts)}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

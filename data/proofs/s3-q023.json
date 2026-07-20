@@ -1,0 +1,31 @@
+{
+  "question": "s3-q023",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "observed outcomes={'00': 2000, '11': 2000}; claim {01,00} -> False",
+      "B": "observed outcomes={'00': 2000, '11': 2000}; claim all four -> False",
+      "C": "observed outcomes={'00': 2000, '11': 2000}; claim {10,11} -> False",
+      "D": "observed outcomes={'00': 2000, '11': 2000}; only {00,11} ~50/50 -> True"
+    },
+    "observed": {
+      "counts": {
+        "00": 2000,
+        "11": 2000
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.26,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"observed outcomes={'00': 2000, '11': 2000}; claim {01,00} -> False\", \"B\": \"observed outcomes={'00': 2000, '11': 2000}; claim all four -> False\", \"C\": \"observed outcomes={'00': 2000, '11': 2000}; claim {10,11} -> False\", \"D\": \"observed outcomes={'00': 2000, '11': 2000}; only {00,11} ~50/50 -> True\"}, \"observed\": {\"counts\": {\"00\": 2000, \"11\": 2000}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

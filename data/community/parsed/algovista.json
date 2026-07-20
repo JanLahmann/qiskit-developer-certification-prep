@@ -1,0 +1,379 @@
+[
+  {
+    "n": 1,
+    "stem": "Which two operations will result in a SparsePauliOp that represents exactly the operator $-iY$?",
+    "code": null,
+    "options": {
+      "A": "```python\nfrom qiskit.quantum_info import Pauli\np = Pauli('X') @ Pauli('Z')\n```",
+      "B": "```python\nfrom qiskit.quantum_info import SparsePauliOp\nSparsePauliOp.from_list([(\"Y\", -1j)])\n```",
+      "C": "```python\nfrom qiskit.quantum_info import Pauli\np = Pauli('Z') @ Pauli('X')\n```",
+      "D": "```python\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Pauli\nqc = QuantumCircuit(1)\nqc.y(0)\nPauli(qc)\n```"
+    },
+    "stated_answer": [
+      "A",
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 2,
+    "stem": "What is the correct representation of the operator created by the following line of code under Qiskit's little-endian ordering convention?\n\n\n```python\nfrom qiskit.quantum_info import SparsePauliOp\nSparsePauliOp.from_sparse_list([(\"XYZ\", (1, 3, 4), 2.0)], num_qubits=6)\n```",
+    "code": "from qiskit.quantum_info import SparsePauliOp\nSparsePauliOp.from_sparse_list([(\"XYZ\", (1, 3, 4), 2.0)], num_qubits=6)",
+    "options": {
+      "A": "`SparsePauliOp(['ZXIYII'], coeffs=[2.+0.j])`",
+      "B": "`SparsePauliOp(['IZYIXI'], coeffs=[2.+0.j])`",
+      "C": "`SparsePauliOp(['IXIYZE'], coeffs=[2.+0.j])`",
+      "D": "`SparsePauliOp(['IIXYZI'], coeffs=[2.+0.j])`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 3,
+    "stem": "Given the code block below, what is the exact analytical probability of observing the state $|1>$ upon running an ideal computational basis measurement?\n\n\n```python\nfrom qiskit import QuantumCircuit\nimport numpy as np\n\nqc = QuantumCircuit(1)\nqc.ry(np.pi / 3, 0)\nqc.rz(np.pi / 2, 0)\n```",
+    "code": "from qiskit import QuantumCircuit\nimport numpy as np\n\nqc = QuantumCircuit(1)\nqc.ry(np.pi / 3, 0)\nqc.rz(np.pi / 2, 0)",
+    "options": {
+      "A": "0.25",
+      "B": "0.75",
+      "C": "0.5",
+      "D": "0.125"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 4,
+    "stem": "Which visualization method should be chosen to visualize a multi-qubit quantum state specifically when you need to highlight continuous phase values by color mapping across computational basis state projections without displaying a full density matrix?",
+    "code": null,
+    "options": {
+      "A": "`plot_state_city`",
+      "B": "`plot_state_qsphere`",
+      "C": "`plot_state_hinton`",
+      "D": "`plot_bloch_multivector`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 5,
+    "stem": "What visualization is produced by executing the following snippet on a multi-qubit state, tracking Qiskit's right-to-left string indexing rule?\n\n\n```python\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_multivector\n\nsv = Statevector.from_label('r-')\nplot_bloch_multivector(sv)\n```",
+    "code": "from qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_multivector\n\nsv = Statevector.from_label('r-')\nplot_bloch_multivector(sv)",
+    "options": {
+      "A": "Qubit 0 vector points along $+Y$; Qubit 1 vector points along $-Z$",
+      "B": "Qubit 0 vector points along $-X$; Qubit 1 vector points along $+Y$",
+      "C": "Qubit 0 vector points along $+X$; Qubit 1 vector points along $-Y$",
+      "D": "Qubit 0 vector points along $-Z$; Qubit 1 vector points along $+X$"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 6,
+    "stem": "You want to dynamically append measurements to all qubits in your circuit. You have already declared a classical register and want the measurement outcomes to route directly into it without creating an additional, new classical register. Which routine fits this requirement precisely?",
+    "code": null,
+    "options": {
+      "A": "`qc.measure_all()`",
+      "B": "`qc.measure_all(add_bits=False)`",
+      "C": "`qc.measure_active()`",
+      "D": "`qc.measure()`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 7,
+    "stem": "When configuring a compilation strategy utilizing the modern pass management framework via `generate_preset_pass_manager`, which parameter option dictates the depth and heuristic computational effort spent optimizing target hardware layouts?",
+    "code": null,
+    "options": {
+      "A": "`optimization_level`",
+      "B": "`routing_method`",
+      "C": "`initial_layout`",
+      "D": "`approximation_degree`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 8,
+    "stem": "A user compiles a circuit for an IBM backend using `optimization_level=3`. What structural optimization will they notice regarding consecutive single-qubit gates?",
+    "code": null,
+    "options": {
+      "A": "All virtual Z gates are transformed into physical RZ microwave pulses.",
+      "B": "Adjacent single-qubit gates are aggressively combined and parameterized into single target basis gates to minimize errors.",
+      "C": "The transpiler wraps all operations into un-optimized opaque black-box structures.",
+      "D": "Every CX gate is systematically replaced with an ECR gate regardless of backend specifications."
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 9,
+    "stem": "Which code snippet correctly implements a parameterized hardware-level control flow loop inside a `QuantumCircuit` instance using standard Qiskit v2.x context-manager syntax?",
+    "code": null,
+    "options": {
+      "A": "```python\nwith qc.for_loop(range(3)) as i:\n    qc.rx(i * theta, i)\n```",
+      "B": "```python\nfor i in range(3):\n    qc.rx(i * theta, i)\n```",
+      "C": "```python\nqc.add_loop(range(3), lambda i: qc.rx(i * theta, i))\n```",
+      "D": "```python\nwith qc.loop(3) as i:\n    qc.rx(theta, i)\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 10,
+    "stem": "Which two approaches are incorrect when managing job contexts using execution modes in Qiskit Runtime V2 primitives?",
+    "code": null,
+    "options": {
+      "A": "```python\nwith Session(backend=backend) as session:\n    sampler = SamplerV2(mode=backend)\n```",
+      "B": "```python\nsession = Session(backend=backend)\nsampler = SamplerV2(mode=session)\n```",
+      "C": "```python\nwith Batch(backend=backend) as batch:\n    estimator = EstimatorV2(mode=batch)\n```",
+      "D": "```python\nsampler = SamplerV2(mode=\"Batch\")\n```"
+    },
+    "stated_answer": [
+      "A",
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 11,
+    "stem": "What occurs when the `.close()` method is called on an active Qiskit Runtime `Session` or `Batch` object instance?",
+    "code": null,
+    "options": {
+      "A": "The session immediately stops accepting new jobs, and all currently queued or running jobs within that context are forced to cancel.",
+      "B": "The session stops accepting new job submissions, but any jobs already submitted within the context are allowed to run to completion.",
+      "C": "The session remains open indefinitely until the maximum system wall clock limit forces a hard server-side termination.",
+      "D": "The session context is deleted along with its entire historical job record from the cloud dashboard service database."
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 12,
+    "stem": "How does usage time accumulation differ between Batch mode and Session mode on real IBM Quantum backends?",
+    "code": null,
+    "options": {
+      "A": "Batch mode limits your usage footprint to active QPU processing time, whereas Session mode tracks the total wall clock time from context opening to closure (including processing pauses).",
+      "B": "Session mode calculates usage based only on pure gate counts, while Batch mode uses real hardware clock duration metrics.",
+      "C": "There is no difference; both execution modes charge exclusively for full wall clock time from start to finish.",
+      "D": "Batch mode charges for the compilation time of circuits, whereas Session mode does not."
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 13,
+    "stem": "Which represents the standard structural layout sequence for executing an experimental workflow with the V2 Estimator primitive?",
+    "code": null,
+    "options": {
+      "A": "Circuit design -> Primitive instantiation -> Hardware selection -> Execution",
+      "B": "Backend selection -> Circuit design -> Observable mapping -> Transpilation -> Layout application to observables -> Primitive configuration -> Execution",
+      "C": "Primitive configuration -> Execution -> Local compilation -> Topology selection",
+      "D": "Observable mapping -> Execution -> Local transpilation -> Backend selection"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 14,
+    "stem": "You have a parameterized circuit `qct` with two parameters, `alpha` and `beta`. Which code snippet correctly formats the parameter values for a single Primitive Unified Block (PUB) when calling `SamplerV2.run()`?",
+    "code": null,
+    "options": {
+      "A": "```python\npub = (qct, {alpha: [0.1, 0.2], beta: [0.4, 0.5]})\njob = sampler.run([pub])\n```",
+      "B": "```python\npub = (qct, [0.1, 0.2, 0.4, 0.5])\njob = sampler.run([pub])\n```",
+      "C": "```python\npub = (qct, [{alpha: 0.1, beta: 0.4}, {alpha: 0.2, beta: 0.5}])\njob = sampler.run([pub])\n```",
+      "D": "```python\npub = (qct, alpha, beta, [0.1, 0.4])\njob = sampler.run([pub])\n```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 15,
+    "stem": "When defining an execution block for `EstimatorV2.run()`, what is the correct structure for a single Primitive Unified Block (PUB) tuple?",
+    "code": null,
+    "options": {
+      "A": "`(circuit, observables)`",
+      "B": "`(circuit, observables, parameter_values, precision)`",
+      "C": "`(circuit, observables, shots)`",
+      "D": "`(circuit, parameter_values)`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 16,
+    "stem": "According to the broadcasting rules used by Qiskit Runtime Primitive Unified Blocks (PUBs), what happens if a circuit uses a parameter array of size 5 and an observable array of size 1?",
+    "code": null,
+    "options": {
+      "A": "The execution fails immediately due to a dimension mismatch error.",
+      "B": "The single observable is automatically broadcast to match all 5 parameter sets, resulting in 5 expectation values.",
+      "C": "The execution defaults to a size of 1, discarding the remaining parameter values.",
+      "D": "The system pads the missing observable slots with identity operators."
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 17,
+    "stem": "You execute a parameterized circuit via SamplerV2 with an array of 4 parameter sets. Assuming your classical register is named 'c', how should you retrieve the measurement counts for the third parameter configuration from the job result object?",
+    "code": null,
+    "options": {
+      "A": "`result.get_counts(2)`",
+      "B": "`result[0].data.meas.get_counts()[2]`",
+      "C": "```python\npub_result = result[0]\npub_result.data.c.get_counts(2)\n```",
+      "D": "`result.pub_data[2].counts()`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 18,
+    "stem": "Which code snippet correctly retrieves a historical list of jobs submitted to an IBM backend named 'ibm_brisbane' under a specific session ID?",
+    "code": null,
+    "options": {
+      "A": "`service.jobs(backend_name='ibm_brisbane', session_id=my_session_id)`",
+      "B": "`backend.jobs(session_id=my_session_id)`",
+      "C": "`Session.from_id(my_session_id).get_all_jobs()`",
+      "D": "`service.get_backend('ibm_brisbane').history(my_session_id)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 19,
+    "stem": "Which line of OpenQASM 3 code correctly declares a fixed-size array of 8 multi-bit registers, where each register is a 4-bit unsigned integer?",
+    "code": null,
+    "options": {
+      "A": "`uint[4][8] my_array;`",
+      "B": "`array[uint[4], 8] my_array;`",
+      "C": "`uint my_array[4][8];`",
+      "D": "`register uint[4] my_array[8];`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 20,
+    "stem": "When interacting directly with the IBM Quantum cloud infrastructure via its REST API, which header field must be included to authenticate your requests securely?",
+    "code": null,
+    "options": {
+      "A": "`Authorization: Bearer <API_TOKEN>`",
+      "B": "`X-IAM-Key: <KEY>`",
+      "C": "`Content-Type: application/qasm`",
+      "D": "`Service-CRN: <CRN_ID>`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 21,
+    "stem": "What is the native gate configuration behavior when transpiling a circuit for a target backend that natively supports Cross-Resonance (`ECR`) instead of Controlled-NOT (`CX`)?",
+    "code": null,
+    "options": {
+      "A": "The transpiler will reject the circuit unless you manually replace all CX gates first.",
+      "B": "Each CX gate is unrolled into an ECR gate combined with local single-qubit rotations.",
+      "C": "The transpiler converts all operations into software-simulated swap networks.",
+      "D": "The circuit is executed on the hardware using virtualized CX emulation layers."
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 22,
+    "stem": "Which function provides a straightforward way to dynamically track and print updates on a job's status while it is processing in the IBM Quantum hardware runtime queue?",
+    "code": null,
+    "options": {
+      "A": "`job.status()`",
+      "B": "`job.wait_for_final_state()`",
+      "C": "`job.result(stream=True)`",
+      "D": "`runtime.monitor(job)`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 23,
+    "stem": "What happens if you attempt to submit an untranspiled `QuantumCircuit` directly to an IBM Qiskit Runtime V2 primitive execution method?",
+    "code": null,
+    "options": {
+      "A": "The primitive automatically transpiles the circuit using default optimization settings.",
+      "B": "The job fails because V2 primitives require circuits to be pre-transpiled to match the backend's native basis gates and physical layout.",
+      "C": "The primitive routes the circuit to a local simulator instead of the real hardware.",
+      "D": "The circuit runs normally, but the hardware uses slower fallback emulation pulses."
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 24,
+    "stem": "When using `generate_preset_pass_manager` to target a specific backend, what is the primary benefit of passing the real `backend` object instance instead of just providing a raw list of basis gates?",
+    "code": null,
+    "options": {
+      "A": "It enables the pass manager to optimize the circuit using real-time dynamic calibration metrics, gate error rates, and the physical coupling map of the device.",
+      "B": "It automatically authenticates your runtime cloud session with the cloud infrastructure service.",
+      "C": "It bypasses local compilation and uploads the raw Python code directly to the hardware.",
+      "D": "It reduces the physical gate execution times on the quantum device."
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 25,
+    "stem": "Which OpenQASM 3 feature allows you to change the execution path of a circuit dynamically based on the outcome of a mid-circuit measurement?",
+    "code": null,
+    "options": {
+      "A": "Dynamic circuit switch-case or conditional if statements evaluating classical bits.",
+      "B": "The compiletime verification macro system.",
+      "C": "The reset instruction.",
+      "D": "The deferred execution pipeline filter."
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false
+  }
+]

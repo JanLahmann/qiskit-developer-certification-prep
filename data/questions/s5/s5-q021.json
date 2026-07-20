@@ -1,0 +1,58 @@
+{
+  "id": "s5-q021",
+  "section": "s5",
+  "objectives": [
+    "s5o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "A research team wants complete control over readout-error correction: they need the untouched per-shot measurement outcomes so they can apply their own calibration matrix afterward. Which statement about SamplerV2 is correct?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "SamplerV2 applies no readout-error mitigation to its output by default; it returns the raw per-shot bitstrings (a BitArray), so any custom mitigation can be done in post-processing"
+    },
+    {
+      "key": "B",
+      "text": "SamplerV2 always applies TREX readout mitigation, so obtaining raw outcomes is impossible without editing the runtime source"
+    },
+    {
+      "key": "C",
+      "text": "You must set `resilience_level = 0` on the sampler to disable its built-in mitigation before raw counts are returned"
+    },
+    {
+      "key": "D",
+      "text": "Bypassing mitigation requires switching to EstimatorV2, which is the only primitive that exposes raw data"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The Sampler primitive is deliberately low-level: it returns the sampled bitstrings as a BitArray with no post-processing correction of measurement error applied by default. That raw per-shot data is exactly what you need to implement your own mitigation (e.g. build and apply a readout-calibration/confusion matrix, or use a package like mthree). Error suppression (dynamical decoupling) and twirling can be opted into, but they do not alter the counts into 'mitigated' values.",
+    "distractors": {
+      "B": "TREX is an Estimator resilience technique for expectation values; the Sampler does not apply it, so raw outcomes are simply what you already get.",
+      "C": "The Sampler has no `resilience_level` at all, so there is nothing to set to 0 — the returned counts are already raw.",
+      "D": "It is the Sampler, not the Estimator, that exposes per-shot samples. The Estimator returns processed expectation values, which is the opposite of raw data."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitives",
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

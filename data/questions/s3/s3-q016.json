@@ -1,0 +1,68 @@
+{
+  "id": "s3-q016",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "The circuit prepares a 3-qubit state. Which computational-basis states have non-zero amplitude in its statevector, and with what amplitude?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.cx(0, 2)\n\nsv = Statevector(qc)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`|000⟩` and `|111⟩`, each with amplitude 1/√2 (a GHZ state)."
+    },
+    {
+      "key": "B",
+      "text": "`|000⟩` and `|100⟩`, each with amplitude 1/√2."
+    },
+    {
+      "key": "C",
+      "text": "All eight basis states, each with amplitude 1/√8."
+    },
+    {
+      "key": "D",
+      "text": "`|000⟩` and `|011⟩`, each with amplitude 1/√2."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "H on qubit 0 makes (|0⟩+|1⟩)/√2. The two CX gates copy qubit 0's value onto qubits 1 and 2, so the state becomes (|000⟩ + |111⟩)/√2 — a 3-qubit GHZ state with only those two basis states populated.",
+    "distractors": {
+      "B": "`|100⟩` would appear only if the CX gates did nothing; they entangle qubits 1 and 2 with qubit 0, flipping them when qubit 0 is 1.",
+      "C": "A uniform superposition over all 8 states needs an H on every qubit; here only qubit 0 gets an H and the CXs create correlation, not full superposition.",
+      "D": "`|011⟩` misplaces the excitation — both CX gates are controlled by qubit 0, so all three qubits share the same value (000 or 111)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q016.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(3)\nqc.h(0); qc.cx(0, 1); qc.cx(0, 2)\nsv = Statevector(qc).data\ninv = 1 / np.sqrt(2)\nnz = {format(i, \"03b\"): sv[i] for i in range(8) if abs(sv[i]) > 1e-9}\n\ndef matches(states):\n    if set(nz) != set(states):\n        return False\n    return all(np.isclose(nz[b], inv) for b in states)\n\nclaims = {\n    \"A\": matches([\"000\", \"111\"]),\n    \"B\": matches([\"000\", \"100\"]),\n    \"C\": (len(nz) == 8) and all(np.isclose(abs(v), 1/np.sqrt(8)) for v in nz.values()),\n    \"D\": matches([\"000\", \"011\"]),\n}\nnzr = {k: complex(round(v.real, 4), round(v.imag, 4)) for k, v in nz.items()}\nevidence = {\n    \"A\": f\"nonzero basis states = {nzr}; claim {{000,111}} at 1/sqrt2 -> {claims['A']}\",\n    \"B\": f\"nonzero = {nzr}; claim {{000,100}} -> {claims['B']}\",\n    \"C\": f\"nonzero = {nzr} ({len(nz)} states); claim all-8-uniform -> {claims['C']}\",\n    \"D\": f\"nonzero = {nzr}; claim {{000,011}} -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"nonzero\": {k: str(v) for k, v in nzr.items()}}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

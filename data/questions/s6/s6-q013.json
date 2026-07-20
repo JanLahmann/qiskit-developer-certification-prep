@@ -1,0 +1,68 @@
+{
+  "id": "s6-q013",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "spot-bug",
+  "difficulty": 2,
+  "stem": "This code transpiles a 2-qubit circuit for a 5-qubit backend and then tries to estimate `<ZZ>`, but `estimator.run(...).result()` raises `ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2)`. What is the correct fix?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\n\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa = pm.run(qc)\n\nest = EstimatorV2(mode=backend)\njob = est.run([(isa, obs)])   # <-- raises when result() is fetched\n",
+  "options": [
+    {
+      "key": "A",
+      "text": "Build the observable for the ISA circuit with `iobs = obs.apply_layout(isa.layout)` and pass `iobs`."
+    },
+    {
+      "key": "B",
+      "text": "Add `qc.measure_all()` before transpiling so the circuit and observable match."
+    },
+    {
+      "key": "C",
+      "text": "Pass the backend to run: `est.run([(isa, obs)], backend=backend)`."
+    },
+    {
+      "key": "D",
+      "text": "Replace the `SparsePauliOp` with the plain string `\"ZZ\"`."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Transpilation maps the 2 logical qubits onto physical qubits of the 5-qubit device, so the ISA circuit spans 5 qubits. The observable must be expanded to those same 5 qubits with `obs.apply_layout(isa.layout)`, which pads/permutes it to match the circuit's final layout. Then the PUB is well-formed and the estimator runs.",
+    "distractors": {
+      "B": "Estimator circuits do not carry measurement instructions (the primitive measures the observable itself), and measure_all() does not change the observable's qubit count — the width mismatch remains.",
+      "C": "run() has no `backend=` keyword (the target is fixed by `mode=` at construction), and even if it did, it would not resize a 2-qubit observable to the 5-qubit ISA circuit.",
+      "D": "A string 'ZZ' is still a 2-qubit observable; changing the Python type does not align it to the 5-qubit ISA circuit, so the same ValueError is raised."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q013.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1, seed_transpiler=42)\nisa = pm.run(qc)\nest = EstimatorV2(mode=backend)\n\n# The buggy code as written: observable NOT aligned to the 5-qubit ISA circuit\nbuggy_err = None\ntry:\n    est.run([(isa, obs)]).result()\nexcept Exception as e:\n    buggy_err = f\"{type(e).__name__}: {str(e)[:120]}\"\n\nevidence = {}\nproven = []\n# A: apply_layout to the observable\ntry:\n    iobs = obs.apply_layout(isa.layout)\n    ev = float(est.run([(isa, iobs)]).result()[0].data.evs)\n    evidence[\"A\"] = f\"obs.apply_layout(isa.layout) -> run SUCCEEDS, evs={ev:.3f} (buggy run had failed with {buggy_err})\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"apply_layout still raised {type(e).__name__}: {str(e)[:100]}\"\n# B: add measure_all to the circuit\ntry:\n    qcm = qc.copy(); qcm.measure_all()\n    isam = pm.run(qcm)\n    est.run([(isam, obs)]).result()\n    evidence[\"B\"] = \"adding measure_all() made it run (unexpected)\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"adding measure_all() does NOT fix it: still {type(e).__name__} (the 2-qubit observable still does not span the 5-qubit ISA circuit)\"\n# C: pass backend= to run\ntry:\n    est.run([(isa, obs)], backend=backend).result()\n    evidence[\"C\"] = \"run(..., backend=) accepted (unexpected)\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"run(..., backend=) raises {type(e).__name__}: run() has no backend kwarg, and it would not align the observable anyway\"\n# D: use plain string observable \"ZZ\"\ntry:\n    est.run([(isa, \"ZZ\")]).result()\n    evidence[\"D\"] = \"string 'ZZ' observable ran (unexpected)\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"the string 'ZZ' is still a 2-qubit observable, so it still raises {type(e).__name__}: switching type does not fix the width\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy_error\": buggy_err}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

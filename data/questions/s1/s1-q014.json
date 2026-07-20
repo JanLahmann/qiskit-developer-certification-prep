@@ -1,0 +1,73 @@
+{
+  "id": "s1-q014",
+  "section": "s1",
+  "objectives": [
+    "s1o1"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "Using `.dot` (the operator product A·B, which tracks the ± i phase), which of the following single-qubit Pauli identities are TRUE? Select all that apply.",
+  "code": "from qiskit.quantum_info import Pauli\n# e.g. Pauli('X').dot(Pauli('Y')).to_label()",
+  "options": [
+    {
+      "key": "A",
+      "text": "X · Y = iZ"
+    },
+    {
+      "key": "B",
+      "text": "Y · Z = iX"
+    },
+    {
+      "key": "C",
+      "text": "Z · X = iY"
+    },
+    {
+      "key": "D",
+      "text": "X · Z = iY"
+    },
+    {
+      "key": "E",
+      "text": "Y · X = iZ"
+    }
+  ],
+  "answer": [
+    "A",
+    "B",
+    "C"
+  ],
+  "explanation": {
+    "correct": "The cyclic products carry a +i phase: X·Y = iZ, Y·Z = iX, Z·X = iY. Reversing the order flips the sign of the phase.",
+    "distractors": {
+      "D": "X·Z = −iY, not +iY. This is an anti-cyclic (reversed) product, so the phase is −i.",
+      "E": "Y·X = −iZ, not +iZ. It is the reverse of X·Y, so the phase flips sign."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q014.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.quantum_info import Pauli\nopts = {\"A\": (\"X\", \"Y\", \"iZ\"), \"B\": (\"Y\", \"Z\", \"iX\"), \"C\": (\"Z\", \"X\", \"iY\"),\n        \"D\": (\"X\", \"Z\", \"iY\"), \"E\": (\"Y\", \"X\", \"iZ\")}\nevidence = {}\nproven = []\nfor k, (a, b, claim) in opts.items():\n    got = Pauli(a).dot(Pauli(b)).to_label()\n    match = (got == claim)\n    evidence[k] = f\"{a}.dot({b}).to_label() = '{got}'; option claims '{a}·{b} = {claim}' -> match={match}\"\n    if match:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {f\"{a}.{b}\": Pauli(a).dot(Pauli(b)).to_label() for a, b, _ in opts.values()}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "id": "s3-q029",
+  "section": "s3",
+  "objectives": [
+    "s3o2"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "Select ALL statements that correctly describe control flow in Qiskit 2.x.",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "`if_test` is used as a context manager whose condition is a `(classical_resource, value)` tuple."
+    },
+    {
+      "key": "B",
+      "text": "`.c_if()` is still available on gate instructions as the recommended way to add a conditional."
+    },
+    {
+      "key": "C",
+      "text": "Control-flow blocks such as `if_else` and `for_loop` appear as single operations in `count_ops()`."
+    },
+    {
+      "key": "D",
+      "text": "A `for_loop` body may contain at most one gate."
+    },
+    {
+      "key": "E",
+      "text": "A `switch` block can define a fallback branch using `case(case.DEFAULT)`."
+    }
+  ],
+  "answer": [
+    "A",
+    "C",
+    "E"
+  ],
+  "explanation": {
+    "correct": "`if_test((resource, value))` is the context-manager API (A). Each control-flow block is stored as one composite instruction, so `count_ops()` shows `if_else`, `for_loop`, etc. (C). `switch` supports a default branch via `case(case.DEFAULT)` (E).",
+    "distractors": {
+      "B": "`.c_if()` was REMOVED in Qiskit 2.0; the supported API is the `if_test` context manager, not `.c_if()`.",
+      "D": "A `for_loop` body can contain any number of gates, not just one."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q029.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\n# A: if_test with tuple condition builds a conditional\nqcA = QuantumCircuit(2, 2); qcA.measure(0, 0)\nwith qcA.if_test((qcA.cregs[0][0], 1)):\n    qcA.x(1)\nA = \"if_else\" in qcA.count_ops()\n\n# B: c_if still available?\nqcB = QuantumCircuit(1, 1); qcB.measure(0, 0)\ntry:\n    qcB.x(0).c_if(qcB.cregs[0], 1); B = True\nexcept AttributeError:\n    B = False\n\n# C: control-flow blocks are single ops\nqcC = QuantumCircuit(1, 1)\nwith qcC.for_loop(range(2)):\n    qcC.x(0)\nC = (\"for_loop\" in qcC.count_ops()) and (qcC.count_ops().get(\"for_loop\") == 1)\n\n# D: for_loop body limited to one gate?\nqcD = QuantumCircuit(1, 1)\ntry:\n    with qcD.for_loop(range(2)):\n        qcD.x(0); qcD.h(0); qcD.z(0)\n    D = False  # multiple gates accepted -> claim 'at most one' is false\nexcept Exception:\n    D = True\n\n# E: switch default branch\nqcE = QuantumCircuit(2, 2); qcE.measure(0, 0)\ntry:\n    with qcE.switch(qcE.cregs[0][0]) as case:\n        with case(0):\n            qcE.x(1)\n        with case(case.DEFAULT):\n            qcE.z(1)\n    E = \"switch_case\" in qcE.count_ops()\nexcept Exception:\n    E = False\n\nclaims = {\"A\": A, \"B\": B, \"C\": C, \"D\": D, \"E\": E}\nevidence = {\n    \"A\": f\"if_test((clbit,1)) produced {dict(qcA.count_ops())} -> {A}\",\n    \"B\": f\"gate.c_if(...) available -> {B} (AttributeError means removed)\",\n    \"C\": f\"for_loop op count = {dict(qcC.count_ops())} -> single-op block {C}\",\n    \"D\": f\"for_loop body with 3 gates accepted; 'at most one gate' -> {D}\",\n    \"E\": f\"switch with case.DEFAULT produced {dict(qcE.count_ops())} -> {E}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": claims})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

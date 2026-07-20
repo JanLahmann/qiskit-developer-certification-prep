@@ -1,0 +1,73 @@
+{
+  "id": "s5-q020",
+  "section": "s5",
+  "objectives": [
+    "s5o1"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "Which of the following are settable options on a `SamplerV2` primitive? (Select all that apply.)",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "`sampler.options.default_shots`"
+    },
+    {
+      "key": "B",
+      "text": "`sampler.options.dynamical_decoupling.enable`"
+    },
+    {
+      "key": "C",
+      "text": "`sampler.options.twirling.enable_gates`"
+    },
+    {
+      "key": "D",
+      "text": "`sampler.options.resilience_level`"
+    },
+    {
+      "key": "E",
+      "text": "`sampler.options.optimization_level`"
+    }
+  ],
+  "answer": [
+    "A",
+    "B",
+    "C"
+  ],
+  "explanation": {
+    "correct": "SamplerV2 options cover sampling and error-handling: `default_shots`, the `dynamical_decoupling` group (error suppression), and the `twirling` group (Pauli/measurement twirling), plus execution and simulator settings. `resilience_level` is an EstimatorV2 option, and `optimization_level` is a transpiler setting (used when building the pass manager) — neither exists on the Sampler, so setting them raises a validation error.",
+    "distractors": {
+      "D": "`resilience_level` selects Estimator mitigation strategies for expectation values; the Sampler returns raw samples and has no such option.",
+      "E": "`optimization_level` is a transpiler argument (e.g. to `generate_preset_pass_manager`), not a primitive option. The Sampler validates and rejects it."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q020.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nevidence, proven = {}, []\n\ndef try_set(key, fn, label):\n    try:\n        fn(SamplerV2(mode=backend))\n        evidence[key] = f\"{label}: accepted (valid SamplerV2 option)\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"{label}: rejected -> {type(e).__name__}: {str(e)[:80]}\"\n\ntry_set(\"A\", lambda s: setattr(s.options, \"default_shots\", 2048), \"options.default_shots = 2048\")\ntry_set(\"B\", lambda s: setattr(s.options.dynamical_decoupling, \"enable\", True), \"options.dynamical_decoupling.enable = True\")\ntry_set(\"C\", lambda s: setattr(s.options.twirling, \"enable_gates\", True), \"options.twirling.enable_gates = True\")\ntry_set(\"D\", lambda s: setattr(s.options, \"resilience_level\", 1), \"options.resilience_level = 1\")\ntry_set(\"E\", lambda s: setattr(s.options, \"optimization_level\", 3), \"options.optimization_level = 3\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"accepted\": proven}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

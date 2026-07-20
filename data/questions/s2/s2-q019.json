@@ -1,0 +1,68 @@
+{
+  "id": "s2-q019",
+  "section": "s2",
+  "objectives": [
+    "s2o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "This runs on a noiseless simulator. Which single bitstring carries probability 1 — i.e., where would `plot_histogram` place its one bar?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.x(2)\nsv = Statevector.from_instruction(qc)\n\nprint(sv.probabilities_dict())",
+  "options": [
+    {
+      "key": "A",
+      "text": "`{'101': 1.0}`"
+    },
+    {
+      "key": "B",
+      "text": "`{'011': 1.0}`"
+    },
+    {
+      "key": "C",
+      "text": "`{'110': 1.0}`"
+    },
+    {
+      "key": "D",
+      "text": "`{'5': 1.0}`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Qiskit labels outcomes little-endian: the string is written q2 q1 q0 (highest-index qubit on the left). X flips qubits 0 and 2 to |1>, qubit 1 stays |0>, so the label is 1·0·1 = '101'. The single histogram bar sits at '101'.",
+    "distractors": {
+      "B": "'011' applies the reverse convention (q0 q1 q2 left-to-right). Qiskit puts qubit 0 on the RIGHT, so the set bits land at the rightmost and leftmost positions.",
+      "C": "'110' also mis-orders the bits; the flipped qubits (0 and 2) map to the rightmost and leftmost characters, giving '101', not '110'.",
+      "D": "`probabilities_dict` keys are binary bitstrings; '5' is the decimal index, which is not how the histogram labels are written."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q019.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.x(2)\nsv = Statevector.from_instruction(qc)\npd = sv.probabilities_dict()\npeak = max(pd, key=pd.get)\npeak_prob = pd[peak]\n\nclaims = {\"A\": \"101\", \"B\": \"011\", \"C\": \"110\", \"D\": \"5\"}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    match = (c == peak and abs(peak_prob - 1.0) < 1e-9)\n    evidence[k] = (\n        f\"option claims outcome {c!r}; executed probabilities_dict has peak \"\n        f\"{peak!r} at p={round(peak_prob,4)} (little-endian q2 q1 q0) -> match={match}\"\n    )\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"probabilities_dict\": {k: round(v, 6) for k, v in pd.items()}},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

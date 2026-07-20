@@ -1,0 +1,73 @@
+{
+  "id": "s5-q027",
+  "section": "s5",
+  "objectives": [
+    "s5o1"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "Which of the following are real fields of the SamplerV2 `twirling` options group? (Select all that apply.)",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "`twirling.enable_gates`"
+    },
+    {
+      "key": "B",
+      "text": "`twirling.enable_measure`"
+    },
+    {
+      "key": "C",
+      "text": "`twirling.num_randomizations`"
+    },
+    {
+      "key": "D",
+      "text": "`twirling.twirling_level`"
+    },
+    {
+      "key": "E",
+      "text": "`twirling.readout`"
+    }
+  ],
+  "answer": [
+    "A",
+    "B",
+    "C"
+  ],
+  "explanation": {
+    "correct": "The twirling options group controls Pauli twirling of gates and measurements: `enable_gates` and `enable_measure` toggle each kind, `num_randomizations` sets how many random twirls to average over, and `shots_per_randomization`/`strategy` complete the group. `twirling_level` and `readout` are not fields of this group, so assigning them raises a validation error.",
+    "distractors": {
+      "D": "There is no `twirling_level`. Twirling is toggled per-kind (`enable_gates`, `enable_measure`) and tuned via `num_randomizations`; there is no single integer 'level'.",
+      "E": "Readout/measurement twirling is controlled by `enable_measure`, not a field called `readout`. Setting `twirling.readout` fails validation."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q027.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nevidence, proven = {}, []\n\ndef try_field(key, field, value):\n    try:\n        s = SamplerV2(mode=backend)\n        setattr(s.options.twirling, field, value)\n        evidence[key] = f\"twirling.{field} = {value!r}: accepted (real field)\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"twirling.{field}: rejected -> {type(e).__name__}: {str(e)[:70]}\"\n\ntry_field(\"A\", \"enable_gates\", True)\ntry_field(\"B\", \"enable_measure\", True)\ntry_field(\"C\", \"num_randomizations\", 8)\ntry_field(\"D\", \"twirling_level\", 2)\ntry_field(\"E\", \"readout\", True)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"accepted\": proven}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

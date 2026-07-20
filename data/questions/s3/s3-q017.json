@@ -1,0 +1,68 @@
+{
+  "id": "s3-q017",
+  "section": "s3",
+  "objectives": [
+    "s3o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A list of values is passed to `assign_parameters`. What angles do the `rx` and `rz` gates end up with?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter('theta')\nphi = Parameter('phi')\n\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)   # added first\nqc.rz(phi, 0)     # added second\n\nbound = qc.assign_parameters([0.5, 1.5])",
+  "options": [
+    {
+      "key": "A",
+      "text": "`rx = 0.5`, `rz = 1.5` — the list is applied in the order the gates were added."
+    },
+    {
+      "key": "B",
+      "text": "`rx = 0.5`, `rz = 0.5` — both gates receive the first value."
+    },
+    {
+      "key": "C",
+      "text": "It raises an error: `assign_parameters` requires a dictionary, not a list."
+    },
+    {
+      "key": "D",
+      "text": "`rx = 1.5`, `rz = 0.5` — the list is applied in alphabetical parameter order (`phi`, then `theta`)."
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "When you pass a plain list, values are bound to `qc.parameters`, which is sorted ALPHABETICALLY by name — `phi` before `theta`. So `phi`=0.5 and `theta`=1.5, giving `rz`(phi)=0.5 and `rx`(theta)=1.5. Insertion order is irrelevant.",
+    "distractors": {
+      "A": "This assumes the list follows the order gates were added. It actually follows `qc.parameters`, which is alphabetical (`phi` < `theta`).",
+      "B": "Each parameter gets a distinct list entry; they are not both set to the first value.",
+      "C": "A list is a valid argument — it binds positionally to the sorted parameters. A dict is only required for partial binding."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q017.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter('theta'); phi = Parameter('phi')\nqc = QuantumCircuit(1)\nqc.rx(theta, 0); qc.rz(phi, 0)\nbound = qc.assign_parameters([0.5, 1.5])\nang = {ins.operation.name: float(ins.operation.params[0]) for ins in bound.data}\nrx_a, rz_a = ang[\"rx\"], ang[\"rz\"]\norder = [p.name for p in qc.parameters]\nclaims = {\n    \"A\": rx_a == 0.5 and rz_a == 1.5,\n    \"B\": rx_a == 0.5 and rz_a == 0.5,\n    \"C\": False,\n    \"D\": rx_a == 1.5 and rz_a == 0.5,\n}\nevidence = {\n    \"A\": f\"qc.parameters order={order}; observed rx={rx_a}, rz={rz_a}; claim rx0.5/rz1.5 -> {claims['A']}\",\n    \"B\": f\"observed rx={rx_a}, rz={rz_a}; claim both 0.5 -> {claims['B']}\",\n    \"C\": f\"assign_parameters([0.5,1.5]) succeeded (no error); claim 'needs dict' -> {claims['C']}\",\n    \"D\": f\"parameters sorted={order}; observed rx={rx_a}, rz={rz_a}; claim rx1.5/rz0.5 -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"rx\": rx_a, \"rz\": rz_a, \"param_order\": order}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

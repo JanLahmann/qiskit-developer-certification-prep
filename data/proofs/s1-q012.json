@@ -1,0 +1,29 @@
+{
+  "question": "s1-q012",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "Pauli('IX').to_matrix() == I\u2297X (X on qubit 0)? True; p[0]='X', p[1]='I'",
+      "B": "== X\u2297I (X on qubit 1)? False",
+      "C": "== X\u2297X (X on both qubits)? False",
+      "D": "Pauli('IX') constructed with no error, so the claim 'invalid label' is False"
+    },
+    "observed": {
+      "qubit0_op": "X",
+      "qubit1_op": "I"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 2.4,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"Pauli('IX').to_matrix() == I\\u2297X (X on qubit 0)? True; p[0]='X', p[1]='I'\", \"B\": \"== X\\u2297I (X on qubit 1)? False\", \"C\": \"== X\\u2297X (X on both qubits)? False\", \"D\": \"Pauli('IX') constructed with no error, so the claim 'invalid label' is False\"}, \"observed\": {\"qubit0_op\": \"X\", \"qubit1_op\": \"I\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

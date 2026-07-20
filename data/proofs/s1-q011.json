@@ -1,0 +1,33 @@
+{
+  "question": "s1-q011",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "Pauli('Y') = [[0j, -1j], [1j, 0j]]; option A claims [[0j, (-0-1j)], [1j, 0j]] -> match=True",
+      "B": "Pauli('Y') = [[0j, -1j], [1j, 0j]]; option B claims [[0j, 1j], [(-0-1j), 0j]] -> match=False",
+      "C": "Pauli('Y') = [[0j, -1j], [1j, 0j]]; option C claims [[0j, (1+0j)], [(1+0j), 0j]] -> match=False",
+      "D": "Pauli('Y') = [[0j, -1j], [1j, 0j]]; option D claims [[(1+0j), 0j], [0j, (-1+0j)]] -> match=False"
+    },
+    "observed": {
+      "matrix": [
+        "0j",
+        "-1j",
+        "1j",
+        "0j"
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 2.4,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"Pauli('Y') = [[0j, -1j], [1j, 0j]]; option A claims [[0j, (-0-1j)], [1j, 0j]] -> match=True\", \"B\": \"Pauli('Y') = [[0j, -1j], [1j, 0j]]; option B claims [[0j, 1j], [(-0-1j), 0j]] -> match=False\", \"C\": \"Pauli('Y') = [[0j, -1j], [1j, 0j]]; option C claims [[0j, (1+0j)], [(1+0j), 0j]] -> match=False\", \"D\": \"Pauli('Y') = [[0j, -1j], [1j, 0j]]; option D claims [[(1+0j), 0j], [0j, (-1+0j)]] -> match=False\"}, \"observed\": {\"matrix\": [\"0j\", \"-1j\", \"1j\", \"0j\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

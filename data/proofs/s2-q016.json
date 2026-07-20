@@ -1,0 +1,28 @@
+{
+  "question": "s2-q016",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "rendered OK; initial-state label '|0>' present=True",
+      "B": "raised TypeError: QuantumCircuit.draw() got an unexpected keyword argument 'with_initial_state'",
+      "C": "rendered OK; initial-state label '|0>' present=False",
+      "D": "rendered OK; initial-state label '|0>' present=False"
+    },
+    "observed": {
+      "initial_state_drawing": "        \u250c\u2500\u2500\u2500\u2510\nq_0: |0>\u2524 H \u251c\n        \u2514\u2500\u2500\u2500\u2518\nq_1: |0>\u2500\u2500\u2500\u2500\u2500\n             "
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.26,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"rendered OK; initial-state label '|0>' present=True\", \"B\": \"raised TypeError: QuantumCircuit.draw() got an unexpected keyword argument 'with_initial_state'\", \"C\": \"rendered OK; initial-state label '|0>' present=False\", \"D\": \"rendered OK; initial-state label '|0>' present=False\"}, \"observed\": {\"initial_state_drawing\": \"        \\u250c\\u2500\\u2500\\u2500\\u2510\\nq_0: |0>\\u2524 H \\u251c\\n        \\u2514\\u2500\\u2500\\u2500\\u2518\\nq_1: |0>\\u2500\\u2500\\u2500\\u2500\\u2500\\n             \"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

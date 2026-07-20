@@ -1,0 +1,35 @@
+{
+  "question": "s3-q029",
+  "verdict": {
+    "answer": [
+      "A",
+      "C",
+      "E"
+    ],
+    "evidence": {
+      "A": "if_test((clbit,1)) produced {'measure': 1, 'if_else': 1} -> True",
+      "B": "gate.c_if(...) available -> False (AttributeError means removed)",
+      "C": "for_loop op count = {'for_loop': 1} -> single-op block True",
+      "D": "for_loop body with 3 gates accepted; 'at most one gate' -> False",
+      "E": "switch with case.DEFAULT produced {'measure': 1, 'switch_case': 1} -> True"
+    },
+    "observed": {
+      "A": true,
+      "B": false,
+      "C": true,
+      "D": false,
+      "E": true
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.35,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\", \"C\", \"E\"], \"evidence\": {\"A\": \"if_test((clbit,1)) produced {'measure': 1, 'if_else': 1} -> True\", \"B\": \"gate.c_if(...) available -> False (AttributeError means removed)\", \"C\": \"for_loop op count = {'for_loop': 1} -> single-op block True\", \"D\": \"for_loop body with 3 gates accepted; 'at most one gate' -> False\", \"E\": \"switch with case.DEFAULT produced {'measure': 1, 'switch_case': 1} -> True\"}, \"observed\": {\"A\": true, \"B\": false, \"C\": true, \"D\": false, \"E\": true}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

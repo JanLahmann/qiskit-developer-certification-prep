@@ -1,0 +1,69 @@
+{
+  "id": "s8-q013",
+  "section": "s8",
+  "objectives": [
+    "s8o2",
+    "s8o3"
+  ],
+  "type": "spot-bug",
+  "difficulty": 2,
+  "stem": "This code builds a circuit with an `if_test` block and tries to export it to OpenQASM 2, but the export raises an error. Which single change makes the export succeed while representing the same conditional circuit?",
+  "code": "from qiskit import QuantumCircuit, qasm2\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.if_test((qc.clbits[0], 1)):\n    qc.x(0)\n\ntext = qasm2.dumps(qc)  # raises QASM2ExportError",
+  "options": [
+    {
+      "key": "A",
+      "text": "Export with `qasm3.dumps(qc)` instead."
+    },
+    {
+      "key": "B",
+      "text": "Keep OpenQASM 2 but relax the parser: `qasm2.dumps(qc, strict=False)`."
+    },
+    {
+      "key": "C",
+      "text": "Flatten the circuit first: `qasm2.dumps(qc.decompose())`."
+    },
+    {
+      "key": "D",
+      "text": "Use the circuit's string form directly: `str(qc)`."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Structured control flow such as `if_test` is an OpenQASM 3 feature. OpenQASM 2 has no general `if` construct (only register-equality conditions), so the v2 exporter raises `QASM2ExportError`. Exporting with `qasm3.dumps` succeeds and emits an `if (...) { ... }` block.",
+    "distractors": {
+      "B": "`strict` is not a parameter of `qasm2.dumps`, so this raises `TypeError`. Even if it existed, no flag lets OpenQASM 2 express general control flow.",
+      "C": "`decompose()` only expands one level of gate definitions; the `if_test` control-flow op remains, so `qasm2.dumps` still raises `QASM2ExportError`.",
+      "D": "`str(qc)` returns the ASCII circuit diagram, not an OpenQASM program, so it is not a valid export at all."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s8-q013.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm2, qasm3\n\ndef build():\n    qc = QuantumCircuit(1, 1)\n    qc.h(0)\n    qc.measure(0, 0)\n    with qc.if_test((qc.clbits[0], 1)):\n        qc.x(0)\n    return qc\n\n# Demonstrate the bug: the original qasm2.dumps call fails.\ntry:\n    qasm2.dumps(build())\n    bug = \"no error (unexpected)\"\nexcept Exception as e:\n    bug = f\"{type(e).__name__}: {str(e)[:110]}\"\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        out = fn()\n        ok = isinstance(out, str) and out.strip().startswith(\"OPENQASM\")\n        evidence[key] = f\"produced {type(out).__name__}; valid OpenQASM (starts with 'OPENQASM')={ok}\"\n        if ok:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\nattempt(\"A\", lambda: qasm3.dumps(build()))\nattempt(\"B\", lambda: qasm2.dumps(build(), strict=False))\nattempt(\"C\", lambda: qasm2.dumps(build().decompose()))\nattempt(\"D\", lambda: str(build()))\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug\": bug}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

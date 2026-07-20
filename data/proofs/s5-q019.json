@@ -1,0 +1,26 @@
+{
+  "question": "s5-q019",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "set options.dynamical_decoupling.enable=True: OK, enable now True, job ran",
+      "B": "raised ValidationError: 2 validation errors for SamplerOptions\ndynamical_decoupling.DynamicalDecouplingOptions\n  I",
+      "C": "raised TypeError: SamplerV2.run() got an unexpected keyword argument 'dynamical_decoupling'",
+      "D": "raised AttributeError: 'SamplerOptions' object has no attribute 'resilience'"
+    },
+    "observed": {}
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.49,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"set options.dynamical_decoupling.enable=True: OK, enable now True, job ran\", \"B\": \"raised ValidationError: 2 validation errors for SamplerOptions\\ndynamical_decoupling.DynamicalDecouplingOptions\\n  I\", \"C\": \"raised TypeError: SamplerV2.run() got an unexpected keyword argument 'dynamical_decoupling'\", \"D\": \"raised AttributeError: 'SamplerOptions' object has no attribute 'resilience'\"}, \"observed\": {}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "/Users/majl/GitHub/qiskit-developer-certification-prep/.venv/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/local_service.py:274: UserWarning: Options {'dynamical_decoupling': {'enable': True}} have no effect in local testing mode.\n  warnings.warn(f\"Options {options_copy} have no effect in local testing mode.\")\n",
+  "python": "3.12.2"
+}

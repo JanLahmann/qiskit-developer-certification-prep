@@ -1,0 +1,36 @@
+{
+  "id": "s2-q018",
+  "section": "s2",
+  "objectives": ["s2o1"],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You are preparing a figure of a quantum circuit for a published paper: you want colored gate boxes, a clean layout, and to save it as a high-resolution PNG with `savefig`. Which `draw()` output should you use?",
+  "code": null,
+  "options": [
+    { "key": "A", "text": "`output=\"mpl\"` — returns a styleable Matplotlib `Figure` you can customize and save with `savefig`." },
+    { "key": "B", "text": "`output=\"text\"` — returns ASCII art, ideal for quick inspection in a terminal." },
+    { "key": "C", "text": "`output=\"latex_source\"` — returns a raw LaTeX string rather than a rendered image." },
+    { "key": "D", "text": "the default `draw()` with no argument — gives you the same ASCII text drawing." }
+  ],
+  "answer": ["A"],
+  "explanation": {
+    "correct": "The `mpl` renderer returns a `matplotlib.figure.Figure`, which supports colored gate boxes, style customization, and `fig.savefig(...)` to any raster or vector format. That is exactly what a publication-quality circuit figure needs.",
+    "distractors": {
+      "B": "The text renderer produces monochrome ASCII intended for terminals and logs; it cannot make colored boxes or a savable raster image.",
+      "C": "`latex_source` returns a LaTeX string you would still have to compile yourself; it is not a ready-to-save figure and offers no Matplotlib styling.",
+      "D": "With no argument `draw()` defaults to the text (ASCII) renderer — the opposite of the styleable, high-resolution figure you want."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": { "status": "conceptual", "artifact": null },
+  "verification": { "mode": "none" },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

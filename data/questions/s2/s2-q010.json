@@ -1,0 +1,68 @@
+{
+  "id": "s2-q010",
+  "section": "s2",
+  "objectives": [
+    "s2o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "What does this script print?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\n\nprint(type(qc.draw()).__name__)\nprint(type(qc.draw(\"mpl\")).__name__)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`TextDrawing` then `Figure`"
+    },
+    {
+      "key": "B",
+      "text": "`str` then `Figure`"
+    },
+    {
+      "key": "C",
+      "text": "`TextDrawing` then `Axes`"
+    },
+    {
+      "key": "D",
+      "text": "`str` then `AxesImage`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "With no `output` argument, `QuantumCircuit.draw()` defaults to the text renderer and returns a `TextDrawing` object (its `__str__` produces the ASCII art). `draw(\"mpl\")` returns a full `matplotlib.figure.Figure` — the object you can `savefig()` or embed — so the two printed class names are `TextDrawing` and `Figure`.",
+    "distractors": {
+      "B": "Confuses the printable object with a bare string: `draw()` returns a `TextDrawing`, not `str`; only `str(qc.draw())` or `draw('latex_source')` yields a plain string.",
+      "C": "The mpl renderer returns the whole `Figure`, not a single `Axes`; returning the Figure is what lets you save or further style the drawing.",
+      "D": "Both halves are wrong: the default is `TextDrawing` (not `str`) and `mpl` returns a `Figure` (not an `AxesImage`, which is an image-plot artist)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q010.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nimport matplotlib\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\n\ndefault_name = type(qc.draw()).__name__\nmpl_obj = qc.draw(\"mpl\")\nmpl_name = type(mpl_obj).__name__\nis_fig = isinstance(mpl_obj, matplotlib.figure.Figure)\nobserved_pair = (default_name, mpl_name)\n\npairs = {\n    \"A\": (\"TextDrawing\", \"Figure\"),\n    \"B\": (\"str\", \"Figure\"),\n    \"C\": (\"TextDrawing\", \"Axes\"),\n    \"D\": (\"str\", \"AxesImage\"),\n}\nevidence = {}\nproven = []\nfor k, claim in pairs.items():\n    match = (claim == observed_pair)\n    evidence[k] = (\n        f\"option claims {claim}; executed: draw() -> {default_name}, \"\n        f\"draw('mpl') -> {mpl_name} (isinstance Figure={is_fig}) -> match={match}\"\n    )\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"default\": default_name, \"mpl\": mpl_name, \"is_figure\": is_fig},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s2)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

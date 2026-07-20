@@ -1,0 +1,68 @@
+{
+  "id": "s5-q016",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "A circuit has 2 parameters. You bind a NumPy array of shape (6, 2) and run one PUB: `sampler.run([(isa, vals)])`. What is `result[0].data.meas.shape`?",
+  "code": "import numpy as np\n\n# isa has 2 free parameters\nvals = np.linspace(0, 1, 12).reshape(6, 2)  # shape (6, 2)\nresult = sampler.run([(isa, vals)]).result()\nprint(result[0].data.meas.shape)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`(6,)` — the trailing axis is consumed as the 2 parameters, leaving 6 broadcast results"
+    },
+    {
+      "key": "B",
+      "text": "`(6, 2)` — the result keeps the full shape of the parameter array"
+    },
+    {
+      "key": "C",
+      "text": "`(2,)` — one result per parameter"
+    },
+    {
+      "key": "D",
+      "text": "`()` — a single scalar result, since it is one PUB"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "In a Sampler PUB the parameter array's last axis must have length = number of parameters; that axis is consumed to bind the circuit. The remaining leading shape becomes the result's broadcast shape. Shape (6, 2) with 2 parameters therefore yields 6 independent results -> data.meas.shape == (6,).",
+    "distractors": {
+      "B": "The parameter axis (the trailing 2) is consumed when binding; it does not survive into the result shape. Only the leading dimensions remain.",
+      "C": "There are 6 parameter sets, not 2. The '2' is the number of parameters per set (the consumed axis), not the number of results.",
+      "D": "One PUB with a broadcast parameter array still produces one result per parameter set. The shape is (6,), not a scalar; you index it as data.meas[i]."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q016.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import ParameterVector\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\np = ParameterVector(\"p\", 2)\nqc = QuantumCircuit(1); qc.ry(p[0], 0); qc.rz(p[1], 0); qc.measure_all()\nisa = pm.run(qc)\n\nvals = np.linspace(0, 1, 12).reshape(6, 2)   # 6 parameter sets, 2 params each\nshape = tuple(SamplerV2(mode=backend).run([(isa, vals)], shots=128).result()[0].data.meas.shape)\n\ncandidates = {\"A\": (6,), \"B\": (6, 2), \"C\": (2,), \"D\": ()}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == shape)\n    evidence[k] = f\"option claims data.meas.shape={v}; executed run gave {shape} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"params_shape\": list(vals.shape), \"result_shape\": list(shape)}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

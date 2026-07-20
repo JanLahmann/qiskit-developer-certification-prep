@@ -1,0 +1,26 @@
+{
+  "question": "s5-q033",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "SamplerV2(mode=backend, options={\"default_shots\":4096}) -> a no-shots run used 4096 shots = True",
+      "B": "SamplerV2(shots=4096): raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'shots'",
+      "C": "SamplerV2(default_shots=4096): raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'default_shots",
+      "D": "setting sampler.shots=4096 then no-shots run used 1024 shots -> took effect = False"
+    },
+    "observed": {}
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.5,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"SamplerV2(mode=backend, options={\\\"default_shots\\\":4096}) -> a no-shots run used 4096 shots = True\", \"B\": \"SamplerV2(shots=4096): raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'shots'\", \"C\": \"SamplerV2(default_shots=4096): raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'default_shots\", \"D\": \"setting sampler.shots=4096 then no-shots run used 1024 shots -> took effect = False\"}, \"observed\": {}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

@@ -21,7 +21,7 @@
           "text": "Apply quantum operations"
         }
       ],
-      "bankCount": 1
+      "bankCount": 37
     },
     {
       "id": "s2",
@@ -42,7 +42,7 @@
           "text": "Visualize quantum states"
         }
       ],
-      "bankCount": 0
+      "bankCount": 26
     },
     {
       "id": "s3",
@@ -67,7 +67,7 @@
           "text": "Transpile and optimize circuits"
         }
       ],
-      "bankCount": 0
+      "bankCount": 44
     },
     {
       "id": "s4",
@@ -84,7 +84,7 @@
           "text": "Run quantum circuits with a real hardware in the IBM Runtime provider"
         }
       ],
-      "bankCount": 1
+      "bankCount": 36
     },
     {
       "id": "s5",
@@ -105,7 +105,7 @@
           "text": "Understand the theoretical background behind the sampler primitive"
         }
       ],
-      "bankCount": 7
+      "bankCount": 31
     },
     {
       "id": "s6",
@@ -122,7 +122,7 @@
           "text": "Understand the theoretical background behind the estimator primitive"
         }
       ],
-      "bankCount": 0
+      "bankCount": 30
     },
     {
       "id": "s7",
@@ -139,7 +139,7 @@
           "text": "Monitor jobs"
         }
       ],
-      "bankCount": 0
+      "bankCount": 24
     },
     {
       "id": "s8",
@@ -164,7 +164,7 @@
           "text": "Interact with the Qiskit IBM Runtime REST API"
         }
       ],
-      "bankCount": 0
+      "bankCount": 16
     }
   ]
 }

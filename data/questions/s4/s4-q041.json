@@ -1,0 +1,58 @@
+{
+  "id": "s4-q041",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "When does a session (or batch) actually start — that is, when does its maximum TTL timer begin counting?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "When its first job begins execution."
+    },
+    {
+      "key": "B",
+      "text": "The moment you construct the `Session`/`Batch` object."
+    },
+    {
+      "key": "C",
+      "text": "When you exit the context manager."
+    },
+    {
+      "key": "D",
+      "text": "When you call `service = QiskitRuntimeService()`."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "A session or batch starts when its first job begins execution; that is when the maximum TTL timer starts. (Note: if you open a session but submit no jobs for 30 minutes, it closes automatically.)",
+    "distractors": {
+      "B": "Merely constructing the object does not start the clock — the first job entering execution does.",
+      "C": "Exiting the context manager closes the session/batch; it does not start the TTL timer.",
+      "D": "Creating the service only authenticates you; it is unrelated to when a session's timer begins."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

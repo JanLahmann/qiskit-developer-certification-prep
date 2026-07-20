@@ -1,0 +1,57 @@
+{
+  "id": "s4-q025",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "When you construct `QiskitRuntimeService()` without specifying a `channel`, which channel is used by default?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "`ibm_quantum_platform`"
+    },
+    {
+      "key": "B",
+      "text": "`ibm_cloud`"
+    },
+    {
+      "key": "C",
+      "text": "`ibm_quantum`"
+    },
+    {
+      "key": "D",
+      "text": "`local`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The default channel is `ibm_quantum_platform`. Because this is almost always the appropriate channel, the docs omit it from the examples; you only pass `channel=` to override it.",
+    "distractors": {
+      "B": "`ibm_cloud` is a separate channel value, not the default.",
+      "C": "`ibm_quantum` was the legacy channel used by the older platform; it is not the current default and this is a common out-of-date assumption.",
+      "D": "There is no `local` channel; local testing mode is achieved by passing a fake backend as the primitive's mode, not by a channel setting."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/initialize-account",
+      "https://quantum.cloud.ibm.com/docs/guides/hello-world"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

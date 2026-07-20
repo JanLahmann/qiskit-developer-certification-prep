@@ -1,0 +1,58 @@
+{
+  "id": "s4-q037",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "Your workload is a single circuit. A colleague wraps it in a batch, expecting the batch to reduce its queuing time. Why does this not help?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "The queuing time does not decrease for the first job submitted within a batch (or session), so wrapping a single job in a batch provides no queuing benefit."
+    },
+    {
+      "key": "B",
+      "text": "Batches only speed up circuits with more than 100 gates."
+    },
+    {
+      "key": "C",
+      "text": "The batch cancels the single job because a batch requires at least two jobs."
+    },
+    {
+      "key": "D",
+      "text": "Single jobs submitted in a batch are always redirected to a simulator."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Batching helps by scheduling multiple jobs together and parallelizing their classical processing. But the first job in a batch still waits in the normal queue, so a batch (or session) provides no benefit when there is only one job.",
+    "distractors": {
+      "B": "Batch benefits come from parallel scheduling across jobs, not from circuit size; there is no gate-count threshold.",
+      "C": "A batch does not require or enforce a minimum of two jobs, and it does not cancel a lone job.",
+      "D": "Execution target is set by the mode/backend, not by whether a job is in a batch; nothing redirects it to a simulator."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch",
+      "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

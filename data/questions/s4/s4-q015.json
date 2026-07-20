@@ -1,0 +1,58 @@
+{
+  "id": "s4-q015",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "A developer on the free Open Plan writes code that opens `Session(backend=backend)` and submits jobs inside it. What is the documented outcome, and what should they do instead?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Open Plan users cannot submit session jobs; the workload must run in job mode or batch mode instead."
+    },
+    {
+      "key": "B",
+      "text": "The session runs normally — the Open Plan supports all three execution modes."
+    },
+    {
+      "key": "C",
+      "text": "Sessions work on the Open Plan but are limited to a single job each."
+    },
+    {
+      "key": "D",
+      "text": "The Open Plan supports sessions but not batch mode."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The documentation states explicitly that Open Plan users cannot submit session jobs; their workloads must run in job mode or batch mode. Sessions (dedicated, exclusive access) are reserved for paid plans.",
+    "distractors": {
+      "B": "The Open Plan does NOT support sessions; only job and batch mode are available to it.",
+      "C": "Sessions are not merely limited on the Open Plan — they cannot be submitted at all.",
+      "D": "It is the reverse: batch mode IS available on the Open Plan (with a 10-minute max TTL); sessions are not."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
+      "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "id": "s4-q039",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "multi",
+  "difficulty": 3,
+  "stem": "Which THREE of the following statements about Qiskit Runtime execution modes are correct? (Select three.)",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Job mode submits a single primitive request made without a context manager."
+    },
+    {
+      "key": "B",
+      "text": "In session mode the user has exclusive access to the QPU during the active window; no other jobs, including calibration jobs, run."
+    },
+    {
+      "key": "C",
+      "text": "In batch mode the classical pre-processing of the jobs is parallelized so the quantum execution can be packed tightly together."
+    },
+    {
+      "key": "D",
+      "text": "Batch mode gives each job dedicated, exclusive QPU access, just like a session."
+    },
+    {
+      "key": "E",
+      "text": "Session mode is available to Open Plan users, just like batch mode."
+    },
+    {
+      "key": "F",
+      "text": "Sessions are generally cheaper than batches for the same set of independent jobs."
+    }
+  ],
+  "answer": [
+    "A",
+    "B",
+    "C"
+  ],
+  "explanation": {
+    "correct": "Job mode is a single request without a context manager (A). A session grants exclusive access with no other users' or calibration jobs during the active window (B). Batch parallelizes the classical processing to pack quantum execution tightly (C).",
+    "distractors": {
+      "D": "Batch mode does NOT give exclusive access; batched jobs share the QPU with others. Exclusivity is a session feature.",
+      "E": "Open Plan users cannot use sessions; only job and batch mode are available to them.",
+      "F": "Sessions are generally MORE expensive than batches, not cheaper; batch is preferred when dedicated access is not needed."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+      "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

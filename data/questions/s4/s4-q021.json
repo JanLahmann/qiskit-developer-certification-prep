@@ -1,0 +1,68 @@
+{
+  "id": "s4-q021",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "A `SamplerV2` is constructed with no mode and is not inside any session or batch context, then `run` is called. What is the result?",
+  "code": "from qiskit_ibm_runtime import SamplerV2\n# isa: a transpiled circuit; no Session/Batch context is open\nsampler = SamplerV2()          # no mode given\njob = sampler.run([isa])",
+  "options": [
+    {
+      "key": "A",
+      "text": "It raises `ValueError: A backend or session must be specified.` — a primitive needs an execution target."
+    },
+    {
+      "key": "B",
+      "text": "It runs on a default local simulator."
+    },
+    {
+      "key": "C",
+      "text": "It raises `TypeError` because `mode` is a required positional argument."
+    },
+    {
+      "key": "D",
+      "text": "It automatically selects the least busy backend."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`mode` defaults to `None`, so construction succeeds, but a primitive must ultimately have an execution target. With no mode and no enclosing session/batch, calling `run` raises `ValueError: A backend or session must be specified.`",
+    "distractors": {
+      "B": "There is no implicit default simulator; you must supply a backend (for example, a fake backend for local testing) as the mode.",
+      "C": "`mode` is optional (it defaults to `None`), so construction does not raise `TypeError`; the failure happens at `run` time.",
+      "D": "The primitive never contacts a service to pick a backend for you; backend selection (for example `least_busy`) is your responsibility."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+      "https://quantum.cloud.ibm.com/docs/guides/hello-world"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q021.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\ntry:\n    SamplerV2().run([isa]).result()\n    outcome = (\"success\",)\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nmsg = outcome[2] if is_exc else \"\"\nflags = {\n    \"A\": is_exc and name == \"ValueError\" and \"backend or session\" in msg,\n    \"B\": outcome[0] == \"success\",\n    \"C\": is_exc and name == \"TypeError\",\n    \"D\": outcome[0] == \"success\",\n}\nlabels = {\"A\": \"ValueError: a backend or session must be specified\", \"B\": \"runs on a default local simulator\",\n          \"C\": \"TypeError: mode is a required positional argument\", \"D\": \"auto-selects the least busy backend\"}\nevidence = {k: f\"observed={outcome}; option {k} predicts '{labels[k]}' -> match={v}\" for k, v in flags.items()}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": list(outcome)}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

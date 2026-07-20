@@ -1,0 +1,68 @@
+{
+  "id": "s4-q043",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You have two transpiled ISA circuits `isa1` and `isa2` and want to run both in a single Sampler job on `backend`. Which call is correct?",
+  "code": "sampler = SamplerV2(mode=backend)\njob = ...  # run both isa1 and isa2 in one job",
+  "options": [
+    {
+      "key": "A",
+      "text": "`sampler.run([isa1, isa2])`"
+    },
+    {
+      "key": "B",
+      "text": "`sampler.run(isa1, isa2)`"
+    },
+    {
+      "key": "C",
+      "text": "`sampler.run([isa1], [isa2])`"
+    },
+    {
+      "key": "D",
+      "text": "`sampler.run([[isa1, isa2]])`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`run` takes one iterable of PUBs. Two circuits are two PUBs, so they go in one list: `run([isa1, isa2])`. The result then has one pub-result per circuit.",
+    "distractors": {
+      "B": "`run(isa1, isa2)` passes two positional arguments; `run` accepts a single `pubs` iterable, so this raises `TypeError`.",
+      "C": "`run([isa1], [isa2])` again supplies two positionals (the second is interpreted as `shots`), raising an error rather than running two circuits.",
+      "D": "`[[isa1, isa2]]` is a single PUB whose first element is a list of circuits — an invalid pub-like — so it raises rather than running the two circuits."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+      "https://quantum.cloud.ibm.com/docs/guides/hello-world"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q043.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc1 = QuantumCircuit(2); qc1.h(0); qc1.cx(0, 1); qc1.measure_all()\nqc2 = QuantumCircuit(2); qc2.x(0); qc2.measure_all()\nisa1 = pm.run(qc1); isa2 = pm.run(qc2)\nsampler = SamplerV2(mode=backend)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        res = fn()\n        evidence[key] = f\"ran, returned {len(res)} pub result(s) in one job\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nattempt(\"A\", lambda: sampler.run([isa1, isa2]).result())\nattempt(\"B\", lambda: sampler.run(isa1, isa2).result())\nattempt(\"C\", lambda: sampler.run([isa1], [isa2]).result())\nattempt(\"D\", lambda: sampler.run([[isa1, isa2]]).result())\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

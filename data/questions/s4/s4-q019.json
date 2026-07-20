@@ -1,0 +1,57 @@
+{
+  "id": "s4-q019",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You want the Runtime service to automatically pick a real QPU that is currently operational and has the shortest queue. Which call does this?",
+  "code": "from qiskit_ibm_runtime import QiskitRuntimeService\nservice = QiskitRuntimeService()\nbackend = ...  # which call?",
+  "options": [
+    {
+      "key": "A",
+      "text": "`service.least_busy(operational=True, simulator=False)`"
+    },
+    {
+      "key": "B",
+      "text": "`service.least_busy(simulator=True)`"
+    },
+    {
+      "key": "C",
+      "text": "`service.backend()`"
+    },
+    {
+      "key": "D",
+      "text": "`service.most_available()`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`least_busy` returns the backend with the fewest pending jobs. Passing `operational=True` restricts to devices that are up, and `simulator=False` restricts to real QPUs, so you get the least-busy operational hardware backend.",
+    "distractors": {
+      "B": "`simulator=True` would return a simulator, not a real QPU, and does not filter for operational status.",
+      "C": "`service.backend()` retrieves a specific backend by name and does not consider queue length; called with no name it does not select the least busy device.",
+      "D": "There is no `most_available()` method on `QiskitRuntimeService`; the selector is `least_busy`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/hello-world",
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

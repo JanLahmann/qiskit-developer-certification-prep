@@ -1,0 +1,62 @@
+{
+  "id": "s4-q022",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "Which TWO statements correctly describe what happens when you CLOSE a session (for example, by exiting the `with Session(...)` context manager)? (Select two.)",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "The session stops accepting new jobs."
+    },
+    {
+      "key": "B",
+      "text": "Jobs already submitted (running or queued) continue to completion, and their results can still be retrieved."
+    },
+    {
+      "key": "C",
+      "text": "All queued jobs are immediately cancelled and their results are lost."
+    },
+    {
+      "key": "D",
+      "text": "Closing resets the session's maximum TTL back to zero and reopens it."
+    },
+    {
+      "key": "E",
+      "text": "The backend is removed from the service and must be re-fetched."
+    }
+  ],
+  "answer": [
+    "A",
+    "B"
+  ],
+  "explanation": {
+    "correct": "Closing a session puts it into 'In progress, not accepting new jobs': it stops accepting new submissions but finishes processing jobs that are already running or queued, and you can still retrieve their results. Exiting the context manager is equivalent to `session.close()`.",
+    "distractors": {
+      "C": "Immediate cancellation of queued jobs is what CANCELLING a session (or hitting the maximum TTL) does — not closing it.",
+      "D": "Closing does not reset the TTL or reopen the session; a closed session cannot accept new jobs.",
+      "E": "Closing a session has no effect on the backend object or the service."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

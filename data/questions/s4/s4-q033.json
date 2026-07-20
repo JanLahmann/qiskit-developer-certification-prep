@@ -1,0 +1,57 @@
+{
+  "id": "s4-q033",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "In a session, what is the difference between the interactive TTL and the maximum TTL?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "The maximum TTL caps the session's total lifetime from when it starts; the interactive TTL is the idle gap allowed between consecutive jobs before the session is temporarily deactivated."
+    },
+    {
+      "key": "B",
+      "text": "The interactive TTL caps the session's total lifetime; the maximum TTL is the time allowed for any single job to run."
+    },
+    {
+      "key": "C",
+      "text": "They measure the same thing; 'interactive' is simply the Open Plan name for the maximum TTL."
+    },
+    {
+      "key": "D",
+      "text": "The interactive TTL is what you configure with `max_time`; the maximum TTL cannot be set."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The maximum TTL is the total time the session may run, measured from when the first job starts; you set it with `max_time`. The interactive TTL is the allowed idle time between jobs — if no job is queued within that window, the session is temporarily deactivated (and must be reactivated through the normal queue). The interactive TTL cannot be configured.",
+    "distractors": {
+      "B": "This reverses the two: the maximum TTL is the total lifetime, not a per-job limit, and the interactive TTL is the inter-job idle gap.",
+      "C": "They are distinct timers with different roles; 'interactive' is not an alias for the maximum TTL.",
+      "D": "It is the MAXIMUM TTL that you set with `max_time`; the interactive TTL is fixed and not configurable — the opposite of this statement."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.47,
+  "wall_seconds": 1.29,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"constructed and ran: 64 shots over 4 bitstrings\", \"B\": \"raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'batch'\", \"C\": \"raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'session'\", \"D\": \"raised ValueError: mode must be of type Backend, Session, Batch or None\"}, \"observed\": {\"proven\": [\"A\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

@@ -1,0 +1,69 @@
+{
+  "id": "s4-q038",
+  "section": "s4",
+  "objectives": [
+    "s4o2",
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "Inside `with Session(backend=backend) as session:` you want an Estimator that submits its jobs inside the session. Which construction is correct?",
+  "code": "with Session(backend=backend) as session:\n    estimator = ...  # which one?",
+  "options": [
+    {
+      "key": "A",
+      "text": "`EstimatorV2(mode=session)`"
+    },
+    {
+      "key": "B",
+      "text": "`EstimatorV2(session=session)`"
+    },
+    {
+      "key": "C",
+      "text": "`EstimatorV2(mode=\"session\")`"
+    },
+    {
+      "key": "D",
+      "text": "`EstimatorV2(backend=session)`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "As with the Sampler, the execution mode is passed through `mode=`, which accepts a Session object. `EstimatorV2(mode=session)` binds the Estimator to the open session.",
+    "distractors": {
+      "B": "`session=` is the removed pre-0.24 keyword; on V2 primitives it raises `TypeError`. Use `mode=session`.",
+      "C": "`mode` needs the Session object, not the string `\"session\"`; a string raises `ValueError`.",
+      "D": "`backend=` was removed from the V2 constructors and raises `TypeError`; you also would not pass a Session to a `backend` argument."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q038.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2, Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nisa = pm.run(qc)\nobs = SparsePauliOp(\"ZZ\").apply_layout(isa.layout)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        evs = float(fn().run([(isa, obs)]).result()[0].data.evs)\n        evidence[key] = f\"constructed and ran in the session: evs={round(evs, 4)}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nwith Session(backend=backend) as session:\n    attempt(\"A\", lambda: EstimatorV2(mode=session))\n    attempt(\"B\", lambda: EstimatorV2(session=session))\n    attempt(\"C\", lambda: EstimatorV2(mode=\"session\"))\n    attempt(\"D\", lambda: EstimatorV2(backend=session))\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

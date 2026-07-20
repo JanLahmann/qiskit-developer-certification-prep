@@ -1,0 +1,58 @@
+{
+  "id": "s4-q027",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "A session (or batch) reaches its maximum time to live (max TTL) while some of its jobs are still running and others are still waiting in the queue. What happens?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Jobs that are already running finish, but jobs still queued are failed/cancelled."
+    },
+    {
+      "key": "B",
+      "text": "All jobs, running and queued, are immediately cancelled."
+    },
+    {
+      "key": "C",
+      "text": "The max TTL timer pauses until all queued jobs complete."
+    },
+    {
+      "key": "D",
+      "text": "The session is automatically extended until the queue empties."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "When the maximum TTL is reached the session/batch is closed. Jobs that are already running are allowed to finish, but any jobs still queued are failed. The max TTL timer starts when the first job starts and does not pause.",
+    "distractors": {
+      "B": "Running jobs are not killed mid-execution; only the still-queued jobs are failed.",
+      "C": "The max TTL timer does not pause or stop once started; it runs to the configured limit.",
+      "D": "There is no automatic extension; you set the limit with `max_time`, and reaching it ends the workload."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

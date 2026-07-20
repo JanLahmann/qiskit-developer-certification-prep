@@ -1,0 +1,57 @@
+{
+  "id": "s4-q030",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "On a trusted laptop, you want to authenticate once and then reuse your credentials in later Python sessions without pasting your API key each time. Which approach matches the documented workflow?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Call `QiskitRuntimeService.save_account(token=\"<api-key>\", instance=\"<CRN>\")` once; afterwards `service = QiskitRuntimeService()` loads the saved credentials."
+    },
+    {
+      "key": "B",
+      "text": "Pass `token=` and `instance=` to `QiskitRuntimeService()` every time; there is no way to persist them."
+    },
+    {
+      "key": "C",
+      "text": "Store the backend name in `save_account` so that `least_busy` is no longer needed."
+    },
+    {
+      "key": "D",
+      "text": "Call `QiskitRuntimeService.login()` with your IBM id and password."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`QiskitRuntimeService.save_account(token=..., instance=...)` saves credentials to disk once (recommended only in a trusted environment). Later, `QiskitRuntimeService()` with no arguments loads the saved default account, so you never paste the key again.",
+    "distractors": {
+      "B": "Explicit per-session credentials are one option, but credentials CAN be saved with `save_account`; claiming there is no way to persist them is wrong.",
+      "C": "`save_account` stores authentication credentials, not a backend choice; you still select a backend (for example with `least_busy`) at run time.",
+      "D": "There is no `login()` method that takes an id and password; authentication uses an API key/token, optionally saved with `save_account`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/hello-world",
+      "https://quantum.cloud.ibm.com/docs/guides/initialize-account"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

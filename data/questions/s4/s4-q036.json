@@ -1,0 +1,69 @@
+{
+  "id": "s4-q036",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "spot-bug",
+  "difficulty": 3,
+  "stem": "This 'map the problem -> optimize -> execute' workflow skips a step and fails at `run`. Which change makes it run correctly?",
+  "code": "backend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\n\nestimator = EstimatorV2(mode=backend)\njob = estimator.run([(qc, obs)])     # runs the abstract circuit + raw observable\nprint(job.result()[0].data.evs)",
+  "options": [
+    {
+      "key": "A",
+      "text": "Transpile to an ISA circuit and map the observable to its layout before running: `isa = pm.run(qc); mapped = obs.apply_layout(isa.layout); estimator.run([(isa, mapped)])`."
+    },
+    {
+      "key": "B",
+      "text": "Increase the shots via `estimator.options.default_shots` before running."
+    },
+    {
+      "key": "C",
+      "text": "Wrap the circuit and observable in an extra list: `estimator.run([[qc, obs]])`."
+    },
+    {
+      "key": "D",
+      "text": "Pass the backend as a second argument to run: `estimator.run([(qc, obs)], backend)`."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The 'optimize' step is missing: the circuit was never transpiled to the backend's ISA (its `h`/`cx` are not native and unrouted), so `run` raises `IBMInputValueError`. Building an ISA circuit with the preset pass manager and mapping the observable with `apply_layout` fixes it and yields an expectation value.",
+    "distractors": {
+      "B": "Shot count has nothing to do with the failure; the abstract circuit is still not an ISA circuit, so raising `default_shots` still raises the same error.",
+      "C": "Nesting does not transpile anything; the circuit is still non-ISA, so `run([[qc, obs]])` still raises `IBMInputValueError`.",
+      "D": "`run` does not take a positional backend; adding one raises `TypeError`, and it still would not solve the missing transpilation."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/hello-world",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q036.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nestimator = EstimatorV2(mode=backend)\n\n# buggy: run the abstract circuit + raw observable\ntry:\n    estimator.run([(qc, obs)]).result()\n    buggy = \"ran (unexpected)\"\nexcept Exception as e:\n    buggy = f\"{type(e).__name__}: {str(e)[:120]}\"\n\n# A: transpile + apply_layout\ntry:\n    isa = pm.run(qc); mapped = obs.apply_layout(isa.layout)\n    evs = float(estimator.run([(isa, mapped)]).result()[0].data.evs)\n    A_ok = (evs == evs)  # finite float\n    a_note = f\"transpiled + apply_layout -> evs={round(evs, 4)}\"\nexcept Exception as e:\n    A_ok = False; a_note = f\"{type(e).__name__}: {str(e)[:100]}\"\n\n# B: increasing shots does not address the non-ISA circuit\ntry:\n    estimator.options.default_shots = 8000\n    estimator.run([(qc, obs)]).result()\n    B_ok = True; b_note = \"ran\"\nexcept Exception as e:\n    B_ok = False; b_note = f\"{type(e).__name__}: {str(e)[:90]}\"\n\n# C: nesting the still-untranspiled circuit in an extra list\ntry:\n    estimator.run([[qc, obs]]).result()\n    C_ok = True; c_note = \"ran\"\nexcept Exception as e:\n    C_ok = False; c_note = f\"{type(e).__name__}: {str(e)[:90]}\"\n\n# D: passing backend as an extra positional to run\ntry:\n    isa2 = pm.run(qc); mapped2 = obs.apply_layout(isa2.layout)\n    estimator.run([(isa2, mapped2)], backend).result()\n    D_ok = True; d_note = \"ran\"\nexcept Exception as e:\n    D_ok = False; d_note = f\"{type(e).__name__}: {str(e)[:90]}\"\n\nflags = {\"A\": A_ok, \"B\": B_ok, \"C\": C_ok, \"D\": D_ok}\nevidence = {\n    \"A\": f\"buggy run([(qc, obs)]) -> {buggy}; fix {a_note} -> {A_ok}\",\n    \"B\": f\"raising default_shots then run([(qc, obs)]) -> {b_note} (shots do not fix a non-ISA circuit) -> {B_ok}\",\n    \"C\": f\"run([[qc, obs]]) with the un-transpiled circuit -> {c_note} -> {C_ok}\",\n    \"D\": f\"run([(isa, mapped)], backend) extra positional -> {d_note} -> {D_ok}\",\n}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy\": buggy, \"a_note\": a_note}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "id": "s4-q042",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Using local testing mode, a session is opened on FakeManilaV2 and its `backend()` accessor is called. What is printed?",
+  "code": "from qiskit_ibm_runtime import Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nwith Session(backend=backend) as session:\n    print(session.backend())",
+  "options": [
+    {
+      "key": "A",
+      "text": "`fake_manila` — `session.backend()` returns the backend's name (a string)."
+    },
+    {
+      "key": "B",
+      "text": "`<FakeManilaV2 object ...>` — it returns the backend object itself."
+    },
+    {
+      "key": "C",
+      "text": "`None` — a local session has no associated backend."
+    },
+    {
+      "key": "D",
+      "text": "It raises an error because no `QiskitRuntimeService` was provided."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`Session.backend()` returns the name of the QPU bound to the session as a string. For a session opened on FakeManilaV2 it returns `'fake_manila'`. Local testing mode lets you open a `Session(backend=fake_backend)` and run primitives without any credentials.",
+    "distractors": {
+      "B": "It returns the backend NAME (a string), not the backend object; this is a common assumption to check.",
+      "C": "The session does have a backend (the one you passed), so it is not `None`.",
+      "D": "In local testing mode a fake backend is passed directly, so no service is needed and no error is raised."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q042.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit_ibm_runtime import Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nwith Session(backend=backend) as session:\n    returned = session.backend()\n\nis_str = isinstance(returned, str)\nflags = {\n    \"A\": is_str and returned == \"fake_manila\",\n    \"B\": (not is_str),\n    \"C\": returned is None,\n    \"D\": False,\n}\nlabels = {\"A\": \"returns the backend name string 'fake_manila'\", \"B\": \"returns the backend object\",\n          \"C\": \"returns None\", \"D\": \"raises an error (no service)\"}\nevidence = {}\nfor k, v in flags.items():\n    evidence[k] = (f\"session.backend() -> type={type(returned).__name__}, value={returned!r}; \"\n                   f\"option {k} predicts '{labels[k]}' -> match={v}\")\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"type\": type(returned).__name__, \"value\": str(returned)}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

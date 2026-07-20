@@ -1,0 +1,57 @@
+{
+  "id": "s4-q017",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "Your workload is a set of independent circuits with no feedback between them. A colleague suggests always using a session 'to be safe'. According to IBM's guidance, why is batch usually the better default here?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Sessions are generally more expensive than batches, so you should use batch whenever you do not need a session's dedicated exclusive access."
+    },
+    {
+      "key": "B",
+      "text": "Sessions cannot run more than one job, so they cannot handle a set of circuits."
+    },
+    {
+      "key": "C",
+      "text": "Batch mode guarantees your jobs run before any other user's jobs."
+    },
+    {
+      "key": "D",
+      "text": "Sessions do not support the SamplerV2 and EstimatorV2 primitives."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Sessions provide dedicated, exclusive access but at higher usage cost. The docs recommend using batch whenever you don't need that dedicated access — as with a set of independent jobs — because batch delivers the same parallel classical processing and single queue wait more cheaply.",
+    "distractors": {
+      "B": "Sessions are explicitly designed for multi-job workloads; a session can run many jobs.",
+      "C": "Batch jobs do not get priority over other users; they are not even exclusive. It is sessions that reserve the QPU.",
+      "D": "Both primitives run in sessions (and in batches and job mode); the mode is passed via `mode=`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

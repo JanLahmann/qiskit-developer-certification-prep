@@ -1,0 +1,57 @@
+{
+  "id": "s4-q029",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You partition a long list of independent circuits into several jobs and run them in batch mode. Besides shorter queuing, what practical advantage does this give over submitting everything as one giant job?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "You get each job's results individually, so you can cancel the remaining jobs if early results are unsatisfactory, or re-submit only the one job that failed."
+    },
+    {
+      "key": "B",
+      "text": "Batch mode guarantees exclusive access to the QPU for the whole run."
+    },
+    {
+      "key": "C",
+      "text": "Batch mode applies stronger error mitigation than a single job."
+    },
+    {
+      "key": "D",
+      "text": "A batch never counts against your usage or cost."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Partitioning into multiple batched jobs makes results more flexible to work with: you receive each job's result separately, so you can stop early by cancelling remaining jobs, or re-run just a failed job instead of the entire workload.",
+    "distractors": {
+      "B": "Batch mode does not give exclusive access — that is a session feature. Batched jobs share the QPU.",
+      "C": "Error mitigation is controlled by primitive options, not by the execution mode; batching does not change it.",
+      "D": "Batched jobs still consume QPU usage and count against cost; batching does not make execution free."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

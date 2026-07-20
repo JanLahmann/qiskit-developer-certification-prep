@@ -1,0 +1,68 @@
+{
+  "id": "s4-q023",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "spot-bug",
+  "difficulty": 2,
+  "stem": "A developer expects `counts` to hold measurement results, but the last line fails with an error and the result data is empty. What is the bug?",
+  "code": "qc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\n# (no measurement instructions)\nisa = pm.run(qc)\njob = SamplerV2(mode=backend).run([isa], shots=1024)\ncounts = job.result()[0].data.meas.get_counts()   # fails / empty",
+  "options": [
+    {
+      "key": "A",
+      "text": "The circuit has no measurement instructions, so the Sampler returns an empty result with no `meas` register; add `qc.measure_all()` (or explicit measurements) before transpiling."
+    },
+    {
+      "key": "B",
+      "text": "`get_counts()` was removed in V2; you must use `job.result().counts`."
+    },
+    {
+      "key": "C",
+      "text": "`shots=1024` is too low to populate the classical register."
+    },
+    {
+      "key": "D",
+      "text": "The Sampler cannot run an entangling circuit; you must use the Estimator instead."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The SamplerV2 returns the outcomes of classical registers written by measurements. With no measurement, the result `DataBin` has no `meas` field, so `data.meas` raises `AttributeError` and the result is empty. Adding `qc.measure_all()` (which also creates the `meas` register) before transpiling fixes it.",
+    "distractors": {
+      "B": "`get_counts()` is available on the `BitArray` returned for a measured register; the fixed circuit's result uses it successfully.",
+      "C": "Shot count is irrelevant here; the same `shots=1024` works as soon as a measurement is present. The problem is that nothing is measured.",
+      "D": "The Sampler runs entangling circuits fine; it just needs measurements. The Estimator is for expectation values, a different task."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/hello-world",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q023.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport warnings\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)     # no measurement\nisa = pm.run(qc)\nwith warnings.catch_warnings():\n    warnings.simplefilter(\"ignore\")\n    res = SamplerV2(mode=backend).run([isa], shots=256).result()[0]\nfields = list(res.data.keys())\ntry:\n    res.data.meas.get_counts(); meas_access = \"meas accessible\"; meas_missing = False\nexcept Exception as e:\n    meas_access = type(e).__name__; meas_missing = True\n\nqcf = QuantumCircuit(2); qcf.h(0); qcf.cx(0, 1); qcf.measure_all()\nisaf = pm.run(qcf)\ncf = SamplerV2(mode=backend).run([isaf], shots=256).result()[0].data.meas.get_counts()\nfix_works = sum(cf.values()) == 256 and len(fields) == 0 and meas_missing\n\nflags = {\"A\": fix_works, \"B\": not fix_works, \"C\": not fix_works, \"D\": not fix_works}\nevidence = {\n    \"A\": f\"no-measure result data fields={fields}, meas access -> {meas_access}; after measure_all Sampler returns {sum(cf.values())} shots -> bug is the missing measurement ({flags['A']})\",\n    \"B\": f\"get_counts() works on the fixed circuit's result -> it was not removed in V2 ({flags['B']})\",\n    \"C\": f\"the same shots=256 succeed once a measurement is added -> shots were not the problem ({flags['C']})\",\n    \"D\": f\"SamplerV2 returns counts for this circuit once it is measured -> the Estimator is not required ({flags['D']})\",\n}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"fields\": fields, \"fixed_shots\": sum(cf.values())}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

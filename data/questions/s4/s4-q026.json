@@ -1,0 +1,69 @@
+{
+  "id": "s4-q026",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "FakeManilaV2 has five qubits connected in a line (0-1-2-3-4). The circuit below uses only the backend's native basis gates, but qubits 0 and 4 are not directly connected. It is submitted without routing. What happens?",
+  "code": "backend = FakeManilaV2()          # line topology 0-1-2-3-4\nqc = QuantumCircuit(5)\nqc.sx(0)\nqc.rz(0.7, 0)\nqc.cx(0, 4)                       # 0 and 4 are NOT adjacent\nqc.measure_all()\njob = SamplerV2(mode=backend).run([qc])",
+  "options": [
+    {
+      "key": "A",
+      "text": "It raises an error: `cx` on qubits (0, 4) is not supported because those qubits are not connected — the circuit still must be routed to the coupling map, not just expressed in basis gates."
+    },
+    {
+      "key": "B",
+      "text": "It runs fine; using only the backend's basis gates is sufficient, so connectivity does not matter."
+    },
+    {
+      "key": "C",
+      "text": "It runs after the primitive automatically inserts SWAP gates to route the CX."
+    },
+    {
+      "key": "D",
+      "text": "It raises a `TypeError` because a 5-qubit circuit is too large for FakeManilaV2."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "An ISA circuit must satisfy BOTH the native basis gates AND the device's qubit connectivity. Using only basis gates is not enough: a two-qubit gate between non-adjacent qubits raises `IBMInputValueError` (`the instruction cx on qubits (0, 4) is not supported by the target system`). A preset pass manager would route it by inserting SWAPs.",
+    "distractors": {
+      "B": "Connectivity absolutely matters; a CX between unconnected qubits is not executable and is rejected.",
+      "C": "The primitive does NOT auto-route; routing (SWAP insertion) is the transpiler's job, which you must run before submitting.",
+      "D": "FakeManilaV2 has five qubits, so a 5-qubit circuit fits; the problem is the non-adjacent CX, not the circuit width."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpile",
+      "https://quantum.cloud.ibm.com/docs/guides/hello-world",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q026.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()   # 5 qubits in a line: 0-1-2-3-4\nqc = QuantumCircuit(5)\nqc.sx(0)\nqc.rz(0.7, 0)\nqc.cx(0, 4)                # 0 and 4 are not directly connected\nqc.measure_all()\ntry:\n    SamplerV2(mode=backend).run([qc]).result()\n    outcome = (\"success\",)\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nmsg = outcome[2] if is_exc else \"\"\nflags = {\n    \"A\": is_exc and name == \"IBMInputValueError\" and \"(0, 4)\" in msg,\n    \"B\": outcome[0] == \"success\",\n    \"C\": outcome[0] == \"success\",\n    \"D\": is_exc and name == \"TypeError\",\n}\nlabels = {\"A\": \"raises: cx (0,4) not supported (connectivity)\", \"B\": \"runs fine, basis gates suffice\",\n          \"C\": \"runs after auto-inserting SWAPs\", \"D\": \"raises TypeError, circuit too large\"}\nevidence = {k: f\"observed={outcome}; option {k} predicts '{labels[k]}' -> match={v}\" for k, v in flags.items()}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": list(outcome)}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

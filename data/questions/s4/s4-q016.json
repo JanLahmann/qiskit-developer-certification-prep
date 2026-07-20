@@ -1,0 +1,69 @@
+{
+  "id": "s4-q016",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "spot-bug",
+  "difficulty": 2,
+  "stem": "This code, adapted from a Qiskit V1 tutorial, fails on the line that constructs the sampler. What is the bug?",
+  "code": "from qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\n# isa: a circuit already transpiled for `backend`\nsampler = SamplerV2(backend=backend)\njob = sampler.run([isa])",
+  "options": [
+    {
+      "key": "A",
+      "text": "`SamplerV2` has no `backend=` parameter; the execution target is passed through `mode=` — use `SamplerV2(mode=backend)`."
+    },
+    {
+      "key": "B",
+      "text": "`SamplerV2` must be imported from `qiskit.primitives`, not `qiskit_ibm_runtime`."
+    },
+    {
+      "key": "C",
+      "text": "The circuit must be passed to the constructor, not to `run()`."
+    },
+    {
+      "key": "D",
+      "text": "`run()` needs the backend as a second argument: `sampler.run([isa], backend)`."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "In V2 the `backend=` keyword was removed from the primitive constructors; the execution mode (a Backend, Session, or Batch) is supplied through `mode=`. `SamplerV2(backend=backend)` raises `TypeError: unexpected keyword argument 'backend'`; the fix is `SamplerV2(mode=backend)`.",
+    "distractors": {
+      "B": "`SamplerV2` from `qiskit_ibm_runtime` is the correct Runtime primitive and works fine once `mode=` is used — the import is not the problem.",
+      "C": "The circuit is passed to `run()` as a PUB, not to the constructor; `sampler.run([isa])` is correct.",
+      "D": "`run()` takes only the iterable of PUBs (plus keyword options like `shots`); adding the backend as a positional argument raises `TypeError`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/hello-world",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q016.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\ntry:\n    SamplerV2(backend=backend)\n    backend_kw = \"constructed (no error)\"; backend_fails = False\nexcept Exception as e:\n    backend_kw = f\"{type(e).__name__}: {str(e)[:120]}\"\n    backend_fails = isinstance(e, TypeError) and \"backend\" in str(e)\ntry:\n    c = SamplerV2(mode=backend).run([isa], shots=64).result()[0].data.meas.get_counts()\n    mode_works = True; mode_note = f\"mode=backend ran ({sum(c.values())} shots)\"\nexcept Exception as e:\n    mode_works = False; mode_note = f\"{type(e).__name__}: {str(e)[:120]}\"\ntry:\n    SamplerV2(mode=backend).run([isa], backend); d_ok = True; d_note = \"ran\"\nexcept Exception as e:\n    d_ok = False; d_note = f\"{type(e).__name__}: {str(e)[:120]}\"\n\nflags = {\"A\": backend_fails and mode_works, \"B\": not mode_works, \"C\": not mode_works, \"D\": d_ok}\nevidence = {\n    \"A\": f\"SamplerV2(backend=backend) -> {backend_kw}; SamplerV2(mode=backend) -> {mode_note}; bug is backend= and fix is mode= -> {flags['A']}\",\n    \"B\": f\"SamplerV2 imported from qiskit_ibm_runtime constructed and ran via mode= -> that import is valid, so B is false ({flags['B']})\",\n    \"C\": f\"passing the circuit to run([isa]) works -> the circuit belongs in run(), not the constructor, so C is false ({flags['C']})\",\n    \"D\": f\"SamplerV2(mode=backend).run([isa], backend) -> {d_note} -> D's proposed fix is {'valid' if d_ok else 'invalid'} ({flags['D']})\",\n}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"backend_kw\": backend_kw, \"mode_note\": mode_note, \"d_note\": d_note}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

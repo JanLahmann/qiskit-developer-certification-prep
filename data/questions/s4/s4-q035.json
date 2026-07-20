@@ -1,0 +1,57 @@
+{
+  "id": "s4-q035",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "According to the documented best practices, which execution mode should you use to submit a single primitive request (one small experiment)?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Job mode (`mode=backend`, with no session or batch context)."
+    },
+    {
+      "key": "B",
+      "text": "Session mode, to guarantee it runs before other users' jobs."
+    },
+    {
+      "key": "C",
+      "text": "Batch mode, to reduce the single job's queuing time."
+    },
+    {
+      "key": "D",
+      "text": "It makes no difference; all three modes add exactly the same overhead for one job."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The guidance is explicit: always use job mode to submit a single primitive request. Job mode is easiest for a small experiment and may even run sooner than batch.",
+    "distractors": {
+      "B": "A session does not give a single job priority over other users, and it costs more; its benefits appear only across multiple jobs.",
+      "C": "The queuing time does not decrease for the first job in a batch, so batching one job gives no benefit.",
+      "D": "It does make a difference: sessions and batches add overhead/cost without helping a single job, whereas job mode is the recommended, lightest choice."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

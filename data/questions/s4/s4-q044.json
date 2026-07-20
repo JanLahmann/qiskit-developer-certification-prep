@@ -1,0 +1,68 @@
+{
+  "id": "s4-q044",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "A Bell circuit is transpiled and run with the Estimator on a noisy fake backend to measure `<ZZ>`. Ideally the Bell state gives `<ZZ> = +1`. Which best describes the value actually obtained?",
+  "code": "backend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)     # Bell state\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa = pm.run(qc)\nmapped = obs.apply_layout(isa.layout)\nevs = EstimatorV2(mode=backend).run([(isa, mapped)]).result()[0].data.evs\nprint(evs)",
+  "options": [
+    {
+      "key": "A",
+      "text": "A value close to `+1` but slightly below it (roughly `+0.9`), because the two qubits are strongly Z-correlated and noise only slightly reduces the correlation."
+    },
+    {
+      "key": "B",
+      "text": "A value close to `0`."
+    },
+    {
+      "key": "C",
+      "text": "A value close to `-1`."
+    },
+    {
+      "key": "D",
+      "text": "Exactly `+1.0`, with no effect from device noise."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "In the Bell state the two qubits' Z outcomes are perfectly correlated, so `<ZZ>` is `+1` ideally. On a noisy device the measured value is close to but a bit below `+1` (about `+0.9` here), reflecting the small reduction from noise.",
+    "distractors": {
+      "B": "`<ZZ>` near 0 would mean the qubits are uncorrelated in Z, which is not true for a Bell state.",
+      "C": "`<ZZ>` near -1 would mean anti-correlation (outcomes like 01/10 dominating); the Bell state gives 00/11, i.e. positive correlation.",
+      "D": "Real device noise reduces the magnitude below 1; you should not expect exactly +1.0 from hardware."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/hello-world",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q044.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)     # Bell state\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa = pm.run(qc)\nmapped = obs.apply_layout(isa.layout)\nevs = float(EstimatorV2(mode=backend).run([(isa, mapped)]).result()[0].data.evs)\n\nflags = {\n    \"A\": 0.7 < evs < 1.0,\n    \"B\": abs(evs) < 0.2,\n    \"C\": evs < -0.7,\n    \"D\": evs == 1.0,\n}\nlabels = {\"A\": \"close to +1 but below 1 (noisy)\", \"B\": \"close to 0\", \"C\": \"close to -1\", \"D\": \"exactly +1.0\"}\nevidence = {k: f\"measured <ZZ>={round(evs, 4)} on the noisy backend; option {k} predicts '{labels[k]}' -> match={v}\"\n            for k, v in flags.items()}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": evs}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -5,8 +5,8 @@
     "s4o1"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "You want to compare the effect of several different error-mitigation settings on one circuit and observable. All the jobs are independent, are known at the outset, and you want them to run as closely together in time as possible (to minimize device drift) while still being able to inspect each job's result separately. Which execution mode does the documentation recommend here?",
+  "difficulty": 1,
+  "stem": "You want to compare the effect of several different error-mitigation settings on one circuit and observable. The jobs are independent, all known at the outset, and you want them to run as closely together in time as possible (to limit device drift) while still being able to inspect each job's result separately. Which execution mode does the documentation recommend?",
   "code": null,
   "options": [
     {
@@ -30,11 +30,11 @@
     "A"
   ],
   "explanation": {
-    "correct": "All the jobs are independent and available at the outset, so they can be scheduled collectively in a batch: you wait through the queue only once, the classical pre-processing runs in parallel, and the jobs run closely together to limit drift. You still get each job's result individually. Because sessions are generally more expensive, batch is preferred whenever you do not need a session's dedicated access.",
+    "correct": "All jobs are independent and available at the outset, so they can be scheduled collectively in a batch: you wait through the queue only once, the classical pre-processing runs in parallel, and the jobs run closely together to limit drift, while you still get each job's result individually. Because sessions are generally more expensive, batch is preferred whenever dedicated access is not required.",
     "distractors": {
-      "B": "A session would work but is generally more expensive than batch; the docs recommend using batch whenever you do not need the dedicated exclusive access a session provides.",
-      "C": "Plain job mode gives no scheduling relationship between the jobs — each waits in the queue separately and there is no guarantee they run close together.",
-      "D": "Opening a session per setting multiplies session overhead and cost while providing no benefit for independent jobs."
+      "B": "A session would work but is generally more expensive; the docs recommend batch whenever you do not need a session's dedicated exclusive access.",
+      "C": "Plain job mode creates no scheduling relationship between jobs — each waits in the queue separately with no guarantee they run close together.",
+      "D": "Opening a session per setting multiplies session overhead and cost while giving independent jobs no benefit."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",

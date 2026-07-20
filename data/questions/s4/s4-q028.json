@@ -1,0 +1,69 @@
+{
+  "id": "s4-q028",
+  "section": "s4",
+  "objectives": [
+    "s4o1",
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "Which snippet correctly opens a session on `backend`, runs a transpiled circuit `isa` with a Sampler inside it, and retrieves the counts?",
+  "code": "# backend is a real-device (fake) backend; isa is transpiled for it",
+  "options": [
+    {
+      "key": "A",
+      "text": "with Session(backend=backend) as session:\n    job = SamplerV2(mode=session).run([isa])\ncounts = job.result()[0].data.meas.get_counts()"
+    },
+    {
+      "key": "B",
+      "text": "with Session(backend=backend) as session:\n    job = SamplerV2(mode=session).run(isa)        # unwrapped\ncounts = job.result()[0].data.meas.get_counts()"
+    },
+    {
+      "key": "C",
+      "text": "session = Session(mode=backend)                    # mode=, not backend=\njob = SamplerV2(mode=session).run([isa])\ncounts = job.result()[0].data.meas.get_counts()"
+    },
+    {
+      "key": "D",
+      "text": "with Session(backend) as session:\n    job = SamplerV2(session).run(isa)             # unwrapped\ncounts = job.result()[0].data.meas.get_counts()"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`Session` takes the backend (`Session(backend=backend)`), the primitive binds to the session with `mode=session`, and `run` takes an iterable of PUBs, so the circuit is wrapped in a list: `run([isa])`. Exiting the context manager closes the session while the submitted job runs to completion.",
+    "distractors": {
+      "B": "`run(isa)` passes an unwrapped circuit; `run` needs an iterable of PUBs, so this raises `ValueError` about an invalid Sampler pub-like.",
+      "C": "`Session` has no `mode=` parameter — the QPU is passed as `backend=`. `Session(mode=backend)` raises `TypeError`.",
+      "D": "`Session(backend)` and `SamplerV2(session)` are fine positionally, but `run(isa)` is again unwrapped and raises `ValueError`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q028.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2, Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        counts = fn()\n        evidence[key] = f\"ran successfully: {sum(counts.values())} shots over {len(counts)} bitstrings\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\ndef opt_A():\n    with Session(backend=backend) as session:\n        job = SamplerV2(mode=session).run([isa])\n    return job.result()[0].data.meas.get_counts()\n\ndef opt_B():\n    with Session(backend=backend) as session:\n        job = SamplerV2(mode=session).run(isa)          # not wrapped in a list\n    return job.result()[0].data.meas.get_counts()\n\ndef opt_C():\n    session = Session(mode=backend)                     # Session takes backend=, not mode=\n    job = SamplerV2(mode=session).run([isa])\n    return job.result()[0].data.meas.get_counts()\n\ndef opt_D():\n    with Session(backend) as session:\n        job = SamplerV2(session).run(isa)               # unwrapped circuit\n    return job.result()[0].data.meas.get_counts()\n\nattempt(\"A\", opt_A)\nattempt(\"B\", opt_B)\nattempt(\"C\", opt_C)\nattempt(\"D\", opt_D)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "The classical pre-processing (for example, compilation) of the jobs is run in parallel, so a batch finishes significantly faster than running the same jobs serially."
+      "text": "The classical pre-processing (for example, compilation) of the jobs runs in parallel, so a batch finishes significantly faster than running the same jobs serially."
     },
     {
       "key": "B",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "Running a single job in a batch reduces that job's queuing time compared with job mode."
+      "text": "Wrapping a single job in a batch reduces that job's queuing time compared with job mode."
     },
     {
       "key": "E",

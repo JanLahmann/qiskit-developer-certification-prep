@@ -1,0 +1,63 @@
+{
+  "id": "s4-q031",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "For which TWO of the following workloads is SESSION mode the most appropriate execution mode? (Select two.)",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "A variational eigensolver whose next circuit depends on the classical optimizer's use of the previous result."
+    },
+    {
+      "key": "B",
+      "text": "An experiment that needs the QPU reserved exclusively so that no other users' jobs or calibrations interleave with your circuits."
+    },
+    {
+      "key": "C",
+      "text": "Fifty independent circuits, all known upfront, that you want to clear the queue as cheaply as possible."
+    },
+    {
+      "key": "D",
+      "text": "A single circuit you want to run once as quickly as possible."
+    },
+    {
+      "key": "E",
+      "text": "A large collection of unrelated benchmarking circuits where minimizing cost is the priority."
+    }
+  ],
+  "answer": [
+    "A",
+    "B"
+  ],
+  "explanation": {
+    "correct": "Sessions shine for iterative workloads whose inputs are not all ready at the outset (A) and for experiments that need dedicated, exclusive access to the QPU (B). Both justify a session's higher cost.",
+    "distractors": {
+      "C": "Independent circuits known upfront that you want to run cheaply are the classic case for batch mode, which is generally less expensive than a session.",
+      "D": "A single circuit run should use job mode; a session gives no queuing benefit for the first (only) job and costs more.",
+      "E": "Cost-sensitive, independent benchmarking circuits belong in batch mode, not a more expensive session."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-20",
+    "model": "claude-opus (generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

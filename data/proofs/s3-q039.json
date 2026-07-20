@@ -26,7 +26,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.73,
+  "wall_seconds": 1.11,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"level 4 -> ValueError: Invalid optimization level 4; levels [0, 1, 2, 3] all built OK -> True\", \"B\": \"level 4 fails on this backend with ValueError: Invalid optimization level 4; there is no hardware-only level 4 -> False\", \"C\": \"optimization_level is an int; the failure is out-of-range, not a type issue (ValueError: Invalid optimization level 4) -> False\", \"D\": \"seed_transpiler does not enable a level 4; ValueError: Invalid optimization level 4 -> False\"}, \"observed\": {\"level4\": \"ValueError: Invalid optimization level 4\", \"valid_levels\": [0, 1, 2, 3]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

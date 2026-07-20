@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "You call `generate_preset_pass_manager(backend=backend)` WITHOUT passing `optimization_level`. Which optimization level does it use by default?",
+  "stem": "In Qiskit 2.x, you call `generate_preset_pass_manager(backend=backend)` WITHOUT passing `optimization_level`. Which optimization level does it use by default?",
   "code": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n\npm = generate_preset_pass_manager(backend=backend)   # no optimization_level given",
   "options": [
     {
@@ -52,7 +52,7 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   },
   "freshness": {

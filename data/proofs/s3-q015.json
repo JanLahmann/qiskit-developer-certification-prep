@@ -25,7 +25,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.29,
+  "wall_seconds": 1.19,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\", \"C\", \"E\"], \"evidence\": {\"A\": \"num_qubits=3, num_clbits=2, width=5, size=5, depth=4: qubits=3 & clbits=2 -> True\", \"B\": \"num_qubits=3, num_clbits=2, width=5, size=5, depth=4: width()=5 (qubits+clbits), not 3 -> False\", \"C\": \"num_qubits=3, num_clbits=2, width=5, size=5, depth=4: size()=5 operations -> True\", \"D\": \"num_qubits=3, num_clbits=2, width=5, size=5, depth=4: depth=4 vs size=5 -> equal? False\", \"E\": \"num_qubits=3, num_clbits=2, width=5, size=5, depth=4: num_qubits+num_clbits=5 vs width=5 -> True\"}, \"observed\": {\"width\": 5, \"size\": 5, \"depth\": 4}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

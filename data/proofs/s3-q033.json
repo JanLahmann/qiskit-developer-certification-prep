@@ -23,7 +23,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.42,
+  "wall_seconds": 1.12,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"is_isa -> True (only basis gates on adjacent qubits)\", \"B\": \"is_isa -> False (h not in basis ['cx', 'delay', 'id', 'measure', 'reset', 'rz', 'sx', 'x'])\", \"C\": \"is_isa -> False (cx on non-adjacent (0, 4))\", \"D\": \"is_isa -> False (ccx not in basis ['cx', 'delay', 'id', 'measure', 'reset', 'rz', 'sx', 'x'])\"}, \"observed\": {\"A\": true, \"B\": false, \"C\": false, \"D\": false}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

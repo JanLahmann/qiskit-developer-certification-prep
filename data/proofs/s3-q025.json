@@ -20,7 +20,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.34,
+  "wall_seconds": 1.14,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"bug=AttributeError: 'InstructionSet' object has no attribute 'c_if'; fix with if_test -> ops={'h': 1, 'measure': 1, 'if_else': 1} -> valid conditional True\", \"B\": \"c_if(cr[0],1) -> raised AttributeError: 'InstructionSet' object has no attribute 'c_if' -> False\", \"C\": \"decompose then c_if -> raised AttributeError: 'InstructionSet' object has no attribute 'c_if' -> False\", \"D\": \"x(0, condition=...) -> raised TypeError: QuantumCircuit.x() got an unexpected keyword argument 'condition' -> False\"}, \"observed\": {\"bug\": \"AttributeError: 'InstructionSet' object has no attribute 'c_if'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

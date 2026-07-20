@@ -30,7 +30,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.41,
+  "wall_seconds": 1.12,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\", \"B\", \"D\"], \"evidence\": {\"A\": \"pm.stages=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling'); is 'layout' a stage? True\", \"B\": \"pm.stages=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling'); is 'routing' a stage? True\", \"C\": \"pm.stages=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling'); is 'mitigation' a stage? False\", \"D\": \"pm.stages=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling'); is 'scheduling' a stage? True\", \"E\": \"pm.stages=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling'); is 'sampling' a stage? False\"}, \"observed\": {\"stages\": [\"init\", \"layout\", \"routing\", \"translation\", \"optimization\", \"scheduling\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

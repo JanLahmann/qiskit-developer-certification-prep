@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.4,
+  "wall_seconds": 1.08,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"counts={'1 11': 1000}; o always 0? -> False\", \"B\": \"counts={'1 11': 1000}; c=11=3 so condition fired, o always 1? -> True\", \"C\": \"if_test(expr.equal(...)) built and ran without error -> claim 'raises' is False\", \"D\": \"counts={'1 11': 1000}; o deterministic (not random) -> claim 'random' is False\"}, \"observed\": {\"counts\": {\"1 11\": 1000}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

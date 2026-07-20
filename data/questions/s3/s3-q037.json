@@ -1,0 +1,68 @@
+{
+  "id": "s3-q037",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "The circuit has `h` and `t` gates on qubit 0. After transpiling to a `GenericBackendV2` whose basis is {cx, id, rz, sx, x, ...}, which statement about the resulting ISA circuit is TRUE?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=5, seed=11)\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.t(0)\nqc.cx(0, 1)\n\nisa = generate_preset_pass_manager(1, backend, seed_transpiler=11).run(qc)\nprint(isa.count_ops())",
+  "options": [
+    {
+      "key": "A",
+      "text": "It still contains a `t` gate, because `t` is a standard gate kept as-is."
+    },
+    {
+      "key": "B",
+      "text": "It keeps the `h` gate but the `t` gate is removed entirely."
+    },
+    {
+      "key": "C",
+      "text": "Neither `h` nor `t` survives; both are rewritten into the target basis (e.g. `rz`/`sx`)."
+    },
+    {
+      "key": "D",
+      "text": "Transpilation raises an error because `t` is not one of the basis gates."
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "The translation stage rewrites every gate into the target's basis. Since neither `h` nor `t` is a basis gate, both are decomposed into `rz`/`sx` (and the two-qubit `cx` stays), so the ISA circuit contains no `h` or `t`.",
+    "distractors": {
+      "A": "`t` is not in this backend's basis, so it cannot survive — it is translated away.",
+      "B": "`h` is also absent from the basis and is likewise rewritten; it does not remain either.",
+      "D": "A gate outside the basis is translated, not rejected — transpilation succeeds without error."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q037.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=5, seed=11)\nbasis = set(backend.operation_names)\nqc = QuantumCircuit(2)\nqc.h(0); qc.t(0); qc.cx(0, 1)\nisa = generate_preset_pass_manager(1, backend, seed_transpiler=11).run(qc)\nops = dict(isa.count_ops())\nhas_t = \"t\" in ops\nhas_h = \"h\" in ops\nin_basis = set(ops).issubset(basis | {\"barrier\", \"measure\"})\nclaims = {\n    \"A\": has_t,\n    \"B\": has_h and (not has_t),\n    \"C\": (not has_t) and (not has_h) and in_basis,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"transpiled ops={ops}; contains 't'? {has_t} -> {claims['A']}\",\n    \"B\": f\"transpiled ops={ops}; keeps 'h'? {has_h} -> {claims['B']}\",\n    \"C\": f\"transpiled ops={ops}; no h/t and all in basis={in_basis} -> {claims['C']}\",\n    \"D\": f\"transpilation succeeded (ops={ops}); claim 'error' -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"ops\": ops}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "id": "s3-q032",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "A circuit whose only gate is `cx(0, 4)` is transpiled onto a 5-qubit LINE backend (connectivity 0-1-2-3-4, so qubits 0 and 4 are NOT directly connected). Comparing `optimization_level=0` with `optimization_level=1`, what happens to the number of CX gates?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(5, coupling_map=CouplingMap.from_line(5), seed=1)\nqc = QuantumCircuit(5)\nqc.cx(0, 4)\n\nfor lvl in (0, 1):\n    isa = generate_preset_pass_manager(optimization_level=lvl,\n                                       backend=backend, seed_transpiler=1).run(qc)\n    print(lvl, isa.count_ops())",
+  "options": [
+    {
+      "key": "A",
+      "text": "Level 0 needs many CX gates (it keeps the trivial layout and routes with SWAPs), while level 1 chooses a layout placing the two qubits adjacently, needing just one CX."
+    },
+    {
+      "key": "B",
+      "text": "Both levels produce exactly one CX; the optimization level does not influence qubit layout."
+    },
+    {
+      "key": "C",
+      "text": "Level 0 produces one CX; level 1 inserts SWAPs and ends up with more CX gates."
+    },
+    {
+      "key": "D",
+      "text": "Both levels raise an error because a CX between non-adjacent qubits cannot be routed on a line."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "At level 0 the layout is trivial (virtual qubit i -> physical qubit i), so the CX between physical 0 and 4 must be routed with SWAPs, decomposed into many CX gates. At level 1 the layout pass picks two adjacent physical qubits for the interacting virtual qubits, so a single CX suffices. This is why layout/optimization level dramatically affects gate count.",
+    "distractors": {
+      "B": "Layout selection is part of the optimization level: level 0 uses a trivial layout while level 1+ actively searches for a good one, so the CX counts differ.",
+      "C": "It is the other way around — the higher level reduces the count by choosing a better layout; level 0 is the expensive one here.",
+      "D": "Routing on a line always succeeds by inserting SWAPs; it never raises for a single CX."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q032.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(5, coupling_map=CouplingMap.from_line(5), seed=1)\nqc = QuantumCircuit(5)\nqc.cx(0, 4)\ncx0 = generate_preset_pass_manager(optimization_level=0, backend=backend, seed_transpiler=1).run(qc).count_ops().get(\"cx\", 0)\ncx1 = generate_preset_pass_manager(optimization_level=1, backend=backend, seed_transpiler=1).run(qc).count_ops().get(\"cx\", 0)\nclaims = {\n    \"A\": cx0 > 1 and cx1 == 1,\n    \"B\": cx0 == 1 and cx1 == 1,\n    \"C\": cx0 == 1 and cx1 > 1,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"level0 cx={cx0}, level1 cx={cx1}; many-vs-one -> {claims['A']}\",\n    \"B\": f\"level0 cx={cx0}, level1 cx={cx1}; both==1? -> {claims['B']}\",\n    \"C\": f\"level0 cx={cx0}, level1 cx={cx1}; level1 more? -> {claims['C']}\",\n    \"D\": f\"both levels transpiled without error (cx: {cx0}, {cx1}) -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"cx_level0\": cx0, \"cx_level1\": cx1}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

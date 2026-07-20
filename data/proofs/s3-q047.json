@@ -1,0 +1,28 @@
+{
+  "question": "s3-q047",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "bug=CircuitError: 'Index 0 out of range for size 0.'; with QuantumCircuit(2,2) measure([0,1],[0,1]) ran, counts={'11': 96, '00': 104} -> True",
+      "B": "the list form measured 2 bits successfully once clbits existed -> 'lists not allowed' is False",
+      "C": "QuantumCircuit.measure exists=True -> claim 'no measure method' is False",
+      "D": "reordering the measurement does not add classical bits; irrelevant to the error -> False"
+    },
+    "observed": {
+      "bug": "CircuitError: 'Index 0 out of range for size 0.'"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.11,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"bug=CircuitError: 'Index 0 out of range for size 0.'; with QuantumCircuit(2,2) measure([0,1],[0,1]) ran, counts={'11': 96, '00': 104} -> True\", \"B\": \"the list form measured 2 bits successfully once clbits existed -> 'lists not allowed' is False\", \"C\": \"QuantumCircuit.measure exists=True -> claim 'no measure method' is False\", \"D\": \"reordering the measurement does not add classical bits; irrelevant to the error -> False\"}, \"observed\": {\"bug\": \"CircuitError: 'Index 0 out of range for size 0.'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

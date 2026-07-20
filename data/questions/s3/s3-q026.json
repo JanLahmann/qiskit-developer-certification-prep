@@ -5,7 +5,7 @@
     "s3o2"
   ],
   "type": "predict-output",
-  "difficulty": 2,
+  "difficulty": 3,
   "stem": "This dynamic circuit branches on `cr[0]`: if it is 0 it applies X to qubit 1, ELSE it applies Z to qubit 1; then it measures qubit 1. Which outcomes appear (bit order `c1 c0`)?",
   "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(2, 'q')\ncr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.if_test((cr[0], 0)) as else_:\n    qc.x(1)\nwith else_:\n    qc.z(1)\nqc.measure(1, 1)",
   "options": [

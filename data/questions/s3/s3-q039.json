@@ -1,0 +1,68 @@
+{
+  "id": "s3-q039",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "spot-bug",
+  "difficulty": 1,
+  "stem": "This call raises. What is the reason?",
+  "code": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=5, seed=42)\npm = generate_preset_pass_manager(optimization_level=4, backend=backend)",
+  "options": [
+    {
+      "key": "A",
+      "text": "Valid optimization levels are 0, 1, 2, and 3; level 4 does not exist, so it raises a `ValueError`."
+    },
+    {
+      "key": "B",
+      "text": "Level 4 exists but is only allowed for real hardware backends, not fake ones."
+    },
+    {
+      "key": "C",
+      "text": "`optimization_level` must be passed as a string, e.g. `'4'`."
+    },
+    {
+      "key": "D",
+      "text": "Level 4 is valid but requires `seed_transpiler` to be set first."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "The preset pass managers define exactly four optimization levels: 0, 1, 2, and 3. Passing 4 is out of range and raises `ValueError: Invalid optimization level 4`.",
+    "distractors": {
+      "B": "There is no level 4 for any backend type; the range is 0-3 regardless of real or fake hardware.",
+      "C": "`optimization_level` is an integer argument; passing a string is not the fix and level 4 still would not exist.",
+      "D": "`seed_transpiler` is unrelated; even with a seed, level 4 is invalid."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q039.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=5, seed=42)\n# level 4 raises\ntry:\n    generate_preset_pass_manager(optimization_level=4, backend=backend)\n    err4 = \"no error\"\nexcept ValueError as e:\n    err4 = f\"ValueError: {str(e)[:60]}\"\nexcept Exception as e:\n    err4 = f\"{type(e).__name__}: {str(e)[:60]}\"\n# levels 0-3 succeed\nvalid = []\nfor lvl in range(4):\n    try:\n        generate_preset_pass_manager(optimization_level=lvl, backend=backend)\n        valid.append(lvl)\n    except Exception:\n        pass\nraised_valueerror = err4.startswith(\"ValueError\")\nclaims = {\n    \"A\": raised_valueerror and valid == [0, 1, 2, 3],\n    \"B\": False,\n    \"C\": False,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"level 4 -> {err4}; levels {valid} all built OK -> {claims['A']}\",\n    \"B\": f\"level 4 fails on this backend with {err4}; there is no hardware-only level 4 -> {claims['B']}\",\n    \"C\": f\"optimization_level is an int; the failure is out-of-range, not a type issue ({err4}) -> {claims['C']}\",\n    \"D\": f\"seed_transpiler does not enable a level 4; {err4} -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"level4\": err4, \"valid_levels\": valid}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "id": "s3-q044",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "Why must an abstract quantum circuit be transpiled before it can be run on IBM Quantum hardware through the Runtime primitives?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Hardware executes only ISA circuits: gates must be expressed in the device's native basis, and every two-qubit gate must act on physically-connected qubits — transpilation rewrites and routes the circuit to satisfy both."
+    },
+    {
+      "key": "B",
+      "text": "Transpilation is optional; the V2 primitives silently convert any abstract circuit at submission time, so it only saves a little runtime."
+    },
+    {
+      "key": "C",
+      "text": "Transpilation is needed only to draw the circuit nicely; execution accepts any circuit unchanged."
+    },
+    {
+      "key": "D",
+      "text": "Transpilation exists to convert the circuit into OpenQASM 2, the only format the hardware accepts."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Real devices have a fixed native gate set and a limited qubit connectivity. Transpilation maps virtual qubits to physical ones, routes two-qubit gates onto connected pairs (inserting SWAPs), and translates gates into the basis set — producing an ISA circuit, which is what the V2 primitives require as input.",
+    "distractors": {
+      "B": "The V2 primitives do NOT silently transpile arbitrary circuits; they expect ISA circuits and will error on non-ISA input. Transpiling is a required step, not a mere optimization.",
+      "C": "Drawing has nothing to do with it; an un-transpiled circuit generally cannot execute on hardware at all.",
+      "D": "Hardware execution is not about OpenQASM 2; the requirement is native basis gates plus valid connectivity (an ISA circuit)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpile",
+      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-primitives"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

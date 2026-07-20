@@ -1,0 +1,68 @@
+{
+  "id": "s3-q043",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "A 3-qubit circuit is transpiled with `initial_layout=[2, 3, 4]` onto a 5-qubit backend. What does this argument do?",
+  "code": "from qiskit import transpile\n\nisa = transpile(qc, backend, initial_layout=[2, 3, 4], optimization_level=0)",
+  "options": [
+    {
+      "key": "A",
+      "text": "It sets the optimization level to the list `[2, 3, 4]`."
+    },
+    {
+      "key": "B",
+      "text": "It adds measurements of physical qubits 2, 3, and 4 at the end of the circuit."
+    },
+    {
+      "key": "C",
+      "text": "It fixes the starting layout: virtual qubits 0, 1, 2 are placed on physical qubits 2, 3, 4 respectively."
+    },
+    {
+      "key": "D",
+      "text": "It restricts the job so it runs only when physical qubits 2, 3, 4 are idle."
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "`initial_layout` pins the initial virtual-to-physical qubit mapping: the i-th entry is the physical qubit that virtual qubit i is assigned to. Here virtual 0->physical 2, virtual 1->physical 3, virtual 2->physical 4.",
+    "distractors": {
+      "A": "The optimization level is a separate argument (`optimization_level=0` here); `initial_layout` is a qubit mapping, not a level.",
+      "B": "`initial_layout` places qubits; it does not add measurements. Measurements come from `measure`/`measure_all`.",
+      "D": "`initial_layout` is a compile-time mapping choice, not a runtime scheduling/idle constraint."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q043.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, transpile\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbe = GenericBackendV2(5, coupling_map=CouplingMap.from_line(5), seed=5)\nqc = QuantumCircuit(3)\nqc.h(0); qc.cx(0, 1); qc.cx(1, 2)\nt = transpile(qc, be, initial_layout=[2, 3, 4], optimization_level=0, seed_transpiler=5)\nil = list(t.layout.initial_index_layout(filter_ancillas=True))\nn_measure = t.count_ops().get(\"measure\", 0)\nclaims = {\n    \"A\": False,\n    \"B\": n_measure > 0,\n    \"C\": il == [2, 3, 4],\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"optimization_level was a separate argument; initial_index_layout={il} is a qubit map, not a level -> {claims['A']}\",\n    \"B\": f\"transpiled circuit has {n_measure} measurements (none added by initial_layout) -> {claims['B']}\",\n    \"C\": f\"virtual->physical initial layout = {il}; matches [2,3,4] -> {claims['C']}\",\n    \"D\": f\"initial_layout is a compile-time mapping (observed {il}), not a runtime idle constraint -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"initial_index_layout\": il}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

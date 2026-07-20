@@ -1,0 +1,57 @@
+{
+  "id": "s3-q038",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "In the preset transpilation pipeline, which stage inserts SWAP gates so that every two-qubit gate acts on a physically-connected pair of qubits?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "The layout stage."
+    },
+    {
+      "key": "B",
+      "text": "The routing stage."
+    },
+    {
+      "key": "C",
+      "text": "The translation stage."
+    },
+    {
+      "key": "D",
+      "text": "The optimization stage."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "Routing is the stage that makes a circuit satisfy the coupling map: when a two-qubit gate is requested between non-adjacent physical qubits, the router inserts SWAP gates to bring the qubit states together. Layout only assigns the initial virtual->physical mapping.",
+    "distractors": {
+      "A": "The layout stage chooses which physical qubit each virtual qubit starts on; it does not insert SWAPs to move them during the circuit.",
+      "C": "Translation rewrites gates into the target's basis set; it has nothing to do with connectivity.",
+      "D": "Optimization simplifies and cancels gates; SWAP insertion for connectivity is the router's job, not optimization's."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

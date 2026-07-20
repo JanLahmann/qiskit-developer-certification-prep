@@ -1,0 +1,68 @@
+{
+  "id": "s3-q047",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "spot-bug",
+  "difficulty": 1,
+  "stem": "This code raises a `CircuitError` at the `measure` call. What is the fix?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)          # 2 qubits, 0 classical bits\nqc.h(0)\nqc.cx(0, 1)\nqc.measure([0, 1], [0, 1])     # CircuitError",
+  "options": [
+    {
+      "key": "A",
+      "text": "The circuit has no classical bits; create it as `QuantumCircuit(2, 2)` (or add a `ClassicalRegister`) so there are bits to store the outcomes."
+    },
+    {
+      "key": "B",
+      "text": "`measure` cannot take lists of qubits/bits; you must measure each qubit in a separate call."
+    },
+    {
+      "key": "C",
+      "text": "The `measure` method does not exist; you must call `qc.measure_all()` instead."
+    },
+    {
+      "key": "D",
+      "text": "The qubits must be measured before the CX gate, not after it."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`QuantumCircuit(2)` creates 2 qubits and ZERO classical bits, so `measure` has nowhere to write. Declaring classical bits — `QuantumCircuit(2, 2)` or adding a `ClassicalRegister` — resolves it.",
+    "distractors": {
+      "B": "`measure` accepts parallel lists of qubits and clbits; the list form is fine once classical bits exist.",
+      "C": "`measure` absolutely exists; `measure_all` is just a convenience that also creates its own register.",
+      "D": "Gate ordering is irrelevant here — the error is the missing classical bits, not the position of the measurement."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/measure-qubits",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q047.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\n# reproduce the bug\ntry:\n    qc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure([0, 1], [0, 1])\n    bug = \"no error\"\nexcept Exception as e:\n    bug = f\"{type(e).__name__}: {str(e)[:70]}\"\n\n# A: add classical bits\nqcA = QuantumCircuit(2, 2); qcA.h(0); qcA.cx(0, 1); qcA.measure([0, 1], [0, 1])\nsim = AerSimulator(seed_simulator=42)\na_counts = sim.run(qcA, shots=200).result().get_counts()\na_ok = len(a_counts) > 0 and all(len(k) == 2 for k in a_counts)\n\n# B: does list-measure really fail? (should work with clbits) -> B claim false\nlist_ok = a_ok\n\n# C: measure exists?\nc_exists = hasattr(QuantumCircuit, \"measure\")\n\nclaims = {\n    \"A\": bug != \"no error\" and a_ok,\n    \"B\": not list_ok,\n    \"C\": not c_exists,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"bug={bug}; with QuantumCircuit(2,2) measure([0,1],[0,1]) ran, counts={a_counts} -> {claims['A']}\",\n    \"B\": f\"the list form measured 2 bits successfully once clbits existed -> 'lists not allowed' is {claims['B']}\",\n    \"C\": f\"QuantumCircuit.measure exists={c_exists} -> claim 'no measure method' is {claims['C']}\",\n    \"D\": f\"reordering the measurement does not add classical bits; irrelevant to the error -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug\": bug}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

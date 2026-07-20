@@ -18,7 +18,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.28,
+  "wall_seconds": 1.19,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"qc.num_parameters=1, bound.num_parameters=0, bound is qc=False: bound is a separate object and qc keeps its parameter -> False\", \"B\": \"assign_parameters returned a circuit (is None=False) -> False\", \"C\": \"qc.num_parameters=1, bound.num_parameters=0, bound is qc=False: original unchanged, new circuit fully bound -> True\", \"D\": \"qc.num_parameters=1, bound.num_parameters=0, bound is qc=False: qc was NOT mutated (default inplace=False) -> False\"}, \"observed\": \"qc.num_parameters=1, bound.num_parameters=0, bound is qc=False\"}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

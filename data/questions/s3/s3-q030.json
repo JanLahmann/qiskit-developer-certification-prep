@@ -1,0 +1,68 @@
+{
+  "id": "s3-q030",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You build `pm = generate_preset_pass_manager(optimization_level=2, backend=backend)`, which returns a `StagedPassManager`. What are its stages, in execution order?",
+  "code": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n\npm = generate_preset_pass_manager(optimization_level=2, backend=backend)\nprint(pm.stages)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`('layout', 'routing', 'translation', 'optimization')` — four stages."
+    },
+    {
+      "key": "B",
+      "text": "`('init', 'layout', 'routing', 'optimization', 'measurement')`."
+    },
+    {
+      "key": "C",
+      "text": "`('sampling', 'layout', 'routing', 'translation', 'scheduling')`."
+    },
+    {
+      "key": "D",
+      "text": "`('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling')` — six stages."
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "A preset `StagedPassManager` runs six stages in order: init, layout, routing, translation, optimization, and scheduling. Layout+routing map the circuit to hardware qubits/connectivity, translation rewrites to the basis gates, optimization simplifies, and scheduling adds timing.",
+    "distractors": {
+      "A": "This omits the `init` and `scheduling` stages; the preset pipeline has six named stages, not four.",
+      "B": "`measurement` is not a transpiler stage, and this list drops `translation` and `scheduling`.",
+      "C": "`sampling` is a runtime/primitive concept, not a transpiler stage; the pipeline never contains it."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q030.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=5, seed=42)\npm = generate_preset_pass_manager(optimization_level=2, backend=backend, seed_transpiler=42)\nstages = tuple(pm.stages)\nopts = {\n    \"A\": (\"layout\", \"routing\", \"translation\", \"optimization\"),\n    \"B\": (\"init\", \"layout\", \"routing\", \"optimization\", \"measurement\"),\n    \"C\": (\"sampling\", \"layout\", \"routing\", \"translation\", \"scheduling\"),\n    \"D\": (\"init\", \"layout\", \"routing\", \"translation\", \"optimization\", \"scheduling\"),\n}\nclaims = {k: (v == stages) for k, v in opts.items()}\nevidence = {k: f\"observed pm.stages={stages}; option={opts[k]} -> match={claims[k]}\" for k in opts}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"stages\": list(stages)}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

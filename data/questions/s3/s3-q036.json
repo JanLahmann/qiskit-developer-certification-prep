@@ -1,0 +1,62 @@
+{
+  "id": "s3-q036",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "Select ALL statements that are TRUE about transpiler optimization levels 0-3.",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Level 0 does the minimum needed to make the circuit runnable on the target, with essentially no optimization."
+    },
+    {
+      "key": "B",
+      "text": "Level 3 applies the most aggressive optimization and typically takes the longest to run."
+    },
+    {
+      "key": "C",
+      "text": "A higher optimization level is guaranteed to produce fewer two-qubit gates for every circuit."
+    },
+    {
+      "key": "D",
+      "text": "`generate_preset_pass_manager` uses optimization level 1 by default."
+    },
+    {
+      "key": "E",
+      "text": "All four levels target the same basis gates and coupling constraints; they differ in how hard they work to optimize."
+    }
+  ],
+  "answer": [
+    "A",
+    "B",
+    "E"
+  ],
+  "explanation": {
+    "correct": "Level 0 is minimal mapping/translation with no real optimization (A). Level 3 is the most aggressive and usually the slowest (B). Every level produces a circuit valid for the SAME target constraints — the difference is optimization effort, not the constraints (E).",
+    "distractors": {
+      "C": "Optimization uses heuristics; a higher level USUALLY helps but is NOT guaranteed to beat a lower level on every circuit.",
+      "D": "`generate_preset_pass_manager` defaults to level 2, not level 1. (Level 1 is the legacy `transpile()` default.)"
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

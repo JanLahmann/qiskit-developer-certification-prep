@@ -1,0 +1,68 @@
+{
+  "id": "s3-q046",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "Circuit `a` applies X to its single qubit; circuit `b` applies identity to its single qubit. Which two-qubit state does `a.tensor(b)` prepare (bit order `q1 q0`)?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\na = QuantumCircuit(1)\na.x(0)      # a's qubit -> |1>\n\nb = QuantumCircuit(1)\nb.id(0)     # b's qubit -> |0>\n\ncombined = a.tensor(b)\nsv = Statevector(combined)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`|01⟩` — `b` (identity) lands on the higher-order qubit and `a` (X) on the lower one."
+    },
+    {
+      "key": "B",
+      "text": "`|11⟩` — both qubits end up excited."
+    },
+    {
+      "key": "C",
+      "text": "An equal superposition of all four basis states."
+    },
+    {
+      "key": "D",
+      "text": "`|10⟩` — `a` occupies the higher-order qubit, so its X sets q1 to 1 while q0 stays 0."
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "In `a.tensor(b)` the left operand `a` is placed on the MORE significant (higher-index) qubits and `b` on the less significant ones. So `a`'s X acts on q1 (giving 1) and `b`'s identity leaves q0 at 0, producing `|10⟩`.",
+    "distractors": {
+      "A": "`|01⟩` reverses the tensor convention; `a` (the left operand), not `b`, takes the higher-order qubit.",
+      "B": "`b` applies identity, so q0 remains 0 — the state is not `|11⟩`.",
+      "C": "Neither circuit contains an H or other superposition-creating gate, so the result is a definite basis state."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q046.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\na = QuantumCircuit(1); a.x(0)\nb = QuantumCircuit(1); b.id(0)\ncombined = a.tensor(b)\nsv = Statevector(combined).data\nnz = {format(i, \"02b\"): sv[i] for i in range(4) if abs(sv[i]) > 1e-9}\n\ndef is_single(state):\n    return set(nz) == {state} and np.isclose(nz[state], 1.0)\n\nclaims = {\n    \"A\": is_single(\"01\"),\n    \"B\": is_single(\"11\"),\n    \"C\": len(nz) == 4,\n    \"D\": is_single(\"10\"),\n}\nnzr = {k: str(np.round(v, 3)) for k, v in nz.items()}\nevidence = {\n    \"A\": f\"nonzero amplitudes={nzr}; claim |01> -> {claims['A']}\",\n    \"B\": f\"nonzero={nzr}; claim |11> -> {claims['B']}\",\n    \"C\": f\"nonzero={nzr} ({len(nz)} states); claim superposition -> {claims['C']}\",\n    \"D\": f\"nonzero={nzr}; single |10> (a on high qubit) -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"nonzero\": nzr}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

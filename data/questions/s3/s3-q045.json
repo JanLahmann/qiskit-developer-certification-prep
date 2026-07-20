@@ -1,0 +1,68 @@
+{
+  "id": "s3-q045",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Qubit 0 is flipped to `|1⟩`. The measurements deliberately map q0 -> c1 and q1 -> c0. What bitstring (order `c1 c0`) is observed on every shot?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2, 2)\nqc.x(0)\nqc.measure(0, 1)   # qubit 0 -> classical bit 1\nqc.measure(1, 0)   # qubit 1 -> classical bit 0",
+  "options": [
+    {
+      "key": "A",
+      "text": "`01`"
+    },
+    {
+      "key": "B",
+      "text": "`11`"
+    },
+    {
+      "key": "C",
+      "text": "`10`"
+    },
+    {
+      "key": "D",
+      "text": "`00`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "Qubit 0 is `1`, qubit 1 is `0`. The mapping stores qubit 0's result in c1 and qubit 1's result in c0, so c1=1 and c0=0. Printed as `c1 c0`, that is `10`.",
+    "distractors": {
+      "A": "`01` assumes the default mapping q0->c0, q1->c1; here the mapping is deliberately swapped, sending qubit 0's value to c1.",
+      "B": "`11` would require both qubits to be 1, but only qubit 0 was flipped.",
+      "D": "`00` would require both qubits to be 0; qubit 0 carries an X."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/measure-qubits",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q045.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit_aer import AerSimulator\n\nqc = QuantumCircuit(2, 2)\nqc.x(0)\nqc.measure(0, 1)\nqc.measure(1, 0)\nsim = AerSimulator(seed_simulator=42)\ncounts = sim.run(qc, shots=1000).result().get_counts()\ntotal = sum(counts.values())\nopts = {\"A\": \"01\", \"B\": \"11\", \"C\": \"10\", \"D\": \"00\"}\nclaims = {k: (counts.get(v, 0) == total) for k, v in opts.items()}\nevidence = {k: f\"option={opts[k]!r}; observed {counts.get(opts[k], 0)}/{total}; full={counts} -> {claims[k]}\" for k in opts}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": counts}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

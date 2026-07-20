@@ -1,0 +1,30 @@
+{
+  "question": "s3-q045",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "A": "option='01'; observed 0/1000; full={'10': 1000} -> False",
+      "B": "option='11'; observed 0/1000; full={'10': 1000} -> False",
+      "C": "option='10'; observed 1000/1000; full={'10': 1000} -> True",
+      "D": "option='00'; observed 0/1000; full={'10': 1000} -> False"
+    },
+    "observed": {
+      "counts": {
+        "10": 1000
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.05,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"option='01'; observed 0/1000; full={'10': 1000} -> False\", \"B\": \"option='11'; observed 0/1000; full={'10': 1000} -> False\", \"C\": \"option='10'; observed 1000/1000; full={'10': 1000} -> True\", \"D\": \"option='00'; observed 0/1000; full={'10': 1000} -> False\"}, \"observed\": {\"counts\": {\"10\": 1000}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

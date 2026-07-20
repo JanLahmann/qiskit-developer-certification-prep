@@ -1,0 +1,68 @@
+{
+  "id": "s3-q041",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "A single Toffoli `ccx(0, 1, 2)` is transpiled onto a 3-qubit LINE backend (basis {cx, rz, sx, x}; connectivity 0-1-2). How many two-qubit (`cx`) gates does the resulting ISA circuit contain?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(3, coupling_map=CouplingMap.from_line(3), seed=7)\nqc = QuantumCircuit(3)\nqc.ccx(0, 1, 2)\n\nisa = generate_preset_pass_manager(1, backend, seed_transpiler=7).run(qc)\nprint(isa.count_ops().get('cx'))",
+  "options": [
+    {
+      "key": "A",
+      "text": "0 — the backend runs the 3-qubit Toffoli directly."
+    },
+    {
+      "key": "B",
+      "text": "Exactly 1 CX."
+    },
+    {
+      "key": "C",
+      "text": "Between 2 and 5 CX."
+    },
+    {
+      "key": "D",
+      "text": "6 or more CX — the Toffoli is decomposed into many one- and two-qubit basis gates, and routing on a line adds still more."
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "`ccx` is neither a basis gate nor a two-qubit gate, so it is decomposed. A Toffoli already needs 6 CX in an all-to-all decomposition, and routing it on a linear coupling map inserts additional CX (via SWAPs), giving well over 6 CX in practice.",
+    "distractors": {
+      "A": "`ccx` is not in the basis and acts on 3 qubits; hardware cannot run it directly, so it must be decomposed into CX-based gates.",
+      "B": "One CX is nowhere near enough to realize a Toffoli — the standard decomposition alone needs 6.",
+      "C": "The minimal Toffoli decomposition already uses 6 CX; on a line with routing the count is even higher, so it is not in the 2-5 range."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q041.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(3, coupling_map=CouplingMap.from_line(3), seed=7)\nqc = QuantumCircuit(3)\nqc.ccx(0, 1, 2)\nisa = generate_preset_pass_manager(1, backend, seed_transpiler=7).run(qc)\nncx = isa.count_ops().get(\"cx\", 0)\nclaims = {\n    \"A\": ncx == 0,\n    \"B\": ncx == 1,\n    \"C\": 2 <= ncx <= 5,\n    \"D\": ncx >= 6,\n}\nevidence = {\n    \"A\": f\"observed cx count={ncx}; claim 0 -> {claims['A']}\",\n    \"B\": f\"observed cx count={ncx}; claim 1 -> {claims['B']}\",\n    \"C\": f\"observed cx count={ncx}; claim 2-5 -> {claims['C']}\",\n    \"D\": f\"observed cx count={ncx}; claim >=6 -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"cx_count\": ncx, \"ops\": dict(isa.count_ops())}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

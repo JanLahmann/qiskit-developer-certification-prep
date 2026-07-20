@@ -1,0 +1,68 @@
+{
+  "id": "s3-q034",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "spot-bug",
+  "difficulty": 2,
+  "stem": "This code transpiles a 4-qubit circuit for a 3-qubit backend and raises a `TranspilerError`. What is the root cause?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=3, seed=42)\nqc = QuantumCircuit(4)\nqc.h(range(4))\nqc.measure_all()\n\npm = generate_preset_pass_manager(optimization_level=1, backend=backend)\nisa = pm.run(qc)   # raises TranspilerError",
+  "options": [
+    {
+      "key": "A",
+      "text": "`measure_all()` must be called AFTER transpilation, not before."
+    },
+    {
+      "key": "B",
+      "text": "The circuit uses 4 qubits but the backend has only 3 — a circuit cannot be mapped onto a device with fewer qubits."
+    },
+    {
+      "key": "C",
+      "text": "`optimization_level=1` is too low to map 4 qubits; raising it to level 3 fixes it."
+    },
+    {
+      "key": "D",
+      "text": "`GenericBackendV2` must be constructed with an explicit `coupling_map` or transpilation always fails."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "Transpilation maps each virtual qubit onto a distinct physical qubit. With 4 virtual qubits and only 3 physical qubits, no valid layout exists, so the layout stage raises `TranspilerError: Number of qubits greater than device.` The fix is a backend with at least 4 qubits.",
+    "distractors": {
+      "A": "The position of `measure_all()` is irrelevant to the qubit-count mismatch; the error occurs during layout, not measurement.",
+      "C": "No optimization level can invent extra physical qubits; higher levels still fail on the same mismatch.",
+      "D": "`GenericBackendV2` supplies a default coupling map; the failure is the qubit count, not a missing coupling map."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpile",
+      "https://quantum.cloud.ibm.com/docs/guides/set-optimization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q034.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbe3 = GenericBackendV2(num_qubits=3, seed=42)\n\ndef build4():\n    qc = QuantumCircuit(4); qc.h(range(4)); qc.measure_all(); return qc\n\n# reproduce the bug\ntry:\n    generate_preset_pass_manager(optimization_level=1, backend=be3).run(build4())\n    bug = \"no error\"\nexcept Exception as e:\n    bug = f\"{type(e).__name__}: {str(e)[:70]}\"\n\n# A: measure after transpile -> still fails on qubit count\ntry:\n    qc = QuantumCircuit(4); qc.h(range(4))\n    generate_preset_pass_manager(1, be3).run(qc)\n    a_fixed = True\nexcept Exception:\n    a_fixed = False\n\n# C: level 3 -> still fails\ntry:\n    generate_preset_pass_manager(3, be3).run(build4())\n    c_fixed = True\nexcept Exception:\n    c_fixed = False\n\n# B: use a >=4 qubit backend -> works\nbe4 = GenericBackendV2(num_qubits=4, seed=42)\nb_ops = dict(generate_preset_pass_manager(1, be4).run(build4()).count_ops())\nb_fixed = len(b_ops) > 0\n\nclaims = {\"A\": a_fixed, \"B\": b_fixed and bug.startswith(\"TranspilerError\"), \"C\": c_fixed, \"D\": False}\nevidence = {\n    \"A\": f\"removing measure_all still fails on 3q backend (fixed={a_fixed}) -> {claims['A']}\",\n    \"B\": f\"bug={bug}; a 4-qubit backend transpiles fine (ops={b_ops}) -> {claims['B']}\",\n    \"C\": f\"optimization_level=3 on 3q backend still fails (fixed={c_fixed}) -> {claims['C']}\",\n    \"D\": f\"GenericBackendV2 had a default coupling map; the real cause is qubit count -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug\": bug}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

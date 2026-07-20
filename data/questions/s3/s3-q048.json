@@ -1,0 +1,57 @@
+{
+  "id": "s3-q048",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "What is the practical benefit of building a circuit from named registers such as `QuantumRegister(3, 'data')` and `QuantumRegister(1, 'anc')` instead of the bare `QuantumCircuit(4)` form?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Named registers make the circuit execute faster on hardware."
+    },
+    {
+      "key": "B",
+      "text": "They let you address qubits and bits by meaningful groups and names (e.g. `data[0]`, `anc[0]`), improving readability and letting one circuit hold several logically-distinct registers."
+    },
+    {
+      "key": "C",
+      "text": "Only qubits that belong to a named register can be measured; anonymous qubits cannot."
+    },
+    {
+      "key": "D",
+      "text": "Named registers are required by the transpiler; a circuit built with `QuantumCircuit(4)` cannot be transpiled."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "Registers are an organizational tool. Naming them lets you reference qubits/bits by role (`data`, `anc`) and index within each group, which keeps larger circuits readable and lets one circuit contain multiple distinct registers. They carry no performance or execution requirement.",
+    "distractors": {
+      "A": "Register naming is purely structural metadata; it has no effect on execution speed.",
+      "C": "Any qubit can be measured regardless of whether it lives in a user-named register; `QuantumCircuit(4)` qubits are measurable too.",
+      "D": "Circuits built with the integer form transpile perfectly well; named registers are not a transpiler requirement."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

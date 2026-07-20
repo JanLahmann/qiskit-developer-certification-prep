@@ -1,0 +1,68 @@
+{
+  "id": "s3-q031",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "You call `generate_preset_pass_manager(backend=backend)` WITHOUT passing `optimization_level`. Which optimization level does it use by default?",
+  "code": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n\npm = generate_preset_pass_manager(backend=backend)   # no optimization_level given",
+  "options": [
+    {
+      "key": "A",
+      "text": "0"
+    },
+    {
+      "key": "B",
+      "text": "2"
+    },
+    {
+      "key": "C",
+      "text": "1"
+    },
+    {
+      "key": "D",
+      "text": "3"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "`generate_preset_pass_manager` defaults to `optimization_level=2` — a balanced level with light-weight but effective optimization. (Note this differs from the older `transpile()` function, whose default resolves to level 1.)",
+    "distractors": {
+      "A": "Level 0 is minimal (only what is needed to run) and is not the default; you must ask for it explicitly.",
+      "C": "Level 1 is the default of the legacy `transpile()` function, not of `generate_preset_pass_manager`.",
+      "D": "Level 3 is the heaviest optimization and is never applied unless you request it."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q031.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import inspect\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\ndefault = inspect.signature(generate_preset_pass_manager).parameters[\"optimization_level\"].default\nbackend = GenericBackendV2(num_qubits=5, seed=42)\n\n# functional confirmation: default pm behaves like the explicit level == default\nqc = QuantumCircuit(3)\nqc.h(0); qc.cx(0, 1); qc.cx(0, 2); qc.ccx(0, 1, 2); qc.measure_all()\npm_def = generate_preset_pass_manager(backend=backend, seed_transpiler=42)\nops_def = dict(pm_def.run(qc).count_ops())\nmatch_level = None\nfor lvl in range(4):\n    pml = generate_preset_pass_manager(optimization_level=lvl, backend=backend, seed_transpiler=42)\n    if dict(pml.run(qc).count_ops()) == ops_def:\n        match_level = lvl\n        break\n\nclaims = {\"A\": default == 0, \"B\": default == 2, \"C\": default == 1, \"D\": default == 3}\nevidence = {\n    \"A\": f\"signature default optimization_level={default}; claim 0 -> {claims['A']}\",\n    \"B\": f\"signature default={default}; default pm output matches explicit level {match_level} -> {claims['B']}\",\n    \"C\": f\"signature default={default}; claim 1 (that is transpile()'s default, not this) -> {claims['C']}\",\n    \"D\": f\"signature default={default}; claim 3 -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"default\": default, \"functional_match_level\": match_level}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

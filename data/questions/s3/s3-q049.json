@@ -1,0 +1,68 @@
+{
+  "id": "s3-q049",
+  "section": "s3",
+  "objectives": [
+    "s3o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "A 3-parameter circuit is partially bound with a dict that supplies only `q`. How many free parameters does `partial` have, and which remain?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\np = Parameter('p'); q = Parameter('q'); r = Parameter('r')\nqc = QuantumCircuit(1)\nqc.rx(p, 0)\nqc.ry(q, 0)\nqc.rz(r, 0)\n\npartial = qc.assign_parameters({q: 1.0})",
+  "options": [
+    {
+      "key": "A",
+      "text": "0 — assigning any dict binds all of the circuit's parameters at once."
+    },
+    {
+      "key": "B",
+      "text": "1 — only `q` remains free."
+    },
+    {
+      "key": "C",
+      "text": "2 — `p` and `r` remain free; only `q` was bound."
+    },
+    {
+      "key": "D",
+      "text": "It raises, because a dict must supply a value for every parameter."
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "A dict binds exactly the parameters it names. Passing `{q: 1.0}` binds only `q`, leaving `p` and `r` free — so `partial.num_parameters` is 2. This is partial binding.",
+    "distractors": {
+      "A": "A dict binds only the keys you provide, not every parameter; the others stay symbolic.",
+      "B": "`q` is the one that gets bound, so it is NOT among the remaining free parameters.",
+      "D": "A dict is exactly how you do partial binding; it does not require a value for every parameter (a list would)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q049.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\np = Parameter('p'); q = Parameter('q'); r = Parameter('r')\nqc = QuantumCircuit(1)\nqc.rx(p, 0); qc.ry(q, 0); qc.rz(r, 0)\npartial = qc.assign_parameters({q: 1.0})\nn = partial.num_parameters\nremaining = sorted(x.name for x in partial.parameters)\nclaims = {\n    \"A\": n == 0,\n    \"B\": n == 1 and remaining == [\"q\"],\n    \"C\": n == 2 and remaining == [\"p\", \"r\"],\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"partial.num_parameters={n}, remaining={remaining}; claim 0 -> {claims['A']}\",\n    \"B\": f\"remaining={remaining}; claim only q -> {claims['B']}\",\n    \"C\": f\"num_parameters={n}, remaining={remaining}; only q bound -> {claims['C']}\",\n    \"D\": f\"partial dict binding succeeded (remaining={remaining}); claim 'raises' -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"remaining\": remaining}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

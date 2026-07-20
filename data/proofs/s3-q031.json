@@ -1,0 +1,29 @@
+{
+  "question": "s3-q031",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "signature default optimization_level=2; claim 0 -> False",
+      "B": "signature default=2; default pm output matches explicit level 2 -> True",
+      "C": "signature default=2; claim 1 (that is transpile()'s default, not this) -> False",
+      "D": "signature default=2; claim 3 -> False"
+    },
+    "observed": {
+      "default": 2,
+      "functional_match_level": 2
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.11,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"signature default optimization_level=2; claim 0 -> False\", \"B\": \"signature default=2; default pm output matches explicit level 2 -> True\", \"C\": \"signature default=2; claim 1 (that is transpile()'s default, not this) -> False\", \"D\": \"signature default=2; claim 3 -> False\"}, \"observed\": {\"default\": 2, \"functional_match_level\": 2}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

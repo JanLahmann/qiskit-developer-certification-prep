@@ -1,0 +1,68 @@
+{
+  "id": "s3-q033",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "A backend's target has basis gates {cx, rz, sx, x} on a linear coupling map (qubit i connected only to i-1 and i+1). Which circuit is ALREADY an ISA circuit for this backend — needing no further transpilation?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "A circuit using only `rz`, `sx`, and `cx`, with every `cx` acting on a physically-adjacent qubit pair."
+    },
+    {
+      "key": "B",
+      "text": "A circuit that applies an `h` gate to qubit 0."
+    },
+    {
+      "key": "C",
+      "text": "A circuit with a `cx` between qubit 0 and qubit 4 (not adjacent on the line)."
+    },
+    {
+      "key": "D",
+      "text": "A circuit containing a `ccx` (Toffoli) gate."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "An ISA (Instruction Set Architecture) circuit uses ONLY the backend's basis gates AND respects its coupling map. Option A satisfies both: `rz`/`sx`/`cx` are in the basis and each `cx` is on connected qubits, so no translation or routing is needed.",
+    "distractors": {
+      "B": "`h` is not in the basis {cx, rz, sx, x}; a translation pass must rewrite it, so the circuit is not yet ISA.",
+      "C": "A `cx` on non-adjacent qubits violates the coupling map; the router must insert SWAPs first, so it is not ISA.",
+      "D": "`ccx` is neither a basis gate nor a two-qubit gate; it must be decomposed and routed, so it is not ISA."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpile",
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q033.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbe = GenericBackendV2(5, coupling_map=CouplingMap.from_line(5), seed=3)\nbasis = set(be.operation_names)\nedges = set()\nfor a, b in be.coupling_map.get_edges():\n    edges.add((a, b)); edges.add((b, a))\n\ndef is_isa(qc):\n    for ins in qc.data:\n        name = ins.operation.name\n        if name in (\"barrier\", \"measure\"):\n            continue\n        if name not in basis:\n            return False, f\"{name} not in basis {sorted(basis)}\"\n        if ins.operation.num_qubits == 2:\n            q = tuple(qc.find_bit(x).index for x in ins.qubits)\n            if q not in edges:\n                return False, f\"{name} on non-adjacent {q}\"\n    return True, \"only basis gates on adjacent qubits\"\n\ndef cA():\n    qc = QuantumCircuit(5); qc.rz(0.5, 0); qc.sx(0); qc.cx(0, 1); return qc\ndef cB():\n    qc = QuantumCircuit(5); qc.h(0); return qc\ndef cC():\n    qc = QuantumCircuit(5); qc.cx(0, 4); return qc\ndef cD():\n    qc = QuantumCircuit(5); qc.ccx(0, 1, 2); return qc\n\nres = {\"A\": is_isa(cA()), \"B\": is_isa(cB()), \"C\": is_isa(cC()), \"D\": is_isa(cD())}\nclaims = {k: res[k][0] for k in res}\nevidence = {k: f\"is_isa -> {res[k][0]} ({res[k][1]})\" for k in res}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {k: res[k][0] for k in res}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

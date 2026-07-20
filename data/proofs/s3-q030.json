@@ -1,0 +1,35 @@
+{
+  "question": "s3-q030",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "observed pm.stages=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling'); option=('layout', 'routing', 'translation', 'optimization') -> match=False",
+      "B": "observed pm.stages=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling'); option=('init', 'layout', 'routing', 'optimization', 'measurement') -> match=False",
+      "C": "observed pm.stages=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling'); option=('sampling', 'layout', 'routing', 'translation', 'scheduling') -> match=False",
+      "D": "observed pm.stages=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling'); option=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling') -> match=True"
+    },
+    "observed": {
+      "stages": [
+        "init",
+        "layout",
+        "routing",
+        "translation",
+        "optimization",
+        "scheduling"
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.05,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"observed pm.stages=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling'); option=('layout', 'routing', 'translation', 'optimization') -> match=False\", \"B\": \"observed pm.stages=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling'); option=('init', 'layout', 'routing', 'optimization', 'measurement') -> match=False\", \"C\": \"observed pm.stages=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling'); option=('sampling', 'layout', 'routing', 'translation', 'scheduling') -> match=False\", \"D\": \"observed pm.stages=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling'); option=('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling') -> match=True\"}, \"observed\": {\"stages\": [\"init\", \"layout\", \"routing\", \"translation\", \"optimization\", \"scheduling\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

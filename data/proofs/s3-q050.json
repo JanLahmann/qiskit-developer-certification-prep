@@ -1,0 +1,35 @@
+{
+  "question": "s3-q050",
+  "verdict": {
+    "answer": [
+      "A",
+      "B",
+      "D"
+    ],
+    "evidence": {
+      "A": "list [0.5,1.5] -> rx(theta)=1.5, rz(phi)=0.5 (alphabetical) -> True",
+      "B": "transpiled ISA had 1 param(s); bound to 0 -> True",
+      "C": "binding after transpile worked, so pre-transpile binding is not required -> False",
+      "D": "dict {u:0.2} left 1 free -> True",
+      "E": "reusing one Parameter on 2 gates gave num_parameters=1, raised=False"
+    },
+    "observed": {
+      "A": true,
+      "B": true,
+      "C": false,
+      "D": true,
+      "E": false
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.07,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\", \"B\", \"D\"], \"evidence\": {\"A\": \"list [0.5,1.5] -> rx(theta)=1.5, rz(phi)=0.5 (alphabetical) -> True\", \"B\": \"transpiled ISA had 1 param(s); bound to 0 -> True\", \"C\": \"binding after transpile worked, so pre-transpile binding is not required -> False\", \"D\": \"dict {u:0.2} left 1 free -> True\", \"E\": \"reusing one Parameter on 2 gates gave num_parameters=1, raised=False\"}, \"observed\": {\"A\": true, \"B\": true, \"C\": false, \"D\": true, \"E\": false}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

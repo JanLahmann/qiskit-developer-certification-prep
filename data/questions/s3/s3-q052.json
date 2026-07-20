@@ -1,0 +1,68 @@
+{
+  "id": "s3-q052",
+  "section": "s3",
+  "objectives": [
+    "s3o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Qubit 0 is set to `|1⟩` and measured into c0. A `switch` on c0 applies X to qubit 1 in `case(0)` and identity in the DEFAULT case. Qubit 1 is then measured. What outcome (order `c1 c0`) appears on every shot?",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(2, 'q')\ncr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.x(0)\nqc.measure(0, 0)\nwith qc.switch(cr[0]) as case:\n    with case(0):\n        qc.x(1)\n    with case(case.DEFAULT):\n        qc.id(1)\nqc.measure(1, 1)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`01` on every shot — c0=1 takes the DEFAULT branch (identity), so qubit 1 stays 0."
+    },
+    {
+      "key": "B",
+      "text": "`11` on every shot — the `case(0)` branch runs and applies X to qubit 1."
+    },
+    {
+      "key": "C",
+      "text": "`10` on every shot."
+    },
+    {
+      "key": "D",
+      "text": "A mix of `00` and `11`, roughly 50/50."
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "c0 is deterministically 1 (qubit 0 was flipped). The `switch` matches value 1 against `case(0)` (no match) and falls to `case(DEFAULT)`, which applies identity, leaving qubit 1 at 0. So c1=0, c0=1 → `01` every shot.",
+    "distractors": {
+      "B": "`case(0)` only runs when c0=0; here c0=1, so the X branch is NOT taken.",
+      "C": "`10` would require qubit 1 to be 1 while c0=0; neither holds.",
+      "D": "There is no superposition — qubit 0 is a definite 1 — so the outcome is deterministic, not 50/50."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q052.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\nqr = QuantumRegister(2, 'q'); cr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.x(0); qc.measure(0, 0)\nwith qc.switch(cr[0]) as case:\n    with case(0):\n        qc.x(1)\n    with case(case.DEFAULT):\n        qc.id(1)\nqc.measure(1, 1)\nsim = AerSimulator(seed_simulator=42)\ncounts = sim.run(qc, shots=1000).result().get_counts()\ntotal = sum(counts.values())\nseen = set(counts)\nclaims = {\n    \"A\": counts.get(\"01\", 0) == total,\n    \"B\": counts.get(\"11\", 0) == total,\n    \"C\": counts.get(\"10\", 0) == total,\n    \"D\": seen == {\"00\", \"11\"},\n}\nevidence = {\n    \"A\": f\"counts={counts}; all '01' (default/identity branch)? -> {claims['A']}\",\n    \"B\": f\"counts={counts}; all '11'? -> {claims['B']}\",\n    \"C\": f\"counts={counts}; all '10'? -> {claims['C']}\",\n    \"D\": f\"counts={counts}; mix of 00/11? -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": counts}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

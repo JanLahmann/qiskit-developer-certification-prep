@@ -1,0 +1,68 @@
+{
+  "id": "s3-q040",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You have built `pm = generate_preset_pass_manager(optimization_level=1, backend=backend)`. Which call actually transpiles `qc` into an ISA circuit using this pass manager?",
+  "code": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n\npm = generate_preset_pass_manager(optimization_level=1, backend=backend)\n# isa = ?",
+  "options": [
+    {
+      "key": "A",
+      "text": "`isa = pm.transpile(qc)`"
+    },
+    {
+      "key": "B",
+      "text": "`isa = pm.run(qc)`"
+    },
+    {
+      "key": "C",
+      "text": "`isa = pm(qc)`"
+    },
+    {
+      "key": "D",
+      "text": "`isa = transpile(qc, pm)`"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "A pass manager executes its passes on a circuit via `.run(circuit)`. For a preset `StagedPassManager`, `pm.run(qc)` returns the transpiled ISA circuit.",
+    "distractors": {
+      "A": "`StagedPassManager` has no `.transpile()` method; calling it raises `AttributeError`. `.run()` is the method.",
+      "C": "A pass manager is not callable; `pm(qc)` raises `TypeError`.",
+      "D": "`transpile()` expects a backend/target, not a pass-manager object; passing `pm` there raises an error."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q040.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, transpile\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=5, seed=42)\npm = generate_preset_pass_manager(optimization_level=1, backend=backend, seed_transpiler=42)\n\ndef qc():\n    c = QuantumCircuit(3); c.h(0); c.cx(0, 1); c.cx(1, 2); c.measure_all(); return c\n\nevidence = {}\nproven = []\ndef check(key, fn):\n    try:\n        out = fn()\n        ok = isinstance(out, QuantumCircuit)\n        evidence[key] = f\"returned {type(out).__name__}; is a transpiled circuit={ok}\"\n        if ok:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ncheck(\"A\", lambda: pm.transpile(qc()))\ncheck(\"B\", lambda: pm.run(qc()))\ncheck(\"C\", lambda: pm(qc()))\ncheck(\"D\", lambda: transpile(qc(), pm))\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

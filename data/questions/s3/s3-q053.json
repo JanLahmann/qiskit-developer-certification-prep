@@ -1,0 +1,68 @@
+{
+  "id": "s3-q053",
+  "section": "s3",
+  "objectives": [
+    "s3o2"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "Both qubits 0 and 1 are set to `|1⟩` and measured into the 2-bit register `c`. An `if_test` guarded by `expr.equal(c, 3)` flips qubit 2, which is read into register `o`. What value does `o` hold?",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.circuit.classical import expr\n\nqr = QuantumRegister(3, 'q')\nc = ClassicalRegister(2, 'c')\no = ClassicalRegister(1, 'o')\nqc = QuantumCircuit(qr, c, o)\nqc.x(0); qc.x(1)\nqc.measure(0, 0); qc.measure(1, 1)\nwith qc.if_test(expr.equal(c, 3)):\n    qc.x(2)\nqc.measure(2, o[0])",
+  "options": [
+    {
+      "key": "A",
+      "text": "`o = 0` — `expr.equal` compares individual bits, so it can never match the whole-register value 3."
+    },
+    {
+      "key": "B",
+      "text": "`o = 1` — `c` holds binary `11` = 3, so the condition is true and qubit 2 is flipped."
+    },
+    {
+      "key": "C",
+      "text": "It raises — an `if_test` condition must be a `(register, value)` tuple; an `expr` is not accepted."
+    },
+    {
+      "key": "D",
+      "text": "`o` is random 0 or 1 because qubit 2 was never given a definite initial state."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "`expr.equal(c, 3)` builds a classical expression that is true when the register `c`, interpreted as an integer, equals 3. With both bits set, `c` = binary `11` = 3, so the condition holds and X is applied to qubit 2, making `o` = 1.",
+    "distractors": {
+      "A": "`expr.equal` compares the whole register's integer value, not bit-by-bit; it matches 3 exactly here.",
+      "C": "`if_test` accepts either a `(resource, value)` tuple OR a classical `expr`; passing `expr.equal(...)` is valid.",
+      "D": "Qubit 2 starts in the definite state `|0⟩`; the conditional flips it deterministically, so `o` is not random."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/circuit_classical"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q053.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.circuit.classical import expr\nfrom qiskit_aer import AerSimulator\n\nqr = QuantumRegister(3, 'q'); c = ClassicalRegister(2, 'c'); o = ClassicalRegister(1, 'o')\nqc = QuantumCircuit(qr, c, o)\nqc.x(0); qc.x(1)\nqc.measure(0, 0); qc.measure(1, 1)\nwith qc.if_test(expr.equal(c, 3)):\n    qc.x(2)\nqc.measure(2, o[0])\nsim = AerSimulator(seed_simulator=42)\ncounts = sim.run(qc, shots=1000).result().get_counts()\ntotal = sum(counts.values())\n# outcome strings look like 'o c1c0' (space-separated registers). Extract the 'o' bit.\no_is_one = all(k.split()[0] == \"1\" for k in counts)\no_is_zero = all(k.split()[0] == \"0\" for k in counts)\nclaims = {\n    \"A\": o_is_zero,\n    \"B\": o_is_one,\n    \"C\": False,\n    \"D\": (not o_is_one) and (not o_is_zero),\n}\nevidence = {\n    \"A\": f\"counts={counts}; o always 0? -> {claims['A']}\",\n    \"B\": f\"counts={counts}; c=11=3 so condition fired, o always 1? -> {claims['B']}\",\n    \"C\": f\"if_test(expr.equal(...)) built and ran without error -> claim 'raises' is {claims['C']}\",\n    \"D\": f\"counts={counts}; o deterministic (not random) -> claim 'random' is {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": counts}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

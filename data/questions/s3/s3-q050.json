@@ -1,0 +1,73 @@
+{
+  "id": "s3-q050",
+  "section": "s3",
+  "objectives": [
+    "s3o3"
+  ],
+  "type": "multi",
+  "difficulty": 3,
+  "stem": "Select ALL true statements about parameterized circuits and how they interact with binding and transpilation.",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "The values in a LIST passed to `assign_parameters` are matched to `qc.parameters` in alphabetical name order, not in gate-insertion order."
+    },
+    {
+      "key": "B",
+      "text": "A parameterized circuit can be transpiled first and have its parameters assigned afterward; the ISA circuit keeps the parameters until you bind them."
+    },
+    {
+      "key": "C",
+      "text": "`assign_parameters` must be called before transpilation, otherwise the parameters are lost."
+    },
+    {
+      "key": "D",
+      "text": "A dict passed to `assign_parameters` may bind only a subset of parameters (partial binding)."
+    },
+    {
+      "key": "E",
+      "text": "Reusing the same `Parameter` object on two gates raises an error."
+    }
+  ],
+  "answer": [
+    "A",
+    "B",
+    "D"
+  ],
+  "explanation": {
+    "correct": "List binding follows `qc.parameters`, which is sorted alphabetically by name (A). Parameters survive transpilation, so you can transpile once and bind many times afterward (B). A dict binds only the named parameters (D).",
+    "distractors": {
+      "C": "Parameters are preserved through transpilation; you do NOT have to bind before transpiling (in fact binding after is the efficient pattern).",
+      "E": "Reusing one `Parameter` across gates is fully supported — it ties those gates to a shared value, not an error."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q050.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\n# A: list binds in alphabetical parameter order\ntheta = Parameter('theta'); phi = Parameter('phi')\nqcA = QuantumCircuit(1)\nqcA.rx(theta, 0); qcA.rz(phi, 0)   # theta added first\nboundA = qcA.assign_parameters([0.5, 1.5])   # phi<-0.5, theta<-1.5\nangA = {i.operation.name: float(i.operation.params[0]) for i in boundA.data}\nA = (angA[\"rx\"] == 1.5 and angA[\"rz\"] == 0.5)\n\n# B: transpile then bind\nbe = GenericBackendV2(5, seed=9)\nqcB = QuantumCircuit(2)\nqcB.rx(Parameter('a'), 0); qcB.cx(0, 1); qcB.measure_all()\nisa = generate_preset_pass_manager(1, be, seed_transpiler=9).run(qcB)\nB = isa.num_parameters == 1\nisa_bound = isa.assign_parameters({list(isa.parameters)[0]: 0.3})\nB = B and (isa_bound.num_parameters == 0)\n\n# C: is binding-before-transpile mandatory? B just showed it is not -> C false\nC = not B\n\n# D: partial dict binding\nu = Parameter('u'); v = Parameter('v')\nqcD = QuantumCircuit(1); qcD.rx(u, 0); qcD.rz(v, 0)\nD = qcD.assign_parameters({u: 0.2}).num_parameters == 1\n\n# E: reuse raises?\nth = Parameter('th')\ntry:\n    qcE = QuantumCircuit(2); qcE.rx(th, 0); qcE.rx(th, 1)\n    E = False  # no error\n    reuse_count = qcE.num_parameters\nexcept Exception:\n    E = True; reuse_count = None\n\nclaims = {\"A\": A, \"B\": B, \"C\": C, \"D\": D, \"E\": E}\nevidence = {\n    \"A\": f\"list [0.5,1.5] -> rx(theta)={angA['rx']}, rz(phi)={angA['rz']} (alphabetical) -> {A}\",\n    \"B\": f\"transpiled ISA had {isa.num_parameters} param(s); bound to {isa_bound.num_parameters} -> {B}\",\n    \"C\": f\"binding after transpile worked, so pre-transpile binding is not required -> {C}\",\n    \"D\": f\"dict {{u:0.2}} left {qcD.assign_parameters({u: 0.2}).num_parameters} free -> {D}\",\n    \"E\": f\"reusing one Parameter on 2 gates gave num_parameters={reuse_count}, raised={E}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": claims})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

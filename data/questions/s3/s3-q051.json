@@ -1,0 +1,68 @@
+{
+  "id": "s3-q051",
+  "section": "s3",
+  "objectives": [
+    "s3o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "The SAME parameter `th` is used on two different gates. How many free parameters does `qc` have, and what happens when `th` is bound?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\nth = Parameter('th')\nqc = QuantumCircuit(2)\nqc.rx(th, 0)\nqc.rx(th, 1)\n\nbound = qc.assign_parameters({th: 0.5})",
+  "options": [
+    {
+      "key": "A",
+      "text": "`qc` has 2 free parameters — each gate gets its own independent copy of `th`."
+    },
+    {
+      "key": "B",
+      "text": "`qc` has 1 free parameter, but binding sets only the first `rx`; the second stays symbolic."
+    },
+    {
+      "key": "C",
+      "text": "It raises, because one `Parameter` object cannot be reused across two gates."
+    },
+    {
+      "key": "D",
+      "text": "`qc` has 1 free parameter; binding `th` sets BOTH `rx` gates to 0.5 at once."
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "A `Parameter` is a single symbolic object. Reusing `th` on both gates means `qc.num_parameters` is 1, and assigning `th` substitutes that one value into every gate that references it — so both `rx` gates become `0.5`. This is how weight-sharing ansätze tie gates together.",
+    "distractors": {
+      "A": "Reusing the same object does not clone it; there is one parameter, not two.",
+      "B": "Binding a parameter updates every occurrence of it, not just the first gate.",
+      "C": "Reusing a parameter across gates is fully valid and common; it does not raise."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q051.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\nth = Parameter('th')\nqc = QuantumCircuit(2)\nqc.rx(th, 0); qc.rx(th, 1)\nnfree = qc.num_parameters\nbound = qc.assign_parameters({th: 0.5})\nangles = [float(i.operation.params[0]) for i in bound.data if i.operation.name == \"rx\"]\nboth_set = angles == [0.5, 0.5]\nclaims = {\n    \"A\": nfree == 2,\n    \"B\": nfree == 1 and angles[0] == 0.5 and (len(angles) > 1 and angles[1] != 0.5),\n    \"C\": False,\n    \"D\": nfree == 1 and both_set,\n}\nevidence = {\n    \"A\": f\"qc.num_parameters={nfree}; claim 2 independent copies -> {claims['A']}\",\n    \"B\": f\"after bind rx angles={angles}; claim only first set -> {claims['B']}\",\n    \"C\": f\"reusing th did not raise (num_parameters={nfree}) -> {claims['C']}\",\n    \"D\": f\"num_parameters={nfree}; both rx angles={angles} set to 0.5 -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"num_parameters\": nfree, \"angles\": angles}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

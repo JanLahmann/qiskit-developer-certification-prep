@@ -27,7 +27,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.31,
+  "wall_seconds": 1.15,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"C\": \"RZ(pi/2)|0> = [(0.7071-0.7071j), 0j]; option C claims [(0.7071-0.7071j), 0j] -> match=True  (probabilities unchanged: [1.0, 0.0])\", \"D\": \"RZ(pi/2)|0> = [(0.7071-0.7071j), 0j]; option D claims [1, 0] -> match=False\", \"A\": \"RZ(pi/2)|0> = [(0.7071-0.7071j), 0j]; option A claims [(0.7071+0j), 0.7071j] -> match=False\", \"B\": \"RZ(pi/2)|0> = [(0.7071-0.7071j), 0j]; option B claims [(0.7071+0.7071j), 0j] -> match=False\"}, \"observed\": {\"sv\": [\"(0.707107-0.707107j)\", \"0j\"], \"probs\": [1.0, 0.0]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

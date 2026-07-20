@@ -5,10 +5,10 @@
       "C"
     ],
     "evidence": {
-      "C": "simplify() -> {'Z': 3.0, 'X': 1.0} (2 terms); option A claims {'Z':3,'X':1} -> match=True",
-      "D": "simplify() produced 2 terms; option B claims 3 unmerged terms -> match=False",
-      "A": "option C claims Z coeff 2 (dedup); actual {'Z': 3.0, 'X': 1.0} -> match=False",
-      "B": "option D claims {'Z':3,'X':2}; actual {'Z': 3.0, 'X': 1.0} -> match=False"
+      "A": "simplify() -> {'Z': 3.0, 'X': 1.0} (2 terms); option A claims dedup keep-largest {'Z':2,'X':1} -> match=False",
+      "B": "simplify() -> {'Z': 3.0, 'X': 1.0} (2 terms); option B claims sum all coeffs {'Z':3,'X':2} -> match=False",
+      "C": "simplify() -> {'Z': 3.0, 'X': 1.0} (2 terms); option C claims like terms summed {'Z':3,'X':1} -> match=True",
+      "D": "simplify() -> {'Z': 3.0, 'X': 1.0} (2 terms); option D claims unmerged (3 terms) -> match=False"
     },
     "observed": {
       "simplified": {
@@ -24,9 +24,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.35,
+  "wall_seconds": 1.15,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"C\": \"simplify() -> {'Z': 3.0, 'X': 1.0} (2 terms); option A claims {'Z':3,'X':1} -> match=True\", \"D\": \"simplify() produced 2 terms; option B claims 3 unmerged terms -> match=False\", \"A\": \"option C claims Z coeff 2 (dedup); actual {'Z': 3.0, 'X': 1.0} -> match=False\", \"B\": \"option D claims {'Z':3,'X':2}; actual {'Z': 3.0, 'X': 1.0} -> match=False\"}, \"observed\": {\"simplified\": {\"Z\": 3.0, \"X\": 1.0}, \"n_terms\": 2}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"simplify() -> {'Z': 3.0, 'X': 1.0} (2 terms); option A claims dedup keep-largest {'Z':2,'X':1} -> match=False\", \"B\": \"simplify() -> {'Z': 3.0, 'X': 1.0} (2 terms); option B claims sum all coeffs {'Z':3,'X':2} -> match=False\", \"C\": \"simplify() -> {'Z': 3.0, 'X': 1.0} (2 terms); option C claims like terms summed {'Z':3,'X':1} -> match=True\", \"D\": \"simplify() -> {'Z': 3.0, 'X': 1.0} (2 terms); option D claims unmerged (3 terms) -> match=False\"}, \"observed\": {\"simplified\": {\"Z\": 3.0, \"X\": 1.0}, \"n_terms\": 2}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

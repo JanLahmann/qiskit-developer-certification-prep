@@ -42,16 +42,27 @@
     ]
   },
   "proof": {
-    "status": "conceptual",
-    "artifact": null
+    "status": "executed",
+    "artifact": "proofs/s1-q027.json"
   },
   "verification": {
-    "mode": "none"
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit, transpile\nfrom qiskit.quantum_info import Statevector\nfrom qiskit_aer import AerSimulator\n\ndef base():\n    qc = QuantumCircuit(1)\n    qc.h(0)\n    return qc\n\nraised = False\nnorm = None\ntry:\n    qc_sv = base(); qc_sv.global_phase = np.pi / 4\n    sv = Statevector.from_instruction(qc_sv)\n    norm = float(np.real(np.vdot(sv.data, sv.data)))\nexcept Exception:\n    raised = True\n\np_ref = Statevector.from_instruction(base()).probabilities()\nqc_gp0 = base(); qc_gp0.global_phase = np.pi / 4\np_gp = Statevector.from_instruction(qc_gp0).probabilities()\nprobs_equal = bool(np.allclose(p_gp, p_ref))\n\nsim = AerSimulator(seed_simulator=42)\ndef counts(gp):\n    qc = base()\n    if gp is not None:\n        qc.global_phase = gp\n    qc.measure_all()\n    return sim.run(transpile(qc, sim), shots=4096, seed_simulator=42).result().get_counts()\n\nc_gp = counts(np.pi / 4)\nc_ref = counts(None)\ndef p1(c):\n    tot = sum(c.values())\n    return sum(v for k, v in c.items() if k.strip()[-1] == '1') / tot\np1_gp, p1_ref = p1(c_gp), p1(c_ref)\ncounts_match = bool(c_gp == c_ref) or abs(p1_gp - p1_ref) < 0.03\n\nqc_ry = QuantumCircuit(1); qc_ry.ry(np.pi / 4, 0)\np1_ry = float(Statevector.from_instruction(qc_ry).probabilities()[1])\n\nB_ok = (not raised) and probs_equal and counts_match\nA_ok = raised\nC_ok = (p1_gp > p1_ref + 0.05)\nD_ok = (abs(p1_gp - p1_ry) < 0.03) and (abs(p1_gp - 0.5) > 0.05)\n\nevidence = {\n    \"A\": f\"setting global_phase raised={raised}; statevector norm={norm} (|e^(i pi/4)|=1 keeps it normalized) -> 'error/un-normalized' claim is {A_ok}\",\n    \"B\": f\"exact probs with phase {np.round(p_gp,4).tolist()} == without phase {np.round(p_ref,4).tolist()}? {probs_equal}; seeded counts gp={c_gp} vs ref={c_ref} (P(1) {p1_gp:.3f} vs {p1_ref:.3f}) -> counts unchanged={B_ok}\",\n    \"C\": f\"P(outcome 1) with phase={p1_gp:.3f} vs without={p1_ref:.3f}; shifted toward 1? {C_ok}\",\n    \"D\": f\"an RY(pi/4) would give P(1)={p1_ry:.3f}; observed P(1)={p1_gp:.3f} behaves like RY? {D_ok}\",\n}\nproven = [k for k, ok in ((\"A\", A_ok), (\"B\", B_ok), (\"C\", C_ok), (\"D\", D_ok)) if ok]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"probs_gp\": p_gp.tolist(), \"probs_ref\": p_ref.tolist(),\n                           \"counts_gp\": c_gp, \"counts_ref\": c_ref, \"raised\": raised, \"norm\": norm}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
   }
 }

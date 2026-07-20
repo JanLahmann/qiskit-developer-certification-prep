@@ -52,7 +52,7 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude (orchestrator seed)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
     "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank."
   },

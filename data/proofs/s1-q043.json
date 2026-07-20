@@ -21,7 +21,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.31,
+  "wall_seconds": 1.19,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"D\": \"<1|Z|1> = -1.0000; option D claims -1.0 -> match=True\", \"A\": \"<1|Z|1> = -1.0000; option A claims 1.0 -> match=False\", \"B\": \"<1|Z|1> = -1.0000; option B claims 0.0 -> match=False\", \"C\": \"|1> is an eigenstate of Z? True; claim 'not an eigenstate / undefined' -> match=False\"}, \"observed\": {\"Z_expectation\": -1.0, \"is_eigenstate\": true}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

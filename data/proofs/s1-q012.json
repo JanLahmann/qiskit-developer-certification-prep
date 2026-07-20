@@ -21,7 +21,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.24,
+  "wall_seconds": 1.11,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"C\": \"Pauli('IX').to_matrix() == I\\u2297X (X on qubit 0)? True; p[0]='X', p[1]='I'\", \"D\": \"== X\\u2297I (X on qubit 1)? False\", \"A\": \"== X\\u2297X (X on both qubits)? False\", \"B\": \"Pauli('IX') constructed with no error, so the claim 'invalid label' is False\"}, \"observed\": {\"qubit0_op\": \"X\", \"qubit1_op\": \"I\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

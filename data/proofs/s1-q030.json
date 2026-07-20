@@ -26,7 +26,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.35,
+  "wall_seconds": 1.14,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"C\": \"from_label('10').data has its 1 at index 2; option C claims index 2 -> match=True\", \"D\": \"from_label('10').data has its 1 at index 2; option D claims index 1 -> match=False\", \"A\": \"from_label('10').data has its 1 at index 2; option A claims index 3 -> match=False\", \"B\": \"from_label('10').data has its 1 at index 2; option B claims index 0 -> match=False\"}, \"observed\": {\"index\": 2, \"data\": [\"0j\", \"0j\", \"(1+0j)\", \"0j\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

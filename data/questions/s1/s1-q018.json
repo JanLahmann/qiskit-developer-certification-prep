@@ -47,12 +47,12 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.quantum_info import SparsePauliOp\nop = SparsePauliOp.from_list([(\"Z\", 1), (\"Z\", 2), (\"X\", 1)]).simplify()\nlabels = list(op.paulis.to_labels())\nobs = {l: round(complex(c).real, 6) for l, c in zip(labels, op.coeffs)}\nnterms = len(labels)\nmA = (obs == {\"Z\": 3.0, \"X\": 1.0})\nmB = (nterms == 3)\nmC = (obs == {\"Z\": 2.0, \"X\": 1.0})\nmD = (obs == {\"Z\": 3.0, \"X\": 2.0})\nevidence = {\n    \"C\": f\"simplify() -> {obs} ({nterms} terms); option A claims {{'Z':3,'X':1}} -> match={mA}\",\n    \"D\": f\"simplify() produced {nterms} terms; option B claims 3 unmerged terms -> match={mB}\",\n    \"A\": f\"option C claims Z coeff 2 (dedup); actual {obs} -> match={mC}\",\n    \"B\": f\"option D claims {{'Z':3,'X':2}}; actual {obs} -> match={mD}\",\n}\nproven = [k for k, m in ((\"C\", mA), (\"D\", mB), (\"A\", mC), (\"B\", mD)) if m]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"simplified\": obs, \"n_terms\": nterms}})\n"
+    "proof_script": "from qiskit.quantum_info import SparsePauliOp\nop = SparsePauliOp.from_list([(\"Z\", 1), (\"Z\", 2), (\"X\", 1)]).simplify()\nlabels = list(op.paulis.to_labels())\nobs = {l: round(complex(c).real, 6) for l, c in zip(labels, op.coeffs)}\nnterms = len(labels)\nclaims = {\n    \"A\": (\"dedup keep-largest {'Z':2,'X':1}\", obs == {\"Z\": 2.0, \"X\": 1.0}),\n    \"B\": (\"sum all coeffs {'Z':3,'X':2}\", obs == {\"Z\": 3.0, \"X\": 2.0}),\n    \"C\": (\"like terms summed {'Z':3,'X':1}\", obs == {\"Z\": 3.0, \"X\": 1.0}),\n    \"D\": (\"unmerged (3 terms)\", nterms == 3),\n}\nevidence = {}\nproven = []\nfor k, (desc, ok) in claims.items():\n    evidence[k] = f\"simplify() -> {obs} ({nterms} terms); option {k} claims {desc} -> match={ok}\"\n    if ok:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"simplified\": obs, \"n_terms\": nterms}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   },
   "freshness": {

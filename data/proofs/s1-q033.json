@@ -24,7 +24,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.31,
+  "wall_seconds": 1.13,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\", \"C\"], \"evidence\": {\"A\": \"X vs Y: Operator.equiv()=False (exact ==? False)\", \"B\": \"Z vs RZ(pi): Operator.equiv()=True (exact ==? False)\", \"C\": \"X vs RX(pi): Operator.equiv()=True (exact ==? False)\", \"D\": \"H vs Z: Operator.equiv()=False (exact ==? False)\"}, \"observed\": {\"A\": false, \"B\": true, \"C\": true, \"D\": false}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

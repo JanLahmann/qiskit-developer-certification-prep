@@ -23,7 +23,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.28,
+  "wall_seconds": 1.17,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"|0>.evolve(X) = [0j, (1+0j)]; option A claims [0, 1] -> match=True\", \"B\": \"|0>.evolve(X) = [0j, (1+0j)]; option B claims [1, 0] -> match=False\", \"C\": \"|0>.evolve(X) = [0j, (1+0j)]; option C claims [0.7071, 0.7071] -> match=False\", \"D\": \"|0>.evolve(X) = [0j, (1+0j)]; option D claims [0j, 1j] -> match=False\"}, \"observed\": {\"data\": [\"0j\", \"(1+0j)\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

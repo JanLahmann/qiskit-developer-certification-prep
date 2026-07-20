@@ -1,0 +1,45 @@
+{
+  "question": "s1-q027",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "setting global_phase raised=False; statevector norm=0.9999999999999998 (|e^(i pi/4)|=1 keeps it normalized) -> 'error/un-normalized' claim is False",
+      "B": "exact probs with phase [0.5, 0.5] == without phase [0.5, 0.5]? True; seeded counts gp={'0': 2022, '1': 2074} vs ref={'0': 2022, '1': 2074} (P(1) 0.506 vs 0.506) -> counts unchanged=True",
+      "C": "P(outcome 1) with phase=0.506 vs without=0.506; shifted toward 1? False",
+      "D": "an RY(pi/4) would give P(1)=0.146; observed P(1)=0.506 behaves like RY? False"
+    },
+    "observed": {
+      "probs_gp": [
+        0.4999999999999999,
+        0.4999999999999999
+      ],
+      "probs_ref": [
+        0.4999999999999999,
+        0.4999999999999999
+      ],
+      "counts_gp": {
+        "0": 2022,
+        "1": 2074
+      },
+      "counts_ref": {
+        "0": 2022,
+        "1": 2074
+      },
+      "raised": false,
+      "norm": 0.9999999999999998
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.27,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"setting global_phase raised=False; statevector norm=0.9999999999999998 (|e^(i pi/4)|=1 keeps it normalized) -> 'error/un-normalized' claim is False\", \"B\": \"exact probs with phase [0.5, 0.5] == without phase [0.5, 0.5]? True; seeded counts gp={'0': 2022, '1': 2074} vs ref={'0': 2022, '1': 2074} (P(1) 0.506 vs 0.506) -> counts unchanged=True\", \"C\": \"P(outcome 1) with phase=0.506 vs without=0.506; shifted toward 1? False\", \"D\": \"an RY(pi/4) would give P(1)=0.146; observed P(1)=0.506 behaves like RY? False\"}, \"observed\": {\"probs_gp\": [0.4999999999999999, 0.4999999999999999], \"probs_ref\": [0.4999999999999999, 0.4999999999999999], \"counts_gp\": {\"0\": 2022, \"1\": 2074}, \"counts_ref\": {\"0\": 2022, \"1\": 2074}, \"raised\": false, \"norm\": 0.9999999999999998}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

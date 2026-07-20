@@ -1,0 +1,57 @@
+{
+  "id": "s5-q038",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "You estimate an outcome probability from a SamplerV2 histogram and then increase the shot count from 1000 to 4000. Roughly how does the statistical (sampling) error on that estimated probability change?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "It roughly halves — sampling (shot) error scales like 1/sqrt(N), so 4x the shots gives about 2x smaller error"
+    },
+    {
+      "key": "B",
+      "text": "It drops to a quarter, scaling like 1/N with the number of shots"
+    },
+    {
+      "key": "C",
+      "text": "It is essentially unchanged — statistical error depends on the hardware, not the shot count"
+    },
+    {
+      "key": "D",
+      "text": "It roughly doubles, because more shots accumulate more noise"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Counting outcomes is a Monte-Carlo estimate of a probability. The standard error of a frequency is sqrt(p(1-p)/N), i.e. it shrinks like 1/sqrt(N). Quadrupling the shots (1000 -> 4000) multiplies the error by 1/sqrt(4) = 1/2. This is why halving the error costs 4x the shots — the same shots<->precision trade-off that underlies the primitives.",
+    "distractors": {
+      "B": "Sampling error scales like 1/sqrt(N), not 1/N. You would need 16x the shots (not 4x) to quarter the error.",
+      "C": "Shot noise is a property of finite sampling and clearly decreases with more shots; it is not fixed by the hardware.",
+      "D": "More shots reduce, not increase, the statistical uncertainty of the estimate; the error goes down like 1/sqrt(N)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitives",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

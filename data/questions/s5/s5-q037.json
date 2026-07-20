@@ -1,0 +1,57 @@
+{
+  "id": "s5-q037",
+  "section": "s5",
+  "objectives": [
+    "s5o2"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "Having chosen not to rely on any runtime mitigation, a team wants to rigorously correct measurement (readout) error in their SamplerV2 counts — not merely post-select. Which do-it-yourself technique fits the raw per-shot data the Sampler provides?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Characterize readout with calibration circuits to build an assignment (confusion) matrix, then apply its inverse to the measured counts (e.g. a matrix-based method such as M3)"
+    },
+    {
+      "key": "B",
+      "text": "Raise `sampler.options.resilience_level` until the readout error disappears"
+    },
+    {
+      "key": "C",
+      "text": "Apply Zero-Noise Extrapolation directly to the bitstrings"
+    },
+    {
+      "key": "D",
+      "text": "Turn on gate twirling, which mathematically inverts the readout confusion matrix"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Readout error is a classical relabeling of measured bits, captured by an assignment/confusion matrix measured from calibration circuits (prepare each basis state, see what you read). Inverting (or least-squares inverting) that matrix corrects the counts — the approach used by tools like mthree (M3). The Sampler's raw counts are exactly the input such a method needs.",
+    "distractors": {
+      "B": "SamplerV2 has no `resilience_level`; that Estimator option cannot be set here, and it would not build a readout-calibration matrix anyway.",
+      "C": "Zero-Noise Extrapolation mitigates errors in *expectation values* by scaling gate noise (an Estimator technique); it is not defined on raw sampled bitstrings.",
+      "D": "Twirling randomizes coherent gate/measurement noise into a simpler stochastic form; it does not measure or invert the readout confusion matrix."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
+      "https://quantum.cloud.ibm.com/docs/guides/primitives"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

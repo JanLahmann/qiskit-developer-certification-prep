@@ -1,0 +1,64 @@
+{
+  "id": "s5-q034",
+  "section": "s5",
+  "objectives": [
+    "s5o1",
+    "s5o2"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "Which statements about error handling in SamplerV2 are correct? (Select all that apply.)",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "By default SamplerV2 applies no measurement-error mitigation; the returned counts are raw samples"
+    },
+    {
+      "key": "B",
+      "text": "Dynamical decoupling is an error-*suppression* technique you can turn on via `options.dynamical_decoupling.enable`"
+    },
+    {
+      "key": "C",
+      "text": "Setting `options.resilience_level` selects the sampler's built-in mitigation strategy"
+    },
+    {
+      "key": "D",
+      "text": "Twirling reduces the number of qubits that get measured"
+    },
+    {
+      "key": "E",
+      "text": "Because the sampler post-processes the data internally, you cannot add your own mitigation"
+    }
+  ],
+  "answer": [
+    "A",
+    "B"
+  ],
+  "explanation": {
+    "correct": "SamplerV2 returns raw samples with no automatic readout mitigation (A), and its error-handling knobs are error *suppression* (dynamical decoupling) and twirling — DD is enabled through `options.dynamical_decoupling.enable` (B). Everything downstream (readout calibration, post-selection) is left to you.",
+    "distractors": {
+      "C": "`resilience_level` is an EstimatorV2 option for expectation-value mitigation; SamplerV2 has no such option, so it cannot select any built-in mitigation.",
+      "D": "Twirling inserts randomized Pauli/measurement operations to tailor noise; it does not change how many qubits are measured.",
+      "E": "The opposite is true: the sampler returns un-mitigated per-shot data precisely so you *can* apply your own mitigation afterward."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
+      "https://quantum.cloud.ibm.com/docs/guides/configure-error-suppression",
+      "https://quantum.cloud.ibm.com/docs/guides/primitives"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

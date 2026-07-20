@@ -1,0 +1,68 @@
+{
+  "id": "s5-q035",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You broadcast a 1-parameter circuit over 6 parameter values in one PUB and pass `shots=200`. How many total circuit executions does the sampler perform?",
+  "code": "import numpy as np\nvals = np.linspace(0, np.pi, 6).reshape(6, 1)   # 6 parameter sets\njob = sampler.run([(isa, vals)], shots=200)",
+  "options": [
+    {
+      "key": "A",
+      "text": "1200 — every parameter set gets its own 200 shots (6 x 200)"
+    },
+    {
+      "key": "B",
+      "text": "200 — the 200 shots are shared across the whole sweep"
+    },
+    {
+      "key": "C",
+      "text": "6 — one execution per parameter value"
+    },
+    {
+      "key": "D",
+      "text": "34 — 200 shots divided among the 6 parameter sets"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`shots` is per parameter set, not per PUB total. Broadcasting over 6 parameter values means the circuit is sampled 200 times at each of the 6 bindings, for 6 x 200 = 1200 executions. Each set's counts independently sum to 200.",
+    "distractors": {
+      "B": "The shot count applies to each broadcast element, so the sweep does not share a single 200-shot budget; the total is 6 x 200.",
+      "C": "6 is the number of parameter sets, not executions. Each set runs 200 shots, so executions number 1200.",
+      "D": "Shots are not divided across the sweep; each parameter set receives the full 200 shots."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/specify-runtime-options"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q035.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nt = Parameter(\"t\"); qc = QuantumCircuit(1); qc.ry(t, 0); qc.measure_all()\nisa = pm.run(qc)\n\nvals = np.linspace(0, np.pi, 6).reshape(6, 1)   # 6 parameter sets\nba = SamplerV2(mode=backend).run([(isa, vals)], shots=200).result()[0].data.meas\ntotal = sum(sum(ba.get_counts(i).values()) for i in range(ba.shape[0]))\n\ncandidates = {\"A\": 1200, \"B\": 200, \"C\": 6, \"D\": 34}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == total)\n    evidence[k] = f\"option claims {v}; summed shots over all 6 parameter sets = {total} (6 x 200) -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"param_sets\": int(ba.shape[0]), \"shots_each\": 200, \"total_executions\": total}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

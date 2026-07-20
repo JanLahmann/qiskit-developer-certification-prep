@@ -1,0 +1,68 @@
+{
+  "id": "s5-q036",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A 2-qubit circuit applies X to both qubits and measures all. What is the dominant key of `result[0].data.meas.get_int_counts()`?",
+  "code": "qc = QuantumCircuit(2)\nqc.x(0); qc.x(1)\nqc.measure_all()\n# ... run ...\nba = result[0].data.meas\nprint(ba.get_int_counts())   # dominant key?",
+  "options": [
+    {
+      "key": "A",
+      "text": "`3` — `get_int_counts()` keys are integers; the bitstring `11` is binary 3"
+    },
+    {
+      "key": "B",
+      "text": "`'11'` — same string keys as `get_counts()`"
+    },
+    {
+      "key": "C",
+      "text": "`11` — the digits `11` read as the decimal number eleven"
+    },
+    {
+      "key": "D",
+      "text": "`2` — two qubits are set to 1"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`get_int_counts()` returns the same histogram as `get_counts()` but with each bitstring decoded as an integer. Both qubits are 1, so the outcome bitstring is `11`, which as a binary number is 3. The keys are true integers (3), not the string `'11'`.",
+    "distractors": {
+      "B": "That is `get_counts()`'s output (string keys). `get_int_counts()` converts each key to an integer, so `'11'` becomes `3`.",
+      "C": "The bitstring is interpreted in binary, not read as base-10 digits, so `11` is 2+1 = 3, not eleven.",
+      "D": "2 would be the *count* of set qubits, not the integer value of the outcome. Binary `11` equals 3."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q036.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.x(0); qc.x(1); qc.measure_all()   # deterministic '11'\nisa = pm.run(qc)\n\ns = SamplerV2(mode=backend); s.options.simulator.seed_simulator = 5\nba = s.run([isa], shots=3000).result()[0].data.meas\nic = ba.get_int_counts()\ndom_key = max(ic, key=ic.get)   # dominant integer key\n\ncandidates = {\"A\": 3, \"B\": \"11\", \"C\": 11, \"D\": 2}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == dom_key)   # a string option can never equal an integer key\n    evidence[k] = f\"option claims dominant get_int_counts() key {v!r} ({type(v).__name__}); observed {dom_key!r} ({type(dom_key).__name__}) -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"get_counts\": ba.get_counts(), \"get_int_counts\": {str(kk): vv for kk, vv in ic.items()}, \"dominant_int\": dom_key}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

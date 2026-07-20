@@ -5,7 +5,7 @@
       "A"
     ],
     "evidence": {
-      "A": "data.c.get_counts() -> {'00': 101, '11': 86, '10': 6, '01': 7} (fields present: ['c'])",
+      "A": "data.c.get_counts() -> {'11': 90, '00': 101, '01': 3, '10': 6} (fields present: ['c'])",
       "B": "circuit uses QuantumCircuit(2,2); its register is 'c' not 'meas'. data.meas -> AttributeError: 'DataBin' object has no attribute 'meas'",
       "C": "BitArray.get_counts() exists and works = True; claim that get_counts is unavailable is false",
       "D": "shots=200 was passed yet field is 'c', not 'meas'; fields=['c']"
@@ -23,9 +23,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.74,
+  "wall_seconds": 1.21,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"data.c.get_counts() -> {'00': 101, '11': 86, '10': 6, '01': 7} (fields present: ['c'])\", \"B\": \"circuit uses QuantumCircuit(2,2); its register is 'c' not 'meas'. data.meas -> AttributeError: 'DataBin' object has no attribute 'meas'\", \"C\": \"BitArray.get_counts() exists and works = True; claim that get_counts is unavailable is false\", \"D\": \"shots=200 was passed yet field is 'c', not 'meas'; fields=['c']\"}, \"observed\": {\"data_fields\": [\"c\"], \"buggy_data_meas\": \"AttributeError: 'DataBin' object has no attribute 'meas'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"data.c.get_counts() -> {'11': 90, '00': 101, '01': 3, '10': 6} (fields present: ['c'])\", \"B\": \"circuit uses QuantumCircuit(2,2); its register is 'c' not 'meas'. data.meas -> AttributeError: 'DataBin' object has no attribute 'meas'\", \"C\": \"BitArray.get_counts() exists and works = True; claim that get_counts is unavailable is false\", \"D\": \"shots=200 was passed yet field is 'c', not 'meas'; fields=['c']\"}, \"observed\": {\"data_fields\": [\"c\"], \"buggy_data_meas\": \"AttributeError: 'DataBin' object has no attribute 'meas'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

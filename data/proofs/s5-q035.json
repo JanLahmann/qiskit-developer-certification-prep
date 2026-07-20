@@ -1,0 +1,30 @@
+{
+  "question": "s5-q035",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "option claims 1200; summed shots over all 6 parameter sets = 1200 (6 x 200) -> match=True",
+      "B": "option claims 200; summed shots over all 6 parameter sets = 1200 (6 x 200) -> match=False",
+      "C": "option claims 6; summed shots over all 6 parameter sets = 1200 (6 x 200) -> match=False",
+      "D": "option claims 34; summed shots over all 6 parameter sets = 1200 (6 x 200) -> match=False"
+    },
+    "observed": {
+      "param_sets": 6,
+      "shots_each": 200,
+      "total_executions": 1200
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.23,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"option claims 1200; summed shots over all 6 parameter sets = 1200 (6 x 200) -> match=True\", \"B\": \"option claims 200; summed shots over all 6 parameter sets = 1200 (6 x 200) -> match=False\", \"C\": \"option claims 6; summed shots over all 6 parameter sets = 1200 (6 x 200) -> match=False\", \"D\": \"option claims 34; summed shots over all 6 parameter sets = 1200 (6 x 200) -> match=False\"}, \"observed\": {\"param_sets\": 6, \"shots_each\": 200, \"total_executions\": 1200}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

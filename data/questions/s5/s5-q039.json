@@ -1,0 +1,68 @@
+{
+  "id": "s5-q039",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You submit three circuits in one call: `result = sampler.run([isaA, isaB, isaC]).result()`. What is `len(result)`?",
+  "code": "result = sampler.run([isaA, isaB, isaC]).result()\nprint(len(result))",
+  "options": [
+    {
+      "key": "A",
+      "text": "3 — one PUB result per submitted PUB, indexed `result[0]`, `result[1]`, `result[2]`"
+    },
+    {
+      "key": "B",
+      "text": "1 — all circuits are merged into a single result object"
+    },
+    {
+      "key": "C",
+      "text": "256 — one entry per shot"
+    },
+    {
+      "key": "D",
+      "text": "768 — total shots across the three circuits"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`run()` takes a list of PUBs and returns a PrimitiveResult that is a sequence of PUB results, one per input PUB, in order. Three circuits in, three results out — you read each with `result[i].data.<register>.get_counts()`.",
+    "distractors": {
+      "B": "Results are not merged; each PUB keeps its own result object. `len(result)` equals the number of PUBs, here 3.",
+      "C": "The length is the number of PUBs, not shots. Shots live inside each PUB result's BitArray (`num_shots`).",
+      "D": "768 is 3 x 256 total shots, but `len(result)` counts PUB results (3), not shots."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q039.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n\ndef mk(gate):\n    qc = QuantumCircuit(1)\n    gate(qc)\n    qc.measure_all()\n    return pm.run(qc)\n\nisaA = mk(lambda c: c.h(0))\nisaB = mk(lambda c: c.x(0))\nisaC = mk(lambda c: c.id(0))\n\nresult = SamplerV2(mode=backend).run([isaA, isaB, isaC], shots=256).result()\nobserved = len(result)\n\ncandidates = {\"A\": 3, \"B\": 1, \"C\": 256, \"D\": 768}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims len(result)={v}; run([isaA,isaB,isaC]) gave len(result)={observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"len_result\": observed,\n                           \"per_pub_counts\": [result[i].data.meas.get_counts() for i in range(observed)]}})\n"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

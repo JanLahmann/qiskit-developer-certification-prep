@@ -20,7 +20,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.49,
+  "wall_seconds": 1.27,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"transpile->ISA then run: SUCCESS, counts sum=128\", \"B\": \"still raised IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do not match the target\", \"C\": \"still raised IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do not match the target\", \"D\": \"raised ValueError: A backend or session must be specified.\"}, \"observed\": {\"buggy_error\": \"IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do not match the target hardware \"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

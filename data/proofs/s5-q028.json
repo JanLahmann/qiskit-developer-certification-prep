@@ -29,7 +29,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.62,
+  "wall_seconds": 1.35,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"post-selecting even-parity kept 3763/4000 shots and discarded odd-parity leakage {'01': 90, '10': 147} -> user-implemented mitigation works = True\", \"B\": \"resilience_level=2 raised ValidationError: 1 validation error for SamplerOptions\\nresilience_level\\n  Object has no (no such Sampler option)\", \"C\": \"with DD enabled, odd-parity readout outcomes still present (237 shots) -> DD does not post-select counts\", \"D\": \"post-processing IS possible (option A filtered 3763 shots) -> claim is false\"}, \"observed\": {\"raw\": {\"11\": 1822, \"00\": 1941, \"01\": 90, \"10\": 147}, \"post_selected\": {\"11\": 1822, \"00\": 1941}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "/Users/majl/GitHub/qiskit-developer-certification-prep/.venv/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/local_service.py:274: UserWarning: Options {'dynamical_decoupling': {'enable': True}} have no effect in local testing mode.\n  warnings.warn(f\"Options {options_copy} have no effect in local testing mode.\")\n",

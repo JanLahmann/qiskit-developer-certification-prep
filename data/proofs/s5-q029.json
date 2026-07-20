@@ -21,7 +21,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.5,
+  "wall_seconds": 1.25,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"option claims len=777; len(get_bitstrings())=777 (num_shots=777) -> match=True\", \"B\": \"option claims len=2; len(get_bitstrings())=777 (num_shots=777) -> match=False\", \"C\": \"option claims len=4; len(get_bitstrings())=777 (num_shots=777) -> match=False\", \"D\": \"option claims len=1; len(get_bitstrings())=777 (num_shots=777) -> match=False\"}, \"observed\": {\"len_bitstrings\": 777, \"num_shots\": 777}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

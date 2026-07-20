@@ -21,7 +21,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.3,
+  "wall_seconds": 1.17,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"default drawing puts q0_top, reverse_bits=True puts q1_top -> wire order flips (q1 on top) = True\", \"B\": \"circuit operations are ['x'] both before and after drawing; reverse_bits does not alter gate control/target roles\", \"C\": \"num_clbits=0; the reordering moves qubit wires (q0_top -> q1_top), not classical-bit labels\", \"D\": \"qc.draw returns TextDrawing (a rendering), no execution occurs, so no counts/endianness change\"}, \"observed\": {\"default_order\": \"q0_top\", \"reversed_order\": \"q1_top\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

@@ -7,7 +7,7 @@
   "stem": "You are preparing a figure of a quantum circuit for a published paper: you want colored gate boxes, a clean layout, and to save it as a high-resolution PNG with `savefig`. Which `draw()` output should you use?",
   "code": null,
   "options": [
-    { "key": "A", "text": "`output=\"mpl\"` — returns a styleable Matplotlib `Figure` you can customize and save with `savefig`." },
+    { "key": "A", "text": "`output=\"mpl\"` — returns a Matplotlib `Figure` you can style and save with `savefig`." },
     { "key": "B", "text": "`output=\"text\"` — returns ASCII art, ideal for quick inspection in a terminal." },
     { "key": "C", "text": "`output=\"latex_source\"` — returns a raw LaTeX string rather than a rendered image." },
     { "key": "D", "text": "the default `draw()` with no argument — gives you the same ASCII text drawing." }
@@ -30,7 +30,7 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false
   }
 }

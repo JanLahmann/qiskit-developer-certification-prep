@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.29,
+  "wall_seconds": 1.26,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"option claims outcome '011'; executed probabilities_dict has peak np.str_('101') at p=1.0 (little-endian q2 q1 q0) -> match=False\", \"B\": \"option claims outcome '101'; executed probabilities_dict has peak np.str_('101') at p=1.0 (little-endian q2 q1 q0) -> match=True\", \"C\": \"option claims outcome '110'; executed probabilities_dict has peak np.str_('101') at p=1.0 (little-endian q2 q1 q0) -> match=False\", \"D\": \"option claims outcome '5'; executed probabilities_dict has peak np.str_('101') at p=1.0 (little-endian q2 q1 q0) -> match=False\"}, \"observed\": {\"probabilities_dict\": {\"101\": 1.0}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

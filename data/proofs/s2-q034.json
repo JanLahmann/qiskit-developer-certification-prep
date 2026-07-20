@@ -23,7 +23,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.75,
+  "wall_seconds": 1.57,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"result: raised ValueError Bloch-sphere axes (need 2, one per qubit) -> correct=False\", \"B\": \"result: 1 Bloch-sphere axes (need 2, one per qubit) -> correct=False\", \"C\": \"result: raised VisualizationError Bloch-sphere axes (need 2, one per qubit) -> correct=False\", \"D\": \"result: 2 Bloch-sphere axes (need 2, one per qubit) -> correct=True\"}, \"observed\": {\"num_qubits\": 2, \"correct_calls\": [\"D\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

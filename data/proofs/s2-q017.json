@@ -25,7 +25,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.62,
+  "wall_seconds": 1.56,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\", \"B\"], \"evidence\": {\"A\": \"returned Figure; is matplotlib Figure=True\", \"B\": \"returned Figure; is matplotlib Figure=True\", \"C\": \"raised VisualizationError: 'Invalid output type matplotlib selected. The only valid choices are text, latex, latex_so\", \"D\": \"returned TextDrawing; is matplotlib Figure=False\", \"E\": \"raised VisualizationError: 'Invalid output type figure selected. The only valid choices are text, latex, latex_source\"}, \"observed\": {\"figure_returning_calls\": [\"A\", \"B\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

@@ -26,7 +26,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.69,
+  "wall_seconds": 1.91,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"observed labels ['00', '01', '10', '11'], Figure=True; insertion order ['11', '00', '10', '01'] -> match=False\", \"B\": \"observed labels ['00', '01', '10', '11']; count-descending order ['00', '11', '01', '10'] -> match=False\", \"C\": \"observed labels ['00', '01', '10', '11'], returns matplotlib Figure=True; ascending order ['00', '01', '10', '11'] -> match=True\", \"D\": \"observed labels ['00', '01', '10', '11']; return type is Figure (Figure=True) -> Axes-not-Figure match=False\"}, \"observed\": {\"labels\": [\"00\", \"01\", \"10\", \"11\"], \"is_figure\": true}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

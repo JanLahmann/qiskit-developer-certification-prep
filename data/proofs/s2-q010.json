@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.79,
+  "wall_seconds": 2.08,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"option claims ('str', 'Figure'); executed: draw() -> TextDrawing, draw('mpl') -> Figure (isinstance Figure=True) -> match=False\", \"B\": \"option claims ('TextDrawing', 'Figure'); executed: draw() -> TextDrawing, draw('mpl') -> Figure (isinstance Figure=True) -> match=True\", \"C\": \"option claims ('TextDrawing', 'Axes'); executed: draw() -> TextDrawing, draw('mpl') -> Figure (isinstance Figure=True) -> match=False\", \"D\": \"option claims ('str', 'AxesImage'); executed: draw() -> TextDrawing, draw('mpl') -> Figure (isinstance Figure=True) -> match=False\"}, \"observed\": {\"default\": \"TextDrawing\", \"mpl\": \"Figure\", \"is_figure\": true}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

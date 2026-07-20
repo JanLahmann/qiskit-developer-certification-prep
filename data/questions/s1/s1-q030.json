@@ -1,0 +1,68 @@
+{
+  "id": "s1-q030",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "For `Statevector.from_label('10')` on a two-qubit system, which computational-basis amplitude is 1?",
+  "code": "from qiskit.quantum_info import Statevector\n\nprint(Statevector.from_label('10').data)",
+  "options": [
+    {
+      "key": "A",
+      "text": "Index 3: the state |11⟩"
+    },
+    {
+      "key": "B",
+      "text": "Index 0: the state |00⟩"
+    },
+    {
+      "key": "C",
+      "text": "Index 2: the state |q1 q0⟩ = |10⟩ — qubit 1 is 1 and qubit 0 is 0"
+    },
+    {
+      "key": "D",
+      "text": "Index 1: label '10' means qubit 0 = 1 and qubit 1 = 0"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "`from_label` reads the string left-to-right as |q_{n-1} … q_0⟩. So '10' means qubit 1 = 1, qubit 0 = 0, which is the basis state with integer index 2 (binary 10). The amplitude at index 2 is 1.",
+    "distractors": {
+      "D": "This reverses the label order. The leftmost character is the highest-index qubit, so '10' has qubit 1 = 1 (index 2), not qubit 0 = 1 (index 1).",
+      "A": "|11⟩ (index 3) would come from label '11'. '10' has a 0 on qubit 0.",
+      "B": "|00⟩ (index 0) is label '00'; '10' has qubit 1 set."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q030.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Statevector\nobs = Statevector.from_label('10').data\ntrue_idx = int(np.argmax(np.abs(obs)))\nclaims = {\"C\": 2, \"D\": 1, \"A\": 3, \"B\": 0}\nevidence = {}\nproven = []\nfor k, i in claims.items():\n    m = (true_idx == i)\n    evidence[k] = f\"from_label('10').data has its 1 at index {true_idx}; option {k} claims index {i} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"index\": true_idx, \"data\": [str(x) for x in obs]}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "id": "s1-q033",
+  "section": "s1",
+  "objectives": [
+    "s1o1",
+    "s1o2"
+  ],
+  "type": "multi",
+  "difficulty": 3,
+  "stem": "`Operator.__eq__` (`==`) tests exact matrix equality, while `Operator.equiv` tests equality up to a global phase. For which of the following pairs does `Operator(a).equiv(Operator(b))` return True? Select all that apply.",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\n# a: e.g. QuantumCircuit with z(0); b: with rz(pi, 0)",
+  "options": [
+    {
+      "key": "A",
+      "text": "a = X gate, b = Y gate"
+    },
+    {
+      "key": "B",
+      "text": "a = Z gate, b = RZ(π)"
+    },
+    {
+      "key": "C",
+      "text": "a = X gate, b = RX(π)"
+    },
+    {
+      "key": "D",
+      "text": "a = H gate, b = Z gate"
+    }
+  ],
+  "answer": [
+    "B",
+    "C"
+  ],
+  "explanation": {
+    "correct": "RZ(π) = diag(e^{−iπ/2}, e^{iπ/2}) = −i·Z, so it equals Z up to the global phase −i → equiv is True (though `==` is False). Likewise RX(π) = −i·X, equivalent to X up to a global phase. Both pass `.equiv()`.",
+    "distractors": {
+      "A": "X and Y are genuinely different operators (they differ by more than a scalar phase — X·Y = iZ ≠ scalar), so `.equiv()` is False.",
+      "D": "H and Z are distinct unitaries (H is not a phase multiple of Z), so `.equiv()` returns False."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operator-class",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q033.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\n\ndef op(build):\n    qc = QuantumCircuit(1)\n    build(qc)\n    return Operator(qc)\n\npairs = {\n    \"A\": (\"X vs Y\", op(lambda c: c.x(0)), op(lambda c: c.y(0))),\n    \"B\": (\"Z vs RZ(pi)\", op(lambda c: c.z(0)), op(lambda c: c.rz(np.pi, 0))),\n    \"C\": (\"X vs RX(pi)\", op(lambda c: c.x(0)), op(lambda c: c.rx(np.pi, 0))),\n    \"D\": (\"H vs Z\", op(lambda c: c.h(0)), op(lambda c: c.z(0))),\n}\nevidence = {}\nproven = []\nfor k, (name, a, b) in pairs.items():\n    eq = bool(a.equiv(b))\n    ident = bool(a == b)\n    evidence[k] = f\"{name}: Operator.equiv()={eq} (exact ==? {ident})\"\n    if eq:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {k: bool(a.equiv(b)) for k, (_, a, b) in pairs.items()}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

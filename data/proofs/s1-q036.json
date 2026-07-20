@@ -1,0 +1,30 @@
+{
+  "question": "s1-q036",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "C": "measured circuit raised [QiskitError: 'Cannot apply instruction with classical bits: measure']; measurement-free circuit works=True; cause is the measurement -> True",
+      "D": "Statevector.from_instruction has a 'backend' parameter? False; error is about the measurement, not a backend -> False",
+      "A": "Statevector.from_instruction is exact (no shots parameter); 'set shots' does not apply -> False",
+      "B": "DensityMatrix.from_instruction on the SAME measured circuit also raised? True; the class is not the cause -> False"
+    },
+    "observed": {
+      "error": "QiskitError: 'Cannot apply instruction with classical bits: measure'",
+      "free_circuit_works": true,
+      "has_backend_param": false
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.06,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"C\": \"measured circuit raised [QiskitError: 'Cannot apply instruction with classical bits: measure']; measurement-free circuit works=True; cause is the measurement -> True\", \"D\": \"Statevector.from_instruction has a 'backend' parameter? False; error is about the measurement, not a backend -> False\", \"A\": \"Statevector.from_instruction is exact (no shots parameter); 'set shots' does not apply -> False\", \"B\": \"DensityMatrix.from_instruction on the SAME measured circuit also raised? True; the class is not the cause -> False\"}, \"observed\": {\"error\": \"QiskitError: 'Cannot apply instruction with classical bits: measure'\", \"free_circuit_works\": true, \"has_backend_param\": false}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

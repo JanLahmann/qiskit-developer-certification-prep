@@ -1,0 +1,73 @@
+{
+  "id": "s1-q045",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "A qubit is in state |0⟩. After which of the following single operations does a computational-basis measurement STILL yield outcome 0 with probability 1? Select all that apply.",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector",
+  "options": [
+    {
+      "key": "A",
+      "text": "Applying H"
+    },
+    {
+      "key": "B",
+      "text": "Applying X"
+    },
+    {
+      "key": "C",
+      "text": "Applying Z"
+    },
+    {
+      "key": "D",
+      "text": "Applying T"
+    },
+    {
+      "key": "E",
+      "text": "Applying RY(π/2)"
+    }
+  ],
+  "answer": [
+    "C",
+    "D"
+  ],
+  "explanation": {
+    "correct": "Z and T are diagonal (phase) gates: on |0⟩ they only multiply by a phase and leave the population entirely on |0⟩, so P(0) stays 1. H, X, and RY(π/2) all move amplitude to |1⟩.",
+    "distractors": {
+      "A": "H maps |0⟩ to |+⟩, giving P(0) = 0.5 — the population is no longer certain.",
+      "B": "X flips |0⟩ to |1⟩, so P(0) becomes 0.",
+      "E": "RY(π/2) rotates |0⟩ to |+⟩ (a real rotation that moves population), giving P(0) = 0.5."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q045.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\ndef p0(build):\n    qc = QuantumCircuit(1)\n    build(qc)\n    return float(Statevector.from_instruction(qc).probabilities()[0])\n\nopts = {\n    \"A\": (\"H\", lambda c: c.h(0)),\n    \"B\": (\"X\", lambda c: c.x(0)),\n    \"C\": (\"Z\", lambda c: c.z(0)),\n    \"D\": (\"T\", lambda c: c.t(0)),\n    \"E\": (\"RY(pi/2)\", lambda c: c.ry(np.pi / 2, 0)),\n}\nevidence = {}\nproven = []\nfor k, (name, build) in opts.items():\n    prob0 = p0(build)\n    keeps = bool(abs(prob0 - 1.0) < 1e-9)\n    evidence[k] = f\"after {name}: P(measure 0) = {prob0:.3f} -> stays |0> with certainty? {keeps}\"\n    if keeps:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {k: p0(b) for k, (_, b) in opts.items()}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

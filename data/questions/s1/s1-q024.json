@@ -11,30 +11,30 @@
   "options": [
     {
       "key": "A",
-      "text": "Replace `qc.s(0)` with `qc.sdg(0)` — S applies +i, but S† (sdg) applies the −i phase"
-    },
-    {
-      "key": "B",
       "text": "Nothing — S already applies the −i phase to |1⟩"
     },
     {
-      "key": "C",
+      "key": "B",
       "text": "Replace `qc.s(0)` with `qc.z(0)` — Z supplies the −i phase"
     },
     {
-      "key": "D",
+      "key": "C",
       "text": "Replace `qc.s(0)` with `qc.t(0)` — T supplies the −i phase"
+    },
+    {
+      "key": "D",
+      "text": "Replace `qc.s(0)` with `qc.sdg(0)` — S applies +i, but S† (sdg) applies the −i phase"
     }
   ],
   "answer": [
-    "A"
+    "D"
   ],
   "explanation": {
     "correct": "S = diag(1, i) applies a +i phase, producing (|0⟩ + i|1⟩)/√2 — the opposite of the target. The inverse gate S† (`sdg`) = diag(1, −i) gives the desired (|0⟩ − i|1⟩)/√2.",
     "distractors": {
-      "B": "S applies +i, not −i; the code produces (|0⟩ + i|1⟩)/√2, which is why it is wrong.",
-      "C": "Z applies a phase of −1 (not −i), giving (|0⟩ − |1⟩)/√2 = |−⟩ — a real amplitude, not the imaginary −i.",
-      "D": "T applies e^{iπ/4}, producing (|0⟩ + e^{iπ/4}|1⟩)/√2, neither +i nor −i."
+      "A": "S applies +i, not −i; the code produces (|0⟩ + i|1⟩)/√2, which is why it is wrong.",
+      "B": "Z applies a phase of −1 (not −i), giving (|0⟩ − |1⟩)/√2 = |−⟩ — a real amplitude, not the imaginary −i.",
+      "C": "T applies e^{iπ/4}, producing (|0⟩ + e^{iπ/4}|1⟩)/√2, neither +i nor −i."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,7 +47,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\ns = 1 / np.sqrt(2)\ntarget = np.array([s, -1j * s])  # (|0> - i|1>)/sqrt2\n\ndef state(gate):\n    qc = QuantumCircuit(1)\n    qc.h(0)\n    getattr(qc, gate)(0)\n    return Statevector.from_instruction(qc).data\n\norig = state('s')\nfix_sdg = state('sdg')\nfix_z = state('z')\nfix_t = state('t')\nm_orig = bool(np.allclose(orig, target))\nm_sdg = bool(np.allclose(fix_sdg, target))\nm_z = bool(np.allclose(fix_z, target))\nm_t = bool(np.allclose(fix_t, target))\nevidence = {\n    \"A\": f\"H then sdg -> {np.round(fix_sdg, 4).tolist()} == target {np.round(target, 4).tolist()}? {m_sdg} -> correct fix\",\n    \"B\": f\"H then s (current) -> {np.round(orig, 4).tolist()} == target? {m_orig} -> 'already correct' is False\",\n    \"C\": f\"H then z -> {np.round(fix_z, 4).tolist()} == target? {m_z} (Z gives -1, not -i)\",\n    \"D\": f\"H then t -> {np.round(fix_t, 4).tolist()} == target? {m_t} (T gives e^(i pi/4), not -i)\",\n}\nproven = []\nif m_sdg and not m_orig:\n    proven.append(\"A\")\nif m_orig:\n    proven.append(\"B\")\nif m_z:\n    proven.append(\"C\")\nif m_t:\n    proven.append(\"D\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"current\": [str(x) for x in np.round(orig, 4)], \"sdg\": [str(x) for x in np.round(fix_sdg, 4)]}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\ns = 1 / np.sqrt(2)\ntarget = np.array([s, -1j * s])  # (|0> - i|1>)/sqrt2\n\ndef state(gate):\n    qc = QuantumCircuit(1)\n    qc.h(0)\n    getattr(qc, gate)(0)\n    return Statevector.from_instruction(qc).data\n\norig = state('s')\nfix_sdg = state('sdg')\nfix_z = state('z')\nfix_t = state('t')\nm_orig = bool(np.allclose(orig, target))\nm_sdg = bool(np.allclose(fix_sdg, target))\nm_z = bool(np.allclose(fix_z, target))\nm_t = bool(np.allclose(fix_t, target))\nevidence = {\n    \"D\": f\"H then sdg -> {np.round(fix_sdg, 4).tolist()} == target {np.round(target, 4).tolist()}? {m_sdg} -> correct fix\",\n    \"A\": f\"H then s (current) -> {np.round(orig, 4).tolist()} == target? {m_orig} -> 'already correct' is False\",\n    \"B\": f\"H then z -> {np.round(fix_z, 4).tolist()} == target? {m_z} (Z gives -1, not -i)\",\n    \"C\": f\"H then t -> {np.round(fix_t, 4).tolist()} == target? {m_t} (T gives e^(i pi/4), not -i)\",\n}\nproven = []\nif m_sdg and not m_orig:\n    proven.append(\"D\")\nif m_orig:\n    proven.append(\"A\")\nif m_z:\n    proven.append(\"B\")\nif m_t:\n    proven.append(\"C\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"current\": [str(x) for x in np.round(orig, 4)], \"sdg\": [str(x) for x in np.round(fix_sdg, 4)]}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",

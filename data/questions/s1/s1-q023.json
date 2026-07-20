@@ -11,30 +11,30 @@
   "options": [
     {
       "key": "A",
-      "text": "|−⟩ = (|0⟩ − |1⟩)/√2 ≈ [0.7071, −0.7071]"
+      "text": "[0.7071, 0.7071j] — Z adds a phase of i to |1⟩"
     },
     {
       "key": "B",
-      "text": "|+⟩ unchanged ≈ [0.7071, 0.7071]"
+      "text": "|−⟩ = (|0⟩ − |1⟩)/√2 ≈ [0.7071, −0.7071]"
     },
     {
       "key": "C",
-      "text": "|1⟩ = [0, 1]"
+      "text": "|+⟩ unchanged ≈ [0.7071, 0.7071]"
     },
     {
       "key": "D",
-      "text": "[0.7071, 0.7071j] — Z adds a phase of i to |1⟩"
+      "text": "|1⟩ = [0, 1]"
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
     "correct": "Z = diag(1, −1) flips the sign of the |1⟩ amplitude, mapping |+⟩ = (|0⟩+|1⟩)/√2 to |−⟩ = (|0⟩−|1⟩)/√2 ≈ [0.7071, −0.7071].",
     "distractors": {
-      "B": "Z is not the identity on a superposition — it negates the |1⟩ component, turning |+⟩ into the orthogonal |−⟩.",
-      "C": "Z does not collapse or move the state to |1⟩; it changes a relative sign, not the populations.",
-      "D": "A phase of i on |1⟩ is the S gate. Z applies a phase of −1 (= e^{iπ}), giving a real −0.7071 amplitude."
+      "C": "Z is not the identity on a superposition — it negates the |1⟩ component, turning |+⟩ into the orthogonal |−⟩.",
+      "D": "Z does not collapse or move the state to |1⟩; it changes a relative sign, not the populations.",
+      "A": "A phase of i on |1⟩ is the S gate. Z applies a phase of −1 (= e^{iπ}), giving a real −0.7071 amplitude."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,7 +47,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.z(0)\nobserved = Statevector.from_instruction(qc).data\ns = 1 / np.sqrt(2)\ncands = {\"A\": np.array([s, -s]), \"B\": np.array([s, s]), \"C\": np.array([0, 1]), \"D\": np.array([s, 1j * s])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"Z|+> = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"sv\": [str(x) for x in np.round(observed, 6)]}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.z(0)\nobserved = Statevector.from_instruction(qc).data\ns = 1 / np.sqrt(2)\ncands = {\"B\": np.array([s, -s]), \"C\": np.array([s, s]), \"D\": np.array([0, 1]), \"A\": np.array([s, 1j * s])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"Z|+> = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"sv\": [str(x) for x in np.round(observed, 6)]}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",

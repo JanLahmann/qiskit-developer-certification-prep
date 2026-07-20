@@ -1,0 +1,68 @@
+{
+  "id": "s1-q038",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "What state does `Statevector.from_int(2, dims=4)` create for a two-qubit system?",
+  "code": "from qiskit.quantum_info import Statevector\n\nprint(Statevector.from_int(2, dims=4).data)",
+  "options": [
+    {
+      "key": "A",
+      "text": "|10⟩ — a 1 at index 2 (binary 10): qubit 1 = 1, qubit 0 = 0"
+    },
+    {
+      "key": "B",
+      "text": "|01⟩ — the integer 2 sets qubit 0 to 1"
+    },
+    {
+      "key": "C",
+      "text": "|2⟩ of a single 4-level qudit; not a valid two-qubit basis state"
+    },
+    {
+      "key": "D",
+      "text": "an equal superposition of two basis states, because dims=4"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`from_int(2, dims=4)` creates the basis state whose integer index is 2 in a 4-dimensional (two-qubit) space: a single amplitude 1 at index 2, i.e. |10⟩ (qubit 1 = 1, qubit 0 = 0).",
+    "distractors": {
+      "B": "Integer 2 is binary 10, so qubit 1 (the high bit) is set, giving |10⟩. |01⟩ would be integer 1.",
+      "C": "`dims=4` here means a 4-dimensional space that factorizes as two qubits; index 2 is a perfectly valid two-qubit basis state |10⟩.",
+      "D": "`from_int` builds a single basis state, never a superposition; `dims` only sets the total dimension."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q038.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Statevector\nobs = Statevector.from_int(2, dims=4).data\nidx = int(np.argmax(np.abs(obs)))\nnnz = int(np.count_nonzero(np.abs(obs) > 1e-9))\nclaims = {\"A\": 2, \"B\": 1}\nevidence = {}\nproven = []\nfor k, i in claims.items():\n    m = (nnz == 1 and idx == i)\n    evidence[k] = f\"from_int(2, dims=4) has one amplitude at index {idx} (nnz={nnz}); option {k} claims index {i} -> match={m}\"\n    if m:\n        proven.append(k)\nmC = (nnz != 1)\nevidence[\"C\"] = f\"result is a single basis state |{format(idx, '02b')}> with nnz={nnz}; 'invalid qudit' claim -> match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = (nnz > 1)\nevidence[\"D\"] = f\"result has nnz={nnz}; 'equal superposition' claim -> match={mD}\"\nif mD:\n    proven.append(\"D\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"index\": idx, \"nnz\": nnz}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

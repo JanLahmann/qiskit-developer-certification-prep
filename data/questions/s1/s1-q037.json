@@ -1,0 +1,68 @@
+{
+  "id": "s1-q037",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "A two-qubit circuit applies H to qubit 0 only. As a tensor product, what is `Operator(qc)`?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\n\nqc = QuantumCircuit(2)\nqc.h(0)\nprint(np.round(Operator(qc).data, 3))",
+  "options": [
+    {
+      "key": "A",
+      "text": "a 2×2 matrix H — the idle qubit is dropped from the operator"
+    },
+    {
+      "key": "B",
+      "text": "I ⊗ H — the operator on qubit 0 sits on the RIGHT of the tensor product"
+    },
+    {
+      "key": "C",
+      "text": "H ⊗ I — the operator on qubit 0 sits on the LEFT of the tensor product"
+    },
+    {
+      "key": "D",
+      "text": "H ⊗ H — H is applied to both qubits"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "Qiskit's little-endian convention puts qubit 0 on the RIGHT of the tensor product. A gate on qubit 0 with the other qubit idle is therefore I ⊗ H, a 4×4 operator.",
+    "distractors": {
+      "C": "H ⊗ I would put H on qubit 1 (the high, left factor). Since the gate is on qubit 0, H is the right factor: I ⊗ H.",
+      "D": "H acts on qubit 0 only; qubit 1 is idle, so its factor is the identity, not H.",
+      "A": "The operator of a 2-qubit circuit is always 4×4. The idle qubit contributes an identity factor; it is not dropped."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/guides/operator-class"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q037.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\nqc = QuantumCircuit(2)\nqc.h(0)\nobserved = Operator(qc).data\nH = np.array([[1, 1], [1, -1]], dtype=complex) / np.sqrt(2)\nI = np.eye(2, dtype=complex)\ncands = {\"B\": np.kron(I, H), \"C\": np.kron(H, I), \"D\": np.kron(H, H), \"A\": H}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = observed.shape == v.shape and bool(np.allclose(observed, v))\n    evidence[k] = f\"Operator(qc) is {observed.shape}; option {k} claims {v.shape} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"shape\": list(observed.shape)}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

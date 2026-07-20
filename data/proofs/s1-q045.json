@@ -1,0 +1,34 @@
+{
+  "question": "s1-q045",
+  "verdict": {
+    "answer": [
+      "C",
+      "D"
+    ],
+    "evidence": {
+      "A": "after H: P(measure 0) = 0.500 -> stays |0> with certainty? False",
+      "B": "after X: P(measure 0) = 0.000 -> stays |0> with certainty? False",
+      "C": "after Z: P(measure 0) = 1.000 -> stays |0> with certainty? True",
+      "D": "after T: P(measure 0) = 1.000 -> stays |0> with certainty? True",
+      "E": "after RY(pi/2): P(measure 0) = 0.500 -> stays |0> with certainty? False"
+    },
+    "observed": {
+      "A": 0.4999999999999999,
+      "B": 0.0,
+      "C": 1.0,
+      "D": 1.0,
+      "E": 0.5000000000000001
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.1,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\", \"D\"], \"evidence\": {\"A\": \"after H: P(measure 0) = 0.500 -> stays |0> with certainty? False\", \"B\": \"after X: P(measure 0) = 0.000 -> stays |0> with certainty? False\", \"C\": \"after Z: P(measure 0) = 1.000 -> stays |0> with certainty? True\", \"D\": \"after T: P(measure 0) = 1.000 -> stays |0> with certainty? True\", \"E\": \"after RY(pi/2): P(measure 0) = 0.500 -> stays |0> with certainty? False\"}, \"observed\": {\"A\": 0.4999999999999999, \"B\": 0.0, \"C\": 1.0, \"D\": 1.0, \"E\": 0.5000000000000001}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

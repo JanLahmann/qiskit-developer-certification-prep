@@ -1,0 +1,68 @@
+{
+  "id": "s1-q029",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "What is the statevector after applying a Y gate to |0⟩?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.y(0)\nprint(Statevector.from_instruction(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": "[0, i] — Y|0⟩ = i|1⟩"
+    },
+    {
+      "key": "B",
+      "text": "[0, 1] = |1⟩ — Y is just a bit flip like X"
+    },
+    {
+      "key": "C",
+      "text": "[0, −i] — Y|0⟩ = −i|1⟩"
+    },
+    {
+      "key": "D",
+      "text": "[i, 0] — Y|0⟩ = i|0⟩"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Y = [[0, −i], [i, 0]]. Acting on |0⟩ (the first column) it returns [0, i] = i|1⟩. Y flips the bit AND multiplies by i.",
+    "distractors": {
+      "B": "Y does flip |0⟩ to the |1⟩ subspace, but it also applies a factor of i. Ignoring that phase confuses Y with X.",
+      "C": "Y|0⟩ = +i|1⟩. The −i factor appears for Y|1⟩ = −i|0⟩, not Y|0⟩.",
+      "D": "Y is off-diagonal; it moves |0⟩ to the |1⟩ amplitude, it does not leave the qubit in |0⟩."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q029.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.y(0)\nobserved = Statevector.from_instruction(qc).data\ncands = {\"A\": np.array([0, 1j]), \"B\": np.array([0, 1]), \"C\": np.array([0, -1j]), \"D\": np.array([1j, 0])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"Y|0> = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"sv\": [str(x) for x in np.round(observed, 6)]}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

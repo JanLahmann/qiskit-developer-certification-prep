@@ -1,0 +1,68 @@
+{
+  "id": "s1-q031",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A two-qubit circuit applies X to qubit 0 only. What does `probabilities_dict()` of the resulting statevector return?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.x(0)\nprint(Statevector.from_instruction(qc).probabilities_dict())",
+  "options": [
+    {
+      "key": "A",
+      "text": "{'10': 1.0} — qubit 0 is the leftmost bit in the string"
+    },
+    {
+      "key": "B",
+      "text": "{'11': 1.0} — X flips both qubits"
+    },
+    {
+      "key": "C",
+      "text": "{'00': 1.0} — X on qubit 0 has no measurable effect"
+    },
+    {
+      "key": "D",
+      "text": "{'01': 1.0} — bitstrings are ordered q1q0, so flipping qubit 0 gives '01'"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "Qiskit orders bitstrings as q_{n-1}…q_0, so the rightmost character is qubit 0. Flipping only qubit 0 of |00⟩ gives the bitstring '01' with probability 1.",
+    "distractors": {
+      "A": "This reverses the bit order. Qubit 0 is the rightmost character, so its flip shows up on the right of the string ('01'), not the left ('10').",
+      "B": "X was applied to qubit 0 only; qubit 1 stays 0, so the string is '01', not '11'.",
+      "C": "X flips |0⟩ to |1⟩ on qubit 0 — a very measurable change; the outcome '01' occurs with certainty."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q031.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(2)\nqc.x(0)\nd = Statevector.from_instruction(qc).probabilities_dict()\nobs = {str(k): round(float(v), 6) for k, v in d.items()}\ntrue_key = max(obs, key=obs.get)\nclaims = {\"D\": \"01\", \"A\": \"10\", \"B\": \"11\", \"C\": \"00\"}\nevidence = {}\nproven = []\nfor k, key in claims.items():\n    m = (obs.get(key, 0.0) == 1.0)\n    evidence[k] = f\"probabilities_dict() = {obs}; option {k} claims '{key}':1.0 -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"dict\": obs, \"certain_outcome\": true_key}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

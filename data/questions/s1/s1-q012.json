@@ -11,30 +11,30 @@
   "options": [
     {
       "key": "A",
-      "text": "X on qubit 0 (I ⊗ X): the rightmost label character maps to the lowest-index qubit"
-    },
-    {
-      "key": "B",
-      "text": "X on qubit 1 (X ⊗ I): the leftmost label character maps to qubit 0"
-    },
-    {
-      "key": "C",
       "text": "X on both qubits, since the identity 'passes through' and copies the X"
     },
     {
-      "key": "D",
+      "key": "B",
       "text": "Nothing — 'IX' is an invalid Pauli label and raises an error"
+    },
+    {
+      "key": "C",
+      "text": "X on qubit 0 (I ⊗ X): the rightmost label character maps to the lowest-index qubit"
+    },
+    {
+      "key": "D",
+      "text": "X on qubit 1 (X ⊗ I): the leftmost label character maps to qubit 0"
     }
   ],
   "answer": [
-    "A"
+    "C"
   ],
   "explanation": {
     "correct": "Pauli labels are little-endian: the rightmost character is qubit 0. So `Pauli('IX')` puts identity on qubit 1 and X on qubit 0, giving I ⊗ X.",
     "distractors": {
-      "B": "Reverses the label convention. The leftmost character is the highest-index qubit, so I (not X) acts on qubit 1.",
-      "C": "The identity factor leaves its qubit untouched; it does not duplicate the X onto the other qubit.",
-      "D": "'IX' is a perfectly valid Pauli label; I is a legal single-qubit Pauli character."
+      "D": "Reverses the label convention. The leftmost character is the highest-index qubit, so I (not X) acts on qubit 1.",
+      "A": "The identity factor leaves its qubit untouched; it does not duplicate the X onto the other qubit.",
+      "B": "'IX' is a perfectly valid Pauli label; I is a legal single-qubit Pauli character."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,7 +47,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nX = np.array([[0, 1], [1, 0]], dtype=complex)\nI = np.eye(2, dtype=complex)\np = Pauli('IX')\nobserved = p.to_matrix()\nmA = bool(np.allclose(observed, np.kron(I, X)))\nmB = bool(np.allclose(observed, np.kron(X, I)))\nmC = bool(np.allclose(observed, np.kron(X, X)))\nevidence = {\n    \"A\": f\"Pauli('IX').to_matrix() == I⊗X (X on qubit 0)? {mA}; p[0]='{p[0].to_label()}', p[1]='{p[1].to_label()}'\",\n    \"B\": f\"== X⊗I (X on qubit 1)? {mB}\",\n    \"C\": f\"== X⊗X (X on both qubits)? {mC}\",\n    \"D\": \"Pauli('IX') constructed with no error, so the claim 'invalid label' is False\",\n}\nproven = [k for k, m in ((\"A\", mA), (\"B\", mB), (\"C\", mC)) if m]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"qubit0_op\": p[0].to_label(), \"qubit1_op\": p[1].to_label()}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nX = np.array([[0, 1], [1, 0]], dtype=complex)\nI = np.eye(2, dtype=complex)\np = Pauli('IX')\nobserved = p.to_matrix()\nmA = bool(np.allclose(observed, np.kron(I, X)))\nmB = bool(np.allclose(observed, np.kron(X, I)))\nmC = bool(np.allclose(observed, np.kron(X, X)))\nevidence = {\n    \"C\": f\"Pauli('IX').to_matrix() == I⊗X (X on qubit 0)? {mA}; p[0]='{p[0].to_label()}', p[1]='{p[1].to_label()}'\",\n    \"D\": f\"== X⊗I (X on qubit 1)? {mB}\",\n    \"A\": f\"== X⊗X (X on both qubits)? {mC}\",\n    \"B\": \"Pauli('IX') constructed with no error, so the claim 'invalid label' is False\",\n}\nproven = [k for k, m in ((\"C\", mA), (\"D\", mB), (\"A\", mC)) if m]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"qubit0_op\": p[0].to_label(), \"qubit1_op\": p[1].to_label()}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",

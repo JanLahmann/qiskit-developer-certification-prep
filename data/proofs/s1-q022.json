@@ -2,13 +2,13 @@
   "question": "s1-q022",
   "verdict": {
     "answer": [
-      "A"
+      "C"
     ],
     "evidence": {
-      "A": "T|1> = [0j, (0.7071+0.7071j)]; option A claims [0j, (0.7071+0.7071j)] -> match=True",
-      "B": "T|1> = [0j, (0.7071+0.7071j)]; option B claims [0, 1] -> match=False",
-      "C": "T|1> = [0j, (0.7071+0.7071j)]; option C claims [0j, 1j] -> match=False",
-      "D": "T|1> = [0j, (0.7071+0.7071j)]; option D claims [(0.7071+0j), 0.7071j] -> match=False"
+      "C": "T|1> = [0j, (0.7071+0.7071j)]; option C claims [0j, (0.7071+0.7071j)] -> match=True",
+      "D": "T|1> = [0j, (0.7071+0.7071j)]; option D claims [0, 1] -> match=False",
+      "A": "T|1> = [0j, (0.7071+0.7071j)]; option A claims [0j, 1j] -> match=False",
+      "B": "T|1> = [0j, (0.7071+0.7071j)]; option B claims [(0.7071+0j), 0.7071j] -> match=False"
     },
     "observed": {
       "sv": [
@@ -23,9 +23,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.33,
+  "wall_seconds": 1.06,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"T|1> = [0j, (0.7071+0.7071j)]; option A claims [0j, (0.7071+0.7071j)] -> match=True\", \"B\": \"T|1> = [0j, (0.7071+0.7071j)]; option B claims [0, 1] -> match=False\", \"C\": \"T|1> = [0j, (0.7071+0.7071j)]; option C claims [0j, 1j] -> match=False\", \"D\": \"T|1> = [0j, (0.7071+0.7071j)]; option D claims [(0.7071+0j), 0.7071j] -> match=False\"}, \"observed\": {\"sv\": [\"0j\", \"(0.707107+0.707107j)\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"C\": \"T|1> = [0j, (0.7071+0.7071j)]; option C claims [0j, (0.7071+0.7071j)] -> match=True\", \"D\": \"T|1> = [0j, (0.7071+0.7071j)]; option D claims [0, 1] -> match=False\", \"A\": \"T|1> = [0j, (0.7071+0.7071j)]; option A claims [0j, 1j] -> match=False\", \"B\": \"T|1> = [0j, (0.7071+0.7071j)]; option B claims [(0.7071+0j), 0.7071j] -> match=False\"}, \"observed\": {\"sv\": [\"0j\", \"(0.707107+0.707107j)\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

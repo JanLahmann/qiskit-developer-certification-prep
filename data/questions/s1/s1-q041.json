@@ -1,0 +1,68 @@
+{
+  "id": "s1-q041",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "A Bell circuit applies H to qubit 0 then CX(0, 1). What does `probabilities_dict()` of the resulting statevector return?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nprint(Statevector.from_instruction(qc).probabilities_dict())",
+  "options": [
+    {
+      "key": "A",
+      "text": "{'00': 0.5, '11': 0.5} — the two qubits are perfectly correlated"
+    },
+    {
+      "key": "B",
+      "text": "{'00': 0.25, '01': 0.25, '10': 0.25, '11': 0.25} — all four outcomes equally likely"
+    },
+    {
+      "key": "C",
+      "text": "{'01': 0.5, '10': 0.5} — the qubits are anti-correlated"
+    },
+    {
+      "key": "D",
+      "text": "{'00': 1.0} — CX has no effect after H"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "H puts qubit 0 into |+⟩, then CX entangles the qubits into (|00⟩ + |11⟩)/√2. Measuring gives '00' or '11', each with probability 0.5 — perfect correlation.",
+    "distractors": {
+      "B": "Four equal outcomes would require two independent |+⟩ qubits (H on both). The CX creates entanglement, forbidding '01' and '10'.",
+      "C": "(|01⟩ + |10⟩)/√2 is the anti-correlated Bell state (from an extra X). This circuit produces the correlated |00⟩/|11⟩ pair.",
+      "D": "CX flips qubit 1 for the |1⟩ component of qubit 0, which is essential to the entanglement; it is far from a no-op."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q041.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nd = Statevector.from_instruction(qc).probabilities_dict()\nobs = {str(k): round(float(v), 4) for k, v in d.items() if float(v) > 1e-9}\nclaims = {\n    \"A\": {\"00\": 0.5, \"11\": 0.5},\n    \"B\": {\"00\": 0.25, \"01\": 0.25, \"10\": 0.25, \"11\": 0.25},\n    \"C\": {\"01\": 0.5, \"10\": 0.5},\n    \"D\": {\"00\": 1.0},\n}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = (obs == c)\n    evidence[k] = f\"probabilities_dict() = {obs}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"dict\": obs}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

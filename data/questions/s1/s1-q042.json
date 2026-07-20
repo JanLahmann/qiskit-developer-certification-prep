@@ -1,0 +1,68 @@
+{
+  "id": "s1-q042",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "For the Bell state (|00⟩ + |11⟩)/√2, what does `sv.probabilities([0])` (the marginal distribution over qubit 0) return?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nsv = Statevector.from_instruction(qc)\nprint(sv.probabilities([0]))",
+  "options": [
+    {
+      "key": "A",
+      "text": "[0.7071, 0.7071] — it returns amplitudes, not probabilities"
+    },
+    {
+      "key": "B",
+      "text": "[0.5, 0.5] — qubit 0 on its own is 0 or 1 with equal probability"
+    },
+    {
+      "key": "C",
+      "text": "[1.0, 0.0] — qubit 0 is always measured as 0"
+    },
+    {
+      "key": "D",
+      "text": "[0.5, 0, 0, 0.5] — `probabilities([0])` still returns all four joint outcomes"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "Passing a qubit list to `probabilities` marginalizes over the rest. Qubit 0 of the Bell state is maximally mixed, so its marginal is [0.5, 0.5] (a length-2 vector for one qubit).",
+    "distractors": {
+      "C": "Qubit 0 is in an equal mixture, not fixed at 0. Both outcomes have probability 0.5.",
+      "D": "`probabilities([0])` returns the distribution over qubit 0 ALONE — a length-2 array — not all four joint outcomes.",
+      "A": "`probabilities` returns probabilities (which sum to 1), not amplitudes. 0.7071 is an amplitude magnitude, not a probability."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q042.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nobs = np.asarray(Statevector.from_instruction(qc).probabilities([0]))\ns = 1 / np.sqrt(2)\ncands = {\"B\": np.array([0.5, 0.5]), \"C\": np.array([1.0, 0.0]),\n         \"D\": np.array([0.5, 0, 0, 0.5]), \"A\": np.array([s, s])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = obs.shape == v.shape and bool(np.allclose(obs, v))\n    evidence[k] = f\"probabilities([0]) = {np.round(obs, 4).tolist()} (len {obs.shape[0]}); option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"marginal\": obs.tolist()}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

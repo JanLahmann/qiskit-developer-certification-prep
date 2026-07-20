@@ -1,0 +1,29 @@
+{
+  "question": "s1-q038",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "from_int(2, dims=4) has one amplitude at index 2 (nnz=1); option A claims index 2 -> match=True",
+      "B": "from_int(2, dims=4) has one amplitude at index 2 (nnz=1); option B claims index 1 -> match=False",
+      "C": "result is a single basis state |10> with nnz=1; 'invalid qudit' claim -> match=False",
+      "D": "result has nnz=1; 'equal superposition' claim -> match=False"
+    },
+    "observed": {
+      "index": 2,
+      "nnz": 1
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.06,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"from_int(2, dims=4) has one amplitude at index 2 (nnz=1); option A claims index 2 -> match=True\", \"B\": \"from_int(2, dims=4) has one amplitude at index 2 (nnz=1); option B claims index 1 -> match=False\", \"C\": \"result is a single basis state |10> with nnz=1; 'invalid qudit' claim -> match=False\", \"D\": \"result has nnz=1; 'equal superposition' claim -> match=False\"}, \"observed\": {\"index\": 2, \"nnz\": 1}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

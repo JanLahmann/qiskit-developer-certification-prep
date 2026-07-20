@@ -1,0 +1,68 @@
+{
+  "id": "s1-q032",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "A circuit applies `qc.cx(0, 1)` (control = qubit 0, target = qubit 1). Writing states as |q1 q0⟩, which basis-state transformation does it implement?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\n\nqc = QuantumCircuit(2)\nqc.cx(0, 1)\nprint(Operator(qc).data.real)",
+  "options": [
+    {
+      "key": "A",
+      "text": "|11⟩ → |00⟩: both qubits flip when both are 1"
+    },
+    {
+      "key": "B",
+      "text": "|01⟩ → |11⟩ and |11⟩ → |01⟩; |00⟩ and |10⟩ unchanged (target qubit 1 flips when control qubit 0 = 1)"
+    },
+    {
+      "key": "C",
+      "text": "|10⟩ → |11⟩ and |11⟩ → |10⟩ (qubit 1 flips whenever qubit 1 is already 1)"
+    },
+    {
+      "key": "D",
+      "text": "|10⟩ → |01⟩: the gate simply swaps the two qubits"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "With control = qubit 0, the target (qubit 1) is flipped exactly when qubit 0 = 1. In |q1 q0⟩ notation, qubit 0 = 1 holds for |01⟩ and |11⟩, so |01⟩ ↔ |11⟩ while |00⟩ and |10⟩ (qubit 0 = 0) are untouched.",
+    "distractors": {
+      "C": "This treats qubit 1 as the control. The control is qubit 0, so the flip is conditioned on qubit 0 = 1, not qubit 1.",
+      "D": "CX is not a SWAP; it changes only the target when the control is 1, leaving |00⟩/|10⟩ fixed. SWAP would move population differently.",
+      "A": "CX flips one qubit (the target), not both. |11⟩ maps to |01⟩, not |00⟩."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q032.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Operator\nqc = QuantumCircuit(2)\nqc.cx(0, 1)\nU = Operator(qc)\n\ndef maps(src, dst):\n    return bool(np.allclose(Statevector.from_label(src).evolve(U).data, Statevector.from_label(dst).data))\n\nA_ok = maps('01', '11') and maps('11', '01') and maps('00', '00') and maps('10', '10')\nB_ok = maps('10', '11') and maps('11', '10')\nC_ok = maps('10', '01')\nD_ok = maps('11', '00')\nevidence = {\n    \"B\": f\"01->11 & 11->01 with 00,10 fixed? {A_ok}\",\n    \"C\": f\"10->11 & 11->10 (qubit1 as control)? {B_ok}\",\n    \"D\": f\"10->01 (a full swap)? {C_ok}\",\n    \"A\": f\"11->00 (both qubits flip)? {D_ok}\",\n}\nproven = [k for k, ok in ((\"B\", A_ok), (\"C\", B_ok), (\"D\", C_ok), (\"A\", D_ok)) if ok]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"01_maps_to_index\": int(np.argmax(np.abs(Statevector.from_label('01').evolve(U).data)))}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

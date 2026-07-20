@@ -1,0 +1,68 @@
+{
+  "id": "s1-q040",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "For the state RY(π/3)|0⟩, what is the expectation value ⟨Z⟩?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\n\nqc = QuantumCircuit(1)\nqc.ry(np.pi / 3, 0)\nsv = Statevector.from_instruction(qc)\nprint(sv.expectation_value(Pauli('Z')))",
+  "options": [
+    {
+      "key": "A",
+      "text": "0.25 — ⟨Z⟩ equals P(1) = sin²(θ/2)"
+    },
+    {
+      "key": "B",
+      "text": "0.866 = cos(π/6) = cos(θ/2)"
+    },
+    {
+      "key": "C",
+      "text": "0.5 = cos(π/3) — ⟨Z⟩ = cos θ for RY(θ)|0⟩"
+    },
+    {
+      "key": "D",
+      "text": "−0.5 — ⟨Z⟩ = −cos θ"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "For RY(θ)|0⟩ the populations are cos²(θ/2) on |0⟩ and sin²(θ/2) on |1⟩, so ⟨Z⟩ = cos²(θ/2) − sin²(θ/2) = cos θ. With θ = π/3, cos(π/3) = 0.5.",
+    "distractors": {
+      "D": "The sign is positive here: the state is weighted toward |0⟩ (the +1 eigenstate of Z), giving ⟨Z⟩ = +cos θ = +0.5.",
+      "A": "0.25 is P(1) = sin²(θ/2), a probability, not the Z expectation value. ⟨Z⟩ = cos θ = 0.5.",
+      "B": "cos(θ/2) = cos(π/6) ≈ 0.866 uses the half-angle. The expectation value uses the full angle: ⟨Z⟩ = cos θ."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q040.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\nqc = QuantumCircuit(1)\nqc.ry(np.pi / 3, 0)\nval = float(np.real(Statevector.from_instruction(qc).expectation_value(Pauli('Z'))))\nclaims = {\"C\": 0.5, \"D\": -0.5, \"A\": 0.25, \"B\": 0.8660254}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = bool(abs(val - c) < 1e-6)\n    evidence[k] = f\"<Z> = {val:.4f}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"Z_expectation\": val}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

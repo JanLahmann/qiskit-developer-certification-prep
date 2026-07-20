@@ -27,7 +27,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.33,
+  "wall_seconds": 1.13,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\", \"C\", \"D\"], \"evidence\": {\"A\": \"Pauli('XX').commutes(Pauli('ZZ')) = True\", \"B\": \"Pauli('XI').commutes(Pauli('ZZ')) = False\", \"C\": \"Pauli('XZ').commutes(Pauli('ZX')) = True\", \"D\": \"Pauli('IX').commutes(Pauli('ZI')) = True\", \"E\": \"Pauli('X').commutes(Pauli('Z')) = False\"}, \"observed\": {\"A\": true, \"B\": false, \"C\": true, \"D\": true, \"E\": false}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

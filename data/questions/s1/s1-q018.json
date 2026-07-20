@@ -11,30 +11,30 @@
   "options": [
     {
       "key": "A",
-      "text": "SparsePauliOp(['Z', 'X'], coeffs=[3, 1]) — like terms are summed"
-    },
-    {
-      "key": "B",
-      "text": "SparsePauliOp(['Z', 'Z', 'X'], coeffs=[1, 2, 1]) — from_list already merged, so simplify does nothing"
-    },
-    {
-      "key": "C",
       "text": "SparsePauliOp(['Z', 'X'], coeffs=[2, 1]) — duplicate 'Z' terms are dropped, keeping the largest"
     },
     {
-      "key": "D",
+      "key": "B",
       "text": "SparsePauliOp(['Z', 'X'], coeffs=[3, 2]) — every coefficient is summed together"
+    },
+    {
+      "key": "C",
+      "text": "SparsePauliOp(['Z', 'X'], coeffs=[3, 1]) — like terms are summed"
+    },
+    {
+      "key": "D",
+      "text": "SparsePauliOp(['Z', 'Z', 'X'], coeffs=[1, 2, 1]) — from_list already merged, so simplify does nothing"
     }
   ],
   "answer": [
-    "A"
+    "C"
   ],
   "explanation": {
     "correct": "`simplify()` combines repeated Pauli terms by summing their coefficients: the two 'Z' terms (1 + 2) become 3, and 'X' stays 1, yielding coeffs [3, 1].",
     "distractors": {
-      "B": "`from_list` does NOT merge duplicates; it stores all three terms verbatim. It is `simplify()` that reduces them to two.",
-      "C": "Duplicate terms are summed, not deduplicated — 1 + 2 = 3, not 2.",
-      "D": "Only terms with the SAME Pauli string are summed. 'X' is a different string, so its coefficient stays 1, not 2."
+      "D": "`from_list` does NOT merge duplicates; it stores all three terms verbatim. It is `simplify()` that reduces them to two.",
+      "A": "Duplicate terms are summed, not deduplicated — 1 + 2 = 3, not 2.",
+      "B": "Only terms with the SAME Pauli string are summed. 'X' is a different string, so its coefficient stays 1, not 2."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,7 +47,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.quantum_info import SparsePauliOp\nop = SparsePauliOp.from_list([(\"Z\", 1), (\"Z\", 2), (\"X\", 1)]).simplify()\nlabels = list(op.paulis.to_labels())\nobs = {l: round(complex(c).real, 6) for l, c in zip(labels, op.coeffs)}\nnterms = len(labels)\nmA = (obs == {\"Z\": 3.0, \"X\": 1.0})\nmB = (nterms == 3)\nmC = (obs == {\"Z\": 2.0, \"X\": 1.0})\nmD = (obs == {\"Z\": 3.0, \"X\": 2.0})\nevidence = {\n    \"A\": f\"simplify() -> {obs} ({nterms} terms); option A claims {{'Z':3,'X':1}} -> match={mA}\",\n    \"B\": f\"simplify() produced {nterms} terms; option B claims 3 unmerged terms -> match={mB}\",\n    \"C\": f\"option C claims Z coeff 2 (dedup); actual {obs} -> match={mC}\",\n    \"D\": f\"option D claims {{'Z':3,'X':2}}; actual {obs} -> match={mD}\",\n}\nproven = [k for k, m in ((\"A\", mA), (\"B\", mB), (\"C\", mC), (\"D\", mD)) if m]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"simplified\": obs, \"n_terms\": nterms}})\n"
+    "proof_script": "from qiskit.quantum_info import SparsePauliOp\nop = SparsePauliOp.from_list([(\"Z\", 1), (\"Z\", 2), (\"X\", 1)]).simplify()\nlabels = list(op.paulis.to_labels())\nobs = {l: round(complex(c).real, 6) for l, c in zip(labels, op.coeffs)}\nnterms = len(labels)\nmA = (obs == {\"Z\": 3.0, \"X\": 1.0})\nmB = (nterms == 3)\nmC = (obs == {\"Z\": 2.0, \"X\": 1.0})\nmD = (obs == {\"Z\": 3.0, \"X\": 2.0})\nevidence = {\n    \"C\": f\"simplify() -> {obs} ({nterms} terms); option A claims {{'Z':3,'X':1}} -> match={mA}\",\n    \"D\": f\"simplify() produced {nterms} terms; option B claims 3 unmerged terms -> match={mB}\",\n    \"A\": f\"option C claims Z coeff 2 (dedup); actual {obs} -> match={mC}\",\n    \"B\": f\"option D claims {{'Z':3,'X':2}}; actual {obs} -> match={mD}\",\n}\nproven = [k for k, m in ((\"C\", mA), (\"D\", mB), (\"A\", mC), (\"B\", mD)) if m]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"simplified\": obs, \"n_terms\": nterms}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",

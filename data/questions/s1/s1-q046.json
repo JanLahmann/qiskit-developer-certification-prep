@@ -1,0 +1,57 @@
+{
+  "id": "s1-q046",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You compare a gate against a hand-written decomposition with `Operator(a) == Operator(b)` and get False, even though the two circuits are functionally the same unitary. Why can this happen, and what check should you use instead?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "`==` compares Python object identity, not the matrices; compare the circuits with `np.array_equal` instead"
+    },
+    {
+      "key": "B",
+      "text": "A False from `==` proves the decomposition is wrong; there is no other reason two equal unitaries would compare unequal"
+    },
+    {
+      "key": "C",
+      "text": "They can differ by a global phase; `==` demands exact matrix equality, whereas `Operator.equiv` treats operators as equal up to a global phase — use `.equiv()`"
+    },
+    {
+      "key": "D",
+      "text": "`==` fails because the two circuits list their qubits in different orders; reorder the qubits and `==` will pass"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "Two circuits implementing the same operation can produce unitaries that differ by an overall phase factor e^{iθ} (e.g. Z vs RZ(π) = −i·Z). `Operator.__eq__` requires the matrices to match exactly, so it returns False; `Operator.equiv` returns True when they match up to a global phase, which is the physically meaningful comparison.",
+    "distractors": {
+      "D": "Qubit-order differences are a separate issue and would produce a genuinely different matrix, not a global-phase discrepancy. Reordering does not address the phase, and `.equiv()` is the right tool here.",
+      "A": "`Operator.__eq__` does compare the underlying matrices (numerically), not object identity, so this diagnosis is wrong.",
+      "B": "A functionally-correct decomposition can still differ by a global phase, so a False from `==` does NOT by itself mean the decomposition is wrong — that is exactly why `.equiv()` exists."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operator-class",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  }
+}

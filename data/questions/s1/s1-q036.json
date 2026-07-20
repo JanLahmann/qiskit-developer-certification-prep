@@ -1,0 +1,68 @@
+{
+  "id": "s1-q036",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "spot-bug",
+  "difficulty": 3,
+  "stem": "This code tries to read the statevector of a circuit but raises an error. What is the true cause and correct fix?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nsv = Statevector.from_instruction(qc)",
+  "options": [
+    {
+      "key": "A",
+      "text": "The number of shots defaults to 0; set `shots=1024` so the measurement resolves"
+    },
+    {
+      "key": "B",
+      "text": "`Statevector` cannot represent a superposition; use `DensityMatrix.from_instruction` instead"
+    },
+    {
+      "key": "C",
+      "text": "Measurement is not a unitary and adds classical bits; build the statevector from the measurement-free circuit (drop `measure`)"
+    },
+    {
+      "key": "D",
+      "text": "`from_instruction` needs a backend; pass `backend=AerSimulator()` to it"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "`Statevector.from_instruction` simulates unitary evolution and cannot process a `measure` (which is non-unitary and involves classical bits). The fix is to remove the measurement and take the statevector of the pure-unitary circuit.",
+    "distractors": {
+      "D": "`from_instruction` takes no backend argument and does not run on hardware; the error is about the measurement, not a missing backend.",
+      "A": "`Statevector.from_instruction` is an exact algebraic evolution with no concept of shots; adding shots does not apply.",
+      "B": "`Statevector` represents superpositions fine (H|0⟩ works). Switching to `DensityMatrix.from_instruction` on the same circuit raises the same measurement error, so it is not the fix."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q036.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import inspect\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, DensityMatrix\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nraised = False\nmsg = \"\"\ntry:\n    Statevector.from_instruction(qc)\nexcept Exception as e:\n    raised = True\n    msg = f\"{type(e).__name__}: {e}\"\nqc2 = QuantumCircuit(1)\nqc2.h(0)\nworks = False\ntry:\n    Statevector.from_instruction(qc2)\n    works = True\nexcept Exception:\n    works = False\nhas_backend = \"backend\" in inspect.signature(Statevector.from_instruction).parameters\ndm_raised = False\ntry:\n    DensityMatrix.from_instruction(qc)\nexcept Exception:\n    dm_raised = True\nabout_measure = (\"classical\" in msg.lower()) or (\"measure\" in msg.lower())\nA_ok = raised and works and about_measure\nevidence = {\n    \"C\": f\"measured circuit raised [{msg[:80]}]; measurement-free circuit works={works}; cause is the measurement -> {A_ok}\",\n    \"D\": f\"Statevector.from_instruction has a 'backend' parameter? {has_backend}; error is about the measurement, not a backend -> False\",\n    \"A\": \"Statevector.from_instruction is exact (no shots parameter); 'set shots' does not apply -> False\",\n    \"B\": f\"DensityMatrix.from_instruction on the SAME measured circuit also raised? {dm_raised}; the class is not the cause -> False\",\n}\nproven = [\"C\"] if A_ok else []\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"error\": msg[:140], \"free_circuit_works\": works, \"has_backend_param\": has_backend}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

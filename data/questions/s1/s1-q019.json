@@ -12,30 +12,30 @@
   "options": [
     {
       "key": "A",
-      "text": "1.0 — ⟨ZZ⟩ = 1 on |00⟩ and ⟨XX⟩ = 0"
-    },
-    {
-      "key": "B",
       "text": "1.5 — both terms contribute their full coefficient"
     },
     {
-      "key": "C",
+      "key": "B",
       "text": "0.0 — the two Pauli strings cancel"
     },
     {
-      "key": "D",
+      "key": "C",
       "text": "0.5 — only the X⊗X term contributes"
+    },
+    {
+      "key": "D",
+      "text": "1.0 — ⟨ZZ⟩ = 1 on |00⟩ and ⟨XX⟩ = 0"
     }
   ],
   "answer": [
-    "A"
+    "D"
   ],
   "explanation": {
     "correct": "|00⟩ is a +1 eigenstate of Z⊗Z, so ⟨ZZ⟩ = 1. X⊗X flips |00⟩ to |11⟩, which is orthogonal to |00⟩, so ⟨XX⟩ = 0. The total is 1·1 + 0.5·0 = 1.0.",
     "distractors": {
-      "B": "Assumes both Pauli terms have expectation 1. ⟨XX⟩ on |00⟩ is 0 (it maps the state to an orthogonal one), so the 0.5 term drops out.",
-      "C": "The terms do not cancel; ⟨ZZ⟩ = 1 stands on its own while ⟨XX⟩ = 0.",
-      "D": "It is the Z⊗Z term (not X⊗X) that contributes here; X⊗X has zero expectation on |00⟩."
+      "A": "Assumes both Pauli terms have expectation 1. ⟨XX⟩ on |00⟩ is 0 (it maps the state to an orthogonal one), so the 0.5 term drops out.",
+      "B": "The terms do not cancel; ⟨ZZ⟩ = 1 stands on its own while ⟨XX⟩ = 0.",
+      "C": "It is the Z⊗Z term (not X⊗X) that contributes here; X⊗X has zero expectation on |00⟩."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
@@ -48,7 +48,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.quantum_info import Statevector, SparsePauliOp\nO = SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"XX\", 0.5)])\nval = complex(Statevector.from_label(\"00\").expectation_value(O))\nclaims = {\"A\": 1.0, \"B\": 1.5, \"C\": 0.0, \"D\": 0.5}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    match = bool(abs(val - c) < 1e-9)\n    evidence[k] = f\"<00|O|00> = {val.real:.4f}; option {k} claims {c} -> match={match}\"\n    if match:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": val.real}})\n"
+    "proof_script": "from qiskit.quantum_info import Statevector, SparsePauliOp\nO = SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"XX\", 0.5)])\nval = complex(Statevector.from_label(\"00\").expectation_value(O))\nclaims = {\"D\": 1.0, \"A\": 1.5, \"B\": 0.0, \"C\": 0.5}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    match = bool(abs(val - c) < 1e-9)\n    evidence[k] = f\"<00|O|00> = {val.real:.4f}; option {k} claims {c} -> match={match}\"\n    if match:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": val.real}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",

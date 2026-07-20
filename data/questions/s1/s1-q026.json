@@ -1,0 +1,68 @@
+{
+  "id": "s1-q026",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "What is the statevector after applying `rz(π/2)` to |0⟩? (Qiskit defines RZ(θ) = diag(e^{−iθ/2}, e^{iθ/2}).)",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.rz(np.pi / 2, 0)\nprint(Statevector.from_instruction(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": "[0.7071, 0.7071j] — RZ rotates |0⟩ into a superposition"
+    },
+    {
+      "key": "B",
+      "text": "[e^{+iπ/4}, 0] ≈ [0.7071+0.7071j, 0] — the |0⟩ phase is +θ/2"
+    },
+    {
+      "key": "C",
+      "text": "[e^{−iπ/4}, 0] ≈ [0.7071−0.7071j, 0] — RZ multiplies |0⟩ by e^{−iθ/2}"
+    },
+    {
+      "key": "D",
+      "text": "[1, 0] — RZ has no effect on |0⟩ at all"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "RZ(θ) = diag(e^{−iθ/2}, e^{iθ/2}). On |0⟩ it multiplies the amplitude by e^{−iθ/2} = e^{−iπ/4} = 0.7071 − 0.7071j. Because |0⟩ is an eigenstate, this is a global phase — the measurement probabilities are unchanged — but `Statevector.from_instruction` still records it.",
+    "distractors": {
+      "D": "Although the phase is unobservable in isolation (probabilities stay [1,0]), Qiskit's statevector explicitly carries the e^{−iπ/4} factor, so the amplitude is not exactly 1.",
+      "A": "RZ is diagonal; it never creates a superposition. Only RX/RY move population between |0⟩ and |1⟩.",
+      "B": "The |0⟩ (upper) diagonal entry is e^{−iθ/2}, with a minus sign. A +θ/2 phase would be the |1⟩ entry."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q026.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.rz(np.pi / 2, 0)\nobserved = Statevector.from_instruction(qc).data\ns = 1 / np.sqrt(2)\ncands = {\"C\": np.array([np.exp(-1j * np.pi / 4), 0]), \"D\": np.array([1, 0]),\n         \"A\": np.array([s, 1j * s]), \"B\": np.array([np.exp(1j * np.pi / 4), 0])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"RZ(pi/2)|0> = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nprobs = Statevector.from_instruction(qc).probabilities().tolist()\nevidence[\"C\"] += f\"  (probabilities unchanged: {np.round(probs, 4).tolist()})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"sv\": [str(x) for x in np.round(observed, 6)], \"probs\": probs}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

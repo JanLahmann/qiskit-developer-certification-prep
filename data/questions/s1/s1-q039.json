@@ -1,0 +1,68 @@
+{
+  "id": "s1-q039",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A qubit starts in |0⟩ and an RY(π/3) rotation is applied. What is the probability of measuring outcome 1?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.ry(np.pi / 3, 0)\nprint(Statevector.from_instruction(qc).probabilities())",
+  "options": [
+    {
+      "key": "A",
+      "text": "0.75 = cos²(π/6) — P(1) = cos²(θ/2)"
+    },
+    {
+      "key": "B",
+      "text": "0.5 — any nonzero rotation yields an equal superposition"
+    },
+    {
+      "key": "C",
+      "text": "1.0 — RY(π/3) rotates |0⟩ all the way to |1⟩"
+    },
+    {
+      "key": "D",
+      "text": "0.25 = sin²(π/6) — for RY(θ)|0⟩, P(1) = sin²(θ/2)"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "RY(θ)|0⟩ = cos(θ/2)|0⟩ + sin(θ/2)|1⟩, so P(1) = sin²(θ/2). With θ = π/3, sin²(π/6) = 0.5² = 0.25.",
+    "distractors": {
+      "A": "cos²(θ/2) = 0.75 is P(0), the probability of outcome 0. The two outcomes are swapped.",
+      "B": "The rotation angle sets the split; only θ = π/2 gives 0.5/0.5. At θ = π/3 the state is closer to |0⟩.",
+      "C": "|0⟩ reaches |1⟩ only at θ = π. At θ = π/3 the qubit is mostly still |0⟩ (P(1) = 0.25)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q039.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.ry(np.pi / 3, 0)\np1 = float(Statevector.from_instruction(qc).probabilities()[1])\nclaims = {\"D\": 0.25, \"A\": 0.75, \"B\": 0.5, \"C\": 1.0}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = bool(abs(p1 - c) < 1e-9)\n    evidence[k] = f\"P(measure 1) = {p1:.4f}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"P1\": p1}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

@@ -2,13 +2,13 @@
   "question": "s1-q020",
   "verdict": {
     "answer": [
-      "A"
+      "B"
     ],
     "evidence": {
-      "A": "Pauli('IZ') == intended (I\u2297Z)? True; original Pauli('ZI') == intended? False -> fix is correct",
-      "B": "Pauli('ZI') == intended? False (it is Z\u2297I, Z on qubit 1) -> 'already correct' is False",
-      "C": "Pauli('ZZ') == intended? False (Z on both qubits) -> False",
-      "D": "Pauli(['Z','I']) raised QiskitError: 'Invalid input data for Pauli.' -> not a valid fix"
+      "B": "Pauli('IZ') == intended (I\u2297Z)? True; original Pauli('ZI') == intended? False -> fix is correct",
+      "C": "Pauli('ZI') == intended? False (it is Z\u2297I, Z on qubit 1) -> 'already correct' is False",
+      "D": "Pauli('ZZ') == intended? False (Z on both qubits) -> False",
+      "A": "Pauli(['Z','I']) raised QiskitError: 'Invalid input data for Pauli.' -> not a valid fix"
     },
     "observed": {
       "buggy_is_intended": false,
@@ -21,9 +21,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.32,
+  "wall_seconds": 1.05,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"Pauli('IZ') == intended (I\\u2297Z)? True; original Pauli('ZI') == intended? False -> fix is correct\", \"B\": \"Pauli('ZI') == intended? False (it is Z\\u2297I, Z on qubit 1) -> 'already correct' is False\", \"C\": \"Pauli('ZZ') == intended? False (Z on both qubits) -> False\", \"D\": \"Pauli(['Z','I']) raised QiskitError: 'Invalid input data for Pauli.' -> not a valid fix\"}, \"observed\": {\"buggy_is_intended\": false, \"IZ_is_intended\": true}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"B\": \"Pauli('IZ') == intended (I\\u2297Z)? True; original Pauli('ZI') == intended? False -> fix is correct\", \"C\": \"Pauli('ZI') == intended? False (it is Z\\u2297I, Z on qubit 1) -> 'already correct' is False\", \"D\": \"Pauli('ZZ') == intended? False (Z on both qubits) -> False\", \"A\": \"Pauli(['Z','I']) raised QiskitError: 'Invalid input data for Pauli.' -> not a valid fix\"}, \"observed\": {\"buggy_is_intended\": false, \"IZ_is_intended\": true}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

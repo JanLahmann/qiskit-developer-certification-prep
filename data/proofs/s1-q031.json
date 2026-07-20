@@ -1,0 +1,31 @@
+{
+  "question": "s1-q031",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "D": "probabilities_dict() = {'01': 1.0}; option D claims '01':1.0 -> match=True",
+      "A": "probabilities_dict() = {'01': 1.0}; option A claims '10':1.0 -> match=False",
+      "B": "probabilities_dict() = {'01': 1.0}; option B claims '11':1.0 -> match=False",
+      "C": "probabilities_dict() = {'01': 1.0}; option C claims '00':1.0 -> match=False"
+    },
+    "observed": {
+      "dict": {
+        "01": 1.0
+      },
+      "certain_outcome": "01"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.16,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"D\": \"probabilities_dict() = {'01': 1.0}; option D claims '01':1.0 -> match=True\", \"A\": \"probabilities_dict() = {'01': 1.0}; option A claims '10':1.0 -> match=False\", \"B\": \"probabilities_dict() = {'01': 1.0}; option B claims '11':1.0 -> match=False\", \"C\": \"probabilities_dict() = {'01': 1.0}; option C claims '00':1.0 -> match=False\"}, \"observed\": {\"dict\": {\"01\": 1.0}, \"certain_outcome\": \"01\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

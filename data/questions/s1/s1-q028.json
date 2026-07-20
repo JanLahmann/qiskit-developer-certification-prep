@@ -1,0 +1,68 @@
+{
+  "id": "s1-q028",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "What is the statevector after applying `p(π/2)` (the phase gate P) to |1⟩?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.x(0)\nqc.p(np.pi / 2, 0)\nprint(Statevector.from_instruction(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": "[0, 1] — P only adds a phase to |0⟩, so |1⟩ is unchanged"
+    },
+    {
+      "key": "B",
+      "text": "[0, −1] — the phase is e^{iπ} = −1"
+    },
+    {
+      "key": "C",
+      "text": "[i, 0] — the phase is applied to the |0⟩ amplitude"
+    },
+    {
+      "key": "D",
+      "text": "[0, i] — P(π/2) = diag(1, e^{iπ/2}) multiplies |1⟩ by i (P(π/2) is the S gate)"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "P(θ) = diag(1, e^{iθ}) puts the phase on the |1⟩ amplitude. With θ = π/2 that is e^{iπ/2} = i, so |1⟩ → i|1⟩ = [0, i]. P(π/2) is exactly the S gate.",
+    "distractors": {
+      "A": "P leaves |0⟩ alone and phases |1⟩ — the opposite of this claim. |1⟩ is multiplied by e^{iθ}.",
+      "B": "e^{iπ} = −1 corresponds to P(π) = Z. Here θ = π/2, giving e^{iπ/2} = i, not −1.",
+      "C": "The lower diagonal entry (e^{iθ}) acts on |1⟩, not |0⟩; the |0⟩ amplitude here is 0 anyway."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q028.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.x(0)\nqc.p(np.pi / 2, 0)\nobserved = Statevector.from_instruction(qc).data\ncands = {\"D\": np.array([0, 1j]), \"A\": np.array([0, 1]), \"B\": np.array([0, -1]), \"C\": np.array([1j, 0])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"P(pi/2)|1> = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"sv\": [str(x) for x in np.round(observed, 6)]}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

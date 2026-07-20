@@ -1,0 +1,31 @@
+{
+  "question": "s1-q037",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "B": "Operator(qc) is (4, 4); option B claims (4, 4) -> match=True",
+      "C": "Operator(qc) is (4, 4); option C claims (4, 4) -> match=False",
+      "D": "Operator(qc) is (4, 4); option D claims (4, 4) -> match=False",
+      "A": "Operator(qc) is (4, 4); option A claims (2, 2) -> match=False"
+    },
+    "observed": {
+      "shape": [
+        4,
+        4
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.05,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"B\": \"Operator(qc) is (4, 4); option B claims (4, 4) -> match=True\", \"C\": \"Operator(qc) is (4, 4); option C claims (4, 4) -> match=False\", \"D\": \"Operator(qc) is (4, 4); option D claims (4, 4) -> match=False\", \"A\": \"Operator(qc) is (4, 4); option A claims (2, 2) -> match=False\"}, \"observed\": {\"shape\": [4, 4]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

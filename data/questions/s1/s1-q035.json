@@ -1,0 +1,68 @@
+{
+  "id": "s1-q035",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "For `a = Statevector.from_label('0')` and `b = Statevector.from_label('1')`, what is `a.tensor(b)`?",
+  "code": "from qiskit.quantum_info import Statevector\n\na = Statevector.from_label('0')\nb = Statevector.from_label('1')\nprint(a.tensor(b).data)",
+  "options": [
+    {
+      "key": "A",
+      "text": "|10⟩ (a 1 at index 2): `tensor` puts `a` on qubit 0 and `b` on the higher qubit"
+    },
+    {
+      "key": "B",
+      "text": "|11⟩ (a 1 at index 3): both qubits are set"
+    },
+    {
+      "key": "C",
+      "text": "the zero vector [0,0,0,0]: tensoring orthogonal states vanishes"
+    },
+    {
+      "key": "D",
+      "text": "|01⟩ (a 1 at index 1): `tensor` puts `a` on the higher-index qubit and `b` on qubit 0"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "`a.tensor(b)` = a ⊗ b places the caller `a` on the higher-index qubit (qubit 1) and `b` on qubit 0. With a = |0⟩ and b = |1⟩ that is |q1 q0⟩ = |01⟩, a single 1 at index 1.",
+    "distractors": {
+      "A": "That is what `a.expand(b)` (= b ⊗ a) would give. `tensor` keeps the caller on the high qubit, so the result is |01⟩ (index 1), not |10⟩ (index 2).",
+      "B": "|11⟩ would require both single-qubit states to be |1⟩; here `a` = |0⟩.",
+      "C": "The tensor product of two normalized states is a normalized 4-vector with one nonzero amplitude, not the zero vector."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q035.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Statevector\na = Statevector.from_label('0')\nb = Statevector.from_label('1')\nobs = a.tensor(b).data\nidx = int(np.argmax(np.abs(obs)))\nnnz = int(np.count_nonzero(np.abs(obs) > 1e-9))\nclaims = {\"D\": 1, \"A\": 2, \"B\": 3}\nevidence = {}\nproven = []\nfor k, i in claims.items():\n    m = (nnz == 1 and idx == i)\n    evidence[k] = f\"a.tensor(b) has one amplitude at index {idx} (nnz={nnz}); option {k} claims index {i} -> match={m}\"\n    if m:\n        proven.append(k)\nmD = (nnz == 0)\nevidence[\"C\"] = f\"a.tensor(b) has {nnz} nonzero amplitude(s); 'zero vector' claim -> match={mD}\"\nif mD:\n    proven.append(\"C\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"index\": idx, \"nnz\": nnz}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

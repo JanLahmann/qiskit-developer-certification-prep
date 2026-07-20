@@ -1,0 +1,68 @@
+{
+  "id": "s1-q025",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "What is the statevector after applying the √X gate (`sx`) to |0⟩?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.sx(0)\nprint(Statevector.from_instruction(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": "[0.5+0.5j, 0.5−0.5j] — √X is the 'square root of NOT'"
+    },
+    {
+      "key": "B",
+      "text": "[0, 1] = |1⟩ — √X is just another name for X"
+    },
+    {
+      "key": "C",
+      "text": "[0.7071, 0.7071] = |+⟩ — √X creates an equal real superposition"
+    },
+    {
+      "key": "D",
+      "text": "[0.7071, 0.7071j] — equal magnitudes with a phase i on |1⟩"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "SX = ½[[1+i, 1−i], [1−i, 1+i]]. Applied to |0⟩ it gives [0.5+0.5j, 0.5−0.5j]. Applying SX twice reproduces X, which is why it is the 'square root of NOT'; a single application yields equal 0.5/0.5 probabilities but with complex amplitudes.",
+    "distractors": {
+      "B": "SX is the square root of X: SX·SX = X. One application does not fully flip the qubit; it produces a complex-amplitude superposition.",
+      "C": "H also gives 0.5/0.5 probabilities but with real amplitudes [0.7071, 0.7071]. SX produces complex amplitudes 0.5 ± 0.5j, so the states differ.",
+      "D": "The magnitudes are 0.5 each (not 0.7071), and both amplitudes are complex; the phase structure is 0.5 ± 0.5j, not a single i on |1⟩."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q025.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.sx(0)\nobserved = Statevector.from_instruction(qc).data\ns = 1 / np.sqrt(2)\ncands = {\"A\": np.array([0.5 + 0.5j, 0.5 - 0.5j]), \"B\": np.array([0, 1]),\n         \"C\": np.array([s, s]), \"D\": np.array([s, 1j * s])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"SX|0> = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"sv\": [str(x) for x in np.round(observed, 6)]}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

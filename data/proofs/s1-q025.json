@@ -1,0 +1,31 @@
+{
+  "question": "s1-q025",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "SX|0> = [(0.5+0.5j), (0.5-0.5j)]; option A claims [(0.5+0.5j), (0.5-0.5j)] -> match=True",
+      "B": "SX|0> = [(0.5+0.5j), (0.5-0.5j)]; option B claims [0, 1] -> match=False",
+      "C": "SX|0> = [(0.5+0.5j), (0.5-0.5j)]; option C claims [0.7071, 0.7071] -> match=False",
+      "D": "SX|0> = [(0.5+0.5j), (0.5-0.5j)]; option D claims [(0.7071+0j), 0.7071j] -> match=False"
+    },
+    "observed": {
+      "sv": [
+        "(0.5+0.5j)",
+        "(0.5-0.5j)"
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.07,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"SX|0> = [(0.5+0.5j), (0.5-0.5j)]; option A claims [(0.5+0.5j), (0.5-0.5j)] -> match=True\", \"B\": \"SX|0> = [(0.5+0.5j), (0.5-0.5j)]; option B claims [0, 1] -> match=False\", \"C\": \"SX|0> = [(0.5+0.5j), (0.5-0.5j)]; option C claims [0.7071, 0.7071] -> match=False\", \"D\": \"SX|0> = [(0.5+0.5j), (0.5-0.5j)]; option D claims [(0.7071+0j), 0.7071j] -> match=False\"}, \"observed\": {\"sv\": [\"(0.5+0.5j)\", \"(0.5-0.5j)\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

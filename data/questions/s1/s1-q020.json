@@ -11,30 +11,30 @@
   "options": [
     {
       "key": "A",
-      "text": "Replace it with `Pauli('IZ')` — the rightmost character is qubit 0, so Z must be on the right"
+      "text": "Replace it with `Pauli(['Z', 'I'])` — multi-qubit labels must be passed as a list"
     },
     {
       "key": "B",
-      "text": "Nothing — 'ZI' already puts Z on qubit 0"
+      "text": "Replace it with `Pauli('IZ')` — the rightmost character is qubit 0, so Z must be on the right"
     },
     {
       "key": "C",
-      "text": "Replace it with `Pauli('ZZ')` — you must specify Z on both positions"
+      "text": "Nothing — 'ZI' already puts Z on qubit 0"
     },
     {
       "key": "D",
-      "text": "Replace it with `Pauli(['Z', 'I'])` — multi-qubit labels must be passed as a list"
+      "text": "Replace it with `Pauli('ZZ')` — you must specify Z on both positions"
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
     "correct": "Pauli labels are little-endian: the rightmost character is qubit 0. To place Z on qubit 0 you write `Pauli('IZ')` (identity on qubit 1, Z on qubit 0). The original 'ZI' does the opposite — Z on qubit 1.",
     "distractors": {
-      "B": "'ZI' puts Z on qubit 1 (the leftmost, highest-index position), not qubit 0 — that is exactly the bug.",
-      "C": "'ZZ' applies Z to both qubits, changing qubit 1 as well; the goal was to leave qubit 1 alone.",
-      "D": "The Pauli constructor takes a single label string like 'IZ'; it does not require (or expect) a Python list of characters."
+      "C": "'ZI' puts Z on qubit 1 (the leftmost, highest-index position), not qubit 0 — that is exactly the bug.",
+      "D": "'ZZ' applies Z to both qubits, changing qubit 1 as well; the goal was to leave qubit 1 alone.",
+      "A": "The Pauli constructor takes a single label string like 'IZ'; it does not require (or expect) a Python list of characters."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,7 +47,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nI = np.eye(2, dtype=complex)\nZ = np.array([[1, 0], [0, -1]], dtype=complex)\nintended = np.kron(I, Z)  # Z on qubit 0, identity on qubit 1\nbuggy_ok = bool(np.allclose(Pauli('ZI').to_matrix(), intended))\nfix_ok = bool(np.allclose(Pauli('IZ').to_matrix(), intended))\nzz_ok = bool(np.allclose(Pauli('ZZ').to_matrix(), intended))\ntry:\n    d_ok = bool(np.allclose(np.asarray(Pauli(['Z', 'I']).to_matrix()), intended))\n    d_note = f\"Pauli(['Z','I']) built; equals intended I⊗Z? {d_ok}\"\nexcept Exception as e:\n    d_ok = False\n    d_note = f\"Pauli(['Z','I']) raised {type(e).__name__}: {str(e)[:80]} -> not a valid fix\"\nevidence = {\n    \"A\": f\"Pauli('IZ') == intended (I⊗Z)? {fix_ok}; original Pauli('ZI') == intended? {buggy_ok} -> fix is correct\",\n    \"B\": f\"Pauli('ZI') == intended? {buggy_ok} (it is Z⊗I, Z on qubit 1) -> 'already correct' is False\",\n    \"C\": f\"Pauli('ZZ') == intended? {zz_ok} (Z on both qubits) -> False\",\n    \"D\": d_note,\n}\nproven = []\nif fix_ok and not buggy_ok:\n    proven.append(\"A\")\nif buggy_ok:\n    proven.append(\"B\")\nif zz_ok:\n    proven.append(\"C\")\nif d_ok:\n    proven.append(\"D\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"buggy_is_intended\": buggy_ok, \"IZ_is_intended\": fix_ok}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nI = np.eye(2, dtype=complex)\nZ = np.array([[1, 0], [0, -1]], dtype=complex)\nintended = np.kron(I, Z)  # Z on qubit 0, identity on qubit 1\nbuggy_ok = bool(np.allclose(Pauli('ZI').to_matrix(), intended))\nfix_ok = bool(np.allclose(Pauli('IZ').to_matrix(), intended))\nzz_ok = bool(np.allclose(Pauli('ZZ').to_matrix(), intended))\ntry:\n    d_ok = bool(np.allclose(np.asarray(Pauli(['Z', 'I']).to_matrix()), intended))\n    d_note = f\"Pauli(['Z','I']) built; equals intended I⊗Z? {d_ok}\"\nexcept Exception as e:\n    d_ok = False\n    d_note = f\"Pauli(['Z','I']) raised {type(e).__name__}: {str(e)[:80]} -> not a valid fix\"\nevidence = {\n    \"B\": f\"Pauli('IZ') == intended (I⊗Z)? {fix_ok}; original Pauli('ZI') == intended? {buggy_ok} -> fix is correct\",\n    \"C\": f\"Pauli('ZI') == intended? {buggy_ok} (it is Z⊗I, Z on qubit 1) -> 'already correct' is False\",\n    \"D\": f\"Pauli('ZZ') == intended? {zz_ok} (Z on both qubits) -> False\",\n    \"A\": d_note,\n}\nproven = []\nif fix_ok and not buggy_ok:\n    proven.append(\"B\")\nif buggy_ok:\n    proven.append(\"C\")\nif zz_ok:\n    proven.append(\"D\")\nif d_ok:\n    proven.append(\"A\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"buggy_is_intended\": buggy_ok, \"IZ_is_intended\": fix_ok}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",

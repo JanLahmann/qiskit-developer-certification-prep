@@ -1,0 +1,68 @@
+{
+  "id": "s1-q034",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "What does `Statevector.from_label('0').evolve(Pauli('X'))` produce?",
+  "code": "from qiskit.quantum_info import Statevector, Pauli\n\nsv = Statevector.from_label('0').evolve(Pauli('X'))\nprint(sv.data)",
+  "options": [
+    {
+      "key": "A",
+      "text": "|1⟩ = [0, 1] — X flips |0⟩ to |1⟩"
+    },
+    {
+      "key": "B",
+      "text": "|0⟩ = [1, 0] — `evolve` returns the operator applied later, leaving the state as |0⟩"
+    },
+    {
+      "key": "C",
+      "text": "|+⟩ = [0.7071, 0.7071]"
+    },
+    {
+      "key": "D",
+      "text": "[0, i] — X applies a phase as well as a flip"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`Statevector.evolve(op)` returns a new statevector with `op` applied. X maps |0⟩ to |1⟩, so the result is [0, 1].",
+    "distractors": {
+      "B": "`evolve` actually applies the operator and returns the evolved state; it does not defer the action or leave the state unchanged.",
+      "C": "|+⟩ comes from H, not X. X is a bit flip, producing |1⟩.",
+      "D": "X is a real matrix with no phase; the i factor would come from Y. X|0⟩ = |1⟩ = [0, 1]."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q034.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Statevector, Pauli\nobserved = Statevector.from_label('0').evolve(Pauli('X')).data\ns = 1 / np.sqrt(2)\ncands = {\"A\": np.array([0, 1]), \"B\": np.array([1, 0]), \"C\": np.array([s, s]), \"D\": np.array([0, 1j])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"|0>.evolve(X) = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"data\": [str(x) for x in observed]}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

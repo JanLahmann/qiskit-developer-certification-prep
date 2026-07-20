@@ -1,0 +1,73 @@
+{
+  "id": "s1-q044",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "multi",
+  "difficulty": 3,
+  "stem": "The qubit is in the state |+⟩ = H|0⟩. Which of the following statements are TRUE? Select all that apply.",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\n\nqc = QuantumCircuit(1)\nqc.h(0)   # |+>\nsv = Statevector.from_instruction(qc)",
+  "options": [
+    {
+      "key": "A",
+      "text": "⟨Y⟩ = +1"
+    },
+    {
+      "key": "B",
+      "text": "⟨Z⟩ = 0"
+    },
+    {
+      "key": "C",
+      "text": "⟨X⟩ = +1"
+    },
+    {
+      "key": "D",
+      "text": "A Z-basis measurement yields outcome 1 with probability 1"
+    },
+    {
+      "key": "E",
+      "text": "|+⟩ is an eigenstate of X with eigenvalue +1"
+    }
+  ],
+  "answer": [
+    "B",
+    "C",
+    "E"
+  ],
+  "explanation": {
+    "correct": "|+⟩ is the +1 eigenstate of X, so ⟨X⟩ = +1 and X|+⟩ = |+⟩ (statements C and E). Its Z-basis populations are equal, so ⟨Z⟩ = 0 (statement B).",
+    "distractors": {
+      "A": "⟨Y⟩ = 0 for |+⟩ (it lies on the +X axis of the Bloch sphere, with no Y component), not +1.",
+      "D": "A Z-basis measurement of |+⟩ gives 0 or 1 each with probability 0.5, not outcome 1 with certainty."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q044.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\nqc = QuantumCircuit(1)\nqc.h(0)\nsv = Statevector.from_instruction(qc)\nxexp = float(np.real(sv.expectation_value(Pauli('X'))))\nyexp = float(np.real(sv.expectation_value(Pauli('Y'))))\nzexp = float(np.real(sv.expectation_value(Pauli('Z'))))\np1 = float(sv.probabilities()[1])\nis_xeig = bool(np.allclose(sv.evolve(Pauli('X')).data, sv.data))\nchecks = {\n    \"A\": (\"<Y> == +1\", abs(yexp - 1.0) < 1e-9),\n    \"B\": (\"<Z> == 0\", abs(zexp - 0.0) < 1e-9),\n    \"C\": (\"<X> == +1\", abs(xexp - 1.0) < 1e-9),\n    \"D\": (\"Z-basis P(1) == 1\", abs(p1 - 1.0) < 1e-9),\n    \"E\": (\"X-eigenstate (+1)\", is_xeig),\n}\nbase = f\"[observed <X>={xexp:.3f} <Y>={yexp:.3f} <Z>={zexp:.3f} P(1)={p1:.3f} Xeig={is_xeig}]\"\nevidence = {}\nproven = []\nfor k, (desc, ok) in checks.items():\n    evidence[k] = f\"{desc}: statement is {ok} {base}\"\n    if ok:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {\"X\": xexp, \"Y\": yexp, \"Z\": zexp, \"P1\": p1, \"x_eigenstate\": is_xeig}})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-19",
+    "model": "claude-opus (generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-20",
+    "stale": false
+  }
+}

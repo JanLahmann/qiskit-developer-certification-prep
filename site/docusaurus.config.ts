@@ -14,8 +14,8 @@ const config: Config = {
     v4: true,
   },
 
-  url: 'https://janlahmann.github.io',
-  baseUrl: '/qiskit-developer-certification-prep/',
+  url: 'https://certiq.dev',
+  baseUrl: '/',
   trailingSlash: false,
 
   // GitHub pages deployment config.

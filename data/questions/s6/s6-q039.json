@@ -24,17 +24,27 @@
     {
       "key": "D",
       "text": "`estimator.options.resilience_level = 1`"
+    },
+    {
+      "key": "E",
+      "text": "`estimator.options.dynamical_decoupling.enabled = True`"
+    },
+    {
+      "key": "F",
+      "text": "`estimator.options.dynamical_decoupling.sequence_type = \"XY4\"`"
     }
   ],
   "answer": [
     "C"
   ],
   "explanation": {
-    "correct": "Dynamical decoupling inserts pulse sequences on idle qubits to approximately cancel decoherence while they wait \u2014 exactly the situation described. It is an error-suppression technique enabled via `options.dynamical_decoupling.enable = True`.",
+    "correct": "Dynamical decoupling inserts pulse sequences on idle qubits to approximately cancel decoherence while they wait — exactly the situation described. It is an error-suppression technique enabled via `options.dynamical_decoupling.enable = True`.",
     "distractors": {
       "A": "ZNE is a post-processing error-mitigation method for expectation values; it does not protect idle qubits during execution.",
       "B": "`measure_mitigation` (TREX) corrects readout errors on measurement, not decoherence on idle qubits.",
-      "D": "Resilience level 1 enables readout mitigation (TREX), not dynamical decoupling; DD is configured through its own option group."
+      "D": "Resilience level 1 enables readout mitigation (TREX), not dynamical decoupling; DD is configured through its own option group.",
+      "E": "Near-miss attribute name: the flag is `enable`, not `enabled`. The options are pydantic-validated, so the misspelling raises instead of quietly doing nothing.",
+      "F": "`sequence_type` is a real field, but it only picks WHICH pulse sequence would be used; the group stays switched off until `enable` is set, so no DD pulses are inserted."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6: citation guides/configure-error-suppression (301 -> the page already cited) replaced with guides/estimator-options, which documents dynamical_decoupling.enable"
-  }
+    "notes": "adversarial s6: citation guides/configure-error-suppression (301 -> the page already cited) replaced with guides/estimator-options, which documents dynamical_decoupling.enable | pool wave: +E enabled-vs-enable near-miss, +F sequence_type-does-not-enable"
+  },
+  "display_count": 4
 }

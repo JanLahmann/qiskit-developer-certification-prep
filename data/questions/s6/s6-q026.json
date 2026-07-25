@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`estimator.run([(isa, obs)], zne=True)`"
+    },
+    {
+      "key": "E",
+      "text": "`estimator.options.resilience.zne.noise_factors = [1, 3]`"
+    },
+    {
+      "key": "F",
+      "text": "`estimator.options.resilience.zne_mitigation.enable = True`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "`dynamical_decoupling.enable` turns on dynamical decoupling (error suppression on idle qubits), not ZNE.",
       "C": "Resilience level 1 enables only readout mitigation (TREX); ZNE is added at level 2, so level 1 does not turn on ZNE.",
-      "D": "`run()` accepts only the PUB list and `precision`; there is no `zne` keyword, so this raises a TypeError."
+      "D": "`run()` accepts only the PUB list and `precision`; there is no `zne` keyword, so this raises a TypeError.",
+      "E": "A real field that configures ZNE but does not switch it on: `zne_mitigation` stays unset, so the amplification never runs. Configuring a technique and enabling it are separate steps.",
+      "F": "`zne_mitigation` is a plain boolean flag, not an options group like `dynamical_decoupling`, so there is no `.enable` beneath it; the line leaves the flag unset and ZNE off."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
-  }
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E configuring-is-not-enabling, +F zne_mitigation treated as a group"
+  },
+  "display_count": 4
 }

@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "It expresses the ideal circuit as a quasi-probability combination of noisy circuits and samples from it."
+    },
+    {
+      "key": "E",
+      "text": "It repeats the job at several shot counts and extrapolates the results to the infinite-shot limit."
+    },
+    {
+      "key": "F",
+      "text": "It runs the circuit at several amplified noise levels and returns the average of those results."
     }
   ],
   "answer": [
@@ -33,8 +41,10 @@
     "correct": "ZNE has two stages: noise amplification (running the circuit at several increased noise rates, e.g. by digital gate folding) and extrapolation (fitting those noisy expectation values and extrapolating to the zero-noise limit). It often improves results but is not guaranteed to be unbiased.",
     "distractors": {
       "B": "Learning and inverting the readout-error matrix describes TREX (measurement mitigation), not ZNE.",
-      "C": "Inserting pulses on idle qubits is dynamical decoupling \u2014 an error-suppression technique, not ZNE.",
-      "D": "Expressing the ideal circuit as a quasi-probability combination of noisy circuits describes probabilistic error cancellation (PEC), not ZNE."
+      "C": "Inserting pulses on idle qubits is dynamical decoupling — an error-suppression technique, not ZNE.",
+      "D": "Expressing the ideal circuit as a quasi-probability combination of noisy circuits describes probabilistic error cancellation (PEC), not ZNE.",
+      "E": "Extrapolating in SHOTS would only shrink statistical error, which more sampling already does; ZNE extrapolates along the NOISE axis to reach a point the hardware cannot reach directly.",
+      "F": "The amplified runs are fitted and extrapolated back to zero noise, not averaged: an average of noisy points is still a noisy point, and would sit further from the ideal than the unamplified run."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
@@ -52,6 +62,7 @@
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6: correct option tightened to remove the length tell"
-  }
+    "notes": "adversarial s6: correct option tightened to remove the length tell | pool wave: +E extrapolating in shots, +F averaging instead of extrapolating"
+  },
+  "display_count": 4
 }

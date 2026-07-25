@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`2`"
+    },
+    {
+      "key": "E",
+      "text": "`4`"
+    },
+    {
+      "key": "F",
+      "text": "`1.5`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "There is no resilience_level 3 for EstimatorV2 (that value existed under some older V1 resilience schemes); the current maximum is 2, so it raises a ValidationError.",
       "B": "5 is far outside the supported 0..2 range and raises a ValidationError — the level is not an arbitrary 'more is better' dial.",
-      "C": "Negative levels are invalid; resilience_level is a non-negative integer bounded above by 2, so -1 raises a ValidationError."
+      "C": "Negative levels are invalid; resilience_level is a non-negative integer bounded above by 2, so -1 raises a ValidationError.",
+      "E": "A common miscount: the option is often remembered as a five-point 0-4 scale (as in the retired V1 interface). EstimatorV2 caps it at 2, so 4 fails validation the same way 3 and 5 do.",
+      "F": "`resilience_level` is an integer index into a small set of preset configurations, not a continuous dial — a fractional value is rejected outright."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit_ibm_runtime import EstimatorOptions\n\ncandidates = {\"A\": 3, \"B\": 5, \"C\": -1, \"D\": 2}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    try:\n        o = EstimatorOptions()\n        o.resilience_level = val\n        evidence[k] = f\"resilience_level = {val} accepted (EstimatorV2 supports levels 0, 1, 2)\"\n        proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"resilience_level = {val} raises {type(e).__name__}: value must be an integer in the range 0..2\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {}})\n"
+    "proof_script": "\nfrom qiskit_ibm_runtime import EstimatorOptions\n\ncandidates = {\"A\": 3, \"B\": 5, \"C\": -1, \"D\": 2, \"E\": 4, \"F\": 1.5}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    try:\n        o = EstimatorOptions()\n        o.resilience_level = val\n        evidence[k] = f\"resilience_level = {val} accepted (EstimatorV2 supports levels 0, 1, 2)\"\n        proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"resilience_level = {val} raises {type(e).__name__}: value must be an integer in the range 0..2\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E five-level 0-4 miscount, +F fractional level"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

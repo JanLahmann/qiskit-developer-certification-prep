@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`estimator.options.resilience.zne.noise_factors = [1, 3, 5, 7]`"
+    },
+    {
+      "key": "E",
+      "text": "`estimator.options.resilience.zne.factors = [1, 3, 5, 7]`"
+    },
+    {
+      "key": "F",
+      "text": "`estimator.options.resilience.noise_factors = [1, 3, 5, 7]`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "`zne.extrapolator` is a real sub-option, but it chooses the fitting function used to extrapolate to zero noise (exponential, linear, polynomial_degree_k, ...), not the noise scale factors; a list of numbers fails its validation.",
       "B": "`zne.amplifier` is a real sub-option that selects HOW noise is amplified (for example gate folding versus PEA), not at which factors; passing numbers to it fails validation.",
-      "C": "`twirling.num_randomizations` controls how many random Pauli-twirled instances of a circuit are run — a twirling knob unrelated to ZNE's noise scaling — and it expects a single integer, not a list."
+      "C": "`twirling.num_randomizations` controls how many random Pauli-twirled instances of a circuit are run — a twirling knob unrelated to ZNE's noise scaling — and it expects a single integer, not a list.",
+      "E": "A shortened spelling of the real field. `ZneOptions` exposes `noise_factors`; `factors` does not exist, so the assignment is rejected by validation.",
+      "F": "Right field name, wrong nesting level: the scale factors live inside the `zne` sub-group, not directly on `resilience` (whose own fields are the mitigation switches and the noise-learning settings)."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/estimator-options",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit_ibm_runtime import EstimatorOptions\n\n# EstimatorOptions is exactly the object behind `estimator.options`, and its\n# pydantic validation is what accepts or rejects each assignment.\nevidence = {}\nproven = []\n\ndef attempt(key, label, fn):\n    opts = EstimatorOptions()\n    try:\n        fn(opts)\n        evidence[key] = f\"{label} = [1, 3, 5, 7] ACCEPTED -> {opts.resilience.zne}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"{label} = [1, 3, 5, 7] raises {type(e).__name__}: \" + \" \".join(str(e).split())[:170]\n\nattempt(\"A\", \"resilience.zne.extrapolator\",\n        lambda o: setattr(o.resilience.zne, \"extrapolator\", [1, 3, 5, 7]))\nattempt(\"B\", \"resilience.zne.amplifier\",\n        lambda o: setattr(o.resilience.zne, \"amplifier\", [1, 3, 5, 7]))\nattempt(\"C\", \"twirling.num_randomizations\",\n        lambda o: setattr(o.twirling, \"num_randomizations\", [1, 3, 5, 7]))\nattempt(\"D\", \"resilience.zne.noise_factors\",\n        lambda o: setattr(o.resilience.zne, \"noise_factors\", [1, 3, 5, 7]))\n\nopts = EstimatorOptions()\nopts.resilience.zne.noise_factors = [1, 3, 5, 7]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"stored_noise_factors\": list(opts.resilience.zne.noise_factors)}})\n"
+    "proof_script": "\nfrom qiskit_ibm_runtime import EstimatorOptions\n\n# EstimatorOptions is exactly the object behind `estimator.options`, and its\n# pydantic validation is what accepts or rejects each assignment.\nevidence = {}\nproven = []\n\ndef attempt(key, label, fn):\n    opts = EstimatorOptions()\n    try:\n        fn(opts)\n        evidence[key] = f\"{label} = [1, 3, 5, 7] ACCEPTED -> {opts.resilience.zne}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"{label} = [1, 3, 5, 7] raises {type(e).__name__}: \" + \" \".join(str(e).split())[:170]\n\nattempt(\"A\", \"resilience.zne.extrapolator\",\n        lambda o: setattr(o.resilience.zne, \"extrapolator\", [1, 3, 5, 7]))\nattempt(\"B\", \"resilience.zne.amplifier\",\n        lambda o: setattr(o.resilience.zne, \"amplifier\", [1, 3, 5, 7]))\nattempt(\"C\", \"twirling.num_randomizations\",\n        lambda o: setattr(o.twirling, \"num_randomizations\", [1, 3, 5, 7]))\nattempt(\"D\", \"resilience.zne.noise_factors\",\n        lambda o: setattr(o.resilience.zne, \"noise_factors\", [1, 3, 5, 7]))\n\nattempt(\"E\", \"resilience.zne.factors\",\n        lambda o: setattr(o.resilience.zne, \"factors\", [1, 3, 5, 7]))\nattempt(\"F\", \"resilience.noise_factors\",\n        lambda o: setattr(o.resilience, \"noise_factors\", [1, 3, 5, 7]))\n\nopts = EstimatorOptions()\nopts.resilience.zne.noise_factors = [1, 3, 5, 7]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"stored_noise_factors\": list(opts.resilience.zne.noise_factors)}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6: REWORKED — old resilience_level=0 question was a near-duplicate of a community practice question (jaccard 0.42) and redundant with q028A; replaced with ZNE noise_factors configuration, now an executed attempt-proof"
+    "notes": "adversarial s6: REWORKED — old resilience_level=0 question was a near-duplicate of a community practice question (jaccard 0.42) and redundant with q028A; replaced with ZNE noise_factors configuration, now an executed attempt-proof | pool wave: +E factors shorthand, +F wrong nesting level for noise_factors"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

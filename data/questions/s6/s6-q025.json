@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "The observable has to be wrapped in a list, `[obs]`, so that the PUB carries a broadcastable observable array."
+    },
+    {
+      "key": "E",
+      "text": "The precision has to be given before the observable in the PUB, so the call should read `est.run([(bell, 0.01, obs)])`."
+    },
+    {
+      "key": "F",
+      "text": "The PUB has to be written as a list rather than a tuple, so `est.run([[bell, obs, 0.01]])` is the form that carries it."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "A PUB is not limited to two entries: the 4-element form (circuit, observables, parameter_values, precision) is accepted and runs — the entries are positional, which is exactly what this bug is about.",
       "B": "There is no lower bound being hit here: the identical error appears with 0.1 in that slot, because the complaint is about a parameter-value SHAPE, not about the magnitude of the precision.",
-      "D": "Wrapping the observable as `[obs]` changes the observable array's shape but leaves 0.01 in the parameter_values slot, so the same ValueError is raised — it misreads a parameter-shape error as an observable-shape error."
+      "D": "Wrapping the observable as `[obs]` changes the observable array's shape but leaves 0.01 in the parameter_values slot, so the same ValueError is raised — it misreads a parameter-shape error as an observable-shape error.",
+      "E": "PUB slots are fixed and ordered: circuit, observable, parameter values, precision. Moving the float into the observable slot makes the estimator try to read `0.01` as an observable, which raises TypeError.",
+      "F": "A list PUB is coerced exactly like a tuple, so the entries land in the same slots and the identical ValueError comes back. The bracket style is not what is wrong here."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nest = StatevectorEstimator(seed=7)\nbell = QuantumCircuit(2); bell.h(0); bell.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\n\nbuggy = None\ntry:\n    est.run([(bell, obs, 0.01)]).result()\nexcept Exception as e:\n    buggy = f\"{type(e).__name__}: {str(e)[:110]}\"\n\nevidence = {}\nproven = []\n\n# A: \"a PUB can hold at most two entries, precision cannot live in a PUB\"\ntry:\n    ev4 = float(np.asarray(est.run([(bell, obs, None, 0.01)]).result()[0].data.evs))\n    evidence[\"A\"] = (f\"refuted: the 4-entry PUB (bell, obs, None, 0.01) IS accepted and returns \"\n                     f\"evs={ev4:.4f}, so a PUB can carry a precision value\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"the 4-entry PUB also raised {type(e).__name__}\"\n    proven.append(\"A\")\n    ev4 = None\n\n# B: \"0.01 is too small; 0.1 in the same slot works\"\ntry:\n    est.run([(bell, obs, 0.1)]).result()\n    evidence[\"B\"] = \"0.1 in the third slot ran (unexpected)\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = (f\"refuted: 0.1 in the same slot raises the identical {type(e).__name__}: \"\n                     f\"{str(e)[:80]} — the magnitude is irrelevant\")\n\n# C: \"third slot is parameter_values; precision is the fourth\"\ntry:\n    ev = float(np.asarray(est.run([(bell, obs, None, 0.01)]).result()[0].data.evs))\n    ev_run = float(np.asarray(est.run([(bell, obs)], precision=0.01).result()[0].data.evs))\n    evidence[\"C\"] = (f\"confirmed: moving 0.01 to the fourth slot, (bell, obs, None, 0.01), runs and \"\n                     f\"gives evs={ev:.4f}; the equivalent run(precision=0.01) gives evs={ev_run:.4f} \"\n                     f\"(the buggy 3-slot PUB had failed with {buggy})\")\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"the 4-entry PUB raised {type(e).__name__}: {str(e)[:100]}\"\n\n# D: \"wrap the observable in a list\"\ntry:\n    est.run([(bell, [obs], 0.01)]).result()\n    evidence[\"D\"] = \"wrapping the observable in a list ran (unexpected)\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = (f\"refuted: (bell, [obs], 0.01) still raises {type(e).__name__}: {str(e)[:80]} \"\n                     f\"— 0.01 is still sitting in the parameter_values slot\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"buggy_error\": buggy, \"evs_with_precision_in_slot_4\": ev4}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nest = StatevectorEstimator(seed=7)\nbell = QuantumCircuit(2); bell.h(0); bell.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\n\nbuggy = None\ntry:\n    est.run([(bell, obs, 0.01)]).result()\nexcept Exception as e:\n    buggy = f\"{type(e).__name__}: {str(e)[:110]}\"\n\nevidence = {}\nproven = []\n\n# A: \"a PUB can hold at most two entries, precision cannot live in a PUB\"\ntry:\n    ev4 = float(np.asarray(est.run([(bell, obs, None, 0.01)]).result()[0].data.evs))\n    evidence[\"A\"] = (f\"refuted: the 4-entry PUB (bell, obs, None, 0.01) IS accepted and returns \"\n                     f\"evs={ev4:.4f}, so a PUB can carry a precision value\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"the 4-entry PUB also raised {type(e).__name__}\"\n    proven.append(\"A\")\n    ev4 = None\n\n# B: \"0.01 is too small; 0.1 in the same slot works\"\ntry:\n    est.run([(bell, obs, 0.1)]).result()\n    evidence[\"B\"] = \"0.1 in the third slot ran (unexpected)\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = (f\"refuted: 0.1 in the same slot raises the identical {type(e).__name__}: \"\n                     f\"{str(e)[:80]} — the magnitude is irrelevant\")\n\n# C: \"third slot is parameter_values; precision is the fourth\"\ntry:\n    ev = float(np.asarray(est.run([(bell, obs, None, 0.01)]).result()[0].data.evs))\n    ev_run = float(np.asarray(est.run([(bell, obs)], precision=0.01).result()[0].data.evs))\n    evidence[\"C\"] = (f\"confirmed: moving 0.01 to the fourth slot, (bell, obs, None, 0.01), runs and \"\n                     f\"gives evs={ev:.4f}; the equivalent run(precision=0.01) gives evs={ev_run:.4f} \"\n                     f\"(the buggy 3-slot PUB had failed with {buggy})\")\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"the 4-entry PUB raised {type(e).__name__}: {str(e)[:100]}\"\n\n# D: \"wrap the observable in a list\"\ntry:\n    est.run([(bell, [obs], 0.01)]).result()\n    evidence[\"D\"] = \"wrapping the observable in a list ran (unexpected)\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = (f\"refuted: (bell, [obs], 0.01) still raises {type(e).__name__}: {str(e)[:80]} \"\n                     f\"— 0.01 is still sitting in the parameter_values slot\")\n\n# E: \"the precision goes before the observable\"\ntry:\n    est.run([(bell, 0.01, obs)]).result()\n    evidence[\"E\"] = \"(bell, 0.01, obs) ran (unexpected)\"\n    proven.append(\"E\")\nexcept Exception as e:\n    evidence[\"E\"] = (f\"refuted: putting the float in the observable slot raises {type(e).__name__}: \"\n                     f\"{str(e)[:80]} \\u2014 PUB slots are ordered, not searched by value\")\n\n# F: \"write the PUB as a list, not a tuple\"\ntry:\n    est.run([[bell, obs, 0.01]]).result()\n    evidence[\"F\"] = \"the list-shaped PUB ran (unexpected)\"\n    proven.append(\"F\")\nexcept Exception as e:\n    evidence[\"F\"] = (f\"refuted: the list-shaped PUB is coerced identically and raises the same {type(e).__name__}: \"\n                     f\"{str(e)[:80]} \\u2014 brackets are not the problem\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"buggy_error\": buggy, \"evs_with_precision_in_slot_4\": ev4}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6: REWORKED — old 'observable width' spot-bug duplicated q013 (same ValueError, same measure_all distractor); replaced with PUB entry ordering (circuit, observables, parameter_values, precision), a scope_note not otherwise covered"
+    "notes": "adversarial s6: REWORKED — old 'observable width' spot-bug duplicated q013 (same ValueError, same measure_all distractor); replaced with PUB entry ordering (circuit, observables, parameter_values, precision), a scope_note not otherwise covered | pool wave: +E precision-before-observable slot order, +F list-vs-tuple PUB bracketing"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

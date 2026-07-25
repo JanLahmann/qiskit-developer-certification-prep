@@ -11,19 +11,27 @@
   "options": [
     {
       "key": "A",
-      "text": "SamplerV2 \u2014 it returns the expectation value(s) directly in `result[0].data.evs`."
+      "text": "SamplerV2 — it returns the expectation value(s) directly in `result[0].data.evs`."
     },
     {
       "key": "B",
-      "text": "SamplerV2 \u2014 its quasi-probability distributions usually give the expectation value."
+      "text": "SamplerV2 — its quasi-probability distributions usually give the expectation value."
     },
     {
       "key": "C",
-      "text": "EstimatorV2 \u2014 it returns the expectation value(s) directly in `result[0].data.evs`."
+      "text": "EstimatorV2 — it returns the expectation value(s) directly in `result[0].data.evs`."
     },
     {
       "key": "D",
-      "text": "EstimatorV2 \u2014 but you must add `measure_all()` and average the bitstrings."
+      "text": "EstimatorV2 — but you must add `measure_all()` and average the bitstrings."
+    },
+    {
+      "key": "E",
+      "text": "EstimatorV2 — it returns the probability distribution over eigenvalues, which you typically turn into <O>."
+    },
+    {
+      "key": "F",
+      "text": "SamplerV2 — by default it returns `result[0].data.evs` once an observable is set in `options`."
     }
   ],
   "answer": [
@@ -33,8 +41,10 @@
     "correct": "The Estimator primitive is purpose-built to estimate expectation values of observables. You give it (circuit, observable) PUBs and it performs the necessary basis changes and averaging internally, returning the expectation values in `data.evs` (with standard errors in `data.stds`).",
     "distractors": {
       "A": "SamplerV2 returns per-shot bitstring samples (a BitArray), not expectation values; there is no `evs` field on Sampler output.",
-      "B": "`quasi_dists` is a retired V1 Sampler concept, and a probability distribution is not equivalent to an expectation value under any circumstances \u2014 you would still have to combine it with the observable's eigenvalues yourself.",
-      "D": "The Estimator measures the observable for you; estimator circuits carry no measurement instructions, and you do not average bitstrings manually \u2014 that would be re-implementing the Estimator."
+      "B": "`quasi_dists` is a retired V1 Sampler concept, and a probability distribution is not equivalent to an expectation value under any circumstances — you would still have to combine it with the observable's eigenvalues yourself.",
+      "D": "The Estimator measures the observable for you; estimator circuits carry no measurement instructions, and you do not average bitstrings manually — that would be re-implementing the Estimator.",
+      "E": "Right primitive, wrong output: EstimatorV2 returns the expectation value itself in `evs` (plus `stds`). A distribution over outcomes is the Sampler's product, and no post-processing step is needed.",
+      "F": "SamplerV2 has no observable option and no `evs` field — it returns per-shot bitstring data. Attaching an observable to a Sampler is the classic V1-to-V2 mix-up."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6: dead citation guides/get-started-with-primitives (404) -> guides/get-started-with-estimator; B hedged to kill absolute-wording tell | adversarial s6: B/D tightened so the key is (deliberately) the longest option here \u2014 the section's correct-is-longest rate is held near chance, not driven to zero"
-  }
+    "notes": "adversarial s6: dead citation guides/get-started-with-primitives (404) -> guides/get-started-with-estimator; B hedged to kill absolute-wording tell | adversarial s6: B/D tightened so the key is (deliberately) the longest option here — the section's correct-is-longest rate is held near chance, not driven to zero | pool wave: +E right primitive/wrong output, +F observable-on-the-Sampler"
+  },
+  "display_count": 4
 }

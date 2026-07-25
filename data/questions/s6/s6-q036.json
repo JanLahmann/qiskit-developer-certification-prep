@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "To attach the measurement instructions the estimator needs in order to sample the observable."
+    },
+    {
+      "key": "E",
+      "text": "To rescale the observable's coefficients using the backend's measured readout-error rates."
+    },
+    {
+      "key": "F",
+      "text": "To reorder the Pauli terms so the estimator can group them into commuting measurement sets."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Converting a matrix to Paulis is done by `SparsePauliOp.from_operator`, not `apply_layout`; the observable is already a SparsePauliOp here.",
       "C": "`apply_layout` only relocates the observable's qubits; error mitigation is configured through the resilience options and needs no per-observable registration.",
-      "D": "The Estimator measures the observable itself; `apply_layout` adds no measurement instructions and estimator circuits carry none."
+      "D": "The Estimator measures the observable itself; `apply_layout` adds no measurement instructions and estimator circuits carry none.",
+      "E": "`apply_layout` is a pure index remapping and never touches coefficients; correcting for readout error is the job of measurement mitigation (TREX), configured through the resilience options.",
+      "F": "Commuting-set grouping is an internal detail of how the primitive measures an observable; it happens regardless of layout and is not what `apply_layout` does."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6: options relengthened (was a high-severity length tell, ratio 1.75)"
-  }
+    "notes": "adversarial s6: options relengthened (was a high-severity length tell, ratio 1.75) | pool wave: +E apply_layout-rescales-coefficients, +F apply_layout-groups-commuting-terms"
+  },
+  "display_count": 4
 }

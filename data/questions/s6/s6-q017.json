@@ -25,6 +25,14 @@
     {
       "key": "D",
       "text": "It is unchanged — precision does not affect the number of shots."
+    },
+    {
+      "key": "E",
+      "text": "It decreases by about 4x — a tighter precision needs fewer shots."
+    },
+    {
+      "key": "F",
+      "text": "It increases by about 1.4x, since shots scale with the square root of the precision."
     }
   ],
   "answer": [
@@ -35,7 +43,9 @@
     "distractors": {
       "A": "A 2x factor assumes shots scale as 1/precision (linearly); the standard error scales as 1/sqrt(N), so the dependence is 1/precision^2, giving 4x.",
       "C": "16x would be 1/precision^4 — squaring the exponent twice. The correct scaling is 1/precision^2, i.e. 4x for a halving.",
-      "D": "Precision directly sets how many shots are needed: a smaller target standard error requires more sampling, so the shot count is not independent of precision."
+      "D": "Precision directly sets how many shots are needed: a smaller target standard error requires more sampling, so the shot count is not independent of precision.",
+      "E": "The relationship is inverted here. Shot noise falls as 1/sqrt(shots), so a SMALLER target standard error always demands MORE samples, never fewer.",
+      "F": "This inverts the exponent: the standard error goes as 1/sqrt(shots), which means shots go as 1/precision^2. A square-root law would give ~1.4x; the measured requirement is 4x."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\n# Measure the observable X on the state |0>: the H is the X->Z basis change, so\n# every shot is a +-1 sample of X with mean 0 and unit variance (worst-case shot\n# noise). The standard error of the estimate is then MEASURED, not assumed: we\n# draw R independent estimates at each shot budget and take their spread.\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.measure_all()\nsampler = StatevectorSampler(seed=42)\n\nR = 200          # independent repetitions per shot budget\nBASE = 2500      # baseline budget\n\ndef measured_std(n_shots):\n    bits = sampler.run([qc], shots=R * n_shots).result()[0].data.meas.array[:, 0].astype(np.int8)\n    estimates = (1 - 2 * bits).reshape(R, n_shots).mean(axis=1)\n    return float(np.std(estimates))\n\ncandidates = {\"A\": 2, \"B\": 4, \"C\": 16, \"D\": 1}\nstds = {k: measured_std(BASE * m) for k, m in candidates.items()}\nbaseline_std = stds[\"D\"]            # multiplier 1 == unchanged shot count\ntarget_std = baseline_std / 2.0     # \"halve the precision\" == halve the standard error\n\n# Which multiplier ACTUALLY lands on the halved standard error? Chosen by the\n# measured spreads, not by re-evaluating the 1/precision**2 formula.\nbest = min(candidates, key=lambda k: abs(stds[k] - target_std))\n\nevidence = {}\nproven = []\nfor k, m in candidates.items():\n    ok = (k == best)\n    evidence[k] = (\n        f\"measured standard error over {R} independent estimates at {BASE * m} shots \"\n        f\"({m}x the baseline {BASE}): {stds[k]:.5f}; the baseline standard error is \"\n        f\"{baseline_std:.5f} and halving it needs {target_std:.5f} -> {m}x \"\n        f\"{'HITS' if ok else 'misses'} the target\"\n    )\n    if ok:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\n    \"repetitions\": R, \"baseline_shots\": BASE,\n    \"measured_stds\": {str(candidates[k]): stds[k] for k in candidates},\n    \"baseline_std\": baseline_std, \"target_std\": target_std, \"winning_multiplier\": candidates[best]}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\n# Measure the observable X on the state |0>: the H is the X->Z basis change, so\n# every shot is a +-1 sample of X with mean 0 and unit variance (worst-case shot\n# noise). The standard error of the estimate is then MEASURED, not assumed: we\n# draw R independent estimates at each shot budget and take their spread.\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.measure_all()\nsampler = StatevectorSampler(seed=42)\n\nR = 200          # independent repetitions per shot budget\nBASE = 2500      # baseline budget\n\ndef measured_std(n_shots):\n    bits = sampler.run([qc], shots=R * n_shots).result()[0].data.meas.array[:, 0].astype(np.int8)\n    estimates = (1 - 2 * bits).reshape(R, n_shots).mean(axis=1)\n    return float(np.std(estimates))\n\ncandidates = {\"A\": 2, \"B\": 4, \"C\": 16, \"D\": 1}\nstds = {k: measured_std(BASE * m) for k, m in candidates.items()}\nbaseline_std = stds[\"D\"]            # multiplier 1 == unchanged shot count\ntarget_std = baseline_std / 2.0     # \"halve the precision\" == halve the standard error\n\n# Which multiplier ACTUALLY lands on the halved standard error? Chosen by the\n# measured spreads, not by re-evaluating the 1/precision**2 formula.\nbest = min(candidates, key=lambda k: abs(stds[k] - target_std))\n\nevidence = {}\nproven = []\nfor k, m in candidates.items():\n    ok = (k == best)\n    evidence[k] = (\n        f\"measured standard error over {R} independent estimates at {BASE * m} shots \"\n        f\"({m}x the baseline {BASE}): {stds[k]:.5f}; the baseline standard error is \"\n        f\"{baseline_std:.5f} and halving it needs {target_std:.5f} -> {m}x \"\n        f\"{'HITS' if ok else 'misses'} the target\"\n    )\n    if ok:\n        proven.append(k)\nevidence[\"E\"] = (f\"refuted: the measured standard error FALLS as samples are added ({stds['D']:.5f} at the baseline \"\n                 f\"budget vs {stds['B']:.5f} at 4x), so cutting the budget would enlarge it, not shrink it\")\nevidence[\"F\"] = (f\"refuted: a square-root law would predict ~1.4x, yet the smallest tested multiplier (2x) still leaves \"\n                 f\"the measured standard error at {stds['A']:.5f}, above the target {target_std:.5f}\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\n    \"repetitions\": R, \"baseline_shots\": BASE,\n    \"measured_stds\": {str(candidates[k]): stds[k] for k in candidates},\n    \"baseline_std\": baseline_std, \"target_std\": target_std, \"winning_multiplier\": candidates[best]}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6: proof rewritten to MEASURE the standard error at 1x/2x/4x/16x shots instead of recomputing 1/precision^2 (was circular)"
+    "notes": "adversarial s6: proof rewritten to MEASURE the standard error at 1x/2x/4x/16x shots instead of recomputing 1/precision^2 (was circular) | pool wave: +E inverted shots/precision direction, +F sqrt-instead-of-square exponent"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

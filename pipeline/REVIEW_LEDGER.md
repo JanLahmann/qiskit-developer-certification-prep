@@ -558,3 +558,109 @@ and died with it.
   positions 28–32% (baseline 23.3%), 0 blockers/warnings, 6 low `length_tell`
   residuals = the 6 deliberate keepers. `similar_twin_member` 40.7% at 22%
   coverage — below the 25% gating floor, accepted residual as in s4.
+
+## Verified library facts (s6 pool wave — estimator primitive, 2026-07-25, qiskit 2.5.0 / runtime 0.48.0)
+
+- **`EstimatorV2.run` accepts a LIST-shaped PUB**: `run([[isa, iobs]])` succeeds
+  (coerced exactly like the tuple), and `run(pubs=[...])` is the real keyword —
+  never offer either as a wrong option. What DOES fail: `run([(iobs, isa)])`
+  (`TypeError: Invalid observable type: QuantumCircuit`), `run({isa: iobs})`
+  (`TypeError: unhashable type: QuantumCircuit`), and a dict-shaped PUB
+  `run([{"circuit": isa, "observable": iobs}])` (`KeyError: 0` during coercion).
+- **`EstimatorV2.run` keyword surface is `precision=` only**: `shots=`,
+  `default_precision=`, `resilience_level=` and `backend=` all raise
+  `TypeError: unexpected keyword argument`. `options.precision` does not exist
+  either (pydantic `no_such_attribute`) — the options field is `default_precision`.
+- **`resilience_level` coerces silently**: `2.0`, `"2"` and `True` are ACCEPTED
+  (so a string level is a SECOND CORRECT ANSWER — never a distractor); `1.5` and
+  `None` raise. `3`, `4`, `5`, `-1` raise the range error (`must be <=2` / `>=0`).
+- **`default_precision = 0` raises whatever route you take**: attribute assignment,
+  `EstimatorV2(options={"default_precision": 0})` and `EstimatorOptions(default_precision=0)`
+  all hit the same `must be >0` validator — "set it in the constructor instead"
+  is a clean, refuted distractor. `options.execution` holds only `init_qubits`
+  and `rep_delay` (an `ExecutionOptionsV2` `default_precision` is a ValidationError).
+- **`ZneOptions` fields are exactly `amplifier, noise_factors, extrapolator,
+  extrapolated_noise_factors`** — `zne.factors`, `zne.scale_factors` (the Mitiq
+  spelling) and `zne.enable` are all `no_such_attribute`; so is
+  `resilience.noise_factors` (right name, wrong nesting level) and a top-level
+  `options.zne_mitigation`. `resilience.zne.noise_factors = [1, 3]` is ACCEPTED
+  and leaves `zne_mitigation` **Unset** — configuring is not enabling (the s5
+  `sequence_type` pattern, now confirmed for the Estimator).
+- **`options.resilience.zne_mitigation.enable = True` does NOT raise** — the flag
+  is `Unset` (a plain singleton), so the attribute write lands on it and ZNE stays
+  off. A "runs fine, does nothing" distractor; it needs a post-condition, never an
+  exception. Same shape for `dynamical_decoupling.sequence_type = "XY4"`
+  (accepted, `enable` still Unset), while `dynamical_decoupling.enabled` and
+  `dynamical_decoupling = True` both raise.
+- **PUB precision beats `default_precision`**: a PUB written `(isa, iobs, None, 0.005)`
+  under `options.default_precision = 0.05` reports `target_precision` 0.005 — the
+  resolution order is PUB > `run()` > options (mirrors the s5 shots finding).
+- **Observable broadcasting, measured:** a flat list of 3 observables → `evs.shape
+  (3,)`; `[[o1],[o2],[o3]]` → `(3, 1)`; `[[o1, o2, o3]]` → `(1, 3)`. A
+  `SparsePauliOp` built from several terms stays ONE observable and returns a
+  0-d array — there is no per-term breakdown. `evs` dtype is real `float64`
+  even though `SparsePauliOp.coeffs` is complex.
+- **`SparsePauliOp` construction near-misses:** `SparsePauliOp("ZZ", num_qubits=5)`
+  → `TypeError: unexpected keyword argument` (only `from_sparse_list` takes
+  `num_qubits`, and there it is a REQUIRED positional — omitting it is a
+  TypeError). `SparsePauliOp(["ZZ","XX"], coeffs=[1.0,0.5,0.25])` → `ValueError:
+  operands could not be broadcast`. `from_sparse_list([("Z",[0],1.0)], num_qubits=3)`
+  pads to `IIZ` — it never raises and never leaves a bare `Z`.
+- **`initial_layout` does not narrow the transpiled circuit**: a preset pass manager
+  with `initial_layout=[0, 1]` still emits a 5-qubit ISA circuit on a 5-qubit
+  backend, so the observable/circuit width mismatch survives — a good refuted
+  "fix" on `apply_layout` spot-bug stems.
+- **`PubResult.metadata` carries `target_precision` and `circuit_metadata` only**
+  (KeyError for `evs`); `PubResult.values` and `DataBin.expectation_values` are
+  AttributeErrors. CAUTION: `DataBin.values` is a bound METHOD and
+  `DataBin.values()` returns the arrays — never use it as a wrong option.
+- **`StatevectorEstimator` `stds` stays exactly `0.0`** even with
+  `run(..., precision=0.01)` (re-confirms the s6/s7 entry): `isnan` is False, so
+  both "nan-filled" and "shrinks as precision tightens" are safe refuted options.
+
+## Pool-craft rules (s6 pool wave, 2026-07-25 — 29/30 pooled, 56 new distractors)
+
+- **Manufacture keepers when the section starts short.** s6 had only 5 low
+  `length_tell` keepers for 27 single-answer questions (18.5%), and the preflight
+  landed `longest_option` at 20.7% — inside the 20–30% band but with no margin.
+  Fix: pick TWO non-keepers whose correct option is second-longest (s6-q013,
+  s6-q031) and make BOTH pool distractors shorter than the correct option. At
+  dc=4 that flips the 4 of 10 variants which drop the one longer distractor into
+  correct-strictly-longest, worth ~+0.4 each on `longest_option` (23.3% final).
+  The cost is one extra low `length_tell` residual per question, and ~-0.13 each
+  on `avoid_longest`. Cheaper and more honest than rewriting a correct option.
+- **`shortest_option` can start BELOW chance** (s6 baseline 13.6%) — the s5 rule
+  is symmetric: when the aggregate is low, the ordinary "pool distractors >=
+  len(correct)" discipline is exactly what fixes it (13.6% → 21.7%), and the
+  shortest-correct questions should be LEFT alone rather than compensated.
+  Always read the pre-pool aggregate before deciding which direction to push.
+- **All-equal-length option sets are longest_option ballast worth 0.25 each.**
+  Predict-output label questions (s6-q033 `IZIZ`-style, s6-q035) keep it for free
+  if the new options are the same width; prose or shape-flavoured pool distractors
+  break it and cost 0.225 apiece. Budget the trade explicitly — s6 spent it on
+  q011/q027/q035 for better misconceptions and bought the loss back with the two
+  manufactured keepers.
+- **Predict-output value spaces exhaust fast; the reliable refills are SHAPE and
+  TYPE claims** — `(3, 1)` vs `(1, 3)` vs `(3,)` broadcasting, "a length-1 array",
+  "a complex value", "one value per Pauli term", "one row per observable". Each is
+  refuted by a single `.shape`/`.dtype` read and none duplicates an existing value.
+- **Verify every bracketing before using it.** On the Estimator, `[[circuit, obs]]`
+  SUCCEEDS while `[(obs, circuit)]`, `{circuit: obs}` and `[{...}]` fail — the
+  s4 Sampler finding generalises: nested-list PUBs are coerced, not rejected.
+- **Watch the lint corpus when adding option text, not just evidence.** s6-q020's
+  proof evidence contains pydantic `type=no_such_attribute` fragments; they are
+  invisible to `lint_proof_drift` only because the word "type" appears nowhere in
+  that question's stem/options/explanations. Adding a distractor explanation that
+  says "type" would have created five new findings at once.
+- **Sign/exponent inversions are the cheapest conceptual pool pair** on any
+  scaling question: "it DEcreases by 4x" (direction inverted) and "it increases by
+  1.4x" (sqrt instead of square) both refute against the measurement the proof
+  already took — no extra execution, no new >=3-digit numbers in the evidence.
+- **4-of-6 multis still cannot pool** (s6-q028, the section's only skip) — the
+  third instance of this constraint after s3-q042 and the s4 note.
+- s6 final: `longest_option` 23.3%, `avoid_longest` 26.0%, `shortest_option` 21.7%,
+  positions 30.0–33.3% (baseline 25.0%, answer keys 7/7/7/6), 0 blockers/warnings,
+  7 low `length_tell` residuals (5 inherited keepers + 2 manufactured), lint
+  findings unchanged from the pre-pool baseline (4, all pre-existing).
+  `similar_twin_member` 40.0% at 59% coverage → 33.9% exam estimate, accepted
+  residual as in s4/s5.

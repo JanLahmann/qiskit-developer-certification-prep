@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`SparsePauliOp(\"ZZ\", \"XX\")`"
+    },
+    {
+      "key": "E",
+      "text": "`SparsePauliOp.from_sparse_list([(\"ZZ\", [0, 1], 1.0)])`"
+    },
+    {
+      "key": "F",
+      "text": "`SparsePauliOp([\"ZZ\", \"XX\"], coeffs=[1.0, 0.5, 0.25])`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "'ZZ' and 'YY' are 2-qubit labels but 'X' is a 1-qubit label; every term in one SparsePauliOp must act on the same number of qubits, so mixing widths raises a ValueError.",
       "C": "'ZZ' is 2 qubits and 'XYZ' is 3 qubits — again inconsistent widths, so construction raises a ValueError.",
-      "D": "The second positional argument to SparsePauliOp is the coefficients, not a second label; passing 'XX' there is a malformed signature and raises."
+      "D": "The second positional argument to SparsePauliOp is the coefficients, not a second label; passing 'XX' there is a malformed signature and raises.",
+      "E": "`from_sparse_list` cannot infer the register width from the indices — `num_qubits` is a required positional argument, so omitting it raises TypeError.",
+      "F": "The coefficient array is matched element-wise against the Pauli list; three coefficients for two Paulis cannot be broadcast and the construction raises."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
@@ -46,14 +56,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit.quantum_info import SparsePauliOp\n\nevidence = {}\nproven = []\ndef attempt(key, fn):\n    try:\n        op = fn()\n        evidence[key] = f\"construction succeeded: {op.paulis.to_labels()} with coeffs {list(op.coeffs)}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"construction raises {type(e).__name__}: {str(e)[:110]}\"\n\nattempt(\"A\", lambda: SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"X\", 0.5), (\"YY\", 0.25)]))\nattempt(\"B\", lambda: SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"XX\", 0.5)]))\nattempt(\"C\", lambda: SparsePauliOp([\"ZZ\", \"XYZ\"]))\nattempt(\"D\", lambda: SparsePauliOp(\"ZZ\", \"XX\"))\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {}})\n"
+    "proof_script": "\nfrom qiskit.quantum_info import SparsePauliOp\n\nevidence = {}\nproven = []\ndef attempt(key, fn):\n    try:\n        op = fn()\n        evidence[key] = f\"construction succeeded: {op.paulis.to_labels()} with coeffs {list(op.coeffs)}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"construction raises {type(e).__name__}: {str(e)[:110]}\"\n\nattempt(\"A\", lambda: SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"X\", 0.5), (\"YY\", 0.25)]))\nattempt(\"B\", lambda: SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"XX\", 0.5)]))\nattempt(\"C\", lambda: SparsePauliOp([\"ZZ\", \"XYZ\"]))\nattempt(\"D\", lambda: SparsePauliOp(\"ZZ\", \"XX\"))\nattempt(\"E\", lambda: SparsePauliOp.from_sparse_list([(\"ZZ\", [0, 1], 1.0)]))\nattempt(\"F\", lambda: SparsePauliOp([\"ZZ\", \"XX\"], coeffs=[1.0, 0.5, 0.25]))\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6: A extended with a third term (length tell); proof updated"
+    "notes": "adversarial s6: A extended with a third term (length tell); proof updated | pool wave: +E from_sparse_list without num_qubits, +F coeffs length mismatch"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +74,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

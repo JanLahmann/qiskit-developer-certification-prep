@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`IIZ`"
+    },
+    {
+      "key": "E",
+      "text": "It raises a `QiskitError`: a sparse list needs one label character per qubit."
+    },
+    {
+      "key": "F",
+      "text": "`Z` — `num_qubits` just checks the indices and does not pad the label."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "'ZII' would put the Z on the left-most character, i.e. qubit 2 (big-endian reading), not qubit 0.",
       "B": "'IZI' places the Z on qubit 1 (the middle character), off by one from index 0.",
-      "C": "'ZZZ' applies Z to all three qubits; the sparse entry specifies only qubit index 0."
+      "C": "'ZZZ' applies Z to all three qubits; the sparse entry specifies only qubit index 0.",
+      "E": "That is precisely what the sparse form avoids: you give only the acting Paulis plus their qubit indices, and `num_qubits` supplies the width. The call succeeds.",
+      "F": "`num_qubits` is the width of the operator that gets built, so the term is padded with identities to that width; the stored label is three characters long."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
@@ -46,14 +56,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit.quantum_info import SparsePauliOp\n\n# \"Z on qubit index 0\" of a 3-qubit operator\nop = SparsePauliOp.from_sparse_list([(\"Z\", [0], 1.0)], num_qubits=3)\nobserved = str(op.paulis[0])\n\ncandidates = {\"A\": \"ZII\", \"B\": \"IZI\", \"C\": \"ZZZ\", \"D\": \"IIZ\"}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = (observed == val)\n    evidence[k] = f\"from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> '{observed}'; option claims '{val}' -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": observed}})\n"
+    "proof_script": "\nfrom qiskit.quantum_info import SparsePauliOp\n\n# \"Z on qubit index 0\" of a 3-qubit operator\nop = SparsePauliOp.from_sparse_list([(\"Z\", [0], 1.0)], num_qubits=3)\nobserved = str(op.paulis[0])\n\ncandidates = {\"A\": \"ZII\", \"B\": \"IZI\", \"C\": \"ZZZ\", \"D\": \"IIZ\"}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = (observed == val)\n    evidence[k] = f\"from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> '{observed}'; option claims '{val}' -> match={m}\"\n    if m:\n        proven.append(k)\nevidence[\"E\"] = (f\"no exception is raised: from_sparse_list([('Z',[0],1.0)], num_qubits=3) returns '{observed}', \"\n                 f\"so the sparse form does not need one label character per qubit\")\nevidence[\"F\"] = (f\"the stored label is '{observed}', {len(observed)} characters wide \\u2014 the term IS padded with \"\n                 f\"identities, so a bare 'Z' is not what comes back\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": observed}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E sparse-list-needs-full-width, +F num_qubits-does-not-pad"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +74,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

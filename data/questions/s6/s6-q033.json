@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`IIZZ`"
+    },
+    {
+      "key": "E",
+      "text": "`ZIIZ`"
+    },
+    {
+      "key": "F",
+      "text": "`IZZI`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "'ZIZI' puts the Z operators at physical qubits 3 and 1 — shifted by one from the requested [2, 0].",
       "C": "'ZZII' keeps the two Z's adjacent on the highest qubits (3 and 2), ignoring the layout list entirely.",
-      "D": "'IIZZ' is the observable padded to 4 qubits WITHOUT relocation (Z's still on qubits 1 and 0) — this is what you get if apply_layout is skipped."
+      "D": "'IIZZ' is the observable padded to 4 qubits WITHOUT relocation (Z's still on qubits 1 and 0) — this is what you get if apply_layout is skipped.",
+      "E": "This places the operators on physical qubits 3 and 0, which is what you get by reading the layout list as 1-based. `apply_layout` indices are 0-based.",
+      "F": "This places the operators on qubits 1 and 2, as if the list `[2, 0]` described a span of qubits rather than an explicit destination for each observable qubit."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit.quantum_info import SparsePauliOp\n\n# Map the 2-qubit observable ZZ onto physical qubits [2, 0] of a 4-qubit register.\nresult = SparsePauliOp(\"ZZ\").apply_layout([2, 0], num_qubits=4)\nobserved = str(result.paulis[0])\n\ncandidates = {\"A\": \"IZIZ\", \"B\": \"ZIZI\", \"C\": \"ZZII\", \"D\": \"IIZZ\"}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = (observed == val)\n    evidence[k] = f\"SparsePauliOp('ZZ').apply_layout([2,0], num_qubits=4) -> '{observed}'; option claims '{val}' -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": observed}})\n"
+    "proof_script": "\nfrom qiskit.quantum_info import SparsePauliOp\n\n# Map the 2-qubit observable ZZ onto physical qubits [2, 0] of a 4-qubit register.\nresult = SparsePauliOp(\"ZZ\").apply_layout([2, 0], num_qubits=4)\nobserved = str(result.paulis[0])\n\ncandidates = {\"A\": \"IZIZ\", \"B\": \"ZIZI\", \"C\": \"ZZII\", \"D\": \"IIZZ\", \"E\": \"ZIIZ\", \"F\": \"IZZI\"}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = (observed == val)\n    evidence[k] = f\"SparsePauliOp('ZZ').apply_layout([2,0], num_qubits=4) -> '{observed}'; option claims '{val}' -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": observed}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E 1-based layout indices, +F layout read as a span"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

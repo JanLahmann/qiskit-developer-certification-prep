@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Undefined — `StatevectorEstimator` has no `stds` field."
+    },
+    {
+      "key": "E",
+      "text": "The same shape as `evs`, but filled with `nan`."
+    },
+    {
+      "key": "F",
+      "text": "A nonzero value that shrinks as `precision` tightens."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "`stds` is the uncertainty of the estimate, a separate quantity from the expectation value in `evs`; they are not the same number.",
       "C": "1.0 is not a generic standard deviation here; an exact computation yields zero uncertainty, not the maximum.",
-      "D": "The Estimator DataBin does expose a `stds` field alongside `evs`; it is defined and here equals 0.0."
+      "D": "The Estimator DataBin does expose a `stds` field alongside `evs`; it is defined and here equals 0.0.",
+      "E": "The field is a real number, not a missing-value marker: an exact calculation has a well-defined uncertainty of zero, and that is what is reported.",
+      "F": "That is the behaviour of a sampling-based estimator. `StatevectorEstimator` computes the value algebraically, so its reported standard error stays exactly zero no matter how tight a precision you ask for."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
@@ -46,14 +56,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nbell = QuantumCircuit(2); bell.h(0); bell.cx(0, 1)\ndata = StatevectorEstimator().run([(bell, SparsePauliOp(\"ZZ\"))]).result()[0].data\nobserved_stds = float(np.asarray(data.stds))\nobserved_evs = float(np.asarray(data.evs))\n\nevidence = {}\nproven = []\n# A: 0.0 (exact -> no sampling uncertainty)\nmatchA = bool(np.isclose(observed_stds, 0.0))\nevidence[\"A\"] = f\"result[0].data.stds = {observed_stds} (exact calculation, evs = {observed_evs}); equals 0.0 -> {matchA}\"\nif matchA:\n    proven.append(\"A\")\n# B: same as evs\nevidence[\"B\"] = f\"stds ({observed_stds}) equals evs ({observed_evs})? {np.isclose(observed_stds, observed_evs) and observed_evs != 0.0}: stds is the uncertainty, not the value\"\n# C: 1.0\nevidence[\"C\"] = f\"stds ({observed_stds}) equals 1.0? {np.isclose(observed_stds, 1.0)}\"\n# D: undefined / no stds field\nevidence[\"D\"] = f\"StatevectorEstimator DataBin HAS a stds field (hasattr={hasattr(data, 'stds')}); it is defined, so 'undefined' is false\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"stds\": observed_stds, \"evs\": observed_evs}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nbell = QuantumCircuit(2); bell.h(0); bell.cx(0, 1)\ndata = StatevectorEstimator().run([(bell, SparsePauliOp(\"ZZ\"))]).result()[0].data\nobserved_stds = float(np.asarray(data.stds))\nobserved_evs = float(np.asarray(data.evs))\n\nevidence = {}\nproven = []\n# A: 0.0 (exact -> no sampling uncertainty)\nmatchA = bool(np.isclose(observed_stds, 0.0))\nevidence[\"A\"] = f\"result[0].data.stds = {observed_stds} (exact calculation, evs = {observed_evs}); equals 0.0 -> {matchA}\"\nif matchA:\n    proven.append(\"A\")\n# B: same as evs\nevidence[\"B\"] = f\"stds ({observed_stds}) equals evs ({observed_evs})? {np.isclose(observed_stds, observed_evs) and observed_evs != 0.0}: stds is the uncertainty, not the value\"\n# C: 1.0\nevidence[\"C\"] = f\"stds ({observed_stds}) equals 1.0? {np.isclose(observed_stds, 1.0)}\"\n# D: undefined / no stds field\nevidence[\"D\"] = f\"StatevectorEstimator DataBin HAS a stds field (hasattr={hasattr(data, 'stds')}); it is defined, so 'undefined' is false\"\nevidence[\"E\"] = f\"stds = {observed_stds} and numpy reports isnan={bool(np.isnan(observed_stds))}: the field holds a real number, not a missing-value marker\"\nstds_tight = float(np.asarray(StatevectorEstimator().run([(bell, SparsePauliOp(\"ZZ\"))], precision=0.01).result()[0].data.stds))\nevidence[\"F\"] = f\"asking the same run for a tighter target precision still reports stds = {stds_tight}: it stays exactly zero instead of shrinking from a nonzero value\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"stds\": observed_stds, \"evs\": observed_evs, \"stds_tight\": stds_tight}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6: D tightened so the key is (deliberately) the longest option here; proof re-checked: stds=0.0 still discriminates because evs=1.0 refutes B and hasattr refutes D"
+    "notes": "adversarial s6: D tightened so the key is (deliberately) the longest option here; proof re-checked: stds=0.0 still discriminates because evs=1.0 refutes B and hasattr refutes D | pool wave: +E nan-filled stds, +F stds shrinks with precision"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +74,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

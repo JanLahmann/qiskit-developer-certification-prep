@@ -25,6 +25,14 @@
     {
       "key": "D",
       "text": "Precision cannot be set on `options` at all; it is only accepted as the `precision` keyword of `run()`."
+    },
+    {
+      "key": "E",
+      "text": "The option lives at `options.execution.default_precision`, not at the top level of `options`."
+    },
+    {
+      "key": "F",
+      "text": "`default_precision` has to be passed through the `options=` argument of the constructor."
     }
   ],
   "answer": [
@@ -35,7 +43,9 @@
     "distractors": {
       "B": "Precision is a real-valued target standard error, not an integer shot count; a float like 0.01 is perfectly valid, so the fix is not to make it an integer.",
       "C": "`default_precision` does exist on EstimatorOptions; `default_shots` is a separate option, not a substitute for the invalid value.",
-      "D": "`default_precision` is a documented EstimatorOptions field and setting it on `estimator.options` is perfectly legal; `precision` in `run()` is an additional, higher-precedence route, not the only one. The value 0 is the actual problem."
+      "D": "`default_precision` is a documented EstimatorOptions field and setting it on `estimator.options` is perfectly legal; `precision` in `run()` is an additional, higher-precedence route, not the only one. The value 0 is the actual problem.",
+      "E": "`ExecutionOptionsV2` only carries `init_qubits` and `rep_delay`; assigning a precision there is itself a validation error. `default_precision` is a top-level Estimator option.",
+      "F": "The constructor route runs the very same validator: building the primitive with a zero `default_precision` raises the identical error. The problem is the value, not where it is set."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit_ibm_runtime import EstimatorOptions\n\n# estimator.options is an EstimatorOptions instance; validation is identical.\nbuggy_err = None\ntry:\n    o = EstimatorOptions(); o.default_precision = 0\nexcept Exception as e:\n    buggy_err = type(e).__name__\n\nevidence = {}\nproven = []\n# A: use a positive value\ntry:\n    o = EstimatorOptions(); o.default_precision = 0.01\n    evidence[\"A\"] = f\"default_precision = 0.01 is accepted; the bug was default_precision = 0 ({buggy_err}: value must be > 0)\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"0.01 still failed {type(e).__name__}\"\n# B: 'must be an integer number of shots' -> refute (a float is accepted)\nevidence[\"B\"] = \"false: 0.01 (a non-integer float) is accepted as default_precision, so precision is not an integer shot count\"\n# C: 'there is no default_precision; use default_shots' -> refute\nhas_dp = hasattr(EstimatorOptions(), \"default_precision\")\nevidence[\"C\"] = f\"false: EstimatorOptions.default_precision exists (hasattr={has_dp}); default_shots is a separate option, not a replacement\"\n# D: 'precision cannot be set on options, only in run()' -> refute\nevidence[\"D\"] = \"false: default_precision was set on the options object (before any run() call) without error\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy_error\": buggy_err}})\n"
+    "proof_script": "\nfrom qiskit_ibm_runtime import EstimatorOptions\n\n# estimator.options is an EstimatorOptions instance; validation is identical.\nbuggy_err = None\ntry:\n    o = EstimatorOptions(); o.default_precision = 0\nexcept Exception as e:\n    buggy_err = type(e).__name__\n\nevidence = {}\nproven = []\n# A: use a positive value\ntry:\n    o = EstimatorOptions(); o.default_precision = 0.01\n    evidence[\"A\"] = f\"default_precision = 0.01 is accepted; the bug was default_precision = 0 ({buggy_err}: value must be > 0)\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"0.01 still failed {type(e).__name__}\"\n# B: 'must be an integer number of shots' -> refute (a float is accepted)\nevidence[\"B\"] = \"false: 0.01 (a non-integer float) is accepted as default_precision, so precision is not an integer shot count\"\n# C: 'there is no default_precision; use default_shots' -> refute\nhas_dp = hasattr(EstimatorOptions(), \"default_precision\")\nevidence[\"C\"] = f\"false: EstimatorOptions.default_precision exists (hasattr={has_dp}); default_shots is a separate option, not a replacement\"\n# D: 'precision cannot be set on options, only in run()' -> refute\nevidence[\"D\"] = \"false: default_precision was set on the options object (before any run() call) without error\"\n# E: 'the option lives under options.execution'\ntry:\n    o = EstimatorOptions(); o.execution.default_precision = 0.01\n    evidence[\"E\"] = \"options.execution accepted a default_precision field (unexpected)\"\n    proven.append(\"E\")\nexcept Exception as e:\n    evidence[\"E\"] = (f\"false: the execution group has no such field ({type(e).__name__}); the option sits at the \"\n                     f\"top level, where 0.01 was accepted above\")\n# F: 'set it through the constructor instead'\ntry:\n    EstimatorOptions(default_precision=0)\n    evidence[\"F\"] = \"building the options with a zero precision was accepted (unexpected)\"\n    proven.append(\"F\")\nexcept Exception as e:\n    evidence[\"F\"] = (f\"false: building the options with a zero precision raises the same {type(e).__name__}; \"\n                     f\"the validator is identical, so the constructor does not rescue the value\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy_error\": buggy_err}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6: A tightened and D extended to remove the length tell"
+    "notes": "adversarial s6: A tightened and D extended to remove the length tell | pool wave: +E wrong nesting under execution, +F constructor-rescues-the-value"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

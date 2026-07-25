@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`[-1.0, -1.0]`"
+    },
+    {
+      "key": "E",
+      "text": "`0.0` — a list of observables is summed into one expectation value."
+    },
+    {
+      "key": "F",
+      "text": "`[[1.0], [-1.0]]` — one row per observable."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "[-1, +1] reads the labels left-to-right (big-endian), assigning Z to qubit 0 in 'ZI' — the reverse of Qiskit's convention where the last character is qubit 0.",
       "C": "[+1, +1] treats the flipped qubit as still measuring +1, ignoring that X|0> = |1> gives Z-eigenvalue -1 on that qubit.",
-      "D": "[-1, -1] assumes both observables act on the flipped qubit; each string has its Z on a different qubit, so only one of them sees the |1>."
+      "D": "[-1, -1] assumes both observables act on the flipped qubit; each string has its Z on a different qubit, so only one of them sees the |1>.",
+      "E": "A list of observables in a PUB is BROADCAST, not added: you get one expectation value per observable. Summing would require putting both terms inside a single `SparsePauliOp`.",
+      "F": "The observable array here is one-dimensional, so `evs` comes back with the same flat shape. The nested shape appears only if you write the observables as `[[obs1], [obs2]]`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
@@ -46,14 +56,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.x(0)   # qubit 0 -> |1>, qubit 1 -> |0>\nobs = [SparsePauliOp(\"ZI\"), SparsePauliOp(\"IZ\")]\nres = StatevectorEstimator().run([(qc, obs)]).result()\nobserved = [round(float(v), 4) for v in np.asarray(res[0].data.evs)]\n\ncandidates = {\"A\": [-1.0, 1.0], \"B\": [1.0, -1.0], \"C\": [1.0, 1.0], \"D\": [-1.0, -1.0]}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.allclose(observed, val))\n    evidence[k] = f\"executed [<ZI>, <IZ>] = {observed}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": observed}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.x(0)   # qubit 0 -> |1>, qubit 1 -> |0>\nobs = [SparsePauliOp(\"ZI\"), SparsePauliOp(\"IZ\")]\nres = StatevectorEstimator().run([(qc, obs)]).result()\nobserved = [round(float(v), 4) for v in np.asarray(res[0].data.evs)]\n\ncandidates = {\"A\": [-1.0, 1.0], \"B\": [1.0, -1.0], \"C\": [1.0, 1.0], \"D\": [-1.0, -1.0]}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.allclose(observed, val))\n    evidence[k] = f\"executed [<ZI>, <IZ>] = {observed}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nraw = np.asarray(res[0].data.evs)\nevidence[\"E\"] = f\"the estimator returns TWO values {observed} (shape {raw.shape}); the observables are broadcast, not summed into one number\"\nevidence[\"F\"] = f\"evs has shape {raw.shape} \\u2014 a flat pair of values, not one single-entry row per observable\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": observed}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E observables-are-summed, +F nested observable shape"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +74,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

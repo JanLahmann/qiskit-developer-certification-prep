@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`2.0`"
+    },
+    {
+      "key": "E",
+      "text": "`-1.0`"
+    },
+    {
+      "key": "F",
+      "text": "`[0.5, 0.5]` — one value per Pauli term"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Counting only one term (e.g. assuming <XX> = 0) gives 0.5 — but the Bell state is perfectly correlated in the X basis too, so <XX> = 1.",
       "B": "0.0 would require the two terms to cancel or the state to be uncorrelated; the Bell state is maximally correlated, so both terms are +1, not opposite in sign.",
-      "D": "2.0 ignores the 0.5 coefficients and simply adds <ZZ> + <XX>; the coefficients scale each term."
+      "D": "2.0 ignores the 0.5 coefficients and simply adds <ZZ> + <XX>; the coefficients scale each term.",
+      "E": "This is the value for the singlet |Psi-> (where both <ZZ> and <XX> are -1). The circuit builds |Phi+>, for which <ZZ> = <XX> = +1 — a state-identification slip.",
+      "F": "A `SparsePauliOp` is ONE observable: the estimator contracts all of its terms into a single weighted number. It does not report a per-term breakdown, so the result is a scalar, not a length-2 array."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
@@ -46,14 +56,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)   # Bell state (|00>+|11>)/sqrt(2)\nobs = SparsePauliOp([\"ZZ\", \"XX\"], coeffs=[0.5, 0.5])\nobserved = float(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs))\n\ncandidates = {\"A\": 0.5, \"B\": 0.0, \"C\": 1.0, \"D\": 2.0}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.isclose(observed, val))\n    evidence[k] = f\"exact <0.5*ZZ + 0.5*XX> on the Bell state = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)   # Bell state (|00>+|11>)/sqrt(2)\nobs = SparsePauliOp([\"ZZ\", \"XX\"], coeffs=[0.5, 0.5])\nobserved = float(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs))\n\ncandidates = {\"A\": 0.5, \"B\": 0.0, \"C\": 1.0, \"D\": 2.0, \"E\": -1.0}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.isclose(observed, val))\n    evidence[k] = f\"exact <0.5*ZZ + 0.5*XX> on the Bell state = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nraw = np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs)\nevidence[\"F\"] = f\"the PUB returns a single scalar (shape {raw.shape}) equal to {observed:.6f} \\u2014 the weighted sum of the two Pauli terms, not one value per term\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E singlet-vs-triplet state slip, +F per-Pauli-term breakdown"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +74,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

@@ -8,7 +8,9 @@
       "A": "exact <3*X> on |+> = 3.000000; option claims 1.0 -> match=False",
       "B": "exact <3*X> on |+> = 3.000000; option claims 0.0 -> match=False",
       "C": "exact <3*X> on |+> = 3.000000; option claims -3.0 -> match=False",
-      "D": "exact <3*X> on |+> = 3.000000; option claims 3.0 -> match=True"
+      "D": "exact <3*X> on |+> = 3.000000; option claims 3.0 -> match=True",
+      "E": "evs is a 0-dimensional array (shape ()) holding 3.000000, not a length-1 array",
+      "F": "evs has dtype float64 \u2014 a real float; the complex coefficients are contracted away, so no complex value is returned"
     },
     "observed": {
       "expectation": 2.999999999999999
@@ -20,9 +22,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.2,
+  "wall_seconds": 1.11,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"exact <3*X> on |+> = 3.000000; option claims 1.0 -> match=False\", \"B\": \"exact <3*X> on |+> = 3.000000; option claims 0.0 -> match=False\", \"C\": \"exact <3*X> on |+> = 3.000000; option claims -3.0 -> match=False\", \"D\": \"exact <3*X> on |+> = 3.000000; option claims 3.0 -> match=True\"}, \"observed\": {\"expectation\": 2.999999999999999}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"exact <3*X> on |+> = 3.000000; option claims 1.0 -> match=False\", \"B\": \"exact <3*X> on |+> = 3.000000; option claims 0.0 -> match=False\", \"C\": \"exact <3*X> on |+> = 3.000000; option claims -3.0 -> match=False\", \"D\": \"exact <3*X> on |+> = 3.000000; option claims 3.0 -> match=True\", \"E\": \"evs is a 0-dimensional array (shape ()) holding 3.000000, not a length-1 array\", \"F\": \"evs has dtype float64 \\u2014 a real float; the complex coefficients are contracted away, so no complex value is returned\"}, \"observed\": {\"expectation\": 2.999999999999999}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

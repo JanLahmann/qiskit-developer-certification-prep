@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`3.0`"
+    },
+    {
+      "key": "E",
+      "text": "`[3.0]` — a length-1 array, one entry per list item."
+    },
+    {
+      "key": "F",
+      "text": "`(3+0j)` — a complex value, since `SparsePauliOp` coefficients are complex."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "1.0 is the bare <X>; it ignores the coefficient 3.0 that multiplies the Pauli term.",
       "B": "0.0 would be <Z> on |+>, or the result of assuming X has zero expectation — but |+> is the +1 eigenstate of X.",
-      "C": "-3.0 has the right magnitude but the wrong sign; |+> is the +1 (not -1) eigenstate of X."
+      "C": "-3.0 has the right magnitude but the wrong sign; |+> is the +1 (not -1) eigenstate of X.",
+      "E": "`from_list` builds ONE observable out of the listed terms; the PUB's observable is a scalar entry, so `evs` comes back 0-dimensional. A length-1 array needs `[obs]` in the PUB.",
+      "F": "`SparsePauliOp` stores complex coefficients internally, but an expectation value of a Hermitian observable is real and the estimator returns a real float."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
@@ -46,14 +56,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(1); qc.h(0)   # |+>, so <X> = 1\nobs = SparsePauliOp.from_list([(\"X\", 3.0)])\nobserved = float(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs))\n\ncandidates = {\"A\": 1.0, \"B\": 0.0, \"C\": -3.0, \"D\": 3.0}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.isclose(observed, val))\n    evidence[k] = f\"exact <3*X> on |+> = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(1); qc.h(0)   # |+>, so <X> = 1\nobs = SparsePauliOp.from_list([(\"X\", 3.0)])\nobserved = float(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs))\n\ncandidates = {\"A\": 1.0, \"B\": 0.0, \"C\": -3.0, \"D\": 3.0}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.isclose(observed, val))\n    evidence[k] = f\"exact <3*X> on |+> = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nraw = np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs)\nevidence[\"E\"] = f\"evs is a 0-dimensional array (shape {raw.shape}) holding {observed:.6f}, not a length-1 array\"\nevidence[\"F\"] = f\"evs has dtype {raw.dtype} \\u2014 a real float; the complex coefficients are contracted away, so no complex value is returned\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E length-1 array shape, +F complex-coefficient leakage"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +74,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

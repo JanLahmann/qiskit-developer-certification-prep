@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Replace the `SparsePauliOp` with the plain Pauli string `\"ZZ\"`, which the primitive widens to the circuit automatically."
+    },
+    {
+      "key": "E",
+      "text": "Pin the layout with `initial_layout=[0, 1]` when transpiling, so the ISA circuit stays 2 qubits wide."
+    },
+    {
+      "key": "F",
+      "text": "Build the observable at backend width with `SparsePauliOp(\"ZZ\", num_qubits=5)` and pass that instead."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "Estimator circuits do not carry measurement instructions (the primitive measures the observable itself), and measure_all() does not change the observable's qubit count — the width mismatch remains.",
       "C": "run() has no `backend=` keyword (the target is fixed by `mode=` at construction), and even if it did, it would not resize a 2-qubit observable to the 5-qubit ISA circuit.",
-      "D": "A bare label 'ZZ' is still a 2-qubit observable and the primitive does not silently widen it to the circuit — changing the Python type leaves the same ValueError."
+      "D": "A bare label 'ZZ' is still a 2-qubit observable and the primitive does not silently widen it to the circuit — changing the Python type leaves the same ValueError.",
+      "E": "`initial_layout` chooses WHICH physical qubits are used, not how wide the output is: a preset pass manager always emits a circuit at the backend's full width, so the transpiled circuit is still 5 qubits and the same mismatch is raised.",
+      "F": "`SparsePauliOp.__init__` has no `num_qubits` parameter (that argument belongs to `from_sparse_list`), so this line raises TypeError before any run happens."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1, seed_transpiler=42)\nisa = pm.run(qc)\nest = EstimatorV2(mode=backend)\n\n# The buggy code as written: observable NOT aligned to the 5-qubit ISA circuit\nbuggy_err = None\ntry:\n    est.run([(isa, obs)]).result()\nexcept Exception as e:\n    buggy_err = f\"{type(e).__name__}: {str(e)[:120]}\"\n\nevidence = {}\nproven = []\n# A: apply_layout to the observable\ntry:\n    iobs = obs.apply_layout(isa.layout)\n    ev = float(est.run([(isa, iobs)]).result()[0].data.evs)\n    evidence[\"A\"] = f\"obs.apply_layout(isa.layout) -> run SUCCEEDS, evs={ev:.3f} (buggy run had failed with {buggy_err})\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"apply_layout still raised {type(e).__name__}: {str(e)[:100]}\"\n# B: add measure_all to the circuit\ntry:\n    qcm = qc.copy(); qcm.measure_all()\n    isam = pm.run(qcm)\n    est.run([(isam, obs)]).result()\n    evidence[\"B\"] = \"adding measure_all() made it run (unexpected)\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"adding measure_all() does NOT fix it: still {type(e).__name__} (the 2-qubit observable still does not span the 5-qubit ISA circuit)\"\n# C: pass backend= to run\ntry:\n    est.run([(isa, obs)], backend=backend).result()\n    evidence[\"C\"] = \"run(..., backend=) accepted (unexpected)\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"run(..., backend=) raises {type(e).__name__}: run() has no backend kwarg, and it would not align the observable anyway\"\n# D: use plain string observable \"ZZ\"\ntry:\n    est.run([(isa, \"ZZ\")]).result()\n    evidence[\"D\"] = \"string 'ZZ' observable ran (unexpected)\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"the string 'ZZ' is still a 2-qubit observable, so it still raises {type(e).__name__}: switching type does not fix the width\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy_error\": buggy_err}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1, seed_transpiler=42)\nisa = pm.run(qc)\nest = EstimatorV2(mode=backend)\n\n# The buggy code as written: observable NOT aligned to the 5-qubit ISA circuit\nbuggy_err = None\ntry:\n    est.run([(isa, obs)]).result()\nexcept Exception as e:\n    buggy_err = f\"{type(e).__name__}: {str(e)[:120]}\"\n\nevidence = {}\nproven = []\n# A: apply_layout to the observable\ntry:\n    iobs = obs.apply_layout(isa.layout)\n    ev = float(est.run([(isa, iobs)]).result()[0].data.evs)\n    evidence[\"A\"] = f\"obs.apply_layout(isa.layout) -> run SUCCEEDS, evs={ev:.3f} (buggy run had failed with {buggy_err})\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"apply_layout still raised {type(e).__name__}: {str(e)[:100]}\"\n# B: add measure_all to the circuit\ntry:\n    qcm = qc.copy(); qcm.measure_all()\n    isam = pm.run(qcm)\n    est.run([(isam, obs)]).result()\n    evidence[\"B\"] = \"adding measure_all() made it run (unexpected)\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"adding measure_all() does NOT fix it: still {type(e).__name__} (the 2-qubit observable still does not span the 5-qubit ISA circuit)\"\n# C: pass backend= to run\ntry:\n    est.run([(isa, obs)], backend=backend).result()\n    evidence[\"C\"] = \"run(..., backend=) accepted (unexpected)\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"run(..., backend=) raises {type(e).__name__}: run() has no backend kwarg, and it would not align the observable anyway\"\n# D: use plain string observable \"ZZ\"\ntry:\n    est.run([(isa, \"ZZ\")]).result()\n    evidence[\"D\"] = \"string 'ZZ' observable ran (unexpected)\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"the string 'ZZ' is still a 2-qubit observable, so it still raises {type(e).__name__}: switching type does not fix the width\"\n# E: pin initial_layout and hope the ISA circuit stays 2 qubits wide\nisa2 = generate_preset_pass_manager(backend=backend, optimization_level=1,\n                                    seed_transpiler=42, initial_layout=[0, 1]).run(qc)\ntry:\n    est.run([(isa2, obs)]).result()\n    evidence[\"E\"] = \"pinning the layout made it run (unexpected)\"\n    proven.append(\"E\")\nexcept Exception as e:\n    evidence[\"E\"] = (f\"refuted: with the layout pinned the transpiled circuit is still {isa2.num_qubits} qubits wide, \"\n                     f\"so the run still raises {type(e).__name__}\")\n# F: build the observable at backend width via a num_qubits keyword\ntry:\n    wide = SparsePauliOp(\"ZZ\", num_qubits=5)\n    est.run([(isa, wide)]).result()\n    evidence[\"F\"] = \"SparsePauliOp took a num_qubits keyword and ran (unexpected)\"\n    proven.append(\"F\")\nexcept Exception as e:\n    evidence[\"F\"] = (f\"refuted: the SparsePauliOp constructor has no such keyword \\u2014 building it raises \"\n                     f\"{type(e).__name__}, so nothing is ever submitted\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy_error\": buggy_err}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6: A/D relengthened (length + absolute-wording tells); D rationale sharpened"
+    "notes": "adversarial s6: A/D relengthened (length + absolute-wording tells); D rationale sharpened | pool wave: +E initial_layout-narrows-the-circuit, +F SparsePauliOp(num_qubits=) near-miss"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

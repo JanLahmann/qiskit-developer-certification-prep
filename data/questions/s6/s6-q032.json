@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "PEC returns an unbiased estimate but generally costs more sampling overhead, whereas ZNE is cheaper but not guaranteed unbiased."
+    },
+    {
+      "key": "E",
+      "text": "PEC and ZNE both give unbiased estimates; the real difference is that PEC needs a learned noise model."
+    },
+    {
+      "key": "F",
+      "text": "PEC is unbiased and cheaper to sample, whereas ZNE is biased and needs far more circuit executions."
     }
   ],
   "answer": [
@@ -33,8 +41,10 @@
     "correct": "PEC represents the ideal result as a quasi-probability combination of noisy circuits, yielding an unbiased estimate, but the sampling overhead grows (quadratically in the quasi-probability norm, which scales exponentially with depth). ZNE amplifies noise and extrapolates to zero; it is cheaper but 'not guaranteed to produce an unbiased result.'",
     "distractors": {
       "A": "This reverses the guarantees: PEC (not ZNE) is the unbiased method, and PEC is generally more expensive, not cheaper.",
-      "B": "They do not have the same cost, and ZNE is not guaranteed unbiased \u2014 only PEC provides an unbiased estimate.",
-      "C": "Both PEC and ZNE are error-mitigation techniques that post-process an ensemble of executed circuits; neither is a pre-execution suppression method like dynamical decoupling."
+      "B": "They do not have the same cost, and ZNE is not guaranteed unbiased — only PEC provides an unbiased estimate.",
+      "C": "Both PEC and ZNE are error-mitigation techniques that post-process an ensemble of executed circuits; neither is a pre-execution suppression method like dynamical decoupling.",
+      "E": "PEC does require a learned noise model, but that is not the distinguishing guarantee: ZNE's extrapolation is a fit whose residual bias depends on the model chosen, so it is not unbiased.",
+      "F": "The overhead comparison is backwards. PEC buys its unbiasedness with a sampling overhead that grows with circuit size, while ZNE's amplified runs are the cheaper option."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
@@ -52,6 +62,7 @@
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6: options relengthened (was a high-severity length tell, ratio 1.59)"
-  }
+    "notes": "adversarial s6: options relengthened (was a high-severity length tell, ratio 1.59) | pool wave: +E noise-model-is-the-difference, +F inverted overhead comparison"
+  },
+  "display_count": 4
 }

@@ -24,17 +24,27 @@
     {
       "key": "D",
       "text": "The circuit is automatically simplified to fewer gates before execution."
+    },
+    {
+      "key": "E",
+      "text": "Expectation values that are typically noisier, because mitigation averages over fewer shots."
+    },
+    {
+      "key": "F",
+      "text": "The job is rejected unless you also raise `default_shots`, which level 2 generally requires."
     }
   ],
   "answer": [
     "C"
   ],
   "explanation": {
-    "correct": "Higher resilience levels build more resilience against errors by running and post-processing larger ensembles of circuits (e.g. ZNE's noise-amplified copies at level 2). This yields more accurate, less biased expectation values but takes longer and consumes more QPU time \u2014 a cost/accuracy trade-off.",
+    "correct": "Higher resilience levels build more resilience against errors by running and post-processing larger ensembles of circuits (e.g. ZNE's noise-amplified copies at level 2). This yields more accurate, less biased expectation values but takes longer and consumes more QPU time — a cost/accuracy trade-off.",
     "distractors": {
       "A": "Mitigation adds overhead (extra circuits and shots), so higher levels are slower, not faster.",
       "B": "Resilience level controls error mitigation, not qubit selection, and it clearly changes runtime.",
-      "D": "Gate-count reduction is the transpiler's job (optimization_level); resilience level does not simplify the circuit."
+      "D": "Gate-count reduction is the transpiler's job (optimization_level); resilience level does not simplify the circuit.",
+      "E": "This confuses bias with variance: mitigation adds circuits rather than taking shots away, and the estimator still meets the requested precision — it just spends more QPU time doing so.",
+      "F": "Nothing is rejected: the resilience level configures how the estimator spends its budget, and the Estimator sizes its sampling from `precision`, not from a shot count you must raise by hand."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
@@ -52,6 +62,7 @@
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6: hedge added to distractor A (absolute-wording tell)"
-  }
+    "notes": "adversarial s6: hedge added to distractor A (absolute-wording tell) | pool wave: +E mitigation-adds-noise (bias vs variance), +F level-2-requires-manual-shots"
+  },
+  "display_count": 4
 }

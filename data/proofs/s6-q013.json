@@ -5,10 +5,12 @@
       "A"
     ],
     "evidence": {
-      "A": "obs.apply_layout(isa.layout) -> run SUCCEEDS, evs=0.884 (buggy run had failed with ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).)",
+      "A": "obs.apply_layout(isa.layout) -> run SUCCEEDS, evs=0.880 (buggy run had failed with ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).)",
       "B": "adding measure_all() does NOT fix it: still ValueError (the 2-qubit observable still does not span the 5-qubit ISA circuit)",
       "C": "run(..., backend=) raises TypeError: run() has no backend kwarg, and it would not align the observable anyway",
-      "D": "the string 'ZZ' is still a 2-qubit observable, so it still raises ValueError: switching type does not fix the width"
+      "D": "the string 'ZZ' is still a 2-qubit observable, so it still raises ValueError: switching type does not fix the width",
+      "E": "refuted: with the layout pinned the transpiled circuit is still 5 qubits wide, so the run still raises ValueError",
+      "F": "refuted: the SparsePauliOp constructor has no such keyword \u2014 building it raises TypeError, so nothing is ever submitted"
     },
     "observed": {
       "buggy_error": "ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2)."
@@ -20,9 +22,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.35,
+  "wall_seconds": 1.26,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"obs.apply_layout(isa.layout) -> run SUCCEEDS, evs=0.884 (buggy run had failed with ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).)\", \"B\": \"adding measure_all() does NOT fix it: still ValueError (the 2-qubit observable still does not span the 5-qubit ISA circuit)\", \"C\": \"run(..., backend=) raises TypeError: run() has no backend kwarg, and it would not align the observable anyway\", \"D\": \"the string 'ZZ' is still a 2-qubit observable, so it still raises ValueError: switching type does not fix the width\"}, \"observed\": {\"buggy_error\": \"ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"obs.apply_layout(isa.layout) -> run SUCCEEDS, evs=0.880 (buggy run had failed with ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).)\", \"B\": \"adding measure_all() does NOT fix it: still ValueError (the 2-qubit observable still does not span the 5-qubit ISA circuit)\", \"C\": \"run(..., backend=) raises TypeError: run() has no backend kwarg, and it would not align the observable anyway\", \"D\": \"the string 'ZZ' is still a 2-qubit observable, so it still raises ValueError: switching type does not fix the width\", \"E\": \"refuted: with the layout pinned the transpiled circuit is still 5 qubits wide, so the run still raises ValueError\", \"F\": \"refuted: the SparsePauliOp constructor has no such keyword \\u2014 building it raises TypeError, so nothing is ever submitted\"}, \"observed\": {\"buggy_error\": \"ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

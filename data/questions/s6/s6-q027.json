@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`1.5`"
+    },
+    {
+      "key": "E",
+      "text": "`0.75`"
+    },
+    {
+      "key": "F",
+      "text": "`1.866`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "0.5 is only the rotated qubit's contribution <Z_q0>; it omits the +1 from qubit 1 (which is still |0>).",
       "B": "1.0 is only <Z_q1>; it drops the 0.5 contribution from the rotated qubit 0.",
-      "C": "2.0 assumes both qubits give <Z> = 1, ignoring that RY(pi/3) tilts qubit 0 so its <Z> is 0.5, not 1."
+      "C": "2.0 assumes both qubits give <Z> = 1, ignoring that RY(pi/3) tilts qubit 0 so its <Z> is 0.5, not 1.",
+      "E": "The average of the two single-qubit terms rather than their sum. The observable adds them with coefficient 1 each, so the two contributions accumulate.",
+      "F": "This uses sin(pi/3) for the rotated qubit. RY(theta) on |0> leaves <Z> = cos(theta), so the rotated qubit contributes cos(pi/3), not its sine."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
@@ -46,14 +56,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.ry(np.pi / 3, 0)   # qubit 0 rotated; qubit 1 stays |0>\nobs = SparsePauliOp([\"IZ\", \"ZI\"], coeffs=[1.0, 1.0])   # Z on qubit 0 + Z on qubit 1\nobserved = float(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs))\n\ncandidates = {\"A\": 0.5, \"B\": 1.0, \"C\": 2.0, \"D\": 1.5}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.isclose(observed, val))\n    evidence[k] = f\"exact <Z_q0 + Z_q1> = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.ry(np.pi / 3, 0)   # qubit 0 rotated; qubit 1 stays |0>\nobs = SparsePauliOp([\"IZ\", \"ZI\"], coeffs=[1.0, 1.0])   # Z on qubit 0 + Z on qubit 1\nobserved = float(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs))\n\ncandidates = {\"A\": 0.5, \"B\": 1.0, \"C\": 2.0, \"D\": 1.5, \"E\": 0.75, \"F\": 1.866}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.isclose(observed, val))\n    evidence[k] = f\"exact <Z_q0 + Z_q1> = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E averaging instead of summing terms, +F sin-instead-of-cos"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +74,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

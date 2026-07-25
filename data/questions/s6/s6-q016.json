@@ -25,6 +25,14 @@
     {
       "key": "D",
       "text": "`est.run([(isa, iobs)], shots=8000, precision=0.01)`"
+    },
+    {
+      "key": "E",
+      "text": "`est.run([(isa, iobs)], default_precision=0.01)`"
+    },
+    {
+      "key": "F",
+      "text": "`est.options.precision = 0.01`"
     }
   ],
   "answer": [
@@ -35,7 +43,9 @@
     "distractors": {
       "A": "`shots` is the Sampler's knob; EstimatorV2.run() has no `shots` keyword and raises a TypeError. The estimator internally chooses how many shots are needed to reach the requested precision.",
       "B": "`resilience_level` is an option set on `est.options` before running, not a keyword of `run()`; passing it to run() raises a TypeError.",
-      "D": "Adding a valid `precision` does not rescue the call — the stray `shots` keyword is still unexpected, so run() raises a TypeError before executing."
+      "D": "Adding a valid `precision` does not rescue the call — the stray `shots` keyword is still unexpected, so run() raises a TypeError before executing.",
+      "E": "`default_precision` is the OPTION name; the `run()` keyword is plain `precision`. Mixing the two raises TypeError for an unexpected keyword argument.",
+      "F": "The options object has no `precision` field — the fallback used when a run supplies none is `default_precision`. Pydantic rejects the misspelled attribute."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/estimator-options",
@@ -48,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\npm = generate_preset_pass_manager(backend=backend, optimization_level=1, seed_transpiler=42)\nisa = pm.run(qc)\niobs = SparsePauliOp(\"ZZ\").apply_layout(isa.layout)\nest = EstimatorV2(mode=backend)\n\nevidence = {}\nproven = []\ndef attempt(key, kwargs):\n    try:\n        est.run([(isa, iobs)], **kwargs).result()\n        evidence[key] = f\"est.run(..., {kwargs}) accepted and executed on {backend.name}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"est.run(..., {kwargs}) raises {type(e).__name__}: {str(e)[:120]}\"\n\nattempt(\"A\", {\"shots\": 8000})\nattempt(\"B\", {\"resilience_level\": 2})\nattempt(\"C\", {\"precision\": 0.01})\nattempt(\"D\", {\"shots\": 8000, \"precision\": 0.01})\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"backend\": backend.name}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\npm = generate_preset_pass_manager(backend=backend, optimization_level=1, seed_transpiler=42)\nisa = pm.run(qc)\niobs = SparsePauliOp(\"ZZ\").apply_layout(isa.layout)\nest = EstimatorV2(mode=backend)\n\nevidence = {}\nproven = []\ndef attempt(key, kwargs):\n    try:\n        est.run([(isa, iobs)], **kwargs).result()\n        evidence[key] = f\"est.run(..., {kwargs}) accepted and executed on {backend.name}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"est.run(..., {kwargs}) raises {type(e).__name__}: {str(e)[:120]}\"\n\nattempt(\"A\", {\"shots\": 8000})\nattempt(\"B\", {\"resilience_level\": 2})\nattempt(\"C\", {\"precision\": 0.01})\nattempt(\"D\", {\"shots\": 8000, \"precision\": 0.01})\nattempt(\"E\", {\"default_precision\": 0.01})\ntry:\n    est2 = EstimatorV2(mode=backend)\n    est2.options.precision = 0.01\n    evidence[\"F\"] = \"est.options.precision was accepted (unexpected)\"\n    proven.append(\"F\")\nexcept Exception as ex:\n    evidence[\"F\"] = f\"est.options.precision = 0.01 raises {type(ex).__name__}: the options field is called default_precision\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"backend\": backend.name}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E default_precision as a run kwarg, +F options.precision near-miss"
   },
   "freshness": {
     "verified_against": {
@@ -66,5 +76,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

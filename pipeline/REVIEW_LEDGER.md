@@ -119,6 +119,23 @@ and died with it.
   sample test with attribution. Luke's parsed bank is stored as fingerprints only
   (unlicensed, 1035 Qs); raw pickle gitignored.
 
+## Distractor pools (2026-07-25)
+
+- Schema: optional `display_count` (4–5); must be < len(options) and leave >= 2
+  displayed distractors. Runtime: `shuffledOptions()` seededly samples distractors
+  (correct always shown), then position-shuffles; same seed = same subset+layout.
+- Pool distractors need: named misconception + explanation entry + proof
+  attempt/refutation with evidence (executed questions). Keys append alphabetically
+  (E, F). Anki decks show the full pool (stored order).
+- The audit enumerates displayed variants: a tell in ANY variant flags the question;
+  aggregate heuristics weight variants uniformly. Gold pilots: s5-q019 (executed,
+  enabled-vs-enable near-miss E), s4-q001 (conceptual, session-max_time misuse E).
+- Multis with 4+ correct answers cannot pool (display_count constraint) — skip them.
+- Highest-yield pool distractor classes: near-miss attribute/kwarg names
+  (enable/enabled, dump/dumps, qubit_wise/group_wise), PUB bracketing, V1
+  signatures, wrong-options-group paths (resilience on Sampler, twirling fields
+  on dynamical_decoupling).
+
 ## Process rules
 
 - Reviewers/generators run BOTH gates per batch: `verify_bank.py --section sX`

@@ -93,6 +93,30 @@ def load_bank(section: str | None) -> list[dict]:
     return bank
 
 
+def display_variants(q: dict) -> list[dict]:
+    """All option sets a learner can actually be shown.
+
+    Without a pool this is the question itself. With display_count < pool,
+    the site renders all correct answers + every possible distractor subset
+    (uniformly), so the audit must hold EVERY variant to the bar — a tell
+    that only appears in one subset is still a tell.
+    """
+    dc = q.get("display_count")
+    if not dc or dc >= len(q["options"]):
+        return [q]
+    answers = set(q["answer"])
+    correct = [o for o in q["options"] if o["key"] in answers]
+    distractors = [o for o in q["options"] if o["key"] not in answers]
+    k = dc - len(correct)
+    variants = []
+    for combo in combinations(distractors, k):
+        opts = [o for o in q["options"] if o in correct or o in combo]
+        v = dict(q)
+        v["options"] = opts
+        variants.append(v)
+    return variants
+
+
 # ---------------------------------------------------------------------------
 # Heuristics: each returns the set of option keys a test-wise guesser would
 # pick from (empty set = heuristic abstains on this question).
@@ -314,24 +338,39 @@ def question_flags(q) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 def score_heuristics(bank):
-    """Expected score of each blind heuristic over single-answer questions."""
+    """Expected score of each blind heuristic over single-answer questions.
+
+    Pool questions contribute via their displayed variants, each weighted
+    1/n_variants, matching the uniform runtime selection.
+    """
     singles = [q for q in bank if q["type"] in SINGLE_ANSWER_TYPES]
     results = {}
     for name, h in HEURISTICS.items():
-        total_ev, answered = 0.0, 0
+        total_ev, answered_w = 0.0, 0.0
         for q in singles:
-            picks = h(q)
-            if not picks:
-                continue
-            answered += 1
-            if q["answer"][0] in picks:
-                total_ev += 1 / len(picks)
+            variants = display_variants(q)
+            w = 1 / len(variants)
+            for v in variants:
+                picks = h(v)
+                if not picks:
+                    continue
+                answered_w += w
+                if q["answer"][0] in picks:
+                    total_ev += w / len(picks)
         results[name] = {
-            "expected_accuracy": round(total_ev / answered, 4) if answered else None,
-            "questions_answered": answered,
-            "coverage": round(answered / len(singles), 3) if singles else 0,
+            "expected_accuracy": round(total_ev / answered_w, 4) if answered_w else None,
+            "questions_answered": round(answered_w, 2),
+            "coverage": round(answered_w / len(singles), 3) if singles else 0,
         }
-    baseline = sum(1 / len(q["options"]) for q in singles) / len(singles) if singles else 0
+    baseline = (
+        sum(
+            sum(1 / len(v["options"]) for v in display_variants(q)) / len(display_variants(q))
+            for q in singles
+        )
+        / len(singles)
+        if singles
+        else 0
+    )
     return results, round(baseline, 4), len(singles)
 
 
@@ -405,10 +444,19 @@ def main():
 
     flagged = []
     for q in bank:
-        fl = question_flags(q)
-        if fl:
+        variants = display_variants(q)
+        fl_all: dict[str, dict] = {}
+        for v in variants:
+            for fl in question_flags(v):
+                prev = fl_all.get(fl["flag"])
+                sev_rank = {"low": 0, "medium": 1, "high": 2}
+                if prev is None or sev_rank[fl["severity"]] > sev_rank[prev["severity"]]:
+                    if len(variants) > 1:
+                        fl = {**fl, "detail": fl["detail"] + " (in >=1 displayed pool variant)"}
+                    fl_all[fl["flag"]] = fl
+        if fl_all:
             flagged.append({"id": q["id"], "type": q["type"],
-                            "file": q["_file"], "flags": fl})
+                            "file": q["_file"], "flags": list(fl_all.values())})
 
     blockers, warnings = [], []
     for name, r in heur.items():

@@ -89,6 +89,7 @@ def load_bank() -> tuple[dict, list[str]]:
                 "stem": q["stem"],
                 "code": q["code"],
                 "options": q["options"],
+                "displayCount": q.get("display_count"),
                 "answer": q["answer"],
                 "explanation": q["explanation"],
                 "proof": proof_view,

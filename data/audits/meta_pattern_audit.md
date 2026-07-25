@@ -8,21 +8,21 @@ Scope: **all sections** — 243 questions (214 single-answer, 29 multi-select). 
 
 | Heuristic | EV accuracy (answered) | Coverage | Est. exam score |
 |---|---|---|---|
-| similar_twin_member | 31.8% | 41% | 27.8% |
+| similar_twin_member | 32.1% | 41% | 27.9% |
 | stem_keyword_overlap | 26.7% | 86% | 26.5% |
-| position_A | 26.2% | 100% | 26.2% |
 | position_B | 26.2% | 100% | 26.2% |
+| position_A | 26.2% | 100% | 26.2% |
 | longest_option | 25.3% | 100% | 25.3% |
 | most_absolute | 25.3% | 36% | 25.1% |
-| avoid_longest | 24.8% | 95% | 24.8% |
 | position_C | 24.8% | 100% | 24.8% |
+| avoid_longest | 24.8% | 95% | 24.8% |
 | avoid_hedged | 24.1% | 30% | 24.7% |
 | most_hedged | 21.7% | 30% | 24.0% |
 | least_absolute | 20.8% | 36% | 23.5% |
 | position_D | 22.9% | 100% | 22.9% |
-| shortest_option | 16.7% | 100% | 16.7% |
+| shortest_option | 16.8% | 100% | 16.8% |
 | odd_one_out | 13.2% | 100% | 13.2% |
-| code_formatted_only | 26.4% | 19% | – |
+| code_formatted_only | 25.9% | 20% | – |
 | numeric_middle | 25.0% | 17% | – |
 
 ## Verdicts

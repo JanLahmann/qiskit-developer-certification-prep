@@ -30,6 +30,12 @@ export type BankQuestion = {
   stem: string;
   code: string | null;
   options: BankOption[];
+  /**
+   * When set and < options.length, only this many options are shown per
+   * rendering: all correct answers + a seeded sample of distractors
+   * (distractor-pool rotation). Null/undefined = show all options.
+   */
+  displayCount?: number | null;
   answer: string[];
   explanation: {
     correct: string;
@@ -107,15 +113,31 @@ export function hashString(s: string): number {
 }
 
 /**
- * Options in display order for one question. Positions are shuffled per
- * (seed, question id) so the stored answer key carries no positional signal;
- * the same seed always reproduces the same layout (mock-exam review/replay).
- * Stored option keys stay authoritative for grading, stats, and proofs —
- * only the on-screen letters change.
+ * Options in display order for one question. Two seeded steps:
+ *  1. Pool selection — when displayCount is set and smaller than the pool,
+ *     all correct answers are kept and distractors are sampled down to fit,
+ *     so repeat encounters show different wrong answers.
+ *  2. Position shuffle — so the stored answer key carries no positional
+ *     signal.
+ * The same seed always reproduces the same subset AND layout (mock-exam
+ * review/replay). Stored option keys stay authoritative for grading, stats,
+ * and proofs — only the on-screen letters change.
  */
 export function shuffledOptions(q: BankQuestion, seed: number): BankOption[] {
   const rand = mulberry32((seed ^ hashString(q.id)) >>> 0);
-  return seededShuffle(q.options, rand);
+  let pool = q.options;
+  const dc = q.displayCount;
+  if (dc != null && dc < pool.length) {
+    const answers = new Set(q.answer);
+    const correct = pool.filter((o) => answers.has(o.key));
+    const distractors = seededShuffle(
+      pool.filter((o) => !answers.has(o.key)),
+      rand,
+    ).slice(0, Math.max(0, dc - correct.length));
+    const chosen = new Set([...correct, ...distractors].map((o) => o.key));
+    pool = pool.filter((o) => chosen.has(o.key)); // keep stored (stable) order
+  }
+  return seededShuffle(pool, rand);
 }
 
 /** Letters used for on-screen option labels, by display position. */

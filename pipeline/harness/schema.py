@@ -65,6 +65,11 @@ QUESTION_SCHEMA: dict = {
             "minItems": 1,
             "items": {"type": "string", "pattern": "^[A-F]$"},
         },
+        # Distractor-pool rotation: when present and < len(options), the site
+        # displays answer keys + a seeded sample of distractors, so repeat
+        # encounters differ. Pool distractors are full citizens: explanation
+        # AND proof evidence must cover them like any other option.
+        "display_count": {"type": "integer", "minimum": 4, "maximum": 5},
         "explanation": {
             "type": "object",
             "additionalProperties": False,
@@ -161,6 +166,17 @@ def validate_question(q: dict) -> None:
     missing = wrong_keys - set(q["explanation"]["distractors"])
     if missing:
         raise QuestionError(f"explanation.distractors missing keys: {sorted(missing)}")
+
+    dc = q.get("display_count")
+    if dc is not None:
+        if dc >= len(option_keys):
+            raise QuestionError(
+                "display_count must be < len(options) (otherwise there is no pool)"
+            )
+        if dc - len(answers) < 2:
+            raise QuestionError(
+                "display_count must leave room for >= 2 displayed distractors"
+            )
 
     # Proof / verification coupling
     if q["proof"]["status"] == "executed":

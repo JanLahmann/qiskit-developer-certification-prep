@@ -43,6 +43,12 @@ wave that follows generation (agent gate). Questions that violate it get killed.
    `explanation.distractors[key]` text must NAME the misconception.
 4. **Options**: 4 options (A–D) standard; 5–6 allowed for `multi`. Alphabetical key order.
    Similar length/register (no "longest answer is correct" tells). No "All of the above".
+   **Distractor pools**: a question MAY carry 5–6 options with `display_count: 4` (or 5) —
+   the site then shows all correct answers + a seeded sample of distractors, so repeat
+   encounters differ. Pool distractors are full citizens: named misconception,
+   `explanation.distractors` entry, and (for executed questions) attempted/refuted in the
+   proof with their own evidence key. The audit holds EVERY displayed variant to the
+   anti-tell bar. `display_count` must leave >= 2 displayed distractors.
 5. **No test-wise tells** (enforced by `pipeline/audit_meta_patterns.py --gate` in CI; a
    pilot user passed questions blind via "longest option wins"). A knowledge-free guesser
    must stay at chance. Concretely:

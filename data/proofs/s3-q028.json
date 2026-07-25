@@ -8,7 +8,8 @@
       "A": "observed counts={'1': 1000}; claim always 0 -> False",
       "B": "for_loop(range(3)) built and ran without error -> claim 'error' is False",
       "C": "observed counts={'1': 1000}; all shots = '1' -> True",
-      "D": "observed counts={'1': 1000}; claim ~50/50 -> False"
+      "D": "observed counts={'1': 1000}; claim ~50/50 -> False",
+      "E": "the for_loop body was written without 'as i' and still built and ran (counts={'1': 1000}) -> claim CircuitError is False"
     },
     "observed": {
       "counts": {
@@ -22,9 +23,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.12,
+  "wall_seconds": 1.2,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"observed counts={'1': 1000}; claim always 0 -> False\", \"B\": \"for_loop(range(3)) built and ran without error -> claim 'error' is False\", \"C\": \"observed counts={'1': 1000}; all shots = '1' -> True\", \"D\": \"observed counts={'1': 1000}; claim ~50/50 -> False\"}, \"observed\": {\"counts\": {\"1\": 1000}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"observed counts={'1': 1000}; claim always 0 -> False\", \"B\": \"for_loop(range(3)) built and ran without error -> claim 'error' is False\", \"C\": \"observed counts={'1': 1000}; all shots = '1' -> True\", \"D\": \"observed counts={'1': 1000}; claim ~50/50 -> False\", \"E\": \"the for_loop body was written without 'as i' and still built and ran (counts={'1': 1000}) -> claim CircuitError is False\"}, \"observed\": {\"counts\": {\"1\": 1000}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

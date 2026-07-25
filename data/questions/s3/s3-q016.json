@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`|000⟩` and `|011⟩`, each with amplitude 1/√2."
+    },
+    {
+      "key": "E",
+      "text": "Only `|000⟩` and `|111⟩`, but with amplitude 1/2 each."
+    },
+    {
+      "key": "F",
+      "text": "Only `|000⟩` and `|101⟩`, each with amplitude 1/√2."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "`|100⟩` would appear only if the CX gates did nothing; they entangle qubits 1 and 2 with qubit 0, flipping them when qubit 0 is 1.",
       "C": "A uniform superposition over all 8 states needs an H on every qubit; here only qubit 0 gets an H and the CXs create correlation, not full superposition.",
-      "D": "`|011⟩` misplaces the excitation — both CX gates are controlled by qubit 0, so all three qubits share the same value (000 or 111)."
+      "D": "`|011⟩` misplaces the excitation — both CX gates are controlled by qubit 0, so all three qubits share the same value (000 or 111).",
+      "E": "The populated basis states are right, but 1/2 is the PROBABILITY of each outcome, not the amplitude. Two equally weighted terms carry amplitude 1/√2, whose square 1/2 is the probability.",
+      "F": "This assumes the second CX replaces the first, correlating only qubits 0 and 2 and leaving qubit 1 at 0. Both CX gates stay in the circuit, so qubit 1 is flipped as well."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(3)\nqc.h(0); qc.cx(0, 1); qc.cx(0, 2)\nsv = Statevector(qc).data\ninv = 1 / np.sqrt(2)\nnz = {format(i, \"03b\"): sv[i] for i in range(8) if abs(sv[i]) > 1e-9}\n\ndef matches(states):\n    if set(nz) != set(states):\n        return False\n    return all(np.isclose(nz[b], inv) for b in states)\n\nclaims = {\n    \"A\": matches([\"000\", \"111\"]),\n    \"B\": matches([\"000\", \"100\"]),\n    \"C\": (len(nz) == 8) and all(np.isclose(abs(v), 1/np.sqrt(8)) for v in nz.values()),\n    \"D\": matches([\"000\", \"011\"]),\n}\nnzr = {k: complex(round(v.real, 4), round(v.imag, 4)) for k, v in nz.items()}\nevidence = {\n    \"A\": f\"nonzero basis states = {nzr}; claim {{000,111}} at 1/sqrt2 -> {claims['A']}\",\n    \"B\": f\"nonzero = {nzr}; claim {{000,100}} -> {claims['B']}\",\n    \"C\": f\"nonzero = {nzr} ({len(nz)} states); claim all-8-uniform -> {claims['C']}\",\n    \"D\": f\"nonzero = {nzr}; claim {{000,011}} -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"nonzero\": {k: str(v) for k, v in nzr.items()}}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(3)\nqc.h(0); qc.cx(0, 1); qc.cx(0, 2)\nsv = Statevector(qc).data\ninv = 1 / np.sqrt(2)\nnz = {format(i, \"03b\"): sv[i] for i in range(8) if abs(sv[i]) > 1e-9}\n\ndef matches(states):\n    if set(nz) != set(states):\n        return False\n    return all(np.isclose(nz[b], inv) for b in states)\n\nclaims = {\n    \"A\": matches([\"000\", \"111\"]),\n    \"B\": matches([\"000\", \"100\"]),\n    \"C\": (len(nz) == 8) and all(np.isclose(abs(v), 1/np.sqrt(8)) for v in nz.values()),\n    \"D\": matches([\"000\", \"011\"]),\n}\nnzr = {k: complex(round(v.real, 4), round(v.imag, 4)) for k, v in nz.items()}\nevidence = {\n    \"A\": f\"nonzero basis states = {nzr}; claim {{000,111}} at 1/sqrt2 -> {claims['A']}\",\n    \"B\": f\"nonzero = {nzr}; claim {{000,100}} -> {claims['B']}\",\n    \"C\": f\"nonzero = {nzr} ({len(nz)} states); claim all-8-uniform -> {claims['C']}\",\n    \"D\": f\"nonzero = {nzr}; claim {{000,011}} -> {claims['D']}\",\n}\nclaims[\"E\"] = set(nz) == {\"000\", \"111\"} and all(np.isclose(nz[b], 0.5) for b in (\"000\", \"111\"))\nclaims[\"F\"] = matches([\"000\", \"101\"])\nevidence[\"E\"] = (f\"nonzero = {nzr}; the amplitude on 000 is {abs(sv[0]):.4f} = 1/sqrt(2), while 1/2 \"\n                 f\"is its probability -> claim 'amplitude 1/2' is {claims['E']}\")\nevidence[\"F\"] = f\"nonzero = {nzr}; claim {{000,101}} (qubit 1 left at 0) -> {claims['F']}\"\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"nonzero\": {k: str(v) for k, v in nzr.items()}}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'only'; the predicted values are unchanged)"
+    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'only'; the predicted values are unchanged) | pool wave: +E (amplitude/probability confusion) +F (second CX believed to replace the first)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

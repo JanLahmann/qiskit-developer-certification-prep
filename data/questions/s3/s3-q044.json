@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Transpilation exists to convert the circuit into OpenQASM 2, the only format the hardware accepts."
+    },
+    {
+      "key": "E",
+      "text": "Transpilation is what packs the circuit into the primitive's PUB format; without that step `SamplerV2` cannot read the circuit at all, whatever gates it uses."
+    },
+    {
+      "key": "F",
+      "text": "Hardware accepts any gate set, but the transpiler is needed to insert the dynamical-decoupling pulses that keep idle qubits alive between the gates."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "The V2 primitives do NOT silently transpile arbitrary circuits; they expect ISA circuits and will error on non-ISA input. Transpiling is a required step, not a mere optimization.",
       "C": "Drawing has nothing to do with it; an un-transpiled circuit generally cannot execute on hardware at all.",
-      "D": "Hardware execution is not about OpenQASM 2; the requirement is native basis gates plus valid connectivity (an ISA circuit)."
+      "D": "Hardware execution is not about OpenQASM 2; the requirement is native basis gates plus valid connectivity (an ISA circuit).",
+      "E": "PUBs are built when you call the primitive (circuit + parameters + observables); transpilation is a separate, earlier step about gates and connectivity. A PUB made from an abstract circuit is well-formed but still rejected as non-ISA.",
+      "F": "Dynamical decoupling is an optional error-suppression option on the primitive, not the reason to transpile. The real requirement is the native basis plus a valid coupling map."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/transpile",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "high length tell cleared (correct trimmed, distractor B given substance); dead citation guides/get-started-with-primitives (404) replaced with guides/get-started-with-sampler, which states that circuits must be transformed to instruction-set-architecture (ISA) form before a primitive runs them"
-  }
+    "notes": "high length tell cleared (correct trimmed, distractor B given substance); dead citation guides/get-started-with-primitives (404) replaced with guides/get-started-with-sampler, which states that circuits must be transformed to instruction-set-architecture (ISA) form before a primitive runs them | pool wave: +E (transpilation confused with PUB construction) +F (transpilation confused with error suppression)"
+  },
+  "display_count": 4
 }

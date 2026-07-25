@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`rx = 1.5`, `rz = 0.5` — the list is applied in alphabetical parameter order (`phi`, then `theta`)."
+    },
+    {
+      "key": "E",
+      "text": "`bound` is `None` — `assign_parameters` binds in place by default, so `qc` carries the angles."
+    },
+    {
+      "key": "F",
+      "text": "It raises a `TypeError`: binding from a list needs a `ParameterVector`, not separate `Parameter`s."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "This assumes the list follows the order gates were added. It actually follows `qc.parameters`, which is alphabetical (`phi` < `theta`).",
       "B": "Each parameter gets a distinct list entry; they are not both set to the first value.",
-      "C": "A list is a valid argument — it binds positionally to the sorted parameters. A dict is only required for partial binding."
+      "C": "A list is a valid argument — it binds positionally to the sorted parameters. A dict is only required for partial binding.",
+      "E": "`assign_parameters` is functional by default: it RETURNS a bound copy and leaves `qc` parametric. Passing `inplace=True` is what mutates the caller — and that call is the one returning `None`.",
+      "F": "Positional binding works for any parameters, however they were created: the sequence is matched against `qc.parameters`. A `ParameterVector` is only a convenience for creating many related parameters at once."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -47,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter('theta'); phi = Parameter('phi')\nqc = QuantumCircuit(1)\nqc.rx(theta, 0); qc.rz(phi, 0)\nbound = qc.assign_parameters([0.5, 1.5])\nang = {ins.operation.name: float(ins.operation.params[0]) for ins in bound.data}\nrx_a, rz_a = ang[\"rx\"], ang[\"rz\"]\norder = [p.name for p in qc.parameters]\nclaims = {\n    \"A\": rx_a == 0.5 and rz_a == 1.5,\n    \"B\": rx_a == 0.5 and rz_a == 0.5,\n    \"C\": False,\n    \"D\": rx_a == 1.5 and rz_a == 0.5,\n}\nevidence = {\n    \"A\": f\"qc.parameters order={order}; observed rx={rx_a}, rz={rz_a}; claim rx0.5/rz1.5 -> {claims['A']}\",\n    \"B\": f\"observed rx={rx_a}, rz={rz_a}; claim both 0.5 -> {claims['B']}\",\n    \"C\": f\"assign_parameters([0.5,1.5]) succeeded (no error); claim 'needs dict' -> {claims['C']}\",\n    \"D\": f\"parameters sorted={order}; observed rx={rx_a}, rz={rz_a}; claim rx1.5/rz0.5 -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"rx\": rx_a, \"rz\": rz_a, \"param_order\": order}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter('theta'); phi = Parameter('phi')\nqc = QuantumCircuit(1)\nqc.rx(theta, 0); qc.rz(phi, 0)\nbound = qc.assign_parameters([0.5, 1.5])\nang = {ins.operation.name: float(ins.operation.params[0]) for ins in bound.data}\nrx_a, rz_a = ang[\"rx\"], ang[\"rz\"]\norder = [p.name for p in qc.parameters]\nclaims = {\n    \"A\": rx_a == 0.5 and rz_a == 1.5,\n    \"B\": rx_a == 0.5 and rz_a == 0.5,\n    \"C\": False,\n    \"D\": rx_a == 1.5 and rz_a == 0.5,\n}\nevidence = {\n    \"A\": f\"qc.parameters order={order}; observed rx={rx_a}, rz={rz_a}; claim rx0.5/rz1.5 -> {claims['A']}\",\n    \"B\": f\"observed rx={rx_a}, rz={rz_a}; claim both 0.5 -> {claims['B']}\",\n    \"C\": f\"assign_parameters([0.5,1.5]) succeeded (no error); claim 'needs dict' -> {claims['C']}\",\n    \"D\": f\"parameters sorted={order}; observed rx={rx_a}, rz={rz_a}; claim rx1.5/rz0.5 -> {claims['D']}\",\n}\nclaims[\"E\"] = bound is None\nclaims[\"F\"] = False\nevidence[\"E\"] = (f\"assign_parameters returned a {type(bound).__name__} (not None) and qc keeps its \"\n                 f\"parameters {order} -> 'binds in place, returns nothing' is {claims['E']}\")\nevidence[\"F\"] = (f\"a plain list bound two separately created Parameters without any ParameterVector \"\n                 f\"(rx={rx_a}, rz={rz_a}) and raised nothing -> {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"rx\": rx_a, \"rz\": rz_a, \"param_order\": order}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E (assign_parameters assumed in-place/None) +F (thinks positional binding needs a ParameterVector) | orchestrator pool calibration: E/F trimmed below correct length (keeper set)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

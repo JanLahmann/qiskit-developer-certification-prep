@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Both levels raise an error because a CX between non-adjacent qubits is not routable on a line."
+    },
+    {
+      "key": "E",
+      "text": "Level 0 keeps the trivial layout and routes with SWAPs; level 1 typically routes the same way, then cancels the redundant CX pairs."
+    },
+    {
+      "key": "F",
+      "text": "Level 0 needs 3 CX (one SWAP plus the original gate) and level 1 needs 1; SWAP cost usually does not grow with distance."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "Layout selection is part of the optimization level: level 0 uses a trivial layout while level 1+ actively searches for a good one, so the CX counts differ.",
       "C": "It is the other way around — the higher level reduces the count by choosing a better layout; level 0 is the expensive one here.",
-      "D": "Routing on a line succeeds by inserting SWAPs; a single CX never makes the router give up."
+      "D": "Routing on a line succeeds by inserting SWAPs; a single CX never makes the router give up.",
+      "E": "Level 1's saving comes from the LAYOUT, not from cancellation: it starts the two interacting virtual qubits on a connected physical pair, so the router never inserts a SWAP at all.",
+      "F": "Distance matters: physical qubits 0 and 4 are four hops apart on the line, so the router inserts three SWAPs — nine CX plus the original one, not a single SWAP."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(5, coupling_map=CouplingMap.from_line(5), seed=1)\nqc = QuantumCircuit(5)\nqc.cx(0, 4)\ncx0 = generate_preset_pass_manager(optimization_level=0, backend=backend, seed_transpiler=1).run(qc).count_ops().get(\"cx\", 0)\ncx1 = generate_preset_pass_manager(optimization_level=1, backend=backend, seed_transpiler=1).run(qc).count_ops().get(\"cx\", 0)\nclaims = {\n    \"A\": cx0 > 1 and cx1 == 1,\n    \"B\": cx0 == 1 and cx1 == 1,\n    \"C\": cx0 == 1 and cx1 > 1,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"level0 cx={cx0}, level1 cx={cx1}; many-vs-one -> {claims['A']}\",\n    \"B\": f\"level0 cx={cx0}, level1 cx={cx1}; both==1? -> {claims['B']}\",\n    \"C\": f\"level0 cx={cx0}, level1 cx={cx1}; level1 more? -> {claims['C']}\",\n    \"D\": f\"both levels transpiled without error (cx: {cx0}, {cx1}) -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"cx_level0\": cx0, \"cx_level1\": cx1}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(5, coupling_map=CouplingMap.from_line(5), seed=1)\nqc = QuantumCircuit(5)\nqc.cx(0, 4)\ncx0 = generate_preset_pass_manager(optimization_level=0, backend=backend, seed_transpiler=1).run(qc).count_ops().get(\"cx\", 0)\ncx1 = generate_preset_pass_manager(optimization_level=1, backend=backend, seed_transpiler=1).run(qc).count_ops().get(\"cx\", 0)\nclaims = {\n    \"A\": cx0 > 1 and cx1 == 1,\n    \"B\": cx0 == 1 and cx1 == 1,\n    \"C\": cx0 == 1 and cx1 > 1,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"level0 cx={cx0}, level1 cx={cx1}; many-vs-one -> {claims['A']}\",\n    \"B\": f\"level0 cx={cx0}, level1 cx={cx1}; both==1? -> {claims['B']}\",\n    \"C\": f\"level0 cx={cx0}, level1 cx={cx1}; level1 more? -> {claims['C']}\",\n    \"D\": f\"both levels transpiled without error (cx: {cx0}, {cx1}) -> {claims['D']}\",\n}\npm0 = generate_preset_pass_manager(optimization_level=0, backend=backend, seed_transpiler=1)\npm1 = generate_preset_pass_manager(optimization_level=1, backend=backend, seed_transpiler=1)\nlay0 = list(pm0.run(qc).layout.initial_index_layout())\nlay1 = list(pm1.run(qc).layout.initial_index_layout())\ntrivial = list(range(5))\nclaims[\"E\"] = (lay1 == trivial)\nclaims[\"F\"] = (cx0 == 3)\nevidence[\"E\"] = (f\"level0 initial layout={lay0} (trivial), level1 initial layout={lay1}; level 1 moved the \"\n                 f\"interacting qubits onto a connected pair instead of cancelling SWAPs -> {claims['E']}\")\nevidence[\"F\"] = (f\"level0 cx={cx0}, i.e. three SWAPs plus the original gate over four hops, not 3 -> {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"cx_level0\": cx0, \"cx_level1\": cx1}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor C given substance and the absolute, distractor B now hedges)"
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor C given substance and the absolute, distractor B now hedges) | pool wave: +E (level-1 gain attributed to gate cancellation) +F (SWAP cost believed distance-independent)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

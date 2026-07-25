@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "6 or more CX — the Toffoli decomposition alone needs six."
+    },
+    {
+      "key": "E",
+      "text": "Exactly 6 CX — the six-CX decomposition typically fits the line without any routing."
+    },
+    {
+      "key": "F",
+      "text": "3 CX — the transpiler usually rewrites a Toffoli into three two-qubit gates on a line."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "No IBM backend offers a native 3-qubit gate; `ccx` sits outside the basis and has to be decomposed into CX-based gates.",
       "B": "One CX is nowhere near enough to realize a Toffoli — the standard decomposition alone needs 6.",
-      "C": "The minimal Toffoli decomposition already uses 6 CX; on a line with routing the count is even higher, so it is not in the 2-5 range."
+      "C": "The minimal Toffoli decomposition already uses 6 CX; on a line with routing the count is even higher, so it is not in the 2-5 range.",
+      "E": "Six is the count for an all-to-all decomposition; on a line the router adds more, so the ISA circuit ends up above six.",
+      "F": "No three-CX Toffoli exists: three two-qubit gates cannot implement a doubly-controlled X, and the transpiled circuit shows far more than three."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(3, coupling_map=CouplingMap.from_line(3), seed=7)\nqc = QuantumCircuit(3)\nqc.ccx(0, 1, 2)\nisa = generate_preset_pass_manager(1, backend, seed_transpiler=7).run(qc)\nncx = isa.count_ops().get(\"cx\", 0)\nclaims = {\n    \"A\": ncx == 0,\n    \"B\": ncx == 1,\n    \"C\": 2 <= ncx <= 5,\n    \"D\": ncx >= 6,\n}\nevidence = {\n    \"A\": f\"observed cx count={ncx}; claim 0 -> {claims['A']}\",\n    \"B\": f\"observed cx count={ncx}; claim 1 -> {claims['B']}\",\n    \"C\": f\"observed cx count={ncx}; claim 2-5 -> {claims['C']}\",\n    \"D\": f\"observed cx count={ncx}; claim >=6 -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"cx_count\": ncx, \"ops\": dict(isa.count_ops())}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(3, coupling_map=CouplingMap.from_line(3), seed=7)\nqc = QuantumCircuit(3)\nqc.ccx(0, 1, 2)\nisa = generate_preset_pass_manager(1, backend, seed_transpiler=7).run(qc)\nncx = isa.count_ops().get(\"cx\", 0)\nclaims = {\n    \"A\": ncx == 0,\n    \"B\": ncx == 1,\n    \"C\": 2 <= ncx <= 5,\n    \"D\": ncx >= 6,\n}\nevidence = {\n    \"A\": f\"observed cx count={ncx}; claim 0 -> {claims['A']}\",\n    \"B\": f\"observed cx count={ncx}; claim 1 -> {claims['B']}\",\n    \"C\": f\"observed cx count={ncx}; claim 2-5 -> {claims['C']}\",\n    \"D\": f\"observed cx count={ncx}; claim >=6 -> {claims['D']}\",\n}\nclaims[\"E\"] = (ncx == 6)\nclaims[\"F\"] = (ncx == 3)\nevidence[\"E\"] = f\"observed cx count={ncx}; claim exactly 6 with no routing overhead -> {claims['E']}\"\nevidence[\"F\"] = f\"observed cx count={ncx}; claim 3 -> {claims['F']}\"\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"cx_count\": ncx, \"ops\": dict(isa.count_ops())}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "high length tell + stem-echo + absolute-wording tells cleared (correct option's gloss trimmed, distractor A given substance and a hedge; the predicted values are unchanged)"
+    "notes": "high length tell + stem-echo + absolute-wording tells cleared (correct option's gloss trimmed, distractor A given substance and a hedge; the predicted values are unchanged) | pool wave: +E (exactly the textbook 6, ignoring routing) +F (believes a 3-CX Toffoli exists)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

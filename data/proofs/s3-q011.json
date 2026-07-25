@@ -8,7 +8,9 @@
       "A": "cregs=['meas'], num_clbits=2, barrier=True, ops={'measure': 2, 'h': 1, 'cx': 1, 'barrier': 1}: measure_all did not raise -> claim(error) is False",
       "B": "cregs=['meas'], num_clbits=2, barrier=True, ops={'measure': 2, 'h': 1, 'cx': 1, 'barrier': 1}: register 'meas' size2 + barrier + 2 measures -> True",
       "C": "cregs=['meas'], num_clbits=2, barrier=True, ops={'measure': 2, 'h': 1, 'cx': 1, 'barrier': 1}: register is 'meas' not 'c' and barrier present -> False",
-      "D": "cregs=['meas'], num_clbits=2, barrier=True, ops={'measure': 2, 'h': 1, 'cx': 1, 'barrier': 1}: all qubits measured, num_clbits=2 not 1 -> False"
+      "D": "cregs=['meas'], num_clbits=2, barrier=True, ops={'measure': 2, 'h': 1, 'cx': 1, 'barrier': 1}: all qubits measured, num_clbits=2 not 1 -> False",
+      "E": "QuantumCircuit(2, 2).measure_all() -> num_clbits=4, cregs=['c', 'meas']: a fresh 'meas' register is appended even though 2 classical bits already existed -> reuse claim False",
+      "F": "instruction order=['h', 'cx', 'barrier', 'measure', 'measure']: barrier sits at index 2, before the last measure at index 4 -> 'barrier after' False"
     },
     "observed": {
       "cregs": [
@@ -30,7 +32,7 @@
   },
   "wall_seconds": 1.68,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"cregs=['meas'], num_clbits=2, barrier=True, ops={'measure': 2, 'h': 1, 'cx': 1, 'barrier': 1}: measure_all did not raise -> claim(error) is False\", \"B\": \"cregs=['meas'], num_clbits=2, barrier=True, ops={'measure': 2, 'h': 1, 'cx': 1, 'barrier': 1}: register 'meas' size2 + barrier + 2 measures -> True\", \"C\": \"cregs=['meas'], num_clbits=2, barrier=True, ops={'measure': 2, 'h': 1, 'cx': 1, 'barrier': 1}: register is 'meas' not 'c' and barrier present -> False\", \"D\": \"cregs=['meas'], num_clbits=2, barrier=True, ops={'measure': 2, 'h': 1, 'cx': 1, 'barrier': 1}: all qubits measured, num_clbits=2 not 1 -> False\"}, \"observed\": {\"cregs\": [\"meas\"], \"ops\": {\"measure\": 2, \"h\": 1, \"cx\": 1, \"barrier\": 1}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"cregs=['meas'], num_clbits=2, barrier=True, ops={'measure': 2, 'h': 1, 'cx': 1, 'barrier': 1}: measure_all did not raise -> claim(error) is False\", \"B\": \"cregs=['meas'], num_clbits=2, barrier=True, ops={'measure': 2, 'h': 1, 'cx': 1, 'barrier': 1}: register 'meas' size2 + barrier + 2 measures -> True\", \"C\": \"cregs=['meas'], num_clbits=2, barrier=True, ops={'measure': 2, 'h': 1, 'cx': 1, 'barrier': 1}: register is 'meas' not 'c' and barrier present -> False\", \"D\": \"cregs=['meas'], num_clbits=2, barrier=True, ops={'measure': 2, 'h': 1, 'cx': 1, 'barrier': 1}: all qubits measured, num_clbits=2 not 1 -> False\", \"E\": \"QuantumCircuit(2, 2).measure_all() -> num_clbits=4, cregs=['c', 'meas']: a fresh 'meas' register is appended even though 2 classical bits already existed -> reuse claim False\", \"F\": \"instruction order=['h', 'cx', 'barrier', 'measure', 'measure']: barrier sits at index 2, before the last measure at index 4 -> 'barrier after' False\"}, \"observed\": {\"cregs\": [\"meas\"], \"ops\": {\"measure\": 2, \"h\": 1, \"cx\": 1, \"barrier\": 1}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

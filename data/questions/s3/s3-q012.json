@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`compose` raises an error because `sub` has fewer qubits than `qc`"
+    },
+    {
+      "key": "E",
+      "text": "Control = qubit 2, target = qubit 0"
+    },
+    {
+      "key": "F",
+      "text": "`compose` raises an error because the `qubits` list needs to name adjacent qubits"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Target qubit 1 ignores the `qubits=[0, 2]` mapping and assumes the sub-circuit lands on qubits 0 and 1.",
       "B": "This misreads the mapping as shifting both qubits up by one; the mapping sends sub-qubit 0 to physical qubit 0.",
-      "D": "Composing a smaller circuit onto a subset of a larger one is exactly what the `qubits` argument is for — no error occurs."
+      "D": "Composing a smaller circuit onto a subset of a larger one is exactly what the `qubits` argument is for — no error occurs.",
+      "E": "This reads the `qubits` list right-to-left, as if the mapping were little-endian. The list is positional: entry 0 is `sub`'s qubit 0, entry 1 is `sub`'s qubit 1, so the control stays on qubit 0.",
+      "F": "There is no adjacency requirement — `qubits` may name any subset in any order, and 0 and 2 are not neighbours here. Connectivity constraints come from the backend's coupling map at transpile time, not from `compose`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -47,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(3)\nqc.h(0)\nsub = QuantumCircuit(2)\nsub.cx(0, 1)\ncomp = qc.compose(sub, qubits=[0, 2])\n\ncx = [ins for ins in comp.data if ins.operation.name == \"cx\"][0]\nidx = [comp.find_bit(q).index for q in cx.qubits]\nctrl, tgt = idx[0], idx[1]\nclaims = {\n    \"A\": ctrl == 0 and tgt == 1,\n    \"B\": ctrl == 1 and tgt == 2,\n    \"C\": ctrl == 0 and tgt == 2,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"observed CX=({ctrl},{tgt}); claim (0,1) -> {claims['A']}\",\n    \"B\": f\"observed CX=({ctrl},{tgt}); claim (1,2) -> {claims['B']}\",\n    \"C\": f\"observed CX (control,target)=({ctrl},{tgt}); claim (0,2) -> {claims['C']}\",\n    \"D\": f\"compose succeeded, comp ops={dict(comp.count_ops())}; no error -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"cx_qubits\": [ctrl, tgt]}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(3)\nqc.h(0)\nsub = QuantumCircuit(2)\nsub.cx(0, 1)\ncomp = qc.compose(sub, qubits=[0, 2])\n\ncx = [ins for ins in comp.data if ins.operation.name == \"cx\"][0]\nidx = [comp.find_bit(q).index for q in cx.qubits]\nctrl, tgt = idx[0], idx[1]\nclaims = {\n    \"A\": ctrl == 0 and tgt == 1,\n    \"B\": ctrl == 1 and tgt == 2,\n    \"C\": ctrl == 0 and tgt == 2,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"observed CX=({ctrl},{tgt}); claim (0,1) -> {claims['A']}\",\n    \"B\": f\"observed CX=({ctrl},{tgt}); claim (1,2) -> {claims['B']}\",\n    \"C\": f\"observed CX (control,target)=({ctrl},{tgt}); claim (0,2) -> {claims['C']}\",\n    \"D\": f\"compose succeeded, comp ops={dict(comp.count_ops())}; no error -> {claims['D']}\",\n}\nclaims[\"E\"] = ctrl == 2 and tgt == 0\nclaims[\"F\"] = False\nevidence[\"E\"] = f\"observed CX (control,target)=({ctrl},{tgt}); claim (2,0) reversed mapping -> {claims['E']}\"\nevidence[\"F\"] = (f\"compose onto the non-adjacent pair [0, 2] succeeded, comp ops={dict(comp.count_ops())}; \"\n                 f\"claim 'must name adjacent qubits' -> {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"cx_qubits\": [ctrl, tgt]}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E (qubits list read right-to-left) +F (believes the mapping must be adjacent)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "All four outcomes, roughly 25% each."
+    },
+    {
+      "key": "E",
+      "text": "Only `10` and `11`, roughly 50/50."
+    },
+    {
+      "key": "F",
+      "text": "It raises a `CircuitError`: the `else_` context manager has to be entered inside the `if_test` block."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "`00`/`11` would require the two bits to match; here the X-branch makes them differ and the Z-branch leaves qubit 1 at 0 while `c0`=1, so they always differ.",
       "C": "`11` never occurs: qubit 1 becomes 1 only in the `c0`=0 branch, which pairs with `c0`=0, giving `10`.",
-      "D": "The outcome of qubit 1 is fully determined by `c0`, so only two of the four combinations occur."
+      "D": "The outcome of qubit 1 is fully determined by `c0`, so only two of the four combinations occur.",
+      "E": "This treats the `else` branch's Z as a bit flip. Z leaves `|0⟩` unchanged (it only flips the phase of `|1⟩`), so the `c0`=1 branch still measures `c1`=0.",
+      "F": "`with qc.if_test(...) as else_:` yields the else-builder for use AFTER the if-block closes; entering it as a sibling `with` statement is exactly the supported syntax."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
@@ -47,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\nqr = QuantumRegister(2, 'q'); cr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0); qc.measure(0, 0)\nwith qc.if_test((cr[0], 0)) as else_:\n    qc.x(1)\nwith else_:\n    qc.z(1)\nqc.measure(1, 1)\nsim = AerSimulator(seed_simulator=42)\ncounts = sim.run(qc, shots=4000).result().get_counts()\ntotal = sum(counts.values())\nseen = set(counts)\n\ndef near(bs, tol=0.06):\n    return abs(counts.get(bs, 0)/total - 0.5) <= tol\n\nclaims = {\n    \"A\": seen == {\"00\", \"11\"},\n    \"B\": seen == {\"10\", \"01\"} and near(\"10\") and near(\"01\"),\n    \"C\": seen == {\"11\", \"01\"},\n    \"D\": seen == {\"00\", \"01\", \"10\", \"11\"},\n}\nevidence = {\n    \"A\": f\"observed={dict(counts)}; claim {{00,11}} -> {claims['A']}\",\n    \"B\": f\"observed={dict(counts)}; only {{10,01}} ~50/50 -> {claims['B']}\",\n    \"C\": f\"observed={dict(counts)}; claim {{11,01}} -> {claims['C']}\",\n    \"D\": f\"observed={dict(counts)}; claim all four -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": dict(counts)}})\n"
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\nqr = QuantumRegister(2, 'q'); cr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0); qc.measure(0, 0)\nwith qc.if_test((cr[0], 0)) as else_:\n    qc.x(1)\nwith else_:\n    qc.z(1)\nqc.measure(1, 1)\nsim = AerSimulator(seed_simulator=42)\ncounts = sim.run(qc, shots=4000).result().get_counts()\ntotal = sum(counts.values())\nseen = set(counts)\n\ndef near(bs, tol=0.06):\n    return abs(counts.get(bs, 0)/total - 0.5) <= tol\n\nclaims = {\n    \"A\": seen == {\"00\", \"11\"},\n    \"B\": seen == {\"10\", \"01\"} and near(\"10\") and near(\"01\"),\n    \"C\": seen == {\"11\", \"01\"},\n    \"D\": seen == {\"00\", \"01\", \"10\", \"11\"},\n}\nevidence = {\n    \"A\": f\"observed={dict(counts)}; claim {{00,11}} -> {claims['A']}\",\n    \"B\": f\"observed={dict(counts)}; only {{10,01}} ~50/50 -> {claims['B']}\",\n    \"C\": f\"observed={dict(counts)}; claim {{11,01}} -> {claims['C']}\",\n    \"D\": f\"observed={dict(counts)}; claim all four -> {claims['D']}\",\n}\nclaims[\"E\"] = seen == {\"10\", \"11\"}\nclaims[\"F\"] = False\nevidence[\"E\"] = f\"observed={dict(counts)}; claim {{10,11}} (Z treated as a bit flip) -> {claims['E']}\"\nevidence[\"F\"] = (f\"the sibling 'with else_:' block built and ran, producing {dict(counts)} without \"\n                 f\"raising -> claim CircuitError is {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": dict(counts)}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E (Z mistaken for a bit flip in the else branch) +F (else_ builder scoping believed illegal)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

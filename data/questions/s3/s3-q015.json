@@ -28,6 +28,10 @@
     {
       "key": "E",
       "text": "`qc.num_qubits + qc.num_clbits` equals `qc.width()`."
+    },
+    {
+      "key": "F",
+      "text": "`qc.size()` returns 3, because `size()` counts the gates in the circuit and skips the two `measure` instructions."
     }
   ],
   "answer": [
@@ -39,7 +43,8 @@
     "correct": "`num_qubits`=3 and `num_clbits`=2 (A). `size()` counts all 5 operations: 1 H + 2 CX + 2 measures (C). `width()` returns qubits + classical bits = 3 + 2 = 5, so it equals `num_qubits + num_clbits` (E).",
     "distractors": {
       "B": "`width()` returns qubits PLUS classical bits (5 here), not the qubit count. Confusing `width()` with `num_qubits` is a common slip.",
-      "D": "`depth()` is the longest gate path (4 here), while `size()` is the total operation count (5); the H and the first CX do share a layer, so the two metrics differ."
+      "D": "`depth()` is the longest gate path (4 here), while `size()` is the total operation count (5); the H and the first CX do share a layer, so the two metrics differ.",
+      "F": "`size()` counts every instruction that is not a directive: the two `measure` operations count, giving 5. Only directives such as `barrier` are skipped."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -52,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(3, 'q'); cr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0); qc.cx(0, 1); qc.cx(1, 2)\nqc.measure(0, 0); qc.measure(2, 1)\n\nnq, ncl = qc.num_qubits, qc.num_clbits\nw, s, d = qc.width(), qc.size(), qc.depth()\nclaims = {\n    \"A\": nq == 3 and ncl == 2,\n    \"B\": w == 3,\n    \"C\": s == 5,\n    \"D\": d == s,\n    \"E\": (nq + ncl) == w,\n}\nfacts = f\"num_qubits={nq}, num_clbits={ncl}, width={w}, size={s}, depth={d}\"\nevidence = {\n    \"A\": f\"{facts}: qubits=3 & clbits=2 -> {claims['A']}\",\n    \"B\": f\"{facts}: width()={w} (qubits+clbits), not 3 -> {claims['B']}\",\n    \"C\": f\"{facts}: size()={s} operations -> {claims['C']}\",\n    \"D\": f\"{facts}: depth={d} vs size={s} -> equal? {claims['D']}\",\n    \"E\": f\"{facts}: num_qubits+num_clbits={nq+ncl} vs width={w} -> {claims['E']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"width\": w, \"size\": s, \"depth\": d}})\n"
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(3, 'q'); cr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0); qc.cx(0, 1); qc.cx(1, 2)\nqc.measure(0, 0); qc.measure(2, 1)\n\nnq, ncl = qc.num_qubits, qc.num_clbits\nw, s, d = qc.width(), qc.size(), qc.depth()\nclaims = {\n    \"A\": nq == 3 and ncl == 2,\n    \"B\": w == 3,\n    \"C\": s == 5,\n    \"D\": d == s,\n    \"E\": (nq + ncl) == w,\n}\nfacts = f\"num_qubits={nq}, num_clbits={ncl}, width={w}, size={s}, depth={d}\"\nevidence = {\n    \"A\": f\"{facts}: qubits=3 & clbits=2 -> {claims['A']}\",\n    \"B\": f\"{facts}: width()={w} (qubits+clbits), not 3 -> {claims['B']}\",\n    \"C\": f\"{facts}: size()={s} operations -> {claims['C']}\",\n    \"D\": f\"{facts}: depth={d} vs size={s} -> equal? {claims['D']}\",\n    \"E\": f\"{facts}: num_qubits+num_clbits={nq+ncl} vs width={w} -> {claims['E']}\",\n}\nclaims[\"F\"] = (s == 3)\nevidence[\"F\"] = f\"{facts}: size()={s} includes both measure instructions, so it is not 3 -> {claims['F']}\"\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"width\": w, \"size\": s, \"depth\": d}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "length tell + stem-echo tell cleared (distractor B given substance and the stem's own vocabulary) | stem-echo tell cleared (distractors B and D given the stem's own vocabulary)"
+    "notes": "length tell + stem-echo tell cleared (distractor B given substance and the stem's own vocabulary) | stem-echo tell cleared (distractors B and D given the stem's own vocabulary) | pool wave: +F (believes size() skips measurements)"
   },
   "freshness": {
     "verified_against": {
@@ -70,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

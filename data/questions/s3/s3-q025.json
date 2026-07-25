@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Use `qc.x(0, condition=(cr, 1))`; the `condition` keyword replaces `.c_if()`."
+    },
+    {
+      "key": "E",
+      "text": "Set the condition as an attribute instead: `qc.x(0).condition = (cr, 1)`, which is what `.c_if()` did internally."
+    },
+    {
+      "key": "F",
+      "text": "Guard the gate with a plain Python `if cr[0] == 1:` block, since the classical bit is typically readable while building."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "`.c_if()` no longer exists at all — indexing the register to `cr[0]` still raises `AttributeError`; the method itself is gone.",
       "C": "`decompose()` expands composite gates and has nothing to do with conditionals; it never restores `.c_if()`.",
-      "D": "Gate methods like `x()` have no `condition` keyword; passing one raises a `TypeError`. Conditions go through `if_test`."
+      "D": "Gate methods like `x()` have no `condition` keyword; passing one raises a `TypeError`. Conditions go through `if_test`.",
+      "E": "`x()` returns an `InstructionSet`, which has no `condition` attribute — the assignment raises `AttributeError`. The whole `condition` mechanism went away with `c_if` in Qiskit 2.0.",
+      "F": "A classical bit has no value at build time: `cr[0] == 1` is just a `False` comparison, so the body never runs and no gate — conditional or otherwise — is added."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\ndef base():\n    qr = QuantumRegister(1, 'q'); cr = ClassicalRegister(1, 'c')\n    qc = QuantumCircuit(qr, cr); qc.h(0); qc.measure(0, 0)\n    return qc, cr\n\n# reproduce the bug\nqc, cr = base()\ntry:\n    qc.x(0).c_if(cr, 1)\n    bug = \"no error\"\nexcept AttributeError as e:\n    bug = f\"AttributeError: {str(e)[:70]}\"\n\n# candidate fixes\ndef try_fix(fn):\n    try:\n        qc, cr = base()\n        fn(qc, cr)\n        return (\"if_else\" in qc.count_ops()), f\"ops={dict(qc.count_ops())}\"\n    except Exception as e:\n        return False, f\"raised {type(e).__name__}: {str(e)[:80]}\"\n\ndef fixA(qc, cr):\n    with qc.if_test((cr, 1)):\n        qc.x(0)\ndef fixB(qc, cr):\n    qc.x(0).c_if(cr[0], 1)\ndef fixC(qc, cr):\n    qc2 = qc.decompose(); qc2.x(0).c_if(cr, 1)\ndef fixD(qc, cr):\n    qc.x(0, condition=(cr, 1))\n\na_ok, a_msg = try_fix(fixA)\nb_ok, b_msg = try_fix(fixB)\nc_ok, c_msg = try_fix(fixC)\nd_ok, d_msg = try_fix(fixD)\nclaims = {\"A\": a_ok, \"B\": b_ok, \"C\": c_ok, \"D\": d_ok}\nevidence = {\n    \"A\": f\"bug={bug}; fix with if_test -> {a_msg} -> valid conditional {a_ok}\",\n    \"B\": f\"c_if(cr[0],1) -> {b_msg} -> {b_ok}\",\n    \"C\": f\"decompose then c_if -> {c_msg} -> {c_ok}\",\n    \"D\": f\"x(0, condition=...) -> {d_msg} -> {d_ok}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug\": bug}})\n"
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\ndef base():\n    qr = QuantumRegister(1, 'q'); cr = ClassicalRegister(1, 'c')\n    qc = QuantumCircuit(qr, cr); qc.h(0); qc.measure(0, 0)\n    return qc, cr\n\n# reproduce the bug\nqc, cr = base()\ntry:\n    qc.x(0).c_if(cr, 1)\n    bug = \"no error\"\nexcept AttributeError as e:\n    bug = f\"AttributeError: {str(e)[:70]}\"\n\n# candidate fixes\ndef try_fix(fn):\n    try:\n        qc, cr = base()\n        fn(qc, cr)\n        return (\"if_else\" in qc.count_ops()), f\"ops={dict(qc.count_ops())}\"\n    except Exception as e:\n        return False, f\"raised {type(e).__name__}: {str(e)[:80]}\"\n\ndef fixA(qc, cr):\n    with qc.if_test((cr, 1)):\n        qc.x(0)\ndef fixB(qc, cr):\n    qc.x(0).c_if(cr[0], 1)\ndef fixC(qc, cr):\n    qc2 = qc.decompose(); qc2.x(0).c_if(cr, 1)\ndef fixD(qc, cr):\n    qc.x(0, condition=(cr, 1))\n\na_ok, a_msg = try_fix(fixA)\nb_ok, b_msg = try_fix(fixB)\nc_ok, c_msg = try_fix(fixC)\nd_ok, d_msg = try_fix(fixD)\ndef fixE(qc, cr):\n    qc.x(0).condition = (cr, 1)\ndef fixF(qc, cr):\n    if cr[0] == 1:\n        qc.x(0)\n\ne_ok, e_msg = try_fix(fixE)\nf_ok, f_msg = try_fix(fixF)\nclaims = {\"A\": a_ok, \"B\": b_ok, \"C\": c_ok, \"D\": d_ok, \"E\": e_ok, \"F\": f_ok}\nevidence = {\n    \"A\": f\"bug={bug}; fix with if_test -> {a_msg} -> valid conditional {a_ok}\",\n    \"B\": f\"c_if(cr[0],1) -> {b_msg} -> {b_ok}\",\n    \"C\": f\"decompose then c_if -> {c_msg} -> {c_ok}\",\n    \"D\": f\"x(0, condition=...) -> {d_msg} -> {d_ok}\",\n}\nevidence[\"E\"] = f\"assigning .condition on the InstructionSet returned by x(0) -> {e_msg} -> valid conditional {e_ok}\"\nevidence[\"F\"] = f\"plain Python 'if cr[0] == 1' around the gate -> {f_msg} -> valid conditional {f_ok}\"\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug\": bug}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "length tell + absolute-wording tell cleared (correct trimmed, distractor B given substance, distractor C now hedges)"
+    "notes": "length tell + absolute-wording tell cleared (correct trimmed, distractor B given substance, distractor C now hedges) | pool wave: +E (instruction .condition attribute) +F (plain Python if on a classical bit)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

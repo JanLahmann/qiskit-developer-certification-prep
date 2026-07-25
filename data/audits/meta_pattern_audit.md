@@ -2,38 +2,43 @@
 
 *Repo-only quality artifact — not linked from the website.*
 
-Scope: **s2** — 26 questions (23 single-answer, 3 multi-select). Random-guess baseline: **25.0%**. Exam pass line: **69%**.
+Scope: **s3** — 44 questions (38 single-answer, 6 multi-select). Random-guess baseline: **23.7%**. Exam pass line: **69%**.
 
 ## Blind-guesser scores
 
 | Heuristic | EV accuracy (answered) | Coverage | Est. exam score |
 |---|---|---|---|
-| position_A | 39.0% | 78% | 35.9% |
-| similar_twin_member | 43.0% | 56% | 35.1% |
-| position_C | 33.3% | 78% | 31.5% |
-| position_B | 32.8% | 80% | 31.2% |
-| avoid_longest | 25.4% | 99% | 25.4% |
-| stem_keyword_overlap | 24.8% | 78% | 24.8% |
-| position_D | 23.1% | 75% | 23.5% |
-| shortest_option | 19.8% | 100% | 19.8% |
-| longest_option | 19.2% | 100% | 19.2% |
-| odd_one_out | 7.5% | 100% | 7.5% |
-| most_hedged | 10.4% | 17% | – |
-| avoid_hedged | 31.2% | 17% | – |
-| least_absolute | 23.1% | 14% | – |
-| most_absolute | 30.8% | 14% | – |
-| code_formatted_only | 26.7% | 11% | – |
-| numeric_middle | 34.6% | 6% | – |
+| position_A | 34.8% | 76% | 32.1% |
+| position_B | 34.7% | 76% | 32.0% |
+| position_C | 31.6% | 75% | 29.6% |
+| position_D | 31.5% | 75% | 29.5% |
+| similar_twin_member | 38.2% | 28% | 27.7% |
+| avoid_hedged | 29.6% | 59% | 27.2% |
+| most_absolute | 25.9% | 60% | 25.0% |
+| stem_keyword_overlap | 24.8% | 88% | 24.6% |
+| code_formatted_only | 24.0% | 27% | 23.8% |
+| longest_option | 23.7% | 100% | 23.7% |
+| avoid_longest | 23.1% | 98% | 23.1% |
+| most_hedged | 22.1% | 59% | 22.8% |
+| least_absolute | 16.5% | 60% | 19.4% |
+| odd_one_out | 18.0% | 100% | 18.0% |
+| shortest_option | 14.0% | 100% | 14.0% |
+| numeric_middle | 39.7% | 15% | – |
 
 ## Verdicts
 
 - ✅ no aggregate biases above thresholds
 
-## Flagged questions (6)
+## Flagged questions (9)
 
-- `s2-q010` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 27 chars vs longest distractor 25, ratio 1.08) (in >=1 displayed pool variant)
-- `s2-q018` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 101 chars vs longest distractor 78, ratio 1.29) (in >=1 displayed pool variant)
-- `s2-q022` (spot-bug) — **length_tell** [low]: correct option(s) strictly longest (min correct 50 chars vs longest distractor 46, ratio 1.09) (in >=1 displayed pool variant)
-- `s2-q023` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 61 chars vs longest distractor 60, ratio 1.02) (in >=1 displayed pool variant)
-- `s2-q024` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 61 chars vs longest distractor 49, ratio 1.24) (in >=1 displayed pool variant)
-- `s2-q030` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 94 chars vs longest distractor 82, ratio 1.15) (in >=1 displayed pool variant)
+- `s3-q016` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 65 chars vs longest distractor 54, ratio 1.20) (in >=1 displayed pool variant)
+- `s3-q017` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 99 chars vs longest distractor 79, ratio 1.25) (in >=1 displayed pool variant)
+- `s3-q017` (predict-output) — **stem_echo_tell** [medium]: correct option echoes stem vocabulary (overlap 4 vs best distractor 2) (in >=1 displayed pool variant)
+- `s3-q024` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 44 chars vs longest distractor 42, ratio 1.05) (in >=1 displayed pool variant)
+- `s3-q028` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 78 chars vs longest distractor 77, ratio 1.01) (in >=1 displayed pool variant)
+- `s3-q030` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 99 chars vs longest distractor 96, ratio 1.03) (in >=1 displayed pool variant)
+- `s3-q034` (spot-bug) — **length_tell** [low]: correct option(s) strictly longest (min correct 130 chars vs longest distractor 124, ratio 1.05) (in >=1 displayed pool variant)
+- `s3-q037` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 88 chars vs longest distractor 79, ratio 1.11) (in >=1 displayed pool variant)
+- `s3-q039` (spot-bug) — **length_tell** [low]: correct option(s) strictly longest (min correct 95 chars vs longest distractor 77, ratio 1.23) (in >=1 displayed pool variant)
+- `s3-q052` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 82 chars vs longest distractor 72, ratio 1.14) (in >=1 displayed pool variant)
+- `s3-q052` (predict-output) — **stem_echo_tell** [medium]: correct option echoes stem vocabulary (overlap 5 vs best distractor 2) (in >=1 displayed pool variant)

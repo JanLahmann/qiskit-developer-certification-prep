@@ -28,6 +28,10 @@
     {
       "key": "E",
       "text": "All four levels target the same basis gates and coupling constraints; they differ in how hard they work to optimize."
+    },
+    {
+      "key": "F",
+      "text": "Level 0 skips routing altogether, so two-qubit gates on non-adjacent qubits come back unrouted."
     }
   ],
   "answer": [
@@ -39,7 +43,8 @@
     "correct": "Level 0 is minimal mapping/translation with no real optimization (A). Level 3 is the most aggressive and usually the slowest (B). Every level produces a circuit valid for the SAME target constraints — the difference is optimization effort, not the constraints (E).",
     "distractors": {
       "C": "Optimization uses heuristics; a higher level USUALLY helps but is NOT guaranteed to beat a lower level on every circuit.",
-      "D": "`generate_preset_pass_manager` defaults to level 2, not level 1. (Level 1 is the legacy `transpile()` default.)"
+      "D": "`generate_preset_pass_manager` defaults to level 2, not level 1. (Level 1 was the legacy `transpile()` default in Qiskit 1.x; in 2.x `transpile()` also resolves to 2.)",
+      "F": "Every level routes — level 0 just uses a trivial layout and then inserts whatever SWAPs that layout forces, which is why it often produces the MOST two-qubit gates."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
@@ -57,6 +62,8 @@
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 1,
-    "reviewed": false
-  }
+    "reviewed": false,
+    "notes": "pool wave: +F (believes level 0 skips routing)"
+  },
+  "display_count": 5
 }

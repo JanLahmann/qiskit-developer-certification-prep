@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "It measures just the qubits that already carry gates, adding a single classical bit."
+    },
+    {
+      "key": "E",
+      "text": "It reuses the circuit's existing classical bits whenever there are enough of them, adding `meas` only as a fallback."
+    },
+    {
+      "key": "F",
+      "text": "It creates the 2-bit `meas` register and measures every qubit, then appends the barrier after the measurements."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "`measure_all()` never errors on a register-less circuit — it creates the classical bits for you (unlike `measure`, which needs existing bits).",
       "C": "The auto-created register is named `meas`, not `c`, and `measure_all()` does insert a barrier ahead of the measurements.",
-      "D": "Measuring just the active qubits is what `measure_active()` does; `measure_all()` measures every qubit in the circuit."
+      "D": "Measuring just the active qubits is what `measure_active()` does; `measure_all()` measures every qubit in the circuit.",
+      "E": "Reusing existing bits is what `measure_all(add_bits=False)` does; the default is `add_bits=True`, which always appends a fresh `meas` register — even to a circuit that already has enough classical bits.",
+      "F": "The register and the measurements are right, but the barrier goes BEFORE the measurements: it separates the state preparation from the readout so nothing is optimized across that boundary."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1)\nqc.measure_all()\nnames = [c.name for c in qc.cregs]\nops = dict(qc.count_ops())\nnclb = qc.num_clbits\nhas_barrier = \"barrier\" in ops\nraised = False  # measure_all executed without raising\n\nclaims = {\n    \"A\": raised,\n    \"B\": (\"meas\" in names) and (nclb == 2) and has_barrier and ops.get(\"measure\") == 2,\n    \"C\": (\"c\" in names) and (not has_barrier),\n    \"D\": (nclb == 1),\n}\nfacts = f\"cregs={names}, num_clbits={nclb}, barrier={has_barrier}, ops={ops}\"\nevidence = {\n    \"A\": f\"{facts}: measure_all did not raise -> claim(error) is {claims['A']}\",\n    \"B\": f\"{facts}: register 'meas' size2 + barrier + 2 measures -> {claims['B']}\",\n    \"C\": f\"{facts}: register is 'meas' not 'c' and barrier present -> {claims['C']}\",\n    \"D\": f\"{facts}: all qubits measured, num_clbits=2 not 1 -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"cregs\": names, \"ops\": ops}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1)\nqc.measure_all()\nnames = [c.name for c in qc.cregs]\nops = dict(qc.count_ops())\nnclb = qc.num_clbits\nhas_barrier = \"barrier\" in ops\nraised = False  # measure_all executed without raising\n\nclaims = {\n    \"A\": raised,\n    \"B\": (\"meas\" in names) and (nclb == 2) and has_barrier and ops.get(\"measure\") == 2,\n    \"C\": (\"c\" in names) and (not has_barrier),\n    \"D\": (nclb == 1),\n}\nfacts = f\"cregs={names}, num_clbits={nclb}, barrier={has_barrier}, ops={ops}\"\nevidence = {\n    \"A\": f\"{facts}: measure_all did not raise -> claim(error) is {claims['A']}\",\n    \"B\": f\"{facts}: register 'meas' size2 + barrier + 2 measures -> {claims['B']}\",\n    \"C\": f\"{facts}: register is 'meas' not 'c' and barrier present -> {claims['C']}\",\n    \"D\": f\"{facts}: all qubits measured, num_clbits=2 not 1 -> {claims['D']}\",\n}\nqc2 = QuantumCircuit(2, 2)\nqc2.measure_all()\nreuse = (qc2.num_clbits == 2)\nseq = [ins.operation.name for ins in qc.data]\nlast_measure = max(i for i, n in enumerate(seq) if n == \"measure\")\nclaims[\"E\"] = reuse\nclaims[\"F\"] = seq.index(\"barrier\") > last_measure\nevidence[\"E\"] = (f\"QuantumCircuit(2, 2).measure_all() -> num_clbits={qc2.num_clbits}, \"\n                 f\"cregs={[c.name for c in qc2.cregs]}: a fresh 'meas' register is appended even \"\n                 f\"though 2 classical bits already existed -> reuse claim {claims['E']}\")\nevidence[\"F\"] = (f\"instruction order={seq}: barrier sits at index {seq.index('barrier')}, \"\n                 f\"before the last measure at index {last_measure} -> 'barrier after' {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"cregs\": names, \"ops\": ops}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "high length tell + absolute-wording tell cleared (correct trimmed and now carries the true 'every'/'by default', distractor C given substance)"
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed and now carries the true 'every'/'by default', distractor C given substance) | pool wave: +E (add_bits default reuse) +F (barrier placed after the measurements)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

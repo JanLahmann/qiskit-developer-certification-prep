@@ -8,7 +8,9 @@
       "A": "counts={'01': 1000}; all '01' (default/identity branch)? -> True",
       "B": "counts={'01': 1000}; all '11'? -> False",
       "C": "counts={'01': 1000}; all '10'? -> False",
-      "D": "counts={'01': 1000}; mix of 00/11? -> False"
+      "D": "counts={'01': 1000}; mix of 00/11? -> False",
+      "E": "the switch with case(case.DEFAULT) declared last built and ran, giving counts={'01': 1000} -> claim 'DEFAULT must come first' is False",
+      "F": "counts={'01': 1000}; c0 still reads 1 after the switch, so nothing was consumed -> claim '00 every shot' is False"
     },
     "observed": {
       "counts": {
@@ -22,9 +24,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.19,
+  "wall_seconds": 1.16,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"counts={'01': 1000}; all '01' (default/identity branch)? -> True\", \"B\": \"counts={'01': 1000}; all '11'? -> False\", \"C\": \"counts={'01': 1000}; all '10'? -> False\", \"D\": \"counts={'01': 1000}; mix of 00/11? -> False\"}, \"observed\": {\"counts\": {\"01\": 1000}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"counts={'01': 1000}; all '01' (default/identity branch)? -> True\", \"B\": \"counts={'01': 1000}; all '11'? -> False\", \"C\": \"counts={'01': 1000}; all '10'? -> False\", \"D\": \"counts={'01': 1000}; mix of 00/11? -> False\", \"E\": \"the switch with case(case.DEFAULT) declared last built and ran, giving counts={'01': 1000} -> claim 'DEFAULT must come first' is False\", \"F\": \"counts={'01': 1000}; c0 still reads 1 after the switch, so nothing was consumed -> claim '00 every shot' is False\"}, \"observed\": {\"counts\": {\"01\": 1000}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

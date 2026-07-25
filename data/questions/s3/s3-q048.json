@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Named registers are required by the transpiler, which refuses a circuit built with the bare `QuantumCircuit(4)` form."
+    },
+    {
+      "key": "E",
+      "text": "Named registers usually let the transpiler keep the `data` qubits contiguous on the device, which improves the layout."
+    },
+    {
+      "key": "F",
+      "text": "Named registers typically survive transpilation, so the ISA circuit still shows `data` and `anc` labels instead of `q`."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Register naming is purely structural metadata; it has no effect on execution speed.",
       "C": "Any qubit can be measured regardless of whether it lives in a user-named register; `QuantumCircuit(4)` qubits are measurable too.",
-      "D": "Circuits built with the integer form transpile perfectly well; the transpiler never inspects register names."
+      "D": "Circuits built with the integer form transpile perfectly well; the transpiler never inspects register names.",
+      "E": "The layout pass optimizes on connectivity and error rates; it never reads register names, so grouping by register buys no locality.",
+      "F": "A transpiled circuit is defined over the device's physical qubits and carries a single register named `q`; your names live on in the layout, not in the ISA circuit's registers."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor D given substance, distractor A now hedges)"
-  }
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor D given substance, distractor A now hedges) | pool wave: +E (register names believed to steer the layout) +F (register names believed to survive transpilation)"
+  },
+  "display_count": 4
 }

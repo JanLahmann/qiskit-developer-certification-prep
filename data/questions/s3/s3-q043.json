@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "It restricts the job so it runs only when physical qubits 2, 3, 4 are idle."
+    },
+    {
+      "key": "E",
+      "text": "It pins the map the other way round: physical qubit 0 is generally sent to virtual 2, physical 1 to virtual 3."
+    },
+    {
+      "key": "F",
+      "text": "It restricts the transpiler to physical qubits 2, 3 and 4, which it may then assign in whichever order it likes."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "The optimization level is a separate integer argument (`optimization_level=0` here); `initial_layout` is a qubit mapping, not a list of levels.",
       "B": "`initial_layout` places qubits; it does not add measurements. Measurements come from `measure`/`measure_all`.",
-      "D": "`initial_layout` is a compile-time mapping choice, not a runtime scheduling/idle constraint."
+      "D": "`initial_layout` is a compile-time mapping choice, not a runtime scheduling/idle constraint.",
+      "E": "The list is indexed by VIRTUAL qubit: entry i names the physical qubit that virtual qubit i starts on. Reading it the other way round inverts the mapping.",
+      "F": "The order is part of the instruction, not a free choice: transpiling the same circuit with `[4, 3, 2]` produces the reversed assignment, so the list is an ordered map and not a set of allowed qubits."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit, transpile\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbe = GenericBackendV2(5, coupling_map=CouplingMap.from_line(5), seed=5)\nqc = QuantumCircuit(3)\nqc.h(0); qc.cx(0, 1); qc.cx(1, 2)\nt = transpile(qc, be, initial_layout=[2, 3, 4], optimization_level=0, seed_transpiler=5)\nil = list(t.layout.initial_index_layout(filter_ancillas=True))\nn_measure = t.count_ops().get(\"measure\", 0)\nclaims = {\n    \"A\": False,\n    \"B\": n_measure > 0,\n    \"C\": il == [2, 3, 4],\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"optimization_level was a separate argument; initial_index_layout={il} is a qubit map, not a level -> {claims['A']}\",\n    \"B\": f\"transpiled circuit has {n_measure} measurements (none added by initial_layout) -> {claims['B']}\",\n    \"C\": f\"virtual->physical initial layout = {il}; matches [2,3,4] -> {claims['C']}\",\n    \"D\": f\"initial_layout is a compile-time mapping (observed {il}), not a runtime idle constraint -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"initial_index_layout\": il}})\n"
+    "proof_script": "from qiskit import QuantumCircuit, transpile\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbe = GenericBackendV2(5, coupling_map=CouplingMap.from_line(5), seed=5)\nqc = QuantumCircuit(3)\nqc.h(0); qc.cx(0, 1); qc.cx(1, 2)\nt = transpile(qc, be, initial_layout=[2, 3, 4], optimization_level=0, seed_transpiler=5)\nil = list(t.layout.initial_index_layout(filter_ancillas=True))\nn_measure = t.count_ops().get(\"measure\", 0)\nclaims = {\n    \"A\": False,\n    \"B\": n_measure > 0,\n    \"C\": il == [2, 3, 4],\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"optimization_level was a separate argument; initial_index_layout={il} is a qubit map, not a level -> {claims['A']}\",\n    \"B\": f\"transpiled circuit has {n_measure} measurements (none added by initial_layout) -> {claims['B']}\",\n    \"C\": f\"virtual->physical initial layout = {il}; matches [2,3,4] -> {claims['C']}\",\n    \"D\": f\"initial_layout is a compile-time mapping (observed {il}), not a runtime idle constraint -> {claims['D']}\",\n}\nt2 = transpile(qc, be, initial_layout=[4, 3, 2], optimization_level=0, seed_transpiler=5)\nil2 = list(t2.layout.initial_index_layout(filter_ancillas=True))\nclaims[\"E\"] = (il != [2, 3, 4])\nclaims[\"F\"] = (il2 == il)\nevidence[\"E\"] = (f\"entry i of the list is the physical qubit of virtual i: observed virtual->physical \"\n                 f\"{il} -> the reversed reading is {claims['E']}\")\nevidence[\"F\"] = (f\"the same circuit with the list reversed gave {il2} instead of {il}, so the order fixes \"\n                 f\"the assignment -> 'assign them in whichever order' is {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"initial_index_layout\": il}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "length tell + absolute-wording tell cleared (correct trimmed, distractor B given substance, distractor A now hedges)"
+    "notes": "length tell + absolute-wording tell cleared (correct trimmed, distractor B given substance, distractor A now hedges) | pool wave: +E (layout list read physical->virtual) +F (initial_layout treated as an unordered qubit set)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

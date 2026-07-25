@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "It raises an error because gate angles must typically be plain `Parameter`s, not expressions."
+    },
+    {
+      "key": "E",
+      "text": "`rx = π ≈ 3.142`, `rz = 3π/2 ≈ 4.712` — the multiplier on `t` is dropped while the added constant survives."
+    },
+    {
+      "key": "F",
+      "text": "It raises a `TypeError`: adding `np.pi` to a `Parameter` first needs an explicit `ParameterExpression` wrapper."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "The coefficient and additive constant are part of the expression and ARE applied; `t` is not substituted raw.",
       "C": "The additive constant `π/2` is not dropped — `rz` gets `π + π/2 = 3π/2`.",
-      "D": "Expressions like `2*t` and `t + π/2` are valid gate arguments; no error occurs."
+      "D": "Expressions like `2*t` and `t + π/2` are valid gate arguments; no error occurs.",
+      "E": "The mirror image of dropping the constant: `2 * t` is a full expression too, so `rx` gets 2π, not π.",
+      "F": "`Parameter` overloads the arithmetic operators, so `t + np.pi / 2` builds a `ParameterExpression` by itself — no explicit wrapper and no error."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\nt = Parameter('t')\nqc = QuantumCircuit(1)\nqc.rx(2 * t, 0)\nqc.rz(t + np.pi / 2, 0)\nbound = qc.assign_parameters({t: np.pi})\nang = {ins.operation.name: float(ins.operation.params[0]) for ins in bound.data}\nrx_a, rz_a = ang[\"rx\"], ang[\"rz\"]\nclaims = {\n    \"A\": np.isclose(rx_a, 2*np.pi) and np.isclose(rz_a, 3*np.pi/2),\n    \"B\": np.isclose(rx_a, np.pi) and np.isclose(rz_a, np.pi),\n    \"C\": np.isclose(rx_a, 2*np.pi) and np.isclose(rz_a, np.pi/2),\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"observed rx={rx_a:.4f}, rz={rz_a:.4f}; expect 2pi={2*np.pi:.4f}, 3pi/2={3*np.pi/2:.4f} -> {claims['A']}\",\n    \"B\": f\"observed rx={rx_a:.4f}, rz={rz_a:.4f}; claim both=pi -> {claims['B']}\",\n    \"C\": f\"observed rz={rz_a:.4f}; claim rz=pi/2={np.pi/2:.4f} (constant dropped) -> {claims['C']}\",\n    \"D\": f\"binding expressions succeeded (rx={rx_a:.4f}, rz={rz_a:.4f}); claim 'error' -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"rx\": rx_a, \"rz\": rz_a}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\nt = Parameter('t')\nqc = QuantumCircuit(1)\nqc.rx(2 * t, 0)\nqc.rz(t + np.pi / 2, 0)\nbound = qc.assign_parameters({t: np.pi})\nang = {ins.operation.name: float(ins.operation.params[0]) for ins in bound.data}\nrx_a, rz_a = ang[\"rx\"], ang[\"rz\"]\nclaims = {\n    \"A\": np.isclose(rx_a, 2*np.pi) and np.isclose(rz_a, 3*np.pi/2),\n    \"B\": np.isclose(rx_a, np.pi) and np.isclose(rz_a, np.pi),\n    \"C\": np.isclose(rx_a, 2*np.pi) and np.isclose(rz_a, np.pi/2),\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"observed rx={rx_a:.4f}, rz={rz_a:.4f}; expect 2pi={2*np.pi:.4f}, 3pi/2={3*np.pi/2:.4f} -> {claims['A']}\",\n    \"B\": f\"observed rx={rx_a:.4f}, rz={rz_a:.4f}; claim both=pi -> {claims['B']}\",\n    \"C\": f\"observed rz={rz_a:.4f}; claim rz=pi/2={np.pi/2:.4f} (constant dropped) -> {claims['C']}\",\n    \"D\": f\"binding expressions succeeded (rx={rx_a:.4f}, rz={rz_a:.4f}); claim 'error' -> {claims['D']}\",\n}\nclaims[\"E\"] = np.isclose(rx_a, np.pi) and np.isclose(rz_a, 3*np.pi/2)\nclaims[\"F\"] = False\nevidence[\"E\"] = (f\"observed rx={rx_a:.3f}; the 2* multiplier IS applied (2pi={2*np.pi:.3f}), so the claim \"\n                 f\"rx=pi={np.pi:.3f} is {claims['E']}\")\nevidence[\"F\"] = (f\"t + np.pi/2 built a {type(qc.data[1].operation.params[0]).__name__} with no explicit \"\n                 f\"wrapper and bound to rz={rz_a:.3f} -> claim TypeError is {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"rx\": rx_a, \"rz\": rz_a}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (absolute removed from distractor C; distractor D now hedges)"
+    "notes": "absolute-wording tell cleared (absolute removed from distractor C; distractor D now hedges) | pool wave: +E (coefficient dropped, constant kept) +F (thinks Parameter arithmetic needs an explicit ParameterExpression)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

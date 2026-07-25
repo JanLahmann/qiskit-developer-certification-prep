@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Measuring an ancilla mid-circuit and applying a correction gate to a data qubit when that measurement returns 1."
+    },
+    {
+      "key": "E",
+      "text": "Choosing which circuit to submit next from the previous job's classical result, which typically arrives after that job finished."
+    },
+    {
+      "key": "F",
+      "text": "Post-selecting on the ancilla measurement result after the job returns — a classical filter that usually discards some shots."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Measuring at the end of a fixed gate sequence is a static circuit — no classical result is fed forward mid-execution.",
       "B": "Parameter sweeps are handled by parameterized circuits and array broadcasting, not by classical feedforward.",
-      "C": "Cancelling adjacent gates is a transpiler optimization; it needs no measurement-conditioned control flow."
+      "C": "Cancelling adjacent gates is a transpiler optimization; it needs no measurement-conditioned control flow.",
+      "E": "That is classical feedback BETWEEN jobs (the variational-loop pattern), not feedforward inside one execution. Nothing is conditioned mid-circuit, so a static circuit per iteration is enough.",
+      "F": "Post-selection is classical filtering of results that already came back; the quantum execution never branched on the measurement, so no dynamic circuit is involved."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "length + stem-echo + absolute-wording tells cleared (distractor A given the stem's vocabulary and the absolutes, distractor C now hedges)"
-  }
+    "notes": "length + stem-echo + absolute-wording tells cleared (distractor A given the stem's vocabulary and the absolutes, distractor C now hedges) | pool wave: +E (between-jobs classical loop) +F (post-selection mistaken for feedforward)"
+  },
+  "display_count": 4
 }

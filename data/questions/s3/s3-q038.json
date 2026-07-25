@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "The optimization stage."
+    },
+    {
+      "key": "E",
+      "text": "The scheduling stage."
+    },
+    {
+      "key": "F",
+      "text": "The init stage."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "The layout stage chooses which physical qubit each virtual qubit starts on; it does not insert SWAPs to move them during the circuit.",
       "C": "Translation rewrites gates into the target's basis set; it has nothing to do with connectivity.",
-      "D": "Optimization simplifies and cancels gates; SWAP insertion for connectivity is the router's job, not optimization's."
+      "D": "Optimization simplifies and cancels gates; SWAP insertion for connectivity is the router's job, not optimization's.",
+      "E": "Scheduling assigns timing (delays, alignment) to an already routed and translated circuit; it never changes which qubits a gate acts on.",
+      "F": "The init stage runs preliminary passes such as unrolling three-qubit gates before layout; connectivity is not known to it and no SWAP is inserted there."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
@@ -52,6 +62,8 @@
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 1,
-    "reviewed": false
-  }
+    "reviewed": false,
+    "notes": "pool wave: +E (scheduling mistaken for routing) +F (init stage mistaken for routing)"
+  },
+  "display_count": 4
 }

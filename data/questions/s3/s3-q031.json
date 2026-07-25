@@ -24,17 +24,27 @@
     {
       "key": "D",
       "text": "3"
+    },
+    {
+      "key": "E",
+      "text": "There is no default — `optimization_level` is a required argument."
+    },
+    {
+      "key": "F",
+      "text": "It depends on the backend: the level is chosen from the target's qubit count."
     }
   ],
   "answer": [
     "B"
   ],
   "explanation": {
-    "correct": "`generate_preset_pass_manager` defaults to `optimization_level=2` — a balanced level with light-weight but effective optimization. (Note this differs from the older `transpile()` function, whose default resolves to level 1.)",
+    "correct": "`generate_preset_pass_manager` defaults to `optimization_level=2` — a balanced level with light-weight but effective optimization. (In Qiskit 2.x the legacy `transpile()` resolves to the same default, so level 2 is what you get either way; level 1 was `transpile()`'s default back in 1.x.)",
     "distractors": {
       "A": "Level 0 is minimal (only what is needed to run) and is not the default; you must ask for it explicitly.",
-      "C": "Level 1 is the default of the legacy `transpile()` function, not of `generate_preset_pass_manager`.",
-      "D": "Level 3 is the heaviest optimization and is never applied unless you request it."
+      "C": "Level 1 is a lighter, mapping-focused level that you have to request explicitly. It was the default of the legacy `transpile()` in Qiskit 1.x, but in 2.x `transpile()` resolves to 2 as well.",
+      "D": "Level 3 is the heaviest optimization and is never applied unless you request it.",
+      "E": "The parameter has a default in the signature, so the call is valid without it — which is exactly why the default value matters.",
+      "F": "The default is a fixed constant in the signature, not a function of the target: a 5-qubit and a 9-qubit device both get the same level."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
@@ -47,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import inspect\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\ndefault = inspect.signature(generate_preset_pass_manager).parameters[\"optimization_level\"].default\nbackend = GenericBackendV2(num_qubits=5, seed=42)\n\n# functional confirmation: default pm behaves like the explicit level == default\nqc = QuantumCircuit(3)\nqc.h(0); qc.cx(0, 1); qc.cx(0, 2); qc.ccx(0, 1, 2); qc.measure_all()\npm_def = generate_preset_pass_manager(backend=backend, seed_transpiler=42)\nops_def = dict(pm_def.run(qc).count_ops())\nmatch_level = None\nfor lvl in range(4):\n    pml = generate_preset_pass_manager(optimization_level=lvl, backend=backend, seed_transpiler=42)\n    if dict(pml.run(qc).count_ops()) == ops_def:\n        match_level = lvl\n        break\n\nclaims = {\"A\": default == 0, \"B\": default == 2, \"C\": default == 1, \"D\": default == 3}\nevidence = {\n    \"A\": f\"signature default optimization_level={default}; claim 0 -> {claims['A']}\",\n    \"B\": f\"signature default={default}; default pm output matches explicit level {match_level} -> {claims['B']}\",\n    \"C\": f\"signature default={default}; claim 1 (that is transpile()'s default, not this) -> {claims['C']}\",\n    \"D\": f\"signature default={default}; claim 3 -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"default\": default, \"functional_match_level\": match_level}})\n"
+    "proof_script": "import inspect\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\ndefault = inspect.signature(generate_preset_pass_manager).parameters[\"optimization_level\"].default\nbackend = GenericBackendV2(num_qubits=5, seed=42)\n\n# functional confirmation: default pm behaves like the explicit level == default\nqc = QuantumCircuit(3)\nqc.h(0); qc.cx(0, 1); qc.cx(0, 2); qc.ccx(0, 1, 2); qc.measure_all()\npm_def = generate_preset_pass_manager(backend=backend, seed_transpiler=42)\nops_def = dict(pm_def.run(qc).count_ops())\nmatch_level = None\nfor lvl in range(4):\n    pml = generate_preset_pass_manager(optimization_level=lvl, backend=backend, seed_transpiler=42)\n    if dict(pml.run(qc).count_ops()) == ops_def:\n        match_level = lvl\n        break\n\nclaims = {\"A\": default == 0, \"B\": default == 2, \"C\": default == 1, \"D\": default == 3}\nevidence = {\n    \"A\": f\"signature default optimization_level={default}; claim 0 -> {claims['A']}\",\n    \"B\": f\"signature default={default}; default pm output matches explicit level {match_level} -> {claims['B']}\",\n    \"C\": f\"signature default={default}; claim 1 (that is transpile()'s default, not this) -> {claims['C']}\",\n    \"D\": f\"signature default={default}; claim 3 -> {claims['D']}\",\n}\nbe9 = GenericBackendV2(num_qubits=9, seed=42)\nops_def9 = dict(generate_preset_pass_manager(backend=be9, seed_transpiler=42).run(qc).count_ops())\nmatch_level9 = None\nfor lvl in range(4):\n    pml9 = generate_preset_pass_manager(optimization_level=lvl, backend=be9, seed_transpiler=42)\n    if dict(pml9.run(qc).count_ops()) == ops_def9:\n        match_level9 = lvl\n        break\nclaims[\"E\"] = (default is inspect.Parameter.empty)\nclaims[\"F\"] = (match_level9 != match_level)\nevidence[\"E\"] = (f\"the signature carries optimization_level={default} as a default value, so the argument \"\n                 f\"is optional -> 'no default / required' is {claims['E']}\")\nevidence[\"F\"] = (f\"the same default reproduced explicit level {match_level9} on a 9-qubit device and \"\n                 f\"level {match_level} on the 5-qubit one -> 'depends on the backend' is {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"default\": default, \"functional_match_level\": match_level}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E (believes optimization_level is required) +F (believes the default is derived from the backend)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Level 4 is valid but usually requires `seed_transpiler` to be set first."
+    },
+    {
+      "key": "E",
+      "text": "Valid levels are 1–4, but level 4 typically needs the `qiskit-ibm-transpiler` add-on."
+    },
+    {
+      "key": "F",
+      "text": "The keyword order is usually wrong: `backend` has to come before `optimization_level`."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "There is no level 4 for any backend type; the range is 0-3 regardless of real or fake hardware.",
       "C": "`optimization_level` is an integer argument; passing a string is not the fix and level 4 still would not exist.",
-      "D": "`seed_transpiler` is unrelated and only fixes the random seed; even with a seed, level 4 is invalid."
+      "D": "`seed_transpiler` is unrelated and only fixes the random seed; even with a seed, level 4 is invalid.",
+      "E": "The range starts at 0, not 1: level 0 builds fine here, and no add-on adds a level 4 to the preset pass managers.",
+      "F": "Keyword arguments are order-independent in Python; putting `backend` first raises exactly the same `ValueError` about the level."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=5, seed=42)\n# level 4 raises\ntry:\n    generate_preset_pass_manager(optimization_level=4, backend=backend)\n    err4 = \"no error\"\nexcept ValueError as e:\n    err4 = f\"ValueError: {str(e)[:60]}\"\nexcept Exception as e:\n    err4 = f\"{type(e).__name__}: {str(e)[:60]}\"\n# levels 0-3 succeed\nvalid = []\nfor lvl in range(4):\n    try:\n        generate_preset_pass_manager(optimization_level=lvl, backend=backend)\n        valid.append(lvl)\n    except Exception:\n        pass\nraised_valueerror = err4.startswith(\"ValueError\")\nclaims = {\n    \"A\": raised_valueerror and valid == [0, 1, 2, 3],\n    \"B\": False,\n    \"C\": False,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"level 4 -> {err4}; levels {valid} all built OK -> {claims['A']}\",\n    \"B\": f\"level 4 fails on this backend with {err4}; there is no hardware-only level 4 -> {claims['B']}\",\n    \"C\": f\"optimization_level is an int; the failure is out-of-range, not a type issue ({err4}) -> {claims['C']}\",\n    \"D\": f\"seed_transpiler does not enable a level 4; {err4} -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"level4\": err4, \"valid_levels\": valid}})\n"
+    "proof_script": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=5, seed=42)\n# level 4 raises\ntry:\n    generate_preset_pass_manager(optimization_level=4, backend=backend)\n    err4 = \"no error\"\nexcept ValueError as e:\n    err4 = f\"ValueError: {str(e)[:60]}\"\nexcept Exception as e:\n    err4 = f\"{type(e).__name__}: {str(e)[:60]}\"\n# levels 0-3 succeed\nvalid = []\nfor lvl in range(4):\n    try:\n        generate_preset_pass_manager(optimization_level=lvl, backend=backend)\n        valid.append(lvl)\n    except Exception:\n        pass\nraised_valueerror = err4.startswith(\"ValueError\")\nclaims = {\n    \"A\": raised_valueerror and valid == [0, 1, 2, 3],\n    \"B\": False,\n    \"C\": False,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"level 4 -> {err4}; levels {valid} all built OK -> {claims['A']}\",\n    \"B\": f\"level 4 fails on this backend with {err4}; there is no hardware-only level 4 -> {claims['B']}\",\n    \"C\": f\"optimization_level is an int; the failure is out-of-range, not a type issue ({err4}) -> {claims['C']}\",\n    \"D\": f\"seed_transpiler does not enable a level 4; {err4} -> {claims['D']}\",\n}\ntry:\n    generate_preset_pass_manager(backend=backend, optimization_level=4)\n    err_swapped = \"no error\"\nexcept Exception as _e:\n    err_swapped = f\"{type(_e).__name__}: {str(_e)[:60]}\"\nclaims[\"E\"] = (0 not in valid)\nclaims[\"F\"] = (err_swapped == \"no error\")\nevidence[\"E\"] = (f\"levels {valid} all built, so the range starts at 0 and level 4 is simply out of it \"\n                 f\"({err4}) -> 'levels are 1-4' is {claims['E']}\")\nevidence[\"F\"] = (f\"passing the backend keyword first still gives {err_swapped}; keyword order is \"\n                 f\"irrelevant -> {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"level4\": err4, \"valid_levels\": valid}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "length tell + absolute-wording tell cleared (correct trimmed, absolute left in distractor B only, distractor D now hedges)"
+    "notes": "length tell + absolute-wording tell cleared (correct trimmed, absolute left in distractor B only, distractor D now hedges) | pool wave: +E (believes levels are 1-4 with an add-on) +F (blames keyword-argument order) | orchestrator pool calibration: E/F trimmed below correct length (keeper set)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

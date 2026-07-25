@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`GenericBackendV2(num_qubits=3)` must be given an explicit `coupling_map`, or the pass manager always fails on this circuit."
+    },
+    {
+      "key": "E",
+      "text": "`GenericBackendV2(num_qubits=3)` is fine — pass `initial_layout=[0, 1, 2, 3]` to pin the mapping by hand."
+    },
+    {
+      "key": "F",
+      "text": "`measure_all()` adds 4 clbits but a 3-qubit backend has only 3 readout channels, so layout refuses the circuit."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "The position of `measure_all()` is irrelevant to the qubit-count mismatch; the error occurs during layout, not measurement.",
       "C": "No optimization level can invent extra physical qubits; higher levels still fail on the same mismatch.",
-      "D": "`GenericBackendV2` supplies a default coupling map; the failure is the qubit count, not a missing coupling map."
+      "D": "`GenericBackendV2` supplies a default coupling map; the failure is the qubit count, not a missing coupling map.",
+      "E": "A hand-written layout cannot invent a fourth physical qubit — the pass manager still fails, because the device simply does not have a qubit 3.",
+      "F": "Classical bits are never the constraint: the same 4-qubit circuit fails without any measurements, and the same `measure_all()` circuit transpiles fine on a 4-qubit backend."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/transpile",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbe3 = GenericBackendV2(num_qubits=3, seed=42)\n\ndef build4():\n    qc = QuantumCircuit(4); qc.h(range(4)); qc.measure_all(); return qc\n\n# reproduce the bug\ntry:\n    generate_preset_pass_manager(optimization_level=1, backend=be3).run(build4())\n    bug = \"no error\"\nexcept Exception as e:\n    bug = f\"{type(e).__name__}: {str(e)[:70]}\"\n\n# A: measure after transpile -> still fails on qubit count\ntry:\n    qc = QuantumCircuit(4); qc.h(range(4))\n    generate_preset_pass_manager(1, be3).run(qc)\n    a_fixed = True\nexcept Exception:\n    a_fixed = False\n\n# C: level 3 -> still fails\ntry:\n    generate_preset_pass_manager(3, be3).run(build4())\n    c_fixed = True\nexcept Exception:\n    c_fixed = False\n\n# B: use a >=4 qubit backend -> works\nbe4 = GenericBackendV2(num_qubits=4, seed=42)\nb_ops = dict(generate_preset_pass_manager(1, be4).run(build4()).count_ops())\nb_fixed = len(b_ops) > 0\n\nclaims = {\"A\": a_fixed, \"B\": b_fixed and bug.startswith(\"TranspilerError\"), \"C\": c_fixed, \"D\": False}\nevidence = {\n    \"A\": f\"removing measure_all still fails on 3q backend (fixed={a_fixed}) -> {claims['A']}\",\n    \"B\": f\"bug={bug}; a 4-qubit backend transpiles fine (ops={b_ops}) -> {claims['B']}\",\n    \"C\": f\"optimization_level=3 on 3q backend still fails (fixed={c_fixed}) -> {claims['C']}\",\n    \"D\": f\"GenericBackendV2 had a default coupling map; the real cause is qubit count -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug\": bug}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbe3 = GenericBackendV2(num_qubits=3, seed=42)\n\ndef build4():\n    qc = QuantumCircuit(4); qc.h(range(4)); qc.measure_all(); return qc\n\n# reproduce the bug\ntry:\n    generate_preset_pass_manager(optimization_level=1, backend=be3).run(build4())\n    bug = \"no error\"\nexcept Exception as e:\n    bug = f\"{type(e).__name__}: {str(e)[:70]}\"\n\n# A: measure after transpile -> still fails on qubit count\ntry:\n    qc = QuantumCircuit(4); qc.h(range(4))\n    generate_preset_pass_manager(1, be3).run(qc)\n    a_fixed = True\nexcept Exception:\n    a_fixed = False\n\n# C: level 3 -> still fails\ntry:\n    generate_preset_pass_manager(3, be3).run(build4())\n    c_fixed = True\nexcept Exception:\n    c_fixed = False\n\n# B: use a >=4 qubit backend -> works\nbe4 = GenericBackendV2(num_qubits=4, seed=42)\nb_ops = dict(generate_preset_pass_manager(1, be4).run(build4()).count_ops())\nb_fixed = len(b_ops) > 0\n\nclaims = {\"A\": a_fixed, \"B\": b_fixed and bug.startswith(\"TranspilerError\"), \"C\": c_fixed, \"D\": False}\nevidence = {\n    \"A\": f\"removing measure_all still fails on 3q backend (fixed={a_fixed}) -> {claims['A']}\",\n    \"B\": f\"bug={bug}; a 4-qubit backend transpiles fine (ops={b_ops}) -> {claims['B']}\",\n    \"C\": f\"optimization_level=3 on 3q backend still fails (fixed={c_fixed}) -> {claims['C']}\",\n    \"D\": f\"GenericBackendV2 had a default coupling map; the real cause is qubit count -> {claims['D']}\",\n}\ntry:\n    generate_preset_pass_manager(1, be3, initial_layout=[0, 1, 2, 3]).run(build4())\n    e_fixed, e_msg = True, \"no error\"\nexcept Exception as _e:\n    e_fixed, e_msg = False, f\"{type(_e).__name__}: {str(_e)[:60]}\"\nclaims[\"E\"] = e_fixed\nclaims[\"F\"] = False\nevidence[\"E\"] = f\"pinning the layout by hand on the 3-qubit backend -> {e_msg} -> fixed={claims['E']}\"\nevidence[\"F\"] = (f\"the same 4-qubit circuit without any classical bits still fails (fixed={a_fixed}), and \"\n                 f\"the measured circuit transpiles fine on a 4-qubit backend (ops={b_ops}) -> {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug\": bug}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "format tell cleared (the correct option now names the backend in code formatting, like the distractors do) | stem-echo tell cleared (distractor D given the stem's own API vocabulary)"
+    "notes": "format tell cleared (the correct option now names the backend in code formatting, like the distractors do) | stem-echo tell cleared (distractor D given the stem's own API vocabulary) | pool wave: +E (hand-pinned initial_layout believed to fix a width mismatch) +F (blames the classical bits) | orchestrator pool calibration: E/F trimmed below correct length (keeper set)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

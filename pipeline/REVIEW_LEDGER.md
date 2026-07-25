@@ -266,3 +266,105 @@ and died with it.
   whose answer keys already skew, and prefer `display_count: 5` there.
 - **Whole-basis questions cannot be pooled**: s2-q031 lists all four 2-qubit basis
   states as options; a fifth option would not be a basis state (a tell). Skipped.
+
+## Verified library facts (s3 pool wave — circuit construction, 2026-07-25, qiskit 2.5.0)
+
+- **`transpile()` no longer defaults to optimization level 1.** Qiskit 2.5 resolves
+  `optimization_level=None` via `config.get("transpile_optimization_level", 2)` — the
+  SAME default as `generate_preset_pass_manager`. The widespread "transpile defaults
+  to 1" lore is Qiskit 1.x. Reality-check fix applied to the explanations of
+  s3-q031 and s3-q036 (keyed answers unaffected: both are "level 2").
+  `generate_preset_pass_manager`'s default is a signature constant — a 5-qubit and a
+  9-qubit backend both reproduce level 2.
+- **`measure_all()` ALWAYS appends a fresh `meas` register** (`add_bits=True` default):
+  `QuantumCircuit(2, 2).measure_all()` ends with `cregs=['c','meas']`, 4 clbits, and
+  space-separated counts keys. `measure_active()` behaves the same way (also names its
+  register `meas`). Instruction order is `... barrier, measure, measure` — the barrier
+  goes BEFORE the measurements.
+- **`QuantumCircuit.bind_parameters` is GONE** in 2.5 (`AttributeError`) — a clean pool
+  distractor for every positional-binding question.
+- **`assign_parameters` matches dict keys by Parameter IDENTITY**: a *different*
+  `Parameter('th')` object raises `CircuitError: Cannot bind parameters (th) not
+  present in the circuit`. **Name strings ARE valid keys** (`{'q': 1.0}` works) — never
+  offer "string keys raise" as a distractor.
+- **`ParameterVector` does not auto-grow**: `x[3]` on a length-3 vector raises
+  `IndexError`; a 1-element list for a 2-element vector raises the same length
+  `ValueError` as plain `Parameter`s (a vector never broadcasts one value).
+- **`x()` returns an `InstructionSet` with NO `.condition`** (`AttributeError`) — the
+  whole condition mechanism left with `c_if` in 2.0. A plain Python `if cr[0] == 1:`
+  is silently False at build time (no gate added, no error) — a "runs fine, does
+  nothing" refutation.
+- **`if_test((ClassicalRegister, 1))` is valid** (register-valued conditions); never
+  key or offer "conditions must be a single `Clbit`". `if_test(cr[0] == 1)` →
+  `TypeError: 'bool' object is not subscriptable` (confirms the s2 finding for
+  register bits). `while_loop((clbit, 1))` builds a `while_loop` op, not `if_else` —
+  the safe near-miss on "which snippet produces an `if_else`?" stems.
+- **`expr.equal(creg, 3)` lifts the bare int automatically** (no `expr.lift` needed).
+  `switch`: `case(case.DEFAULT)` may be declared LAST; `for_loop(range(3))` needs no
+  `as i` when the body ignores the index.
+- **`add_register` refuses a duplicate register name** (`CircuitError: register name
+  "q" already exists`) — and `QuantumCircuit(2, 2)` already owns `q` and `c`.
+- **Pass-manager call shapes:** `pm.run([qc])` returns a LIST (not a circuit);
+  `pm.transpile`, `pm(qc)` and `QuantumCircuit.transpile` do not exist;
+  `generate_preset_pass_manager(target=<list of gate names>)` →
+  `AttributeError: 'list' object has no attribute 'build_coupling_map'`;
+  `basis_gates=` without `coupling_map=` translates but does NOT route (result is
+  not ISA).
+- **Preset `pm.stages` is always the same 6-tuple** `(init, layout, routing,
+  translation, optimization, scheduling)` — the scheduling slot exists even with no
+  scheduling method (it just runs empty).
+- **Routing costs, measured:** `cx(0, 4)` on a 5-qubit line → level 0 keeps the
+  trivial layout `[0,1,2,3,4]` and emits **10 cx**; level 1 picks layout `[0,4,2,3,1]`
+  and emits **1 cx** (the win is LAYOUT, not gate cancellation). A `ccx` on a 3-qubit
+  line at level 1 → **9 cx** (textbook 6 + routing).
+- **`initial_layout` is an ordered virtual→physical map**: `[2,3,4]` gives
+  `initial_index_layout() == [2,3,4]`, and `[4,3,2]` gives `[4,3,2]` — it is not a set
+  of "allowed" qubits. Pinning a 4-entry layout on a 3-qubit backend still raises.
+- **`h.decompose()` → `u`**, which is outside the IBM basis: `decompose()` never
+  produces an ISA circuit (a high-yield "decompose ≠ transpile" distractor).
+- **`QuantumCircuit.measure`'s keyword is `cbit`, not `clbit`** — and naming the
+  arguments does not rescue a circuit with zero classical bits.
+
+## Pool-craft rules (s3 pool wave, 2026-07-25 — 43/44 pooled, 76 new distractors)
+
+- **The `display_count: 4` feasibility test** (4-option question → 6 options, 3 of 5
+  distractors displayed): the audit enumerates every 3-subset, so **at most ONE
+  existing distractor may be shorter than `len(correct)/1.4`**. With two short ones,
+  the subset containing both fires a HIGH `length_tell` no matter what you add
+  (s3-q013/q014/q016/q018/q019/q030/q033/q034 hit this). Fix: use `display_count: 5`
+  (drop-one variants) and make at least one new distractor ≥ `len(correct)`.
+  12 of 43 s3 questions needed dc=5 for this reason; the rest stayed at dc=4.
+- **One hedged distractor is NOT enough at dc=4.** With 3 of 5 distractors displayed,
+  the variant dropping the lone hedge exposes any absolute-carrying distractor. Rule:
+  if a distractor carries an absolute and the correct option carries none, **both**
+  new pool distractors must hedge (hit q012, q020, q021, q025, q027, q032, q037,
+  q039, q041, q043, q046, q047 — all pre-empted or fixed in one pass).
+- **Corollary that saves work:** when the CORRECT option itself carries an absolute
+  (very common in "select the true statement" stems), `absolute_distractor_tell` can
+  never fire in any variant — skip the hedge engineering entirely.
+- **Stem-echo at dc=4:** give EVERY new pool distractor ≥3 stem tokens when the
+  correct option has ≥4; the flag fires as soon as the one high-overlap distractor is
+  droppable (q013, q015, q017, q027, q049). A pool distractor with MORE stem overlap
+  than the correct option is free insurance (q049 E: 6 vs 4).
+- **Code-snippet options tokenize:** `measure_all` → {`measure`, `all`}, so an
+  innocuous snippet silently becomes the absolute-carrier (q014). `measure_active`
+  was the drop-in replacement with the same misconception and no absolute.
+- **Exhausted-value predict-output questions** (all bitstrings/levels already used)
+  still pool via: a wrong-SHAPE key (`1`, or `2` for the `get_int_counts` confusion),
+  a right-outcomes/wrong-weights option ("`11` in roughly a quarter of the shots"),
+  or a control-flow error claim. Never a second option with an existing value.
+- **Aggregate side-effect of the length rules:** because most pool distractors have to
+  be ≥ `len(correct)`, `longest_option` collapsed (s3: 0.257 → 0.070) and
+  `avoid_longest` rose (0.252 → 0.283). `avoid_longest`'s ceiling with 4 displayed
+  options is 1/3, so it stays under the 0.40 warn line, but a heavily pooled section
+  should deliberately keep a few questions correct-longest in ALL variants (only
+  s3-q016 here). Position heuristics behaved as s2 predicted: 0.263 → ~0.35 EV
+  (0.32 exam-weighted), still under warn.
+- **4-of-6 multis cannot pool** (`display_count` must leave ≥2 displayed distractors
+  and be < len(options)): s3-q042 skipped — the only s3 question without a pool.
+- **Post-pool length calibration is mandatory (s3 lesson):** pooling silently
+  drove longest_option from 25.7% to 7.0% because new E/F options out-lengthed
+  the keeper questions' correct answers. Rule: on ~N/4 keeper questions the
+  correct option must stay strictly longest in EVERY variant — i.e. every pool
+  distractor on a keeper must be shorter than the correct option. Check the
+  section aggregate AFTER pooling, not just per-question flags. (2026-07-26)

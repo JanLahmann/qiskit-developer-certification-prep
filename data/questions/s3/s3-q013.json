@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`base` needs a classical register before `compose` takes effect; without one the composed gates are typically dropped on the floor."
+    },
+    {
+      "key": "E",
+      "text": "`compose` typically mutates the caller when both circuits have the same width; here `base` and `add_on` are both 1-qubit, so the X should be there."
+    },
+    {
+      "key": "F",
+      "text": "`add_on` is usually invisible to `base` until its register is shared: call `base.add_register(add_on.qregs[0])` before the `compose` call."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "`compose` works fine for single-qubit gates — the problem is only that the returned circuit was discarded; `append` is not required.",
       "C": "`to_gate()` is optional; you can compose whole circuits directly. It is unrelated to the in-place behavior.",
-      "D": "Classical registers have nothing to do with composing gates, and nothing is silently dropped; the X is lost purely because the return value was ignored."
+      "D": "Classical registers have nothing to do with composing gates, and nothing is silently dropped; the X is lost purely because the return value was ignored.",
+      "E": "Width plays no role: `compose` is functional for every shape. Composing a 1-qubit circuit onto another 1-qubit circuit and discarding the result leaves `base` with just its H, exactly as here.",
+      "F": "Sharing the register does not help — and `add_register` even refuses a register whose name is already taken. The X is lost purely because the returned circuit was thrown away."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\n\nadd_on = QuantumCircuit(1)\nadd_on.x(0)\ntarget = {\"h\", \"x\"}\n\nb0 = QuantumCircuit(1); b0.h(0)\nb0.compose(add_on)                      # bug: return value discarded\nbug_ops = set(b0.count_ops())\n\nb1 = QuantumCircuit(1); b1.h(0)\nb1 = b1.compose(add_on)                 # fix: reassign\na_reassign = set(b1.count_ops())\nb2 = QuantumCircuit(1); b2.h(0)\nb2.compose(add_on, inplace=True)        # fix: inplace\na_inplace = set(b2.count_ops())\ncompose_worked = (a_reassign == target)\n\nclaims = {\n    \"A\": (not compose_worked),\n    \"B\": (a_reassign == target) and (a_inplace == target) and (bug_ops == {\"h\"}),\n    \"C\": False,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"compose produced {a_reassign} without append -> 'must use append' is {claims['A']}\",\n    \"B\": f\"buggy base ops={bug_ops}; after reassign={a_reassign}; after inplace=True={a_inplace} -> {claims['B']}\",\n    \"C\": f\"compose succeeded without to_gate() (ops={a_reassign}) -> {claims['C']}\",\n    \"D\": f\"no classical register was added; ops={a_reassign} -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug_ops\": sorted(bug_ops), \"fixed_ops\": sorted(a_reassign)}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\n\nadd_on = QuantumCircuit(1)\nadd_on.x(0)\ntarget = {\"h\", \"x\"}\n\nb0 = QuantumCircuit(1); b0.h(0)\nb0.compose(add_on)                      # bug: return value discarded\nbug_ops = set(b0.count_ops())\n\nb1 = QuantumCircuit(1); b1.h(0)\nb1 = b1.compose(add_on)                 # fix: reassign\na_reassign = set(b1.count_ops())\nb2 = QuantumCircuit(1); b2.h(0)\nb2.compose(add_on, inplace=True)        # fix: inplace\na_inplace = set(b2.count_ops())\ncompose_worked = (a_reassign == target)\n\nclaims = {\n    \"A\": (not compose_worked),\n    \"B\": (a_reassign == target) and (a_inplace == target) and (bug_ops == {\"h\"}),\n    \"C\": False,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"compose produced {a_reassign} without append -> 'must use append' is {claims['A']}\",\n    \"B\": f\"buggy base ops={bug_ops}; after reassign={a_reassign}; after inplace=True={a_inplace} -> {claims['B']}\",\n    \"C\": f\"compose succeeded without to_gate() (ops={a_reassign}) -> {claims['C']}\",\n    \"D\": f\"no classical register was added; ops={a_reassign} -> {claims['D']}\",\n}\nb3 = QuantumCircuit(1); b3.h(0)\nb3.compose(add_on)                      # same width, return value still discarded\nsame_width_ops = set(b3.count_ops())\n\nb4 = QuantumCircuit(1); b4.h(0)\ntry:\n    b4.add_register(add_on.qregs[0])\n    add_err = \"no error\"\nexcept Exception as _e:\n    add_err = f\"{type(_e).__name__}: {str(_e)[:60]}\"\nb4.compose(add_on)\nshared_reg_ops = set(b4.count_ops())\n\nclaims[\"E\"] = (same_width_ops == target)\nclaims[\"F\"] = (shared_reg_ops == target)\nevidence[\"E\"] = (f\"both circuits are 1 qubit wide, yet after a discarded compose base ops are \"\n                 f\"{same_width_ops} -> 'same width mutates the caller' is {claims['E']}\")\nevidence[\"F\"] = (f\"base.add_register(add_on.qregs[0]) -> {add_err}; base ops after the discarded \"\n                 f\"compose are still {shared_reg_ops} -> {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug_ops\": sorted(bug_ops), \"fixed_ops\": sorted(a_reassign)}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor D given substance and a hedge, absolute removed from distractor C)"
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor D given substance and a hedge, absolute removed from distractor C) | pool wave: +E (same-width circuits compose in place) +F (thinks add_register must share the register first)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

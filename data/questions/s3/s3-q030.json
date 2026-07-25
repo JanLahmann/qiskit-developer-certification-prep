@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling')` — all six, by default."
+    },
+    {
+      "key": "E",
+      "text": "`('init', 'layout', 'routing', 'translation', 'optimization')` — scheduling needs timing info."
+    },
+    {
+      "key": "F",
+      "text": "`('init', 'translation', 'layout', 'routing', 'optimization', 'scheduling')` — basis fixed first."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "This omits the `init` and `scheduling` stages; the preset pipeline has six named stages, not four.",
       "B": "`measurement` is not a transpiler stage, and this list drops `translation` and `scheduling`.",
-      "C": "`sampling` is a runtime/primitive concept, not a transpiler stage; the pipeline never contains it."
+      "C": "`sampling` is a runtime/primitive concept, not a transpiler stage; the pipeline never contains it.",
+      "E": "`scheduling` is always one of the six stage slots of a preset `StagedPassManager`; it simply runs an empty pass set when no scheduling method was asked for.",
+      "F": "The six names are right but the order is not: layout and routing come before translation, because the router works on the abstract two-qubit gates before they are rewritten into the basis."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=5, seed=42)\npm = generate_preset_pass_manager(optimization_level=2, backend=backend, seed_transpiler=42)\nstages = tuple(pm.stages)\nopts = {\n    \"A\": (\"layout\", \"routing\", \"translation\", \"optimization\"),\n    \"B\": (\"init\", \"layout\", \"routing\", \"optimization\", \"measurement\"),\n    \"C\": (\"sampling\", \"layout\", \"routing\", \"translation\", \"scheduling\"),\n    \"D\": (\"init\", \"layout\", \"routing\", \"translation\", \"optimization\", \"scheduling\"),\n}\nclaims = {k: (v == stages) for k, v in opts.items()}\nevidence = {k: f\"observed pm.stages={stages}; option={opts[k]} -> match={claims[k]}\" for k in opts}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"stages\": list(stages)}})\n"
+    "proof_script": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=5, seed=42)\npm = generate_preset_pass_manager(optimization_level=2, backend=backend, seed_transpiler=42)\nstages = tuple(pm.stages)\nopts = {\n    \"A\": (\"layout\", \"routing\", \"translation\", \"optimization\"),\n    \"B\": (\"init\", \"layout\", \"routing\", \"optimization\", \"measurement\"),\n    \"C\": (\"sampling\", \"layout\", \"routing\", \"translation\", \"scheduling\"),\n    \"D\": (\"init\", \"layout\", \"routing\", \"translation\", \"optimization\", \"scheduling\"),\n}\nclaims = {k: (v == stages) for k, v in opts.items()}\nevidence = {k: f\"observed pm.stages={stages}; option={opts[k]} -> match={claims[k]}\" for k in opts}\nopts[\"E\"] = (\"init\", \"layout\", \"routing\", \"translation\", \"optimization\")\nopts[\"F\"] = (\"init\", \"translation\", \"layout\", \"routing\", \"optimization\", \"scheduling\")\nclaims[\"E\"] = opts[\"E\"] == stages\nclaims[\"F\"] = opts[\"F\"] == stages\nevidence[\"E\"] = f\"observed pm.stages={stages} (6 slots incl. scheduling); option={opts['E']} -> match={claims['E']}\"\nevidence[\"F\"] = f\"observed pm.stages={stages}; option={opts['F']} reorders translation -> match={claims['F']}\"\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"stages\": list(stages)}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "wording rebalanced in the meta-pattern pass (correct option now carries the true 'all six'/'by default', distractor A names what it drops)"
+    "notes": "wording rebalanced in the meta-pattern pass (correct option now carries the true 'all six'/'by default', distractor A names what it drops) | pool wave: +E (scheduling believed conditional) +F (translation believed to run before layout/routing) | orchestrator pool calibration: E/F trimmed below correct length (keeper set)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

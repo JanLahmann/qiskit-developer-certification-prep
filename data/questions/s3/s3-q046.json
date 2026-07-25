@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`|10⟩` — `a` takes the higher-order qubit, so q1 is 1 and q0 stays 0."
+    },
+    {
+      "key": "E",
+      "text": "A single-qubit circuit — `tensor` typically multiplies the operand matrices instead of widening the register."
+    },
+    {
+      "key": "F",
+      "text": "It raises a `CircuitError`, because `tensor` is generally defined for `Operator` objects and not for circuits."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "`|01⟩` reverses the tensor convention; `a` (the left operand), not `b`, takes the higher-order qubit.",
       "B": "`b` applies identity, so q0 remains 0 — the state is not `|11⟩`.",
-      "C": "Neither circuit contains an H or other superposition-creating gate, so the result is a definite basis state."
+      "C": "Neither circuit contains an H or other superposition-creating gate, so the result is a definite basis state.",
+      "E": "Matrix multiplication of same-size operators is `compose`/`dot`. `tensor` builds the Kronecker product, so the result is 2 qubits wide, not 1.",
+      "F": "`QuantumCircuit.tensor` exists and returns a new, wider circuit; you do not have to convert to an `Operator` first."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\na = QuantumCircuit(1); a.x(0)\nb = QuantumCircuit(1); b.id(0)\ncombined = a.tensor(b)\nsv = Statevector(combined).data\nnz = {format(i, \"02b\"): sv[i] for i in range(4) if abs(sv[i]) > 1e-9}\n\ndef is_single(state):\n    return set(nz) == {state} and np.isclose(nz[state], 1.0)\n\nclaims = {\n    \"A\": is_single(\"01\"),\n    \"B\": is_single(\"11\"),\n    \"C\": len(nz) == 4,\n    \"D\": is_single(\"10\"),\n}\nnzr = {k: str(np.round(v, 3)) for k, v in nz.items()}\nevidence = {\n    \"A\": f\"nonzero amplitudes={nzr}; claim |01> -> {claims['A']}\",\n    \"B\": f\"nonzero={nzr}; claim |11> -> {claims['B']}\",\n    \"C\": f\"nonzero={nzr} ({len(nz)} states); claim superposition -> {claims['C']}\",\n    \"D\": f\"nonzero={nzr}; single |10> (a on high qubit) -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"nonzero\": nzr}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\na = QuantumCircuit(1); a.x(0)\nb = QuantumCircuit(1); b.id(0)\ncombined = a.tensor(b)\nsv = Statevector(combined).data\nnz = {format(i, \"02b\"): sv[i] for i in range(4) if abs(sv[i]) > 1e-9}\n\ndef is_single(state):\n    return set(nz) == {state} and np.isclose(nz[state], 1.0)\n\nclaims = {\n    \"A\": is_single(\"01\"),\n    \"B\": is_single(\"11\"),\n    \"C\": len(nz) == 4,\n    \"D\": is_single(\"10\"),\n}\nnzr = {k: str(np.round(v, 3)) for k, v in nz.items()}\nevidence = {\n    \"A\": f\"nonzero amplitudes={nzr}; claim |01> -> {claims['A']}\",\n    \"B\": f\"nonzero={nzr}; claim |11> -> {claims['B']}\",\n    \"C\": f\"nonzero={nzr} ({len(nz)} states); claim superposition -> {claims['C']}\",\n    \"D\": f\"nonzero={nzr}; single |10> (a on high qubit) -> {claims['D']}\",\n}\nclaims[\"E\"] = (combined.num_qubits == 1)\nclaims[\"F\"] = False\nevidence[\"E\"] = (f\"a.tensor(b) returned a {combined.num_qubits}-qubit circuit, so the registers were \"\n                 f\"widened rather than multiplied -> {claims['E']}\")\nevidence[\"F\"] = (f\"tensor ran on two QuantumCircuits and returned a {combined.num_qubits}-qubit circuit \"\n                 f\"(nonzero={nzr}) -> claim CircuitError is {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"nonzero\": nzr}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "answer-longest tie broken and absolute-wording tell cleared (correct option's gloss trimmed, distractor A now hedges; the predicted values are unchanged)"
+    "notes": "answer-longest tie broken and absolute-wording tell cleared (correct option's gloss trimmed, distractor A now hedges; the predicted values are unchanged) | pool wave: +E (tensor mistaken for matrix multiplication) +F (believes tensor is Operator-only)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

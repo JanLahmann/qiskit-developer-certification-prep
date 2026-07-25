@@ -8,7 +8,9 @@
       "A": "raised CircuitError: 'Index 0 out of range for size 0.'",
       "B": "raised CircuitError: \"Incorrect bit type: expected 'B' but got 'Qubit'\"",
       "C": "raised CircuitError: \"Incorrect bit type: expected 'B' but got 'Clbit'\"",
-      "D": "built and ran; outcome bit-width=2, sample counts={'01': 54, '11': 42, '10': 48, '00': 56} -> valid=True"
+      "D": "built and ran; outcome bit-width=2, sample counts={'01': 54, '11': 42, '10': 48, '00': 56} -> valid=True",
+      "E": "built and ran; outcome bit-width=5, sample counts={'01 00': 54, '11 00': 42, '10 00': 48, '00 00': 56} -> valid=False; measure_active() appended its own register on top of the declared one, so the outcome is not a 2-bit string",
+      "F": "raised CircuitError: 'register name \"q\" already exists'; the circuit already owns registers named 'q' and 'c', so add_register hits a duplicate name"
     },
     "observed": {
       "proven": [
@@ -22,9 +24,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.2,
+  "wall_seconds": 1.16,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"raised CircuitError: 'Index 0 out of range for size 0.'\", \"B\": \"raised CircuitError: \\\"Incorrect bit type: expected 'B' but got 'Qubit'\\\"\", \"C\": \"raised CircuitError: \\\"Incorrect bit type: expected 'B' but got 'Clbit'\\\"\", \"D\": \"built and ran; outcome bit-width=2, sample counts={'01': 54, '11': 42, '10': 48, '00': 56} -> valid=True\"}, \"observed\": {\"proven\": [\"D\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"raised CircuitError: 'Index 0 out of range for size 0.'\", \"B\": \"raised CircuitError: \\\"Incorrect bit type: expected 'B' but got 'Qubit'\\\"\", \"C\": \"raised CircuitError: \\\"Incorrect bit type: expected 'B' but got 'Clbit'\\\"\", \"D\": \"built and ran; outcome bit-width=2, sample counts={'01': 54, '11': 42, '10': 48, '00': 56} -> valid=True\", \"E\": \"built and ran; outcome bit-width=5, sample counts={'01 00': 54, '11 00': 42, '10 00': 48, '00 00': 56} -> valid=False; measure_active() appended its own register on top of the declared one, so the outcome is not a 2-bit string\", \"F\": \"raised CircuitError: 'register name \\\"q\\\" already exists'; the circuit already owns registers named 'q' and 'c', so add_register hits a duplicate name\"}, \"observed\": {\"proven\": [\"D\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

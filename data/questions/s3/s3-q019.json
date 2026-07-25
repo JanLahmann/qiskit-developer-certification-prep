@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "The circuit is usually transpiled before any parameters can be assigned."
+    },
+    {
+      "key": "E",
+      "text": "Positional binding needs the legacy API: switch to `qc.bind_parameters([0.7])`, which pads the parameters left unset."
+    },
+    {
+      "key": "F",
+      "text": "`a` and `b` were created separately; group them as `ParameterVector('p', 2)` and one value then expands over the whole vector."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "A list IS accepted when its length matches the parameter count; the error is the wrong length, not the list type.",
       "C": "There is no per-gate `gate.assign()` workflow; binding is done on the circuit via `assign_parameters`.",
-      "D": "Parameter assignment is independent of transpilation; you can (and usually do) bind before transpiling."
+      "D": "Parameter assignment is independent of transpilation; you can (and usually do) bind before transpiling.",
+      "E": "`bind_parameters` was removed in Qiskit 1.0 — calling it raises `AttributeError`, and it never padded missing values either. `assign_parameters` is the only binder, and it still needs one value per parameter.",
+      "F": "A `ParameterVector` is just a convenient way to create related parameters — its elements still bind one value each, so a single-element list raises the same `ValueError`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\na = Parameter('a'); b = Parameter('b')\nqc = QuantumCircuit(1)\nqc.rx(a, 0); qc.rz(b, 0)\n\n# reproduce the bug\ntry:\n    qc.assign_parameters([0.7])\n    bug = \"no error\"\nexcept ValueError as e:\n    bug = f\"ValueError: {str(e)[:80]}\"\n\n# fix B: full list, and dict partial\nfull = qc.assign_parameters([0.7, 1.2])\nfull_ok = full.num_parameters == 0\npartial = qc.assign_parameters({a: 0.7})\npartial_ok = partial.num_parameters == 1\n\n# distractor checks\nlist_accepted = full_ok            # a list IS accepted when length matches -> A false\nhas_gate_assign = hasattr(qc.data[0].operation, \"assign\")  # informational\n\nclaims = {\n    \"A\": not list_accepted,\n    \"B\": bug.startswith(\"ValueError\") and full_ok and partial_ok,\n    \"C\": False,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"a length-2 list bound successfully (num_params after={full.num_parameters}) -> 'a plain list is not a valid argument' is {claims['A']}\",\n    \"B\": f\"one value raised [{bug}]; [0.7,1.2] bound all ({full_ok}); dict {{a:0.7}} left 1 free ({partial_ok}) -> {claims['B']}\",\n    \"C\": f\"binding is done via circuit.assign_parameters, not per-gate -> {claims['C']}\",\n    \"D\": f\"assignment worked with no transpilation -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug\": bug}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\na = Parameter('a'); b = Parameter('b')\nqc = QuantumCircuit(1)\nqc.rx(a, 0); qc.rz(b, 0)\n\n# reproduce the bug\ntry:\n    qc.assign_parameters([0.7])\n    bug = \"no error\"\nexcept ValueError as e:\n    bug = f\"ValueError: {str(e)[:80]}\"\n\n# fix B: full list, and dict partial\nfull = qc.assign_parameters([0.7, 1.2])\nfull_ok = full.num_parameters == 0\npartial = qc.assign_parameters({a: 0.7})\npartial_ok = partial.num_parameters == 1\n\n# distractor checks\nlist_accepted = full_ok            # a list IS accepted when length matches -> A false\nhas_gate_assign = hasattr(qc.data[0].operation, \"assign\")  # informational\n\nclaims = {\n    \"A\": not list_accepted,\n    \"B\": bug.startswith(\"ValueError\") and full_ok and partial_ok,\n    \"C\": False,\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"a length-2 list bound successfully (num_params after={full.num_parameters}) -> 'a plain list is not a valid argument' is {claims['A']}\",\n    \"B\": f\"one value raised [{bug}]; [0.7,1.2] bound all ({full_ok}); dict {{a:0.7}} left 1 free ({partial_ok}) -> {claims['B']}\",\n    \"C\": f\"binding is done via circuit.assign_parameters, not per-gate -> {claims['C']}\",\n    \"D\": f\"assignment worked with no transpilation -> {claims['D']}\",\n}\nfrom qiskit.circuit import ParameterVector\ntry:\n    qc.bind_parameters([0.7])\n    legacy = \"no error\"\nexcept Exception as _e:\n    legacy = f\"{type(_e).__name__}: {str(_e)[:70]}\"\npv = ParameterVector('p', 2)\nqc_pv = QuantumCircuit(1); qc_pv.rx(pv[0], 0); qc_pv.rz(pv[1], 0)\ntry:\n    qc_pv.assign_parameters([0.7])\n    pv_msg = \"no error\"\nexcept Exception as _e:\n    pv_msg = f\"{type(_e).__name__}: {str(_e)[:70]}\"\nclaims[\"E\"] = legacy == \"no error\"\nclaims[\"F\"] = pv_msg == \"no error\"\nevidence[\"E\"] = (f\"qc.bind_parameters([0.7]) -> {legacy}; the legacy binder is gone, so it cannot pad \"\n                 f\"anything -> {claims['E']}\")\nevidence[\"F\"] = (f\"the same circuit built from ParameterVector('p', 2) with assign_parameters([0.7]) \"\n                 f\"-> {pv_msg}; one value still does not cover two parameters -> {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug\": bug}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor A given substance, distractor D now carries the absolute and a hedge)"
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor A given substance, distractor D now carries the absolute and a hedge) | pool wave: +E (removed bind_parameters as the positional binder) +F (ParameterVector believed to broadcast one value)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

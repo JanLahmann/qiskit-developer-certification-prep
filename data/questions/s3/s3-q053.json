@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "`o` is random 0 or 1 because qubit 2 was never given a definite initial state."
+    },
+    {
+      "key": "E",
+      "text": "It raises a `TypeError`: `expr.equal` needs both operands lifted with `expr.lift`, so a bare Python `3` is rejected."
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "A": "`expr.equal` compares the whole register's integer value, not bit-by-bit; it matches 3 exactly here.",
       "C": "`if_test` accepts either a `(resource, value)` tuple OR a classical `expr`; passing `expr.equal(...)` is valid.",
-      "D": "Qubit 2 starts in the definite state `|0⟩`; the conditional flips it deterministically, so `o` is not random."
+      "D": "Qubit 2 starts in the definite state `|0⟩`; the conditional flips it deterministically, so `o` is not random.",
+      "E": "`expr.equal` lifts plain Python values for you and infers the width from the register operand — `expr.equal(c, 3)` is the documented form."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.circuit.classical import expr\nfrom qiskit_aer import AerSimulator\n\nqr = QuantumRegister(3, 'q'); c = ClassicalRegister(2, 'c'); o = ClassicalRegister(1, 'o')\nqc = QuantumCircuit(qr, c, o)\nqc.x(0); qc.x(1)\nqc.measure(0, 0); qc.measure(1, 1)\nwith qc.if_test(expr.equal(c, 3)):\n    qc.x(2)\nqc.measure(2, o[0])\nsim = AerSimulator(seed_simulator=42)\ncounts = sim.run(qc, shots=1000).result().get_counts()\ntotal = sum(counts.values())\n# outcome strings look like 'o c1c0' (space-separated registers). Extract the 'o' bit.\no_is_one = all(k.split()[0] == \"1\" for k in counts)\no_is_zero = all(k.split()[0] == \"0\" for k in counts)\nclaims = {\n    \"A\": o_is_zero,\n    \"B\": o_is_one,\n    \"C\": False,\n    \"D\": (not o_is_one) and (not o_is_zero),\n}\nevidence = {\n    \"A\": f\"counts={counts}; o always 0? -> {claims['A']}\",\n    \"B\": f\"counts={counts}; c=11=3 so condition fired, o always 1? -> {claims['B']}\",\n    \"C\": f\"if_test(expr.equal(...)) built and ran without error -> claim 'raises' is {claims['C']}\",\n    \"D\": f\"counts={counts}; o deterministic (not random) -> claim 'random' is {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": counts}})\n"
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.circuit.classical import expr\nfrom qiskit_aer import AerSimulator\n\nqr = QuantumRegister(3, 'q'); c = ClassicalRegister(2, 'c'); o = ClassicalRegister(1, 'o')\nqc = QuantumCircuit(qr, c, o)\nqc.x(0); qc.x(1)\nqc.measure(0, 0); qc.measure(1, 1)\nwith qc.if_test(expr.equal(c, 3)):\n    qc.x(2)\nqc.measure(2, o[0])\nsim = AerSimulator(seed_simulator=42)\ncounts = sim.run(qc, shots=1000).result().get_counts()\ntotal = sum(counts.values())\n# outcome strings look like 'o c1c0' (space-separated registers). Extract the 'o' bit.\no_is_one = all(k.split()[0] == \"1\" for k in counts)\no_is_zero = all(k.split()[0] == \"0\" for k in counts)\nclaims = {\n    \"A\": o_is_zero,\n    \"B\": o_is_one,\n    \"C\": False,\n    \"D\": (not o_is_one) and (not o_is_zero),\n}\nevidence = {\n    \"A\": f\"counts={counts}; o always 0? -> {claims['A']}\",\n    \"B\": f\"counts={counts}; c=11=3 so condition fired, o always 1? -> {claims['B']}\",\n    \"C\": f\"if_test(expr.equal(...)) built and ran without error -> claim 'raises' is {claims['C']}\",\n    \"D\": f\"counts={counts}; o deterministic (not random) -> claim 'random' is {claims['D']}\",\n}\nclaims[\"E\"] = False\nevidence[\"E\"] = (f\"expr.equal(c, 3) with a bare int built and ran (counts={counts}), so no manual lift was \"\n                 f\"needed -> claim TypeError is {claims['E']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": counts}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'always')"
+    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'always') | pool wave: +E (believes expr operands must be lifted manually)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

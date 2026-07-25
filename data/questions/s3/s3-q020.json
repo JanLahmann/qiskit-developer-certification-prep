@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Both `qc` and `bound` have 0 free parameters, because `assign_parameters` mutates in place by default."
+    },
+    {
+      "key": "E",
+      "text": "`qc` still has 1 free parameter and `bound` has 0, but `bound` shares `qc`'s instruction list, so editing one edits the other."
+    },
+    {
+      "key": "F",
+      "text": "Both circuits keep their free parameter: `assign_parameters` typically records the values and substitutes them at transpile time."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "`bound` is a distinct new circuit, not the same object as `qc`; and `qc` is not modified.",
       "B": "`assign_parameters` returns the bound circuit, not `None` — that is why you capture it in `bound`.",
-      "D": "The default is `inplace=False`, so `qc` is NOT mutated; you would need `inplace=True` for that."
+      "D": "The default is `inplace=False`, so `qc` is NOT mutated; you would need `inplace=True` for that.",
+      "E": "The free-parameter counts are right, but `bound` is an independent copy: appending a gate to it leaves `qc`'s instruction list untouched.",
+      "F": "Substitution happens immediately — `bound` already carries the numeric angle and reports 0 free parameters, with no transpilation involved."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter('theta')\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\nbound = qc.assign_parameters({theta: 3.14})\n\nqc_free = qc.num_parameters\nbound_free = bound.num_parameters\nsame_obj = bound is qc\nreturned_none = bound is None\nclaims = {\n    \"A\": (qc_free == 0) and same_obj,\n    \"B\": returned_none,\n    \"C\": (qc_free == 1) and (bound_free == 0) and (not same_obj),\n    \"D\": (qc_free == 0) and (bound_free == 0),\n}\nfacts = f\"qc.num_parameters={qc_free}, bound.num_parameters={bound_free}, bound is qc={same_obj}\"\nevidence = {\n    \"A\": f\"{facts}: bound is a separate object and qc keeps its parameter -> {claims['A']}\",\n    \"B\": f\"assign_parameters returned a circuit (is None={returned_none}) -> {claims['B']}\",\n    \"C\": f\"{facts}: original unchanged, new circuit fully bound -> {claims['C']}\",\n    \"D\": f\"{facts}: qc was NOT mutated (default inplace=False) -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": facts})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter('theta')\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\nbound = qc.assign_parameters({theta: 3.14})\n\nqc_free = qc.num_parameters\nbound_free = bound.num_parameters\nsame_obj = bound is qc\nreturned_none = bound is None\nclaims = {\n    \"A\": (qc_free == 0) and same_obj,\n    \"B\": returned_none,\n    \"C\": (qc_free == 1) and (bound_free == 0) and (not same_obj),\n    \"D\": (qc_free == 0) and (bound_free == 0),\n}\nfacts = f\"qc.num_parameters={qc_free}, bound.num_parameters={bound_free}, bound is qc={same_obj}\"\nevidence = {\n    \"A\": f\"{facts}: bound is a separate object and qc keeps its parameter -> {claims['A']}\",\n    \"B\": f\"assign_parameters returned a circuit (is None={returned_none}) -> {claims['B']}\",\n    \"C\": f\"{facts}: original unchanged, new circuit fully bound -> {claims['C']}\",\n    \"D\": f\"{facts}: qc was NOT mutated (default inplace=False) -> {claims['D']}\",\n}\nprobe = qc.assign_parameters({theta: 3.14})\nprobe.x(0)\nshares_data = (qc.size() != 1)\nrx_angle = float(bound.data[0].operation.params[0])\nclaims[\"E\"] = (qc_free == 1) and (bound_free == 0) and shares_data\nclaims[\"F\"] = (qc_free == 1) and (bound_free == 1)\nevidence[\"E\"] = (f\"appending a gate to a bound copy left qc at size {qc.size()} -> 'bound shares qc's \"\n                 f\"instruction list' is {claims['E']}\")\nevidence[\"F\"] = (f\"{facts}: bound already carries the numeric angle {rx_angle} with no transpilation \"\n                 f\"-> 'substituted only at transpile time' is {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": facts})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "hedge wording rebalanced in the meta-pattern pass (the correct option now states the `inplace=False` default alongside distractor D)"
+    "notes": "hedge wording rebalanced in the meta-pattern pass (the correct option now states the `inplace=False` default alongside distractor D) | pool wave: +E (bound believed to share the caller's instruction list) +F (substitution believed deferred to transpile time)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

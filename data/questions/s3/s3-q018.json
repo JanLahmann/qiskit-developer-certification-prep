@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "The order is unspecified and can vary between runs."
+    },
+    {
+      "key": "E",
+      "text": "`['gamma', 'beta', 'alpha']` — reverse alphabetical, the order `ParameterView` sorts names in."
+    },
+    {
+      "key": "F",
+      "text": "`qc.parameters` returns an unordered `ParameterView`, so iterating it in a comprehension raises a `TypeError`."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "Parameters are NOT kept in insertion order; they are sorted by name.",
       "C": "The ordering is alphabetical ascending, not reverse insertion order.",
-      "D": "The order is fully deterministic (alphabetical), not run-dependent."
+      "D": "The order is fully deterministic (alphabetical), not run-dependent.",
+      "E": "The sort is ascending, not descending: `alpha` comes first and `gamma` last. Reverse order would need `sorted(qc.parameters, reverse=True)`.",
+      "F": "`ParameterView` is an ordered, iterable sequence — the comprehension runs fine and yields the three names in sorted order."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -47,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ng = Parameter('gamma'); a = Parameter('alpha'); b = Parameter('beta')\nqc = QuantumCircuit(1)\nqc.rz(g, 0); qc.rx(a, 0); qc.ry(b, 0)\norder = [p.name for p in qc.parameters]\nclaims = {\n    \"A\": order == ['alpha', 'beta', 'gamma'],\n    \"B\": order == ['gamma', 'alpha', 'beta'],\n    \"C\": order == ['beta', 'alpha', 'gamma'],\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"observed order={order}; claim alphabetical -> {claims['A']}\",\n    \"B\": f\"observed order={order}; claim insertion order -> {claims['B']}\",\n    \"C\": f\"observed order={order}; claim reverse insertion -> {claims['C']}\",\n    \"D\": f\"observed order={order} is deterministic across runs; claim 'unspecified' -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"order\": order}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ng = Parameter('gamma'); a = Parameter('alpha'); b = Parameter('beta')\nqc = QuantumCircuit(1)\nqc.rz(g, 0); qc.rx(a, 0); qc.ry(b, 0)\norder = [p.name for p in qc.parameters]\nclaims = {\n    \"A\": order == ['alpha', 'beta', 'gamma'],\n    \"B\": order == ['gamma', 'alpha', 'beta'],\n    \"C\": order == ['beta', 'alpha', 'gamma'],\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"observed order={order}; claim alphabetical -> {claims['A']}\",\n    \"B\": f\"observed order={order}; claim insertion order -> {claims['B']}\",\n    \"C\": f\"observed order={order}; claim reverse insertion -> {claims['C']}\",\n    \"D\": f\"observed order={order} is deterministic across runs; claim 'unspecified' -> {claims['D']}\",\n}\nview = qc.parameters\nclaims[\"E\"] = order == ['gamma', 'beta', 'alpha']\nclaims[\"F\"] = False\nevidence[\"E\"] = f\"observed order={order}; claim reverse alphabetical -> {claims['E']}\"\nevidence[\"F\"] = (f\"iterating the {type(view).__name__} in a comprehension yielded {len(order)} names \"\n                 f\"without raising -> 'not iterable' is {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"order\": order}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E (reverse-alphabetical sort) +F (ParameterView believed non-iterable)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

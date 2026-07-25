@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "It raises, because a dict must supply a value for every parameter."
+    },
+    {
+      "key": "E",
+      "text": "2 — `p` and `q` remain free; the dict bound `r`, the last parameter of the circuit."
+    },
+    {
+      "key": "F",
+      "text": "It raises a `CircuitError`: dict keys have to be parameter names like `'q'`, not the `Parameter` objects the circuit holds."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "A dict binds only the keys you provide, not every parameter; the others stay symbolic.",
       "B": "`q` is the one that gets bound, so it is NOT among the remaining free parameters.",
-      "D": "A dict is exactly how you do partial binding; it does not require a value for every parameter (a list would)."
+      "D": "A dict is exactly how you do partial binding; it does not require a value for every parameter (a list would).",
+      "E": "The count is right but the wrong parameter is bound: a dict binds the parameter its KEY refers to, and the key here is `q`, so `p` and `r` are what remain.",
+      "F": "`Parameter` objects are the canonical keys (that is what the code uses, and it works). Name strings are accepted as a convenience — neither form is mandatory."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -47,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\np = Parameter('p'); q = Parameter('q'); r = Parameter('r')\nqc = QuantumCircuit(1)\nqc.rx(p, 0); qc.ry(q, 0); qc.rz(r, 0)\npartial = qc.assign_parameters({q: 1.0})\nn = partial.num_parameters\nremaining = sorted(x.name for x in partial.parameters)\nclaims = {\n    \"A\": n == 0,\n    \"B\": n == 1 and remaining == [\"q\"],\n    \"C\": n == 2 and remaining == [\"p\", \"r\"],\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"partial.num_parameters={n}, remaining={remaining}; claim 0 -> {claims['A']}\",\n    \"B\": f\"remaining={remaining}; claim only q -> {claims['B']}\",\n    \"C\": f\"num_parameters={n}, remaining={remaining}; only q bound -> {claims['C']}\",\n    \"D\": f\"partial dict binding succeeded (remaining={remaining}); claim 'raises' -> {claims['D']}\",\n}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"remaining\": remaining}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\np = Parameter('p'); q = Parameter('q'); r = Parameter('r')\nqc = QuantumCircuit(1)\nqc.rx(p, 0); qc.ry(q, 0); qc.rz(r, 0)\npartial = qc.assign_parameters({q: 1.0})\nn = partial.num_parameters\nremaining = sorted(x.name for x in partial.parameters)\nclaims = {\n    \"A\": n == 0,\n    \"B\": n == 1 and remaining == [\"q\"],\n    \"C\": n == 2 and remaining == [\"p\", \"r\"],\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"partial.num_parameters={n}, remaining={remaining}; claim 0 -> {claims['A']}\",\n    \"B\": f\"remaining={remaining}; claim only q -> {claims['B']}\",\n    \"C\": f\"num_parameters={n}, remaining={remaining}; only q bound -> {claims['C']}\",\n    \"D\": f\"partial dict binding succeeded (remaining={remaining}); claim 'raises' -> {claims['D']}\",\n}\nby_name = qc.assign_parameters({\"q\": 1.0})\nclaims[\"E\"] = n == 2 and remaining == [\"p\", \"q\"]\nclaims[\"F\"] = False\nevidence[\"E\"] = f\"remaining={remaining}: the key q was the one bound, so p and r stay free -> {claims['E']}\"\nevidence[\"F\"] = (f\"the Parameter object as a dict key bound fine (remaining={remaining}); the name string \"\n                 f\"form also works (left {by_name.num_parameters} free) -> claim 'raises' is {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"remaining\": remaining}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E (right count, wrong parameter bound) +F (believes dict keys must be name strings)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

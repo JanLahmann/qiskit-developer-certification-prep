@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`generate_preset_pass_manager(optimization_level=1, basis_gates=basis, coupling_map=cmap).run(qc)`."
+    },
+    {
+      "key": "E",
+      "text": "`generate_preset_pass_manager(optimization_level=1, target=basis).run(qc)` — the basis list doubles as the target."
+    },
+    {
+      "key": "F",
+      "text": "`generate_preset_pass_manager(optimization_level=1, basis_gates=basis).run(qc)` — connectivity is read off the circuit."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "With no target information, the pass manager cannot know the basis or connectivity; the `h` gate stays untranslated, so the result is not ISA.",
       "B": "`transpile(qc)` with no target leaves gates like `h` in place — it does not produce an ISA circuit for any particular device.",
-      "C": "`backend` must be a `BackendV2` object, not a string; passing a string raises `AttributeError` (no `.target`)."
+      "C": "`backend` must be a `BackendV2` object, not a string; passing a string raises `AttributeError` (no `.target`).",
+      "E": "`target` expects a `Target` object describing gates, qubits and connectivity; handing it a list of gate names fails. Loose constraints go in through `basis_gates`/`coupling_map` instead.",
+      "F": "The basis alone gets the gates translated but leaves routing unconstrained: two-qubit gates survive on non-connected pairs, so the result is not ISA for this coupling map."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers",
@@ -47,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit, transpile\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n\ncmap = CouplingMap.from_line(4)\nbasis = ['cx', 'rz', 'sx', 'x']\nedges = set()\nfor a, b in cmap.get_edges():\n    edges.add((a, b)); edges.add((b, a))\n\ndef is_isa(qc):\n    for ins in qc.data:\n        n = ins.operation.name\n        if n in ('barrier', 'measure'):\n            continue\n        if n not in basis:\n            return False\n        if ins.operation.num_qubits == 2:\n            q = tuple(qc.find_bit(x).index for x in ins.qubits)\n            if q not in edges:\n                return False\n    return True\n\ndef base():\n    qc = QuantumCircuit(4); qc.h(0); qc.cx(0, 1); qc.cx(0, 2); qc.cx(0, 3); return qc\n\nevidence = {}\nproven = []\ndef check(key, fn):\n    try:\n        out = fn()\n        ok = is_isa(out)\n        evidence[key] = f\"produced circuit ops={dict(out.count_ops())}; is_isa={ok}\"\n        if ok:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ncheck(\"A\", lambda: generate_preset_pass_manager(optimization_level=1).run(base()))\ncheck(\"B\", lambda: transpile(base()))\ncheck(\"C\", lambda: generate_preset_pass_manager(1, backend='ibm_target').run(base()))\ncheck(\"D\", lambda: generate_preset_pass_manager(optimization_level=1, basis_gates=basis, coupling_map=cmap).run(base()))\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+    "proof_script": "from qiskit import QuantumCircuit, transpile\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n\ncmap = CouplingMap.from_line(4)\nbasis = ['cx', 'rz', 'sx', 'x']\nedges = set()\nfor a, b in cmap.get_edges():\n    edges.add((a, b)); edges.add((b, a))\n\ndef is_isa(qc):\n    for ins in qc.data:\n        n = ins.operation.name\n        if n in ('barrier', 'measure'):\n            continue\n        if n not in basis:\n            return False\n        if ins.operation.num_qubits == 2:\n            q = tuple(qc.find_bit(x).index for x in ins.qubits)\n            if q not in edges:\n                return False\n    return True\n\ndef base():\n    qc = QuantumCircuit(4); qc.h(0); qc.cx(0, 1); qc.cx(0, 2); qc.cx(0, 3); return qc\n\nevidence = {}\nproven = []\ndef check(key, fn):\n    try:\n        out = fn()\n        ok = is_isa(out)\n        evidence[key] = f\"produced circuit ops={dict(out.count_ops())}; is_isa={ok}\"\n        if ok:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ncheck(\"A\", lambda: generate_preset_pass_manager(optimization_level=1).run(base()))\ncheck(\"B\", lambda: transpile(base()))\ncheck(\"C\", lambda: generate_preset_pass_manager(1, backend='ibm_target').run(base()))\ncheck(\"D\", lambda: generate_preset_pass_manager(optimization_level=1, basis_gates=basis, coupling_map=cmap).run(base()))\ncheck(\"E\", lambda: generate_preset_pass_manager(optimization_level=1, target=basis).run(base()))\ncheck(\"F\", lambda: generate_preset_pass_manager(optimization_level=1, basis_gates=basis).run(base()))\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E (basis list passed as target=) +F (coupling map believed inferable from the circuit)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

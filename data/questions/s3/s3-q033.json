@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "A circuit containing a `ccx` (Toffoli) gate."
+    },
+    {
+      "key": "E",
+      "text": "A circuit of `h` and `cx` gates that has been expanded into its component gates with `qc.decompose()`."
+    },
+    {
+      "key": "F",
+      "text": "A 6-qubit circuit of `rz`, `sx` and `cx` gates whose `cx` gates all sit on adjacent qubits of the line."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "`h` is not in the basis {cx, rz, sx, x}; a translation pass must rewrite it, so the circuit is not yet ISA.",
       "C": "A `cx` on non-adjacent qubits violates the coupling map; the router must insert SWAPs first, so it is not ISA.",
-      "D": "`ccx` is neither a basis gate nor a two-qubit gate; it must be decomposed and routed, so it is not ISA."
+      "D": "`ccx` is neither a basis gate nor a two-qubit gate; it must be decomposed and routed, so it is not ISA.",
+      "E": "`decompose()` unrolls one level of gate definitions; it knows nothing about this target, so `h` becomes a `u` gate that is still outside the basis. Only transpilation produces an ISA circuit.",
+      "F": "Basis and connectivity are fine, but the circuit is wider than the device: ISA also means the circuit fits the target's qubit count, and 6 virtual qubits cannot map onto 5 physical ones."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/transpile",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbe = GenericBackendV2(5, coupling_map=CouplingMap.from_line(5), seed=3)\nbasis = set(be.operation_names)\nedges = set()\nfor a, b in be.coupling_map.get_edges():\n    edges.add((a, b)); edges.add((b, a))\n\ndef is_isa(qc):\n    for ins in qc.data:\n        name = ins.operation.name\n        if name in (\"barrier\", \"measure\"):\n            continue\n        if name not in basis:\n            return False, f\"{name} not in basis {sorted(basis)}\"\n        if ins.operation.num_qubits == 2:\n            q = tuple(qc.find_bit(x).index for x in ins.qubits)\n            if q not in edges:\n                return False, f\"{name} on non-adjacent {q}\"\n    return True, \"only basis gates on adjacent qubits\"\n\ndef cA():\n    qc = QuantumCircuit(5); qc.rz(0.5, 0); qc.sx(0); qc.cx(0, 1); return qc\ndef cB():\n    qc = QuantumCircuit(5); qc.h(0); return qc\ndef cC():\n    qc = QuantumCircuit(5); qc.cx(0, 4); return qc\ndef cD():\n    qc = QuantumCircuit(5); qc.ccx(0, 1, 2); return qc\n\nres = {\"A\": is_isa(cA()), \"B\": is_isa(cB()), \"C\": is_isa(cC()), \"D\": is_isa(cD())}\nclaims = {k: res[k][0] for k in res}\nevidence = {k: f\"is_isa -> {res[k][0]} ({res[k][1]})\" for k in res}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {k: res[k][0] for k in res}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbe = GenericBackendV2(5, coupling_map=CouplingMap.from_line(5), seed=3)\nbasis = set(be.operation_names)\nedges = set()\nfor a, b in be.coupling_map.get_edges():\n    edges.add((a, b)); edges.add((b, a))\n\ndef is_isa(qc):\n    for ins in qc.data:\n        name = ins.operation.name\n        if name in (\"barrier\", \"measure\"):\n            continue\n        if name not in basis:\n            return False, f\"{name} not in basis {sorted(basis)}\"\n        if ins.operation.num_qubits == 2:\n            q = tuple(qc.find_bit(x).index for x in ins.qubits)\n            if q not in edges:\n                return False, f\"{name} on non-adjacent {q}\"\n    return True, \"only basis gates on adjacent qubits\"\n\ndef cA():\n    qc = QuantumCircuit(5); qc.rz(0.5, 0); qc.sx(0); qc.cx(0, 1); return qc\ndef cB():\n    qc = QuantumCircuit(5); qc.h(0); return qc\ndef cC():\n    qc = QuantumCircuit(5); qc.cx(0, 4); return qc\ndef cD():\n    qc = QuantumCircuit(5); qc.ccx(0, 1, 2); return qc\n\nres = {\"A\": is_isa(cA()), \"B\": is_isa(cB()), \"C\": is_isa(cC()), \"D\": is_isa(cD())}\nclaims = {k: res[k][0] for k in res}\nevidence = {k: f\"is_isa -> {res[k][0]} ({res[k][1]})\" for k in res}\ndef is_isa_w(qc):\n    ok, why = is_isa(qc)\n    if ok and qc.num_qubits > be.num_qubits:\n        return False, f\"circuit width {qc.num_qubits} exceeds the {be.num_qubits}-qubit device\"\n    return ok, why\n\ndef cE():\n    qc = QuantumCircuit(5); qc.h(0); qc.cx(0, 1); return qc.decompose()\ndef cF():\n    qc = QuantumCircuit(6); qc.rz(0.5, 0); qc.sx(1); qc.cx(0, 1); qc.cx(1, 2); return qc\n\nres[\"E\"] = is_isa_w(cE()); res[\"F\"] = is_isa_w(cF())\nclaims[\"E\"] = res[\"E\"][0]; claims[\"F\"] = res[\"F\"][0]\nevidence[\"E\"] = f\"decompose() gave ops={dict(cE().count_ops())}; is_isa -> {res['E'][0]} ({res['E'][1]})\"\nevidence[\"F\"] = f\"is_isa -> {res['F'][0]} ({res['F'][1]})\"\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {k: res[k][0] for k in res}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "length tell cleared (correct trimmed, distractor C spells out the coupling-map violation)"
+    "notes": "length tell cleared (correct trimmed, distractor C spells out the coupling-map violation) | pool wave: +E (decompose() mistaken for transpilation) +F (ISA check ignoring the device width)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

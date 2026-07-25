@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "[0.5, 0, 0, 0.5] — `probabilities([0])` still returns all four joint outcomes"
+    },
+    {
+      "key": "E",
+      "text": "{'0': 0.5, '1': 0.5} — `probabilities` typically returns a dict keyed by outcome"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "C": "Qubit 0 is in an equal mixture, not fixed at 0. Both outcomes have probability 0.5.",
       "D": "`probabilities([0])` returns the distribution over qubit 0 ALONE — a length-2 array — not all four joint outcomes.",
-      "A": "`probabilities` returns probabilities (which sum to 1), not amplitudes. 0.7071 is an amplitude magnitude, not a probability."
+      "A": "`probabilities` returns probabilities (which sum to 1), not amplitudes. 0.7071 is an amplitude magnitude, not a probability.",
+      "E": "Return-type confusion: `probabilities()` returns a NumPy array indexed by outcome; the dict-keyed form is the separate `probabilities_dict()` method."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nobs = np.asarray(Statevector.from_instruction(qc).probabilities([0]))\ns = 1 / np.sqrt(2)\ncands = {\"B\": np.array([0.5, 0.5]), \"C\": np.array([1.0, 0.0]),\n         \"D\": np.array([0.5, 0, 0, 0.5]), \"A\": np.array([s, s])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = obs.shape == v.shape and bool(np.allclose(obs, v))\n    evidence[k] = f\"probabilities([0]) = {np.round(obs, 4).tolist()} (len {obs.shape[0]}); option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"marginal\": obs.tolist()}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nobs = np.asarray(Statevector.from_instruction(qc).probabilities([0]))\ns = 1 / np.sqrt(2)\ncands = {\"B\": np.array([0.5, 0.5]), \"C\": np.array([1.0, 0.0]),\n         \"D\": np.array([0.5, 0, 0, 0.5]), \"A\": np.array([s, s])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = obs.shape == v.shape and bool(np.allclose(obs, v))\n    evidence[k] = f\"probabilities([0]) = {np.round(obs, 4).tolist()} (len {obs.shape[0]}); option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nraw = Statevector.from_instruction(qc).probabilities([0])\nmE = isinstance(raw, dict)\nevidence[\"E\"] = f\"probabilities([0]) returned a {type(raw).__name__} of shape {np.shape(raw)}, not a dict; the dict claim -> match={mE}\"\nif mE:\n    proven.append(\"E\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"marginal\": obs.tolist()}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor C now hedges, so the correct option needs no absolute)"
+    "notes": "absolute-wording tell cleared (distractor C now hedges, so the correct option needs no absolute) | pool wave: +E probabilities-vs-probabilities_dict return-type confusion"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

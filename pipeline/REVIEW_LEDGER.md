@@ -135,6 +135,56 @@ and died with it.
   (enable/enabled, dump/dumps, qubit_wise/group_wise), PUB bracketing, V1
   signatures, wrong-options-group paths (resilience on Sampler, twirling fields
   on dynamical_decoupling).
+- **Options cap is 6** (schema `maxItems`): a 5-option question can take exactly
+  ONE pool distractor, a 4-option question two. 3-correct multis need
+  `display_count: 5`. (2026-07-25, s1 pool wave)
+- **Pool length rules (derived on the s1 wave — a variant can create a tell the
+  base question does not have):** (a) if the correct option is currently strictly
+  longest, keep new distractors ≤ correct AND ≥ the longest existing distractor —
+  the variant that drops that distractor otherwise raises the ratio (s1-q040 would
+  have gone 1.21 → 1.52 = HIGH); (b) if the correct option is NOT longest, new
+  distractors must be ≥ len(correct), because one variant always drops the current
+  longest distractor.
+- **Pool hedge/absolute rule:** the absolute/hedge balance is re-evaluated per
+  variant. If a question's only hedged distractor can be dropped while an
+  absolute-carrying distractor survives, the new pool distractor MUST carry the
+  hedge, or `absolute_distractor_tell` (medium) fires (hit s1-q015/018/041/042/047
+  in design; all pre-empted).
+- **Pool stem-echo rule:** dropping the high-overlap distractor can expose a
+  `stem_echo_tell` (medium). Caught live on s1-q037 (correct overlap 4 vs 2 after
+  the twin distractor was dropped); fixed by giving the pool distractor ≥3
+  stem-vocabulary tokens (`qubit`, `operator`, `tensor`).
+- Do NOT offer `Pauli(...).reverse_qargs()` as a distractor on label-order
+  questions — it genuinely reverses qubit order and would be a second correct
+  answer. `.adjoint()` is the safe near-miss (Hermitian labels return unchanged).
+- Predict-output pools: a wrong-VALUE option must not duplicate another option's
+  value (two options claiming the same output is itself a tell). For 2-qubit index
+  questions the value space (0–3) is exhausted after 4 options — use a type/shape
+  error ("raises", "length-2 vector", "dict keys") instead.
+
+## Verified library facts (s1 pool wave, 2026-07-25, qiskit 2.5.0)
+
+- `Statevector.from_int(2, dims=4)` **accepts an int `dims`** (total dimension) and
+  returns dims `(2, 2)` — "dims must be a tuple" is a safe, refuted distractor.
+- `Statevector.probabilities_dict()` keys are **`np.str_` bitstrings** (str
+  subclass), never ints; `probabilities([q])` returns an **ndarray**, not a dict.
+- `Statevector(qc)` (constructor) raises the **same** QiskitError as
+  `from_instruction` on a measured circuit (`Cannot apply instruction with
+  classical bits: measure`) — there is no constructor bypass.
+- `Statevector.evolve` is functional: returns a NEW Statevector, source unchanged
+  (never in-place / never None).
+- `Statevector.from_label` accepts **multi-character** labels and '+','-','r','l'.
+- `Pauli` labels accept a **phase prefix** (`Pauli('-iXZ').phase == 1`); a plain
+  multi-letter label has phase 0, so `Pauli('XZ').to_matrix()` is exactly X⊗Z.
+- `Pauli('ZI').adjoint()` returns `'ZI'` (Hermitian) — adjoint never reverses
+  qubit order.
+- `SparsePauliOp.simplify()` **sums** duplicate terms (1+2 → 3), never averages,
+  and only drops coefficients that are zero within `atol` (a coeff-1 term survives).
+- Pauli products: X·Y = iZ, Y·Z = iX, Z·X = iY; reversing the operands conjugates
+  the phase (Z·Y = −iX). `Pauli('ZI').commutes(Pauli('XX'))` is False — an identity
+  factor does not buy commutation.
+- `Operator.equiv` (up to global phase): T ≢ RZ(π/2) (that is S), H ≢ RY(π/2)
+  (determinants differ in sign); H = RY(π/2)·Z.
 
 ## Process rules
 

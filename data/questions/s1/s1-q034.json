@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "[0, i] — X applies a phase as well as a flip"
+    },
+    {
+      "key": "E",
+      "text": "`NoneType` — `evolve` updates the statevector in place"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "B": "`evolve` actually applies the operator and returns the evolved state; it does not defer the action or leave the state unchanged.",
       "C": "|+⟩ comes from H, not X. X is a bit flip, producing |1⟩.",
-      "D": "X is a real matrix with no phase; the i factor would come from Y. X|0⟩ = |1⟩ = [0, 1]."
+      "D": "X is a real matrix with no phase; the i factor would come from Y. X|0⟩ = |1⟩ = [0, 1].",
+      "E": "In-place-mutation misconception: `Statevector` methods are functional — `evolve` returns a NEW `Statevector` and leaves the original untouched, so the call yields a state, never `None`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
@@ -47,13 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Statevector, Pauli\nobserved = Statevector.from_label('0').evolve(Pauli('X')).data\ns = 1 / np.sqrt(2)\ncands = {\"A\": np.array([0, 1]), \"B\": np.array([1, 0]), \"C\": np.array([s, s]), \"D\": np.array([0, 1j])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"|0>.evolve(X) = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"data\": [str(x) for x in observed]}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Statevector, Pauli\nobserved = Statevector.from_label('0').evolve(Pauli('X')).data\ns = 1 / np.sqrt(2)\ncands = {\"A\": np.array([0, 1]), \"B\": np.array([1, 0]), \"C\": np.array([s, s]), \"D\": np.array([0, 1j])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"|0>.evolve(X) = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nsv0 = Statevector.from_label('0')\nret = sv0.evolve(Pauli('X'))\nmE = (ret is None)\nevidence[\"E\"] = (f\"evolve returned a {type(ret).__name__} with data {np.round(np.asarray(ret.data), 4).tolist()}; \"\n                 f\"the source state is still {np.round(sv0.data, 4).tolist()}; the 'in-place, returns nothing' claim -> match={mE}\")\nif mE:\n    proven.append(\"E\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"data\": [str(x) for x in observed]}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E in-place-mutation misconception (evolve returning None)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

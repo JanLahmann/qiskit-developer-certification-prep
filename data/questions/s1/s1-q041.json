@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "{'00': 1.0} — CX has no effect after H"
+    },
+    {
+      "key": "E",
+      "text": "{'0': 0.5, '1': 0.5} — `probabilities_dict` typically reports one key per qubit"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "B": "Four equal outcomes would require two independent |+⟩ qubits (H on both). The CX creates entanglement, forbidding '01' and '10'.",
       "C": "(|01⟩ + |10⟩)/√2 is the anti-correlated Bell state (from an extra X). This circuit produces the correlated |00⟩/|11⟩ pair.",
-      "D": "CX flips qubit 1 for the |1⟩ component of qubit 0, which is essential to the entanglement; it is far from a no-op."
+      "D": "CX flips qubit 1 for the |1⟩ component of qubit 0, which is essential to the entanglement; it is far from a no-op.",
+      "E": "Marginal-vs-joint confusion: `probabilities_dict()` returns the joint distribution keyed by full bitstrings. Per-qubit marginals require an explicit qargs argument, e.g. `probabilities_dict([0])`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nd = Statevector.from_instruction(qc).probabilities_dict()\nobs = {str(k): round(float(v), 4) for k, v in d.items() if float(v) > 1e-9}\nclaims = {\n    \"A\": {\"00\": 0.5, \"11\": 0.5},\n    \"B\": {\"00\": 0.25, \"01\": 0.25, \"10\": 0.25, \"11\": 0.25},\n    \"C\": {\"01\": 0.5, \"10\": 0.5},\n    \"D\": {\"00\": 1.0},\n}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = (obs == c)\n    evidence[k] = f\"probabilities_dict() = {obs}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"dict\": obs}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nd = Statevector.from_instruction(qc).probabilities_dict()\nobs = {str(k): round(float(v), 4) for k, v in d.items() if float(v) > 1e-9}\nclaims = {\n    \"A\": {\"00\": 0.5, \"11\": 0.5},\n    \"B\": {\"00\": 0.25, \"01\": 0.25, \"10\": 0.25, \"11\": 0.25},\n    \"C\": {\"01\": 0.5, \"10\": 0.5},\n    \"D\": {\"00\": 1.0},\n    \"E\": {\"0\": 0.5, \"1\": 0.5},\n}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = (obs == c)\n    evidence[k] = f\"probabilities_dict() = {obs}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"dict\": obs}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor C now hedges, so the correct option needs no absolute)"
+    "notes": "absolute-wording tell cleared (distractor C now hedges, so the correct option needs no absolute) | pool wave: +E marginal-vs-joint distribution confusion"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

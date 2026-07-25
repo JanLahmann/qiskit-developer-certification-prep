@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "SparsePauliOp(['Z', 'Z', 'X'], coeffs=[1, 2, 1]) — from_list merges by default, so simplify does nothing"
+    },
+    {
+      "key": "E",
+      "text": "SparsePauliOp(['Z', 'X'], coeffs=[1.5, 1]) — repeated terms are typically averaged"
+    },
+    {
+      "key": "F",
+      "text": "SparsePauliOp(['Z'], coeffs=[3]) — simplify usually keeps only the dominant term"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "D": "`from_list` does NOT merge duplicates; it stores all three terms verbatim. It is `simplify()` that reduces them to two.",
       "A": "Duplicate terms are summed, not deduplicated — 1 + 2 = 3, not 2.",
-      "B": "Only terms with the SAME Pauli string are summed. 'X' is a different string, so its coefficient stays 1, not 2."
+      "B": "Only terms with the SAME Pauli string are summed. 'X' is a different string, so its coefficient stays 1, not 2.",
+      "E": "Averaging misconception: `simplify` sums the coefficients of identical Pauli strings (1 + 2 = 3); it never averages them.",
+      "F": "Truncation misconception: `simplify` only removes terms whose coefficient is zero (within `atol`). A term with coefficient 1 survives, so the X term is kept alongside the merged Z term."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.quantum_info import SparsePauliOp\nop = SparsePauliOp.from_list([(\"Z\", 1), (\"Z\", 2), (\"X\", 1)]).simplify()\nlabels = list(op.paulis.to_labels())\nobs = {l: round(complex(c).real, 6) for l, c in zip(labels, op.coeffs)}\nnterms = len(labels)\nclaims = {\n    \"A\": (\"dedup keep-largest {'Z':2,'X':1}\", obs == {\"Z\": 2.0, \"X\": 1.0}),\n    \"B\": (\"sum all coeffs {'Z':3,'X':2}\", obs == {\"Z\": 3.0, \"X\": 2.0}),\n    \"C\": (\"like terms summed {'Z':3,'X':1}\", obs == {\"Z\": 3.0, \"X\": 1.0}),\n    \"D\": (\"unmerged (3 terms)\", nterms == 3),\n}\nevidence = {}\nproven = []\nfor k, (desc, ok) in claims.items():\n    evidence[k] = f\"simplify() -> {obs} ({nterms} terms); option {k} claims {desc} -> match={ok}\"\n    if ok:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"simplified\": obs, \"n_terms\": nterms}})\n"
+    "proof_script": "from qiskit.quantum_info import SparsePauliOp\nop = SparsePauliOp.from_list([(\"Z\", 1), (\"Z\", 2), (\"X\", 1)]).simplify()\nlabels = list(op.paulis.to_labels())\nobs = {l: round(complex(c).real, 6) for l, c in zip(labels, op.coeffs)}\nnterms = len(labels)\nclaims = {\n    \"A\": (\"dedup keep-largest {'Z':2,'X':1}\", obs == {\"Z\": 2.0, \"X\": 1.0}),\n    \"B\": (\"sum all coeffs {'Z':3,'X':2}\", obs == {\"Z\": 3.0, \"X\": 2.0}),\n    \"C\": (\"like terms summed {'Z':3,'X':1}\", obs == {\"Z\": 3.0, \"X\": 1.0}),\n    \"D\": (\"unmerged (3 terms)\", nterms == 3),\n    \"E\": (\"averaged duplicates {'Z':1.5,'X':1}\", obs == {\"Z\": 1.5, \"X\": 1.0}),\n    \"F\": (\"only the dominant term {'Z':3}\", obs == {\"Z\": 3.0}),\n}\nevidence = {}\nproven = []\nfor k, (desc, ok) in claims.items():\n    evidence[k] = f\"simplify() -> {obs} ({nterms} terms); option {k} claims {desc} -> match={ok}\"\n    if ok:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"simplified\": obs, \"n_terms\": nterms}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor D now hedges, so the correct option needs no absolute)"
+    "notes": "absolute-wording tell cleared (distractor D now hedges, so the correct option needs no absolute) | pool wave: +E duplicate-averaging misconception, +F small-term-truncation misconception"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

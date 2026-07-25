@@ -28,6 +28,10 @@
     {
       "key": "E",
       "text": "X and Z (single qubit)"
+    },
+    {
+      "key": "F",
+      "text": "Z⊗I and X⊗X"
     }
   ],
   "answer": [
@@ -39,7 +43,8 @@
     "correct": "Two multi-qubit Paulis commute when they anticommute on an EVEN number of qubits. A⊗B and C⊗D commute iff (an even count of the single-qubit factor pairs anticommute). X⊗X vs Z⊗Z: X,Z anticommute on both qubits (even) -> commute. X⊗Z vs Z⊗X: anticommute on both (even) -> commute. I⊗X vs Z⊗I: factors act on disjoint qubits, no anticommuting pair -> commute.",
     "distractors": {
       "B": "X⊗I vs Z⊗Z: they anticommute only on qubit 1 (X vs Z), an ODD count, so the pair anticommutes.",
-      "E": "Single-qubit X and Z anticommute (XZ = −ZX), so they do not commute."
+      "E": "Single-qubit X and Z anticommute (XZ = −ZX), so they do not commute.",
+      "F": "Identity-factor misconception: an identity on one qubit does not buy commutation. Here qubit 1 carries Z against X (anticommuting) while qubit 0 contributes nothing, so the pair anticommutes overall."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -52,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.quantum_info import Pauli\nopts = {\"A\": (\"XX\", \"ZZ\"), \"B\": (\"XI\", \"ZZ\"), \"C\": (\"XZ\", \"ZX\"), \"D\": (\"IX\", \"ZI\"), \"E\": (\"X\", \"Z\")}\nevidence = {}\nproven = []\nfor k, (a, b) in opts.items():\n    c = bool(Pauli(a).commutes(Pauli(b)))\n    evidence[k] = f\"Pauli('{a}').commutes(Pauli('{b}')) = {c}\"\n    if c:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {k: bool(Pauli(a).commutes(Pauli(b))) for k, (a, b) in opts.items()}})\n"
+    "proof_script": "from qiskit.quantum_info import Pauli\nopts = {\"A\": (\"XX\", \"ZZ\"), \"B\": (\"XI\", \"ZZ\"), \"C\": (\"XZ\", \"ZX\"), \"D\": (\"IX\", \"ZI\"), \"E\": (\"X\", \"Z\"),\n        \"F\": (\"ZI\", \"XX\")}\nevidence = {}\nproven = []\nfor k, (a, b) in opts.items():\n    c = bool(Pauli(a).commutes(Pauli(b)))\n    evidence[k] = f\"Pauli('{a}').commutes(Pauli('{b}')) = {c}\"\n    if c:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {k: bool(Pauli(a).commutes(Pauli(b))) for k, (a, b) in opts.items()}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +F identity-factor commutation misconception"
   },
   "freshness": {
     "verified_against": {
@@ -69,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

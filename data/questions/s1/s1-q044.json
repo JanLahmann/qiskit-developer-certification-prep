@@ -28,6 +28,10 @@
     {
       "key": "E",
       "text": "|+⟩ is an eigenstate of X with eigenvalue +1"
+    },
+    {
+      "key": "F",
+      "text": "|+⟩ is an eigenstate of Y with eigenvalue +1"
     }
   ],
   "answer": [
@@ -39,7 +43,8 @@
     "correct": "|+⟩ is the +1 eigenstate of X, so ⟨X⟩ = +1 and X|+⟩ = |+⟩ (statements C and E). Its Z-basis populations are equal, so ⟨Z⟩ = 0 (statement B).",
     "distractors": {
       "A": "⟨Y⟩ = 0 for |+⟩ (it lies on the +X axis of the Bloch sphere, with no Y component), not +1.",
-      "D": "A Z-basis measurement of |+⟩ gives 0 or 1 each with probability 0.5, not outcome 1 with certainty."
+      "D": "A Z-basis measurement of |+⟩ gives 0 or 1 each with probability 0.5, not outcome 1 with certainty.",
+      "F": "Eigenstate-of-every-Pauli misconception: |+⟩ is an eigenstate of X only. The +1 eigenstate of Y is |+i⟩ = (|0⟩ + i|1⟩)/√2, a different state."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
@@ -52,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\nqc = QuantumCircuit(1)\nqc.h(0)\nsv = Statevector.from_instruction(qc)\nxexp = float(np.real(sv.expectation_value(Pauli('X'))))\nyexp = float(np.real(sv.expectation_value(Pauli('Y'))))\nzexp = float(np.real(sv.expectation_value(Pauli('Z'))))\np1 = float(sv.probabilities()[1])\nis_xeig = bool(np.allclose(sv.evolve(Pauli('X')).data, sv.data))\nchecks = {\n    \"A\": (\"<Y> == +1\", abs(yexp - 1.0) < 1e-9),\n    \"B\": (\"<Z> == 0\", abs(zexp - 0.0) < 1e-9),\n    \"C\": (\"<X> == +1\", abs(xexp - 1.0) < 1e-9),\n    \"D\": (\"Z-basis P(1) == 1\", abs(p1 - 1.0) < 1e-9),\n    \"E\": (\"X-eigenstate (+1)\", is_xeig),\n}\nbase = f\"[observed <X>={xexp:.3f} <Y>={yexp:.3f} <Z>={zexp:.3f} P(1)={p1:.3f} Xeig={is_xeig}]\"\nevidence = {}\nproven = []\nfor k, (desc, ok) in checks.items():\n    evidence[k] = f\"{desc}: statement is {ok} {base}\"\n    if ok:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {\"X\": xexp, \"Y\": yexp, \"Z\": zexp, \"P1\": p1, \"x_eigenstate\": is_xeig}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\nqc = QuantumCircuit(1)\nqc.h(0)\nsv = Statevector.from_instruction(qc)\nxexp = float(np.real(sv.expectation_value(Pauli('X'))))\nyexp = float(np.real(sv.expectation_value(Pauli('Y'))))\nzexp = float(np.real(sv.expectation_value(Pauli('Z'))))\np1 = float(sv.probabilities()[1])\nis_xeig = bool(np.allclose(sv.evolve(Pauli('X')).data, sv.data))\nis_yeig = bool(np.allclose(sv.evolve(Pauli('Y')).data, sv.data))\nchecks = {\n    \"A\": (\"<Y> == +1\", abs(yexp - 1.0) < 1e-9),\n    \"B\": (\"<Z> == 0\", abs(zexp - 0.0) < 1e-9),\n    \"C\": (\"<X> == +1\", abs(xexp - 1.0) < 1e-9),\n    \"D\": (\"Z-basis P(1) == 1\", abs(p1 - 1.0) < 1e-9),\n    \"E\": (\"X-eigenstate (+1)\", is_xeig),\n    \"F\": (\"Y-eigenstate (+1)\", is_yeig),\n}\nbase = f\"[observed <X>={xexp:.3f} <Y>={yexp:.3f} <Z>={zexp:.3f} P(1)={p1:.3f} Xeig={is_xeig} Yeig={is_yeig}]\"\nevidence = {}\nproven = []\nfor k, (desc, ok) in checks.items():\n    evidence[k] = f\"{desc}: statement is {ok} {base}\"\n    if ok:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {\"X\": xexp, \"Y\": yexp, \"Z\": zexp, \"P1\": p1, \"x_eigenstate\": is_xeig}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +F eigenstate-of-every-Pauli misconception (|+⟩ as a Y eigenstate)"
   },
   "freshness": {
     "verified_against": {
@@ -69,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

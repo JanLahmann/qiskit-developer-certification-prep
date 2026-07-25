@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "Index 1 — reading left to right, '10' sets qubit 0 = 1 and qubit 1 = 0"
+    },
+    {
+      "key": "E",
+      "text": "It raises an error — `from_label` may only be given a single character"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "D": "This reverses the label order. The leftmost character is the highest-index qubit, so '10' has qubit 1 = 1 (index 2), not qubit 0 = 1 (index 1).",
       "A": "|11⟩ (index 3) would come from label '11'. '10' has a 0 on qubit 0.",
-      "B": "|00⟩ (index 0) is label '00'; '10' has qubit 1 set."
+      "B": "|00⟩ (index 0) is label '00'; '10' has qubit 1 set.",
+      "E": "Single-qubit-label misconception: `Statevector.from_label` accepts multi-character labels (and '+', '-', 'r', 'l' too), building one qubit per character."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Statevector\nobs = Statevector.from_label('10').data\ntrue_idx = int(np.argmax(np.abs(obs)))\nclaims = {\"C\": 2, \"D\": 1, \"A\": 3, \"B\": 0}\nevidence = {}\nproven = []\nfor k, i in claims.items():\n    m = (true_idx == i)\n    evidence[k] = f\"from_label('10').data has its 1 at index {true_idx}; option {k} claims index {i} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"index\": true_idx, \"data\": [str(x) for x in obs]}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Statevector\nobs = Statevector.from_label('10').data\ntrue_idx = int(np.argmax(np.abs(obs)))\nclaims = {\"C\": 2, \"D\": 1, \"A\": 3, \"B\": 0}\nevidence = {}\nproven = []\nfor k, i in claims.items():\n    m = (true_idx == i)\n    evidence[k] = f\"from_label('10').data has its 1 at index {true_idx}; option {k} claims index {i} -> match={m}\"\n    if m:\n        proven.append(k)\ntry:\n    n_amps = len(Statevector.from_label('10').data)\n    e_raises = False\nexcept Exception:\n    n_amps = 0\n    e_raises = True\nevidence[\"E\"] = f\"Statevector.from_label('10') built a {n_amps}-amplitude state (raised={e_raises}); the 'single character only' claim -> match={e_raises}\"\nif e_raises:\n    proven.append(\"E\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"index\": true_idx, \"data\": [str(x) for x in obs]}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "length tell cleared (correct trimmed, distractor D spells out the reversed reading)"
+    "notes": "length tell cleared (correct trimmed, distractor D spells out the reversed reading) | pool wave: +E single-character-label misconception for from_label"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

@@ -28,6 +28,10 @@
     {
       "key": "E",
       "text": "Y · X = iZ"
+    },
+    {
+      "key": "F",
+      "text": "Z · Y = iX"
     }
   ],
   "answer": [
@@ -39,7 +43,8 @@
     "correct": "The cyclic products carry a +i phase: X·Y = iZ, Y·Z = iX, Z·X = iY. Reversing the order flips the sign of the phase.",
     "distractors": {
       "D": "X·Z = −iY, not +iY. This is an anti-cyclic (reversed) product, so the phase is −i.",
-      "E": "Y·X = −iZ, not +iZ. It is the reverse of X·Y, so the phase flips sign."
+      "E": "Y·X = −iZ, not +iZ. It is the reverse of X·Y, so the phase flips sign.",
+      "F": "Reversed cyclic order: the +i identities follow the cycle X→Y→Z→X, so Y·Z = iX but Z·Y = −iX. Swapping the operands conjugates the phase."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -52,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.quantum_info import Pauli\nopts = {\"A\": (\"X\", \"Y\", \"iZ\"), \"B\": (\"Y\", \"Z\", \"iX\"), \"C\": (\"Z\", \"X\", \"iY\"),\n        \"D\": (\"X\", \"Z\", \"iY\"), \"E\": (\"Y\", \"X\", \"iZ\")}\nevidence = {}\nproven = []\nfor k, (a, b, claim) in opts.items():\n    got = Pauli(a).dot(Pauli(b)).to_label()\n    match = (got == claim)\n    evidence[k] = f\"{a}.dot({b}).to_label() = '{got}'; option claims '{a}·{b} = {claim}' -> match={match}\"\n    if match:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {f\"{a}.{b}\": Pauli(a).dot(Pauli(b)).to_label() for a, b, _ in opts.values()}})\n"
+    "proof_script": "from qiskit.quantum_info import Pauli\nopts = {\"A\": (\"X\", \"Y\", \"iZ\"), \"B\": (\"Y\", \"Z\", \"iX\"), \"C\": (\"Z\", \"X\", \"iY\"),\n        \"D\": (\"X\", \"Z\", \"iY\"), \"E\": (\"Y\", \"X\", \"iZ\"),\n        \"F\": (\"Z\", \"Y\", \"iX\")}\nevidence = {}\nproven = []\nfor k, (a, b, claim) in opts.items():\n    got = Pauli(a).dot(Pauli(b)).to_label()\n    match = (got == claim)\n    evidence[k] = f\"{a}.dot({b}).to_label() = '{got}'; option claims '{a}·{b} = {claim}' -> match={match}\"\n    if match:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {f\"{a}.{b}\": Pauli(a).dot(Pauli(b)).to_label() for a, b, _ in opts.values()}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +F reversed-cyclic-order sign error (Z·Y)"
   },
   "freshness": {
     "verified_against": {
@@ -69,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

@@ -8,7 +8,8 @@
       "B": "Operator(qc) is (4, 4); option B claims (4, 4) -> match=True",
       "C": "Operator(qc) is (4, 4); option C claims (4, 4) -> match=False",
       "D": "Operator(qc) is (4, 4); option D claims (4, 4) -> match=False",
-      "A": "Operator(qc) is (4, 4); option A claims (2, 2) -> match=False"
+      "A": "Operator(qc) is (4, 4); option A claims (2, 2) -> match=False",
+      "E": "Operator(qc) is (4, 4); option E claims (4, 4) -> match=False  (the observed matrix equals I\u2297H; the block form diag(H, I) differs from it by max |\u0394| = 1.707)"
     },
     "observed": {
       "shape": [
@@ -23,9 +24,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.05,
+  "wall_seconds": 1.13,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"B\": \"Operator(qc) is (4, 4); option B claims (4, 4) -> match=True\", \"C\": \"Operator(qc) is (4, 4); option C claims (4, 4) -> match=False\", \"D\": \"Operator(qc) is (4, 4); option D claims (4, 4) -> match=False\", \"A\": \"Operator(qc) is (4, 4); option A claims (2, 2) -> match=False\"}, \"observed\": {\"shape\": [4, 4]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"B\": \"Operator(qc) is (4, 4); option B claims (4, 4) -> match=True\", \"C\": \"Operator(qc) is (4, 4); option C claims (4, 4) -> match=False\", \"D\": \"Operator(qc) is (4, 4); option D claims (4, 4) -> match=False\", \"A\": \"Operator(qc) is (4, 4); option A claims (2, 2) -> match=False\", \"E\": \"Operator(qc) is (4, 4); option E claims (4, 4) -> match=False  (the observed matrix equals I\\u2297H; the block form diag(H, I) differs from it by max |\\u0394| = 1.707)\"}, \"observed\": {\"shape\": [4, 4]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "X on qubit 1 (X ⊗ I): the leftmost label character maps to qubit 0"
+    },
+    {
+      "key": "E",
+      "text": "X on qubit 0, but the built operator is 2×2 — identity factors are dropped"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "D": "Reverses the label convention. The leftmost character is the highest-index qubit, so I (not X) acts on qubit 1.",
       "A": "The identity factor leaves its qubit untouched; it does not duplicate the X onto the other qubit.",
-      "B": "'IX' is a perfectly valid Pauli label; I is a legal single-qubit Pauli character."
+      "B": "'IX' is a perfectly valid Pauli label; I is a legal single-qubit Pauli character.",
+      "E": "Identity-elision misconception: an 'I' in a Pauli label is a real tensor factor, not padding that gets optimized away. `Pauli('IX')` is a two-qubit operator and `to_matrix()` returns a 4×4 matrix."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,13 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nX = np.array([[0, 1], [1, 0]], dtype=complex)\nI = np.eye(2, dtype=complex)\np = Pauli('IX')\nobserved = p.to_matrix()\nmA = bool(np.allclose(observed, np.kron(I, X)))\nmB = bool(np.allclose(observed, np.kron(X, I)))\nmC = bool(np.allclose(observed, np.kron(X, X)))\nevidence = {\n    \"C\": f\"Pauli('IX').to_matrix() == I⊗X (X on qubit 0)? {mA}; p[0]='{p[0].to_label()}', p[1]='{p[1].to_label()}'\",\n    \"D\": f\"== X⊗I (X on qubit 1)? {mB}\",\n    \"A\": f\"== X⊗X (X on both qubits)? {mC}\",\n    \"B\": \"Pauli('IX') constructed with no error, so the claim 'invalid label' is False\",\n}\nproven = [k for k, m in ((\"C\", mA), (\"D\", mB), (\"A\", mC)) if m]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"qubit0_op\": p[0].to_label(), \"qubit1_op\": p[1].to_label()}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nX = np.array([[0, 1], [1, 0]], dtype=complex)\nI = np.eye(2, dtype=complex)\np = Pauli('IX')\nobserved = p.to_matrix()\nmA = bool(np.allclose(observed, np.kron(I, X)))\nmB = bool(np.allclose(observed, np.kron(X, I)))\nmC = bool(np.allclose(observed, np.kron(X, X)))\nevidence = {\n    \"C\": f\"Pauli('IX').to_matrix() == I⊗X (X on qubit 0)? {mA}; p[0]='{p[0].to_label()}', p[1]='{p[1].to_label()}'\",\n    \"D\": f\"== X⊗I (X on qubit 1)? {mB}\",\n    \"A\": f\"== X⊗X (X on both qubits)? {mC}\",\n    \"B\": \"Pauli('IX') constructed with no error, so the claim 'invalid label' is False\",\n}\nmE = (observed.shape == (2, 2))\nevidence[\"E\"] = f\"Pauli('IX').to_matrix() has shape {observed.shape} and num_qubits={p.num_qubits}; the '2x2, identity dropped' claim -> match={mE}\"\nproven = [k for k, m in ((\"C\", mA), (\"D\", mB), (\"A\", mC), (\"E\", mE)) if m]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"qubit0_op\": p[0].to_label(), \"qubit1_op\": p[1].to_label()}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E identity-elision misconception (I factor dropped, operator is 2×2)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "[1, 0] — a diagonal gate leaves the |0⟩ amplitude untouched"
+    },
+    {
+      "key": "E",
+      "text": "[e^{−iπ/2}, 0] ≈ [0−1j, 0] — the phase is the full angle θ, not θ/2"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "D": "Being diagonal does not mean acting trivially: RZ's upper diagonal entry is e^{−iθ/2}, not 1. The phase is unobservable in isolation (probabilities stay [1,0]), but `Statevector.from_instruction` still records the e^{−iπ/4} factor.",
       "A": "RZ is diagonal; it never creates a superposition. Only RX/RY move population between |0⟩ and |1⟩.",
-      "B": "The |0⟩ (upper) diagonal entry is e^{−iθ/2}, with a minus sign. A +θ/2 phase would be the |1⟩ entry."
+      "B": "The |0⟩ (upper) diagonal entry is e^{−iθ/2}, with a minus sign. A +θ/2 phase would be the |1⟩ entry.",
+      "E": "Full-angle misconception: RZ(θ) = diag(e^{−iθ/2}, e^{+iθ/2}) splits the angle in half. The gate that applies the full θ to one amplitude is P(θ), not RZ(θ)."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.rz(np.pi / 2, 0)\nobserved = Statevector.from_instruction(qc).data\ns = 1 / np.sqrt(2)\ncands = {\"C\": np.array([np.exp(-1j * np.pi / 4), 0]), \"D\": np.array([1, 0]),\n         \"A\": np.array([s, 1j * s]), \"B\": np.array([np.exp(1j * np.pi / 4), 0])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"RZ(pi/2)|0> = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nprobs = Statevector.from_instruction(qc).probabilities().tolist()\nevidence[\"C\"] += f\"  (probabilities unchanged: {np.round(probs, 4).tolist()})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"sv\": [str(x) for x in np.round(observed, 6)], \"probs\": probs}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.rz(np.pi / 2, 0)\nobserved = Statevector.from_instruction(qc).data\ns = 1 / np.sqrt(2)\ncands = {\"C\": np.array([np.exp(-1j * np.pi / 4), 0]), \"D\": np.array([1, 0]),\n         \"A\": np.array([s, 1j * s]), \"B\": np.array([np.exp(1j * np.pi / 4), 0]),\n         \"E\": np.array([np.exp(-1j * np.pi / 2), 0])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"RZ(pi/2)|0> = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nprobs = Statevector.from_instruction(qc).probabilities().tolist()\nevidence[\"C\"] += f\"  (probabilities unchanged: {np.round(probs, 4).tolist()})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"sv\": [str(x) for x in np.round(observed, 6)], \"probs\": probs}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor D rewritten without an absolute)"
+    "notes": "absolute-wording tell cleared (distractor D rewritten without an absolute) | pool wave: +E RZ full-angle-vs-half-angle misconception"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

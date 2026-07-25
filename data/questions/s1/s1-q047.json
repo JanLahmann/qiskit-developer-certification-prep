@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "0.7071 — the probability equals the amplitude 1/√2"
+    },
+    {
+      "key": "E",
+      "text": "0.25 — the amplitude is usually squared twice over"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "B": "|0⟩ is not aligned with |+⟩; it is an equal superposition of |+⟩ and |−⟩, so the |+⟩ outcome is not certain.",
       "C": "|0⟩ is not orthogonal to |+⟩ — their overlap is ⟨+|0⟩ = 1/√2, giving probability |1/√2|² = 0.5.",
-      "D": "0.7071 is the amplitude 1/√2; the probability is its square, 0.5."
+      "D": "0.7071 is the amplitude 1/√2; the probability is its square, 0.5.",
+      "E": "Double-squaring error: the probability is |amplitude|² = (1/√2)² = 0.5. Squaring the probability again (0.5² = 0.25) applies the Born rule twice."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.h(0)\np0 = float(Statevector.from_instruction(qc).probabilities()[0])\nclaims = {\"A\": 0.5, \"B\": 1.0, \"C\": 0.0, \"D\": 0.7071}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = bool(abs(p0 - c) < 1e-4)\n    evidence[k] = f\"P(|+> outcome) = P(0) after H = {p0:.4f}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"P_plus\": p0}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.h(0)\np0 = float(Statevector.from_instruction(qc).probabilities()[0])\nclaims = {\"A\": 0.5, \"B\": 1.0, \"C\": 0.0, \"D\": 0.7071, \"E\": 0.25}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = bool(abs(p0 - c) < 1e-4)\n    evidence[k] = f\"P(|+> outcome) = P(0) after H = {p0:.4f}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"P_plus\": p0}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor C now hedges, so the correct option needs no absolute)"
+    "notes": "absolute-wording tell cleared (distractor C now hedges, so the correct option needs no absolute) | pool wave: +E double-squaring (Born rule applied twice)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

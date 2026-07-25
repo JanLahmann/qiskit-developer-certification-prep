@@ -28,6 +28,10 @@
     {
       "key": "E",
       "text": "Applying RY(π/2)"
+    },
+    {
+      "key": "F",
+      "text": "Applying SX"
     }
   ],
   "answer": [
@@ -39,7 +43,8 @@
     "distractors": {
       "A": "H maps |0⟩ to |+⟩, giving P(0) = 0.5 — the population is no longer certain.",
       "B": "X flips |0⟩ to |1⟩, so P(0) becomes 0.",
-      "E": "RY(π/2) rotates |0⟩ to |+⟩ (a real rotation that moves population), giving P(0) = 0.5."
+      "E": "RY(π/2) rotates |0⟩ to |+⟩ (a real rotation that moves population), giving P(0) = 0.5.",
+      "F": "Square-root-of-NOT misconception: `sx` is 'half a bit flip' only in the sense that two of them make an X — a single `sx` already produces equal |0⟩/|1⟩ magnitudes, so outcome 0 has probability 0.5."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -52,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\ndef p0(build):\n    qc = QuantumCircuit(1)\n    build(qc)\n    return float(Statevector.from_instruction(qc).probabilities()[0])\n\nopts = {\n    \"A\": (\"H\", lambda c: c.h(0)),\n    \"B\": (\"X\", lambda c: c.x(0)),\n    \"C\": (\"Z\", lambda c: c.z(0)),\n    \"D\": (\"T\", lambda c: c.t(0)),\n    \"E\": (\"RY(pi/2)\", lambda c: c.ry(np.pi / 2, 0)),\n}\nevidence = {}\nproven = []\nfor k, (name, build) in opts.items():\n    prob0 = p0(build)\n    keeps = bool(abs(prob0 - 1.0) < 1e-9)\n    evidence[k] = f\"after {name}: P(measure 0) = {prob0:.3f} -> stays |0> with certainty? {keeps}\"\n    if keeps:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {k: p0(b) for k, (_, b) in opts.items()}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\ndef p0(build):\n    qc = QuantumCircuit(1)\n    build(qc)\n    return float(Statevector.from_instruction(qc).probabilities()[0])\n\nopts = {\n    \"A\": (\"H\", lambda c: c.h(0)),\n    \"B\": (\"X\", lambda c: c.x(0)),\n    \"C\": (\"Z\", lambda c: c.z(0)),\n    \"D\": (\"T\", lambda c: c.t(0)),\n    \"E\": (\"RY(pi/2)\", lambda c: c.ry(np.pi / 2, 0)),\n    \"F\": (\"SX\", lambda c: c.sx(0)),\n}\nevidence = {}\nproven = []\nfor k, (name, build) in opts.items():\n    prob0 = p0(build)\n    keeps = bool(abs(prob0 - 1.0) < 1e-9)\n    evidence[k] = f\"after {name}: P(measure 0) = {prob0:.3f} -> stays |0> with certainty? {keeps}\"\n    if keeps:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {k: p0(b) for k, (_, b) in opts.items()}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +F √X-as-partial-flip misconception"
   },
   "freshness": {
     "verified_against": {
@@ -69,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

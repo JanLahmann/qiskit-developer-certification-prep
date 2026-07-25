@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "|10⟩ → |01⟩: `cx(0, 1)` simply swaps the two qubit states"
+    },
+    {
+      "key": "E",
+      "text": "|01⟩ → |11⟩ and |10⟩ → |11⟩ — either qubit set to 1 makes both 1"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "C": "This treats qubit 1 as the control. The control is qubit 0, so the flip is conditioned on qubit 0 = 1, not qubit 1.",
       "D": "CX is not a SWAP; it changes only the target when the control is 1, leaving |00⟩/|10⟩ fixed. SWAP would move population differently.",
-      "A": "CX flips one qubit (the target), not both. |11⟩ maps to |01⟩, not |00⟩."
+      "A": "CX flips one qubit (the target), not both. |11⟩ maps to |01⟩, not |00⟩.",
+      "E": "Symmetric-CX misconception: CX is not an OR gate on the pair. It is directional — only the control (qubit 0 here) decides, and the target is flipped, so |10⟩ (control 0) is left untouched."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Operator\nqc = QuantumCircuit(2)\nqc.cx(0, 1)\nU = Operator(qc)\n\ndef maps(src, dst):\n    return bool(np.allclose(Statevector.from_label(src).evolve(U).data, Statevector.from_label(dst).data))\n\nA_ok = maps('01', '11') and maps('11', '01') and maps('00', '00') and maps('10', '10')\nB_ok = maps('10', '11') and maps('11', '10')\nC_ok = maps('10', '01')\nD_ok = maps('11', '00')\nevidence = {\n    \"B\": f\"01->11 & 11->01 with 00,10 fixed? {A_ok}\",\n    \"C\": f\"10->11 & 11->10 (qubit1 as control)? {B_ok}\",\n    \"D\": f\"10->01 (a full swap)? {C_ok}\",\n    \"A\": f\"11->00 (both qubits flip)? {D_ok}\",\n}\nproven = [k for k, ok in ((\"B\", A_ok), (\"C\", B_ok), (\"D\", C_ok), (\"A\", D_ok)) if ok]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"01_maps_to_index\": int(np.argmax(np.abs(Statevector.from_label('01').evolve(U).data)))}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Operator\nqc = QuantumCircuit(2)\nqc.cx(0, 1)\nU = Operator(qc)\n\ndef maps(src, dst):\n    return bool(np.allclose(Statevector.from_label(src).evolve(U).data, Statevector.from_label(dst).data))\n\nA_ok = maps('01', '11') and maps('11', '01') and maps('00', '00') and maps('10', '10')\nB_ok = maps('10', '11') and maps('11', '10')\nC_ok = maps('10', '01')\nD_ok = maps('11', '00')\nE_ok = maps('01', '11') and maps('10', '11')\nevidence = {\n    \"E\": f\"01->11? {maps('01', '11')} and 10->11 (control qubit 0 is 0 there)? {maps('10', '11')} -> {E_ok}\",\n    \"B\": f\"01->11 & 11->01 with 00,10 fixed? {A_ok}\",\n    \"C\": f\"10->11 & 11->10 (qubit1 as control)? {B_ok}\",\n    \"D\": f\"10->01 (a full swap)? {C_ok}\",\n    \"A\": f\"11->00 (both qubits flip)? {D_ok}\",\n}\nproven = [k for k, ok in ((\"B\", A_ok), (\"C\", B_ok), (\"D\", C_ok), (\"A\", D_ok), (\"E\", E_ok)) if ok]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"01_maps_to_index\": int(np.argmax(np.abs(Statevector.from_label('01').evolve(U).data)))}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "length + stem-echo tells cleared (correct trimmed, distractor C carries the API vocabulary)"
+    "notes": "length + stem-echo tells cleared (correct trimmed, distractor C carries the API vocabulary) | pool wave: +E symmetric/OR-like CX misconception"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

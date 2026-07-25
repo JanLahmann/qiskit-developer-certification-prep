@@ -25,6 +25,14 @@
     {
       "key": "D",
       "text": "a = H gate, b = Z gate"
+    },
+    {
+      "key": "E",
+      "text": "a = T gate, b = RZ(π/2)"
+    },
+    {
+      "key": "F",
+      "text": "a = H gate, b = RY(π/2)"
     }
   ],
   "answer": [
@@ -35,7 +43,9 @@
     "correct": "RZ(π) = diag(e^{−iπ/2}, e^{iπ/2}) = −i·Z, so it equals Z up to the global phase −i → equiv is True (though `==` is False). Likewise RX(π) = −i·X, equivalent to X up to a global phase. Both pass `.equiv()`.",
     "distractors": {
       "A": "X and Y are genuinely different operators (they differ by more than a scalar phase — X·Y = iZ ≠ scalar), so `.equiv()` is False.",
-      "D": "H and Z are distinct unitaries (H is not a phase multiple of Z), so `.equiv()` returns False."
+      "D": "H and Z are distinct unitaries (H is not a phase multiple of Z), so `.equiv()` returns False.",
+      "E": "Half-angle mismatch: RZ(π/2) equals S up to a global phase (T squared), not T. T corresponds to RZ(π/4).",
+      "F": "H-as-a-rotation misconception: RY(π/2) rotates |0⟩ to |+⟩ but is not H — their determinants differ in sign, so no global phase can bridge them. H equals RY(π/2)·Z, i.e. a Z applied before the rotation."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operator-class",
@@ -48,13 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\n\ndef op(build):\n    qc = QuantumCircuit(1)\n    build(qc)\n    return Operator(qc)\n\npairs = {\n    \"A\": (\"X vs Y\", op(lambda c: c.x(0)), op(lambda c: c.y(0))),\n    \"B\": (\"Z vs RZ(pi)\", op(lambda c: c.z(0)), op(lambda c: c.rz(np.pi, 0))),\n    \"C\": (\"X vs RX(pi)\", op(lambda c: c.x(0)), op(lambda c: c.rx(np.pi, 0))),\n    \"D\": (\"H vs Z\", op(lambda c: c.h(0)), op(lambda c: c.z(0))),\n}\nevidence = {}\nproven = []\nfor k, (name, a, b) in pairs.items():\n    eq = bool(a.equiv(b))\n    ident = bool(a == b)\n    evidence[k] = f\"{name}: Operator.equiv()={eq} (exact ==? {ident})\"\n    if eq:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {k: bool(a.equiv(b)) for k, (_, a, b) in pairs.items()}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\n\ndef op(build):\n    qc = QuantumCircuit(1)\n    build(qc)\n    return Operator(qc)\n\npairs = {\n    \"A\": (\"X vs Y\", op(lambda c: c.x(0)), op(lambda c: c.y(0))),\n    \"B\": (\"Z vs RZ(pi)\", op(lambda c: c.z(0)), op(lambda c: c.rz(np.pi, 0))),\n    \"C\": (\"X vs RX(pi)\", op(lambda c: c.x(0)), op(lambda c: c.rx(np.pi, 0))),\n    \"D\": (\"H vs Z\", op(lambda c: c.h(0)), op(lambda c: c.z(0))),\n    \"E\": (\"T vs RZ(pi/2)\", op(lambda c: c.t(0)), op(lambda c: c.rz(np.pi / 2, 0))),\n    \"F\": (\"H vs RY(pi/2)\", op(lambda c: c.h(0)), op(lambda c: c.ry(np.pi / 2, 0))),\n}\nevidence = {}\nproven = []\nfor k, (name, a, b) in pairs.items():\n    eq = bool(a.equiv(b))\n    ident = bool(a == b)\n    evidence[k] = f\"{name}: Operator.equiv()={eq} (exact ==? {ident})\"\n    if eq:\n        proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {k: bool(a.equiv(b)) for k, (_, a, b) in pairs.items()}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E T-vs-RZ(π/2) half-angle mismatch, +F H-as-RY(π/2) misconception"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +76,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

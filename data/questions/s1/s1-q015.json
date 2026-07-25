@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "Qubit 0 — the rightmost label character maps to the lowest-index qubit"
+    },
+    {
+      "key": "E",
+      "text": "None — a 3-letter label may not be built directly; tensor single Paulis"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "A": "Reverses the little-endian convention. The leftmost character (X) is the highest-index qubit (qubit 2), so Z — the rightmost — is qubit 0, not qubit 2.",
       "B": "Y is the middle factor (qubit 1); Z is the rightmost factor and acts on qubit 0.",
-      "C": "Each character is a separate tensor factor acting on one qubit; Z acts on a single qubit, not all three."
+      "C": "Each character is a separate tensor factor acting on one qubit; Z acts on a single qubit, not all three.",
+      "E": "Invalid-label misconception: multi-qubit Pauli labels of any length are legal, so `Pauli('XYZ')` builds a three-qubit operator directly — tensoring single-qubit Paulis is optional, not required."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.quantum_info import Pauli\np = Pauli('XYZ')\nfactors = {i: p[i].to_label() for i in range(p.num_qubits)}\ntrue_q = next(i for i, lbl in factors.items() if lbl == \"Z\")\nclaims = {\"D\": 0, \"A\": 2, \"B\": 1}\nevidence = {}\nproven = []\nfor k, qi in claims.items():\n    match = (true_q == qi)\n    evidence[k] = f\"per-qubit factors {factors}; Z is on qubit {true_q}; option {k} claims qubit {qi} -> match={match}\"\n    if match:\n        proven.append(k)\nevidence[\"C\"] = f\"Z is one tensor factor on qubit {true_q} only, not all three qubits -> claim False\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"factors\": factors, \"z_qubit\": true_q}})\n"
+    "proof_script": "from qiskit.quantum_info import Pauli\np = Pauli('XYZ')\nfactors = {i: p[i].to_label() for i in range(p.num_qubits)}\ntrue_q = next(i for i, lbl in factors.items() if lbl == \"Z\")\nclaims = {\"D\": 0, \"A\": 2, \"B\": 1}\nevidence = {}\nproven = []\nfor k, qi in claims.items():\n    match = (true_q == qi)\n    evidence[k] = f\"per-qubit factors {factors}; Z is on qubit {true_q}; option {k} claims qubit {qi} -> match={match}\"\n    if match:\n        proven.append(k)\nevidence[\"C\"] = f\"Z is one tensor factor on qubit {true_q} only, not all three qubits -> claim False\"\nlabel_ok = (p.num_qubits == 3)\nevidence[\"E\"] = f\"Pauli('XYZ') was constructed directly: num_qubits={p.num_qubits}, factors {factors}; the 'label cannot be built directly' claim -> match={not label_ok}\"\nif not label_ok:\n    proven.append(\"E\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"factors\": factors, \"z_qubit\": true_q}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor B now hedges, so the correct option needs no absolute)"
+    "notes": "absolute-wording tell cleared (distractor B now hedges, so the correct option needs no absolute) | pool wave: +E invalid-multi-letter-label misconception"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

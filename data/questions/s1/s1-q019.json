@@ -25,6 +25,10 @@
     {
       "key": "D",
       "text": "1.0 — ⟨ZZ⟩ = 1 on |00⟩ and ⟨XX⟩ = 0"
+    },
+    {
+      "key": "E",
+      "text": "−1.0 — bit 0 maps to the −1 eigenvalue of Z"
     }
   ],
   "answer": [
@@ -35,7 +39,8 @@
     "distractors": {
       "A": "Assumes both Pauli terms have expectation 1. ⟨XX⟩ on |00⟩ is 0 (it maps the state to an orthogonal one), so the 0.5 term drops out.",
       "B": "The terms do not cancel; ⟨ZZ⟩ = 1 stands on its own while ⟨XX⟩ = 0.",
-      "C": "It is the Z⊗Z term (not X⊗X) that contributes here; X⊗X has zero expectation on |00⟩."
+      "C": "It is the Z⊗Z term (not X⊗X) that contributes here; X⊗X has zero expectation on |00⟩.",
+      "E": "Eigenvalue-convention flip: in Qiskit Z|0⟩ = +|0⟩, so |00⟩ gives ⟨ZZ⟩ = +1. The 0 ↔ −1 mapping comes from Ising/QUBO encodings, not from the Z operator."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
@@ -48,14 +53,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.quantum_info import Statevector, SparsePauliOp\nO = SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"XX\", 0.5)])\nval = complex(Statevector.from_label(\"00\").expectation_value(O))\nclaims = {\"D\": 1.0, \"A\": 1.5, \"B\": 0.0, \"C\": 0.5}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    match = bool(abs(val - c) < 1e-9)\n    evidence[k] = f\"<00|O|00> = {val.real:.4f}; option {k} claims {c} -> match={match}\"\n    if match:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": val.real}})\n"
+    "proof_script": "from qiskit.quantum_info import Statevector, SparsePauliOp\nO = SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"XX\", 0.5)])\nval = complex(Statevector.from_label(\"00\").expectation_value(O))\nclaims = {\"D\": 1.0, \"A\": 1.5, \"B\": 0.0, \"C\": 0.5, \"E\": -1.0}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    match = bool(abs(val - c) < 1e-9)\n    evidence[k] = f\"<00|O|00> = {val.real:.4f}; option {k} claims {c} -> match={match}\"\n    if match:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": val.real}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (absolute removed from distractor C)"
+    "notes": "absolute-wording tell cleared (absolute removed from distractor C) | pool wave: +E Z-eigenvalue sign-convention flip (bit 0 read as −1)"
   },
   "freshness": {
     "verified_against": {
@@ -66,5 +71,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

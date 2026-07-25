@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "−0.5 — ⟨Z⟩ = −cos θ"
+    },
+    {
+      "key": "E",
+      "text": "−0.866 — a sign slip plus the half angle"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "D": "The sign is positive here: the state is weighted toward |0⟩ (the +1 eigenstate of Z), giving ⟨Z⟩ = +cos θ = +0.5.",
       "A": "0.25 is P(1) = sin²(θ/2), a probability, not the Z expectation value. ⟨Z⟩ = cos θ = 0.5.",
-      "B": "cos(θ/2) = cos(π/6) ≈ 0.866 uses the half-angle. The expectation value uses the full angle: ⟨Z⟩ = cos θ."
+      "B": "cos(θ/2) = cos(π/6) ≈ 0.866 uses the half-angle. The expectation value uses the full angle: ⟨Z⟩ = cos θ.",
+      "E": "Two errors at once: the half-angle cos(θ/2) belongs to the amplitude, not the expectation value, and ⟨Z⟩ for RY(θ)|0⟩ is +cos θ — the state stays in the upper half of the Bloch sphere for θ = π/3."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
@@ -47,13 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\nqc = QuantumCircuit(1)\nqc.ry(np.pi / 3, 0)\nval = float(np.real(Statevector.from_instruction(qc).expectation_value(Pauli('Z'))))\nclaims = {\"C\": 0.5, \"D\": -0.5, \"A\": 0.25, \"B\": 0.8660254}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = bool(abs(val - c) < 1e-6)\n    evidence[k] = f\"<Z> = {val:.4f}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"Z_expectation\": val}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\nqc = QuantumCircuit(1)\nqc.ry(np.pi / 3, 0)\nval = float(np.real(Statevector.from_instruction(qc).expectation_value(Pauli('Z'))))\nclaims = {\"C\": 0.5, \"D\": -0.5, \"A\": 0.25, \"B\": 0.8660254, \"E\": -0.8660254}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = bool(abs(val - c) < 1e-6)\n    evidence[k] = f\"<Z> = {val:.4f}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"Z_expectation\": val}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E combined sign-convention and half-angle error"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

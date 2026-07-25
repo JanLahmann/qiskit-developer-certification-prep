@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`[0.7071j, 0.7071]` — phase i applied to the |0⟩ amplitude"
+    },
+    {
+      "key": "E",
+      "text": "`[0.5+0.5j, 0.5−0.5j]` — S is read as a half-X rotation that mixes amplitudes"
+    },
+    {
+      "key": "F",
+      "text": "`[0.7071, −0.7071]` — the S gate is treated as Z, negating the |1⟩ amplitude"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "This is the state right after H, before the S gate acts — S adds the phase i to the |1⟩ component.",
       "C": "A phase of −i would come from S† (the inverse phase gate, `sdg`), not S.",
-      "D": "S = diag(1, i) acts on the |1⟩ amplitude; the |0⟩ amplitude is untouched."
+      "D": "S = diag(1, i) acts on the |1⟩ amplitude; the |0⟩ amplitude is untouched.",
+      "E": "S-vs-√X confusion: S is treated as a 'half gate' that rotates amplitudes like `sx`. S is diagonal — it only multiplies the |1⟩ amplitude by i, leaving both magnitudes at 1/√2; the mixed 0.5±0.5j amplitudes are what `sx` produces from |0⟩.",
+      "F": "S-vs-Z confusion: S is the square root of Z, so it applies a quarter turn (phase i), not the half turn (phase −1) that Z applies. Negating the |1⟩ amplitude is what Z would do."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)\nobserved = Statevector.from_instruction(qc).data\n\ns = 1 / np.sqrt(2)\ncandidates = {\n    \"A\": np.array([s, s]),\n    \"B\": np.array([s, 1j * s]),\n    \"C\": np.array([s, -1j * s]),\n    \"D\": np.array([1j * s, s]),\n}\nevidence = {}\nproven = []\nfor key, vec in candidates.items():\n    match = bool(np.allclose(observed, vec))\n    evidence[key] = (\n        f\"executed circuit gives {np.round(observed, 4).tolist()}; \"\n        f\"option claims {np.round(vec, 4).tolist()} -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"statevector\": [str(x) for x in np.round(observed, 6)]},\n})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)\nobserved = Statevector.from_instruction(qc).data\n\ns = 1 / np.sqrt(2)\ncandidates = {\n    \"A\": np.array([s, s]),\n    \"B\": np.array([s, 1j * s]),\n    \"C\": np.array([s, -1j * s]),\n    \"D\": np.array([1j * s, s]),\n    \"E\": np.array([0.5 + 0.5j, 0.5 - 0.5j]),\n    \"F\": np.array([s, -s]),\n}\nevidence = {}\nproven = []\nfor key, vec in candidates.items():\n    match = bool(np.allclose(observed, vec))\n    evidence[key] = (\n        f\"executed circuit gives {np.round(observed, 4).tolist()}; \"\n        f\"option claims {np.round(vec, 4).tolist()} -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"statevector\": [str(x) for x in np.round(observed, 6)]},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude (orchestrator seed)",
     "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank."
+    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | pool wave: +E S-vs-sx (half-rotation) confusion, +F S-vs-Z phase confusion"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

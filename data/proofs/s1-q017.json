@@ -11,14 +11,16 @@
       "B": "Pauli('XI').commutes(Pauli('ZZ')) = False",
       "C": "Pauli('XZ').commutes(Pauli('ZX')) = True",
       "D": "Pauli('IX').commutes(Pauli('ZI')) = True",
-      "E": "Pauli('X').commutes(Pauli('Z')) = False"
+      "E": "Pauli('X').commutes(Pauli('Z')) = False",
+      "F": "Pauli('ZI').commutes(Pauli('XX')) = False"
     },
     "observed": {
       "A": true,
       "B": false,
       "C": true,
       "D": true,
-      "E": false
+      "E": false,
+      "F": false
     }
   },
   "versions": {
@@ -27,9 +29,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.11,
+  "wall_seconds": 1.21,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\", \"C\", \"D\"], \"evidence\": {\"A\": \"Pauli('XX').commutes(Pauli('ZZ')) = True\", \"B\": \"Pauli('XI').commutes(Pauli('ZZ')) = False\", \"C\": \"Pauli('XZ').commutes(Pauli('ZX')) = True\", \"D\": \"Pauli('IX').commutes(Pauli('ZI')) = True\", \"E\": \"Pauli('X').commutes(Pauli('Z')) = False\"}, \"observed\": {\"A\": true, \"B\": false, \"C\": true, \"D\": true, \"E\": false}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\", \"C\", \"D\"], \"evidence\": {\"A\": \"Pauli('XX').commutes(Pauli('ZZ')) = True\", \"B\": \"Pauli('XI').commutes(Pauli('ZZ')) = False\", \"C\": \"Pauli('XZ').commutes(Pauli('ZX')) = True\", \"D\": \"Pauli('IX').commutes(Pauli('ZI')) = True\", \"E\": \"Pauli('X').commutes(Pauli('Z')) = False\", \"F\": \"Pauli('ZI').commutes(Pauli('XX')) = False\"}, \"observed\": {\"A\": true, \"B\": false, \"C\": true, \"D\": true, \"E\": false, \"F\": false}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

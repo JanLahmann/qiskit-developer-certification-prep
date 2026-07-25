@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "The 4×4 identity, because X and Z appear in different tensor factors"
+    },
+    {
+      "key": "E",
+      "text": "−i·(X ⊗ Z) — multi-letter labels carry a ±i phase normalization"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "C": "Reverses Qiskit's little-endian label convention. The leftmost character is the highest-index qubit, not qubit 0, so X is on qubit 1 and Z is on qubit 0.",
       "D": "A tensor product of X and Z is not the identity; the label builds a 4×4 operator, and neither factor is the identity here.",
-      "A": "Confuses a tensor product with a single-qubit matrix product. A two-character label is a 2-qubit (4×4) operator, not a 2×2 product of the letters."
+      "A": "Confuses a tensor product with a single-qubit matrix product. A two-character label is a 2-qubit (4×4) operator, not a 2×2 product of the letters.",
+      "E": "Phase-carrying-label confusion: Pauli labels *may* start with a phase prefix ('-iXZ'), but a plain 'XZ' label has phase group 0 — the matrix is exactly X ⊗ Z with no ±i factor attached."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,13 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nX = np.array([[0, 1], [1, 0]], dtype=complex)\nZ = np.array([[1, 0], [0, -1]], dtype=complex)\nY = np.array([[0, -1j], [1j, 0]], dtype=complex)\nobserved = Pauli('XZ').to_matrix()\ncands = {\"B\": np.kron(X, Z), \"C\": np.kron(Z, X), \"D\": np.eye(4, dtype=complex), \"A\": -1j * Y}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    match = observed.shape == v.shape and bool(np.allclose(observed, v))\n    evidence[k] = (f\"Pauli('XZ').to_matrix() is a {observed.shape} matrix; \"\n                   f\"option {k} claims a {v.shape} matrix -> match={match}\")\n    if match:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"shape\": list(observed.shape), \"real_part\": observed.real.tolist()}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nX = np.array([[0, 1], [1, 0]], dtype=complex)\nZ = np.array([[1, 0], [0, -1]], dtype=complex)\nY = np.array([[0, -1j], [1j, 0]], dtype=complex)\nobserved = Pauli('XZ').to_matrix()\ncands = {\"B\": np.kron(X, Z), \"C\": np.kron(Z, X), \"D\": np.eye(4, dtype=complex), \"A\": -1j * Y,\n         \"E\": -1j * np.kron(X, Z)}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    match = observed.shape == v.shape and bool(np.allclose(observed, v))\n    evidence[k] = (f\"Pauli('XZ').to_matrix() is a {observed.shape} matrix; \"\n                   f\"option {k} claims a {v.shape} matrix -> match={match}\")\n    if match:\n        proven.append(k)\nevidence[\"E\"] = (f\"Pauli('XZ').to_label() = '{Pauli('XZ').to_label()}' (no phase prefix); \"\n                 f\"matrix equals -i(X⊗Z)? {bool(np.allclose(observed, -1j * np.kron(X, Z)))}\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"shape\": list(observed.shape), \"real_part\": observed.real.tolist()}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E phase-prefixed-label misconception (labels normalized with ±i)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "[0, 1] — T is a diagonal phase gate, so a basis state comes back unchanged"
+    },
+    {
+      "key": "E",
+      "text": "[0, e^{iπ/8}] ≈ [0, 0.9239+0.3827j] — T acts like RZ(π/4), halving θ"
+    },
+    {
+      "key": "F",
+      "text": "[0.7071+0.7071j, 0] — the T phase lands on the |0⟩ amplitude, not on |1⟩"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "D": "T is diagonal but not the identity: it multiplies the |1⟩ amplitude by e^{iπ/4}. Diagonal does not mean 'no effect' — only |0⟩ is left untouched.",
       "A": "A phase of i = e^{iπ/2} is the S gate. T applies half that angle, e^{iπ/4}.",
-      "B": "T is diagonal; it never creates a superposition. It only adjusts the phase of |1⟩."
+      "B": "T is diagonal; it never creates a superposition. It only adjusts the phase of |1⟩.",
+      "E": "T-vs-RZ half-angle confusion: RZ(θ) splits the phase as diag(e^{−iθ/2}, e^{+iθ/2}), while T = P(π/4) = diag(1, e^{iπ/4}) puts the full angle on |1⟩. The two differ by the global phase e^{−iπ/8}, which is plainly visible in a printed statevector.",
+      "F": "Phase-slot confusion: T is diag(1, e^{iπ/4}), so the |0⟩ amplitude is multiplied by 1. After the X gate the state is |1⟩ anyway, so the |0⟩ amplitude stays 0."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.x(0)\nqc.t(0)\nobserved = Statevector.from_instruction(qc).data\ns = 1 / np.sqrt(2)\ncands = {\"C\": np.array([0, np.exp(1j * np.pi / 4)]), \"D\": np.array([0, 1]),\n         \"A\": np.array([0, 1j]), \"B\": np.array([s, 1j * s])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"T|1> = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"sv\": [str(x) for x in np.round(observed, 6)]}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.x(0)\nqc.t(0)\nobserved = Statevector.from_instruction(qc).data\ns = 1 / np.sqrt(2)\ncands = {\"C\": np.array([0, np.exp(1j * np.pi / 4)]), \"D\": np.array([0, 1]),\n         \"A\": np.array([0, 1j]), \"B\": np.array([s, 1j * s]),\n         \"E\": np.array([0, np.exp(1j * np.pi / 8)]), \"F\": np.array([np.exp(1j * np.pi / 4), 0])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"T|1> = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"sv\": [str(x) for x in np.round(observed, 6)]}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "length tell cleared (correct option trimmed, distractor D given substance)"
+    "notes": "length tell cleared (correct option trimmed, distractor D given substance) | pool wave: +E T-vs-RZ half-angle confusion, +F phase-slot confusion (phase on |0⟩)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

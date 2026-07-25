@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "`Z` — the product is Z and the phase is discarded"
+    },
+    {
+      "key": "E",
+      "text": "`iX` — the product keeps the first operand's letter"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "C": "'-iZ' is Y·X (or, equivalently, `Pauli('X').compose(Pauli('Y'))`, which applies X first then Y). `.dot(B)` means self·B = X·Y, giving +iZ.",
       "D": "The Pauli class does not drop the phase — that is exactly what distinguishes X·Y (= iZ) from Z. The label keeps the leading 'i'.",
-      "A": "The product of X and Y lands on Z, not Y; only the phase is imaginary."
+      "A": "The product of X and Y lands on Z, not Y; only the phase is imaginary.",
+      "E": "Letter-retention misconception applied to the first factor: the Pauli product of two different Paulis lands on the *third* letter (X·Y = iZ), never on either operand's own letter."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,13 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nres = Pauli('X').dot(Pauli('Y'))\nlbl = res.to_label()\nZ = np.array([[1, 0], [0, -1]], dtype=complex)\nclaims = {\"B\": \"iZ\", \"C\": \"-iZ\", \"D\": \"Z\", \"A\": \"iY\"}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    match = (lbl == c)\n    evidence[k] = f\"Pauli('X').dot(Pauli('Y')).to_label() = '{lbl}'; option {k} claims '{c}' -> match={match}\"\n    if match:\n        proven.append(k)\nevidence[\"B\"] += f\"  (cross-check: matrix == iZ? {bool(np.allclose(res.to_matrix(), 1j * Z))})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": lbl}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nres = Pauli('X').dot(Pauli('Y'))\nlbl = res.to_label()\nZ = np.array([[1, 0], [0, -1]], dtype=complex)\nclaims = {\"B\": \"iZ\", \"C\": \"-iZ\", \"D\": \"Z\", \"A\": \"iY\", \"E\": \"iX\"}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    match = (lbl == c)\n    evidence[k] = f\"Pauli('X').dot(Pauli('Y')).to_label() = '{lbl}'; option {k} claims '{c}' -> match={match}\"\n    if match:\n        proven.append(k)\nevidence[\"B\"] += f\"  (cross-check: matrix == iZ? {bool(np.allclose(res.to_matrix(), 1j * Z))})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": lbl}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E letter-retention misconception (product keeps the first operand's letter)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

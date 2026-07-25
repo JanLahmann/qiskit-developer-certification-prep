@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "The 4×4 identity"
+    },
+    {
+      "key": "E",
+      "text": "`iZ` (a 2×2 matrix) — `tensor` multiplies the two operators together"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "B": "This is what `.expand` does (`a.expand(b)` = b ⊗ a). `tensor` keeps the caller `a` on the left/high qubit, giving 'XY', not 'YX'.",
       "C": "The second operand is Y, not X; the result carries Y on qubit 0.",
-      "D": "A tensor product of two non-identity Paulis is not the identity."
+      "D": "A tensor product of two non-identity Paulis is not the identity.",
+      "E": "tensor-vs-dot confusion: `tensor` builds the Kronecker product on two separate qubits (a 4×4 matrix); the operator *product* X·Y = iZ on one qubit is what `.dot`/`.compose` return."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,13 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nX = np.array([[0, 1], [1, 0]], dtype=complex)\nY = np.array([[0, -1j], [1j, 0]], dtype=complex)\nobserved = Pauli('X').tensor(Pauli('Y')).to_matrix()\ncands = {\"A\": np.kron(X, Y), \"B\": np.kron(Y, X), \"C\": np.kron(X, X), \"D\": np.eye(4, dtype=complex)}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    match = bool(np.allclose(observed, v))\n    evidence[k] = f\"X.tensor(Y).to_label()='{Pauli('X').tensor(Pauli('Y')).to_label()}'; option {k} matrix match={match}\"\n    if match:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": Pauli('X').tensor(Pauli('Y')).to_label()}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nX = np.array([[0, 1], [1, 0]], dtype=complex)\nY = np.array([[0, -1j], [1j, 0]], dtype=complex)\nZ = np.array([[1, 0], [0, -1]], dtype=complex)\nobserved = Pauli('X').tensor(Pauli('Y')).to_matrix()\ncands = {\"A\": np.kron(X, Y), \"B\": np.kron(Y, X), \"C\": np.kron(X, X), \"D\": np.eye(4, dtype=complex),\n         \"E\": 1j * Z}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    match = observed.shape == v.shape and bool(np.allclose(observed, v))\n    evidence[k] = f\"X.tensor(Y).to_label()='{Pauli('X').tensor(Pauli('Y')).to_label()}'; option {k} matrix match={match}\"\n    if match:\n        proven.append(k)\nevidence[\"E\"] += (f\"  (tensor returns a {observed.shape} matrix; the one-qubit product \"\n                  f\"X.dot(Y) = '{Pauli('X').dot(Pauli('Y')).to_label()}' is 2x2)\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": Pauli('X').tensor(Pauli('Y')).to_label()}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E tensor-vs-dot confusion (Kronecker product read as operator product)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

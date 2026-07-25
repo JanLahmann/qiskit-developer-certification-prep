@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "{'01': 1.0} — keys are ordered q1q0, so flipping qubit 0 gives '01'"
+    },
+    {
+      "key": "E",
+      "text": "{1: 1.0} — the keys of `probabilities_dict` are integer basis indices"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "A": "This reverses the bit order. `probabilities_dict` keys are q_{n-1}…q_0, so qubit 0 is the RIGHTMOST character and its flip shows up as '01', not '10'.",
       "B": "X was applied to qubit 0 only; qubit 1 stays 0, so the string is '01', not '11'.",
-      "C": "X flips |0⟩ to |1⟩ on qubit 0 — a very measurable change; the outcome '01' occurs with certainty."
+      "C": "X flips |0⟩ to |1⟩ on qubit 0 — a very measurable change; the outcome '01' occurs with certainty.",
+      "E": "Key-type confusion: `probabilities_dict()` is keyed by bitstrings ('01'), not by integer indices. The integer form is what `Statevector.from_int` consumes, not what the dict emits."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(2)\nqc.x(0)\nd = Statevector.from_instruction(qc).probabilities_dict()\nobs = {str(k): round(float(v), 6) for k, v in d.items()}\ntrue_key = max(obs, key=obs.get)\nclaims = {\"D\": \"01\", \"A\": \"10\", \"B\": \"11\", \"C\": \"00\"}\nevidence = {}\nproven = []\nfor k, key in claims.items():\n    m = (obs.get(key, 0.0) == 1.0)\n    evidence[k] = f\"probabilities_dict() = {obs}; option {k} claims '{key}':1.0 -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"dict\": obs, \"certain_outcome\": true_key}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(2)\nqc.x(0)\nd = Statevector.from_instruction(qc).probabilities_dict()\nobs = {str(k): round(float(v), 6) for k, v in d.items()}\ntrue_key = max(obs, key=obs.get)\nclaims = {\"D\": \"01\", \"A\": \"10\", \"B\": \"11\", \"C\": \"00\"}\nevidence = {}\nproven = []\nfor k, key in claims.items():\n    m = (obs.get(key, 0.0) == 1.0)\n    evidence[k] = f\"probabilities_dict() = {obs}; option {k} claims '{key}':1.0 -> match={m}\"\n    if m:\n        proven.append(k)\nkey_types = sorted({type(k).__name__ for k in d})\nmE = all(isinstance(k, int) for k in d)\nevidence[\"E\"] = f\"probabilities_dict() keys are {list(d)} of type {key_types}; the 'integer basis index' claim -> match={mE}\"\nif mE:\n    proven.append(\"E\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"dict\": obs, \"certain_outcome\": true_key}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "length tell cleared (correct trimmed, distractor A names the API it misreads)"
+    "notes": "length tell cleared (correct trimmed, distractor A names the API it misreads) | pool wave: +E probabilities_dict key-type confusion (int index vs bitstring)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

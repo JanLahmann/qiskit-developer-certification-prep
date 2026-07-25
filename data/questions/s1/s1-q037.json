@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "H ⊗ H — H is applied to both qubits"
+    },
+    {
+      "key": "E",
+      "text": "diag(H, I) — the idle qubit adds an operator block, not a tensor slot"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "C": "H ⊗ I would put H on qubit 1 (the high, left factor). Since the gate is on qubit 0, H is the right factor: I ⊗ H.",
       "D": "H acts on qubit 0 only; qubit 1 is idle, so its factor is the identity, not H.",
-      "A": "The operator of a 2-qubit circuit is always 4×4. The idle qubit contributes an identity factor; it is not dropped."
+      "A": "The operator of a 2-qubit circuit is always 4×4. The idle qubit contributes an identity factor; it is not dropped.",
+      "E": "Direct-sum vs tensor-product confusion: an extra qubit multiplies the dimension by tensoring (2×2 → 4×4 with every entry replicated); it does not stack a separate block on the diagonal alongside the gate."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
@@ -47,13 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\nqc = QuantumCircuit(2)\nqc.h(0)\nobserved = Operator(qc).data\nH = np.array([[1, 1], [1, -1]], dtype=complex) / np.sqrt(2)\nI = np.eye(2, dtype=complex)\ncands = {\"B\": np.kron(I, H), \"C\": np.kron(H, I), \"D\": np.kron(H, H), \"A\": H}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = observed.shape == v.shape and bool(np.allclose(observed, v))\n    evidence[k] = f\"Operator(qc) is {observed.shape}; option {k} claims {v.shape} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"shape\": list(observed.shape)}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\nqc = QuantumCircuit(2)\nqc.h(0)\nobserved = Operator(qc).data\nH = np.array([[1, 1], [1, -1]], dtype=complex) / np.sqrt(2)\nI = np.eye(2, dtype=complex)\nzero = np.zeros((2, 2), dtype=complex)\ncands = {\"B\": np.kron(I, H), \"C\": np.kron(H, I), \"D\": np.kron(H, H), \"A\": H,\n         \"E\": np.block([[H, zero], [zero, I]])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = observed.shape == v.shape and bool(np.allclose(observed, v))\n    evidence[k] = f\"Operator(qc) is {observed.shape}; option {k} claims {v.shape} -> match={m}\"\n    if m:\n        proven.append(k)\nevidence[\"E\"] += (f\"  (the observed matrix equals I⊗H; the block form diag(H, I) differs from it \"\n                  f\"by max |Δ| = {float(np.max(np.abs(observed - cands['E']))):.3f})\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"shape\": list(observed.shape)}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E direct-sum-vs-tensor-product confusion"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

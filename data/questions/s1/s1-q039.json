@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "0.25 = sin²(π/6) — for RY(θ)|0⟩, P(1) is always sin²(θ/2)"
+    },
+    {
+      "key": "E",
+      "text": "0.866 = sin(π/3) — the |1⟩ amplitude, unsquared and taken at the full θ"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "A": "cos²(θ/2) = 0.75 is P(0), the probability of outcome 0. The two outcomes are swapped.",
       "B": "The rotation angle sets the split; only θ = π/2 gives 0.5/0.5. At θ = π/3 the state is closer to |0⟩.",
-      "C": "|0⟩ reaches |1⟩ only at θ = π. At θ = π/3 the qubit is mostly still |0⟩ (P(1) = 0.25)."
+      "C": "|0⟩ reaches |1⟩ only at θ = π. At θ = π/3 the qubit is mostly still |0⟩ (P(1) = 0.25).",
+      "E": "Amplitude-vs-probability error compounded with the full angle: the |1⟩ amplitude is sin(θ/2) = 0.5, and the probability is its square. Reading sin(θ) straight off the rotation angle doubles the error."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.ry(np.pi / 3, 0)\np1 = float(Statevector.from_instruction(qc).probabilities()[1])\nclaims = {\"D\": 0.25, \"A\": 0.75, \"B\": 0.5, \"C\": 1.0}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = bool(abs(p1 - c) < 1e-9)\n    evidence[k] = f\"P(measure 1) = {p1:.4f}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"P1\": p1}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.ry(np.pi / 3, 0)\np1 = float(Statevector.from_instruction(qc).probabilities()[1])\nclaims = {\"D\": 0.25, \"A\": 0.75, \"B\": 0.5, \"C\": 1.0, \"E\": 0.8660254}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = bool(abs(p1 - c) < 1e-6)\n    evidence[k] = f\"P(measure 1) = {p1:.4f}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"P1\": p1}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (correct option now carries the absolute)"
+    "notes": "absolute-wording tell cleared (correct option now carries the absolute) | pool wave: +E amplitude-vs-probability error at the full angle"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "an equal superposition of two basis states, because dims=4"
+    },
+    {
+      "key": "E",
+      "text": "a `QiskitError` — `dims` may not be an int; it takes a tuple like (2, 2)"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "B": "Integer 2 is binary 10, so qubit 1 (the high bit) is set, giving |10⟩. |01⟩ would be integer 1.",
       "C": "`dims=4` here means a 4-dimensional space that factorizes as two qubits; index 2 is a perfectly valid two-qubit basis state |10⟩.",
-      "D": "`from_int` builds a single basis state, never a superposition; `dims` only sets the total dimension."
+      "D": "`from_int` builds a single basis state, never a superposition; `dims` only sets the total dimension.",
+      "E": "dims-argument misconception: `dims` accepts an int (the total dimension), a tuple, or nothing at all — `dims=4` is read as one 4-dimensional space split into two qubits."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
@@ -47,13 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Statevector\nobs = Statevector.from_int(2, dims=4).data\nidx = int(np.argmax(np.abs(obs)))\nnnz = int(np.count_nonzero(np.abs(obs) > 1e-9))\nclaims = {\"A\": 2, \"B\": 1}\nevidence = {}\nproven = []\nfor k, i in claims.items():\n    m = (nnz == 1 and idx == i)\n    evidence[k] = f\"from_int(2, dims=4) has one amplitude at index {idx} (nnz={nnz}); option {k} claims index {i} -> match={m}\"\n    if m:\n        proven.append(k)\nmC = (nnz != 1)\nevidence[\"C\"] = f\"result is a single basis state |{format(idx, '02b')}> with nnz={nnz}; 'invalid qudit' claim -> match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = (nnz > 1)\nevidence[\"D\"] = f\"result has nnz={nnz}; 'equal superposition' claim -> match={mD}\"\nif mD:\n    proven.append(\"D\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"index\": idx, \"nnz\": nnz}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Statevector\nobs = Statevector.from_int(2, dims=4).data\nidx = int(np.argmax(np.abs(obs)))\nnnz = int(np.count_nonzero(np.abs(obs) > 1e-9))\nclaims = {\"A\": 2, \"B\": 1}\nevidence = {}\nproven = []\nfor k, i in claims.items():\n    m = (nnz == 1 and idx == i)\n    evidence[k] = f\"from_int(2, dims=4) has one amplitude at index {idx} (nnz={nnz}); option {k} claims index {i} -> match={m}\"\n    if m:\n        proven.append(k)\nmC = (nnz != 1)\nevidence[\"C\"] = f\"result is a single basis state |{format(idx, '02b')}> with nnz={nnz}; 'invalid qudit' claim -> match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = (nnz > 1)\nevidence[\"D\"] = f\"result has nnz={nnz}; 'equal superposition' claim -> match={mD}\"\nif mD:\n    proven.append(\"D\")\ntry:\n    dims_out = Statevector.from_int(2, dims=4).dims()\n    e_raised = False\nexcept Exception:\n    dims_out = None\n    e_raised = True\nevidence[\"E\"] = f\"from_int(2, dims=4) raised? {e_raised}; it returned a state with dims {dims_out}; the 'dims must be a tuple' claim -> match={e_raised}\"\nif e_raised:\n    proven.append(\"E\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"index\": idx, \"nnz\": nnz}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E dims-must-be-a-tuple misconception"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

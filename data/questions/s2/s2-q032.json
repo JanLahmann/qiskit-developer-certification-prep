@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "Nothing meaningful — q-sphere nodes are all the same color and any difference is a rendering artifact."
+    },
+    {
+      "key": "E",
+      "text": "Whether the amplitude has a nonzero imaginary part — real amplitudes typically share a colour."
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "A": "The two amplitudes have equal magnitude (the nodes are the same size), and magnitude is shown by node size, not by color.",
       "C": "|01> and |10> have the same Hamming weight (one 1-bit each), so a color difference cannot be encoding Hamming weight — it is the phase that differs.",
-      "D": "q-sphere nodes ARE color-coded by phase; the difference is meaningful, not an artifact."
+      "D": "q-sphere nodes ARE color-coded by phase; the difference is meaningful, not an artifact.",
+      "E": "Both amplitudes here are real (±1/√2, imaginary part 0) yet the nodes differ in colour: the colour wheel tracks the full phase angle, and a real negative amplitude is phase π."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.x(0)\nqc.z(0)\nsv = Statevector.from_instruction(qc)\nampl = {str(k): v for k, v in sv.to_dict().items() if abs(v) > 1e-9}\n\na01 = ampl.get(\"01\", 0)\na10 = ampl.get(\"10\", 0)\nm01 = round(abs(a01), 4)\nm10 = round(abs(a10), 4)\np01 = round(float(np.angle(a01)), 4)\np10 = round(float(np.angle(a10)), 4)\nhw01 = \"01\".count(\"1\")\nhw10 = \"10\".count(\"1\")\n\nmag_equal = abs(m01 - m10) < 1e-6\nphase_diff_pi = abs(abs(p01 - p10) - np.pi) < 1e-3\n\nevidence = {}\nproven = []\nmA = m01 > m10\nevidence[\"A\"] = f\"|amp(01)|={m01}, |amp(10)|={m10}; magnitudes equal={mag_equal}; '01 larger magnitude' match={mA}\"\nif mA:\n    proven.append(\"A\")\nmB = mag_equal and phase_diff_pi\nevidence[\"B\"] = f\"phase(01)={p01} rad vs phase(10)={p10} rad (differ by pi={phase_diff_pi}); magnitudes equal={mag_equal} -> color encodes relative phase, match={mB}\"\nif mB:\n    proven.append(\"B\")\nmC = hw01 != hw10\nevidence[\"C\"] = f\"Hamming weights 01->{hw01}, 10->{hw10} (equal); a color difference cannot encode Hamming weight, match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = (not phase_diff_pi) and mag_equal and (p01 == p10)\nevidence[\"D\"] = f\"amplitudes differ in phase ({p01} vs {p10}); nodes are not identical, so not an artifact, match={mD}\"\nif mD:\n    proven.append(\"D\")\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"amp_01\": str(np.round(a01, 4)), \"amp_10\": str(np.round(a10, 4))},\n})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.x(0)\nqc.z(0)\nsv = Statevector.from_instruction(qc)\nampl = {str(k): v for k, v in sv.to_dict().items() if abs(v) > 1e-9}\n\na01 = ampl.get(\"01\", 0)\na10 = ampl.get(\"10\", 0)\nm01 = round(abs(a01), 4)\nm10 = round(abs(a10), 4)\np01 = round(float(np.angle(a01)), 4)\np10 = round(float(np.angle(a10)), 4)\nhw01 = \"01\".count(\"1\")\nhw10 = \"10\".count(\"1\")\n\nmag_equal = abs(m01 - m10) < 1e-6\nphase_diff_pi = abs(abs(p01 - p10) - np.pi) < 1e-3\n\nevidence = {}\nproven = []\nmA = m01 > m10\nevidence[\"A\"] = f\"|amp(01)|={m01}, |amp(10)|={m10}; magnitudes equal={mag_equal}; '01 larger magnitude' match={mA}\"\nif mA:\n    proven.append(\"A\")\nmB = mag_equal and phase_diff_pi\nevidence[\"B\"] = f\"phase(01)={p01} rad vs phase(10)={p10} rad (differ by pi={phase_diff_pi}); magnitudes equal={mag_equal} -> color encodes relative phase, match={mB}\"\nif mB:\n    proven.append(\"B\")\nmC = hw01 != hw10\nevidence[\"C\"] = f\"Hamming weights 01->{hw01}, 10->{hw10} (equal); a color difference cannot encode Hamming weight, match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = (not phase_diff_pi) and mag_equal and (p01 == p10)\nevidence[\"D\"] = f\"amplitudes differ in phase ({p01} vs {p10}); nodes are not identical, so not an artifact, match={mD}\"\nif mD:\n    proven.append(\"D\")\n\nim01 = round(float(np.imag(a01)), 4)\nim10 = round(float(np.imag(a10)), 4)\nmE = (im01 != 0) or (im10 != 0)\nevidence[\"E\"] = (\n    f\"imaginary parts: Im(amp(01))={im01}, Im(amp(10))={im10} (both real) yet the phases differ ({p01} vs {p10}) -> imaginary-part claim match={mE}\"\n)\nif mE:\n    proven.append(\"E\")\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"amp_01\": str(np.round(a01, 4)), \"amp_10\": str(np.round(a10, 4))},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern pass: absolute tell cleared by hedging distractor A instead of moving an absolute into the correct option"
+    "notes": "meta-pattern pass: absolute tell cleared by hedging distractor A instead of moving an absolute into the correct option | pool wave: +E colour read as an imaginary-part flag rather than the phase angle"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

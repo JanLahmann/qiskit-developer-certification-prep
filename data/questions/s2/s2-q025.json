@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "Sorted ascending, but the call returns an `Axes` object instead of a matplotlib `Figure`."
+    },
+    {
+      "key": "E",
+      "text": "Sorted in descending bitstring order ('11','10','01','00'); returns a `Figure`."
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "A": "The bars are not left in insertion order; the default `sort='asc'` reorders them by bitstring value.",
       "B": "Sorting by count is not the default — you would need `sort='value_desc'`; by default it sorts by the bitstring label.",
-      "D": "`plot_histogram` returns the whole `Figure`, not a bare `Axes`; returning the Figure is what lets you save or restyle it."
+      "D": "`plot_histogram` returns the whole `Figure`, not a bare `Axes`; returning the Figure is what lets you save or restyle it.",
+      "E": "The default sort is ascending by bitstring, so '00' is the leftmost bar and '11' the rightmost; `sort=\"desc\"` would be needed for the reverse and applies to values, not keys."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.visualization import plot_histogram\nimport matplotlib\n\ncounts = {\"11\": 10, \"00\": 40, \"10\": 5, \"01\": 7}\nfig = plot_histogram(counts)\nlabels = [t.get_text() for t in fig.axes[0].get_xticklabels()]\nis_fig = isinstance(fig, matplotlib.figure.Figure)\n\ninsertion = list(counts.keys())\ncount_desc = [k for k, _ in sorted(counts.items(), key=lambda kv: kv[1], reverse=True)]\nascending = sorted(counts.keys())\n\nevidence = {}\nproven = []\nmA = (labels == insertion) and is_fig\nevidence[\"A\"] = f\"observed labels {labels}, Figure={is_fig}; insertion order {insertion} -> match={mA}\"\nif mA:\n    proven.append(\"A\")\nmB = (labels == count_desc) and is_fig\nevidence[\"B\"] = f\"observed labels {labels}; count-descending order {count_desc} -> match={mB}\"\nif mB:\n    proven.append(\"B\")\nmC = (labels == ascending) and is_fig\nevidence[\"C\"] = f\"observed labels {labels}, returns matplotlib Figure={is_fig}; ascending order {ascending} -> match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = (labels == ascending) and (not is_fig)\nevidence[\"D\"] = f\"observed labels {labels}; return type is {type(fig).__name__} (Figure={is_fig}) -> Axes-not-Figure match={mD}\"\nif mD:\n    proven.append(\"D\")\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"labels\": labels, \"is_figure\": is_fig},\n})\n"
+    "proof_script": "from qiskit.visualization import plot_histogram\nimport matplotlib\n\ncounts = {\"11\": 10, \"00\": 40, \"10\": 5, \"01\": 7}\nfig = plot_histogram(counts)\nlabels = [t.get_text() for t in fig.axes[0].get_xticklabels()]\nis_fig = isinstance(fig, matplotlib.figure.Figure)\n\ninsertion = list(counts.keys())\ncount_desc = [k for k, _ in sorted(counts.items(), key=lambda kv: kv[1], reverse=True)]\nascending = sorted(counts.keys())\n\nevidence = {}\nproven = []\nmA = (labels == insertion) and is_fig\nevidence[\"A\"] = f\"observed labels {labels}, Figure={is_fig}; insertion order {insertion} -> match={mA}\"\nif mA:\n    proven.append(\"A\")\nmB = (labels == count_desc) and is_fig\nevidence[\"B\"] = f\"observed labels {labels}; count-descending order {count_desc} -> match={mB}\"\nif mB:\n    proven.append(\"B\")\nmC = (labels == ascending) and is_fig\nevidence[\"C\"] = f\"observed labels {labels}, returns matplotlib Figure={is_fig}; ascending order {ascending} -> match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = (labels == ascending) and (not is_fig)\nevidence[\"D\"] = f\"observed labels {labels}; return type is {type(fig).__name__} (Figure={is_fig}) -> Axes-not-Figure match={mD}\"\nif mD:\n    proven.append(\"D\")\n\ndescending = sorted(counts.keys(), reverse=True)\nmE = (labels == descending) and is_fig\nevidence[\"E\"] = f\"observed labels {labels}; descending order {descending} -> match={mE}\"\nif mE:\n    proven.append(\"E\")\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"labels\": labels, \"is_figure\": is_fig},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern pass: correct option shortened off the top-length tie so the longest/avoid-longest heuristics both sit at chance"
+    "notes": "meta-pattern pass: correct option shortened off the top-length tie so the longest/avoid-longest heuristics both sit at chance | pool wave: +E default bitstring sort assumed descending"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

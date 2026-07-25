@@ -196,3 +196,73 @@ and died with it.
   its own edits (an orchestrator touch-up once created a new medium flag).
 - Reality wins: fix the question, never the proof.
 - Append what you verify to this ledger.
+
+## Verified library facts (s2 pool wave — visualization, 2026-07-25, qiskit 2.5.0)
+
+- **`QuantumCircuit.draw()` has a fixed signature (no `**kwargs`)**: any near-miss
+  keyword raises `TypeError` (`initial_states=` for `initial_state=`). Same for the
+  standalone drawer: `circuit_drawer(qc, format="text")` → TypeError (the kwarg is
+  `output=`). Both are clean, cheap pool distractors.
+- **`style={...}` is silently ignored by the text renderer** — no error, and no
+  `|0>` labels appear. A non-raising refutation (good for "which call adds X?" stems).
+- **`draw("mpl", ax=ax)` returns `None`** (the caller owns the Axes) — verified
+  distractor for any "which call returns a `Figure`?" question.
+- **`idle_wires="auto"` keeps idle wires unless the circuit carries a transpiler
+  layout**; on an untranspiled circuit q_1 is still drawn. Safe distractor there,
+  a SECOND CORRECT ANSWER on a transpiled circuit — version/context-scope it.
+- **`circuit_drawer(qc, output="matplotlib")` raises the same `VisualizationError`
+  as the method** ("valid choices are text, latex, latex_source, and mpl") — the
+  method and the function share one renderer registry.
+- **`with qc.if_test(qc.clbits[0] == 1):` → `TypeError: 'bool' object is not
+  subscriptable`** (`Clbit.__eq__` returns a plain bool). `if_test` wants a
+  `(clbit, value)` tuple or an `expr` condition.
+- **`plot_histogram` / `plot_distribution` have NO `shots=` parameter** (TypeError) —
+  normalization is derived from the counts themselves. The V1 habit
+  `plot_histogram(counts, shots=...)` is a verified-wrong pool distractor.
+- **`legend=` must be a list**, matched element-wise against the executions: a plain
+  string raises `VisualizationError: Length of legend (13) doesn't match number of
+  input executions (2)`. `labels=` does not exist (TypeError).
+- **`number_to_keep=k` builds a `rest` bar equal to the SUM of the folded counts**
+  (heights 500/500/24 for the 20+4 remainder), never their average.
+- **`BitArray` has `get_counts()`, `get_int_counts()`, `get_bitstrings()` and NO
+  bare `counts()`** (AttributeError). CAUTION:
+  `plot_histogram(bitarray.get_int_counts())` **SUCCEEDS** (returns a Figure) — never
+  use it as a distractor. `plot_histogram(bitarray.get_bitstrings())` raises
+  `AttributeError: 'str' object has no attribute 'values'` (safe).
+- **`Statevector.draw(output="qsphere")` works** (`output` is the first positional
+  parameter) — never offer it as a wrong option. `sv.plot(...)` does not exist
+  (AttributeError), and `sv.draw("q_sphere")` is the safe spelling near-miss.
+- **`plot_bloch_multivector([[0,0,1],[0,0,1]])` → `QiskitError: Invalid DensityMatrix
+  input: not a square matrix`** — a list of Bloch vectors is parsed as a state.
+- **`plot_bloch_multivector(partial_trace(state, [1]))` succeeds but draws ONE
+  sphere** — a "runs fine, wrong result" distractor (needs a count-the-axes proof).
+- **`Statevector.from_label('r')` = +Y (0,1,0), `'l'` = −Y (0,−1,0)** — the safe
+  ±Y foils for ±X Bloch-arrow questions.
+- **`rz` on |0> leaves ⟨Z⟩ = 1** (global phase only) — safe "not on the equator"
+  distractor. `ry(π/2)` would be a SECOND CORRECT answer on equator questions.
+
+## Pool-craft rules (s2 pool wave, 2026-07-25)
+
+- **Pool variants re-expose `format_tell`**: when exactly one distractor carries the
+  backticks that cleared an earlier format tell, the variant dropping it flags. The
+  new pool distractor must be code-formatted too (hit s2-q012 live).
+- **Stem-echo (medium) fires when the only high-overlap distractor is droppable** —
+  give the pool distractor at least as much stem vocabulary as the correct option
+  (s2-q018: correct overlap 3 vs best distractor 1 after the drop; fixed by echoing
+  `output`/`high`/`resolution`/`figure`/`savefig`).
+- **Absolute/hedge rule re-confirmed** (s2-q032): distractor D carried the absolutes
+  and A was the only hedge, so the variant dropping A flagged — the pool distractor
+  had to hedge.
+- **Length rule (b) refined:** a pool distractor SHORTER than the correct option is
+  safe whenever every displayed subset still contains a long distractor (choose-3-of-4
+  can never be all-short). The real bar is: no variant may drop max-distractor length
+  below `len(correct)/1.4` (that is the low→high boundary). Extra low `length_tell`
+  entries are an accepted residual; medium/high are not.
+- **All-equal-length option sets tolerate one short pool distractor** (s2-q019, int
+  key `{5: 1.0}`): it drags `shortest_option` and `avoid_longest` below chance.
+- **Pooling raises the position heuristics**: variants that drop key A abstain from
+  `position_A` on the questions where A is wrong, so the surviving sample is
+  A-heavy (s2 went 0.315 → 0.359 against a 0.40 warn line). Watch it in sections
+  whose answer keys already skew, and prefer `display_count: 5` there.
+- **Whole-basis questions cannot be pooled**: s2-q031 lists all four 2-qubit basis
+  states as options; a fifth option would not be a basis state (a tell). Skipped.

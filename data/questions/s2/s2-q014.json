@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "`from qiskit.visualization.circuit import draw_circuit` then `draw_circuit(qc, output=\"text\")`"
+    },
+    {
+      "key": "E",
+      "text": "`from qiskit.visualization import circuit_drawer` then `circuit_drawer(qc, format=\"text\")`"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "B": "The old `qiskit.tools` namespace was removed; importing the drawer from there raises `ModuleNotFoundError`.",
       "C": "`circuit_drawer` is not re-exported from the top-level `qiskit` package, so this import raises `ImportError`.",
-      "D": "There is no `draw_circuit` function anywhere in `qiskit.visualization` or its `circuit` submodule — the drawer is named `circuit_drawer`, so this import raises `ImportError`."
+      "D": "There is no `draw_circuit` function anywhere in `qiskit.visualization` or its `circuit` submodule — the drawer is named `circuit_drawer`, so this import raises `ImportError`.",
+      "E": "Right import, near-miss keyword: the renderer is selected with `output=`, and `circuit_drawer` has no `format` parameter, so this raises `TypeError`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\n\nevidence = {}\nproven = []\n\ntry:\n    from qiskit.visualization import circuit_drawer as cd_a\n    out = cd_a(qc, output=\"text\")\n    evidence[\"A\"] = f\"import + call OK; returned {type(out).__name__}\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ntry:\n    from qiskit.tools import circuit_drawer as cd_b\n    cd_b(qc, \"text\")\n    evidence[\"B\"] = \"import + call OK\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ntry:\n    from qiskit import circuit_drawer as cd_c\n    cd_c(qc)\n    evidence[\"C\"] = \"import + call OK\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ntry:\n    from qiskit.visualization.circuit import draw_circuit as cd_d\n    cd_d(qc)\n    evidence[\"D\"] = \"import + call OK\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"drawer_import\": \"qiskit.visualization.circuit_drawer\"},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\n\nevidence = {}\nproven = []\n\ntry:\n    from qiskit.visualization import circuit_drawer as cd_a\n    out = cd_a(qc, output=\"text\")\n    evidence[\"A\"] = f\"import + call OK; returned {type(out).__name__}\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ntry:\n    from qiskit.tools import circuit_drawer as cd_b\n    cd_b(qc, \"text\")\n    evidence[\"B\"] = \"import + call OK\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ntry:\n    from qiskit import circuit_drawer as cd_c\n    cd_c(qc)\n    evidence[\"C\"] = \"import + call OK\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ntry:\n    from qiskit.visualization.circuit import draw_circuit as cd_d\n    cd_d(qc)\n    evidence[\"D\"] = \"import + call OK\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ntry:\n    from qiskit.visualization import circuit_drawer as cd_e\n    out = cd_e(qc, format=\"text\")\n    evidence[\"E\"] = f\"import + call OK; returned {type(out).__name__}\"\n    proven.append(\"E\")\nexcept Exception as e:\n    evidence[\"E\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"drawer_import\": \"qiskit.visualization.circuit_drawer\"},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern pass: length tell cleared (distractor D now probes a wrong submodule path)"
+    "notes": "meta-pattern pass: length tell cleared (distractor D now probes a wrong submodule path) | pool wave: +E near-miss kwarg format= instead of output= on circuit_drawer"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

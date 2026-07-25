@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "The endianness of the measurement counts produced by the circuit is reversed."
+    },
+    {
+      "key": "E",
+      "text": "The `draw` output also mirrors the gate sequence, so operations are usually rendered in reverse time order."
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "B": "Reversing the drawing order never changes gate semantics — the control and target qubits of a `cx` keep their roles; only their vertical positions in the picture move.",
       "C": "It reorders the qubit wires themselves (and clbits too), not merely classical-bit labels.",
-      "D": "`draw()` only produces a picture; it does not execute the circuit, so it cannot change any measurement counts or their endianness."
+      "D": "`draw()` only produces a picture; it does not execute the circuit, so it cannot change any measurement counts or their endianness.",
+      "E": "That describes `QuantumCircuit.reverse_ops()`, a circuit transformation. `reverse_bits` is a drawing option for the wire order and leaves the left-to-right time order alone."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.x(0)\ndefault = str(qc.draw(\"text\"))\nrev = str(qc.draw(\"text\", reverse_bits=True))\n\ndef top_qubit(txt):\n    i0 = txt.find(\"q_0\")\n    i1 = txt.find(\"q_1\")\n    return \"q0_top\" if i0 < i1 else \"q1_top\"\n\nd_order = top_qubit(default)\nr_order = top_qubit(rev)\nops_default = [ci.operation.name for ci in qc.data]\n\nevidence = {}\n# A: reverse flips q0-top to q1-top\nresA = (d_order == \"q0_top\" and r_order == \"q1_top\")\nevidence[\"A\"] = (\n    f\"default drawing puts {d_order}, reverse_bits=True puts {r_order} -> \"\n    f\"wire order flips (q1 on top) = {resA}\"\n)\n# B: operations unchanged by the render option\nevidence[\"B\"] = (\n    f\"circuit operations are {ops_default} both before and after drawing; \"\n    \"reverse_bits does not alter gate control/target roles\"\n)\n# C: it is a qubit reorder; there are no classical bits here\nevidence[\"C\"] = (\n    f\"num_clbits={qc.num_clbits}; the reordering moves qubit wires \"\n    f\"({d_order} -> {r_order}), not classical-bit labels\"\n)\n# D: draw returns a picture, not counts\nevidence[\"D\"] = (\n    f\"qc.draw returns {type(qc.draw('text')).__name__} (a rendering), \"\n    \"no execution occurs, so no counts/endianness change\"\n)\nproven = [\"A\"] if resA else []\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"default_order\": d_order, \"reversed_order\": r_order},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.x(0)\ndefault = str(qc.draw(\"text\"))\nrev = str(qc.draw(\"text\", reverse_bits=True))\n\ndef top_qubit(txt):\n    i0 = txt.find(\"q_0\")\n    i1 = txt.find(\"q_1\")\n    return \"q0_top\" if i0 < i1 else \"q1_top\"\n\nd_order = top_qubit(default)\nr_order = top_qubit(rev)\nops_default = [ci.operation.name for ci in qc.data]\n\nevidence = {}\n# A: reverse flips q0-top to q1-top\nresA = (d_order == \"q0_top\" and r_order == \"q1_top\")\nevidence[\"A\"] = (\n    f\"default drawing puts {d_order}, reverse_bits=True puts {r_order} -> \"\n    f\"wire order flips (q1 on top) = {resA}\"\n)\n# B: operations unchanged by the render option\nevidence[\"B\"] = (\n    f\"circuit operations are {ops_default} both before and after drawing; \"\n    \"reverse_bits does not alter gate control/target roles\"\n)\n# C: it is a qubit reorder; there are no classical bits here\nevidence[\"C\"] = (\n    f\"num_clbits={qc.num_clbits}; the reordering moves qubit wires \"\n    f\"({d_order} -> {r_order}), not classical-bit labels\"\n)\n# D: draw returns a picture, not counts\nevidence[\"D\"] = (\n    f\"qc.draw returns {type(qc.draw('text')).__name__} (a rendering), \"\n    \"no execution occurs, so no counts/endianness change\"\n)\ndemo = QuantumCircuit(2)\ndemo.h(0)\ndemo.x(0)\nrev_demo = str(demo.draw(\"text\", reverse_bits=True))\nh_before_x = rev_demo.find(\"H\") < rev_demo.find(\"X\")\nevidence[\"E\"] = (\n    f\"two-gate demo built as [h, x]: with reverse_bits=True the H box still precedes \"\n    f\"the X box in the drawing (H first = {h_before_x}), so the time order is not \"\n    \"mirrored; mirroring is what reverse_ops() does\"\n)\nproven = [\"A\"] if resA else []\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"default_order\": d_order, \"reversed_order\": r_order},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern pass: format tell cleared (distractor B now code-formatted) and absolute tell cleared (distractor B hedges, so distractor C keeps its absolute)"
+    "notes": "meta-pattern pass: format tell cleared (distractor B now code-formatted) and absolute tell cleared (distractor B hedges, so distractor C keeps its absolute) | pool wave: +E reverse_bits confused with reverse_ops (time order mirrored)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

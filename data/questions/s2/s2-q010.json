@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`str` then `AxesImage`"
+    },
+    {
+      "key": "E",
+      "text": "`TextDrawing` then `Image`"
+    },
+    {
+      "key": "F",
+      "text": "`NoneType` then `Figure`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Confuses the printable object with a bare string: `draw()` returns a `TextDrawing`, not `str`; only `str(qc.draw())` or `draw('latex_source')` yields a plain string.",
       "C": "The mpl renderer returns the whole `Figure`, not a single `Axes`; returning the Figure is what lets you save or further style the drawing.",
-      "D": "Both halves are wrong: the default is `TextDrawing` (not `str`) and `mpl` returns a `Figure` (not an `AxesImage`, which is an image-plot artist)."
+      "D": "Both halves are wrong: the default is `TextDrawing` (not `str`) and `mpl` returns a `Figure` (not an `AxesImage`, which is an image-plot artist).",
+      "E": "Mixes up the renderers: the `latex` output is the one that returns a PIL `Image` (and needs a LaTeX toolchain); `mpl` hands back a `matplotlib` `Figure`.",
+      "F": "Assumes `draw()` only prints the diagram as a side effect and returns nothing. It returns a `TextDrawing`; notebooks merely display its `__repr__` automatically."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
@@ -47,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nimport matplotlib\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\n\ndefault_name = type(qc.draw()).__name__\nmpl_obj = qc.draw(\"mpl\")\nmpl_name = type(mpl_obj).__name__\nis_fig = isinstance(mpl_obj, matplotlib.figure.Figure)\nobserved_pair = (default_name, mpl_name)\n\npairs = {\n    \"A\": (\"str\", \"Figure\"),\n    \"B\": (\"TextDrawing\", \"Figure\"),\n    \"C\": (\"TextDrawing\", \"Axes\"),\n    \"D\": (\"str\", \"AxesImage\"),\n}\nevidence = {}\nproven = []\nfor k, claim in pairs.items():\n    match = (claim == observed_pair)\n    evidence[k] = (\n        f\"option claims {claim}; executed: draw() -> {default_name}, \"\n        f\"draw('mpl') -> {mpl_name} (isinstance Figure={is_fig}) -> match={match}\"\n    )\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"default\": default_name, \"mpl\": mpl_name, \"is_figure\": is_fig},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nimport matplotlib\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\n\ndefault_name = type(qc.draw()).__name__\nmpl_obj = qc.draw(\"mpl\")\nmpl_name = type(mpl_obj).__name__\nis_fig = isinstance(mpl_obj, matplotlib.figure.Figure)\nobserved_pair = (default_name, mpl_name)\n\npairs = {\n    \"A\": (\"str\", \"Figure\"),\n    \"B\": (\"TextDrawing\", \"Figure\"),\n    \"C\": (\"TextDrawing\", \"Axes\"),\n    \"D\": (\"str\", \"AxesImage\"),\n    \"E\": (\"TextDrawing\", \"Image\"),\n    \"F\": (\"NoneType\", \"Figure\"),\n}\nevidence = {}\nproven = []\nfor k, claim in pairs.items():\n    match = (claim == observed_pair)\n    evidence[k] = (\n        f\"option claims {claim}; executed: draw() -> {default_name}, \"\n        f\"draw('mpl') -> {mpl_name} (isinstance Figure={is_fig}) -> match={match}\"\n    )\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"default\": default_name, \"mpl\": mpl_name, \"is_figure\": is_fig},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E latex-Image vs mpl-Figure renderer mix-up, +F draw() assumed to return None"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

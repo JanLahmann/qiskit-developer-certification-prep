@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`plot_histogram([before, after], legend=[\"before\", \"after\"])`"
+    },
+    {
+      "key": "E",
+      "text": "`plot_histogram([before, after], labels=[\"before\", \"after\"])`"
+    },
+    {
+      "key": "F",
+      "text": "`plot_histogram([before, after], legend=\"before, after\")`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Two dicts cannot be combined with `+` (that raises `TypeError`); overlaying requires a list of dicts, not addition.",
       "B": "`plot_histogram` takes one data argument; a second positional dict is consumed by the next parameter (`figsize`), which raises an error instead of overlaying.",
-      "C": "A dict-of-dicts is not a list of counts; `plot_histogram` tries to read the outer dict as counts and raises a `TypeError`."
+      "C": "A dict-of-dicts is not a list of counts; `plot_histogram` tries to read the outer dict as counts and raises a `TypeError`.",
+      "E": "Right shape, near-miss keyword: the parameter that names the overlaid executions is `legend`; there is no `labels` parameter, so this raises `TypeError`.",
+      "F": "`legend` is matched element-wise against the list of executions, so a single string is read as a sequence of characters and the call raises `VisualizationError`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
@@ -47,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.visualization import plot_histogram\nimport matplotlib\n\nbefore = {\"00\": 480, \"11\": 300, \"01\": 120, \"10\": 124}\nafter = {\"00\": 500, \"11\": 500, \"01\": 12, \"10\": 12}\n\ndef legend_texts(fig):\n    leg = fig.axes[0].get_legend()\n    return [t.get_text() for t in leg.get_texts()] if leg else []\n\ncalls = {\n    \"A\": lambda: plot_histogram(before + after, legend=[\"before\", \"after\"]),\n    \"B\": lambda: plot_histogram(before, after, legend=[\"before\", \"after\"]),\n    \"C\": lambda: plot_histogram({\"before\": before, \"after\": after}),\n    \"D\": lambda: plot_histogram([before, after], legend=[\"before\", \"after\"]),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        fig = fn()\n        is_fig = isinstance(fig, matplotlib.figure.Figure)\n        leg = legend_texts(fig) if is_fig else []\n        overlays = is_fig and set(leg) == {\"before\", \"after\"}\n        evidence[k] = f\"returned {type(fig).__name__}; legend={leg}; overlays both runs={overlays}\"\n        if overlays:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"overlay_calls\": proven},\n})\n"
+    "proof_script": "from qiskit.visualization import plot_histogram\nimport matplotlib\n\nbefore = {\"00\": 480, \"11\": 300, \"01\": 120, \"10\": 124}\nafter = {\"00\": 500, \"11\": 500, \"01\": 12, \"10\": 12}\n\ndef legend_texts(fig):\n    leg = fig.axes[0].get_legend()\n    return [t.get_text() for t in leg.get_texts()] if leg else []\n\ncalls = {\n    \"A\": lambda: plot_histogram(before + after, legend=[\"before\", \"after\"]),\n    \"B\": lambda: plot_histogram(before, after, legend=[\"before\", \"after\"]),\n    \"C\": lambda: plot_histogram({\"before\": before, \"after\": after}),\n    \"D\": lambda: plot_histogram([before, after], legend=[\"before\", \"after\"]),\n    \"E\": lambda: plot_histogram([before, after], labels=[\"before\", \"after\"]),\n    \"F\": lambda: plot_histogram([before, after], legend=\"before, after\"),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        fig = fn()\n        is_fig = isinstance(fig, matplotlib.figure.Figure)\n        leg = legend_texts(fig) if is_fig else []\n        overlays = is_fig and set(leg) == {\"before\", \"after\"}\n        evidence[k] = f\"returned {type(fig).__name__}; legend={leg}; overlays both runs={overlays}\"\n        if overlays:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"overlay_calls\": proven},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E labels= near-miss for legend=, +F legend given as one string instead of a per-execution list"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

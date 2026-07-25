@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "The +Z axis — the state |0>."
+    },
+    {
+      "key": "E",
+      "text": "The −Y axis — the state (|0> − i|1>)/√2."
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "A": "+X is the state right after H, before S. Applying S rotates the vector off the X axis by 90° about Z.",
       "B": "−Z (state |1>) would require flipping the qubit; H followed by S keeps it on the equator, not at a pole.",
-      "D": "+Z (state |0>) is the starting point before any gate; H already moved the vector to the equator."
+      "D": "+Z (state |0>) is the starting point before any gate; H already moved the vector to the equator.",
+      "E": "`s` applies a +i phase to the |1> component, rotating |+> towards +Y. The −Y state is what `sdg` (S†) would produce instead."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
@@ -47,13 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)\nsv = Statevector.from_instruction(qc)\nbloch = tuple(round(float(np.real(sv.expectation_value(Pauli(p)))), 4) for p in (\"X\", \"Y\", \"Z\"))\n\ntargets = {\n    \"A\": (1.0, 0.0, 0.0),\n    \"B\": (0.0, 0.0, -1.0),\n    \"C\": (0.0, 1.0, 0.0),\n    \"D\": (0.0, 0.0, 1.0),\n}\nlabel = {\"A\": \"+X\", \"B\": \"-Z\", \"C\": \"+Y\", \"D\": \"+Z\"}\nevidence = {}\nproven = []\nfor k, t in targets.items():\n    match = all(abs(a - b) < 1e-6 for a, b in zip(bloch, t))\n    evidence[k] = f\"option claims axis {label[k]} -> Bloch {t}; executed state Bloch vector = {bloch} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"bloch_vector\": list(bloch), \"amplitudes\": [str(np.round(x, 4)) for x in sv.data]},\n})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)\nsv = Statevector.from_instruction(qc)\nbloch = tuple(round(float(np.real(sv.expectation_value(Pauli(p)))), 4) for p in (\"X\", \"Y\", \"Z\"))\n\ntargets = {\n    \"A\": (1.0, 0.0, 0.0),\n    \"B\": (0.0, 0.0, -1.0),\n    \"C\": (0.0, 1.0, 0.0),\n    \"D\": (0.0, 0.0, 1.0),\n    \"E\": (0.0, -1.0, 0.0),\n}\nlabel = {\"A\": \"+X\", \"B\": \"-Z\", \"C\": \"+Y\", \"D\": \"+Z\", \"E\": \"-Y\"}\nevidence = {}\nproven = []\nfor k, t in targets.items():\n    match = all(abs(a - b) < 1e-6 for a, b in zip(bloch, t))\n    evidence[k] = f\"option claims axis {label[k]} -> Bloch {t}; executed state Bloch vector = {bloch} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"bloch_vector\": list(bloch), \"amplitudes\": [str(np.round(x, 4)) for x in sv.data]},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E S vs S-dagger phase sign (arrow on -Y instead of +Y)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

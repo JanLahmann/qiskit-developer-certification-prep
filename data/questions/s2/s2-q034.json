@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "`plot_bloch_multivector(state)` — pass the quantum state to the multivector drawer."
+    },
+    {
+      "key": "E",
+      "text": "`plot_bloch_multivector(partial_trace(state, [1]))` — reduce to one qubit first, then draw."
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "A": "`coord_type` only changes how the three numbers of a vector are interpreted (Cartesian vs spherical); it still cannot take a quantum state — the length-4 state fails to unpack into three coordinates and raises.",
       "B": "`state.data` is the length-4 amplitude array, not a Bloch vector; `plot_bloch_vector` still expects exactly [x, y, z] and draws one meaningless sphere, not one per qubit.",
-      "C": "`plot_bloch_multivector` expects a quantum STATE, not a 3-number vector; passing [0, 0, 1] raises 'Input is not a multi-qubit quantum state'."
+      "C": "`plot_bloch_multivector` expects a quantum STATE, not a 3-number vector; passing [0, 0, 1] raises 'Input is not a multi-qubit quantum state'.",
+      "E": "Tracing out qubit 1 by hand leaves a one-qubit density matrix, so the figure holds a single sphere; the multivector drawer already performs that reduction for every qubit."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
@@ -47,13 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_vector, plot_bloch_multivector\nimport matplotlib\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nstate = Statevector.from_instruction(qc)\nn_qubits = state.num_qubits\n\ndef spheres(fn):\n    try:\n        r = fn()\n        if isinstance(r, matplotlib.figure.Figure):\n            return len(r.axes)\n        return f\"returned {type(r).__name__}\"\n    except Exception as e:\n        return f\"raised {type(e).__name__}\"\n\ncalls = {\n    \"A\": lambda: plot_bloch_vector(state, coord_type=\"spherical\"),\n    \"B\": lambda: plot_bloch_vector(state.data),\n    \"C\": lambda: plot_bloch_multivector([0, 0, 1]),\n    \"D\": lambda: plot_bloch_multivector(state),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    s = spheres(fn)\n    per_qubit = isinstance(s, int) and s == n_qubits\n    evidence[k] = f\"result: {s} Bloch-sphere axes (need {n_qubits}, one per qubit) -> correct={per_qubit}\"\n    if per_qubit:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"num_qubits\": n_qubits, \"correct_calls\": proven},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, partial_trace\nfrom qiskit.visualization import plot_bloch_vector, plot_bloch_multivector\nimport matplotlib\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nstate = Statevector.from_instruction(qc)\nn_qubits = state.num_qubits\n\ndef spheres(fn):\n    try:\n        r = fn()\n        if isinstance(r, matplotlib.figure.Figure):\n            return len(r.axes)\n        return f\"returned {type(r).__name__}\"\n    except Exception as e:\n        return f\"raised {type(e).__name__}\"\n\ncalls = {\n    \"A\": lambda: plot_bloch_vector(state, coord_type=\"spherical\"),\n    \"B\": lambda: plot_bloch_vector(state.data),\n    \"C\": lambda: plot_bloch_multivector([0, 0, 1]),\n    \"D\": lambda: plot_bloch_multivector(state),\n    \"E\": lambda: plot_bloch_multivector(partial_trace(state, [1])),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    s = spheres(fn)\n    per_qubit = isinstance(s, int) and s == n_qubits\n    evidence[k] = f\"result: {s} Bloch-sphere axes (need {n_qubits}, one per qubit) -> correct={per_qubit}\"\n    if per_qubit:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"num_qubits\": n_qubits, \"correct_calls\": proven},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E manual partial_trace before drawing (yields one sphere, not one per qubit)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

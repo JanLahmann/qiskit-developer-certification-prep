@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "`qc.x(0, condition=(qc.clbits[0], 1))` — a gate keyword argument"
+    },
+    {
+      "key": "E",
+      "text": "`with qc.if_test(qc.clbits[0] == 1):` then `qc.x(0)`"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "B": "`InstructionSet.c_if` was the v0.x/v1 way to attach a condition, but it was removed in Qiskit 2.0 — calling it now raises `AttributeError`, so nothing is added to the circuit.",
       "C": "`InstructionSet` (what `qc.x(0)` returns) has no assignable `condition` attribute; this raises `AttributeError` and builds no conditional.",
-      "D": "`QuantumCircuit.x()` accepts no `condition` keyword; passing one raises a `TypeError`."
+      "D": "`QuantumCircuit.x()` accepts no `condition` keyword; passing one raises a `TypeError`.",
+      "E": "`if_test` wants a `(clbit, value)` tuple (or a `qiskit.circuit.classical.expr` condition). A plain Python `==` on a `Clbit` evaluates to a bare `bool`, which the context manager cannot unpack — it raises `TypeError`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\n\ndef base():\n    qc = QuantumCircuit(1, 1)\n    qc.h(0)\n    qc.measure(0, 0)\n    return qc\n\nevidence = {}\nproven = []\n\n# A: if_test context manager\ntry:\n    qc = base()\n    with qc.if_test((qc.clbits[0], 1)):\n        qc.x(0)\n    txt = str(qc.draw(\"text\"))\n    shows_if = \"If\" in txt\n    evidence[\"A\"] = f\"built OK; rendered circuit shows an If-block = {shows_if}\"\n    if shows_if:\n        proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\n# B: c_if (removed in 2.0)\ntry:\n    qc = base()\n    qc.x(0).c_if(qc.clbits[0], 1)\n    txt = str(qc.draw(\"text\"))\n    evidence[\"B\"] = f\"no error; If-block present = {'If' in txt}\"\n    if \"If\" in txt:\n        proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\n# C: .condition assignment\ntry:\n    qc = base()\n    iset = qc.x(0)\n    iset.condition = (qc.clbits[0], 1)\n    txt = str(qc.draw(\"text\"))\n    evidence[\"C\"] = f\"no error; If-block present = {'If' in txt}\"\n    if \"If\" in txt:\n        proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\n# D: condition= keyword\ntry:\n    qc = base()\n    qc.x(0, condition=(qc.clbits[0], 1))\n    txt = str(qc.draw(\"text\"))\n    evidence[\"D\"] = f\"no error; If-block present = {'If' in txt}\"\n    if \"If\" in txt:\n        proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"proven_conditional_render\": proven},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\n\ndef base():\n    qc = QuantumCircuit(1, 1)\n    qc.h(0)\n    qc.measure(0, 0)\n    return qc\n\nevidence = {}\nproven = []\n\n# A: if_test context manager\ntry:\n    qc = base()\n    with qc.if_test((qc.clbits[0], 1)):\n        qc.x(0)\n    txt = str(qc.draw(\"text\"))\n    shows_if = \"If\" in txt\n    evidence[\"A\"] = f\"built OK; rendered circuit shows an If-block = {shows_if}\"\n    if shows_if:\n        proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\n# B: c_if (removed in 2.0)\ntry:\n    qc = base()\n    qc.x(0).c_if(qc.clbits[0], 1)\n    txt = str(qc.draw(\"text\"))\n    evidence[\"B\"] = f\"no error; If-block present = {'If' in txt}\"\n    if \"If\" in txt:\n        proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\n# C: .condition assignment\ntry:\n    qc = base()\n    iset = qc.x(0)\n    iset.condition = (qc.clbits[0], 1)\n    txt = str(qc.draw(\"text\"))\n    evidence[\"C\"] = f\"no error; If-block present = {'If' in txt}\"\n    if \"If\" in txt:\n        proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\n# D: condition= keyword\ntry:\n    qc = base()\n    qc.x(0, condition=(qc.clbits[0], 1))\n    txt = str(qc.draw(\"text\"))\n    evidence[\"D\"] = f\"no error; If-block present = {'If' in txt}\"\n    if \"If\" in txt:\n        proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\n# E: Python comparison instead of a (clbit, value) tuple\ntry:\n    qc = base()\n    with qc.if_test(qc.clbits[0] == 1):\n        qc.x(0)\n    txt = str(qc.draw(\"text\"))\n    evidence[\"E\"] = f\"no error; If-block present = {'If' in txt}\"\n    if \"If\" in txt:\n        proven.append(\"E\")\nexcept Exception as e:\n    evidence[\"E\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"proven_conditional_render\": proven},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern pass: high length tell cleared (correct option trimmed, all four options given a parallel short tail)"
+    "notes": "meta-pattern pass: high length tell cleared (correct option trimmed, all four options given a parallel short tail) | pool wave: +E Python == comparison passed to if_test instead of a (clbit, value) tuple"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "`plot_distribution` requires a `Statevector` rather than a counts dict, so it raises a `TypeError` here."
+    },
+    {
+      "key": "E",
+      "text": "`plot_distribution` normalizes the bars, but you have to hand it `shots=1024` yourself; with no `shots` argument the two figures agree."
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "B": "They are separate functions with different y-axes; `plot_distribution` is neither an alias nor deprecated.",
       "C": "This reverses reality — `plot_histogram` shows raw counts and `plot_distribution` shows normalized probabilities, not the other way around.",
-      "D": "`plot_distribution` accepts a counts / quasi-probability dict directly; it does not require a `Statevector`, so it does not raise here."
+      "D": "`plot_distribution` accepts a counts / quasi-probability dict directly; it does not require a `Statevector`, so it does not raise here.",
+      "E": "`plot_distribution` derives the probabilities from the counts it is given — there is no `shots` parameter in its signature at all, and passing one raises `TypeError`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.visualization import plot_histogram, plot_distribution\nimport matplotlib\n\ncounts = {\"00\": 500, \"11\": 500, \"01\": 20, \"10\": 4}\nshots = sum(counts.values())\n\nfh = plot_histogram(counts)\nah = fh.axes[0]\nsum_h = float(sum(p.get_height() for p in ah.patches))\nyl_h = ah.get_ylabel()\n\nevidence = {}\nproven = []\n\n# D checked as an attempt: does plot_distribution accept the dict?\ntry:\n    fd = plot_distribution(counts)\n    ad = fd.axes[0]\n    sum_d = float(sum(p.get_height() for p in ad.patches))\n    yl_d = ad.get_ylabel()\n    dist_ok = True\nexcept Exception as e:\n    sum_d = None\n    yl_d = f\"raised {type(e).__name__}\"\n    dist_ok = False\n\nhist_is_raw = abs(sum_h - shots) < 1e-6\ndist_is_norm = dist_ok and abs(sum_d - 1.0) < 1e-6\n\nresA = hist_is_raw and dist_is_norm\nevidence[\"A\"] = (\n    f\"plot_histogram heights sum={sum_h} (shots={shots}, ylabel={yl_h!r}); \"\n    f\"plot_distribution heights sum={sum_d} (ylabel={yl_d!r}) -> hist=raw counts, dist=normalized: {resA}\"\n)\nevidence[\"B\"] = (\n    f\"the two differ: histogram sum={sum_h} vs distribution sum={sum_d}, \"\n    f\"ylabels {yl_h!r} vs {yl_d!r} -> not an alias\"\n)\nevidence[\"C\"] = (\n    f\"observed histogram is raw (sum={sum_h}) and distribution is normalized (sum={sum_d}); \"\n    \"the reversed claim is false\"\n)\nevidence[\"D\"] = (\n    f\"plot_distribution(counts_dict) succeeded={dist_ok} (returned a Figure); \"\n    \"it does not require a Statevector\"\n)\nif resA:\n    proven.append(\"A\")\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"histogram_sum\": sum_h, \"distribution_sum\": sum_d, \"shots\": shots},\n})\n"
+    "proof_script": "from qiskit.visualization import plot_histogram, plot_distribution\nimport matplotlib\n\ncounts = {\"00\": 500, \"11\": 500, \"01\": 20, \"10\": 4}\nshots = sum(counts.values())\n\nfh = plot_histogram(counts)\nah = fh.axes[0]\nsum_h = float(sum(p.get_height() for p in ah.patches))\nyl_h = ah.get_ylabel()\n\nevidence = {}\nproven = []\n\n# D checked as an attempt: does plot_distribution accept the dict?\ntry:\n    fd = plot_distribution(counts)\n    ad = fd.axes[0]\n    sum_d = float(sum(p.get_height() for p in ad.patches))\n    yl_d = ad.get_ylabel()\n    dist_ok = True\nexcept Exception as e:\n    sum_d = None\n    yl_d = f\"raised {type(e).__name__}\"\n    dist_ok = False\n\nhist_is_raw = abs(sum_h - shots) < 1e-6\ndist_is_norm = dist_ok and abs(sum_d - 1.0) < 1e-6\n\nresA = hist_is_raw and dist_is_norm\nevidence[\"A\"] = (\n    f\"plot_histogram heights sum={sum_h} (shots={shots}, ylabel={yl_h!r}); \"\n    f\"plot_distribution heights sum={sum_d} (ylabel={yl_d!r}) -> hist=raw counts, dist=normalized: {resA}\"\n)\nevidence[\"B\"] = (\n    f\"the two differ: histogram sum={sum_h} vs distribution sum={sum_d}, \"\n    f\"ylabels {yl_h!r} vs {yl_d!r} -> not an alias\"\n)\nevidence[\"C\"] = (\n    f\"observed histogram is raw (sum={sum_h}) and distribution is normalized (sum={sum_d}); \"\n    \"the reversed claim is false\"\n)\nevidence[\"D\"] = (\n    f\"plot_distribution(counts_dict) succeeded={dist_ok} (returned a Figure); \"\n    \"it does not require a Statevector\"\n)\nif resA:\n    proven.append(\"A\")\n\ntry:\n    plot_distribution(counts, shots=shots)\n    shots_kwarg = \"accepted\"\nexcept Exception as e:\n    shots_kwarg = f\"raised {type(e).__name__}: {str(e)[:70]}\"\nevidence[\"E\"] = (\n    f\"plot_distribution(counts, shots=1024) -> {shots_kwarg}; the normalization above \"\n    f\"(heights sum={sum_d}) happened with no shots argument at all\"\n)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"histogram_sum\": sum_h, \"distribution_sum\": sum_d, \"shots\": shots},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern pass: high length tell cleared (correct option trimmed); shot count made explicit in the stem so no answer rests on an unstated default"
+    "notes": "meta-pattern pass: high length tell cleared (correct option trimmed); shot count made explicit in the stem so no answer rests on an unstated default | pool wave: +E V1-style shots= kwarg believed to drive plot_distribution normalization"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

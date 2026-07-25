@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`qc.draw(\"text\", reverse_bits=True)`"
+    },
+    {
+      "key": "E",
+      "text": "`qc.draw(\"text\", idle_wires=\"auto\")`"
+    },
+    {
+      "key": "F",
+      "text": "`qc.draw(\"text\", cregbundle=False)`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "`idle_wires=True` is the default value — it keeps every wire, so the empty qubit-1 line is still drawn.",
       "C": "`plot_barriers` only toggles whether `barrier` instructions are shown; it has no effect on idle qubit wires.",
-      "D": "`reverse_bits` only flips the top-to-bottom ordering of the wires; all three wires, including the idle one, are still rendered."
+      "D": "`reverse_bits` only flips the top-to-bottom ordering of the wires; all three wires, including the idle one, are still rendered.",
+      "E": "The `\"auto\"` setting only drops idle wires for a circuit that carries a transpiler layout; this circuit was never transpiled, so every wire — including the idle qubit 1 — is still drawn.",
+      "F": "`cregbundle` controls whether classical registers are bundled onto one wire; it says nothing about qubit wires, so the idle qubit 1 line survives."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
@@ -47,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\n\ndef build():\n    qc = QuantumCircuit(3)\n    qc.x(0)\n    qc.x(2)\n    return qc\n\ncalls = {\n    \"A\": lambda qc: qc.draw(\"text\", idle_wires=True),\n    \"B\": lambda qc: qc.draw(\"text\", idle_wires=False),\n    \"C\": lambda qc: qc.draw(\"text\", plot_barriers=False),\n    \"D\": lambda qc: qc.draw(\"text\", reverse_bits=True),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        txt = str(fn(build()))\n        q1_present = \"q_1\" in txt\n        hides_idle = not q1_present\n        evidence[k] = (\n            f\"rendered OK; qubit-1 wire present={q1_present}; \"\n            f\"hides idle q1={hides_idle}\"\n        )\n        if hides_idle:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"idle_false_drawing\": str(build().draw('text', idle_wires=False))},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\n\ndef build():\n    qc = QuantumCircuit(3)\n    qc.x(0)\n    qc.x(2)\n    return qc\n\ncalls = {\n    \"A\": lambda qc: qc.draw(\"text\", idle_wires=True),\n    \"B\": lambda qc: qc.draw(\"text\", idle_wires=False),\n    \"C\": lambda qc: qc.draw(\"text\", plot_barriers=False),\n    \"D\": lambda qc: qc.draw(\"text\", reverse_bits=True),\n    \"E\": lambda qc: qc.draw(\"text\", idle_wires=\"auto\"),\n    \"F\": lambda qc: qc.draw(\"text\", cregbundle=False),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        txt = str(fn(build()))\n        q1_present = \"q_1\" in txt\n        hides_idle = not q1_present\n        evidence[k] = (\n            f\"rendered OK; qubit-1 wire present={q1_present}; \"\n            f\"hides idle q1={hides_idle}\"\n        )\n        if hides_idle:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"idle_false_drawing\": str(build().draw('text', idle_wires=False))},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E idle_wires=\"auto\" (layout-dependent, keeps wires here), +F cregbundle confused with wire removal"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "`{'0': 0.25, '1': 0.75}` — the '1' bar is three times taller."
+    },
+    {
+      "key": "E",
+      "text": "`{'0': 0.5, '1': 0.866}` — the amplitudes, not their squares."
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "A": "This uses the full angle (cos²θ / sin²θ) instead of the half-angle θ/2. RY's rotation is by θ/2 on the state, giving the 0.25 / 0.75 split, not 0.933 / 0.067.",
       "B": "This swaps the two probabilities. P(1) = sin²(θ/2) = 0.75 is the larger one, so '1' dominates, not '0'.",
-      "C": "Equal bars would need θ = π/2 (a balanced superposition); at θ = 2π/3 the state is biased toward |1>."
+      "C": "Equal bars would need θ = π/2 (a balanced superposition); at θ = 2π/3 the state is biased toward |1>.",
+      "E": "These are the amplitudes cos(θ/2) and sin(θ/2) of the rotated state. `probabilities_dict()` reports |amplitude|², so the printed values are their squares and they sum to 1."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
@@ -47,13 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.ry(2 * np.pi / 3, 0)\npd = Statevector.from_instruction(qc).probabilities_dict()\np0 = round(pd.get(\"0\", 0.0), 3)\np1 = round(pd.get(\"1\", 0.0), 3)\n\nclaims = {\n    \"A\": (0.933, 0.067),\n    \"B\": (0.75, 0.25),\n    \"C\": (0.5, 0.5),\n    \"D\": (0.25, 0.75),\n}\nevidence = {}\nproven = []\nfor k, (c0, c1) in claims.items():\n    match = abs(p0 - c0) < 0.01 and abs(p1 - c1) < 0.01\n    evidence[k] = f\"option claims P(0)={c0}, P(1)={c1}; executed P(0)={p0}, P(1)={p1} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"probabilities\": {\"0\": p0, \"1\": p1}},\n})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.ry(2 * np.pi / 3, 0)\npd = Statevector.from_instruction(qc).probabilities_dict()\np0 = round(pd.get(\"0\", 0.0), 3)\np1 = round(pd.get(\"1\", 0.0), 3)\n\nclaims = {\n    \"A\": (0.933, 0.067),\n    \"B\": (0.75, 0.25),\n    \"C\": (0.5, 0.5),\n    \"D\": (0.25, 0.75),\n    \"E\": (0.5, 0.866),\n}\nevidence = {}\nproven = []\nfor k, (c0, c1) in claims.items():\n    match = abs(p0 - c0) < 0.01 and abs(p1 - c1) < 0.01\n    evidence[k] = f\"option claims P(0)={c0}, P(1)={c1}; executed P(0)={p0}, P(1)={p1} -> match={match}\"\n    if match:\n        proven.append(k)\n\nevidence[\"E\"] += (\n    f\"  (0.5 and 0.866 are the amplitudes cos(theta/2), sin(theta/2); squaring them \"\n    f\"gives the printed {p0} and {p1})\"\n)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"probabilities\": {\"0\": p0, \"1\": p1}},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E amplitudes reported where probabilities_dict squares them"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

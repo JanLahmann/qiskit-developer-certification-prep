@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "`{'0x5': 1.0}`"
+    },
+    {
+      "key": "E",
+      "text": "`{5: 1.0}`"
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "A": "'011' applies the reverse convention (q0 q1 q2 left-to-right). Qiskit puts qubit 0 on the RIGHT, so the set bits land at the rightmost and leftmost positions, giving '101'.",
       "C": "'110' also mis-orders the bits; the flipped qubits (0 and 2) map to the rightmost and leftmost characters, giving '101', not '110'.",
-      "D": "`probabilities_dict` keys are binary bitstrings; '0x5' is the hexadecimal form of the state index (5), which is not how Qiskit labels these outcomes."
+      "D": "`probabilities_dict` keys are binary bitstrings; '0x5' is the hexadecimal form of the state index (5), which is not how Qiskit labels these outcomes.",
+      "E": "Keys are bitstring labels, not integers: `probabilities_dict()` returns `np.str_` strings such as `'101'`. The integer indexing you are thinking of belongs to `probabilities()`, which returns a plain array."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.x(2)\nsv = Statevector.from_instruction(qc)\npd = sv.probabilities_dict()\npeak = max(pd, key=pd.get)\npeak_prob = pd[peak]\n\nclaims = {\"A\": \"011\", \"B\": \"101\", \"C\": \"110\", \"D\": \"0x5\"}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    match = (c == peak and abs(peak_prob - 1.0) < 1e-9)\n    evidence[k] = (\n        f\"option claims outcome {c!r}; executed probabilities_dict has peak \"\n        f\"{peak!r} at p={round(peak_prob,4)} (little-endian q2 q1 q0) -> match={match}\"\n    )\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"probabilities_dict\": {k: round(v, 6) for k, v in pd.items()}},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.x(2)\nsv = Statevector.from_instruction(qc)\npd = sv.probabilities_dict()\npeak = max(pd, key=pd.get)\npeak_prob = pd[peak]\n\nclaims = {\"A\": \"011\", \"B\": \"101\", \"C\": \"110\", \"D\": \"0x5\", \"E\": 5}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    match = (c == peak and abs(peak_prob - 1.0) < 1e-9)\n    evidence[k] = (\n        f\"option claims outcome {c!r}; executed probabilities_dict has peak \"\n        f\"{peak!r} at p={round(peak_prob,4)} (little-endian q2 q1 q0) -> match={match}\"\n    )\n    if match:\n        proven.append(k)\n\nkey_types = sorted({type(k).__name__ for k in pd})\nevidence[\"E\"] += f\"  (dict key types are {key_types}, so an integer key never appears)\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"probabilities_dict\": {k: round(v, 6) for k, v in pd.items()}},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern pass: distractor D relengthened to '0x5' so all four options are the same width (length heuristics now abstain)"
+    "notes": "meta-pattern pass: distractor D relengthened to '0x5' so all four options are the same width (length heuristics now abstain) | pool wave: +E integer dict key (probabilities_dict keys are np.str_ bitstrings)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

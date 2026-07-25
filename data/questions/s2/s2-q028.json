@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "|+> = (|0> + |1>)/√2"
+    },
+    {
+      "key": "E",
+      "text": "|i> = (|0> + i|1>)/√2"
+    },
+    {
+      "key": "F",
+      "text": "|−i> = (|0> − i|1>)/√2"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "|0> sits at the north pole, Bloch vector (0,0,+1), not on the −X axis.",
       "C": "|1> sits at the south pole, Bloch vector (0,0,−1).",
-      "D": "|+> is the +1 eigenstate of X, Bloch vector (+1,0,0) — the opposite end of the X axis from the arrow shown."
+      "D": "|+> is the +1 eigenstate of X, Bloch vector (+1,0,0) — the opposite end of the X axis from the arrow shown.",
+      "E": "That state sits on the +Y axis, Bloch vector (0, 1, 0): its |1> component carries a factor i. A real −1 relative sign, not an imaginary one, points the arrow along −X.",
+      "F": "This is the −Y state, Bloch vector (0, −1, 0). Reading the horizontal −X direction as an imaginary phase mixes up the two equatorial axes."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
@@ -47,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Statevector, Pauli\n\ndef bloch(sv):\n    return tuple(round(float(np.real(sv.expectation_value(Pauli(p)))), 4) for p in (\"X\", \"Y\", \"Z\"))\n\nstates = {\n    \"A\": Statevector.from_label(\"0\"),\n    \"B\": Statevector.from_label(\"-\"),\n    \"C\": Statevector.from_label(\"1\"),\n    \"D\": Statevector.from_label(\"+\"),\n}\ntarget = (-1.0, 0.0, 0.0)\nevidence = {}\nproven = []\nfor k, sv in states.items():\n    b = bloch(sv)\n    match = all(abs(a - c) < 1e-6 for a, c in zip(b, target))\n    evidence[k] = f\"option state has Bloch vector {b}; target arrow is {target} (-X axis) -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"target\": list(target)},\n})\n"
+    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Statevector, Pauli\n\ndef bloch(sv):\n    return tuple(round(float(np.real(sv.expectation_value(Pauli(p)))), 4) for p in (\"X\", \"Y\", \"Z\"))\n\nstates = {\n    \"A\": Statevector.from_label(\"0\"),\n    \"B\": Statevector.from_label(\"-\"),\n    \"C\": Statevector.from_label(\"1\"),\n    \"D\": Statevector.from_label(\"+\"),\n    \"E\": Statevector.from_label(\"r\"),\n    \"F\": Statevector.from_label(\"l\"),\n}\ntarget = (-1.0, 0.0, 0.0)\nevidence = {}\nproven = []\nfor k, sv in states.items():\n    b = bloch(sv)\n    match = all(abs(a - c) < 1e-6 for a, c in zip(b, target))\n    evidence[k] = f\"option state has Bloch vector {b}; target arrow is {target} (-X axis) -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"target\": list(target)},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E +Y state read off the -X arrow, +F -Y state (equatorial axis mix-up)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

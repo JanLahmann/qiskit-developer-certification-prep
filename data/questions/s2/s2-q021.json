@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "The four original bitstrings; `number_to_keep` just widens the figure."
+    },
+    {
+      "key": "E",
+      "text": "The two highest-count bitstrings plus a 'rest' bar whose height is the average of the dropped counts."
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "B": "The remaining outcomes are not discarded — their combined weight is shown as the 'rest' bar, so the bars still account for all shots.",
       "C": "Selection is by count magnitude (the largest bars), not by dictionary insertion order, and the remainder IS aggregated into 'rest'.",
-      "D": "`number_to_keep` controls how many individual bars are shown, not the figure size."
+      "D": "`number_to_keep` controls how many individual bars are shown, not the figure size.",
+      "E": "The `rest` bar aggregates by summing: it stands at 24, the sum of the 20 and 4 counts that were folded into it, not at their average of 12."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
@@ -47,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.visualization import plot_histogram\n\ncounts = {\"01\": 20, \"00\": 500, \"10\": 4, \"11\": 500}\nfig = plot_histogram(counts, number_to_keep=2)\nlabels = [t.get_text() for t in fig.axes[0].get_xticklabels()]\n\nhas_rest = \"rest\" in labels\nkept_top2 = (\"00\" in labels and \"11\" in labels)\nn_bars = len(labels)\ninsertion_first2 = (\"01\" in labels and \"00\" in labels)\nall_four = all(b in labels for b in (\"00\", \"01\", \"10\", \"11\"))\n\nresA = has_rest and kept_top2 and n_bars == 3\nevidence = {}\nevidence[\"A\"] = f\"x-axis labels = {labels}; top-2 counts kept + 'rest' bin, 3 bars total = {resA}\"\nevidence[\"B\"] = f\"labels={labels}; a 'rest' bar is present ({has_rest}) so remaining outcomes are NOT dropped\"\nevidence[\"C\"] = f\"labels={labels}; kept bars are the highest-count '00','11' not insertion-first '01','00'; aggregation present={has_rest}\"\nevidence[\"D\"] = f\"labels={labels}; only {n_bars} bars shown (not all four={all_four}) -> number_to_keep changes bars, not width\"\nproven = [\"A\"] if resA else []\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"xtick_labels\": labels},\n})\n"
+    "proof_script": "from qiskit.visualization import plot_histogram\n\ncounts = {\"01\": 20, \"00\": 500, \"10\": 4, \"11\": 500}\nfig = plot_histogram(counts, number_to_keep=2)\nlabels = [t.get_text() for t in fig.axes[0].get_xticklabels()]\n\nhas_rest = \"rest\" in labels\nkept_top2 = (\"00\" in labels and \"11\" in labels)\nn_bars = len(labels)\ninsertion_first2 = (\"01\" in labels and \"00\" in labels)\nall_four = all(b in labels for b in (\"00\", \"01\", \"10\", \"11\"))\n\nresA = has_rest and kept_top2 and n_bars == 3\nevidence = {}\nevidence[\"A\"] = f\"x-axis labels = {labels}; top-2 counts kept + 'rest' bin, 3 bars total = {resA}\"\nevidence[\"B\"] = f\"labels={labels}; a 'rest' bar is present ({has_rest}) so remaining outcomes are NOT dropped\"\nevidence[\"C\"] = f\"labels={labels}; kept bars are the highest-count '00','11' not insertion-first '01','00'; aggregation present={has_rest}\"\nevidence[\"D\"] = f\"labels={labels}; only {n_bars} bars shown (not all four={all_four}) -> number_to_keep changes bars, not width\"\nproven = [\"A\"] if resA else []\n\nheights = [round(float(p.get_height()), 4) for p in fig.axes[0].patches]\nfolded = sorted(v for k, v in counts.items() if k not in (\"00\", \"11\"))\nrest_h = heights[-1] if heights else None\nevidence[\"E\"] = (\n    f\"bar heights={heights} for labels={labels}; folded counts {folded} -> rest bar \"\n    f\"height {rest_h} equals their sum ({sum(folded)}), not their average ({sum(folded)/len(folded)})\"\n)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"xtick_labels\": labels},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern pass: absolute tell inverted deliberately — absolutes removed from distractors B/D and the (factually true) 'all other outcomes' kept in the correct option"
+    "notes": "meta-pattern pass: absolute tell inverted deliberately — absolutes removed from distractors B/D and the (factually true) 'all other outcomes' kept in the correct option | pool wave: +E 'rest' bar read as the average rather than the sum of folded counts"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

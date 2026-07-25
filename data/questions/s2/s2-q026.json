@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "One sphere per qubit, but the call returns a list of `Axes` instead of a `Figure`."
+    },
+    {
+      "key": "E",
+      "text": "Two spheres — the idle qubit 2 carries no gate, so the drawer skips it; returns a `Figure`."
+    },
+    {
+      "key": "F",
+      "text": "Four spheres — one per qubit plus a summary sphere for the joint state; returns a `Figure`."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "It does not collapse the whole register into one sphere — a single sphere can only represent one qubit's reduced state.",
       "C": "The number of spheres tracks the number of qubits (n), not the number of basis states (2^n).",
-      "D": "The function returns the whole `Figure`; the per-qubit axes live inside it."
+      "D": "The function returns the whole `Figure`; the per-qubit axes live inside it.",
+      "E": "The drawer works from the state, not from the circuit's gate list: a 3-qubit `Statevector` always yields 3 reduced states, and the idle qubit simply shows its |0⟩ arrow at the north pole.",
+      "F": "There is no joint-state sphere: a Bloch sphere can only represent a single qubit's reduced state, so the figure holds exactly one sphere per qubit."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
@@ -47,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_multivector\nimport matplotlib\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.x(1)\nstate = Statevector.from_instruction(qc)\nfig = plot_bloch_multivector(state)\nn_axes = len(fig.axes)\nis_fig = isinstance(fig, matplotlib.figure.Figure)\nn_qubits = state.num_qubits\n\nevidence = {}\nproven = []\nmA = (n_axes == 1) and is_fig\nevidence[\"A\"] = f\"drew {n_axes} Bloch sphere(s), Figure={is_fig}; single-sphere claim match={mA}\"\nif mA:\n    proven.append(\"A\")\nmB = (n_axes == n_qubits == 3) and is_fig\nevidence[\"B\"] = f\"drew {n_axes} spheres for {n_qubits} qubits, returns matplotlib Figure={is_fig}; one-per-qubit match={mB}\"\nif mB:\n    proven.append(\"B\")\nmC = (n_axes == 2 ** n_qubits) and is_fig\nevidence[\"C\"] = f\"drew {n_axes} spheres; 2^{n_qubits}={2 ** n_qubits} claim match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = (n_axes == n_qubits) and (not is_fig)\nevidence[\"D\"] = f\"return type is {type(fig).__name__} (Figure={is_fig}); list-of-Axes claim match={mD}\"\nif mD:\n    proven.append(\"D\")\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"num_spheres\": n_axes, \"num_qubits\": n_qubits, \"is_figure\": is_fig},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_multivector\nimport matplotlib\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.x(1)\nstate = Statevector.from_instruction(qc)\nfig = plot_bloch_multivector(state)\nn_axes = len(fig.axes)\nis_fig = isinstance(fig, matplotlib.figure.Figure)\nn_qubits = state.num_qubits\n\nevidence = {}\nproven = []\nmA = (n_axes == 1) and is_fig\nevidence[\"A\"] = f\"drew {n_axes} Bloch sphere(s), Figure={is_fig}; single-sphere claim match={mA}\"\nif mA:\n    proven.append(\"A\")\nmB = (n_axes == n_qubits == 3) and is_fig\nevidence[\"B\"] = f\"drew {n_axes} spheres for {n_qubits} qubits, returns matplotlib Figure={is_fig}; one-per-qubit match={mB}\"\nif mB:\n    proven.append(\"B\")\nmC = (n_axes == 2 ** n_qubits) and is_fig\nevidence[\"C\"] = f\"drew {n_axes} spheres; 2^{n_qubits}={2 ** n_qubits} claim match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = (n_axes == n_qubits) and (not is_fig)\nevidence[\"D\"] = f\"return type is {type(fig).__name__} (Figure={is_fig}); list-of-Axes claim match={mD}\"\nif mD:\n    proven.append(\"D\")\n\nmE = (n_axes == 2) and is_fig\nevidence[\"E\"] = f\"drew {n_axes} spheres for {n_qubits} qubits including the idle one; two-sphere claim match={mE}\"\nif mE:\n    proven.append(\"E\")\nmF = (n_axes == n_qubits + 1) and is_fig\nevidence[\"F\"] = f\"drew {n_axes} spheres; one-per-qubit-plus-summary would be {n_qubits + 1}, match={mF}\"\nif mF:\n    proven.append(\"F\")\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"num_spheres\": n_axes, \"num_qubits\": n_qubits, \"is_figure\": is_fig},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E idle qubit assumed skipped, +F extra summary sphere for the joint state"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

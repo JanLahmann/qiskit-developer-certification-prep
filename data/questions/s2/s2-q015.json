@@ -24,6 +24,10 @@
     {
       "key": "D",
       "text": "The string is correct; install `pylatexenc` to make the Matplotlib renderer work."
+    },
+    {
+      "key": "E",
+      "text": "Call the standalone `circuit_drawer(qc, output=\"matplotlib\")` instead — the function takes the long name."
     }
   ],
   "answer": [
@@ -34,7 +38,8 @@
     "distractors": {
       "B": "`\"figure\"` is also not a recognized output type — the same `VisualizationError` is raised. The Matplotlib output is spelled `\"mpl\"`.",
       "C": "Adding a flag does not fix an invalid output name; the `VisualizationError` about the unrecognized `\"matplotlib\"` value is raised before any rendering happens.",
-      "D": "`pylatexenc` is a dependency of the LaTeX renderer, not `mpl`. The failure here is purely the invalid output string, so installing it changes nothing."
+      "D": "`pylatexenc` is a dependency of the LaTeX renderer, not `mpl`. The failure here is purely the invalid output string, so installing it changes nothing.",
+      "E": "The method and the function share one renderer registry, so the standalone `circuit_drawer` rejects `\"matplotlib\"` with the same `VisualizationError`; the valid choices are text, latex, latex_source and mpl."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
@@ -47,13 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nimport matplotlib\n\ndef build():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    qc.cx(0, 1)\n    return qc\n\ndef is_fig(x):\n    return isinstance(x, matplotlib.figure.Figure)\n\nevidence = {}\nproven = []\n\n# A: output='mpl'\ntry:\n    r = build().draw(output=\"mpl\")\n    ok = is_fig(r)\n    evidence[\"A\"] = f\"draw(output='mpl') -> {type(r).__name__}; is Figure={ok}\"\n    if ok:\n        proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\n# B: output='figure'\ntry:\n    r = build().draw(output=\"figure\")\n    ok = is_fig(r)\n    evidence[\"B\"] = f\"draw(output='figure') -> {type(r).__name__}; is Figure={ok}\"\n    if ok:\n        proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\n# C: matplotlib + interactive flag\ntry:\n    r = build().draw(output=\"matplotlib\", interactive=True)\n    ok = is_fig(r)\n    evidence[\"C\"] = f\"draw(output='matplotlib', interactive=True) -> {type(r).__name__}; is Figure={ok}\"\n    if ok:\n        proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\n# D: premise that 'matplotlib' is a valid string\ntry:\n    r = build().draw(output=\"matplotlib\")\n    ok = is_fig(r)\n    evidence[\"D\"] = f\"draw(output='matplotlib') -> {type(r).__name__}; is Figure={ok} (D claims this string is valid)\"\n    if ok:\n        proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"draw(output='matplotlib') raised {type(e).__name__}: {str(e)[:80]} -> D's premise is false\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"valid_mpl_string\": \"mpl\"},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nimport matplotlib\n\ndef build():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    qc.cx(0, 1)\n    return qc\n\ndef is_fig(x):\n    return isinstance(x, matplotlib.figure.Figure)\n\nevidence = {}\nproven = []\n\n# A: output='mpl'\ntry:\n    r = build().draw(output=\"mpl\")\n    ok = is_fig(r)\n    evidence[\"A\"] = f\"draw(output='mpl') -> {type(r).__name__}; is Figure={ok}\"\n    if ok:\n        proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\n# B: output='figure'\ntry:\n    r = build().draw(output=\"figure\")\n    ok = is_fig(r)\n    evidence[\"B\"] = f\"draw(output='figure') -> {type(r).__name__}; is Figure={ok}\"\n    if ok:\n        proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\n# C: matplotlib + interactive flag\ntry:\n    r = build().draw(output=\"matplotlib\", interactive=True)\n    ok = is_fig(r)\n    evidence[\"C\"] = f\"draw(output='matplotlib', interactive=True) -> {type(r).__name__}; is Figure={ok}\"\n    if ok:\n        proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\n# D: premise that 'matplotlib' is a valid string\ntry:\n    r = build().draw(output=\"matplotlib\")\n    ok = is_fig(r)\n    evidence[\"D\"] = f\"draw(output='matplotlib') -> {type(r).__name__}; is Figure={ok} (D claims this string is valid)\"\n    if ok:\n        proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"draw(output='matplotlib') raised {type(e).__name__}: {str(e)[:80]} -> D's premise is false\"\n\n# E: standalone drawer with the same long output string\ntry:\n    from qiskit.visualization import circuit_drawer\n    r = circuit_drawer(build(), output=\"matplotlib\")\n    ok = is_fig(r)\n    evidence[\"E\"] = f\"circuit_drawer(output='matplotlib') -> {type(r).__name__}; is Figure={ok}\"\n    if ok:\n        proven.append(\"E\")\nexcept Exception as e:\n    evidence[\"E\"] = f\"circuit_drawer(output='matplotlib') raised {type(e).__name__}: {str(e)[:80]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"valid_mpl_string\": \"mpl\"},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E standalone circuit_drawer believed to accept the long 'matplotlib' name"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +70,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

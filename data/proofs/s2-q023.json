@@ -8,7 +8,9 @@
       "A": "raised TypeError: unsupported operand type(s) for +: 'dict' and 'dict'",
       "B": "raised VisualizationError: \"Length of legend (2) doesn't match number of input executions (1).\"",
       "C": "raised TypeError: int() argument must be a string, a bytes-like object or a real number, not 'dict'",
-      "D": "returned Figure; legend=['before', 'after']; overlays both runs=True"
+      "D": "returned Figure; legend=['before', 'after']; overlays both runs=True",
+      "E": "raised TypeError: plot_histogram() got an unexpected keyword argument 'labels'",
+      "F": "raised VisualizationError: \"Length of legend (13) doesn't match number of input executions (2).\""
     },
     "observed": {
       "overlay_calls": [
@@ -22,9 +24,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.52,
+  "wall_seconds": 1.53,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"raised TypeError: unsupported operand type(s) for +: 'dict' and 'dict'\", \"B\": \"raised VisualizationError: \\\"Length of legend (2) doesn't match number of input executions (1).\\\"\", \"C\": \"raised TypeError: int() argument must be a string, a bytes-like object or a real number, not 'dict'\", \"D\": \"returned Figure; legend=['before', 'after']; overlays both runs=True\"}, \"observed\": {\"overlay_calls\": [\"D\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"raised TypeError: unsupported operand type(s) for +: 'dict' and 'dict'\", \"B\": \"raised VisualizationError: \\\"Length of legend (2) doesn't match number of input executions (1).\\\"\", \"C\": \"raised TypeError: int() argument must be a string, a bytes-like object or a real number, not 'dict'\", \"D\": \"returned Figure; legend=['before', 'after']; overlays both runs=True\", \"E\": \"raised TypeError: plot_histogram() got an unexpected keyword argument 'labels'\", \"F\": \"raised VisualizationError: \\\"Length of legend (13) doesn't match number of input executions (2).\\\"\"}, \"observed\": {\"overlay_calls\": [\"D\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

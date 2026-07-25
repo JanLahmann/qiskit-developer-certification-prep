@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`qc.draw(\"text\", vertical_compression=\"high\")`"
+    },
+    {
+      "key": "E",
+      "text": "`qc.draw(\"text\", style={\"initial_state\": True})`"
+    },
+    {
+      "key": "F",
+      "text": "`qc.draw(\"text\", initial_states=True)`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "`plot_barriers` only controls whether `barrier` instructions are drawn; it adds no initial-state labels.",
       "B": "There is no `with_initial_state` parameter; the argument is named `initial_state`, so this spelling raises a `TypeError`.",
-      "D": "`vertical_compression` adjusts the vertical spacing of the text drawing; it does not add `|0>` labels."
+      "D": "`vertical_compression` adjusts the vertical spacing of the text drawing; it does not add `|0>` labels.",
+      "E": "The `style` dictionary configures colours and gate faces for the `mpl`/`latex` renderers; it is not a way to reach drawer flags, so the text drawing comes back without any |0⟩ labels.",
+      "F": "Plural near-miss: the parameter is `initial_state` (singular). `draw()` has a fixed signature and no catch-all keyword, so the plural spelling raises `TypeError`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
@@ -47,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\n\ndef build():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    return qc\n\ncalls = {\n    \"A\": lambda qc: qc.draw(\"text\", plot_barriers=True),\n    \"B\": lambda qc: qc.draw(\"text\", with_initial_state=True),\n    \"C\": lambda qc: qc.draw(\"text\", initial_state=True),\n    \"D\": lambda qc: qc.draw(\"text\", vertical_compression=\"high\"),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        txt = str(fn(build()))\n        has_label = \"|0>\" in txt\n        evidence[k] = f\"rendered OK; initial-state label '|0>' present={has_label}\"\n        if has_label:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"initial_state_drawing\": str(build().draw('text', initial_state=True))},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\n\ndef build():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    return qc\n\ncalls = {\n    \"A\": lambda qc: qc.draw(\"text\", plot_barriers=True),\n    \"B\": lambda qc: qc.draw(\"text\", with_initial_state=True),\n    \"C\": lambda qc: qc.draw(\"text\", initial_state=True),\n    \"D\": lambda qc: qc.draw(\"text\", vertical_compression=\"high\"),\n    \"E\": lambda qc: qc.draw(\"text\", style={\"initial_state\": True}),\n    \"F\": lambda qc: qc.draw(\"text\", initial_states=True),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        txt = str(fn(build()))\n        has_label = \"|0>\" in txt\n        evidence[k] = f\"rendered OK; initial-state label '|0>' present={has_label}\"\n        if has_label:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"initial_state_drawing\": str(build().draw('text', initial_state=True))},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E style-dict misread as a drawer-flag channel, +F plural initial_states near-miss"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

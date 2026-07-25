@@ -8,7 +8,9 @@
       "A": "returned 0.000000; independent prediction sqrt((1-evs^2)/shots)=0.009559 (evs=0.8784, shots=2500, requested precision=0.02) -> match=False",
       "B": "raised AttributeError: 'PubResult' object has no attribute 'stds'",
       "C": "returned 0.020000; independent prediction sqrt((1-evs^2)/shots)=0.009559 (evs=0.8784, shots=2500, requested precision=0.02) -> match=False",
-      "D": "returned 0.009559; independent prediction sqrt((1-evs^2)/shots)=0.009559 (evs=0.8784, shots=2500, requested precision=0.02) -> match=True"
+      "D": "returned 0.009559; independent prediction sqrt((1-evs^2)/shots)=0.009559 (evs=0.8784, shots=2500, requested precision=0.02) -> match=True",
+      "E": "returned 0.020000; independent prediction sqrt((1-evs^2)/shots)=0.009559 (evs=0.8784, shots=2500, requested precision=0.02) -> match=False",
+      "F": "raised AttributeError: 'DataBin' object has no attribute 'variance'"
     },
     "observed": {
       "evs": 0.8784,
@@ -24,9 +26,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.27,
+  "wall_seconds": 1.44,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"returned 0.000000; independent prediction sqrt((1-evs^2)/shots)=0.009559 (evs=0.8784, shots=2500, requested precision=0.02) -> match=False\", \"B\": \"raised AttributeError: 'PubResult' object has no attribute 'stds'\", \"C\": \"returned 0.020000; independent prediction sqrt((1-evs^2)/shots)=0.009559 (evs=0.8784, shots=2500, requested precision=0.02) -> match=False\", \"D\": \"returned 0.009559; independent prediction sqrt((1-evs^2)/shots)=0.009559 (evs=0.8784, shots=2500, requested precision=0.02) -> match=True\"}, \"observed\": {\"evs\": 0.8784, \"stds\": 0.00955852373538927, \"shots\": 2500, \"target_precision\": 0.02, \"predicted_shot_noise\": 0.009559}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"returned 0.000000; independent prediction sqrt((1-evs^2)/shots)=0.009559 (evs=0.8784, shots=2500, requested precision=0.02) -> match=False\", \"B\": \"raised AttributeError: 'PubResult' object has no attribute 'stds'\", \"C\": \"returned 0.020000; independent prediction sqrt((1-evs^2)/shots)=0.009559 (evs=0.8784, shots=2500, requested precision=0.02) -> match=False\", \"D\": \"returned 0.009559; independent prediction sqrt((1-evs^2)/shots)=0.009559 (evs=0.8784, shots=2500, requested precision=0.02) -> match=True\", \"E\": \"returned 0.020000; independent prediction sqrt((1-evs^2)/shots)=0.009559 (evs=0.8784, shots=2500, requested precision=0.02) -> match=False\", \"F\": \"raised AttributeError: 'DataBin' object has no attribute 'variance'\"}, \"observed\": {\"evs\": 0.8784, \"stds\": 0.00955852373538927, \"shots\": 2500, \"target_precision\": 0.02, \"predicted_shot_noise\": 0.009559}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

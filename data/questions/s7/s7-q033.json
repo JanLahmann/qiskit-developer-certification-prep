@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "`job.status()` itself blocks until the job reaches a final state, so calling it before `job.result()` would stall the script"
+    },
+    {
+      "key": "E",
+      "text": "`job.status()` returns a `(state, queue_position)` tuple, so log `job.status()[0]` and keep polling until it reads `\"DONE\"`"
+    },
+    {
+      "key": "F",
+      "text": "`job.result()` returns at once with whatever shots exist so far, so poll `job.done()` to learn when the job has really finished"
     }
   ],
   "answer": [
     "C"
   ],
+  "display_count": 4,
   "explanation": {
     "correct": "In `qiskit-ibm-runtime` 0.4x a `RuntimeJobV2` reports its state as a plain string -- one of `INITIALIZING`, `QUEUED`, `RUNNING`, `CANCELLED`, `DONE`, `ERROR` -- which is why the docs write `if j.status() == \"DONE\"`. `status()` is a cheap non-blocking query, while `job.result()` is the blocking call that waits for completion and returns the PrimitiveResult. The convenience predicates `job.done()`, `job.errored()` and `job.wait_for_final_state()` are built on that same string.",
     "distractors": {
       "A": "`qiskit.tools` (with `job_monitor`) was removed in Qiskit 1.0 and does not exist in 2.x; no monitor helper returns the result either.",
       "B": "Returning a `JobStatus` enum is the V1 provider habit. RuntimeJobV2 returns a string, so comparing it with an enum member is quietly always False -- a loop written that way never exits.",
-      "D": "`status()` does not wait; it queries the current state. `job.wait_for_final_state()` (or `result()`) is what blocks, and calling `status()` only after `result()` defeats the point of logging progress."
+      "D": "`status()` does not wait; it queries the current state. `job.wait_for_final_state()` (or `result()`) is what blocks, and calling `status()` only after `result()` defeats the point of logging progress.",
+      "E": "`status()` returns the bare state string; queue information is a separate concern (`job.metrics()` / the Workloads page). Indexing the string would hand you a single character.",
+      "F": "`result()` is the BLOCKING call -- it waits for a terminal state and then returns the completed `PrimitiveResult`. `job.done()` does exist (as do `errored()`, `in_final_state()` and `metrics()`), but it is for polling instead of blocking, not a companion to a non-blocking `result()`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/save-jobs",
@@ -53,6 +64,6 @@
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7: REWRITTEN — old version duplicated q028 ('result() blocks') and its rationale wrongly claimed job.done() does not exist (it does); now tests the string-valued job.status() of runtime 0.4x vs the V1 JobStatus enum habit"
+    "notes": "adversarial s7: REWRITTEN — old version duplicated q028 ('result() blocks') and its rationale wrongly claimed job.done() does not exist (it does); now tests the string-valued job.status() of runtime 0.4x vs the V1 JobStatus enum habit | pool wave: +E status() returns a (state, queue_position) tuple; +F result() is non-blocking and returns partial shots"
   }
 }

@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "`[b for b in bits.get_bitstrings() if b[-2] == \"0\"]`"
+    },
+    {
+      "key": "E",
+      "text": "`bits.postselect([1], [0], num_bits=bits.num_bits)`"
+    },
+    {
+      "key": "F",
+      "text": "`bits.postselect([1], [0]).slice_bits([1])`"
     }
   ],
   "answer": [
     "B"
   ],
+  "display_count": 4,
   "explanation": {
     "correct": "`postselect(indices, values)` filters SHOTS by the measured value at each index (here qubit 1 must equal 0) and returns a BitArray with the same `num_bits`.",
     "distractors": {
       "A": "`slice_bits` selects which BITS to keep (dropping columns), not which shots; it would shrink `num_bits`.",
       "C": "`slice_shots` selects shots by POSITION index, not by their measured value.",
-      "D": "This does select the right shots, but it returns a plain list of strings: `num_bits`/`num_shots` and every BitArray method (`get_counts`, `postselect`, `expectation_values`) are gone, so it is not a BitArray."
+      "D": "This does select the right shots, but it returns a plain list of strings: `num_bits`/`num_shots` and every BitArray method (`get_counts`, `postselect`, `expectation_values`) are gone, so it is not a BitArray.",
+      "E": "Width preservation is automatic, so there is no `num_bits` parameter: the proof gets `TypeError: BitArray.postselect() got an unexpected keyword argument 'num_bits'`.",
+      "F": "The postselect is right, the follow-up ruins it: `slice_bits([1])` narrows the survivors to a single bit, so the proof observes `num_bits` dropping to 1 instead of staying at the original width."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
@@ -47,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.primitives.containers import BitArray\n\nqc = QuantumCircuit(2); qc.h(0); qc.h(1); qc.measure_all()\nbits = StatevectorSampler(seed=3).run([qc], shots=400).result()[0].data.meas\norig_bits = bits.num_bits\nref = sum(1 for b in bits.get_bitstrings() if b[-2] == \"0\")  # qubit 1 == 0\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        if isinstance(r, BitArray):\n            ok = (r.num_bits == orig_bits and r.num_shots == ref)\n            evidence[key] = f\"BitArray num_bits={r.num_bits}, num_shots={r.num_shots}; want bits={orig_bits}, shots={ref} -> {ok}\"\n        else:\n            ok = False\n            evidence[key] = f\"returned {type(r).__name__} (not a full-width BitArray) -> False\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\ncheck(\"A\", lambda: bits.slice_bits([1]))\ncheck(\"B\", lambda: bits.postselect([1], [0]))\ncheck(\"C\", lambda: bits.slice_shots([0]))\ncheck(\"D\", lambda: [b for b in bits.get_bitstrings() if b[-2] == \"0\"])\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"shots_with_q1_zero\": ref, \"num_bits\": orig_bits}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.primitives.containers import BitArray\n\nqc = QuantumCircuit(2); qc.h(0); qc.h(1); qc.measure_all()\nbits = StatevectorSampler(seed=3).run([qc], shots=400).result()[0].data.meas\norig_bits = bits.num_bits\nref = sum(1 for b in bits.get_bitstrings() if b[-2] == \"0\")  # qubit 1 == 0\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        if isinstance(r, BitArray):\n            ok = (r.num_bits == orig_bits and r.num_shots == ref)\n            evidence[key] = f\"BitArray num_bits={r.num_bits}, num_shots={r.num_shots}; want bits={orig_bits}, shots={ref} -> {ok}\"\n        else:\n            ok = False\n            evidence[key] = f\"returned {type(r).__name__} (not a full-width BitArray) -> False\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\ncheck(\"A\", lambda: bits.slice_bits([1]))\ncheck(\"B\", lambda: bits.postselect([1], [0]))\ncheck(\"C\", lambda: bits.slice_shots([0]))\ncheck(\"D\", lambda: [b for b in bits.get_bitstrings() if b[-2] == \"0\"])\ncheck(\"E\", lambda: bits.postselect([1], [0], num_bits=bits.num_bits))\ncheck(\"F\", lambda: bits.postselect([1], [0]).slice_bits([1]))\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"shots_with_q1_zero\": ref, \"num_bits\": orig_bits}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7: D replaced by a hand-filtered bitstring list (real misconception; kills length tell)"
+    "notes": "adversarial s7: D replaced by a hand-filtered bitstring list (real misconception; kills length tell) | pool wave: +E postselect needs an explicit num_bits to keep the width; +F slice_bits after postselect"
   },
   "freshness": {
     "verified_against": {

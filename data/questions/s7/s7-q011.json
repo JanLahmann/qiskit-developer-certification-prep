@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "`num_shots=2000`, `num_bits=1`"
+    },
+    {
+      "key": "E",
+      "text": "`num_shots=6000`, `num_bits=3`"
+    },
+    {
+      "key": "F",
+      "text": "`num_shots=1024`, `num_bits=3`"
     }
   ],
   "answer": [
     "C"
   ],
+  "display_count": 4,
   "explanation": {
     "correct": "`num_shots` is the number of times the circuit was executed (2000), and `num_bits` is the number of classical bits in that register (3, one per measured qubit from `measure_all()`).",
     "distractors": {
       "A": "This swaps the two attributes: shots and bits are transposed.",
       "B": "8 is 2**3, the number of DISTINCT possible outcomes, not the bit width of the register.",
-      "D": "A single register still holds all 3 measured bits; `num_bits` counts bits, not registers."
+      "D": "A single register still holds all 3 measured bits; `num_bits` counts bits, not registers.",
+      "E": "`num_shots` counts circuit EXECUTIONS, not measured bits. Multiplying the shot count by the register width is the misconception; the proof shows the printed pair is unchanged at the requested shot count.",
+      "F": "`shots=` on `run()` is honoured -- it is not ignored in favour of a built-in fallback. The executed proof prints the requested shot count, not a default one."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
@@ -47,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3)\nqc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\nbits = StatevectorSampler(seed=1).run([qc], shots=2000).result()[0].data.meas\nobs = (bits.num_shots, bits.num_bits)\ncand = {\"A\": (3, 2000), \"B\": (2000, 8), \"C\": (2000, 3), \"D\": (2000, 1)}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = f\"observed (num_shots,num_bits)={obs}; option claims {v} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"num_shots\": bits.num_shots, \"num_bits\": bits.num_bits}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3)\nqc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\nbits = StatevectorSampler(seed=1).run([qc], shots=2000).result()[0].data.meas\nobs = (bits.num_shots, bits.num_bits)\ncand = {\"A\": (3, 2000), \"B\": (2000, 8), \"C\": (2000, 3), \"D\": (2000, 1),\n        \"E\": (6000, 3), \"F\": (1024, 3)}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = f\"observed (num_shots,num_bits)={obs}; option claims {v} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"num_shots\": bits.num_shots, \"num_bits\": bits.num_bits}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E num_shots counts measured bits (shots x width); +F run(shots=) ignored for a built-in default"
   },
   "freshness": {
     "verified_against": {

@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "`{'000': 500}`"
+    },
+    {
+      "key": "E",
+      "text": "`{'001': 1.0}`"
+    },
+    {
+      "key": "F",
+      "text": "`{1: 500}`"
     }
   ],
   "answer": [
     "A"
   ],
+  "display_count": 4,
   "explanation": {
     "correct": "Qiskit uses little-endian bit ordering: qubit 0 is the RIGHTMOST character of the bitstring. Only qubit 0 is flipped, so every shot reads `001`.",
     "distractors": {
       "B": "`100` reads the string big-endian (qubit 0 leftmost); Qiskit puts qubit 0 on the right.",
       "C": "`010` would mean qubit 1 was flipped; the X was on qubit 0.",
-      "D": "`000` ignores the X gate entirely."
+      "D": "`000` ignores the X gate entirely.",
+      "E": "`get_counts()` returns raw integer counts, not normalised probabilities. Normalised dictionaries were the V1 `quasi_dists` habit; the proof prints the shot count against the bitstring.",
+      "F": "String bitstrings are the keys of `get_counts()`; integer keys come from the separate `get_int_counts()`. The proof compares the observed dictionary against this claim and it does not match."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
@@ -47,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3); qc.x(0); qc.measure_all()\nobs = StatevectorSampler(seed=5).run([qc], shots=500).result()[0].data.meas.get_counts()\ncand = {\"A\": {\"001\": 500}, \"B\": {\"100\": 500}, \"C\": {\"010\": 500}, \"D\": {\"000\": 500}}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = f\"observed counts={obs}; option claims {v} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": obs}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3); qc.x(0); qc.measure_all()\nobs = StatevectorSampler(seed=5).run([qc], shots=500).result()[0].data.meas.get_counts()\ncand = {\"A\": {\"001\": 500}, \"B\": {\"100\": 500}, \"C\": {\"010\": 500}, \"D\": {\"000\": 500},\n        \"E\": {\"001\": 1.0}, \"F\": {1: 500}}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = f\"observed counts={obs}; option claims {v} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": obs}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E get_counts returns normalised probabilities (V1 quasi_dists habit); +F integer bitstring keys"
   },
   "freshness": {
     "verified_against": {

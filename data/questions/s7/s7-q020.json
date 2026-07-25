@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "`[0.5, 0.5]` -- outcome probabilities"
+    },
+    {
+      "key": "E",
+      "text": "`-1.0` -- the Bell state anticorrelates under `ZZ`"
+    },
+    {
+      "key": "F",
+      "text": "`array([1.0])` -- a length-one array, not a scalar"
     }
   ],
   "answer": [
     "C"
   ],
+  "display_count": 5,
   "explanation": {
     "correct": "EstimatorV2 returns expectation values, not samples. The Bell state is a +1 eigenstate of ZZ, so <ZZ> = 1.0. The estimator DataBin exposes `evs` (and `stds`), never counts or probabilities.",
     "distractors": {
       "A": "Counts/bitstrings are Sampler output; an estimator DataBin has no such dict.",
       "B": "The Bell state is a +1 eigenstate of ZZ; the value is 1.0, not 0.",
-      "D": "The estimator returns an expectation value, not a probability vector."
+      "D": "The estimator returns an expectation value, not a probability vector.",
+      "E": "The |00>+|11> Bell state is CORRELATED: both surviving outcomes give `ZZ = +1`. The `-1` answer belongs to the singlet |01>-|10>; the proof measures the sign directly.",
+      "F": "One circuit against one observable gives a 0-d array: the proof reports `ndim` 0, so there is no leading axis to index. A length-one 1-D array would come from a shape-`(1,)` parameter or observable broadcast."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/primitives",
@@ -47,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\nimport numpy as np\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nevs = StatevectorEstimator(seed=0).run([(qc, SparsePauliOp(\"ZZ\"))]).result()[0].data.evs\nval = float(evs); scalar = (np.ndim(evs) == 0)\n\nevidence = {}; proven = []\n# A and D claim container-like results: attempt the access each one implies.\ntry:\n    got = evs[\"00\"]\n    evidence[\"A\"] = f\"evs['00'] returned {got} -> dict-like -> True\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = (f\"evs['00'] raised {type(e).__name__}: {str(e)[:60]}; evs is \"\n                     f\"{type(evs).__name__} ndim={np.ndim(evs)} value {round(val, 6)} -> False\")\ntry:\n    got = list(evs)\n    evidence[\"D\"] = f\"list(evs) returned {got} -> sequence of probabilities -> True\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = (f\"list(evs) raised {type(e).__name__}: {str(e)[:60]}; evs is a scalar \"\n                     f\"{round(val, 6)}, not a 2-element list -> False\")\nfor k, claim in {\"B\": 0.0, \"C\": 1.0}.items():\n    ok = scalar and abs(val - claim) < 1e-6\n    evidence[k] = f\"evs={round(val, 6)} (ndim={np.ndim(evs)}); option claims scalar {claim} -> match={ok}\"\n    if ok: proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {\"evs\": val, \"ndim\": int(np.ndim(evs))}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\nimport numpy as np\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nevs = StatevectorEstimator(seed=0).run([(qc, SparsePauliOp(\"ZZ\"))]).result()[0].data.evs\nval = float(evs); scalar = (np.ndim(evs) == 0)\n\nevidence = {}; proven = []\n# A and D claim container-like results: attempt the access each one implies.\ntry:\n    got = evs[\"00\"]\n    evidence[\"A\"] = f\"evs['00'] returned {got} -> dict-like -> True\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = (f\"evs['00'] raised {type(e).__name__}: {str(e)[:60]}; evs is \"\n                     f\"{type(evs).__name__} ndim={np.ndim(evs)} value {round(val, 6)} -> False\")\ntry:\n    got = list(evs)\n    evidence[\"D\"] = f\"list(evs) returned {got} -> sequence of probabilities -> True\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = (f\"list(evs) raised {type(e).__name__}: {str(e)[:60]}; evs is a scalar \"\n                     f\"{round(val, 6)}, not a 2-element list -> False\")\nfor k, claim in {\"B\": 0.0, \"C\": 1.0, \"E\": -1.0}.items():\n    ok = scalar and abs(val - claim) < 1e-6\n    evidence[k] = f\"evs={round(val, 6)} (ndim={np.ndim(evs)}); option claims scalar {claim} -> match={ok}\"\n    if ok: proven.append(k)\nF_ok = (np.ndim(evs) == 1 and np.size(evs) == 1)\nevidence[\"F\"] = (f\"evs has ndim={np.ndim(evs)} and shape {np.shape(evs)}; option claims a \"\n                 f\"length-one 1-D array -> {F_ok}\")\nif F_ok: proven.append(\"F\")\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {\"evs\": val, \"ndim\": int(np.ndim(evs))}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7: proof strengthened — A and D are now attempted (subscript / list()) instead of narrated"
+    "notes": "adversarial s7: proof strengthened — A and D are now attempted (subscript / list()) instead of narrated | pool wave: +E Bell pair anticorrelates under ZZ (sign flip); +F evs is a length-one 1-D array"
   },
   "freshness": {
     "verified_against": {

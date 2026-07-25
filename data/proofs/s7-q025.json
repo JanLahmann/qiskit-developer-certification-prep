@@ -8,7 +8,9 @@
       "A": "expectation_values('ZZ')=1.0; option claims 0.0 -> match=False",
       "B": "expectation_values('ZZ')=1.0; option claims 1.0 -> match=True",
       "C": "expectation_values('ZZ')=1.0; option claims -1.0 -> match=False",
-      "D": "expectation_values('ZZ')=1.0; option claims 0.5 -> match=False"
+      "D": "expectation_values('ZZ')=1.0; option claims 0.5 -> match=False",
+      "E": "expectation_values('ZZ') returned ndim=0 -- a single number, not one value per measured bit -> False",
+      "F": "BitArray.expectation_values('ZZ') returned 1.0 without raising -> False"
     },
     "observed": {
       "ev": 1.0
@@ -20,9 +22,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.11,
+  "wall_seconds": 1.41,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"expectation_values('ZZ')=1.0; option claims 0.0 -> match=False\", \"B\": \"expectation_values('ZZ')=1.0; option claims 1.0 -> match=True\", \"C\": \"expectation_values('ZZ')=1.0; option claims -1.0 -> match=False\", \"D\": \"expectation_values('ZZ')=1.0; option claims 0.5 -> match=False\"}, \"observed\": {\"ev\": 1.0}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"expectation_values('ZZ')=1.0; option claims 0.0 -> match=False\", \"B\": \"expectation_values('ZZ')=1.0; option claims 1.0 -> match=True\", \"C\": \"expectation_values('ZZ')=1.0; option claims -1.0 -> match=False\", \"D\": \"expectation_values('ZZ')=1.0; option claims 0.5 -> match=False\", \"E\": \"expectation_values('ZZ') returned ndim=0 -- a single number, not one value per measured bit -> False\", \"F\": \"BitArray.expectation_values('ZZ') returned 1.0 without raising -> False\"}, \"observed\": {\"ev\": 1.0}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

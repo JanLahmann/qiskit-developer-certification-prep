@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "`0.5`"
+    },
+    {
+      "key": "E",
+      "text": "`[1.0, 1.0]` -- one value per measured bit"
+    },
+    {
+      "key": "F",
+      "text": "It raises `AttributeError` -- `BitArray` has no such method"
     }
   ],
   "answer": [
     "B"
   ],
+  "display_count": 4,
   "explanation": {
     "correct": "`BitArray.expectation_values` assigns +/-1 per bit and averages over shots. In a Bell state every shot is `00` or `11`, and both are +1 eigenvalues of ZZ (product of the two +/-1 bit values), so the average is exactly 1.0 regardless of the split.",
     "distractors": {
       "A": "0 would arise for an uncorrelated single-qubit Z average, not the correlated ZZ product.",
       "C": "-1 has the wrong sign; correlated bits give ZZ = +1.",
-      "D": "0.5 confuses an expectation value with an outcome probability."
+      "D": "0.5 confuses an expectation value with an outcome probability.",
+      "E": "The Pauli string is evaluated as a whole, giving ONE number per observable: the proof reports a 0-dimensional result, not a per-bit vector.",
+      "F": "`BitArray.expectation_values` exists and computes diagonal (Z-type) expectation values straight from sampled bits -- no Estimator needed. The proof calls it and gets a number."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
@@ -47,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nbits = StatevectorSampler(seed=13).run([qc], shots=1000).result()[0].data.meas\nev = float(bits.expectation_values(\"ZZ\"))\ncand = {\"A\": 0.0, \"B\": 1.0, \"C\": -1.0, \"D\": 0.5}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = abs(ev - v) < 1e-9\n    evidence[k] = f\"expectation_values('ZZ')={round(ev,6)}; option claims {v} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"ev\": ev}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nbits = StatevectorSampler(seed=13).run([qc], shots=1000).result()[0].data.meas\nev = float(bits.expectation_values(\"ZZ\"))\ncand = {\"A\": 0.0, \"B\": 1.0, \"C\": -1.0, \"D\": 0.5}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = abs(ev - v) < 1e-9\n    evidence[k] = f\"expectation_values('ZZ')={round(ev,6)}; option claims {v} -> match={m}\"\n    if m: proven.append(k)\nraw = bits.expectation_values(\"ZZ\")\nE_ok = (np.ndim(raw) == 1 and np.size(raw) == 2)\nevidence[\"E\"] = (f\"expectation_values('ZZ') returned ndim={np.ndim(raw)} -- a single number, \"\n                 f\"not one value per measured bit -> {E_ok}\")\nif E_ok: proven.append(\"E\")\ntry:\n    bits.expectation_values(\"ZZ\")\n    F_ok = False\n    evidence[\"F\"] = (f\"BitArray.expectation_values('ZZ') returned {round(ev, 6)} without \"\n                     f\"raising -> {F_ok}\")\nexcept AttributeError as e:\n    F_ok = True\n    evidence[\"F\"] = f\"raised AttributeError: {str(e)[:60]} -> {F_ok}\"\nif F_ok: proven.append(\"F\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"ev\": ev}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E one expectation value per measured bit; +F BitArray has no expectation_values"
   },
   "freshness": {
     "verified_against": {

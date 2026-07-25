@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "Use `result.quasi_dists[0]`"
+    },
+    {
+      "key": "E",
+      "text": "Use `result.results[0].data.meas.get_counts()` (the V1 result list)"
+    },
+    {
+      "key": "F",
+      "text": "Use `result.meas.get_counts()`; the register hangs off the result"
     }
   ],
   "answer": [
     "C"
   ],
+  "display_count": 5,
   "explanation": {
     "correct": "`result` is a PrimitiveResult (a sequence of PubResults). You must select a pub with `result[0]` before reaching `.data`. PrimitiveResult itself has neither `.data` nor `.get_counts` nor V1's `.quasi_dists`.",
     "distractors": {
       "A": "PrimitiveResult has no `get_counts()`; that was the V1 `Result` API.",
       "B": "`.data` is a per-pub attribute; `result.data` (before indexing) does not exist.",
-      "D": "`quasi_dists` was the V1 Sampler output; SamplerV2 returns a BitArray."
+      "D": "`quasi_dists` was the V1 Sampler output; SamplerV2 returns a BitArray.",
+      "E": "`.results` was the V1 `Result` container's per-experiment list. A `PrimitiveResult` is itself the sequence of pub results, so `result.results` raises `AttributeError`.",
+      "F": "The register field lives on a pub's `DataBin`, two levels down: `result[0].data.meas`. Reaching for `.meas` on the `PrimitiveResult` raises `AttributeError`, exactly like the buggy line."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.PrimitiveResult",
@@ -48,14 +59,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nresult = StatevectorSampler(seed=8).run([qc], shots=1024).result()\ntry:\n    _ = result.data.meas.get_counts(); bug = \"no error (unexpected)\"\nexcept Exception as e:\n    bug = f\"{type(e).__name__}: {str(e)[:70]}\"\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        ok = isinstance(r, dict) and sum(r.values()) == 1024\n        evidence[key] = f\"returned {type(r).__name__}={str(r)[:45]}; valid counts -> {ok}\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ncheck(\"A\", lambda: result.get_counts())\ncheck(\"B\", lambda: result.data[0].meas.get_counts())\ncheck(\"C\", lambda: result[0].data.meas.get_counts())\ncheck(\"D\", lambda: result.quasi_dists[0])\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy_line_error\": bug}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nresult = StatevectorSampler(seed=8).run([qc], shots=1024).result()\ntry:\n    _ = result.data.meas.get_counts(); bug = \"no error (unexpected)\"\nexcept Exception as e:\n    bug = f\"{type(e).__name__}: {str(e)[:70]}\"\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        ok = isinstance(r, dict) and sum(r.values()) == 1024\n        evidence[key] = f\"returned {type(r).__name__}={str(r)[:45]}; valid counts -> {ok}\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ncheck(\"A\", lambda: result.get_counts())\ncheck(\"B\", lambda: result.data[0].meas.get_counts())\ncheck(\"C\", lambda: result[0].data.meas.get_counts())\ncheck(\"D\", lambda: result.quasi_dists[0])\ncheck(\"E\", lambda: result.results[0].data.meas.get_counts())\ncheck(\"F\", lambda: result.meas.get_counts())\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy_line_error\": bug}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E V1 result.results[0] container; +F register field hangs off PrimitiveResult"
   },
   "freshness": {
     "verified_against": {

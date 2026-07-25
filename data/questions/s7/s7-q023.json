@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "`len(result)` is 100 (one entry per shot)"
+    },
+    {
+      "key": "E",
+      "text": "`len(result)` is 2; second counts via `result[1].get_counts()`"
+    },
+    {
+      "key": "F",
+      "text": "`len(result)` is 2; second counts via `result[1].data.get_counts()`"
     }
   ],
   "answer": [
     "A"
   ],
+  "display_count": 4,
   "explanation": {
     "correct": "A PrimitiveResult holds one PubResult per PUB, in input order. Two PUBs give `len(result) == 2`; the second circuit's data is at `result[1].data.meas`. Shots live inside each pub's BitArray, not as top-level entries.",
     "distractors": {
       "B": "PUBs are not merged; each PUB gets its own PubResult.",
       "C": "There is no top-level `result.data`; `.data` belongs to each indexed PubResult.",
-      "D": "`len(result)` counts PUBs (2), not shots; shots are inside the BitArray."
+      "D": "`len(result)` counts PUBs (2), not shots; shots are inside the BitArray.",
+      "E": "The pub count is right but `PubResult` has no `get_counts()`; counts live on the register field inside `.data`. The proof raises `AttributeError` on this path.",
+      "F": "A `DataBin` is a container of register fields, not a counts object: it has `keys()/values()/items()` but no `get_counts()`. You must name the register (`.data.meas`) first."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.PrimitiveResult",
@@ -47,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc_a = QuantumCircuit(1); qc_a.x(0); qc_a.measure_all()\nqc_b = QuantumCircuit(1); qc_b.measure_all()\nresult = StatevectorSampler(seed=6).run([qc_a, qc_b], shots=100).result()\nL = len(result)\nevidence = {}; proven = []\ntry:\n    c1 = result[1].data.meas.get_counts()\n    A_ok = (L == 2 and isinstance(c1, dict))\n    evidence[\"A\"] = f\"len(result)={L}; result[1].data.meas.get_counts()={c1} -> {A_ok}\"\nexcept Exception as e:\n    A_ok = False\n    evidence[\"A\"] = f\"len(result)={L}; result[1] path raised {type(e).__name__}: {str(e)[:60]}\"\nif A_ok: proven.append(\"A\")\nB_ok = (L == 1); evidence[\"B\"] = f\"len(result)={L}; claim 1 -> {B_ok}\"\nif B_ok: proven.append(\"B\")\ntry:\n    _ = result.data[1].meas.get_counts(); C_ok = (L == 2)\n    evidence[\"C\"] = f\"result.data[1] path worked; len={L} -> {C_ok}\"\nexcept Exception as e:\n    C_ok = False\n    evidence[\"C\"] = f\"result.data[1] path raised {type(e).__name__}: {str(e)[:60]} -> False\"\nif C_ok: proven.append(\"C\")\nD_ok = (L == 100); evidence[\"D\"] = f\"len(result)={L}; claim 100 -> {D_ok}\"\nif D_ok: proven.append(\"D\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"len\": L}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc_a = QuantumCircuit(1); qc_a.x(0); qc_a.measure_all()\nqc_b = QuantumCircuit(1); qc_b.measure_all()\nresult = StatevectorSampler(seed=6).run([qc_a, qc_b], shots=100).result()\nL = len(result)\nevidence = {}; proven = []\ntry:\n    c1 = result[1].data.meas.get_counts()\n    A_ok = (L == 2 and isinstance(c1, dict))\n    evidence[\"A\"] = f\"len(result)={L}; result[1].data.meas.get_counts()={c1} -> {A_ok}\"\nexcept Exception as e:\n    A_ok = False\n    evidence[\"A\"] = f\"len(result)={L}; result[1] path raised {type(e).__name__}: {str(e)[:60]}\"\nif A_ok: proven.append(\"A\")\nB_ok = (L == 1); evidence[\"B\"] = f\"len(result)={L}; claim 1 -> {B_ok}\"\nif B_ok: proven.append(\"B\")\ntry:\n    _ = result.data[1].meas.get_counts(); C_ok = (L == 2)\n    evidence[\"C\"] = f\"result.data[1] path worked; len={L} -> {C_ok}\"\nexcept Exception as e:\n    C_ok = False\n    evidence[\"C\"] = f\"result.data[1] path raised {type(e).__name__}: {str(e)[:60]} -> False\"\nif C_ok: proven.append(\"C\")\nD_ok = (L == 100); evidence[\"D\"] = f\"len(result)={L}; claim 100 -> {D_ok}\"\nif D_ok: proven.append(\"D\")\ntry:\n    _ = result[1].get_counts()\n    E_ok = (L == 2)\n    evidence[\"E\"] = f\"result[1].get_counts() worked; len(result)={L} -> {E_ok}\"\nexcept Exception as e:\n    E_ok = False\n    evidence[\"E\"] = (f\"len(result)={L}; result[1].get_counts() raised {type(e).__name__}: \"\n                     f\"{str(e)[:60]} -> {E_ok}\")\nif E_ok: proven.append(\"E\")\ntry:\n    _ = result[1].data.get_counts()\n    F_ok = (L == 2)\n    evidence[\"F\"] = f\"result[1].data.get_counts() worked; len(result)={L} -> {F_ok}\"\nexcept Exception as e:\n    F_ok = False\n    evidence[\"F\"] = (f\"len(result)={L}; result[1].data.get_counts() raised {type(e).__name__}: \"\n                     f\"{str(e)[:60]} -> {F_ok}\")\nif F_ok: proven.append(\"F\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"len\": L}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E PubResult.get_counts(); +F DataBin.get_counts()"
   },
   "freshness": {
     "verified_against": {

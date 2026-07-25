@@ -8,7 +8,9 @@
       "A": "len(result)=2; result[1].data.meas.get_counts()={'0': 100} -> True",
       "B": "len(result)=2; claim 1 -> False",
       "C": "result.data[1] path raised AttributeError: 'PrimitiveResult' object has no attribute 'data' -> False",
-      "D": "len(result)=2; claim 100 -> False"
+      "D": "len(result)=2; claim 100 -> False",
+      "E": "len(result)=2; result[1].get_counts() raised AttributeError: 'SamplerPubResult' object has no attribute 'get_counts' -> False",
+      "F": "len(result)=2; result[1].data.get_counts() raised AttributeError: 'DataBin' object has no attribute 'get_counts' -> False"
     },
     "observed": {
       "len": 2
@@ -20,9 +22,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.11,
+  "wall_seconds": 1.28,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"len(result)=2; result[1].data.meas.get_counts()={'0': 100} -> True\", \"B\": \"len(result)=2; claim 1 -> False\", \"C\": \"result.data[1] path raised AttributeError: 'PrimitiveResult' object has no attribute 'data' -> False\", \"D\": \"len(result)=2; claim 100 -> False\"}, \"observed\": {\"len\": 2}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"len(result)=2; result[1].data.meas.get_counts()={'0': 100} -> True\", \"B\": \"len(result)=2; claim 1 -> False\", \"C\": \"result.data[1] path raised AttributeError: 'PrimitiveResult' object has no attribute 'data' -> False\", \"D\": \"len(result)=2; claim 100 -> False\", \"E\": \"len(result)=2; result[1].get_counts() raised AttributeError: 'SamplerPubResult' object has no attribute 'get_counts' -> False\", \"F\": \"len(result)=2; result[1].data.get_counts() raised AttributeError: 'DataBin' object has no attribute 'get_counts' -> False\"}, \"observed\": {\"len\": 2}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

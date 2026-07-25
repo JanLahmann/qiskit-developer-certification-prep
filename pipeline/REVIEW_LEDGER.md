@@ -664,3 +664,118 @@ and died with it.
   findings unchanged from the pre-pool baseline (4, all pre-existing).
   `similar_twin_member` 40.0% at 59% coverage → 33.9% exam estimate, accepted
   residual as in s4/s5.
+
+## Verified library facts (s7 pool wave — results retrieval/analysis, 2026-07-25, qiskit 2.5.0 / runtime 0.48.0)
+
+- **`json.dumps` / `json.loads` are keyword-only after the first argument**:
+  `json.dumps(result, f, cls=RuntimeEncoder)` raises `TypeError: dumps() takes 1
+  positional argument but 2 positional arguments (and 1 keyword-only argument)
+  were given`. The dump/dumps near-miss is therefore a clean, cheap distractor
+  on every serialization stem. Encoding with `RuntimeEncoder` but loading with a
+  plain `json.load` "succeeds" and hands back nested dicts — indexing the pub
+  then fails with `KeyError: 0` (a two-stage refutation, not an exception at the
+  call site).
+- **`BitArray.postselect` has no `num_bits=` parameter** (`TypeError: ...
+  unexpected keyword argument 'num_bits'`) — width preservation is automatic.
+  `postselect(...).slice_bits([i])` is the safe "right call, ruined follow-up"
+  distractor: it drops `num_bits` to 1 while keeping the correct shot set.
+- **`BitArray.from_counts(a.get_counts() | b.get_counts())` SUCCEEDS** and returns
+  a real BitArray — with the wrong shot total, because dict `|` overwrites
+  duplicate outcome keys instead of summing them. Needs a post-condition
+  (`num_shots == a+b`), never an exception. `np.concatenate([a.array, b.array])`
+  also succeeds and returns a bare `ndarray` (no `num_bits`, no BitArray methods).
+- **`BitArray.array` is bit-PACKED `uint8`**, `shape[1] == ceil(num_bits/8)` — a
+  3-bit register gives `shape[1] == 1`, and dtype is never `bool`. The transposed
+  shape and a fixed 8-column width are both safe refuted claims.
+- **`bits.slice_bits([2])` on a 3-bit register does NOT raise** — indices run
+  `0..num_bits-1`, so "IndexError, index out of range" is a safe refuted option
+  (proved by calling it and catching nothing).
+- **`DataBin` has no `get_counts()`, no `get_bitstrings()`, and its fields are not
+  callable** (`TypeError: 'BitArray' object is not callable`). `PubResult` has no
+  `get_counts()` either; `PrimitiveResult` has neither `.results` (the V1 list) nor
+  a register attribute. Four independent AttributeError distractors, all verified.
+  Re-confirmed: `db["name"]` WORKS and must never be a wrong option.
+- **`DataBin.values()` returns the stored BitArrays** — so `list(db.values())` is a
+  refuted "list the register names" option, but do NOT test it with
+  `"ans" in list(db.values())`: `BitArray.__eq__` against a `str` raises
+  `AttributeError: 'str' object has no attribute 'num_bits'`, which makes the
+  evidence read like the option's own expression crashed. Use
+  `any(isinstance(v, str) and v == name for v in ...)`.
+- **`BitArray` does not carry its register name** (`AttributeError: 'BitArray'
+  object has no attribute 'name'`) — the name exists only as the DataBin field.
+- **`PubResult.metadata["evs"]` → `KeyError: 'evs'`** and `DataBin.expvals` →
+  `AttributeError` (re-confirms the s6 metadata finding from the retrieval side).
+  The estimator DataBin also has no `variance` field.
+- **The achieved standard error is NOT `1/sqrt(shots)`**: on a noisy Bell/ZZ pub,
+  `shots ** -0.5` returns 0.02 while `pub.data.stds` and the independent
+  prediction `sqrt((1 - evs^2)/shots)` both give 0.0096 — a factor of 2 apart, so
+  the "shot noise is 1/sqrt(N)" distractor refutes cleanly at a 10% tolerance.
+- **`BitArray.expectation_values("ZZ")` returns a 0-d scalar** (ndim 0), one value
+  per Pauli string — never a per-bit vector, and it exists (an "AttributeError,
+  you need an Estimator" claim is safe and refuted).
+- Re-confirmed for pooling: `StatevectorEstimator` evs on a Bell/ZZ pub is a 0-d
+  array, so "a length-one 1-D array" is a safe shape distractor; `evs` for a
+  `(4, 1)` parameter array is `(4,)`, so `(1, 4)` (observable axis first) is safe.
+
+## Pool-craft rules (s7 pool wave, 2026-07-25 — 23/24 pooled, 44 new distractors)
+
+- **Read the pre-pool `shortest_option` FIRST; s7 started at 10.3%**, the lowest of
+  any section. That is the s6 situation amplified: the ordinary discipline (pool
+  distractors LONGER than the correct option on every non-keeper) is exactly the
+  fix, and it took s7 to 25.0% with no compensating edits at all. The s5
+  shortest-option rule (add a SHORTER pool distractor) is only for sections that
+  START above ~30% — applying it here would have been backwards.
+- **`shortest_option` arithmetic for planning:** at dc=4 (3 of 5 distractors shown),
+  a question with exactly `s` existing distractors shorter than the correct option
+  contributes `C(5-s, 3)/10` once both new distractors are longer — 1.0 for s=0,
+  0.4 for s=1, 0.1 for s=2, 0 for s>=3. Sort the section by `s` before drafting:
+  the s=1 questions are where the aggregate is actually bought.
+- **Keeper count came out at exactly N/4 for free.** 4 questions carried a low
+  `length_tell` pre-wave; the 5th keeper was *manufactured for free* on s7-q023,
+  whose correct option TIED with one distractor (72 vs 72). Making both pool
+  distractors shorter than the correct option turns the 4-of-10 variants that drop
+  the tying distractor into correct-strictly-longest: the question goes 0.5 -> 0.7
+  on `longest_option` at zero content cost. **Look for tied-longest questions
+  before manufacturing a keeper the expensive way (s6's second-longest trick).**
+- **All-equal-length option sets are worth keeping when the template allows it**
+  (s7-q011: every option is `` `num_shots=X`, `num_bits=Y` `` = 25 + len(X) +
+  len(Y) chars, so two more 30-char options were free ballast at 0.25 longest AND
+  0.25 shortest). When only ONE same-width option can be found (s7-q014), pairing
+  it with a deliberately SHORTER second distractor gives 0.30/0.10 instead of the
+  0.10/0.30 you get from pairing it with a longer one — pick the direction the
+  section aggregate needs.
+- **Stem-echo at dc=5 is a one-variant problem.** Only the single variant that drops
+  the highest-overlap distractor can fire, so exactly one pool distractor needs
+  overlap >= ceil(ans_ov/2) (hit s7-q015: correct overlap 4, best remaining 2).
+  Reusing the correct option's own sentence frame ("Only the `111` shots survive,
+  narrowed to ...") is the cheapest way to buy the tokens and it doubles as a
+  strong half-right distractor.
+- **A pool distractor's evidence must not report >=3-digit numbers the question
+  never shows** — but note the escape hatch: numbers already in the artifact's
+  `observed` block are corpus, and any number you put in the NEW OPTION TEXT
+  becomes corpus too (s7-q011's `6000`/`1024` options made their own evidence
+  legal). Where that is not possible, write the post-condition in prose
+  ("holds a shot total below `a.num_shots + b.num_shots`") — s7-q018's E would
+  otherwise have cloned the section's existing `num_shots=200` finding onto a
+  second option.
+- **Same trap for kwarg anchors:** `dtype=uint8` in new evidence is a finding as
+  soon as the word `dtype` enters the corpus via your new option — pre-empt it by
+  naming the real value (`uint8`) in the distractor's explanation (s7-q019).
+- **Ledger facts pay off directly as *rejected* drafts:** `result[0].data["readout"]`
+  (item access works), `next(iter(result))` (PrimitiveResult is iterable),
+  `bits.get_int_counts()` key-set duplicates, `pickle` round-trips and
+  `DataBin.values` were all discarded as second-correct-answers before drafting.
+  On predict-output questions that compare KEY SETS, a "keys are reversed" option
+  is a proven-correct trap — the set is identical.
+- s7 final: `longest_option` 25.0%, `shortest_option` 25.0%, `avoid_longest` 24.0%
+  (baseline 24.1%), positions 30.2–35.2% exam-weighted, 0 blockers/warnings, 5 low
+  `length_tell` residuals = the 5 deliberate keepers, lint findings unchanged from
+  the pre-wave baseline (3, all pre-existing). `similar_twin_member` 40.7% at 64%
+  coverage -> 34.8% exam estimate, accepted residual as in s4/s5/s6.
+  `numeric_middle` rose 25.0% -> 44.6% at 18% coverage (below the 25% gating floor,
+  not scored): it is a tokenizer artifact — `result[0]`-style options all parse as
+  the single number 0, so "never the biggest or smallest" degenerates. Do not
+  distort real API paths to chase it.
+- **4-correct multis at the 6-option cap still cannot pool** (s7-q030, the section's
+  only skip; `display_count` would need to be >= 6 to leave 2 displayed distractors
+  yet must be < len(options)). Fourth instance after s3-q042, s4's note and s6-q028.

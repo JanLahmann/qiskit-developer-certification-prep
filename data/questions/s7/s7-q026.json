@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "`service.job(job_id).result()`"
+    },
+    {
+      "key": "E",
+      "text": "`service.retrieve_job(job_id).result()`"
+    },
+    {
+      "key": "F",
+      "text": "`QiskitRuntimeService.job(job_id).result()`"
     }
   ],
   "answer": [
     "D"
   ],
+  "display_count": 4,
   "explanation": {
     "correct": "IBM Quantum stores every job's results server-side. `service.job(job_id)` re-hydrates the RuntimeJobV2; calling `.result()` returns its stored PrimitiveResult, so work survives a kernel restart.",
     "distractors": {
       "A": "There is no `service.result()` method.",
       "B": "There is no `get_result()` classmethod on the service.",
-      "C": "`service.jobs()` (plural) takes filters and returns a LIST of jobs, not a single job; use singular `service.job(id)`."
+      "C": "`service.jobs()` (plural) takes filters and returns a LIST of jobs, not a single job; use singular `service.job(id)`.",
+      "E": "`retrieve_job` was the V1 `IBMQBackend`/provider spelling. `QiskitRuntimeService` exposes `job(id)` (singular) and `jobs(...)` (filtered list) instead.",
+      "F": "`job()` is an instance method: called on the class it is missing its `self`, and no account/channel has been resolved. Use the `service` object you already constructed."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/save-jobs",
@@ -53,6 +64,6 @@
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E V1 service.retrieve_job; +F job() called on the class instead of the instance"
   }
 }

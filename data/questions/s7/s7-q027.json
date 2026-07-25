@@ -29,6 +29,10 @@
     {
       "key": "E",
       "text": "Results live in local RAM, so a kernel restart discards them for good"
+    },
+    {
+      "key": "F",
+      "text": "Resubmit the same circuit with `sampler.run(...)`; Runtime returns the cached original result"
     }
   ],
   "answer": [
@@ -36,11 +40,13 @@
     "B",
     "C"
   ],
+  "display_count": 5,
   "explanation": {
     "correct": "`service.jobs()` returns your recent jobs and accepts filters (`backend_name`, `created_after`, `session_id`, `pending`, ...); you then call `.result()` on the job you want. The IBM Quantum Platform Workloads page lists your submitted jobs together with their IDs (the save-jobs guide points there for exactly this purpose). Results are stored server-side, so a kernel restart does not lose them.",
     "distractors": {
       "D": "`service.job()` is the singular lookup and requires a job ID (`TypeError` without one); listing many jobs is what the plural `service.jobs()` does, and it pages with `limit` (default 10) rather than dumping everything.",
-      "E": "IBM Quantum stores the results of every job server-side; that is the whole point of `service.job(job_id)` and of the save-jobs guide."
+      "E": "IBM Quantum stores the results of every job server-side; that is the whole point of `service.job(job_id)` and of the save-jobs guide.",
+      "F": "Runtime does not deduplicate submissions: an identical PUB is a NEW job with a new ID, new queue time and freshly sampled shots. Retrieval is by job ID, not by circuit content."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/save-jobs",
@@ -59,6 +65,6 @@
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7: D/E rephrased without absolute wording (kills absolute-distractor tell); Workloads-page option C confirmed against the live save-jobs guide"
+    "notes": "adversarial s7: D/E rephrased without absolute wording (kills absolute-distractor tell); Workloads-page option C confirmed against the live save-jobs guide | pool wave: +F Runtime returns a cached result for an identical resubmission"
   }
 }

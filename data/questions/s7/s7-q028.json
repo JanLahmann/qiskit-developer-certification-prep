@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "Delete the local `job` variable or restart the kernel; the queued job goes away with it"
+    },
+    {
+      "key": "E",
+      "text": "Call `job.cancel()`, then `job.result()` to read the shots collected before it stopped"
+    },
+    {
+      "key": "F",
+      "text": "Call `job.cancel()`; `job.status()` keeps reporting `\"QUEUED\"` until the server prunes the entry"
     }
   ],
   "answer": [
     "A"
   ],
+  "display_count": 5,
   "explanation": {
     "correct": "Cancellation is requested through the job handle: `job.cancel()` tells the Runtime service to drop the job, after which `job.status()` reports the terminal state `\"CANCELLED\"` (the same action is available from the Workloads page). Because the job lives server-side, the handle -- not your Python process -- is what controls it.",
     "distractors": {
       "B": "There is no `QiskitRuntimeService.cancel`. The service is for finding jobs (`service.job`, `service.jobs`); the job object owns the lifecycle calls.",
       "C": "`RuntimeJobV2` has no `stop()`, and a cancelled job yields no partial data: a Sampler result exists only once the job has finished.",
-      "D": "Jobs execute server-side at IBM Quantum and survive kernel restarts -- which is exactly why `service.job(job_id)` can fetch results later. Dropping the client object leaves the job queued and still consuming your instance's time."
+      "D": "Jobs execute server-side at IBM Quantum and survive kernel restarts -- which is exactly why `service.job(job_id)` can fetch results later. Dropping the client object leaves the job queued and still consuming your instance's time.",
+      "E": "A cancelled job has no result: `result()` on it raises rather than handing back partial data. A job that was still queued had not sampled anything at all.",
+      "F": "Cancellation is a state change, not a deletion: once accepted, `status()` reports the terminal `\"CANCELLED\"` state, and `job.in_final_state()` becomes true."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/monitor-job",
@@ -53,6 +64,6 @@
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7: REWRITTEN — old 'job.result() blocks' version was a near-duplicate of a community item and of q033; now covers cancelling a queued job and server-side job lifetime (docs-backed by monitor-job)"
+    "notes": "adversarial s7: REWRITTEN — old 'job.result() blocks' version was a near-duplicate of a community item and of q033; now covers cancelling a queued job and server-side job lifetime (docs-backed by monitor-job) | pool wave: +E cancelled job still yields partial results; +F status() keeps reporting QUEUED after cancel"
   }
 }

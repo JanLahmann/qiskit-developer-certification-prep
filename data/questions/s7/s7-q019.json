@@ -28,6 +28,10 @@
     {
       "key": "E",
       "text": "`bits.num_bits` equals the number of qubits in the circuit (5)"
+    },
+    {
+      "key": "F",
+      "text": "`bits.array.dtype` is `bool`, one column per measured bit"
     }
   ],
   "answer": [
@@ -35,11 +39,13 @@
     "B",
     "D"
   ],
+  "display_count": 5,
   "explanation": {
     "correct": "`num_shots` counts executions (256). `get_bitstrings()` returns one string per shot, so its length equals `num_shots`, and `get_counts()` values sum to `num_shots`. `num_bits` is the width of the measured register (3), independent of the total qubit count (5) and of the packed byte width (`array.shape[1]` is `ceil(num_bits/8)`).",
     "distractors": {
       "C": "The array is bit-PACKED into bytes, so `array.shape[1]` is `ceil(num_bits/8)` (here 1), not `num_bits` (3).",
-      "E": "`num_bits` is the width of the measured classical register (3 here); a circuit may carry more qubits (5) than it measures, and unmeasured qubits contribute no bits."
+      "E": "`num_bits` is the width of the measured classical register (3 here); a circuit may carry more qubits (5) than it measures, and unmeasured qubits contribute no bits.",
+      "F": "The raw array is bit-PACKED `uint8`, not a boolean matrix: its dtype is `uint8` and `shape[1]` is `ceil(num_bits/8)`, which is 1 here while `num_bits` is 3."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
@@ -52,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(5, \"q\"); cr = ClassicalRegister(3, \"m\")\nqc = QuantumCircuit(qr, cr)\nqc.h(0); qc.h(1); qc.h(2)\nqc.measure([0, 1, 2], [0, 1, 2])\nbits = StatevectorSampler(seed=4).run([qc], shots=256).result()[0].data.m\nnq = qc.num_qubits\nsA = (bits.num_shots == 256)\nsB = (len(bits.get_bitstrings()) == bits.num_shots)\nsC = (bits.array.shape[1] == bits.num_bits)\nsD = (sum(bits.get_counts().values()) == bits.num_shots)\nsE = (bits.num_bits == nq)\nevidence = {\n  \"A\": f\"num_shots={bits.num_shots} vs 256 -> {sA}\",\n  \"B\": f\"len(get_bitstrings())={len(bits.get_bitstrings())} vs num_shots={bits.num_shots} -> {sB}\",\n  \"C\": f\"array.shape={bits.array.shape}, shape[1]={bits.array.shape[1]} vs num_bits={bits.num_bits} -> {sC}\",\n  \"D\": f\"sum(counts.values())={sum(bits.get_counts().values())} vs num_shots={bits.num_shots} -> {sD}\",\n  \"E\": f\"num_bits={bits.num_bits} vs num_qubits={nq} -> {sE}\",\n}\nproven = [k for k, v in {\"A\": sA, \"B\": sB, \"C\": sC, \"D\": sD, \"E\": sE}.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"num_shots\": bits.num_shots, \"num_bits\": bits.num_bits,\n                           \"array_shape\": list(bits.array.shape), \"num_qubits\": nq}})\n"
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(5, \"q\"); cr = ClassicalRegister(3, \"m\")\nqc = QuantumCircuit(qr, cr)\nqc.h(0); qc.h(1); qc.h(2)\nqc.measure([0, 1, 2], [0, 1, 2])\nbits = StatevectorSampler(seed=4).run([qc], shots=256).result()[0].data.m\nnq = qc.num_qubits\nsA = (bits.num_shots == 256)\nsB = (len(bits.get_bitstrings()) == bits.num_shots)\nsC = (bits.array.shape[1] == bits.num_bits)\nsD = (sum(bits.get_counts().values()) == bits.num_shots)\nsE = (bits.num_bits == nq)\nsF = (str(bits.array.dtype) == \"bool\" and bits.array.shape[1] == bits.num_bits)\nevidence = {\n  \"A\": f\"num_shots={bits.num_shots} vs 256 -> {sA}\",\n  \"B\": f\"len(get_bitstrings())={len(bits.get_bitstrings())} vs num_shots={bits.num_shots} -> {sB}\",\n  \"C\": f\"array.shape={bits.array.shape}, shape[1]={bits.array.shape[1]} vs num_bits={bits.num_bits} -> {sC}\",\n  \"D\": f\"sum(counts.values())={sum(bits.get_counts().values())} vs num_shots={bits.num_shots} -> {sD}\",\n  \"E\": f\"num_bits={bits.num_bits} vs num_qubits={nq} -> {sE}\",\n  \"F\": f\"array.dtype={bits.array.dtype}, shape[1]={bits.array.shape[1]} vs num_bits={bits.num_bits} -> {sF}\",\n}\nproven = [k for k, v in {\"A\": sA, \"B\": sB, \"C\": sC, \"D\": sD, \"E\": sE, \"F\": sF}.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"num_shots\": bits.num_shots, \"num_bits\": bits.num_bits,\n                           \"array_shape\": list(bits.array.shape), \"num_qubits\": nq}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7: option E de-absolutised ('always' removed, now states the concrete 5) — kills absolute-wording tell"
+    "notes": "adversarial s7: option E de-absolutised ('always' removed, now states the concrete 5) — kills absolute-wording tell | pool wave: +F BitArray.array is a bool matrix with one column per bit"
   },
   "freshness": {
     "verified_against": {

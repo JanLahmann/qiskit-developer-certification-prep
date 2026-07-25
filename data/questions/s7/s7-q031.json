@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "`db.num_bits`"
+    },
+    {
+      "key": "E",
+      "text": "`list(db.values())`"
+    },
+    {
+      "key": "F",
+      "text": "`[b.name for b in db.values()]`"
     }
   ],
   "answer": [
     "B"
   ],
+  "display_count": 4,
   "explanation": {
     "correct": "A DataBin behaves like a mapping of register-name -> BitArray. `db.keys()` enumerates the register-name fields, so you can see the correct name (e.g. `['ans']`).",
     "distractors": {
       "A": "DataBin has no `.registers` attribute.",
       "C": "DataBin has no `get_counts()`; that method belongs to a BitArray (a register field).",
-      "D": "`num_bits` is a BitArray property, not a DataBin one, and would not list names anyway."
+      "D": "`num_bits` is a BitArray property, not a DataBin one, and would not list names anyway.",
+      "E": "`values()` yields the stored BitArrays, not the field names -- useful data, useless for discovering the register's name. `keys()` is the mapping half you want.",
+      "F": "A `BitArray` does not carry its register name (`AttributeError`); the name exists only as the DataBin field it is stored under, which is why `keys()` is the way to list them."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.DataBin",
@@ -47,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(2, \"q\"); ans = ClassicalRegister(2, \"ans\")\nqc = QuantumCircuit(qr, ans); qc.h(0); qc.cx(0, 1); qc.measure(qr, ans)\ndb = StatevectorSampler(seed=15).run([qc], shots=100).result()[0].data\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        ok = isinstance(r, list) and \"ans\" in r\n        evidence[key] = f\"returned {type(r).__name__}={str(r)[:50]}; list of reg names incl 'ans' -> {ok}\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\ncheck(\"A\", lambda: db.registers)\ncheck(\"B\", lambda: list(db.keys()))\ncheck(\"C\", lambda: db.get_counts().keys())\ncheck(\"D\", lambda: db.num_bits)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"keys\": list(db.keys())}})\n"
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(2, \"q\"); ans = ClassicalRegister(2, \"ans\")\nqc = QuantumCircuit(qr, ans); qc.h(0); qc.cx(0, 1); qc.measure(qr, ans)\ndb = StatevectorSampler(seed=15).run([qc], shots=100).result()[0].data\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        ok = isinstance(r, list) and \"ans\" in r\n        evidence[key] = f\"returned {type(r).__name__}={str(r)[:50]}; list of reg names incl 'ans' -> {ok}\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\ncheck(\"A\", lambda: db.registers)\ncheck(\"B\", lambda: list(db.keys()))\ncheck(\"C\", lambda: db.get_counts().keys())\ncheck(\"D\", lambda: db.num_bits)\ntry:\n    stored = list(db.values())\n    E_ok = any(isinstance(v, str) and v == \"ans\" for v in stored)\n    evidence[\"E\"] = (f\"list(db.values()) returned {len(stored)} BitArray object(s) -- the stored \"\n                     f\"data, not the register names -> {E_ok}\")\n    if E_ok: proven.append(\"E\")\nexcept Exception as e:\n    evidence[\"E\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\ncheck(\"F\", lambda: [b.name for b in db.values()])\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"keys\": list(db.keys())}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E values() lists register names; +F BitArray carries its register name"
   },
   "freshness": {
     "verified_against": {

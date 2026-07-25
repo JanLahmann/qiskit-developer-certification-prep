@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "`result.to_json()` to a string, then `PrimitiveResult.from_json(...)` to rebuild the object"
+    },
+    {
+      "key": "E",
+      "text": "`json.dump(result, f, cls=RuntimeEncoder)`, then plain `json.load(f)` -- decoding is automatic"
+    },
+    {
+      "key": "F",
+      "text": "`json.dumps(result, f, cls=RuntimeEncoder)`, then `json.loads(f, cls=RuntimeDecoder)`"
     }
   ],
   "answer": [
     "A"
   ],
+  "display_count": 4,
   "explanation": {
     "correct": "A V2 result is not plain JSON: `PrimitiveResult`, `DataBin` and `BitArray` are custom containers. `RuntimeEncoder` is a `json.JSONEncoder` subclass (so it goes with `dump`) and `RuntimeDecoder` is a `json.JSONDecoder` subclass (so it goes with `load`). The reloaded object is a real PrimitiveResult again -- `result[0].data.meas.get_counts()` still works, with identical counts.",
     "distractors": {
       "B": "Plain `json.dump` raises `TypeError: Object of type PrimitiveResult is not JSON serializable`; the V2 containers need the Runtime encoder.",
       "C": "Encoder and decoder are swapped. `json.dump(..., cls=RuntimeDecoder)` fails because `json` hands encoder keyword arguments to the class (`TypeError: JSONDecoder.__init__() got an unexpected keyword argument 'skipkeys'`).",
-      "D": "`to_json`/`from_json` do not exist on `PrimitiveResult` (`AttributeError`); Runtime serialization goes through the encoder/decoder classes with the standard `json` module."
+      "D": "`to_json`/`from_json` do not exist on `PrimitiveResult` (`AttributeError`); Runtime serialization goes through the encoder/decoder classes with the standard `json` module.",
+      "E": "Only half the round-trip is custom. `RuntimeEncoder` writes the tagged JSON, but a plain `json.load` returns nested dicts, not the containers: the proof reloads and immediately fails with `KeyError: 0` because a dict has no pub index. `RuntimeDecoder` is what rebuilds `PrimitiveResult`.",
+      "F": "`dumps`/`loads` are the STRING forms: they take no file handle. `json.dumps(result, f, ...)` raises `TypeError: dumps() takes 1 positional argument but 2 positional arguments ... were given`. Use `dump`/`load` with a file object, or feed `dumps`' return string to `loads`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/save-jobs",
@@ -47,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import json\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit_ibm_runtime import RuntimeEncoder, RuntimeDecoder\n\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nresult = StatevectorSampler(seed=42).run([qc], shots=400).result()\norig = result[0].data.meas.get_counts()\n\ndef roundtrip(dump_kwargs, load_kwargs, path):\n    with open(path, \"w\") as fh:\n        json.dump(result, fh, **dump_kwargs)\n    with open(path) as fh:\n        return json.load(fh, **load_kwargs)\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        back = fn()\n        got = back[0].data.meas.get_counts()\n        ok = (got == orig)\n        evidence[key] = (f\"round-trip returned {type(back).__name__}; reloaded counts {got} \"\n                         f\"== original {orig} -> {ok}\")\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\ncheck(\"A\", lambda: roundtrip({\"cls\": RuntimeEncoder}, {\"cls\": RuntimeDecoder}, \"a.json\"))\ncheck(\"B\", lambda: roundtrip({}, {}, \"b.json\"))\ncheck(\"C\", lambda: roundtrip({\"cls\": RuntimeDecoder}, {\"cls\": RuntimeEncoder}, \"c.json\"))\ndef _d():\n    s = result.to_json()\n    from qiskit.primitives import PrimitiveResult\n    return PrimitiveResult.from_json(s)\ncheck(\"D\", _d)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"original_counts\": orig}})\n"
+    "proof_script": "import json\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit_ibm_runtime import RuntimeEncoder, RuntimeDecoder\n\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nresult = StatevectorSampler(seed=42).run([qc], shots=400).result()\norig = result[0].data.meas.get_counts()\n\ndef roundtrip(dump_kwargs, load_kwargs, path):\n    with open(path, \"w\") as fh:\n        json.dump(result, fh, **dump_kwargs)\n    with open(path) as fh:\n        return json.load(fh, **load_kwargs)\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        back = fn()\n        got = back[0].data.meas.get_counts()\n        ok = (got == orig)\n        evidence[key] = (f\"round-trip returned {type(back).__name__}; reloaded counts {got} \"\n                         f\"== original {orig} -> {ok}\")\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\ncheck(\"A\", lambda: roundtrip({\"cls\": RuntimeEncoder}, {\"cls\": RuntimeDecoder}, \"a.json\"))\ncheck(\"B\", lambda: roundtrip({}, {}, \"b.json\"))\ncheck(\"C\", lambda: roundtrip({\"cls\": RuntimeDecoder}, {\"cls\": RuntimeEncoder}, \"c.json\"))\ndef _d():\n    s = result.to_json()\n    from qiskit.primitives import PrimitiveResult\n    return PrimitiveResult.from_json(s)\ncheck(\"D\", _d)\ncheck(\"E\", lambda: roundtrip({\"cls\": RuntimeEncoder}, {}, \"e.json\"))\ndef _f():\n    with open(\"f.json\", \"w\") as fh:\n        json.dumps(result, fh, cls=RuntimeEncoder)\n    with open(\"f.json\") as fh:\n        return json.loads(fh, cls=RuntimeDecoder)\ncheck(\"F\", _f)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"original_counts\": orig}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7: REWRITTEN — old version duplicated q024 (pub indexing) and echoed a community item; now tests RuntimeEncoder/RuntimeDecoder round-trip (executed proof, kills the 1.42x length tell)"
+    "notes": "adversarial s7: REWRITTEN — old version duplicated q024 (pub indexing) and echoed a community item; now tests RuntimeEncoder/RuntimeDecoder round-trip (executed proof, kills the 1.42x length tell) | pool wave: +E encoder-only round-trip (plain json.load returns dicts); +F dumps/loads take a file handle"
   },
   "freshness": {
     "verified_against": {

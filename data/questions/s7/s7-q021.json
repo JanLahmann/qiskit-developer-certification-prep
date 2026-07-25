@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "`()` (a scalar)"
+    },
+    {
+      "key": "E",
+      "text": "`(1, 4)` -- the observable axis leads the shape"
+    },
+    {
+      "key": "F",
+      "text": "`.shape` raises `AttributeError`: `evs` is a list"
     }
   ],
   "answer": [
     "B"
   ],
+  "display_count": 4,
   "explanation": {
     "correct": "The PUB broadcasts over the parameter array's leading shape. Four parameter sets against one observable give four expectation values, shape `(4,)`. The trailing parameter axis (size 1) is consumed by binding and does not appear in the evs shape.",
     "distractors": {
       "A": "The trailing parameter axis is bound away; it is not kept in the result shape.",
       "C": "There are four parameter sets, not one; the result is not length 1.",
-      "D": "A scalar would be the single-PUB, single-parameter case; here four values broadcast."
+      "D": "A scalar would be the single-PUB, single-parameter case; here four values broadcast.",
+      "E": "Broadcasting puts the PUB's own leading shape first; the single observable contributes no axis at all. The proof prints the shape and it is one-dimensional.",
+      "F": "`evs` is a NumPy array, so `.shape` is defined. The proof reads it without an exception."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/primitives",
@@ -47,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nt = Parameter(\"t\"); qc = QuantumCircuit(1); qc.ry(t, 0)\nvals = np.array([[0.0], [np.pi/2], [np.pi], [3*np.pi/2]])\nshape = StatevectorEstimator(seed=0).run([(qc, SparsePauliOp(\"Z\"), vals)]).result()[0].data.evs.shape\ncand = {\"A\": (4, 1), \"B\": (4,), \"C\": (1,), \"D\": ()}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (tuple(shape) == v)\n    evidence[k] = f\"evs.shape={tuple(shape)}; option claims {v} -> match={m}\"\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"shape\": list(shape)}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nt = Parameter(\"t\"); qc = QuantumCircuit(1); qc.ry(t, 0)\nvals = np.array([[0.0], [np.pi/2], [np.pi], [3*np.pi/2]])\nevs = StatevectorEstimator(seed=0).run([(qc, SparsePauliOp(\"Z\"), vals)]).result()[0].data.evs\nshape = evs.shape\ncand = {\"A\": (4, 1), \"B\": (4,), \"C\": (1,), \"D\": (), \"E\": (1, 4)}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (tuple(shape) == v)\n    evidence[k] = f\"evs.shape={tuple(shape)}; option claims {v} -> match={m}\"\n    if m: proven.append(k)\ntry:\n    _ = evs.shape\n    F_ok = False\n    evidence[\"F\"] = (f\"evs is a {type(evs).__name__} whose .shape returned {tuple(shape)} \"\n                     f\"without raising -> {F_ok}\")\nexcept AttributeError as e:\n    F_ok = True\n    evidence[\"F\"] = f\".shape raised AttributeError: {str(e)[:60]} -> {F_ok}\"\nif F_ok: proven.append(\"F\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"shape\": list(shape)}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E observable axis leads the broadcast shape; +F evs is a list so .shape raises"
   },
   "freshness": {
     "verified_against": {

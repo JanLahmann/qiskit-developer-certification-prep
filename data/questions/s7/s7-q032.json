@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "`result[0].data.readout.get_counts()`"
+    },
+    {
+      "key": "E",
+      "text": "`result[0].data.get_bitstrings(\"readout\")`"
+    },
+    {
+      "key": "F",
+      "text": "`result[0].data.readout()` returns the register counts"
     }
   ],
   "answer": [
     "D"
   ],
+  "display_count": 4,
   "explanation": {
     "correct": "The DataBin field is named after the classical register, here `readout`. `meas` is only auto-created by `measure_all()`, and `c` is only the default name for `QuantumCircuit(n, m)`; the pub index `[0]` is still required.",
     "distractors": {
       "A": "`meas` is the auto-name from `measure_all()`; this circuit's register is `readout`.",
       "B": "A DataBin has no `get_counts()` of its own (`AttributeError`): the register is an attribute (or key) of the DataBin, not an argument, and `get_counts()` belongs to the BitArray it holds.",
-      "C": "This drops the required pub index `[0]`; PrimitiveResult has no `.data`."
+      "C": "This drops the required pub index `[0]`; PrimitiveResult has no `.data`.",
+      "E": "`get_bitstrings` is a BitArray method, not a DataBin one: the DataBin only routes you to the register field. The proof raises `AttributeError` here.",
+      "F": "The field IS the BitArray, not a getter: calling it raises `TypeError: 'BitArray' object is not callable`. Read the field, then call `get_counts()` on it."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.DataBin",
@@ -47,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(2, \"q\"); readout = ClassicalRegister(2, \"readout\")\nqc = QuantumCircuit(qr, readout); qc.h(0); qc.cx(0, 1); qc.measure(qr, readout)\nresult = StatevectorSampler(seed=16).run([qc], shots=512).result()\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        ok = isinstance(r, dict) and sum(r.values()) == 512\n        evidence[key] = f\"returned {type(r).__name__}={str(r)[:45]}; valid counts -> {ok}\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ncheck(\"A\", lambda: result[0].data.meas.get_counts())\ncheck(\"B\", lambda: result[0].data.get_counts(\"readout\"))\ncheck(\"C\", lambda: result.data.readout.get_counts())\ncheck(\"D\", lambda: result[0].data.readout.get_counts())\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"readout_counts\": result[0].data.readout.get_counts()}})\n"
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(2, \"q\"); readout = ClassicalRegister(2, \"readout\")\nqc = QuantumCircuit(qr, readout); qc.h(0); qc.cx(0, 1); qc.measure(qr, readout)\nresult = StatevectorSampler(seed=16).run([qc], shots=512).result()\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        ok = isinstance(r, dict) and sum(r.values()) == 512\n        evidence[key] = f\"returned {type(r).__name__}={str(r)[:45]}; valid counts -> {ok}\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\ncheck(\"A\", lambda: result[0].data.meas.get_counts())\ncheck(\"B\", lambda: result[0].data.get_counts(\"readout\"))\ncheck(\"C\", lambda: result.data.readout.get_counts())\ncheck(\"D\", lambda: result[0].data.readout.get_counts())\ncheck(\"E\", lambda: result[0].data.get_bitstrings(\"readout\"))\ncheck(\"F\", lambda: result[0].data.readout())\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"readout_counts\": result[0].data.readout.get_counts()}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7: B replaced by the DataBin.get_counts(name) misconception (kills length tell; proof updated)"
+    "notes": "adversarial s7: B replaced by the DataBin.get_counts(name) misconception (kills length tell; proof updated) | pool wave: +E DataBin.get_bitstrings(name); +F the register field is callable"
   },
   "freshness": {
     "verified_against": {

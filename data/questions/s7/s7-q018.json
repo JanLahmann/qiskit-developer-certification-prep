@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "`a + b`"
+    },
+    {
+      "key": "E",
+      "text": "`BitArray.from_counts(a.get_counts() | b.get_counts())`"
+    },
+    {
+      "key": "F",
+      "text": "`np.concatenate([a.array, b.array])` -- pool the packed rows"
     }
   ],
   "answer": [
     "A"
   ],
+  "display_count": 4,
   "explanation": {
     "correct": "`concatenate_shots` stacks the shot axes: the result has `num_shots = a.num_shots + b.num_shots` and unchanged `num_bits` -- exactly pooling repeated runs.",
     "distractors": {
       "B": "`concatenate_bits` widens `num_bits` (for joining registers side by side), keeping shots fixed -- that is not pooling shots.",
       "C": "Adding two `Counter`s really does merge the two count dictionaries, but the result is a Counter, not a BitArray: the per-shot record (and `postselect`, `slice_bits`, `expectation_values`) is lost.",
-      "D": "BitArray does not define `__add__`; `a + b` raises a TypeError."
+      "D": "BitArray does not define `__add__`; `a + b` raises a TypeError.",
+      "E": "The dict `|` operator OVERWRITES duplicate keys instead of summing them, so shared outcomes keep only the right-hand dictionary's tally and the rebuilt BitArray holds far fewer shots than `a.num_shots + b.num_shots`. `Counter(...) + Counter(...)` sums correctly but still yields a Counter, not a BitArray.",
+      "F": "Stacking the packed `uint8` rows returns a plain NumPy `ndarray`. It has lost `num_bits` and every BitArray method, so nothing downstream (`get_counts`, `postselect`) still works."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
@@ -47,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom collections import Counter\nfrom qiskit.primitives.containers import BitArray\n\nqc = QuantumCircuit(3); qc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\na = StatevectorSampler(seed=1).run([qc], shots=200).result()[0].data.meas\nb = StatevectorSampler(seed=2).run([qc], shots=200).result()[0].data.meas\ntgt_shots = a.num_shots + b.num_shots\ntgt_bits = a.num_bits\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        if isinstance(r, BitArray):\n            ok = (r.num_shots == tgt_shots and r.num_bits == tgt_bits)\n            evidence[key] = f\"BitArray num_shots={r.num_shots}, num_bits={r.num_bits}; want shots={tgt_shots}, bits={tgt_bits} -> {ok}\"\n        else:\n            ok = False\n            evidence[key] = f\"returned {type(r).__name__} (not a pooled BitArray) -> False\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\ncheck(\"A\", lambda: BitArray.concatenate_shots([a, b]))\ncheck(\"B\", lambda: BitArray.concatenate_bits([a, b]))\ncheck(\"C\", lambda: Counter(a.get_counts()) + Counter(b.get_counts()))\ncheck(\"D\", lambda: a + b)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"target_shots\": tgt_shots, \"target_bits\": tgt_bits}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nimport numpy as np\nfrom collections import Counter\nfrom qiskit.primitives.containers import BitArray\n\nqc = QuantumCircuit(3); qc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\na = StatevectorSampler(seed=1).run([qc], shots=200).result()[0].data.meas\nb = StatevectorSampler(seed=2).run([qc], shots=200).result()[0].data.meas\ntgt_shots = a.num_shots + b.num_shots\ntgt_bits = a.num_bits\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        if isinstance(r, BitArray):\n            ok = (r.num_shots == tgt_shots and r.num_bits == tgt_bits)\n            evidence[key] = f\"BitArray num_shots={r.num_shots}, num_bits={r.num_bits}; want shots={tgt_shots}, bits={tgt_bits} -> {ok}\"\n        else:\n            ok = False\n            evidence[key] = f\"returned {type(r).__name__} (not a pooled BitArray) -> False\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\ncheck(\"A\", lambda: BitArray.concatenate_shots([a, b]))\ncheck(\"B\", lambda: BitArray.concatenate_bits([a, b]))\ncheck(\"C\", lambda: Counter(a.get_counts()) + Counter(b.get_counts()))\ncheck(\"D\", lambda: a + b)\ntry:\n    merged = BitArray.from_counts(a.get_counts() | b.get_counts())\n    E_ok = (merged.num_shots == tgt_shots and merged.num_bits == tgt_bits)\n    evidence[\"E\"] = (\"dict `|` overwrites duplicate outcome keys instead of summing them: the \"\n                     \"rebuilt BitArray holds a shot total below a.num_shots + b.num_shots \"\n                     f\"-> {E_ok}\")\n    if E_ok: proven.append(\"E\")\nexcept Exception as e:\n    evidence[\"E\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\ncheck(\"F\", lambda: np.concatenate([a.array, b.array]))\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"target_shots\": tgt_shots, \"target_bits\": tgt_bits}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7: C upgraded to the Counter-merge misconception (kills length tell; proof updated)"
+    "notes": "adversarial s7: C upgraded to the Counter-merge misconception (kills length tell; proof updated) | pool wave: +E dict | merge of counts (overwrites instead of summing); +F np.concatenate on the packed arrays"
   },
   "freshness": {
     "verified_against": {

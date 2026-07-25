@@ -24,17 +24,28 @@
     {
       "key": "D",
       "text": "Empty `{}` -- postselection removes every shot"
+    },
+    {
+      "key": "E",
+      "text": "Only the `111` shots survive, narrowed to `{'1': n}`"
+    },
+    {
+      "key": "F",
+      "text": "`{'111': n}`, but `n` is now a fraction of the shots"
     }
   ],
   "answer": [
     "C"
   ],
+  "display_count": 5,
   "explanation": {
     "correct": "`postselect(indices, values)` keeps only the shots whose measured bits at `indices` equal `values`, and it preserves the register width. Requiring qubits [0,1,2] to be [1,1,1] retains exactly the `111` shots, still as 3-bit outcomes -- unlike `slice_bits`, which would narrow the width.",
     "distractors": {
       "A": "This inverts the selection: values `[1,1,1]` keep `111`, not `000`.",
       "B": "Postselection filters shots; it does not leave the counts unchanged.",
-      "D": "The GHZ state produces `111` about half the time, so those shots remain."
+      "D": "The GHZ state produces `111` about half the time, so those shots remain.",
+      "E": "That is what `slice_bits` would do. `postselect` filters SHOTS and preserves the register width, so the proof reports `num_bits` unchanged and 3-character keys.",
+      "F": "Postselection discards shots; it does not renormalise the survivors. The proof shows the surviving counts are plain integer shot counts, not fractions."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
@@ -47,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3); qc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\nbits = StatevectorSampler(seed=11).run([qc], shots=1000).result()[0].data.meas\nkept = bits.postselect([0, 1, 2], [1, 1, 1])\nobs = set(kept.get_counts().keys())\ncand = {\"A\": {\"000\"}, \"B\": {\"000\", \"111\"}, \"C\": {\"111\"}, \"D\": set()}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = (f\"postselected keys={sorted(obs)} (num_bits stayed {kept.num_bits} of {bits.num_bits}, {kept.num_shots} of {bits.num_shots} shots kept); option claims keys={sorted(v)} -> match={m}\")\n    if m: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"kept_counts\": kept.get_counts(), \"num_bits\": kept.num_bits}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3); qc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\nbits = StatevectorSampler(seed=11).run([qc], shots=1000).result()[0].data.meas\nkept = bits.postselect([0, 1, 2], [1, 1, 1])\nobs = set(kept.get_counts().keys())\ncand = {\"A\": {\"000\"}, \"B\": {\"000\", \"111\"}, \"C\": {\"111\"}, \"D\": set()}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = (f\"postselected keys={sorted(obs)} (num_bits stayed {kept.num_bits} of {bits.num_bits}, {kept.num_shots} of {bits.num_shots} shots kept); option claims keys={sorted(v)} -> match={m}\")\n    if m: proven.append(k)\nE_ok = (obs == {\"1\"} and kept.num_bits == 1)\nevidence[\"E\"] = (f\"kept keys={sorted(obs)} with num_bits={kept.num_bits} (unchanged from \"\n                 f\"{bits.num_bits}); option claims postselect narrowed the register to one bit \"\n                 f\"-> {E_ok}\")\nif E_ok: proven.append(\"E\")\nkept_values = list(kept.get_counts().values())\nF_ok = all(isinstance(v, float) and v <= 1.0 for v in kept_values)\nevidence[\"F\"] = (f\"surviving counts have types {[type(v).__name__ for v in kept_values]}: raw shot \"\n                 f\"tallies, not renormalised fractions -> {F_ok}\")\nif F_ok: proven.append(\"F\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"kept_counts\": kept.get_counts(), \"num_bits\": kept.num_bits}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E postselect narrows the register like slice_bits; +F survivors are renormalised to fractions"
   },
   "freshness": {
     "verified_against": {

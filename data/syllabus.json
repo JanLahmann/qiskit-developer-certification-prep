@@ -372,11 +372,6 @@
           "url": "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
         },
         {
-          "title": "Configure error mitigation",
-          "type": "guide",
-          "url": "https://quantum.cloud.ibm.com/docs/guides/configure-error-mitigation"
-        },
-        {
           "title": "Error mitigation and suppression techniques",
           "type": "guide",
           "url": "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"

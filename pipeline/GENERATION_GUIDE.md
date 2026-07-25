@@ -13,6 +13,10 @@ wave that follows generation (agent gate). Questions that violate it get killed.
    `data/questions/s5/s5-q001.json` (mcq with empirical attempt-proof), and
    `data/questions/s4/s4-q001.json` (conceptual with citations).
 3. `pipeline/harness/schema.py` — the schema your files must satisfy.
+4. `pipeline/REVIEW_LEDGER.md` — verified library facts, dead-URL replacements,
+   proof hazards, and meta-pattern calibration recipes from previous waves.
+   Do not contradict a ledger entry without re-verifying it; APPEND what you
+   verify. This file is how review knowledge survives between sessions.
 
 ## 1. Files, IDs, quotas
 
@@ -54,6 +58,10 @@ wave that follows generation (agent gate). Questions that violate it get killed.
      vocabulary or exact docs terminology; distractors need equally authentic API names.
    - **Formatting**: don't code-format only the correct option (or only the distractors).
    - **Multi-select**: vary the number of correct options between questions.
+   - **Calibrate to chance, not zero** — over-correcting any tell creates its
+     inverse, and the audit measures both directions. Exact recipes (the N/4
+     length split, the 3:1 absolutes rule, tie effects, tokenizer quirks) live
+     in `pipeline/REVIEW_LEDGER.md`.
 6. **Explanations teach**: `explanation.correct` explains the mechanism, not just the fact.
    Cite 1–3 URLs from your section's `resources` in syllabus.json (other
    `quantum.cloud.ibm.com/docs/...` URLs allowed if genuinely better).
@@ -129,13 +137,20 @@ Do NOT include a `freshness` block — the verifier stamps it.
 ## 7. Your workflow
 
 1. Read inputs (§0). Plan coverage across objectives/scope_notes.
-2. Write questions in batches of ~5. After each batch run:
+2. Write questions in batches of ~5. After each batch run BOTH gates:
    `.venv/bin/python pipeline/verify_bank.py --section <sX> --jobs 2`
-   Fix every failure before continuing. A failure of the form
+   `python3 pipeline/audit_meta_patterns.py --section <sX>`
+   Fix every verify failure before continuing. A failure of the form
    "verdict.answer != question.answer" means your question (or your understanding) is
    wrong — investigate the observed evidence, then fix the QUESTION to match reality.
+   Fix every high/medium audit flag as you go — form defects (position skew, length
+   tells) are generator habits; they compound silently if left to the review wave.
+   Calibration target is CHANCE, never zero: the audit measures each tell in both
+   directions (longest/avoid_longest, most/avoid_hedged, least/most_absolute) — the
+   exact recipes are in `pipeline/REVIEW_LEDGER.md`.
 3. Finish only when: full quota written AND `verify_bank.py --section <sX>` exits 0
-   with zero failures.
+   with zero failures AND the section audit shows 0 blockers/warnings and no
+   high/medium flags.
 4. Do NOT run git commands. Do NOT touch files outside `data/questions/<your section>/`
    and `data/proofs/` (written by the verifier for your section).
 5. Final message = data for the orchestrator (not prose): counts by type/difficulty,

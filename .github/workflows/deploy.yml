@@ -15,7 +15,32 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Quality gate: nothing deploys unless every proof re-executes cleanly and
+  # no answer-revealing meta-pattern exists. The drift lint is advisory
+  # (heuristic; findings need human judgment).
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: pipeline/requirements.lock
+      - name: Install pinned stack
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install -q -r pipeline/requirements.lock
+      - name: Re-prove question bank
+        run: .venv/bin/python pipeline/verify_bank.py --check --jobs 4
+      - name: Meta-pattern audit gate
+        run: .venv/bin/python pipeline/audit_meta_patterns.py --gate
+      - name: Proof/option drift lint (advisory)
+        continue-on-error: true
+        run: .venv/bin/python pipeline/lint_proof_drift.py
+
   build:
+    needs: gate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

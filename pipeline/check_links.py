@@ -50,10 +50,28 @@ def collect_urls() -> dict[str, list[str]]:
     return urls
 
 
+def _normalize_docs_path(path: str) -> str:
+    """Collapse the locale segment so /docs/en/guides/x == /docs/guides/x."""
+    return path.replace("/docs/en/", "/docs/").rstrip("/")
+
+
 def check(url: str, timeout: int) -> tuple[str, int | str]:
     req = urllib.request.Request(url, headers={"User-Agent": UA}, method="GET")
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
+            # Content-free redirects are worse than 404s: a docs page that
+            # 200s but lands on a DIFFERENT slug no longer says what the
+            # citation claims (seen live: guides/primitives-rest-api ->
+            # guides/primitives, guides/map-problem-to-circuits ->
+            # intro-to-patterns). Locale redirects (/docs/ -> /docs/en/)
+            # are fine.
+            if "quantum.cloud.ibm.com/docs" in url:
+                from urllib.parse import urlparse
+
+                want = _normalize_docs_path(urlparse(url).path)
+                got = _normalize_docs_path(urlparse(resp.geturl()).path)
+                if want != got:
+                    return url, f"redirect-mismatch:{got}"
             return url, resp.status
     except Exception as e:  # noqa: BLE001
         return url, type(e).__name__ + (f":{getattr(e, 'code', '')}" or "")

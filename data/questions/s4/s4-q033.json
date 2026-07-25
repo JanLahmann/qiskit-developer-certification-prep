@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "The maximum TTL caps the session's total lifetime; the interactive TTL is the idle gap allowed between consecutive jobs."
+    },
+    {
+      "key": "E",
+      "text": "The interactive TTL is the maximum TTL divided among the session's jobs, so each job gets an equal slice of the window."
+    },
+    {
+      "key": "F",
+      "text": "The maximum TTL counts only the time when jobs are actually running, while the interactive TTL usually counts the idle gaps as well."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "It is the MAXIMUM TTL that you set with `max_time`; the interactive TTL is fixed and not configurable — the opposite of this statement.",
       "B": "This reverses the two: the maximum TTL is the session's total lifetime (and it starts when the first job starts, not at creation), while the interactive TTL is the inter-job idle gap, not a per-job limit.",
-      "C": "They are distinct timers with different roles; 'interactive' is not an alias for the maximum TTL."
+      "C": "They are distinct timers with different roles; 'interactive' is not an alias for the maximum TTL.",
+      "E": "Neither TTL is a per-job budget. The maximum TTL bounds the session as a whole, and the interactive TTL bounds the gap *between* jobs; how long any single job runs is limited by neither.",
+      "F": "The maximum TTL is wall-clock time from the moment the first job starts, idle stretches included — that is exactly why an unattended session can expire while you are still thinking."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+hedged reversed-definition distractor (length/absolute-tell fix)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+hedged reversed-definition distractor (length/absolute-tell fix). | pool wave: +E (TTLs are per-job budgets), +F (max TTL excludes idle time)"
+  },
+  "display_count": 5
 }

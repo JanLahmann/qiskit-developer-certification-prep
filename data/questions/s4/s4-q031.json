@@ -28,6 +28,10 @@
     {
       "key": "E",
       "text": "A large collection of unrelated benchmarking circuits, where minimizing cost usually matters more than latency."
+    },
+    {
+      "key": "F",
+      "text": "A hundred-point parameter sweep of one circuit, where the whole sweep is usually submitted as a single primitive job anyway."
     }
   ],
   "answer": [
@@ -39,7 +43,8 @@
     "distractors": {
       "A": "Independent circuits known upfront that you want to run cheaply are the classic case for batch mode, which is generally less expensive than a session.",
       "D": "A single circuit run should use job mode; a session gives no queuing benefit for the first (only) job and costs more.",
-      "E": "Cost-sensitive, independent benchmarking circuits belong in batch mode, not in a more expensive session."
+      "E": "Cost-sensitive, independent benchmarking circuits belong in batch mode, not in a more expensive session.",
+      "F": "A parameter sweep is one PUB with an array of parameter values, so it is already a single job — there is no iteration for a session to accelerate and nothing gained from dedicated access."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
@@ -59,6 +64,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened + hedged distractors (length/absolute-tell fix)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened + hedged distractors (length/absolute-tell fix). | pool wave: +F (a parameter sweep needs a session)"
+  },
+  "display_count": 5
 }

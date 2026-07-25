@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "The account whose name comes last alphabetically — here `premium_acct`."
+    },
+    {
+      "key": "E",
+      "text": "The one whose name sorts first alphabetically — here `open_acct`."
+    },
+    {
+      "key": "F",
+      "text": "It usually picks the account with the broadest instance access."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "It does not raise — the alphabetical-last account is selected as the fallback.",
       "B": "Save order is not the tiebreaker; alphabetical name order is.",
-      "C": "There is no automatic preference for free (Open) plans when choosing among SAVED named accounts; the alphabetical rule applies."
+      "C": "There is no automatic preference for free (Open) plans when choosing among SAVED named accounts; the alphabetical rule applies.",
+      "E": "The rule is real but runs the other way: the account whose name sorts LAST is the one loaded. Half-remembering the direction is the whole trap in this question.",
+      "F": "Nothing inspects plans or entitlements when a default is missing. The selection is purely lexicographic over the saved account names."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/initialize-account"
@@ -52,6 +62,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — removed hedge pile-up from the distractors (avoid-hedged calibration)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — removed hedge pile-up from the distractors (avoid-hedged calibration). | pool wave: +E (alphabetically first wins), +F (broadest access wins)"
+  },
+  "display_count": 5
 }

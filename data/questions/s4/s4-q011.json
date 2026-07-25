@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "A separate session per mitigation setting"
+    },
+    {
+      "key": "E",
+      "text": "Job mode with one job that carries every mitigation setting as a separate PUB, so one queue wait covers all of them."
+    },
+    {
+      "key": "F",
+      "text": "One primitive job per setting, submitted from several parallel Python processes so they generally reach the QPU at the same moment."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Plain job mode creates no scheduling relationship between jobs — each waits in the queue separately with no guarantee they run close together.",
       "B": "A session does keep jobs tightly together, but it is generally more expensive; the docs recommend batch whenever you do not need a session's dedicated access.",
-      "D": "Opening a session per setting multiplies session overhead and cost while giving independent jobs no benefit."
+      "D": "Opening a session per setting multiplies session overhead and cost while giving independent jobs no benefit.",
+      "E": "Primitive options — including the error-mitigation settings — are set on the primitive and apply to the whole job, not per PUB. One job cannot carry several different mitigation configurations, and a single job also returns one result object rather than separately inspectable per-setting results.",
+      "F": "Submitting in parallel does not make jobs run together: each one still enters the fair-share queue independently and they can be separated by hours. Batch is the mechanism that asks the scheduler to treat a group as a unit."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
@@ -54,6 +64,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged + lengthened the session distractor (absolute-tell fix)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged + lengthened the session distractor (absolute-tell fix). | pool wave: +E (options are per-PUB), +F (parallel submission substitutes for batching)"
+  },
+  "display_count": 5
 }

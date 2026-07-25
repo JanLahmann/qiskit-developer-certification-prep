@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "It raises `KeyError` because no backend named `'ibm_manila'` exists."
+    },
+    {
+      "key": "E",
+      "text": "It silently falls back to a local simulator, because the name cannot be resolved without a service."
+    },
+    {
+      "key": "F",
+      "text": "It raises `TypeError`, because `mode` is annotated `Backend | Session | Batch | None`."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "The type check on `mode` runs at construction regardless of whether a service exists, so a string always raises — a service does not make it valid.",
       "B": "The primitive does not resolve backend names; that is the service's job. A string is never a valid `mode`.",
-      "D": "No name lookup is attempted, so there is no `KeyError`; the type check rejects the string first with `ValueError`."
+      "D": "No name lookup is attempted, so there is no `KeyError`; the type check rejects the string first with `ValueError`.",
+      "E": "There is no silent fallback: construction fails outright, so no primitive object exists to run anything. Local execution is opted into deliberately, by passing a fake backend or an Aer backend as the mode.",
+      "F": "Annotations are not enforced at runtime. The constructor performs its own `isinstance` guard and reports the violation as a `ValueError` that spells out the accepted types."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
@@ -47,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\n\ntry:\n    SamplerV2(mode=\"ibm_manila\")\n    outcome = (\"success\",)\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nflags = {\n    \"C\": is_exc and name == \"ValueError\",\n    \"B\": outcome[0] == \"success\",\n    \"A\": outcome[0] == \"success\",\n    \"D\": is_exc and name == \"KeyError\",\n}\nlabels = {\"C\": \"ValueError: mode must be Backend/Session/Batch or None\", \"B\": \"works, looks up by name\",\n          \"A\": \"works only if a service exists\", \"D\": \"KeyError: no such backend\"}\nevidence = {k: f\"observed={outcome}; option {k} predicts '{labels[k]}' -> match={v}\" for k, v in flags.items()}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": list(outcome)}})\n"
+    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\n\ntry:\n    sampler = SamplerV2(mode=\"ibm_manila\")\n    outcome = (\"success\",)\n    resolved = repr(getattr(sampler, \"mode\", None))[:80]\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n    resolved = \"nothing was constructed\"\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nflags = {\n    \"C\": is_exc and name == \"ValueError\",\n    \"B\": outcome[0] == \"success\",\n    \"A\": outcome[0] == \"success\",\n    \"D\": is_exc and name == \"KeyError\",\n    \"E\": outcome[0] == \"success\",\n    \"F\": is_exc and name == \"TypeError\",\n}\nlabels = {\"C\": \"ValueError: mode must be Backend/Session/Batch or None\", \"B\": \"works, looks up by name\",\n          \"A\": \"works only if a service exists\", \"D\": \"KeyError: no such backend\",\n          \"E\": \"works, falling back to a local simulator\",\n          \"F\": \"TypeError from an annotation-driven type check\"}\nevidence = {k: f\"observed={outcome}; option {k} predicts '{labels[k]}' -> match={v}\" for k, v in flags.items()}\nevidence[\"E\"] += f\"; construction produced no primitive at all ({resolved}), so there was nothing to fall back to\"\nevidence[\"F\"] += f\"; the raised type is {name} — the check is an explicit isinstance guard that raises ValueError\"\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": list(outcome)}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E (silent local-simulator fallback), +F (TypeError from the annotation)"
   },
   "freshness": {
     "verified_against": {
@@ -64,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

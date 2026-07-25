@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "A batch never counts against your usage or cost."
+    },
+    {
+      "key": "E",
+      "text": "Each job in the batch is transpiled by the service against the calibration data current at its own start time, so later jobs use fresher gates."
+    },
+    {
+      "key": "F",
+      "text": "The results of the individual jobs are merged into a single `PrimitiveResult` at the end of the batch, which is easier to post-process."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "Batch mode does not give exclusive access — that is a session feature. Batched jobs share the QPU with everyone else's.",
       "C": "Error mitigation is controlled by primitive options, not by the execution mode; batching does not change it.",
-      "D": "Batched jobs still consume QPU usage and count against cost; batching does not make execution free."
+      "D": "Batched jobs still consume QPU usage and count against cost; batching does not make execution free.",
+      "E": "The service transpiles nothing: every job in a batch carries ISA circuits you produced before submitting. Splitting the workload changes when jobs run, never how they were compiled.",
+      "F": "A batch performs no merging — each job keeps its own result object, which is exactly the property that lets you re-run one failed job or stop the rest early."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened exclusivity distractor (length-tell fix). Also: hedge added to the correct option (hedge-heuristic calibration)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened exclusivity distractor (length-tell fix). Also: hedge added to the correct option (hedge-heuristic calibration). | pool wave: +E (the service re-transpiles each batched job), +F (a batch merges its results)"
+  },
+  "display_count": 4
 }

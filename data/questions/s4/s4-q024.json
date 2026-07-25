@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "PEC requires exclusive access because it physically recalibrates the QPU hardware between jobs."
+    },
+    {
+      "key": "E",
+      "text": "A session lets the Estimator cache the learned noise model inside the primitive object, which batch and job mode typically discard between jobs."
+    },
+    {
+      "key": "F",
+      "text": "PEC learning runs as a separate calibration job that a session is allowed to submit, so batch and job mode fall back to ZNE."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "The advantage is learning the model ONCE and reusing it while it is still accurate, not re-learning it before every job.",
       "B": "Error mitigation options are available in all execution modes; the mode affects scheduling and how long a learned model stays valid, not whether mitigation is allowed.",
-      "D": "PEC is a software post-processing technique; it does not recalibrate hardware. The benefit of a session is timing, not physical recalibration."
+      "D": "PEC is a software post-processing technique; it does not recalibrate hardware. The benefit of a session is timing, not physical recalibration.",
+      "E": "Nothing is cached client-side in the primitive: a fresh `EstimatorV2` in a session learns exactly as much as one in a batch. What a session buys is elapsed time — the model stays representative because the device has not drifted.",
+      "F": "Learning is part of the primitive's own execution, not a privileged calibration job, and no mode silently swaps your mitigation technique for another one. PEC is available outside sessions; it is only less economical there."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C, lengthened+hedged distractors (length/hedge/absolute-tell fix)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C, lengthened+hedged distractors (length/hedge/absolute-tell fix). | pool wave: +E (the session caches the noise model), +F (only sessions may run PEC learning)"
+  },
+  "display_count": 5
 }

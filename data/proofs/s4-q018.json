@@ -8,14 +8,17 @@
       "B": "observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option B predicts 'ValueError: observable/circuit qubit-count mismatch' -> match=True",
       "A": "observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option A predicts 'prints evs ~ +1' -> match=False",
       "C": "observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option C predicts 'prints evs ~ 0' -> match=False",
-      "D": "observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option D predicts 'IBMInputValueError' -> match=False"
+      "D": "observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option D predicts 'IBMInputValueError' -> match=False",
+      "E": "observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option E predicts 'prints evs ~ +1 after the observable is padded with identities' -> match=False; no padding happens on its own \u2014 apply_layout widened the observable to 5 qubits and the run returned evs=0.880",
+      "F": "observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option F predicts 'QiskitError raised by SparsePauliOp' -> match=False; the raised type is ValueError, and it comes from the primitive, not from SparsePauliOp"
     },
     "observed": {
       "outcome": [
         "exception",
         "ValueError",
         "The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2)."
-      ]
+      ],
+      "control": "apply_layout widened the observable to 5 qubits and the run returned evs=0.880"
     }
   },
   "versions": {
@@ -24,9 +27,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.07,
+  "wall_seconds": 1.29,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"B\": \"observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option B predicts 'ValueError: observable/circuit qubit-count mismatch' -> match=True\", \"A\": \"observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option A predicts 'prints evs ~ +1' -> match=False\", \"C\": \"observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option C predicts 'prints evs ~ 0' -> match=False\", \"D\": \"observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option D predicts 'IBMInputValueError' -> match=False\"}, \"observed\": {\"outcome\": [\"exception\", \"ValueError\", \"The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"B\": \"observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option B predicts 'ValueError: observable/circuit qubit-count mismatch' -> match=True\", \"A\": \"observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option A predicts 'prints evs ~ +1' -> match=False\", \"C\": \"observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option C predicts 'prints evs ~ 0' -> match=False\", \"D\": \"observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option D predicts 'IBMInputValueError' -> match=False\", \"E\": \"observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option E predicts 'prints evs ~ +1 after the observable is padded with identities' -> match=False; no padding happens on its own \\u2014 apply_layout widened the observable to 5 qubits and the run returned evs=0.880\", \"F\": \"observed=('exception', 'ValueError', 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).'); option F predicts 'QiskitError raised by SparsePauliOp' -> match=False; the raised type is ValueError, and it comes from the primitive, not from SparsePauliOp\"}, \"observed\": {\"outcome\": [\"exception\", \"ValueError\", \"The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).\"], \"control\": \"apply_layout widened the observable to 5 qubits and the run returned evs=0.880\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

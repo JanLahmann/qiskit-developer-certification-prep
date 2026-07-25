@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Sessions do not support the SamplerV2 and EstimatorV2 primitives."
+    },
+    {
+      "key": "E",
+      "text": "Batch mode transpiles your circuits to the ISA for you before they are queued, whereas inside a session you must supply already-transpiled circuits yourself."
+    },
+    {
+      "key": "F",
+      "text": "A session has to be closed and reopened between primitive calls, so a set of independent circuits would pay the session start-up cost once per circuit."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Batch jobs do not get priority over other users; they are not even exclusive. It is sessions that reserve the QPU.",
       "B": "Sessions are explicitly designed for multi-job workloads: one session runs many jobs back-to-back, so nothing forces one session per circuit.",
-      "D": "Both primitives run in sessions (and in batches and job mode); the mode is passed via `mode=`."
+      "D": "Both primitives run in sessions (and in batches and job mode); the mode is passed via `mode=`.",
+      "E": "Neither mode transpiles for you: every execution mode requires ISA circuits produced by a preset pass manager. The choice between batch and session is about scheduling and cost, never about who does the transpilation.",
+      "F": "A session stays open across many primitive calls — that is the entire point of the dedicated window. Nothing forces a close between calls; the real cost argument is that the dedicated window itself is billed more than a batch."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C + true absolute in it, lengthened session distractor (length/hedge/absolute-tell fix). Also: hedge restored to the correct option (hedge-heuristic calibration)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C + true absolute in it, lengthened session distractor (length/hedge/absolute-tell fix). Also: hedge restored to the correct option (hedge-heuristic calibration). | pool wave: +E (batch transpiles for you), +F (a session must be reopened per call)"
+  },
+  "display_count": 4
 }

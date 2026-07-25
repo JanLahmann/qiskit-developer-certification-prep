@@ -1,247 +1,224 @@
 {
   "generated_note": "repo-only audit artifact; do not link from the website",
-  "scope": "s3",
-  "n_questions": 44,
-  "n_single_answer": 38,
-  "random_baseline": 0.2368,
+  "scope": "s4",
+  "n_questions": 36,
+  "n_single_answer": 32,
+  "random_baseline": 0.2266,
   "pass_line": 0.69,
   "heuristics": {
     "longest_option": {
-      "expected_accuracy": 0.2368,
-      "questions_answered": 38.0,
+      "expected_accuracy": 0.25,
+      "questions_answered": 32.0,
       "coverage": 1.0,
-      "exam_score_estimate": 0.2368
+      "exam_score_estimate": 0.25
     },
     "shortest_option": {
-      "expected_accuracy": 0.1395,
-      "questions_answered": 38.0,
+      "expected_accuracy": 0.2844,
+      "questions_answered": 32.0,
       "coverage": 1.0,
-      "exam_score_estimate": 0.1395
+      "exam_score_estimate": 0.2844
     },
     "avoid_longest": {
-      "expected_accuracy": 0.2305,
-      "questions_answered": 37.2,
-      "coverage": 0.979,
-      "exam_score_estimate": 0.2306
+      "expected_accuracy": 0.2359,
+      "questions_answered": 32.0,
+      "coverage": 1.0,
+      "exam_score_estimate": 0.2359
     },
     "position_A": {
-      "expected_accuracy": 0.3478,
-      "questions_answered": 28.75,
-      "coverage": 0.757,
-      "exam_score_estimate": 0.3208
+      "expected_accuracy": 0.32,
+      "questions_answered": 25.0,
+      "coverage": 0.781,
+      "exam_score_estimate": 0.2995
     },
     "position_B": {
-      "expected_accuracy": 0.3472,
-      "questions_answered": 28.8,
-      "coverage": 0.758,
-      "exam_score_estimate": 0.3205
+      "expected_accuracy": 0.3252,
+      "questions_answered": 24.6,
+      "coverage": 0.769,
+      "exam_score_estimate": 0.3024
     },
     "position_C": {
-      "expected_accuracy": 0.3158,
-      "questions_answered": 28.5,
-      "coverage": 0.75,
-      "exam_score_estimate": 0.2961
+      "expected_accuracy": 0.3279,
+      "questions_answered": 24.4,
+      "coverage": 0.763,
+      "exam_score_estimate": 0.3039
     },
     "position_D": {
-      "expected_accuracy": 0.3147,
-      "questions_answered": 28.6,
-      "coverage": 0.753,
-      "exam_score_estimate": 0.2955
+      "expected_accuracy": 0.3252,
+      "questions_answered": 24.6,
+      "coverage": 0.769,
+      "exam_score_estimate": 0.3024
     },
     "stem_keyword_overlap": {
-      "expected_accuracy": 0.2478,
-      "questions_answered": 33.5,
-      "coverage": 0.882,
-      "exam_score_estimate": 0.2465
+      "expected_accuracy": 0.2385,
+      "questions_answered": 31.9,
+      "coverage": 0.997,
+      "exam_score_estimate": 0.2385
     },
     "most_hedged": {
-      "expected_accuracy": 0.2215,
-      "questions_answered": 22.35,
-      "coverage": 0.588,
-      "exam_score_estimate": 0.2278
+      "expected_accuracy": 0.2083,
+      "questions_answered": 19.2,
+      "coverage": 0.6,
+      "exam_score_estimate": 0.2156
     },
     "avoid_hedged": {
-      "expected_accuracy": 0.296,
-      "questions_answered": 22.35,
-      "coverage": 0.588,
-      "exam_score_estimate": 0.2716
+      "expected_accuracy": 0.2396,
+      "questions_answered": 19.2,
+      "coverage": 0.6,
+      "exam_score_estimate": 0.2344
     },
     "least_absolute": {
-      "expected_accuracy": 0.1647,
-      "questions_answered": 22.85,
-      "coverage": 0.601,
-      "exam_score_estimate": 0.1935
+      "expected_accuracy": 0.1848,
+      "questions_answered": 20.7,
+      "coverage": 0.647,
+      "exam_score_estimate": 0.1996
     },
     "most_absolute": {
-      "expected_accuracy": 0.2595,
-      "questions_answered": 22.85,
-      "coverage": 0.601,
-      "exam_score_estimate": 0.2504
+      "expected_accuracy": 0.2452,
+      "questions_answered": 20.7,
+      "coverage": 0.647,
+      "exam_score_estimate": 0.2386
     },
     "code_formatted_only": {
-      "expected_accuracy": 0.2402,
-      "questions_answered": 10.2,
-      "coverage": 0.268,
-      "exam_score_estimate": 0.2377
+      "expected_accuracy": 0.2083,
+      "questions_answered": 9.6,
+      "coverage": 0.3,
+      "exam_score_estimate": 0.2211
     },
     "numeric_middle": {
-      "expected_accuracy": 0.3974,
-      "questions_answered": 5.85,
-      "coverage": 0.154
+      "expected_accuracy": 0.2328,
+      "questions_answered": 5.8,
+      "coverage": 0.181
     },
     "odd_one_out": {
-      "expected_accuracy": 0.1803,
-      "questions_answered": 38.0,
+      "expected_accuracy": 0.1081,
+      "questions_answered": 32.0,
       "coverage": 1.0,
-      "exam_score_estimate": 0.1803
+      "exam_score_estimate": 0.1081
     },
     "similar_twin_member": {
-      "expected_accuracy": 0.3821,
-      "questions_answered": 10.6,
-      "coverage": 0.279,
-      "exam_score_estimate": 0.2773
+      "expected_accuracy": 0.3851,
+      "questions_answered": 7.4,
+      "coverage": 0.231
     }
   },
   "position_stats": {
-    "s3": {
+    "s4": {
       "counts": {
-        "A": 10,
-        "B": 10,
-        "C": 9,
-        "D": 9
+        "A": 8,
+        "B": 8,
+        "C": 8,
+        "D": 8
       },
-      "n": 38,
-      "max_share": 0.263,
+      "n": 32,
+      "max_share": 0.25,
       "skewed": false,
-      "top_key": "B"
+      "top_key": "A"
     }
   },
   "multi_select": {
-    "n": 6,
+    "n": 4,
     "answer_count_distribution": {
-      "3": 5,
-      "4": 1
+      "2": 3,
+      "3": 1
     },
-    "adjacent_letter_answers": 1,
+    "adjacent_letter_answers": 3,
     "count_predictable": false
   },
   "cross_question_duplicate_options": {},
   "flagged_questions": [
     {
-      "id": "s3-q016",
+      "id": "s4-q012",
       "type": "predict-output",
-      "file": "data/questions/s3/s3-q016.json",
+      "file": "data/questions/s4/s4-q012.json",
       "flags": [
         {
           "flag": "length_tell",
           "severity": "low",
-          "detail": "correct option(s) strictly longest (min correct 65 chars vs longest distractor 54, ratio 1.20) (in >=1 displayed pool variant)"
+          "detail": "correct option(s) strictly longest (min correct 161 chars vs longest distractor 144, ratio 1.12) (in >=1 displayed pool variant)"
         }
       ]
     },
     {
-      "id": "s3-q017",
-      "type": "predict-output",
-      "file": "data/questions/s3/s3-q017.json",
-      "flags": [
-        {
-          "flag": "length_tell",
-          "severity": "low",
-          "detail": "correct option(s) strictly longest (min correct 99 chars vs longest distractor 79, ratio 1.25) (in >=1 displayed pool variant)"
-        },
-        {
-          "flag": "stem_echo_tell",
-          "severity": "medium",
-          "detail": "correct option echoes stem vocabulary (overlap 4 vs best distractor 2) (in >=1 displayed pool variant)"
-        }
-      ]
-    },
-    {
-      "id": "s3-q024",
+      "id": "s4-q015",
       "type": "mcq",
-      "file": "data/questions/s3/s3-q024.json",
+      "file": "data/questions/s4/s4-q015.json",
       "flags": [
         {
           "flag": "length_tell",
           "severity": "low",
-          "detail": "correct option(s) strictly longest (min correct 44 chars vs longest distractor 42, ratio 1.05) (in >=1 displayed pool variant)"
+          "detail": "correct option(s) strictly longest (min correct 91 chars vs longest distractor 90, ratio 1.01) (in >=1 displayed pool variant)"
         }
       ]
     },
     {
-      "id": "s3-q028",
-      "type": "predict-output",
-      "file": "data/questions/s3/s3-q028.json",
-      "flags": [
-        {
-          "flag": "length_tell",
-          "severity": "low",
-          "detail": "correct option(s) strictly longest (min correct 78 chars vs longest distractor 77, ratio 1.01) (in >=1 displayed pool variant)"
-        }
-      ]
-    },
-    {
-      "id": "s3-q030",
+      "id": "s4-q019",
       "type": "mcq",
-      "file": "data/questions/s3/s3-q030.json",
+      "file": "data/questions/s4/s4-q019.json",
       "flags": [
         {
           "flag": "length_tell",
           "severity": "low",
-          "detail": "correct option(s) strictly longest (min correct 99 chars vs longest distractor 96, ratio 1.03) (in >=1 displayed pool variant)"
+          "detail": "correct option(s) strictly longest (min correct 55 chars vs longest distractor 54, ratio 1.02) (in >=1 displayed pool variant)"
         }
       ]
     },
     {
-      "id": "s3-q034",
-      "type": "spot-bug",
-      "file": "data/questions/s3/s3-q034.json",
+      "id": "s4-q020",
+      "type": "mcq",
+      "file": "data/questions/s4/s4-q020.json",
       "flags": [
         {
           "flag": "length_tell",
           "severity": "low",
-          "detail": "correct option(s) strictly longest (min correct 130 chars vs longest distractor 124, ratio 1.05) (in >=1 displayed pool variant)"
+          "detail": "correct option(s) strictly longest (min correct 112 chars vs longest distractor 102, ratio 1.10) (in >=1 displayed pool variant)"
         }
       ]
     },
     {
-      "id": "s3-q037",
+      "id": "s4-q027",
+      "type": "mcq",
+      "file": "data/questions/s4/s4-q027.json",
+      "flags": [
+        {
+          "flag": "length_tell",
+          "severity": "low",
+          "detail": "correct option(s) strictly longest (min correct 81 chars vs longest distractor 74, ratio 1.09) (in >=1 displayed pool variant)"
+        }
+      ]
+    },
+    {
+      "id": "s4-q032",
+      "type": "mcq",
+      "file": "data/questions/s4/s4-q032.json",
+      "flags": [
+        {
+          "flag": "length_tell",
+          "severity": "low",
+          "detail": "correct option(s) strictly longest (min correct 108 chars vs longest distractor 99, ratio 1.09) (in >=1 displayed pool variant)"
+        }
+      ]
+    },
+    {
+      "id": "s4-q040",
+      "type": "mcq",
+      "file": "data/questions/s4/s4-q040.json",
+      "flags": [
+        {
+          "flag": "length_tell",
+          "severity": "low",
+          "detail": "correct option(s) strictly longest (min correct 71 chars vs longest distractor 65, ratio 1.09) (in >=1 displayed pool variant)"
+        }
+      ]
+    },
+    {
+      "id": "s4-q042",
       "type": "predict-output",
-      "file": "data/questions/s3/s3-q037.json",
+      "file": "data/questions/s4/s4-q042.json",
       "flags": [
         {
           "flag": "length_tell",
           "severity": "low",
-          "detail": "correct option(s) strictly longest (min correct 88 chars vs longest distractor 79, ratio 1.11) (in >=1 displayed pool variant)"
-        }
-      ]
-    },
-    {
-      "id": "s3-q039",
-      "type": "spot-bug",
-      "file": "data/questions/s3/s3-q039.json",
-      "flags": [
-        {
-          "flag": "length_tell",
-          "severity": "low",
-          "detail": "correct option(s) strictly longest (min correct 95 chars vs longest distractor 77, ratio 1.23) (in >=1 displayed pool variant)"
-        }
-      ]
-    },
-    {
-      "id": "s3-q052",
-      "type": "predict-output",
-      "file": "data/questions/s3/s3-q052.json",
-      "flags": [
-        {
-          "flag": "length_tell",
-          "severity": "low",
-          "detail": "correct option(s) strictly longest (min correct 82 chars vs longest distractor 72, ratio 1.14) (in >=1 displayed pool variant)"
-        },
-        {
-          "flag": "stem_echo_tell",
-          "severity": "medium",
-          "detail": "correct option echoes stem vocabulary (overlap 5 vs best distractor 2) (in >=1 displayed pool variant)"
+          "detail": "correct option(s) strictly longest (min correct 74 chars vs longest distractor 66, ratio 1.12) (in >=1 displayed pool variant)"
         }
       ]
     }

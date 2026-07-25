@@ -28,6 +28,10 @@
     {
       "key": "E",
       "text": "Batch mode is only available on paid plans; Open Plan users cannot submit batch jobs."
+    },
+    {
+      "key": "F",
+      "text": "A batch's maximum TTL pauses whenever another user's job occupies the QPU, so a batch never expires while some of its jobs are still queued."
     }
   ],
   "answer": [
@@ -39,7 +43,8 @@
     "distractors": {
       "C": "Exclusive access for the whole window (no other users' jobs, no calibration jobs) is the defining feature of SESSION mode, not batch. Batch jobs share the QPU.",
       "D": "The queuing time does not decrease for the first job submitted within a batch, so batching gives no benefit for a single job.",
-      "E": "It is SESSION mode that Open Plan users cannot use. Batch mode is available on the Open Plan (with a shorter maximum TTL)."
+      "E": "It is SESSION mode that Open Plan users cannot use. Batch mode is available on the Open Plan (with a shorter maximum TTL).",
+      "F": "The maximum TTL never pauses: it starts when the batch's first job starts running and runs down in wall-clock time. When it expires the batch closes — jobs already running finish, but anything still queued is failed."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
@@ -59,6 +64,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened exclusivity distractor (length-tell fix)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened exclusivity distractor (length-tell fix). | pool wave: +F (max TTL pauses while other users run)"
+  },
+  "display_count": 5
 }

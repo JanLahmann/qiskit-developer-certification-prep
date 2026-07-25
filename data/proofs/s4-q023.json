@@ -8,11 +8,14 @@
       "A": "no-measure result data fields=[], meas access -> AttributeError; after measure_all Sampler returns 1024 shots -> bug is the missing measurement (True)",
       "B": "get_counts() works on the fixed circuit's result -> it was not removed in V2 (False)",
       "C": "the same shots=1024 succeed once a measurement is added -> shots were not the problem (False)",
-      "D": "SamplerV2 returns counts for this circuit once it is measured -> the Estimator is not required (False)"
+      "D": "SamplerV2 returns counts for this circuit once it is measured -> the Estimator is not required (False)",
+      "E": "result data fields=[] and data.c -> AttributeError: 'DataBin' object has no attribute 'c': there is no register of any name to read (False)",
+      "F": "transpiling the measured circuit kept 2 measure instruction(s), so pm.run does not strip measurements (False)"
     },
     "observed": {
       "fields": [],
-      "fixed_shots": 1024
+      "fixed_shots": 1024,
+      "measures_after_transpile": 2
     }
   },
   "versions": {
@@ -21,9 +24,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.28,
+  "wall_seconds": 1.37,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"no-measure result data fields=[], meas access -> AttributeError; after measure_all Sampler returns 1024 shots -> bug is the missing measurement (True)\", \"B\": \"get_counts() works on the fixed circuit's result -> it was not removed in V2 (False)\", \"C\": \"the same shots=1024 succeed once a measurement is added -> shots were not the problem (False)\", \"D\": \"SamplerV2 returns counts for this circuit once it is measured -> the Estimator is not required (False)\"}, \"observed\": {\"fields\": [], \"fixed_shots\": 1024}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"no-measure result data fields=[], meas access -> AttributeError; after measure_all Sampler returns 1024 shots -> bug is the missing measurement (True)\", \"B\": \"get_counts() works on the fixed circuit's result -> it was not removed in V2 (False)\", \"C\": \"the same shots=1024 succeed once a measurement is added -> shots were not the problem (False)\", \"D\": \"SamplerV2 returns counts for this circuit once it is measured -> the Estimator is not required (False)\", \"E\": \"result data fields=[] and data.c -> AttributeError: 'DataBin' object has no attribute 'c': there is no register of any name to read (False)\", \"F\": \"transpiling the measured circuit kept 2 measure instruction(s), so pm.run does not strip measurements (False)\"}, \"observed\": {\"fields\": [], \"fixed_shots\": 1024, \"measures_after_transpile\": 2}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

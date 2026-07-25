@@ -28,6 +28,10 @@
     {
       "key": "E",
       "text": "Session mode with a short `max_time`, keeping the dedicated window cheap"
+    },
+    {
+      "key": "F",
+      "text": "Nest the batch inside a session — `with Session(...):` wrapping `with Batch(...):` — so the 30 jobs get both the batch's scheduling and the session's reserved window."
     }
   ],
   "answer": [
@@ -39,7 +43,8 @@
       "B": "Sessions give you dedicated, iterative access — useful when later jobs depend on earlier results (e.g. variational loops). For independent circuits the dedicated window buys nothing and typically costs more device time than batching.",
       "C": "Individually queued jobs each wait in the fair-share queue separately — this maximizes, not minimizes, total queuing overhead.",
       "D": "Opening a session per circuit multiplies session overhead thirty-fold and is the most wasteful option of all.",
-      "E": "Shrinking `max_time` doesn't change what a session is: dedicated, exclusive access intended for dependent, iterative jobs. Independent circuits gain nothing from exclusivity at any window length — batch mode schedules them together without reserving the device."
+      "E": "Shrinking `max_time` doesn't change what a session is: dedicated, exclusive access intended for dependent, iterative jobs. Independent circuits gain nothing from exclusivity at any window length — batch mode schedules them together without reserving the device.",
+      "F": "Nesting does not compose the two modes. A primitive runs in exactly the execution mode its `mode=` argument names; wrapping a batch in a session simply pays the session's higher cost on top, and the batch never inherits or extends a session's reserved window."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
@@ -59,7 +64,7 @@
     "model": "claude (orchestrator seed)",
     "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | distractor pool pilot: +E (session max_time misuse), display_count=4"
+    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | distractor pool pilot: +E (session max_time misuse), display_count=4 | pool wave: +F (nesting Batch inside Session to 'get both')"
   },
   "display_count": 4
 }

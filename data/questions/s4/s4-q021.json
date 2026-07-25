@@ -24,17 +24,27 @@
     {
       "key": "D",
       "text": "It automatically selects the least busy backend from the saved account."
+    },
+    {
+      "key": "E",
+      "text": "It raises `ValueError`, but only when `job.result()` is awaited — the constructor and `run` both return normally."
+    },
+    {
+      "key": "F",
+      "text": "It raises `IBMInputValueError`: the PUB is rejected because no execution target is attached to the transpiled circuit."
     }
   ],
   "answer": [
     "C"
   ],
   "explanation": {
-    "correct": "`mode` defaults to `None`, so construction succeeds, but a primitive must ultimately have an execution target. With no mode and no enclosing session/batch, calling `run` raises `ValueError: A backend or session must be specified.`",
+    "correct": "A primitive must have an execution target. With no `mode` and no enclosing session or batch, `SamplerV2()` raises `ValueError: A backend or session must be specified.` — and it raises it immediately, in the constructor, so `run` never gets a chance to submit anything.",
     "distractors": {
       "A": "`mode` is optional (it defaults to `None`), so construction succeeds; the failure happens at `run` time.",
       "B": "There is no implicit fallback simulator, local Aer or otherwise; you must supply a backend (for example a fake backend for local testing) as the mode.",
-      "D": "The primitive never contacts a service to pick a backend for you; backend selection (for example `least_busy`) is your responsibility."
+      "D": "The primitive never contacts a service to pick a backend for you; backend selection (for example `least_busy`) is your responsibility.",
+      "E": "The failure is not deferred: `SamplerV2()` validates its target in the constructor, so the `ValueError` is raised before `run` — let alone `result()` — is ever reached.",
+      "F": "Circuits do not carry an execution target — the primitive does. Nothing about the PUB is wrong here, so the failure is a plain `ValueError` about the missing backend or session, not a PUB-validation error."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\ntry:\n    SamplerV2().run([isa]).result()\n    outcome = (\"success\",)\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nmsg = outcome[2] if is_exc else \"\"\nflags = {\n    \"C\": is_exc and name == \"ValueError\" and \"backend or session\" in msg,\n    \"B\": outcome[0] == \"success\",\n    \"A\": is_exc and name == \"TypeError\",\n    \"D\": outcome[0] == \"success\",\n}\nlabels = {\"C\": \"ValueError: a backend or session must be specified\", \"B\": \"runs on a local Aer simulator\",\n          \"A\": \"TypeError: mode is a required positional argument\", \"D\": \"auto-selects the least busy backend\"}\nevidence = {k: f\"observed={outcome}; option {k} predicts '{labels[k]}' -> match={v}\" for k, v in flags.items()}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": list(outcome)}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\n# where exactly does it fail? construct, then run, then result -- as three separate steps\nstage = \"none\"\ntry:\n    sampler = SamplerV2()\n    stage = \"constructed\"\n    job = sampler.run([isa])\n    stage = \"submitted\"\n    job.result()\n    stage = \"result\"\n    outcome = (\"success\",)\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\nfailed_at = {\"none\": \"constructor\", \"constructed\": \"run\", \"submitted\": \"result\"}.get(stage, \"nowhere\")\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nmsg = outcome[2] if is_exc else \"\"\nflags = {\n    \"C\": is_exc and name == \"ValueError\" and \"backend or session\" in msg,\n    \"B\": outcome[0] == \"success\",\n    \"A\": is_exc and name == \"TypeError\",\n    \"D\": outcome[0] == \"success\",\n    \"E\": is_exc and name == \"ValueError\" and failed_at == \"result\",\n    \"F\": is_exc and name == \"IBMInputValueError\",\n}\nlabels = {\"C\": \"ValueError: a backend or session must be specified\", \"B\": \"runs on a local Aer simulator\",\n          \"A\": \"TypeError: mode is a required positional argument\", \"D\": \"auto-selects the least busy backend\",\n          \"E\": \"ValueError deferred until job.result() is awaited\",\n          \"F\": \"IBMInputValueError blaming the circuit\"}\nevidence = {k: f\"observed={outcome}; option {k} predicts '{labels[k]}' -> match={v}\" for k, v in flags.items()}\nevidence[\"E\"] += f\"; the three steps were run separately and the failure happened at the {failed_at} step\"\nevidence[\"F\"] += f\"; the raised type is {name} and the message is about the missing target, not the circuit\"\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"outcome\": list(outcome), \"failed_at\": failed_at}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C to shortest, lengthened distractors (length-tell fix). Also: hedge-heuristic calibration."
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C to shortest, lengthened distractors (length-tell fix). Also: hedge-heuristic calibration. | pool wave: +E (the ValueError is deferred to result()), +F (the PUB carries the target) | reality fix: SamplerV2() raises the ValueError in the CONSTRUCTOR, not at run() — explanation corrected"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

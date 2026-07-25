@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "The batch is silently converted into a session."
+    },
+    {
+      "key": "E",
+      "text": "It runs in job mode, and exiting the block usually raises an error because the batch received no jobs."
+    },
+    {
+      "key": "F",
+      "text": "The jobs run in batch mode as long as the backend object is the one the batch was opened on."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "A primitive constructed with NO mode inside the context does inherit the batch — but this one sets `mode=backend` explicitly, which overrides the context and forces job mode.",
       "C": "It does not raise — it runs, just in job mode. A warning is logged that the job is running in job mode.",
-      "D": "Nothing converts a batch to a session; the batch context is simply bypassed for that primitive."
+      "D": "Nothing converts a batch to a session; the batch context is simply bypassed for that primitive.",
+      "E": "An empty batch is not an error: exiting the context manager just closes it. The mode mistake is silent, which is exactly what makes it dangerous — you only notice it in the usage report.",
+      "F": "Mode binding is by object, not by equality of the underlying device. Passing the backend gives you job mode even when it is the very backend the batch wraps; you have to pass the `Batch` object itself."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged + stem-echoed the lexical-scope distractor (absolute-tell fix)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged + stem-echoed the lexical-scope distractor (absolute-tell fix). | pool wave: +E (an empty batch raises on exit), +F (same backend object means batch inheritance)"
+  },
+  "display_count": 5
 }

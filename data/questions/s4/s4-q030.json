@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Call `QiskitRuntimeService.login()` with your IBM id and password."
+    },
+    {
+      "key": "E",
+      "text": "Call `QiskitRuntimeService.save_account(api_key=\"<api-key>\", instance=\"<CRN>\")` once; the token keyword was renamed to `api_key` on IBM Quantum Platform."
+    },
+    {
+      "key": "F",
+      "text": "Call `QiskitRuntimeService(token=\"<api-key>\").save()` after the first successful connection, which typically writes the account file for you."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "`save_account` stores authentication credentials, not a backend choice; you still select a backend (for example with `least_busy`) at run time.",
       "B": "Explicit per-script credentials are one option, but credentials CAN be persisted with `save_account`; nothing prevents writing them to disk on a trusted machine.",
-      "D": "There is no `login()` method that takes an id and password; authentication uses an API key/token, optionally saved with `save_account`."
+      "D": "There is no `login()` method that takes an id and password; authentication uses an API key/token, optionally saved with `save_account`.",
+      "E": "The parameter is still `token=`, whatever the web console calls the string you paste into it. `save_account` has no `api_key` parameter, so this raises `TypeError` before anything is written to disk.",
+      "F": "There is no `save()` method on the service — persisting credentials is a class-level operation, `QiskitRuntimeService.save_account(...)`, and it does not require a live connection first."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/hello-world",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C, lengthened+hedged distractors (length/stem-echo/absolute-tell fix)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C, lengthened+hedged distractors (length/stem-echo/absolute-tell fix). | pool wave: +E (save_account(api_key=...)), +F (service.save() persists the account)"
+  },
+  "display_count": 5
 }

@@ -8,7 +8,9 @@
       "C": "constructed and ran: 64 shots over 4 bitstrings",
       "B": "raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'batch'",
       "A": "raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'session'",
-      "D": "raised ValueError: mode must be of type Backend, Session, Batch or None"
+      "D": "raised ValueError: mode must be of type Backend, Session, Batch or None",
+      "E": "raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'backend'",
+      "F": "batch.backend() returned 'fake_manila' of type str; raised ValueError: mode must be of type Backend, Session, Batch or None"
     },
     "observed": {
       "proven": [
@@ -22,9 +24,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.82,
+  "wall_seconds": 1.67,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"C\": \"constructed and ran: 64 shots over 4 bitstrings\", \"B\": \"raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'batch'\", \"A\": \"raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'session'\", \"D\": \"raised ValueError: mode must be of type Backend, Session, Batch or None\"}, \"observed\": {\"proven\": [\"C\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"C\": \"constructed and ran: 64 shots over 4 bitstrings\", \"B\": \"raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'batch'\", \"A\": \"raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'session'\", \"D\": \"raised ValueError: mode must be of type Backend, Session, Batch or None\", \"E\": \"raised TypeError: SamplerV2.__init__() got an unexpected keyword argument 'backend'\", \"F\": \"batch.backend() returned 'fake_manila' of type str; raised ValueError: mode must be of type Backend, Session, Batch or None\"}, \"observed\": {\"proven\": [\"C\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

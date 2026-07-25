@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "When you call `service = QiskitRuntimeService()`."
+    },
+    {
+      "key": "E",
+      "text": "When you submit the first job, whether or not it has started running."
+    },
+    {
+      "key": "F",
+      "text": "When the session's interactive TTL first elapses."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "Merely constructing the object does not start the clock — the first job entering execution does.",
       "C": "Exiting the context manager closes the session/batch; it does not start the TTL timer.",
-      "D": "Creating the service only authenticates you; it is unrelated to when a session's timer begins."
+      "D": "Creating the service only authenticates you; it is unrelated to when a session's timer begins.",
+      "E": "Submission is not the trigger — the clock starts when that first job actually begins executing. A job that sits in the queue for an hour does not eat into the maximum TTL.",
+      "F": "The interactive TTL measures the idle gap between jobs and only ever ends a session early; it has nothing to do with starting the maximum TTL clock."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
@@ -54,6 +64,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — made the correct option the shortest (shortest-option calibration). Also: de-code-formatted a distractor (format-tell fix)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — made the correct option the shortest (shortest-option calibration). Also: de-code-formatted a distractor (format-tell fix). | pool wave: +E (submission starts the clock), +F (the interactive TTL starts it)"
+  },
+  "display_count": 4
 }

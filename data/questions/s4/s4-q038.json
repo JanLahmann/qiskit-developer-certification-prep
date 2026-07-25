@@ -25,6 +25,14 @@
     {
       "key": "D",
       "text": "`EstimatorV2(backend=backend, session=session)`"
+    },
+    {
+      "key": "E",
+      "text": "`Session(backend=backend).estimator()`"
+    },
+    {
+      "key": "F",
+      "text": "`EstimatorV2(options={\"mode\": session})`"
     }
   ],
   "answer": [
@@ -35,7 +43,9 @@
     "distractors": {
       "A": "`session=` is the removed pre-0.24 keyword; on V2 primitives it raises `TypeError`. Use `mode=session`.",
       "C": "`mode` needs the Session object, not the string `\"session\"`; a string raises `ValueError`.",
-      "D": "Both keywords were removed from the V2 constructors (passing a backend and a session together was the V1 idiom); each raises `TypeError`. The target goes through `mode=`."
+      "D": "Both keywords were removed from the V2 constructors (passing a backend and a session together was the V1 idiom); each raises `TypeError`. The target goes through `mode=`.",
+      "E": "A `Session` does not manufacture primitives — it exposes `close`, `cancel`, `status`, `details` and `backend`, and nothing else. This also opens a second session instead of using the one already in scope.",
+      "F": "The execution mode is a constructor argument, not a primitive option: `EstimatorOptions` has no `mode` field, so this raises a pydantic `ValidationError` for an unexpected keyword."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
@@ -48,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2, Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nisa = pm.run(qc)\nobs = SparsePauliOp(\"ZZ\").apply_layout(isa.layout)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        evs = float(fn().run([(isa, obs)]).result()[0].data.evs)\n        evidence[key] = f\"constructed and ran in the session: evs={round(evs, 4)}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nwith Session(backend=backend) as session:\n    attempt(\"B\", lambda: EstimatorV2(mode=session))\n    attempt(\"A\", lambda: EstimatorV2(session=session))\n    attempt(\"C\", lambda: EstimatorV2(mode=\"session\"))\n    attempt(\"D\", lambda: EstimatorV2(backend=backend, session=session))\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2, Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nisa = pm.run(qc)\nobs = SparsePauliOp(\"ZZ\").apply_layout(isa.layout)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        evs = float(fn().run([(isa, obs)]).result()[0].data.evs)\n        evidence[key] = f\"constructed and ran in the session: evs={round(evs, 4)}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nwith Session(backend=backend) as session:\n    attempt(\"B\", lambda: EstimatorV2(mode=session))\n    attempt(\"A\", lambda: EstimatorV2(session=session))\n    attempt(\"C\", lambda: EstimatorV2(mode=\"session\"))\n    attempt(\"D\", lambda: EstimatorV2(backend=backend, session=session))\n    attempt(\"E\", lambda: Session(backend=backend).estimator())\n    attempt(\"F\", lambda: EstimatorV2(options={\"mode\": session}))\n    evidence[\"F\"] = \"mode is a constructor parameter, not an EstimatorOptions field; \" + evidence[\"F\"]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — broke the two-way longest tie by widening the V1-idiom distractor."
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — broke the two-way longest tie by widening the V1-idiom distractor. | pool wave: +E (session.estimator() factory), +F (mode passed inside options=)"
   },
   "freshness": {
     "verified_against": {
@@ -66,5 +76,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

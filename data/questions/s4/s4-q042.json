@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "It raises an error because no `QiskitRuntimeService` was provided."
+    },
+    {
+      "key": "E",
+      "text": "`'FakeManilaV2'` — the class name of the backend object, usually."
+    },
+    {
+      "key": "F",
+      "text": "`ibm_manila` — the real device that the fake backend mimics."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "The session does have a backend (the one you passed), so it is not `None`.",
       "B": "It returns the backend NAME (a string), not the backend object; this is a common assumption to check.",
-      "D": "In local testing mode a fake backend is passed directly, so no service is needed and no error is raised."
+      "D": "In local testing mode a fake backend is passed directly, so no service is needed and no error is raised.",
+      "E": "`Session.backend()` reports the backend's `name` attribute, not the Python class it happens to be an instance of. The two differ for every fake backend.",
+      "F": "A fake backend carries its own name, `fake_manila`; it never impersonates the retired hardware it was snapshotted from. The session simply echoes `backend.name`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit_ibm_runtime import Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nwith Session(backend=backend) as session:\n    returned = session.backend()\n\nis_str = isinstance(returned, str)\nflags = {\n    \"C\": is_str and returned == \"fake_manila\",\n    \"B\": (not is_str),\n    \"A\": returned is None,\n    \"D\": False,\n}\nlabels = {\"C\": \"returns the backend name string 'fake_manila'\", \"B\": \"returns the backend object\",\n          \"A\": \"returns None\", \"D\": \"raises an error (no service)\"}\nevidence = {}\nfor k, v in flags.items():\n    evidence[k] = (f\"session.backend() -> type={type(returned).__name__}, value={returned!r}; \"\n                   f\"option {k} predicts '{labels[k]}' -> match={v}\")\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"type\": type(returned).__name__, \"value\": str(returned)}})\n"
+    "proof_script": "\nfrom qiskit_ibm_runtime import Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nwith Session(backend=backend) as session:\n    returned = session.backend()\n\nis_str = isinstance(returned, str)\nflags = {\n    \"C\": is_str and returned == \"fake_manila\",\n    \"B\": (not is_str),\n    \"A\": returned is None,\n    \"D\": False,\n    \"E\": is_str and returned == type(backend).__name__,\n    \"F\": is_str and returned == \"ibm_manila\",\n}\nlabels = {\"C\": \"returns the backend name string 'fake_manila'\", \"B\": \"returns the backend object\",\n          \"A\": \"returns None\", \"D\": \"raises an error (no service)\",\n          \"E\": \"returns the backend class name\", \"F\": \"returns the mimicked device name\"}\nevidence = {}\nfor k, v in flags.items():\n    evidence[k] = (f\"session.backend() -> type={type(returned).__name__}, value={returned!r}; \"\n                   f\"option {k} predicts '{labels[k]}' -> match={v}\")\nevidence[\"E\"] += f\"; the class is named {type(backend).__name__}, which is not what was returned\"\nevidence[\"F\"] += f\"; backend.name is {backend.name!r} and that is exactly what the session reported\"\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"type\": type(returned).__name__, \"value\": str(returned), \"class_name\": type(backend).__name__}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the returns-the-object distractor (absolute-tell fix)."
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the returns-the-object distractor (absolute-tell fix). | pool wave: +E (the class name), +F (the mimicked hardware name)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

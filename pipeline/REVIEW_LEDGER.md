@@ -368,3 +368,93 @@ and died with it.
   correct option must stay strictly longest in EVERY variant — i.e. every pool
   distractor on a keeper must be shorter than the correct option. Check the
   section aggregate AFTER pooling, not just per-question flags. (2026-07-26)
+
+## Verified library facts (s4 pool wave — execution modes, 2026-07-25, runtime 0.48.0)
+
+- **`SamplerV2()` / `EstimatorV2()` with no mode raise `ValueError: A backend or
+  session must be specified.` IN THE CONSTRUCTOR**, not at `run()`. The widespread
+  "mode defaults to None so construction succeeds, run() fails" lore is wrong for
+  0.48 — s4-q021's explanation said exactly that and was corrected (keyed answer
+  unaffected: the exception and message are what the option names).
+- **`Session.session_id` is `None` in local testing mode.** So
+  `EstimatorV2(mode=session.session_id)` degrades to `mode=None`, which inside a
+  `with Session(...)` block INHERITS the session and runs fine. Never use
+  `mode=session_id` as a wrong option — it is environment-dependent. (Killed one
+  s4-q038 draft; replaced by `EstimatorV2(options={"mode": session})`, which raises
+  a pydantic `ValidationError` — `mode` is a constructor arg, never an options field.)
+- **`Session.backend()` / `Batch.backend()` return the backend NAME string**
+  (`'fake_manila'`), so `SamplerV2(mode=batch.backend())` raises `ValueError` — a
+  clean, robust pool distractor. `backend.name` and `backend.target` fail the same way.
+- **`Session` has no public `run`** (only `_run`): the public surface is
+  `backend, cancel, close, details, from_id, service, session_id, status, usage`.
+  `session.run(SamplerV2(), [isa])` → `AttributeError`.
+- **`QiskitRuntimeService.least_busy` DOES accept `filters=`** (signature:
+  `min_num_qubits, instance, filters, use_fractional_gates, **kwargs`) —
+  `least_busy(filters=lambda b: not b.simulator)` is a SECOND CORRECT ANSWER on
+  "pick the least busy real QPU" stems. `service.backends(...)` is not queue-sorted
+  (safe distractor); `service.backend()` needs a positional `name` (TypeError).
+- **`save_account` has no `api_key` parameter** (it is `token=`), and
+  `QiskitRuntimeService` has no `.save()` method — both verified near-misses.
+- **PUB bracketing on `SamplerV2.run`, measured:** `run([[isa1],[isa2]])` and
+  `run([(isa1,),(isa2,)])` BOTH SUCCEED (2 pub results) — never offer nested-list or
+  tuple-wrapped PUBs as wrong options. `run({isa1, isa2})` → `TypeError: unhashable`;
+  `run(pubs, shots=[1024, 1024])` → `TypeError: shots must be an integer`;
+  `run([...]).run([...])` → `AttributeError` (a job has no `run`).
+- **Fake backends enforce the ISA exactly like hardware** — local testing mode does
+  NOT skip the target check, for either primitive. Transpiling a measured circuit
+  PRESERVES its `measure` instructions (refutes "pm.run strips measurements").
+- **`SparsePauliOp("ZZ", target=...)` → `TypeError`**: the operator has no device
+  binding; alignment is `obs.apply_layout(isa.layout)` after transpilation, and
+  nothing pads a narrow observable automatically.
+
+## Pool-craft rules (s4 pool wave, 2026-07-25 — 35/36 pooled, 66 new distractors)
+
+- **Keepers-first length calibration (the fix for the s3 collapse).** BEFORE adding
+  anything, run the audit and list the questions that already carry a low
+  `length_tell` — those are your keepers. s4 had exactly 8 of 32 single-answer
+  questions = N/4, so no new keeper had to be manufactured. Then: every pool
+  distractor on a keeper must be SHORTER than the correct option and long enough
+  that no variant drives the ratio past 1.3; every pool distractor elsewhere must
+  leave at least one displayed distractor LONGER than the correct option in EVERY
+  variant. Result: `longest_option` finished at exactly 25.0% and `avoid_longest`
+  at 23.6% (s3 finished at 7.0%).
+- **Put keepers on `display_count: 5`, not 4.** Fewer dropped distractors means the
+  max displayed distractor cannot fall as far, so the ratio stays under the 1.4 HIGH
+  boundary; it also keeps key A displayed more often (position heuristics) and costs
+  nothing on `avoid_longest`, since a keeper contributes 0 to it at any dc.
+- **`avoid_longest` arithmetic to plan a wave:** a non-keeper contributes 1/3 at
+  dc=4 and 1/4 at dc=5; keepers contribute 0. With N/4 keepers and every non-keeper
+  at dc=4 the section lands at ~0.25, and each non-keeper moved to dc=5 costs
+  ~0.0026. s4 spent 7 of them and landed at 0.236 — budget ~10 before the 0.20 floor
+  gets close.
+- **The absolute/hedge fix is far cheaper at dc=5.** At dc=4 (3 of 5 distractors
+  shown) BOTH new distractors must hedge whenever a distractor carries an absolute
+  and the correct option does not — which pushes that question's `avoid_hedged`
+  contribution from 1/3 to 0.5. At dc=5 (drop-one) exactly ONE new distractor needs
+  the hedge and the contribution stays ~0.30. Rule: correct option has no absolute
+  AND only one existing distractor hedges → use dc=5 and hedge one pool distractor.
+  (s3's corollary re-confirmed: a correct option that itself carries an absolute is
+  immune — 12 of 36 s4 questions were, and needed no hedge engineering at all.)
+- **Never open a pool distractor with the same verdict word as the keyed answer.**
+  On "which execution mode?" stems, "Session mode with a short `max_time` …" is a
+  fine distractor when the answer is *batch* (the s4-q001 pilot) but an ambiguous
+  half-right option when the answer *is* session. Two s4 drafts were rewritten for
+  this; check it whenever the correct option is a short label.
+- **`attempt(key, fn)` proof harnesses score "it ran" as proven.** A pool distractor
+  that runs but produces the wrong *mode* or the wrong *result* will come back as a
+  second correct answer and fail verify. Either pick distractors that raise, or add
+  an explicit post-condition to the harness. (Caught live on the s4-q038 draft.)
+- **`similar_twin_member` climbs when you pool code-construction questions** (s4:
+  25% → 38.5%): every near-miss call is a token twin of the correct call. It is not
+  gated below 25% coverage and its exam-score estimate stayed at ~26%, so it is an
+  accepted residual — check its coverage before spending effort on it.
+- **Pooling lowers the section's random-guess baseline** (s4: 25.0% → 22.7%) because
+  dc=5 variants display five options. Read every heuristic against the printed
+  baseline, not against a hard-coded 25%.
+- **A 3-correct multi that already has 6 options (schema cap) can still be pooled by
+  rotation alone:** set `display_count: 5` and add nothing (s4-q039). It rotates 2 of
+  3 distractors and costs nothing, since multis do not feed the heuristics.
+- **More reusable predict-output pool shapes** (value space exhausted): a value on
+  the WRONG SIDE of the ideal ("slightly above `+1`" for a noisy ⟨ZZ⟩), and an
+  over-specific mechanism ("exactly `+0.5`, because noise halves every two-qubit
+  correlation"). Both refute against a single measured number.

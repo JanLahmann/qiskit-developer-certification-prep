@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "It prints counts over only `'00'`, silently dropping the gates the backend does not support."
+    },
+    {
+      "key": "E",
+      "text": "It runs and prints counts: local testing mode on a fake backend typically skips the ISA check, so `h` and `cx` are simulated directly."
+    },
+    {
+      "key": "F",
+      "text": "It raises `IBMInputValueError`, but because `measure_all` added a `meas` register that the backend's target does not declare."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "V2 primitives do NOT auto-transpile the abstract gates for the target; you must produce an ISA circuit yourself. This is a common V1-to-V2 migration misconception.",
       "C": "The error is not a `TranspilerError` — nothing is being transpiled. The primitive itself rejects the non-ISA circuit with `IBMInputValueError`.",
-      "D": "Unsupported instructions are never silently dropped; that would change the computation. The circuit is rejected outright."
+      "D": "Unsupported instructions are never silently dropped; that would change the computation. The circuit is rejected outright.",
+      "E": "Local testing mode changes where the job runs, not what the primitive accepts: a fake backend carries a real `Target`, and `SamplerV2` validates the circuit against it exactly as the hardware path does. The abstract `h` is rejected here too.",
+      "F": "Right exception, wrong cause. The error names the `h` instruction, and the very same circuit — `meas` register included — runs without complaint once it is transpiled to the ISA. Classical registers are not part of the target's instruction set."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/hello-world",
@@ -48,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\nsampler = SamplerV2(mode=backend)\n\ntry:\n    counts = sampler.run([qc]).result()[0].data.meas.get_counts()\n    outcome = (\"success\", str(counts))\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nflags = {\n    \"B\": is_exc and name == \"IBMInputValueError\",\n    \"A\": outcome[0] == \"success\",\n    \"C\": is_exc and name == \"TranspilerError\",\n    \"D\": outcome[0] == \"success\",\n}\nlabels = {\"B\": \"raises: circuit not an ISA circuit\", \"A\": \"runs, counts over 00/11\",\n          \"C\": \"raises TranspilerError\", \"D\": \"runs, counts over only 00\"}\nevidence = {k: f\"executed snippet -> outcome={outcome}; option {k} predicts '{labels[k]}' -> match={v}\"\n            for k, v in flags.items()}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": list(outcome)}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\nsampler = SamplerV2(mode=backend)\n\ntry:\n    counts = sampler.run([qc]).result()[0].data.meas.get_counts()\n    outcome = (\"success\", str(counts))\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n\n# control for F: the SAME circuit (measure_all and all) transpiled to the ISA\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa = pm.run(qc)\ntry:\n    isa_counts = SamplerV2(mode=backend).run([isa]).result()[0].data.meas.get_counts()\n    isa_ok = True\n    isa_note = \"ISA control: the same measure_all circuit, transpiled, ran over %d bitstrings\" % len(isa_counts)\nexcept Exception as e:\n    isa_ok = False\n    isa_note = \"ISA control raised %s: %s\" % (type(e).__name__, str(e)[:120])\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nmsg = outcome[2] if is_exc else \"\"\nflags = {\n    \"B\": is_exc and name == \"IBMInputValueError\",\n    \"A\": outcome[0] == \"success\",\n    \"C\": is_exc and name == \"TranspilerError\",\n    \"D\": outcome[0] == \"success\",\n    \"E\": outcome[0] == \"success\",\n    \"F\": is_exc and name == \"IBMInputValueError\" and \"meas\" in msg and not isa_ok,\n}\nlabels = {\"B\": \"raises: circuit not an ISA circuit\", \"A\": \"runs, counts over 00/11\",\n          \"C\": \"raises TranspilerError\", \"D\": \"runs, counts over only 00\",\n          \"E\": \"runs anyway, local testing mode skips the ISA check\",\n          \"F\": \"raises, blaming the meas register added by measure_all\"}\nevidence = {k: f\"executed snippet -> outcome={outcome}; option {k} predicts '{labels[k]}' -> match={v}\"\n            for k, v in flags.items()}\nevidence[\"E\"] += \"; the fake backend is local testing mode and it still rejected the circuit\"\nevidence[\"F\"] += f\"; the message names the h instruction, not a register, and {isa_note}\"\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"outcome\": list(outcome), \"isa_control_ok\": isa_ok}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened + stem-echoed the auto-transpile distractor."
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened + stem-echoed the auto-transpile distractor. | pool wave: +E (local testing mode skips the ISA check), +F (right error, blamed on the meas register)"
   },
   "freshness": {
     "verified_against": {
@@ -66,5 +76,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

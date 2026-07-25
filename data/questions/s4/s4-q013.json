@@ -25,6 +25,14 @@
     {
       "key": "D",
       "text": "`SamplerV2(mode=\"batch\")`"
+    },
+    {
+      "key": "E",
+      "text": "`SamplerV2(backend=batch)`"
+    },
+    {
+      "key": "F",
+      "text": "`SamplerV2(mode=batch.backend())`"
     }
   ],
   "answer": [
@@ -35,7 +43,9 @@
     "distractors": {
       "A": "`session=` was the pre-0.24 keyword and no longer exists on V2 primitives (raises `TypeError`); you also would not pass a Batch to a `session` argument.",
       "B": "There is no `batch=` keyword on the V2 primitives; it raises `TypeError`. The execution mode always goes through `mode=`.",
-      "D": "`mode=` needs the actual Batch object, not the string `\"batch\"`; a string raises `ValueError: mode must be of type Backend, Session, Batch or None`."
+      "D": "`mode=` needs the actual Batch object, not the string `\"batch\"`; a string raises `ValueError: mode must be of type Backend, Session, Batch or None`.",
+      "E": "`backend=` is the V1 keyword and was removed from the V2 constructors altogether, so this raises `TypeError` no matter what object you hand it — a batch included.",
+      "F": "`Batch.backend()` returns the backend's *name* as a string, not the backend object, and `mode=` rejects strings — this raises `ValueError`. It also would not put the jobs in the batch even if it worked, since the mode would then be a plain backend."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch",
@@ -48,13 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2, Batch\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        sampler = fn()\n        counts = sampler.run([isa], shots=64).result()[0].data.meas.get_counts()\n        evidence[key] = f\"constructed and ran: {sum(counts.values())} shots over {len(counts)} bitstrings\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:130]}\"\n\nwith Batch(backend=backend) as batch:\n    attempt(\"C\", lambda: SamplerV2(mode=batch))\n    attempt(\"B\", lambda: SamplerV2(batch=batch))\n    attempt(\"A\", lambda: SamplerV2(session=batch))\n    attempt(\"D\", lambda: SamplerV2(mode=\"batch\"))\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2, Batch\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        sampler = fn()\n        counts = sampler.run([isa], shots=64).result()[0].data.meas.get_counts()\n        evidence[key] = f\"constructed and ran: {sum(counts.values())} shots over {len(counts)} bitstrings\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:130]}\"\n\nwith Batch(backend=backend) as batch:\n    attempt(\"C\", lambda: SamplerV2(mode=batch))\n    attempt(\"B\", lambda: SamplerV2(batch=batch))\n    attempt(\"A\", lambda: SamplerV2(session=batch))\n    attempt(\"D\", lambda: SamplerV2(mode=\"batch\"))\n    attempt(\"E\", lambda: SamplerV2(backend=batch))\n    try:\n        bval = batch.backend()\n        bnote = f\"batch.backend() returned {bval!r} of type {type(bval).__name__}\"\n    except Exception as e:\n        bval = None\n        bnote = f\"batch.backend() raised {type(e).__name__}\"\n    attempt(\"F\", lambda: SamplerV2(mode=bval))\n    evidence[\"F\"] = bnote + \"; \" + evidence[\"F\"]\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E (backend= kwarg with a Batch), +F (mode=batch.backend() returns a name string)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +76,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

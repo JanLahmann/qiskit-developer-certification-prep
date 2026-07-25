@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Pass the backend to `run` as a second argument so the primitive transpiles the abstract circuit for you: `estimator.run([(qc, obs)], backend)`."
+    },
+    {
+      "key": "E",
+      "text": "Bind the observable to the backend first: `obs = SparsePauliOp(\"ZZ\", target=backend.target)`, so the Estimator knows which physical qubits it refers to."
+    },
+    {
+      "key": "F",
+      "text": "Switch to `SamplerV2`, which accepts abstract circuits directly, and compute the expectation value yourself from the counts it returns."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "Shot count has nothing to do with the failure; the abstract circuit is still not an ISA circuit, so raising `default_shots` still raises the same error.",
       "C": "Nesting does not transpile anything; the circuit is still non-ISA, so `run([[qc, obs]])` still raises `IBMInputValueError`.",
-      "D": "`run` does not take a positional backend and never transpiles for you; the extra argument raises `TypeError`, and the abstract circuit would still not be an ISA circuit."
+      "D": "`run` does not take a positional backend and never transpiles for you; the extra argument raises `TypeError`, and the abstract circuit would still not be an ISA circuit.",
+      "E": "`SparsePauliOp` has no `target` parameter — it is a pure operator with no notion of a device. Aligning it with the hardware is done afterwards, with `apply_layout(isa.layout)` on the transpiled circuit.",
+      "F": "Both V2 primitives enforce the ISA: handing the same abstract circuit to `SamplerV2` is rejected exactly as the Estimator rejected it. Changing primitive does not remove the transpilation step."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/hello-world",
@@ -48,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nestimator = EstimatorV2(mode=backend)\n\n# buggy: run the abstract circuit + raw observable\ntry:\n    estimator.run([(qc, obs)]).result()\n    buggy = \"ran (unexpected)\"\nexcept Exception as e:\n    buggy = f\"{type(e).__name__}: {str(e)[:120]}\"\n\n# A: transpile + apply_layout\ntry:\n    isa = pm.run(qc); mapped = obs.apply_layout(isa.layout)\n    evs = float(estimator.run([(isa, mapped)]).result()[0].data.evs)\n    A_ok = (evs == evs)  # finite float\n    a_note = f\"transpiled + apply_layout -> evs={round(evs, 4)}\"\nexcept Exception as e:\n    A_ok = False; a_note = f\"{type(e).__name__}: {str(e)[:100]}\"\n\n# B: increasing shots does not address the non-ISA circuit\ntry:\n    estimator.options.default_shots = 8000\n    estimator.run([(qc, obs)]).result()\n    B_ok = True; b_note = \"ran\"\nexcept Exception as e:\n    B_ok = False; b_note = f\"{type(e).__name__}: {str(e)[:90]}\"\n\n# C: nesting the still-untranspiled circuit in an extra list\ntry:\n    estimator.run([[qc, obs]]).result()\n    C_ok = True; c_note = \"ran\"\nexcept Exception as e:\n    C_ok = False; c_note = f\"{type(e).__name__}: {str(e)[:90]}\"\n\n# D: passing backend as an extra positional to run\ntry:\n    isa2 = pm.run(qc); mapped2 = obs.apply_layout(isa2.layout)\n    estimator.run([(isa2, mapped2)], backend).result()\n    D_ok = True; d_note = \"ran\"\nexcept Exception as e:\n    D_ok = False; d_note = f\"{type(e).__name__}: {str(e)[:90]}\"\n\nflags = {\"A\": A_ok, \"B\": B_ok, \"C\": C_ok, \"D\": D_ok}\nevidence = {\n    \"A\": f\"buggy run([(qc, obs)]) -> {buggy}; fix {a_note} -> {A_ok}\",\n    \"B\": f\"raising default_shots then run([(qc, obs)]) -> {b_note} (shots do not fix a non-ISA circuit) -> {B_ok}\",\n    \"C\": f\"run([[qc, obs]]) with the un-transpiled circuit -> {c_note} -> {C_ok}\",\n    \"D\": f\"run([(isa, mapped)], backend) extra positional -> {d_note} -> {D_ok}\",\n}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy\": buggy, \"a_note\": a_note}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nestimator = EstimatorV2(mode=backend)\n\n# buggy: run the abstract circuit + raw observable\ntry:\n    estimator.run([(qc, obs)]).result()\n    buggy = \"ran (unexpected)\"\nexcept Exception as e:\n    buggy = f\"{type(e).__name__}: {str(e)[:120]}\"\n\n# A: transpile + apply_layout\ntry:\n    isa = pm.run(qc); mapped = obs.apply_layout(isa.layout)\n    evs = float(estimator.run([(isa, mapped)]).result()[0].data.evs)\n    A_ok = (evs == evs)  # finite float\n    a_note = f\"transpiled + apply_layout -> evs={round(evs, 4)}\"\nexcept Exception as e:\n    A_ok = False; a_note = f\"{type(e).__name__}: {str(e)[:100]}\"\n\n# B: increasing shots does not address the non-ISA circuit\ntry:\n    estimator.options.default_shots = 8000\n    estimator.run([(qc, obs)]).result()\n    B_ok = True; b_note = \"ran\"\nexcept Exception as e:\n    B_ok = False; b_note = f\"{type(e).__name__}: {str(e)[:90]}\"\n\n# C: nesting the still-untranspiled circuit in an extra list\ntry:\n    estimator.run([[qc, obs]]).result()\n    C_ok = True; c_note = \"ran\"\nexcept Exception as e:\n    C_ok = False; c_note = f\"{type(e).__name__}: {str(e)[:90]}\"\n\n# D: passing backend as an extra positional to run\ntry:\n    isa2 = pm.run(qc); mapped2 = obs.apply_layout(isa2.layout)\n    estimator.run([(isa2, mapped2)], backend).result()\n    D_ok = True; d_note = \"ran\"\nexcept Exception as e:\n    D_ok = False; d_note = f\"{type(e).__name__}: {str(e)[:90]}\"\n\nflags = {\"A\": A_ok, \"B\": B_ok, \"C\": C_ok, \"D\": D_ok}\nevidence = {\n    \"A\": f\"buggy run([(qc, obs)]) -> {buggy}; fix {a_note} -> {A_ok}\",\n    \"B\": f\"raising default_shots then run([(qc, obs)]) -> {b_note} (shots do not fix a non-ISA circuit) -> {B_ok}\",\n    \"C\": f\"run([[qc, obs]]) with the un-transpiled circuit -> {c_note} -> {C_ok}\",\n    \"D\": f\"run([(isa, mapped)], backend) extra positional -> {d_note} -> {D_ok}\",\n}\n# E: an invented target= keyword on SparsePauliOp\ntry:\n    SparsePauliOp(\"ZZ\", target=backend.target)\n    E_ok = True; e_note = \"constructed\"\nexcept Exception as e:\n    E_ok = False; e_note = f\"{type(e).__name__}: {str(e)[:90]}\"\n\n# F: does SamplerV2 accept the abstract circuit the Estimator rejected?\ntry:\n    from qiskit_ibm_runtime import SamplerV2\n    qcm = qc.copy(); qcm.measure_all()\n    SamplerV2(mode=backend).run([qcm], shots=64).result()\n    F_ok = True; f_note = \"ran\"\nexcept Exception as e:\n    F_ok = False; f_note = f\"{type(e).__name__}: {str(e)[:90]}\"\n\nflags[\"E\"] = E_ok\nflags[\"F\"] = F_ok\nevidence[\"E\"] = f\"SparsePauliOp('ZZ', target=backend.target) -> {e_note} (there is no such parameter) -> {E_ok}\"\nevidence[\"F\"] = f\"the same abstract circuit handed to SamplerV2 -> {f_note} (the Sampler enforces the ISA too) -> {F_ok}\"\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy\": buggy, \"a_note\": a_note, \"e_note\": e_note, \"f_note\": f_note}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened+stem-echoed the positional-backend distractor (length-tell fix)."
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened+stem-echoed the positional-backend distractor (length-tell fix). | pool wave: +E (SparsePauliOp(target=...)), +F (the Sampler accepts abstract circuits)"
   },
   "freshness": {
     "verified_against": {
@@ -66,5 +76,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

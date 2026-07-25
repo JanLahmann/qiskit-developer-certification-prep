@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "The queuing time does not decrease for the first job in a batch, so a single circuit gains nothing from one."
+    },
+    {
+      "key": "E",
+      "text": "The queuing time actually doubles, because the batch itself has to be scheduled before any of its jobs can enter the queue."
+    },
+    {
+      "key": "F",
+      "text": "It does help, but only marginally — the batch's parallel classical processing usually shaves the transpilation off the critical path."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Nothing validates a batch on a simulator first; the execution target is set by the mode/backend, and the job queues on the QPU exactly as it would in job mode.",
       "B": "Batch benefits come from parallel scheduling across jobs, not from circuit size; there is no gate-count threshold.",
-      "C": "A batch does not require or enforce a minimum of two jobs, and it never cancels a lone job."
+      "C": "A batch does not require or enforce a minimum of two jobs, and it never cancels a lone job.",
+      "E": "A batch is not a queued entity in its own right; opening one costs nothing and adds no waiting. The point is simply that the first job still waits exactly as long as it would have on its own.",
+      "F": "Transpilation happens on your machine before submission, so a batch never parallelizes it. What batch parallelizes is the service-side classical processing between jobs — of which a single job has none."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
@@ -54,6 +64,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+hedged distractors (length/stem-echo/absolute-tell fix). Also: stem-echo calibration (correct option now carries the stem vocabulary). Also: levelled stem vocabulary across the options (stem-echo fix)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+hedged distractors (length/stem-echo/absolute-tell fix). Also: stem-echo calibration (correct option now carries the stem vocabulary). Also: levelled stem vocabulary across the options (stem-echo fix). | pool wave: +E (a batch is itself queued), +F (batch parallelizes your transpilation)"
+  },
+  "display_count": 5
 }

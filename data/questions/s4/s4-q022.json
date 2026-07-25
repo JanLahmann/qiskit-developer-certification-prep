@@ -28,6 +28,10 @@
     {
       "key": "E",
       "text": "The backend is removed from the service and must be re-fetched."
+    },
+    {
+      "key": "F",
+      "text": "Results must be retrieved before the `with` block exits; closing the session discards any results you have not fetched."
     }
   ],
   "answer": [
@@ -39,7 +43,8 @@
     "distractors": {
       "A": "Closing does not reset the TTL or reopen the session; a closed session cannot accept new jobs.",
       "C": "Immediate cancellation of queued jobs is what CANCELLING a session (or hitting the maximum TTL) does — not closing it.",
-      "E": "Closing a session has no effect on the backend object or the service."
+      "E": "Closing a session has no effect on the backend object or the service.",
+      "F": "Results live with the job on the server, not with the session. Once a job has been submitted you can fetch its result long after the session is closed — that is why exiting the context manager is safe."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
@@ -58,6 +63,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — true absolute added to a correct option (absolute-tell fix)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — true absolute added to a correct option (absolute-tell fix). | pool wave: +F (results must be fetched inside the with block)"
+  },
+  "display_count": 4
 }

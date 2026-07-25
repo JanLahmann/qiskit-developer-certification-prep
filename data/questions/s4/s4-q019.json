@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`service.backend(least_busy=True)`"
+    },
+    {
+      "key": "E",
+      "text": "`service.backends(operational=True)[0]`"
+    },
+    {
+      "key": "F",
+      "text": "`min(service.backends(), key=lambda b: b.num_qubits)`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "`simulator=True` selects the least busy *simulator*; it is `simulator=False` that restricts the search to real QPUs.",
       "C": "`service.backend()` retrieves a specific backend by name and does not consider queue length; called with no name it does not select the least busy device.",
-      "D": "`backend()` has no `least_busy` keyword — it looks a backend up by name. Least-busy selection is its own method, `service.least_busy(...)`."
+      "D": "`backend()` has no `least_busy` keyword — it looks a backend up by name. Least-busy selection is its own method, `service.least_busy(...)`.",
+      "E": "`backends()` returns the accessible backends in the service's own order, not sorted by queue depth, so the first entry has nothing to do with how busy a device is. It also still includes simulators.",
+      "F": "Device size is not queue length: the smallest QPU is frequently the most oversubscribed one. `least_busy` ranks by the number of pending jobs reported in each backend's status."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/hello-world",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened simulator distractor to level the option lengths. Also: reworded the invented-API distractor (hedge-heuristic calibration)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened simulator distractor to level the option lengths. Also: reworded the invented-API distractor (hedge-heuristic calibration). | pool wave: +E (first entry of backends() is the least busy), +F (smallest device = shortest queue)"
+  },
+  "display_count": 5
 }

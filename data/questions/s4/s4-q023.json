@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "The Sampler cannot return counts for an entangled state; results with correlated qubits must come from the Estimator instead."
+    },
+    {
+      "key": "E",
+      "text": "`SamplerV2` writes its outcomes into a register named `c` by default, so the accessor should be `job.result()[0].data.c.get_counts()`."
+    },
+    {
+      "key": "F",
+      "text": "The circuit must be measured after transpiling — `pm.run(qc)` strips measurement instructions, so `isa.measure_all()` is the fix."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "`get_counts()` is available on the `BitArray` returned for a measured register; the fixed circuit's result uses it successfully.",
       "C": "Shot count is irrelevant here; the same `shots=1024` works as soon as a measurement is present. The problem is that nothing is measured.",
-      "D": "The Sampler runs entangling circuits fine and returns their counts; it just needs measurements. The Estimator computes expectation values, a different task."
+      "D": "The Sampler runs entangling circuits fine and returns their counts; it just needs measurements. The Estimator computes expectation values, a different task.",
+      "E": "The `DataBin` field names come from the circuit's own classical registers, and this circuit has none — neither `meas` nor `c` exists in the result. Renaming the accessor cannot conjure data that was never measured.",
+      "F": "Transpilation preserves measurements: run a measured circuit through the pass manager and the `measure` instructions are still there. The circuit here simply never had any, and adding them before transpiling is the documented order."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/hello-world",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport warnings\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)     # no measurement\nisa = pm.run(qc)\nwith warnings.catch_warnings():\n    warnings.simplefilter(\"ignore\")\n    res = SamplerV2(mode=backend).run([isa], shots=1024).result()[0]\nfields = list(res.data.keys())\ntry:\n    res.data.meas.get_counts(); meas_access = \"meas accessible\"; meas_missing = False\nexcept Exception as e:\n    meas_access = type(e).__name__; meas_missing = True\n\nqcf = QuantumCircuit(2); qcf.h(0); qcf.cx(0, 1); qcf.measure_all()\nisaf = pm.run(qcf)\ncf = SamplerV2(mode=backend).run([isaf], shots=1024).result()[0].data.meas.get_counts()\nfix_works = sum(cf.values()) == 1024 and len(fields) == 0 and meas_missing\n\nflags = {\"A\": fix_works, \"B\": not fix_works, \"C\": not fix_works, \"D\": not fix_works}\nevidence = {\n    \"A\": f\"no-measure result data fields={fields}, meas access -> {meas_access}; after measure_all Sampler returns {sum(cf.values())} shots -> bug is the missing measurement ({flags['A']})\",\n    \"B\": f\"get_counts() works on the fixed circuit's result -> it was not removed in V2 ({flags['B']})\",\n    \"C\": f\"the same shots=1024 succeed once a measurement is added -> shots were not the problem ({flags['C']})\",\n    \"D\": f\"SamplerV2 returns counts for this circuit once it is measured -> the Estimator is not required ({flags['D']})\",\n}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"fields\": fields, \"fixed_shots\": sum(cf.values())}})\n"
+    "proof_script": "\nimport warnings\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)     # no measurement\nisa = pm.run(qc)\nwith warnings.catch_warnings():\n    warnings.simplefilter(\"ignore\")\n    res = SamplerV2(mode=backend).run([isa], shots=1024).result()[0]\nfields = list(res.data.keys())\ntry:\n    res.data.meas.get_counts(); meas_access = \"meas accessible\"; meas_missing = False\nexcept Exception as e:\n    meas_access = type(e).__name__; meas_missing = True\ntry:\n    res.data.c.get_counts(); c_access = \"c accessible\"\nexcept Exception as e:\n    c_access = f\"{type(e).__name__}: {str(e)[:80]}\"\n\nqcf = QuantumCircuit(2); qcf.h(0); qcf.cx(0, 1); qcf.measure_all()\nisaf = pm.run(qcf)\nn_meas = sum(1 for inst in isaf.data if inst.operation.name == \"measure\")\ncf = SamplerV2(mode=backend).run([isaf], shots=1024).result()[0].data.meas.get_counts()\nfix_works = sum(cf.values()) == 1024 and len(fields) == 0 and meas_missing\n\nflags = {\"A\": fix_works, \"B\": not fix_works, \"C\": not fix_works, \"D\": not fix_works,\n         \"E\": \"c\" in fields, \"F\": n_meas == 0}\nevidence = {\n    \"A\": f\"no-measure result data fields={fields}, meas access -> {meas_access}; after measure_all Sampler returns {sum(cf.values())} shots -> bug is the missing measurement ({flags['A']})\",\n    \"B\": f\"get_counts() works on the fixed circuit's result -> it was not removed in V2 ({flags['B']})\",\n    \"C\": f\"the same shots=1024 succeed once a measurement is added -> shots were not the problem ({flags['C']})\",\n    \"D\": f\"SamplerV2 returns counts for this circuit once it is measured -> the Estimator is not required ({flags['D']})\",\n    \"E\": f\"result data fields={fields} and data.c -> {c_access}: there is no register of any name to read ({flags['E']})\",\n    \"F\": f\"transpiling the measured circuit kept {n_meas} measure instruction(s), so pm.run does not strip measurements ({flags['F']})\",\n}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"fields\": fields, \"fixed_shots\": sum(cf.values()), \"measures_after_transpile\": n_meas}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened Estimator distractor (length-tell fix); proof shots aligned to the stem. Also: hedge moved into the correct option (hedge-heuristic calibration)."
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened Estimator distractor (length-tell fix); proof shots aligned to the stem. Also: hedge moved into the correct option (hedge-heuristic calibration). | pool wave: +E (results live in a register named c), +F (transpiling strips measurements)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`local` — the local testing channel"
+    },
+    {
+      "key": "E",
+      "text": "There is no default: `QiskitRuntimeService()` raises unless a saved account or a `channel=` argument supplies one."
+    },
+    {
+      "key": "F",
+      "text": "`ibm_quantum_platform` is what `save_account` writes, while a bare `QiskitRuntimeService()` falls back to the `local` channel."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "`ibm_cloud` is a separate channel value, not the default.",
       "C": "`ibm_quantum` was the legacy channel used by the older platform; it is not the current default and this is a common out-of-date assumption.",
-      "D": "`local` is a real channel for local testing (`QiskitRuntimeService(channel=\"local\")`), but it is not the default; the default is `ibm_quantum_platform`. You get the local channel only by requesting it explicitly, so `local` is never the default."
+      "D": "`local` is a real channel for local testing (`QiskitRuntimeService(channel=\"local\")`), but it is not the default; the default is `ibm_quantum_platform`. You get the local channel only by requesting it explicitly, so `local` is never the default.",
+      "E": "There is a documented default. A bare `QiskitRuntimeService()` is the ordinary way to construct the service precisely because `channel` falls back to `ibm_quantum_platform`.",
+      "F": "`local` is never a fallback — it is an explicit opt-in for local testing mode. The same default applies whether you are saving an account or constructing the service."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/initialize-account",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — gave every channel option a descriptor so the correct one is no longer the longest."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — gave every channel option a descriptor so the correct one is no longer the longest. | pool wave: +E (channel has no default), +F (bare constructor falls back to the local channel)"
+  },
+  "display_count": 4
 }

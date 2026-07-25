@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`run()` usually takes the backend as its second argument now that the constructor no longer accepts one: `sampler.run([isa], backend)`."
+    },
+    {
+      "key": "E",
+      "text": "`SamplerV2` no longer takes constructor arguments; the target is usually supplied per call as `sampler.run([isa], mode=backend)`."
+    },
+    {
+      "key": "F",
+      "text": "The keyword is right but the value is wrong: `backend=` typically wants the backend *name*, so `SamplerV2(backend=\"fake_manila\")` fixes it."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "`SamplerV2` from `qiskit_ibm_runtime` is the correct Runtime primitive and works fine once `mode=` is used — the import is not the problem.",
       "C": "The circuit is passed to `run()` as a PUB, not to the constructor; `sampler.run([isa])` is correct.",
-      "D": "`run()` takes only the iterable of PUBs (plus keyword options such as `shots`); there is no positional backend on `run()` either, so adding one raises `TypeError`."
+      "D": "`run()` takes only the iterable of PUBs (plus keyword options such as `shots`); there is no positional backend on `run()` either, so adding one raises `TypeError`.",
+      "E": "The constructor kept its parameters (`mode`, `options`) and `run` gained none: it accepts the PUBs and `shots` only, so `run([isa], mode=backend)` raises `TypeError` for an unexpected keyword.",
+      "F": "The keyword itself is what was removed, so no value rescues it: passing a name string raises the same `TypeError`. Names are resolved by `service.backend(\"...\")`, and the resulting object goes to `mode=`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/hello-world",
@@ -48,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\ntry:\n    SamplerV2(backend=backend)\n    backend_kw = \"constructed (no error)\"; backend_fails = False\nexcept Exception as e:\n    backend_kw = f\"{type(e).__name__}: {str(e)[:120]}\"\n    backend_fails = isinstance(e, TypeError) and \"backend\" in str(e)\ntry:\n    c = SamplerV2(mode=backend).run([isa], shots=64).result()[0].data.meas.get_counts()\n    mode_works = True; mode_note = f\"mode=backend ran ({sum(c.values())} shots)\"\nexcept Exception as e:\n    mode_works = False; mode_note = f\"{type(e).__name__}: {str(e)[:120]}\"\ntry:\n    SamplerV2(mode=backend).run([isa], backend); d_ok = True; d_note = \"ran\"\nexcept Exception as e:\n    d_ok = False; d_note = f\"{type(e).__name__}: {str(e)[:120]}\"\n\nflags = {\"A\": backend_fails and mode_works, \"B\": not mode_works, \"C\": not mode_works, \"D\": d_ok}\nevidence = {\n    \"A\": f\"SamplerV2(backend=backend) -> {backend_kw}; SamplerV2(mode=backend) -> {mode_note}; bug is backend= and fix is mode= -> {flags['A']}\",\n    \"B\": f\"SamplerV2 imported from qiskit_ibm_runtime constructed and ran via mode= -> that import is valid, so B is false ({flags['B']})\",\n    \"C\": f\"passing the circuit to run([isa]) works -> the circuit belongs in run(), not the constructor, so C is false ({flags['C']})\",\n    \"D\": f\"SamplerV2(mode=backend).run([isa], backend) -> {d_note} -> D's proposed fix is {'valid' if d_ok else 'invalid'} ({flags['D']})\",\n}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"backend_kw\": backend_kw, \"mode_note\": mode_note, \"d_note\": d_note}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\ntry:\n    SamplerV2(backend=backend)\n    backend_kw = \"constructed (no error)\"; backend_fails = False\nexcept Exception as e:\n    backend_kw = f\"{type(e).__name__}: {str(e)[:120]}\"\n    backend_fails = isinstance(e, TypeError) and \"backend\" in str(e)\ntry:\n    c = SamplerV2(mode=backend).run([isa], shots=64).result()[0].data.meas.get_counts()\n    mode_works = True; mode_note = f\"mode=backend ran ({sum(c.values())} shots)\"\nexcept Exception as e:\n    mode_works = False; mode_note = f\"{type(e).__name__}: {str(e)[:120]}\"\ntry:\n    SamplerV2(mode=backend).run([isa], backend); d_ok = True; d_note = \"ran\"\nexcept Exception as e:\n    d_ok = False; d_note = f\"{type(e).__name__}: {str(e)[:120]}\"\ntry:\n    SamplerV2(mode=backend).run([isa], mode=backend); e_ok = True; e_note = \"ran\"\nexcept Exception as e:\n    e_ok = False; e_note = f\"{type(e).__name__}: {str(e)[:120]}\"\ntry:\n    SamplerV2(backend=\"fake_manila\"); f_ok = True; f_note = \"constructed (no error)\"\nexcept Exception as e:\n    f_ok = False; f_note = f\"{type(e).__name__}: {str(e)[:120]}\"\n\nflags = {\"A\": backend_fails and mode_works, \"B\": not mode_works, \"C\": not mode_works,\n         \"D\": d_ok, \"E\": e_ok, \"F\": f_ok}\nevidence = {\n    \"A\": f\"SamplerV2(backend=backend) -> {backend_kw}; SamplerV2(mode=backend) -> {mode_note}; bug is backend= and fix is mode= -> {flags['A']}\",\n    \"B\": f\"SamplerV2 imported from qiskit_ibm_runtime constructed and ran via mode= -> that import is valid, so B is false ({flags['B']})\",\n    \"C\": f\"passing the circuit to run([isa]) works -> the circuit belongs in run(), not the constructor, so C is false ({flags['C']})\",\n    \"D\": f\"SamplerV2(mode=backend).run([isa], backend) -> {d_note} -> D's proposed fix is {'valid' if d_ok else 'invalid'} ({flags['D']})\",\n    \"E\": f\"SamplerV2(mode=backend).run([isa], mode=backend) -> {e_note} -> run() takes no such keyword, so E is false ({flags['E']})\",\n    \"F\": f\"SamplerV2(backend=<name string>) -> {f_note} -> the keyword itself is gone, so no value rescues it ({flags['F']})\",\n}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"backend_kw\": backend_kw, \"mode_note\": mode_note, \"d_note\": d_note,\n                           \"e_note\": e_note, \"f_note\": f_note}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened+hedged run() distractor (length/absolute-tell fix)."
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened+hedged run() distractor (length/absolute-tell fix). | pool wave: +E (mode moved to run()), +F (backend= wants the name string)"
   },
   "freshness": {
     "verified_against": {
@@ -66,5 +76,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

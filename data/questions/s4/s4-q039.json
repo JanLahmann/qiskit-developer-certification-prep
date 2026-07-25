@@ -62,6 +62,8 @@
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 1,
-    "reviewed": false
-  }
+    "reviewed": false,
+    "notes": "pool wave: display_count=5 rotation only — 6 options already (schema cap), so no new distractor can be added"
+  },
+  "display_count": 5
 }

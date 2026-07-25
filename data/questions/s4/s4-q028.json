@@ -25,6 +25,14 @@
     {
       "key": "D",
       "text": "with Session(backend) as session:\n    job = SamplerV2(session).run(isa)             # unwrapped\ncounts = job.result()[0].data.meas.get_counts()"
+    },
+    {
+      "key": "E",
+      "text": "with Session(backend=backend) as session:\n    job = SamplerV2(mode=session).run([isa])\ncounts = job.result()[0].data.get_counts()"
+    },
+    {
+      "key": "F",
+      "text": "with Session(backend=backend) as session:\n    job = session.run(SamplerV2(), [isa])\ncounts = job.result()[0].data.meas.get_counts()"
     }
   ],
   "answer": [
@@ -35,7 +43,9 @@
     "distractors": {
       "A": "`run(isa)` passes an unwrapped circuit; `run` needs an iterable of PUBs, so this raises `ValueError` about an invalid Sampler pub-like.",
       "C": "`Session` has no `mode=` parameter — the QPU is passed as `backend=`. `Session(mode=backend)` raises `TypeError`.",
-      "D": "`Session(backend)` and `SamplerV2(session)` are fine positionally, but `run(isa)` is again unwrapped and raises `ValueError`."
+      "D": "`Session(backend)` and `SamplerV2(session)` are fine positionally, but `run(isa)` is again unwrapped and raises `ValueError`.",
+      "E": "The session and the PUB are right, but the last line is not: a `DataBin` has no `get_counts()`. Counts come from the field named after the circuit's classical register, here `data.meas.get_counts()`.",
+      "F": "A `Session` is not a submitter: it has `close`, `cancel`, `status` and `details`, but no public `run`. Work is always submitted through a primitive that was bound to the session with `mode=`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
@@ -48,13 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2, Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        counts = fn()\n        evidence[key] = f\"ran successfully: {sum(counts.values())} shots over {len(counts)} bitstrings\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\ndef opt_A():\n    with Session(backend=backend) as session:\n        job = SamplerV2(mode=session).run([isa])\n    return job.result()[0].data.meas.get_counts()\n\ndef opt_B():\n    with Session(backend=backend) as session:\n        job = SamplerV2(mode=session).run(isa)          # not wrapped in a list\n    return job.result()[0].data.meas.get_counts()\n\ndef opt_C():\n    session = Session(mode=backend)                     # Session takes backend=, not mode=\n    job = SamplerV2(mode=session).run([isa])\n    return job.result()[0].data.meas.get_counts()\n\ndef opt_D():\n    with Session(backend) as session:\n        job = SamplerV2(session).run(isa)               # unwrapped circuit\n    return job.result()[0].data.meas.get_counts()\n\nattempt(\"B\", opt_A)\nattempt(\"A\", opt_B)\nattempt(\"C\", opt_C)\nattempt(\"D\", opt_D)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2, Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        counts = fn()\n        evidence[key] = f\"ran successfully: {sum(counts.values())} shots over {len(counts)} bitstrings\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\ndef opt_A():\n    with Session(backend=backend) as session:\n        job = SamplerV2(mode=session).run([isa])\n    return job.result()[0].data.meas.get_counts()\n\ndef opt_B():\n    with Session(backend=backend) as session:\n        job = SamplerV2(mode=session).run(isa)          # not wrapped in a list\n    return job.result()[0].data.meas.get_counts()\n\ndef opt_C():\n    session = Session(mode=backend)                     # Session takes backend=, not mode=\n    job = SamplerV2(mode=session).run([isa])\n    return job.result()[0].data.meas.get_counts()\n\ndef opt_D():\n    with Session(backend) as session:\n        job = SamplerV2(session).run(isa)               # unwrapped circuit\n    return job.result()[0].data.meas.get_counts()\n\ndef opt_E():\n    with Session(backend=backend) as session:\n        job = SamplerV2(mode=session).run([isa])\n    return job.result()[0].data.get_counts()            # counts straight off the DataBin\n\ndef opt_F():\n    with Session(backend=backend) as session:\n        job = session.run(SamplerV2(), [isa])           # submit through the session\n    return job.result()[0].data.meas.get_counts()\n\nattempt(\"B\", opt_A)\nattempt(\"A\", opt_B)\nattempt(\"C\", opt_C)\nattempt(\"D\", opt_D)\nattempt(\"E\", opt_E)\nattempt(\"F\", opt_F)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 1,
-    "reviewed": false
+    "reviewed": false,
+    "notes": "pool wave: +E (DataBin.get_counts), +F (submit through session.run)"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +76,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

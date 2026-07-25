@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "The Open Plan supports sessions but not batch mode."
+    },
+    {
+      "key": "E",
+      "text": "Open Plan users can open a session, but only in local testing mode against a fake backend."
+    },
+    {
+      "key": "F",
+      "text": "Session and batch both need a paid plan; the Open Plan generally supports job mode only."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "The Open Plan does NOT accept session jobs; only job mode and batch mode are available to it.",
       "C": "Sessions are not merely limited on the Open Plan — they cannot be submitted at all.",
-      "D": "It is the reverse: batch mode IS available on the Open Plan (with a 10-minute max TTL); sessions are not."
+      "D": "It is the reverse: batch mode IS available on the Open Plan (with a 10-minute max TTL); sessions are not.",
+      "E": "Local testing mode is unrelated to the plan: anyone can open a `Session` on a fake backend because nothing is submitted to IBM at all. What the Open Plan blocks is submitting session jobs to real QPUs.",
+      "F": "This over-corrects: batch mode IS available on the Open Plan. Only session jobs are restricted, which is why the documented advice for Open Plan users is job mode or batch mode."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
@@ -54,6 +64,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — stem-echoed the Open-Plan distractor. Also: hedge moved into the correct option (hedge-heuristic calibration)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — stem-echoed the Open-Plan distractor. Also: hedge moved into the correct option (hedge-heuristic calibration). | pool wave: +E (sessions allowed only in local testing mode), +F (batch also blocked on the Open Plan)"
+  },
+  "display_count": 5
 }

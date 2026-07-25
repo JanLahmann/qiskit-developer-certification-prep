@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Jobs that are already running finish, but jobs still queued are failed/cancelled."
+    },
+    {
+      "key": "E",
+      "text": "Queued jobs are re-queued into a fresh session that inherits the same TTL."
+    },
+    {
+      "key": "F",
+      "text": "Running jobs are usually cancelled while queued jobs wait for the next session."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "There is no automatic extension; you set the limit with `max_time`, and reaching it ends the workload.",
       "B": "Running jobs are not killed mid-execution; only the still-queued jobs are failed.",
-      "C": "The max TTL timer does not pause or stop once started; it runs to the configured limit."
+      "C": "The max TTL timer does not pause or stop once started; it runs to the configured limit.",
+      "E": "Reaching the maximum TTL closes the session for good; nothing is carried over into a successor. Anything still queued is failed, and rerunning it means opening a new session and queuing again from scratch.",
+      "F": "This inverts the rule. The jobs that are protected are the ones already running — they are allowed to finish — while the queued ones are the casualties."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
@@ -54,6 +64,7 @@
     "model": "claude-opus (generation agent, section s4)",
     "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the auto-extension distractor (absolute-tell fix)."
-  }
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the auto-extension distractor (absolute-tell fix). | pool wave: +E (queued jobs roll into a fresh session), +F (running jobs die, queued jobs survive)"
+  },
+  "display_count": 5
 }

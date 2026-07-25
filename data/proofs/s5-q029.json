@@ -8,7 +8,9 @@
       "A": "option claims len=777; len(get_bitstrings())=777 (num_shots=777) -> match=True",
       "B": "option claims len=2; len(get_bitstrings())=777 (num_shots=777) -> match=False",
       "C": "option claims len=4; len(get_bitstrings())=777 (num_shots=777) -> match=False",
-      "D": "option claims len=1; len(get_bitstrings())=777 (num_shots=777) -> match=False"
+      "D": "option claims len=1; len(get_bitstrings())=777 (num_shots=777) -> match=False",
+      "E": "option E claims len=1554 (777 shots x 2 measured qubits); len(get_bitstrings())=777 with num_bits=2 -> match=False",
+      "F": "option F claims the no-argument call raises: it returned 777 bitstrings, raised=False"
     },
     "observed": {
       "len_bitstrings": 777,
@@ -21,9 +23,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.19,
+  "wall_seconds": 1.28,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"option claims len=777; len(get_bitstrings())=777 (num_shots=777) -> match=True\", \"B\": \"option claims len=2; len(get_bitstrings())=777 (num_shots=777) -> match=False\", \"C\": \"option claims len=4; len(get_bitstrings())=777 (num_shots=777) -> match=False\", \"D\": \"option claims len=1; len(get_bitstrings())=777 (num_shots=777) -> match=False\"}, \"observed\": {\"len_bitstrings\": 777, \"num_shots\": 777}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"option claims len=777; len(get_bitstrings())=777 (num_shots=777) -> match=True\", \"B\": \"option claims len=2; len(get_bitstrings())=777 (num_shots=777) -> match=False\", \"C\": \"option claims len=4; len(get_bitstrings())=777 (num_shots=777) -> match=False\", \"D\": \"option claims len=1; len(get_bitstrings())=777 (num_shots=777) -> match=False\", \"E\": \"option E claims len=1554 (777 shots x 2 measured qubits); len(get_bitstrings())=777 with num_bits=2 -> match=False\", \"F\": \"option F claims the no-argument call raises: it returned 777 bitstrings, raised=False\"}, \"observed\": {\"len_bitstrings\": 777, \"num_shots\": 777}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

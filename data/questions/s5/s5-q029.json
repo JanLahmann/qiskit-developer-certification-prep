@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`1` — the shots come back concatenated into a single string"
+    },
+    {
+      "key": "E",
+      "text": "`1554` — one entry per shot for each of the two measured qubits"
+    },
+    {
+      "key": "F",
+      "text": "It raises — `get_bitstrings()` needs the index of the shot you want"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "The length is per-shot, not per-qubit. Each entry is a full 2-character bitstring; there are as many entries as shots.",
       "C": "4 is the number of *possible* outcomes; `get_bitstrings()` lists actual shots (with repeats), so its length is the shot count.",
-      "D": "It returns a list of separate bitstrings (one per shot), not one giant concatenated string."
+      "D": "It returns a list of separate bitstrings (one per shot), not one giant concatenated string.",
+      "E": "`get_bitstrings()` returns one string per shot, and each string already holds every measured bit; the qubit count is the string width, not a multiplier.",
+      "F": "The call takes no shot index (the optional argument selects a broadcast location); with no argument it returns the whole per-shot list."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
@@ -47,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nba = SamplerV2(mode=backend).run([isa], shots=777).result()[0].data.meas\nobserved = len(ba.get_bitstrings())\n\ncandidates = {\"A\": 777, \"B\": 2, \"C\": 4, \"D\": 1}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims len={v}; len(get_bitstrings())={observed} (num_shots={ba.num_shots}) -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"len_bitstrings\": observed, \"num_shots\": ba.num_shots}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nba = SamplerV2(mode=backend).run([isa], shots=777).result()[0].data.meas\nobserved = len(ba.get_bitstrings())\n\ncandidates = {\"A\": 777, \"B\": 2, \"C\": 4, \"D\": 1}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims len={v}; len(get_bitstrings())={observed} (num_shots={ba.num_shots}) -> match={match}\"\n    if match:\n        proven.append(k)\n\nevidence[\"E\"] = (f\"option E claims len=1554 (777 shots x 2 measured qubits); len(get_bitstrings())={observed} \"\n                 f\"with num_bits={ba.num_bits} -> match={observed == 1554}\")\nif observed == 1554:\n    proven.append(\"E\")\nF_raises = False\ntry:\n    _ = ba.get_bitstrings()\nexcept Exception:\n    F_raises = True\nevidence[\"F\"] = (f\"option F claims the no-argument call raises: it returned {observed} bitstrings, raised={F_raises}\")\nif F_raises:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"len_bitstrings\": observed, \"num_shots\": ba.num_shots}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -64,6 +74,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages)"
-  }
+    "notes": "s5 adversarial review: length rebalanced; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | pool wave: +E per-qubit multiplier, +F shot index required"
+  },
+  "display_count": 4
 }

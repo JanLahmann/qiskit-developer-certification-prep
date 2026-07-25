@@ -29,6 +29,10 @@
     {
       "key": "E",
       "text": "Dynamical decoupling is error *suppression*, enabled via `options.dynamical_decoupling.enable`"
+    },
+    {
+      "key": "F",
+      "text": "`options.twirling.num_randomizations` sets the default number of shots each twirled circuit gets"
     }
   ],
   "answer": [
@@ -40,7 +44,8 @@
     "distractors": {
       "A": "`resilience_level` is an EstimatorV2 option for expectation-value mitigation; SamplerOptions has no such attribute, so the assignment raises and no built-in strategy is selected.",
       "B": "Twirling inserts randomized Pauli/measurement operations to tailor noise into a stochastic form; it changes neither how many qubits are measured nor the register width.",
-      "D": "The opposite is true: the sampler returns un-mitigated per-shot data precisely so that you can apply your own mitigation afterward."
+      "D": "The opposite is true: the sampler returns un-mitigated per-shot data precisely so that you can apply your own mitigation afterward.",
+      "F": "Swapped semantics: `num_randomizations` is how many random twirls are drawn; the shots each one gets is `shots_per_randomization`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
@@ -60,6 +65,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: length, hedge and absolute-wording tells fixed; resilience ruling: option C stays a distractor and names the Estimator-only option; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B/C/D/E -> answer now C+E (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set"
-  }
+    "notes": "s5 adversarial review: length, hedge and absolute-wording tells fixed; resilience ruling: option C stays a distractor and names the Estimator-only option; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B/C/D/E -> answer now C+E (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +F num_randomizations vs shots_per_randomization"
+  },
+  "display_count": 5
 }

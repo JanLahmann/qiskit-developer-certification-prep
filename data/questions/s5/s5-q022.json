@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`sampler.run((isa, vals))`"
+    },
+    {
+      "key": "E",
+      "text": "`sampler.run([(isa, vals)], shots=[256])`"
+    },
+    {
+      "key": "F",
+      "text": "`sampler.run([isa], vals, shots=256)`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "A 4-element tuple with an observable is the *Estimator* PUB `(circuit, observable, params, precision)`. The Sampler takes no observable; a PUB of length 4 is rejected.",
       "B": "This swaps the order: slot 2 is parameter_values and slot 3 is shots, so `(isa, 256, vals)` tries to use the array as the shot count and raises a TypeError ('shots must be an integer').",
-      "D": "run() expects a list of PUBs. Passing a bare tuple makes run() iterate it as if `isa` and `vals` were two separate PUBs, which fails. The PUB must be wrapped: `run([(isa, vals)])`."
+      "D": "run() expects a list of PUBs. Passing a bare tuple makes run() iterate it as if `isa` and `vals` were two separate PUBs, which fails. The PUB must be wrapped: `run([(isa, vals)])`.",
+      "E": "A per-PUB shot list is not accepted: `shots` must be a single integer (`TypeError: shots must be an integer`). Per-PUB counts belong in the PUB's third slot.",
+      "F": "`run` takes exactly one positional argument, the list of PUBs; parameter values are part of the PUB, so passing them positionally raises a TypeError."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
@@ -47,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nt = Parameter(\"t\"); qc = QuantumCircuit(1); qc.ry(t, 0); qc.measure_all()\nisa = pm.run(qc)\nvals = np.array([[0.0], [np.pi / 2], [np.pi]])\nobs = SparsePauliOp(\"Z\" * isa.num_qubits)   # width-matched observable for the estimator-style tuple\n\nevidence, proven = {}, []\n\n# C: (circuit, parameter_values, shots)\ntry:\n    r = SamplerV2(mode=backend).run([(isa, vals, 256)]).result()[0]\n    evidence[\"C\"] = f\"(isa, vals, 256): SUCCESS, shape={tuple(r.data.meas.shape)}, num_shots={r.data.meas.num_shots}\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\n# B: (circuit, shots, parameter_values) -- swapped order\ntry:\n    SamplerV2(mode=backend).run([(isa, 256, vals)]).result()\n    evidence[\"B\"] = \"(isa, 256, vals): unexpectedly succeeded\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"(isa, 256, vals): raised {type(e).__name__}: {str(e)[:80]}\"\n\n# A: estimator-style 4-tuple (circuit, observable, params, precision)\ntry:\n    SamplerV2(mode=backend).run([(isa, obs, vals, 0.02)]).result()\n    evidence[\"A\"] = \"(isa, obs, vals, 0.02): unexpectedly succeeded\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"(isa, obs, vals, 0.02): raised {type(e).__name__}: {str(e)[:80]}\"\n\n# D: PUB not wrapped in a list\ntry:\n    SamplerV2(mode=backend).run((isa, vals)).result()\n    evidence[\"D\"] = \"run((isa, vals)) not in a list: unexpectedly succeeded\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"run((isa, vals)): raised {type(e).__name__}: {str(e)[:80]}\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nt = Parameter(\"t\"); qc = QuantumCircuit(1); qc.ry(t, 0); qc.measure_all()\nisa = pm.run(qc)\nvals = np.array([[0.0], [np.pi / 2], [np.pi]])\nobs = SparsePauliOp(\"Z\" * isa.num_qubits)   # width-matched observable for the estimator-style tuple\n\nevidence, proven = {}, []\n\n# C: (circuit, parameter_values, shots)\ntry:\n    r = SamplerV2(mode=backend).run([(isa, vals, 256)]).result()[0]\n    evidence[\"C\"] = f\"(isa, vals, 256): SUCCESS, shape={tuple(r.data.meas.shape)}, num_shots={r.data.meas.num_shots}\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\n# B: (circuit, shots, parameter_values) -- swapped order\ntry:\n    SamplerV2(mode=backend).run([(isa, 256, vals)]).result()\n    evidence[\"B\"] = \"(isa, 256, vals): unexpectedly succeeded\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"(isa, 256, vals): raised {type(e).__name__}: {str(e)[:80]}\"\n\n# A: estimator-style 4-tuple (circuit, observable, params, precision)\ntry:\n    SamplerV2(mode=backend).run([(isa, obs, vals, 0.02)]).result()\n    evidence[\"A\"] = \"(isa, obs, vals, 0.02): unexpectedly succeeded\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"(isa, obs, vals, 0.02): raised {type(e).__name__}: {str(e)[:80]}\"\n\n# D: PUB not wrapped in a list\ntry:\n    SamplerV2(mode=backend).run((isa, vals)).result()\n    evidence[\"D\"] = \"run((isa, vals)) not in a list: unexpectedly succeeded\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"run((isa, vals)): raised {type(e).__name__}: {str(e)[:80]}\"\n\ntry:\n    SamplerV2(mode=backend).run([(isa, vals)], shots=[256]).result()\n    evidence[\"E\"] = \"shots=[256] as a list: unexpectedly succeeded\"\n    proven.append(\"E\")\nexcept Exception as e:\n    evidence[\"E\"] = f\"shots=[256] as a list: raised {type(e).__name__}: {str(e)[:80]}\"\n\ntry:\n    SamplerV2(mode=backend).run([isa], vals, shots=256).result()\n    evidence[\"F\"] = \"run([isa], vals, shots=256): unexpectedly succeeded\"\n    proven.append(\"F\")\nexcept Exception as e:\n    evidence[\"F\"] = f\"run([isa], vals, shots=256): raised {type(e).__name__}: {str(e)[:80]}\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -64,6 +74,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: code block now defines `obs` so option C is self-contained; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped)"
-  }
+    "notes": "s5 adversarial review: code block now defines `obs` so option C is self-contained; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | pool wave: +E per-PUB shots list, +F parameters passed positionally to run"
+  },
+  "display_count": 4
 }

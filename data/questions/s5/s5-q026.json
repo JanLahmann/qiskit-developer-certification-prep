@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "500 — the PUB value and the option value are averaged for the run"
+    },
+    {
+      "key": "E",
+      "text": "It raises — a PUB may not carry shots once `default_shots` has been set"
+    },
+    {
+      "key": "F",
+      "text": "4096 — neither value is used; the run falls back to the service default"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Shot settings are not additive; the more specific PUB value replaces the default rather than summing with it.",
       "B": "The default is only a fallback for PUBs that omit shots. A PUB that carries its own shot count overrides it, so 50 wins, not 1000.",
-      "D": "There is no averaging of shot counts. Precedence is a strict override, giving 50."
+      "D": "There is no averaging of shot counts. Precedence is a strict override, giving 50.",
+      "E": "The two settings do not conflict: `default_shots` is a fallback, so a PUB that carries its own count simply wins. The executed run submits exactly this combination.",
+      "F": "A service-side default only applies when nothing else supplies a shot count. Here the PUB does, so the executed run reports the PUB's value."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-options",
@@ -47,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(1); qc.h(0); qc.measure_all()\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)\nsampler.options.default_shots = 1000\n# single PUB carrying its own shots in slot 3\nobserved = sampler.run([(isa, None, 50)]).result()[0].data.meas.num_shots\n\ncandidates = {\"C\": 50, \"B\": 1000, \"A\": 1050, \"D\": 500}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims {v} shots; with default_shots=1000 and PUB shots=50, observed num_shots={observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"default_shots\": 1000, \"pub_shots\": 50, \"num_shots\": observed}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(1); qc.h(0); qc.measure_all()\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)\nsampler.options.default_shots = 1000\n# single PUB carrying its own shots in slot 3\nobserved = sampler.run([(isa, None, 50)]).result()[0].data.meas.num_shots\n\ncandidates = {\"C\": 50, \"B\": 1000, \"A\": 1050, \"D\": 500}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims {v} shots; with default_shots=1000 and PUB shots=50, observed num_shots={observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nE_raises = False\ntry:\n    s2 = SamplerV2(mode=backend)\n    s2.options.default_shots = 1000\n    s2.run([(isa, None, 50)]).result()\nexcept Exception:\n    E_raises = True\nevidence[\"E\"] = (f\"option E claims the combination raises: re-running with default_shots=1000 and PUB shots=50 \"\n                 f\"raised={E_raises} (observed num_shots={observed})\")\nif E_raises:\n    proven.append(\"E\")\nevidence[\"F\"] = f\"option F claims a 4096-shot service default is used; observed num_shots={observed} -> match={observed == 4096}\"\nif observed == 4096:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"default_shots\": 1000, \"pub_shots\": 50, \"num_shots\": observed}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -64,6 +74,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; explanation now states the full documented precedence chain; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged"
-  }
+    "notes": "s5 adversarial review: length rebalanced; explanation now states the full documented precedence chain; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E PUB-shots-conflict, +F service-default fallback"
+  },
+  "display_count": 5
 }

@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "34 — the 200 shots are divided up among the 6 parameter sets"
+    },
+    {
+      "key": "E",
+      "text": "It raises a `ValueError`: `shots=200` conflicts with a broadcast parameter sweep"
+    },
+    {
+      "key": "F",
+      "text": "`1` — the 6 parameter sets are folded into a single circuit execution before the shots run"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "The shot count applies to each broadcast element, so the sweep does not share a single 200-shot budget; the total is 6 x 200.",
       "C": "6 is the number of parameter sets, not executions. Each set runs 200 shots, so executions number 1200.",
-      "D": "Shots are not divided across the sweep; each parameter set receives the full 200 shots."
+      "D": "Shots are not divided across the sweep; each parameter set receives the full 200 shots.",
+      "E": "They compose: `shots` supplies the per-parameter-set count for a PUB that does not carry its own. The executed run submits exactly this call.",
+      "F": "Every parameter set is a separate circuit execution; nothing is folded together. The executed run sums the shots recorded for each of the 6 sets."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
@@ -47,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nt = Parameter(\"t\"); qc = QuantumCircuit(1); qc.ry(t, 0); qc.measure_all()\nisa = pm.run(qc)\n\nvals = np.linspace(0, np.pi, 6).reshape(6, 1)   # 6 parameter sets\nba = SamplerV2(mode=backend).run([(isa, vals)], shots=200).result()[0].data.meas\ntotal = sum(sum(ba.get_counts(i).values()) for i in range(ba.shape[0]))\n\ncandidates = {\"A\": 1200, \"B\": 200, \"C\": 6, \"D\": 34}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == total)\n    evidence[k] = f\"option claims {v}; summed shots over all 6 parameter sets = {total} (6 x 200) -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"param_sets\": int(ba.shape[0]), \"shots_each\": 200, \"total_executions\": total}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nt = Parameter(\"t\"); qc = QuantumCircuit(1); qc.ry(t, 0); qc.measure_all()\nisa = pm.run(qc)\n\nvals = np.linspace(0, np.pi, 6).reshape(6, 1)   # 6 parameter sets\nba = SamplerV2(mode=backend).run([(isa, vals)], shots=200).result()[0].data.meas\ntotal = sum(sum(ba.get_counts(i).values()) for i in range(ba.shape[0]))\n\ncandidates = {\"A\": 1200, \"B\": 200, \"C\": 6, \"D\": 34}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == total)\n    evidence[k] = f\"option claims {v}; summed shots over all 6 parameter sets = {total} (6 x 200) -> match={match}\"\n    if match:\n        proven.append(k)\n\nE_raises = False\ntry:\n    SamplerV2(mode=backend).run([(isa, vals)], shots=200).result()\nexcept Exception:\n    E_raises = True\nevidence[\"E\"] = (f\"option E claims the call raises: re-running the same PUB with shots=200 raised={E_raises} \"\n                 f\"(total executions {total})\")\nif E_raises:\n    proven.append(\"E\")\nevidence[\"F\"] = (f\"option F claims a single execution; the sweep ran {int(ba.shape[0])} parameter sets \"\n                 f\"x {ba.num_shots} shots = {total} -> match={total == 1}\")\nif total == 1:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"param_sets\": int(ba.shape[0]), \"shots_each\": 200, \"total_executions\": total}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -64,6 +74,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages)"
-  }
+    "notes": "s5 adversarial review: length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | pool wave: +E shots-conflicts-with-sweep, +F sweep-folded-into-one-execution"
+  },
+  "display_count": 4
 }

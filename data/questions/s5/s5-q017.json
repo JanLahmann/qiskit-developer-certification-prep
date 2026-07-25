@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`(3, 4)` — the trailing size-2 axis binds the parameters"
+    },
+    {
+      "key": "E",
+      "text": "`(4, 3)` — the broadcast axes come back transposed"
+    },
+    {
+      "key": "F",
+      "text": "`()` — a single PUB yields one scalar result, with the parameter grid folded into its counts"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "2 is the number of parameters (the consumed axis), not the result count. There are 3x4 = 12 results arranged as (3, 4).",
       "B": "The parameter axis is consumed, not retained. The result drops the trailing 2, leaving (3, 4).",
-      "C": "Broadcast results preserve their multidimensional shape; they are not flattened. The grid stays (3, 4)."
+      "C": "Broadcast results preserve their multidimensional shape; they are not flattened. The grid stays (3, 4).",
+      "E": "Broadcast axes keep their input order; nothing is transposed. The executed run reports the observed shape.",
+      "F": "A PUB keeps its broadcast shape: a scalar result would happen for a circuit bound to one parameter set, not for a 3x4 grid."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
@@ -47,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import ParameterVector\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\np = ParameterVector(\"p\", 2)\nqc = QuantumCircuit(1); qc.ry(p[0], 0); qc.rz(p[1], 0); qc.measure_all()\nisa = pm.run(qc)\n\nvals = np.zeros((3, 4, 2))   # a 3x4 grid of 2-parameter sets\nshape = tuple(SamplerV2(mode=backend).run([(isa, vals)], shots=64).result()[0].data.meas.shape)\n\ncandidates = {\"D\": (3, 4), \"B\": (3, 4, 2), \"C\": (12,), \"A\": (2,)}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == shape)\n    evidence[k] = f\"option claims shape={v}; executed run gave {shape} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"params_shape\": list(vals.shape), \"result_shape\": list(shape)}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import ParameterVector\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\np = ParameterVector(\"p\", 2)\nqc = QuantumCircuit(1); qc.ry(p[0], 0); qc.rz(p[1], 0); qc.measure_all()\nisa = pm.run(qc)\n\nvals = np.zeros((3, 4, 2))   # a 3x4 grid of 2-parameter sets\nshape = tuple(SamplerV2(mode=backend).run([(isa, vals)], shots=64).result()[0].data.meas.shape)\n\ncandidates = {\"D\": (3, 4), \"B\": (3, 4, 2), \"C\": (12,), \"A\": (2,), \"E\": (4, 3), \"F\": ()}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == shape)\n    evidence[k] = f\"option claims shape={v}; executed run gave {shape} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"params_shape\": list(vals.shape), \"result_shape\": list(shape)}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -64,6 +74,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped)"
-  }
+    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped) | pool wave: +E transposed broadcast axes, +F scalar-result-per-PUB"
+  },
+  "display_count": 4
 }

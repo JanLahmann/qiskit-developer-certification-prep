@@ -11,7 +11,8 @@
       "C": "twirling.enable_measure = True: accepted (real field)",
       "E": "twirling.num_randomizations = 8: accepted (real field)",
       "A": "twirling.twirling_level: rejected -> ValidationError: 1 validation error for TwirlingOptions\ntwirling_level\n  Object has no ",
-      "D": "twirling.readout_symmetrization: rejected -> ValidationError: 1 validation error for TwirlingOptions\nreadout_symmetrization\n  Object"
+      "D": "twirling.readout_symmetrization: rejected -> ValidationError: 1 validation error for TwirlingOptions\nreadout_symmetrization\n  Object",
+      "F": "twirling.shots_per_twirl: rejected -> ValidationError: 1 validation error for TwirlingOptions\nshots_per_twirl\n  Object has no"
     },
     "observed": {
       "accepted": [
@@ -27,9 +28,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.06,
+  "wall_seconds": 1.16,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"B\", \"C\", \"E\"], \"evidence\": {\"B\": \"twirling.enable_gates = True: accepted (real field)\", \"C\": \"twirling.enable_measure = True: accepted (real field)\", \"E\": \"twirling.num_randomizations = 8: accepted (real field)\", \"A\": \"twirling.twirling_level: rejected -> ValidationError: 1 validation error for TwirlingOptions\\ntwirling_level\\n  Object has no \", \"D\": \"twirling.readout_symmetrization: rejected -> ValidationError: 1 validation error for TwirlingOptions\\nreadout_symmetrization\\n  Object\"}, \"observed\": {\"accepted\": [\"B\", \"C\", \"E\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\", \"C\", \"E\"], \"evidence\": {\"B\": \"twirling.enable_gates = True: accepted (real field)\", \"C\": \"twirling.enable_measure = True: accepted (real field)\", \"E\": \"twirling.num_randomizations = 8: accepted (real field)\", \"A\": \"twirling.twirling_level: rejected -> ValidationError: 1 validation error for TwirlingOptions\\ntwirling_level\\n  Object has no \", \"D\": \"twirling.readout_symmetrization: rejected -> ValidationError: 1 validation error for TwirlingOptions\\nreadout_symmetrization\\n  Object\", \"F\": \"twirling.shots_per_twirl: rejected -> ValidationError: 1 validation error for TwirlingOptions\\nshots_per_twirl\\n  Object has no\"}, \"observed\": {\"accepted\": [\"B\", \"C\", \"E\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

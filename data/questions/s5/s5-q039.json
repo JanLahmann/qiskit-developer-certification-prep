@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`768` — `len()` counts the total shots across the three circuits"
+    },
+    {
+      "key": "E",
+      "text": "It raises a `TypeError` — a `PrimitiveResult` has no length, so you iterate it instead"
+    },
+    {
+      "key": "F",
+      "text": "`(1, 3)` — `len()` reports the shape of the submission: 1 job holding 3 PUB results"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "The length is the number of PUB results, not shots. Shots live inside each PUB result's BitArray (`num_shots`).",
       "B": "Results are not merged; each PUB keeps its own `SamplerPubResult`. `len(result)` equals the number of PUBs submitted, here 3.",
-      "D": "768 is 3 x 256 total shots, but `len(result)` counts PUB results (3), not shots."
+      "D": "768 is 3 x 256 total shots, but `len(result)` counts PUB results (3), not shots.",
+      "E": "`PrimitiveResult` is a sequence: it supports both `len()` and indexing. The executed run calls `len()` successfully.",
+      "F": "`len()` always returns a plain integer. A shape tuple is what a broadcast PUB's data carries, not what the result container reports."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
@@ -47,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n\ndef mk(gate):\n    qc = QuantumCircuit(1)\n    gate(qc)\n    qc.measure_all()\n    return pm.run(qc)\n\nisaA = mk(lambda c: c.h(0))\nisaB = mk(lambda c: c.x(0))\nisaC = mk(lambda c: c.id(0))\n\nresult = SamplerV2(mode=backend).run([isaA, isaB, isaC], shots=256).result()\nobserved = len(result)\n\ncandidates = {\"C\": 3, \"B\": 1, \"A\": 256, \"D\": 768}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims len(result)={v}; run([isaA,isaB,isaC]) gave len(result)={observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"len_result\": observed,\n                           \"per_pub_counts\": [result[i].data.meas.get_counts() for i in range(observed)]}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n\ndef mk(gate):\n    qc = QuantumCircuit(1)\n    gate(qc)\n    qc.measure_all()\n    return pm.run(qc)\n\nisaA = mk(lambda c: c.h(0))\nisaB = mk(lambda c: c.x(0))\nisaC = mk(lambda c: c.id(0))\n\nresult = SamplerV2(mode=backend).run([isaA, isaB, isaC], shots=256).result()\nobserved = len(result)\n\ncandidates = {\"C\": 3, \"B\": 1, \"A\": 256, \"D\": 768}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims len(result)={v}; run([isaA,isaB,isaC]) gave len(result)={observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nE_raises = False\ntry:\n    _ = len(result)\nexcept Exception:\n    E_raises = True\nevidence[\"E\"] = f\"option E claims len() raises: len(result) returned {observed}, raised={E_raises}\"\nif E_raises:\n    proven.append(\"E\")\nF_val = (1, 3)\nevidence[\"F\"] = f\"option F claims len(result)={F_val}; len() returned the integer {observed} -> match={F_val == observed}\"\nif F_val == observed:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"len_result\": observed,\n                           \"per_pub_counts\": [result[i].data.meas.get_counts() for i in range(observed)]}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -64,6 +74,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length, absolute-wording and formatting tells fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped)"
-  }
+    "notes": "s5 adversarial review: high-severity length, absolute-wording and formatting tells fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | pool wave: +E PrimitiveResult has no len, +F len returns a shape tuple"
+  },
+  "display_count": 4
 }

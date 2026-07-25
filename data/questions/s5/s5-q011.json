@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`bits` is a V1-style `Counts` object, as `result.get_counts()` used to return"
+    },
+    {
+      "key": "E",
+      "text": "`bits` is the `DataBin` for this PUB, and `meas` is looked up inside it afterwards"
+    },
+    {
+      "key": "F",
+      "text": "`bits` is the `SamplerPubResult` for this PUB, whose `.data` attribute holds the outcomes"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "The counts dict is what `bits.get_counts()` *returns*; `bits` itself is the richer BitArray container of per-shot data, not the dict.",
       "C": "The Sampler returns samples, not a probability vector. Frequencies must be estimated by counting shots yourself; nothing in `data.meas` is a probability array.",
-      "D": "This is a V1-migration misconception. V2 has no top-level `result.get_counts()`; results live in per-register BitArrays reached through `data.<register>`."
+      "D": "This is a V1-migration misconception. V2 has no top-level `result.get_counts()`; results live in per-register BitArrays reached through `data.<register>`.",
+      "E": "One level too high: `result[0].data` IS the DataBin; `.meas` is the field you pull out of it. The executed run shows `type(bits).__name__ == 'BitArray'`.",
+      "F": "Two levels too high: `result[0]` is the SamplerPubResult, `result[0].data` its DataBin, and `.meas` the BitArray. The executed run reports the type directly."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
@@ -47,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nbits = SamplerV2(mode=backend).run([isa], shots=256).result()[0].data.meas\ntname = type(bits).__name__\nis_dict = isinstance(bits, dict)\ngc = bits.get_counts()\ngc_is_dict = isinstance(gc, dict)\n\nevidence, proven = {}, []\n# B: bits is a BitArray of per-shot outcomes; get_counts() returns a summary dict\nB = (tname == \"BitArray\") and gc_is_dict and (not is_dict)\n# A: bits itself is a dict mapping bitstrings->counts\nA = is_dict\n# C: bits is a NumPy array of probabilities\nC = (tname == \"ndarray\")\n# D: bits is a V1-style Counts object\nD = (tname == \"Counts\")\nfor k, val, desc in [(\"B\", B, f\"type(bits).__name__={tname!r}, isinstance(bits,dict)={is_dict}, get_counts() is dict={gc_is_dict}\"),\n                     (\"A\", A, f\"isinstance(bits,dict)={is_dict}\"),\n                     (\"C\", C, f\"type name is {tname!r}, not ndarray\"),\n                     (\"D\", D, f\"type name is {tname!r}, not Counts\")]:\n    evidence[k] = f\"claim holds={val} — {desc}\"\n    if val:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"type\": tname, \"get_counts_type\": type(gc).__name__, \"num_shots\": bits.num_shots}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nbits = SamplerV2(mode=backend).run([isa], shots=256).result()[0].data.meas\ntname = type(bits).__name__\nis_dict = isinstance(bits, dict)\ngc = bits.get_counts()\ngc_is_dict = isinstance(gc, dict)\n\nevidence, proven = {}, []\n# B: bits is a BitArray of per-shot outcomes; get_counts() returns a summary dict\nB = (tname == \"BitArray\") and gc_is_dict and (not is_dict)\n# A: bits itself is a dict mapping bitstrings->counts\nA = is_dict\n# C: bits is a NumPy array of probabilities\nC = (tname == \"ndarray\")\n# D: bits is a V1-style Counts object\nD = (tname == \"Counts\")\nfor k, val, desc in [(\"B\", B, f\"type(bits).__name__={tname!r}, isinstance(bits,dict)={is_dict}, get_counts() is dict={gc_is_dict}\"),\n                     (\"A\", A, f\"isinstance(bits,dict)={is_dict}\"),\n                     (\"C\", C, f\"type name is {tname!r}, not ndarray\"),\n                     (\"D\", D, f\"type name is {tname!r}, not Counts\")]:\n    evidence[k] = f\"claim holds={val} — {desc}\"\n    if val:\n        proven.append(k)\n\nE_ok = (tname == \"DataBin\")\nevidence[\"E\"] = f\"claim holds={E_ok} — type(bits).__name__={tname!r}; the DataBin is result[0].data and .meas is one field inside it\"\nif E_ok:\n    proven.append(\"E\")\nF_ok = (tname == \"SamplerPubResult\")\nevidence[\"F\"] = f\"claim holds={F_ok} — type(bits).__name__={tname!r}; SamplerPubResult is result[0], one level above .data\"\nif F_ok:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"type\": tname, \"get_counts_type\": type(gc).__name__, \"num_shots\": bits.num_shots}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -64,6 +74,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed (correct option tightened, distractors given equal weight); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped)"
-  }
+    "notes": "s5 adversarial review: high-severity length tell fixed (correct option tightened, distractors given equal weight); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E DataBin level confusion, +F SamplerPubResult level confusion"
+  },
+  "display_count": 4
 }

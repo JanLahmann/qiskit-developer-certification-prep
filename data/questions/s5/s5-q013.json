@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Drop the execution target and let the primitive transpile: `SamplerV2().run([qc])`"
+    },
+    {
+      "key": "E",
+      "text": "Expand the composite gates first — `sampler.run([qc.decompose()])` — so lower-level gates remain"
+    },
+    {
+      "key": "F",
+      "text": "Translate to the device basis with `transpile(qc, basis_gates=backend.operation_names)` and run that"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "The problem is not list nesting — a single list of PUBs is already the correct structure. Nesting changes nothing about the circuit still being non-ISA.",
       "C": "Shots are optional, not required, and adding them does not make a non-ISA circuit acceptable: the validation error is about gates and connectivity.",
-      "D": "The primitive never transpiles for you. Dropping the mode removes the execution target entirely and the circuit is still non-ISA."
+      "D": "The primitive never transpiles for you. Dropping the mode removes the execution target entirely and the circuit is still non-ISA.",
+      "E": "`decompose()` unrolls one level into `u`/`cx`, which are not the backend's basis and are still unrouted; the same target error is raised. Decomposing is not transpiling.",
+      "F": "Translation without a coupling map produces basis gates on non-adjacent qubits: the run then fails on `cx` between qubits that are not connected. An ISA circuit needs layout and routing too."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/get-started-with-sampler",
@@ -47,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\n\ndef fresh_circuit():\n    qc = QuantumCircuit(3)\n    qc.h(0); qc.cx(0, 1); qc.ccx(0, 1, 2); qc.measure_all()\n    return qc\n\n# Show the bug: running the un-transpiled circuit\nbuggy_err = None\ntry:\n    SamplerV2(mode=backend).run([fresh_circuit()], shots=128).result()\nexcept Exception as e:\n    buggy_err = f\"{type(e).__name__}: {str(e)[:120]}\"\n\nevidence, proven = {}, []\n\n# B: transpile to ISA with a preset pass manager, then run\ntry:\n    pm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n    isa = pm.run(fresh_circuit())\n    c = SamplerV2(mode=backend).run([isa], shots=128).result()[0].data.meas.get_counts()\n    B_ok = sum(c.values()) == 128\n    evidence[\"B\"] = f\"transpile->ISA then run: SUCCESS, counts sum={sum(c.values())}\"\nexcept Exception as e:\n    B_ok = False\n    evidence[\"B\"] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\nif B_ok:\n    proven.append(\"B\")\n\n# A: nest in an extra list\ntry:\n    SamplerV2(mode=backend).run([[fresh_circuit()]], shots=128).result()\n    evidence[\"A\"] = \"nested list [[qc]]: unexpectedly succeeded\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"still raised {type(e).__name__}: {str(e)[:110]}\"\n\n# C: just add shots\ntry:\n    SamplerV2(mode=backend).run([fresh_circuit()], shots=1024).result()\n    evidence[\"C\"] = \"adding shots: unexpectedly succeeded\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"still raised {type(e).__name__}: {str(e)[:110]}\"\n\n# D: SamplerV2 with no mode\ntry:\n    SamplerV2().run([fresh_circuit()], shots=128).result()\n    evidence[\"D\"] = \"SamplerV2() no mode: unexpectedly succeeded\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"buggy_error\": buggy_err}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\n\ndef fresh_circuit():\n    qc = QuantumCircuit(3)\n    qc.h(0); qc.cx(0, 1); qc.ccx(0, 1, 2); qc.measure_all()\n    return qc\n\n# Show the bug: running the un-transpiled circuit\nbuggy_err = None\ntry:\n    SamplerV2(mode=backend).run([fresh_circuit()], shots=128).result()\nexcept Exception as e:\n    buggy_err = f\"{type(e).__name__}: {str(e)[:120]}\"\n\nevidence, proven = {}, []\n\n# B: transpile to ISA with a preset pass manager, then run\ntry:\n    pm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n    isa = pm.run(fresh_circuit())\n    c = SamplerV2(mode=backend).run([isa], shots=128).result()[0].data.meas.get_counts()\n    B_ok = sum(c.values()) == 128\n    evidence[\"B\"] = f\"transpile->ISA then run: SUCCESS, counts sum={sum(c.values())}\"\nexcept Exception as e:\n    B_ok = False\n    evidence[\"B\"] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\nif B_ok:\n    proven.append(\"B\")\n\n# A: nest in an extra list\ntry:\n    SamplerV2(mode=backend).run([[fresh_circuit()]], shots=128).result()\n    evidence[\"A\"] = \"nested list [[qc]]: unexpectedly succeeded\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"still raised {type(e).__name__}: {str(e)[:110]}\"\n\n# C: just add shots\ntry:\n    SamplerV2(mode=backend).run([fresh_circuit()], shots=1024).result()\n    evidence[\"C\"] = \"adding shots: unexpectedly succeeded\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"still raised {type(e).__name__}: {str(e)[:110]}\"\n\n# D: SamplerV2 with no mode\ntry:\n    SamplerV2().run([fresh_circuit()], shots=128).result()\n    evidence[\"D\"] = \"SamplerV2() no mode: unexpectedly succeeded\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\nfrom qiskit import transpile as _transpile\ntry:\n    SamplerV2(mode=backend).run([fresh_circuit().decompose()], shots=128).result()\n    evidence[\"E\"] = \"qc.decompose(): unexpectedly succeeded\"\n    proven.append(\"E\")\nexcept Exception as e:\n    evidence[\"E\"] = f\"qc.decompose(): still raised {type(e).__name__}: {str(e)[:110]}\"\n\ntry:\n    SamplerV2(mode=backend).run([_transpile(fresh_circuit(), basis_gates=list(backend.operation_names))], shots=128).result()\n    evidence[\"F\"] = \"basis_gates-only translation: unexpectedly succeeded\"\n    proven.append(\"F\")\nexcept Exception as e:\n    evidence[\"F\"] = f\"basis_gates-only translation (no coupling map, so no routing): still raised {type(e).__name__}: {str(e)[:110]}\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"buggy_error\": buggy_err}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -64,6 +74,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; distractor C now encodes the 'shots are mandatory' misconception; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped)"
-  }
+    "notes": "s5 adversarial review: high-severity length tell fixed; distractor C now encodes the 'shots are mandatory' misconception; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E decompose-is-not-transpile, +F basis-gates translation without routing"
+  },
+  "display_count": 4
 }

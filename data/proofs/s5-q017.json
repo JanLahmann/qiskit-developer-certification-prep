@@ -8,7 +8,9 @@
       "D": "option claims shape=(3, 4); executed run gave (3, 4) -> match=True",
       "B": "option claims shape=(3, 4, 2); executed run gave (3, 4) -> match=False",
       "C": "option claims shape=(12,); executed run gave (3, 4) -> match=False",
-      "A": "option claims shape=(2,); executed run gave (3, 4) -> match=False"
+      "A": "option claims shape=(2,); executed run gave (3, 4) -> match=False",
+      "E": "option claims shape=(4, 3); executed run gave (3, 4) -> match=False",
+      "F": "option claims shape=(); executed run gave (3, 4) -> match=False"
     },
     "observed": {
       "params_shape": [
@@ -30,7 +32,7 @@
   },
   "wall_seconds": 1.26,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"D\": \"option claims shape=(3, 4); executed run gave (3, 4) -> match=True\", \"B\": \"option claims shape=(3, 4, 2); executed run gave (3, 4) -> match=False\", \"C\": \"option claims shape=(12,); executed run gave (3, 4) -> match=False\", \"A\": \"option claims shape=(2,); executed run gave (3, 4) -> match=False\"}, \"observed\": {\"params_shape\": [3, 4, 2], \"result_shape\": [3, 4]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"D\": \"option claims shape=(3, 4); executed run gave (3, 4) -> match=True\", \"B\": \"option claims shape=(3, 4, 2); executed run gave (3, 4) -> match=False\", \"C\": \"option claims shape=(12,); executed run gave (3, 4) -> match=False\", \"A\": \"option claims shape=(2,); executed run gave (3, 4) -> match=False\", \"E\": \"option claims shape=(4, 3); executed run gave (3, 4) -> match=False\", \"F\": \"option claims shape=(); executed run gave (3, 4) -> match=False\"}, \"observed\": {\"params_shape\": [3, 4, 2], \"result_shape\": [3, 4]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

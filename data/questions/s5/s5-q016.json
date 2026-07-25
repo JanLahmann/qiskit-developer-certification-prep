@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`(6,)` — the trailing axis binds the 2 parameters, leaving 6 broadcast results, one per sweep point"
+    },
+    {
+      "key": "E",
+      "text": "`(12,)` — the 12 values in the sweep array are flattened onto one broadcast axis"
+    },
+    {
+      "key": "F",
+      "text": "`(6, 1)` — a trailing axis is kept for the single PUB submitted in the run"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "One PUB with a broadcast parameter array still produces one result per parameter set, kept as a shaped array; the shape is (6,) and you index it as data.meas[i].",
       "B": "The parameter axis (the trailing 2) is consumed when binding; it does not survive into the result shape. Only the leading dimensions remain.",
-      "C": "There are 6 parameter sets, not 2. The '2' is the number of parameters per set (the consumed axis), not the number of results."
+      "C": "There are 6 parameter sets, not 2. The '2' is the number of parameters per set (the consumed axis), not the number of results.",
+      "E": "Only the trailing axis is consumed by the parameter binding; the leading axes are preserved as-is, so nothing is flattened. The executed run reports the observed shape.",
+      "F": "The PUB itself is not an axis of the result: `result[0]` already selects the PUB, and its data carries only the broadcast shape."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
@@ -47,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import ParameterVector\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\np = ParameterVector(\"p\", 2)\nqc = QuantumCircuit(1); qc.ry(p[0], 0); qc.rz(p[1], 0); qc.measure_all()\nisa = pm.run(qc)\n\nvals = np.linspace(0, 1, 12).reshape(6, 2)   # 6 parameter sets, 2 params each\nshape = tuple(SamplerV2(mode=backend).run([(isa, vals)], shots=128).result()[0].data.meas.shape)\n\ncandidates = {\"D\": (6,), \"B\": (6, 2), \"C\": (2,), \"A\": ()}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == shape)\n    evidence[k] = f\"option claims data.meas.shape={v}; executed run gave {shape} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"params_shape\": list(vals.shape), \"result_shape\": list(shape)}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import ParameterVector\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\np = ParameterVector(\"p\", 2)\nqc = QuantumCircuit(1); qc.ry(p[0], 0); qc.rz(p[1], 0); qc.measure_all()\nisa = pm.run(qc)\n\nvals = np.linspace(0, 1, 12).reshape(6, 2)   # 6 parameter sets, 2 params each\nshape = tuple(SamplerV2(mode=backend).run([(isa, vals)], shots=128).result()[0].data.meas.shape)\n\ncandidates = {\"D\": (6,), \"B\": (6, 2), \"C\": (2,), \"A\": (), \"E\": (12,), \"F\": (6, 1)}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == shape)\n    evidence[k] = f\"option claims data.meas.shape={v}; executed run gave {shape} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"params_shape\": list(vals.shape), \"result_shape\": list(shape)}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -64,6 +74,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; absolute-wording tell removed from distractor D; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged"
-  }
+    "notes": "s5 adversarial review: length rebalanced; absolute-wording tell removed from distractor D; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E flattened-sweep shape, +F extra PUB axis"
+  },
+  "display_count": 5
 }

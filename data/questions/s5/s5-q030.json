@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "The single most likely measurement outcome of the circuit, together with its estimated probability"
+    },
+    {
+      "key": "E",
+      "text": "Quasi-probability distributions over the measured bitstrings, as the V1 `Sampler` returned"
+    },
+    {
+      "key": "F",
+      "text": "The density matrix of the measured qubits, from which counts follow"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Expectation values of observables are EstimatorV2's job; a Sampler PUB carries no observable at all.",
       "B": "Amplitudes are hidden by measurement — sampling only sees classical outcomes with probabilities |amplitude|^2. Statevectors come from simulators (`qiskit.quantum_info`), not from a Sampler.",
-      "D": "The Sampler returns the whole collection of shot outcomes, not a single winner; the distribution over many shots is the entire point."
+      "D": "The Sampler returns the whole collection of shot outcomes, not a single winner; the distribution over many shots is the entire point.",
+      "E": "Quasi-distributions were the V1 output (and could carry negative weights after mitigation). SamplerV2 returns raw per-shot bitstrings in a `BitArray`.",
+      "F": "Reconstructing a density matrix is state tomography, a separate experiment. The Sampler just reports what the measurements produced, shot by shot."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/primitives",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped)"
-  }
+    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | pool wave: +E V1 quasi-distributions, +F density-matrix output"
+  },
+  "display_count": 4
 }

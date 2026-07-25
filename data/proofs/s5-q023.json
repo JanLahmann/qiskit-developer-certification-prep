@@ -8,7 +8,9 @@
       "C": "option claims 2000; ba.get_counts() (no index) totalled 2000 over shape (4,) -> match=True",
       "B": "option claims 500; ba.get_counts() (no index) totalled 2000 over shape (4,) -> match=False",
       "A": "option claims 4; ba.get_counts() (no index) totalled 2000 over shape (4,) -> match=False",
-      "D": "option claims 125; ba.get_counts() (no index) totalled 2000 over shape (4,) -> match=False"
+      "D": "option claims 125; ba.get_counts() (no index) totalled 2000 over shape (4,) -> match=False",
+      "E": "option E claims get_counts() raises without an index: the no-argument call returned 2 distinct keys totalling 2000, raised=False",
+      "F": "option F claims the sum equals the number of distinct bitstrings (2); the sum of the values is 2000 -> match=False"
     },
     "observed": {
       "shape": [
@@ -23,9 +25,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.3,
+  "wall_seconds": 1.43,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"C\": \"option claims 2000; ba.get_counts() (no index) totalled 2000 over shape (4,) -> match=True\", \"B\": \"option claims 500; ba.get_counts() (no index) totalled 2000 over shape (4,) -> match=False\", \"A\": \"option claims 4; ba.get_counts() (no index) totalled 2000 over shape (4,) -> match=False\", \"D\": \"option claims 125; ba.get_counts() (no index) totalled 2000 over shape (4,) -> match=False\"}, \"observed\": {\"shape\": [4], \"aggregate_total\": 2000}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"C\": \"option claims 2000; ba.get_counts() (no index) totalled 2000 over shape (4,) -> match=True\", \"B\": \"option claims 500; ba.get_counts() (no index) totalled 2000 over shape (4,) -> match=False\", \"A\": \"option claims 4; ba.get_counts() (no index) totalled 2000 over shape (4,) -> match=False\", \"D\": \"option claims 125; ba.get_counts() (no index) totalled 2000 over shape (4,) -> match=False\", \"E\": \"option E claims get_counts() raises without an index: the no-argument call returned 2 distinct keys totalling 2000, raised=False\", \"F\": \"option F claims the sum equals the number of distinct bitstrings (2); the sum of the values is 2000 -> match=False\"}, \"observed\": {\"shape\": [4], \"aggregate_total\": 2000}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

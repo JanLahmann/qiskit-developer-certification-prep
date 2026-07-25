@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Pass a `shots` value to `run()` so that the `meas` field is created in the DataBin"
+    },
+    {
+      "key": "E",
+      "text": "The field carries the register's index, so read `result[0].data.c0.get_counts()` instead"
+    },
+    {
+      "key": "F",
+      "text": "Index the bin by position rather than by name: `result[0].data[0].get_counts()`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "DataBin does support item access, but the key still has to exist. `data['meas']` raises a KeyError for the same reason `data.meas` raises AttributeError: this circuit's register is `c`.",
       "C": "`BitArray.get_counts()` does exist and works fine; the error is about the missing field name, not a missing method.",
-      "D": "Shots were run regardless; the field name comes from the classical register's name (`c`), not from the shot count, so passing shots creates no `meas` field."
+      "D": "Shots were run regardless; the field name comes from the classical register's name (`c`), not from the shot count, so passing shots creates no `meas` field.",
+      "E": "The field is named exactly like the classical register, and `QuantumCircuit(2, 2)` names it `c` — no index suffix. `data.c0` raises an AttributeError.",
+      "F": "A `DataBin` is keyed by register name, not by position: `data[0]` raises a KeyError. `data['c']` is the item-access form that works."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
@@ -47,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n\ndef build():\n    qc = QuantumCircuit(2, 2)\n    qc.h(0); qc.cx(0, 1)\n    qc.measure([0, 1], [0, 1])\n    return pm.run(qc)\n\nresult = SamplerV2(mode=backend).run([build()], shots=200).result()\nfields = list(result[0].data.keys())\n\n# Show the bug\nbuggy = None\ntry:\n    result[0].data.meas.get_counts()\nexcept Exception as e:\n    buggy = f\"{type(e).__name__}: {str(e)[:80]}\"\n\nevidence, proven = {}, []\n\n# B: register is named 'c'; use data.c\ntry:\n    c = result[0].data.c.get_counts()\n    evidence[\"B\"] = f\"data.c.get_counts() -> {c} (fields present: {fields})\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"data.c raised {type(e).__name__}: {str(e)[:70]}\"\n\n# A: item access instead of attribute access\ntry:\n    _ = result[0].data[\"meas\"].get_counts()\n    evidence[\"A\"] = \"data['meas'] item access: unexpectedly succeeded\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"data['meas'] item access: raised {type(e).__name__}: {str(e)[:80]} (fields={fields})\"\n\n# C: 'BitArray has no get_counts, use get_bitstrings'\ntry:\n    _ = result[0].data.c.get_counts()\n    has_gc = True\nexcept Exception:\n    has_gc = False\nevidence[\"C\"] = f\"BitArray.get_counts() exists and works = {has_gc}; claim that get_counts is unavailable is false\"\n\n# D: 'must pass shots to create meas'\nevidence[\"D\"] = f\"shots=200 was passed yet field is 'c', not 'meas'; fields={fields}\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"data_fields\": fields, \"buggy_data_meas\": buggy}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n\ndef build():\n    qc = QuantumCircuit(2, 2)\n    qc.h(0); qc.cx(0, 1)\n    qc.measure([0, 1], [0, 1])\n    return pm.run(qc)\n\nresult = SamplerV2(mode=backend).run([build()], shots=200).result()\nfields = list(result[0].data.keys())\n\n# Show the bug\nbuggy = None\ntry:\n    result[0].data.meas.get_counts()\nexcept Exception as e:\n    buggy = f\"{type(e).__name__}: {str(e)[:80]}\"\n\nevidence, proven = {}, []\n\n# B: register is named 'c'; use data.c\ntry:\n    c = result[0].data.c.get_counts()\n    evidence[\"B\"] = f\"data.c.get_counts() -> {c} (fields present: {fields})\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"data.c raised {type(e).__name__}: {str(e)[:70]}\"\n\n# A: item access instead of attribute access\ntry:\n    _ = result[0].data[\"meas\"].get_counts()\n    evidence[\"A\"] = \"data['meas'] item access: unexpectedly succeeded\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"data['meas'] item access: raised {type(e).__name__}: {str(e)[:80]} (fields={fields})\"\n\n# C: 'BitArray has no get_counts, use get_bitstrings'\ntry:\n    _ = result[0].data.c.get_counts()\n    has_gc = True\nexcept Exception:\n    has_gc = False\nevidence[\"C\"] = f\"BitArray.get_counts() exists and works = {has_gc}; claim that get_counts is unavailable is false\"\n\n# D: 'must pass shots to create meas'\nevidence[\"D\"] = f\"shots=200 was passed yet field is 'c', not 'meas'; fields={fields}\"\n\ntry:\n    _ = result[0].data.c0.get_counts()\n    evidence[\"E\"] = \"data.c0: unexpectedly succeeded\"\n    proven.append(\"E\")\nexcept Exception as e:\n    evidence[\"E\"] = f\"data.c0: raised {type(e).__name__}: {str(e)[:70]} (fields={fields})\"\n\ntry:\n    _ = result[0].data[0].get_counts()\n    evidence[\"F\"] = \"data[0] positional index: unexpectedly succeeded\"\n    proven.append(\"F\")\nexcept Exception as e:\n    evidence[\"F\"] = f\"data[0] positional index: raised {type(e).__name__}: {str(e)[:70]} (fields={fields})\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"data_fields\": fields, \"buggy_data_meas\": buggy}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -64,6 +74,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: distractor B replaced: the old 'switch to measure_all()' option was arguably a second working fix; new B (dict-style item access) is executed and refuted by the proof; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged"
-  }
+    "notes": "s5 adversarial review: distractor B replaced: the old 'switch to measure_all()' option was arguably a second working fix; new B (dict-style item access) is executed and refuted by the proof; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E indexed register field name, +F positional DataBin indexing"
+  },
+  "display_count": 5
 }

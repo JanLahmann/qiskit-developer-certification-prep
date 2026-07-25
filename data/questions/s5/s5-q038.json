@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "It roughly doubles, because a longer job accumulates more drift and readout error"
+    },
+    {
+      "key": "E",
+      "text": "It drops to roughly a sixteenth, since the variance falls like the square of the shot count"
+    },
+    {
+      "key": "F",
+      "text": "It typically stays put — the PUB count sets it"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Sampling error scales like 1/sqrt(N), not 1/N. You would need 16x the shots (not 4x) to quarter the error.",
       "C": "Shot noise is a property of finite sampling and clearly decreases with more shots; it is not fixed by the hardware.",
-      "D": "More shots reduce, not increase, the statistical uncertainty of the estimate; the error goes down like 1/sqrt(N)."
+      "D": "More shots reduce, not increase, the statistical uncertainty of the estimate; the error goes down like 1/sqrt(N).",
+      "E": "The variance of a binomial proportion falls like 1/N, so the standard error falls like 1/sqrt(N): 4x more shots is 2x less error, not 16x.",
+      "F": "The number of PUBs only says how many separate results come back; the sampling error of each estimate is governed by that PUB's shots."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/primitives",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped)"
-  }
+    "notes": "s5 adversarial review: length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E 1/N^2 variance scaling, +F error set by PUB count"
+  },
+  "display_count": 4
 }

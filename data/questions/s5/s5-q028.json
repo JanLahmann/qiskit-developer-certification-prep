@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Nothing can be done — the sampler returns already-corrected counts, so the odd-parity outcomes must be physical"
+    },
+    {
+      "key": "E",
+      "text": "Enable measurement twirling with `options.twirling.enable_measure`, which symmetrizes readout error away"
+    },
+    {
+      "key": "F",
+      "text": "Add an `if_test` parity check to the circuit, since counts cannot be filtered after the fact"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "SamplerV2 has no `resilience_level` — that is an EstimatorV2 option, so the line raises — and resilience levels never perform parity post-selection.",
       "C": "Dynamical decoupling suppresses decoherence during idle periods inside the circuit; it does not filter or correct measurement outcomes, so `01`/`10` still appear in the counts.",
-      "D": "The counts come back raw, which is precisely what makes custom mitigation possible; filtering and renormalizing them is a valid post-processing correction."
+      "D": "The counts come back raw, which is precisely what makes custom mitigation possible; filtering and renormalizing them is a valid post-processing correction.",
+      "E": "Measurement twirling randomizes readout error so it looks symmetric; it neither removes odd-parity outcomes nor implements post-selection. The executed run shows `01`/`10` still present with it on.",
+      "F": "Counts are an ordinary Python dict — filtering after the fact is exactly what post-selection is. The executed proof filters them."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
@@ -48,7 +58,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\ns = SamplerV2(mode=backend); s.options.simulator.seed_simulator = 7\nraw = s.run([isa], shots=4000).result()[0].data.meas.get_counts()\n\nevidence, proven = {}, []\n\n# B: keep only even-parity outcomes (00, 11), renormalize -> DIY post-selection\nkept = {k: v for k, v in raw.items() if k in (\"00\", \"11\")}\nodd = {k: v for k, v in raw.items() if k in (\"01\", \"10\")}\nB_ok = (sum(kept.values()) > 0) and (sum(kept.values()) < sum(raw.values())) and (len(odd) > 0)\nevidence[\"B\"] = (f\"post-selecting even-parity kept {sum(kept.values())}/{sum(raw.values())} shots and \"\n                 f\"discarded odd-parity leakage {odd} -> user-implemented mitigation works = {B_ok}\")\nif B_ok:\n    proven.append(\"B\")\n\n# A: resilience_level = 2 to 'auto post-select'\ntry:\n    s2 = SamplerV2(mode=backend); s2.options.resilience_level = 2\n    evidence[\"A\"] = \"resilience_level=2 accepted (unexpected)\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"resilience_level=2 raised {type(e).__name__}: {str(e)[:70]} (no such Sampler option)\"\n\n# C: dynamical decoupling 'removes readout errors' -> enable DD, leakage should persist\ns3 = SamplerV2(mode=backend); s3.options.simulator.seed_simulator = 7\ns3.options.dynamical_decoupling.enable = True\ndd_counts = s3.run([isa], shots=4000).result()[0].data.meas.get_counts()\ndd_leak = sum(v for k, v in dd_counts.items() if k in (\"01\", \"10\"))\nevidence[\"C\"] = f\"with DD enabled, odd-parity readout outcomes still present ({dd_leak} shots) -> DD does not post-select counts\"\n\n# D: 'no way to post-process, must accept raw'\nevidence[\"D\"] = f\"post-processing IS possible (parity filter kept {sum(kept.values())} of {sum(raw.values())} shots) -> claim is false\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"raw\": raw, \"post_selected\": kept}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\ns = SamplerV2(mode=backend); s.options.simulator.seed_simulator = 7\nraw = s.run([isa], shots=4000).result()[0].data.meas.get_counts()\n\nevidence, proven = {}, []\n\n# B: keep only even-parity outcomes (00, 11), renormalize -> DIY post-selection\nkept = {k: v for k, v in raw.items() if k in (\"00\", \"11\")}\nodd = {k: v for k, v in raw.items() if k in (\"01\", \"10\")}\nB_ok = (sum(kept.values()) > 0) and (sum(kept.values()) < sum(raw.values())) and (len(odd) > 0)\nevidence[\"B\"] = (f\"post-selecting even-parity kept {sum(kept.values())}/{sum(raw.values())} shots and \"\n                 f\"discarded odd-parity leakage {odd} -> user-implemented mitigation works = {B_ok}\")\nif B_ok:\n    proven.append(\"B\")\n\n# A: resilience_level = 2 to 'auto post-select'\ntry:\n    s2 = SamplerV2(mode=backend); s2.options.resilience_level = 2\n    evidence[\"A\"] = \"resilience_level=2 accepted (unexpected)\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"resilience_level=2 raised {type(e).__name__}: {str(e)[:70]} (no such Sampler option)\"\n\n# C: dynamical decoupling 'removes readout errors' -> enable DD, leakage should persist\ns3 = SamplerV2(mode=backend); s3.options.simulator.seed_simulator = 7\ns3.options.dynamical_decoupling.enable = True\ndd_counts = s3.run([isa], shots=4000).result()[0].data.meas.get_counts()\ndd_leak = sum(v for k, v in dd_counts.items() if k in (\"01\", \"10\"))\nevidence[\"C\"] = f\"with DD enabled, odd-parity readout outcomes still present ({dd_leak} shots) -> DD does not post-select counts\"\n\n# D: 'no way to post-process, must accept raw'\nevidence[\"D\"] = f\"post-processing IS possible (parity filter kept {sum(kept.values())} of {sum(raw.values())} shots) -> claim is false\"\n\ns4 = SamplerV2(mode=backend); s4.options.simulator.seed_simulator = 7\ns4.options.twirling.enable_measure = True\ntw = s4.run([isa], shots=4000).result()[0].data.meas.get_counts()\ntw_leak = sum(v for k, v in tw.items() if k in (\"01\", \"10\"))\nE_ok = (tw_leak == 0)\nevidence[\"E\"] = (f\"with twirling.enable_measure=True the odd-parity outcomes are still there \"\n                 f\"({tw_leak / sum(tw.values()):.1%} of shots) -> twirling did not keep only 00/11 = {E_ok}\")\nif E_ok:\n    proven.append(\"E\")\nevidence[\"F\"] = (f\"the counts dict was filtered in plain Python, keeping {len(kept)} of {len(raw)} distinct \"\n                 f\"outcomes -> the claim that counts cannot be filtered afterwards is false\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"raw\": raw, \"post_selected\": kept}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -65,6 +75,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell and stem-echo tell fixed; distractor letter reference removed from explanation and proof; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set"
-  }
+    "notes": "s5 adversarial review: high-severity length tell and stem-echo tell fixed; distractor letter reference removed from explanation and proof; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E measure-twirling-as-post-selection, +F counts-cannot-be-filtered"
+  },
+  "display_count": 4
 }

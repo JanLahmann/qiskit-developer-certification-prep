@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`job = sampler.run([isa_qc], backend=backend)` — target passed by keyword"
+    },
+    {
+      "key": "E",
+      "text": "`job = sampler.run(circuits=[isa_qc])` — the V1 form"
+    },
+    {
+      "key": "F",
+      "text": "`job = sampler.run([isa_qc], shots=[1024])` — one shot count per PUB"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "V1 primitives accepted a bare circuit, but SamplerV2.run() iterates its argument as a sequence of PUBs, so an unwrapped circuit is rejected.",
       "C": "run() has no positional backend parameter — the execution target is fixed by `mode=` at construction time; a second positional argument raises a TypeError.",
-      "D": "There is no `backend=` keyword on run() either; that is a V1-migration habit. The only keyword run() accepts is `shots`."
+      "D": "There is no `backend=` keyword on run() either; that is a V1-migration habit. The only keyword run() accepts is `shots`.",
+      "E": "V1 habit: `SamplerV1.run` took `circuits=`. `SamplerV2.run` has a single positional `pubs` parameter, so `circuits=` raises a TypeError before anything is submitted.",
+      "F": "`shots` is a single integer applied to every PUB that does not carry its own shot count; a list raises `TypeError: shots must be an integer`. Per-PUB shot counts go in the PUB tuple's third slot instead."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/get-started-with-sampler",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\n\ntry:\n    from qiskit_ibm_runtime.fake_provider import FakeManilaV2 as _Fake\nexcept ImportError:\n    from qiskit_ibm_runtime.fake_provider import FakeBrisbane as _Fake\n\nbackend = _Fake()\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa_qc = pm.run(qc)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        job = fn()\n        result = job.result()\n        counts = result[0].data.meas.get_counts()\n        total = sum(counts.values())\n        evidence[key] = (\n            f\"call succeeded on {backend.name}: returned job, result()[0].data.meas \"\n            f\"gave counts over {len(counts)} bitstrings (shot count supplied by the local test backend)\"\n        )\n        proven.append(key)\n        return counts\n    except Exception as e:\n        evidence[key] = f\"call raised {type(e).__name__}: {str(e)[:160]}\"\n        return None\n\nsampler = SamplerV2(mode=backend)\ncounts = attempt(\"A\", lambda: sampler.run([isa_qc]))\nattempt(\"B\", lambda: sampler.run(isa_qc))\nattempt(\"C\", lambda: sampler.run([isa_qc], backend))\nattempt(\"D\", lambda: sampler.run([isa_qc], backend=backend))\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"backend\": backend.name, \"counts_A\": counts},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\n\ntry:\n    from qiskit_ibm_runtime.fake_provider import FakeManilaV2 as _Fake\nexcept ImportError:\n    from qiskit_ibm_runtime.fake_provider import FakeBrisbane as _Fake\n\nbackend = _Fake()\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa_qc = pm.run(qc)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        job = fn()\n        result = job.result()\n        counts = result[0].data.meas.get_counts()\n        total = sum(counts.values())\n        evidence[key] = (\n            f\"call succeeded on {backend.name}: returned job, result()[0].data.meas \"\n            f\"gave counts over {len(counts)} bitstrings (shot count supplied by the local test backend)\"\n        )\n        proven.append(key)\n        return counts\n    except Exception as e:\n        evidence[key] = f\"call raised {type(e).__name__}: {str(e)[:160]}\"\n        return None\n\nsampler = SamplerV2(mode=backend)\ncounts = attempt(\"A\", lambda: sampler.run([isa_qc]))\nattempt(\"B\", lambda: sampler.run(isa_qc))\nattempt(\"C\", lambda: sampler.run([isa_qc], backend))\nattempt(\"D\", lambda: sampler.run([isa_qc], backend=backend))\n\nattempt(\"E\", lambda: sampler.run(circuits=[isa_qc]))\nattempt(\"F\", lambda: sampler.run([isa_qc], shots=[1024]))\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"backend\": backend.name, \"counts_A\": counts},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude (orchestrator seed)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | s5 adversarial review: distractor texts lengthened/labelled so the correct option is not the odd one out; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | drift-lint fix: evidence no longer quotes the local 1024 default as meaningful"
+    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | s5 adversarial review: distractor texts lengthened/labelled so the correct option is not the odd one out; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | drift-lint fix: evidence no longer quotes the local 1024 default as meaningful | pool wave: +E V1 `circuits=` kwarg, +F shots as a per-PUB list"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

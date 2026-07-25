@@ -458,3 +458,103 @@ and died with it.
   the WRONG SIDE of the ideal ("slightly above `+1`" for a noisy ⟨ZZ⟩), and an
   over-specific mechanism ("exactly `+0.5`, because noise halves every two-qubit
   correlation"). Both refute against a single measured number.
+
+## Verified library facts (s5 pool wave — sampler primitive, 2026-07-25, runtime 0.48.0)
+
+- **The full `SamplerOptions` tree** (dataclass fields, so anything else is a
+  pydantic `ValidationError`): top level `max_execution_time, environment,
+  simulator, default_shots, dynamical_decoupling, execution, twirling,
+  experimental`; `execution` = `SamplerExecutionOptionsV2(init_qubits,
+  rep_delay, meas_type)` — **no `shots`, no `seed_simulator`**; `simulator` =
+  `noise_model, seed_simulator, coupling_map, basis_gates`; `dynamical_decoupling`
+  = `enable, sequence_type, extra_slack_distribution, scheduling_method,
+  skip_reset_qubits`; `twirling` = `enable_gates, enable_measure,
+  num_randomizations, shots_per_randomization, strategy`.
+- **`dynamical_decoupling.sequence_type = "XX"` is ACCEPTED and leaves `enable`
+  Unset** — a "runs fine, does nothing" refutation (needs a post-condition, not
+  an exception). `twirling.shots_per_twirl` and `simulator.seed` are rejected.
+- **`sampler.options.update(**kwargs)` exists and works** (`update(default_shots=512)`
+  → 512), and plain attribute assignment works too — "SamplerV2.options is
+  read-only" is false. The constructor is no escape hatch either:
+  `SamplerV2(mode=backend, options={"resilience_level": 1})` →
+  `ValidationError: Unexpected keyword argument`. Same for `{"shots": 4096}` and
+  a top-level `{"seed_simulator": 42}`.
+- **`options.experimental` does not absorb unknown option names** — it is an
+  opt-in dict you fill yourself; a misspelled field is rejected outright.
+- **`SamplerV2.set_options(...)` does NOT exist** (AttributeError) — clean V1 habit.
+  So is `run(circuits=[...])` (TypeError). `run([isa], vals, shots=256)` →
+  `TypeError: run() takes 2 positional arguments`; `run([isa], options={...})` →
+  TypeError (no `options` kwarg on run); `run([isa], shots=[1024])` →
+  `TypeError: shots must be an integer` (confirms the s4 finding at list length 1).
+- **`DataBin[0]` → `KeyError: 'Key (0) does not exist in this data bin.'`**;
+  `DataBin.get_counts(name)` and `DataBin.registers` → AttributeError. (Item
+  access by NAME still works — never a wrong option.)
+- **`BitArray.get_bitstrings(0)` on a shape-() BitArray returns a LIST OF ONE
+  bitstring** — it does not raise and does not select a qubit column. Never key
+  or offer "raises without an index". `BitArray.counts()` (bare) is AttributeError.
+- **Broadcast `get_counts()` with NO index pools every parameter set**
+  (4 sets x 500 shots → 2000); `get_counts(i)` gives 500. It never raises for a
+  missing index — "an index is required once broadcast" is a safe, refuted distractor.
+- **Parameter-array shapes, measured:** (6,2)→result (6,); (3,4,2)→(3,4);
+  a (5,3) array for 2 parameters → `ValueError: Length of ('p0','p1') inconsistent
+  with last dimension`. Transposing, flattening, and splitting into one PUB per
+  row all raise the SAME error; `isa.assign_parameters(np.zeros((5,3)))` raises a
+  DIFFERENT one (`Mismatching number of values and parameters`) — useful to prove
+  "bind first" is not a fix.
+- **`decompose()` emits `u` and still fails the target check**;
+  `transpile(qc, basis_gates=...)` without a coupling map fails on `cx` between
+  NON-ADJACENT qubits — the two error messages differ, which is what proves
+  "translation is not routing" independently.
+- **A PUB's own shot count beats `options.default_shots`** (50 wins over 1000);
+  `len(PrimitiveResult)` is defined and equals the number of PUBs submitted.
+
+## Pool-craft rules (s5 pool wave, 2026-07-25 — 30/30 pooled, 56 new distractors)
+
+- **`shortest_option` is the inverse that s3/s4 missed.** The rule that protects
+  `avoid_longest` (new distractors >= len(correct) on non-keepers) drives the
+  correct option to be the SHORTEST displayed option. s5 went 27.8% → 38.3%,
+  two points under the 0.40 warn line, before it was caught. Fix: on the
+  questions where the correct option is already shortest, make exactly ONE pool
+  distractor SHORTER than it and keep the other longer — at dc=4 that drops the
+  question's shortest EV from 1.00 to 0.40 (the short distractor is displayed in
+  6 of 10 subsets). Six such edits took s5 back to exactly 25.0%. Budget: each
+  edit buys ~0.022 of section-level `shortest_option`. Audit ALL THREE length
+  heuristics after a pool wave, not just longest/avoid_longest.
+- **Trimming a pool distractor can strip the hedge that was pre-empting
+  `absolute_distractor_tell`** — s5-q021's shortened E lost "typically" and the
+  flag came back. Re-run the flag check after every length edit, not just after
+  the first draft.
+- **Pre-flight the flags in memory.** Import `audit_meta_patterns`, build the
+  modified question dicts, and run `question_flags` over `display_variants`
+  before writing any file. This caught 5 medium flags (2 stem-echo, 1 format,
+  2 hedge/absolute) with zero disk churn or proof re-runs.
+- **Stem-echo at dc=4 is a COUNTING rule, not a per-option rule:** the flag fires
+  on the 3-subset built from the low-overlap distractors, so raising one new
+  distractor's overlap is not enough — keep the number of distractors with
+  overlap < 3 at TWO or fewer (hit s5-q021 and s5-q035).
+- **`format_tell` has the same shape:** pooling made an all-backticked 3-subset
+  reachable on a question whose base set had only one code-formatted distractor
+  (s5-q021). When the correct option is prose, keep >= 3 non-code-formatted
+  distractors in the pool.
+- **Endianness / "which fix" spot-bug questions are the most dangerous to pool.**
+  On s5-q032 (`b[0]` reads the wrong end), `b[::-1][0]`, `b[1]` for 2 qubits,
+  `qc.reverse_bits()`, swapping the measure mapping, and `BitArray.slice_bits(0)`
+  are ALL second correct answers. The safe wrong "fixes" are the ones that change
+  nothing observable (a barrier before `measure_all()`, `execution.init_qubits =
+  True`) or that read the wrong bit (`(k >> 1) & 1` instead of `k & 1`).
+- **New pool evidence must avoid >=3-digit numbers.** `lint_proof_drift` turns on
+  its number check as soon as ANY >=3-digit number exists in the corpus — and the
+  artifact's own `observed` block counts. Report percentages or small counts
+  (`len(kept)` rather than `sum(kept.values())`); 3 would-be findings were removed
+  this way on s5-q028/q031. An evidence string like `run(options=...)` also trips
+  the kwarg-anchor rule — spell the value out or drop the `=`.
+- **A pool distractor can FIX a pre-existing lint finding:** s5-q001's
+  known-accepted `'1024'` disappeared because the new option F quotes
+  `shots=[1024]`, putting the number into the question corpus.
+- **Conceptual questions pool at zero proof cost** (explanation entry only,
+  `proof.status` stays `conceptual`): 5 of the 30 s5 questions (q021, q030, q034,
+  q037, q038) were pooled this way.
+- s5 final: `longest_option` 22.2%, `avoid_longest` 25.2%, `shortest_option` 25.0%,
+  positions 28–32% (baseline 23.3%), 0 blockers/warnings, 6 low `length_tell`
+  residuals = the 6 deliberate keepers. `similar_twin_member` 40.7% at 22%
+  coverage — below the 25% gating floor, accepted residual as in s4.

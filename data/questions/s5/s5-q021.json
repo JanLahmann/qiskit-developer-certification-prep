@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Only EstimatorV2 exposes per-shot data; the Sampler returns mitigated quasi-probabilities by default, so switch primitives"
+    },
+    {
+      "key": "E",
+      "text": "Set `options.execution.meas_type` to `'kerneled'`, usually the raw per-shot readout"
+    },
+    {
+      "key": "F",
+      "text": "Ask for the untouched per-shot outcomes with a raw=True flag on result(); the Sampler generally returns mitigated counts"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "T-REx is an EstimatorV2 resilience technique for expectation values. The Sampler never applies it, so raw outcomes are simply what you already get.",
       "C": "SamplerV2 has no `resilience_level` at all — the assignment raises — so there is nothing to set to 0; the returned counts are already raw.",
-      "D": "It is the Sampler, not the Estimator, that exposes per-shot samples. The Estimator returns processed expectation values, which is the opposite of raw data."
+      "D": "It is the Sampler, not the Estimator, that exposes per-shot samples. The Estimator returns processed expectation values, which is the opposite of raw data.",
+      "E": "`meas_type` chooses the *level* of returned data (classified bits, kerneled IQ points), not whether mitigation runs. Classified sampler output is already unmitigated, and kerneled data is not what a calibration matrix consumes.",
+      "F": "There is no `raw` parameter on `result()`, and there is nothing to bypass: SamplerV2 counts are already the raw per-shot outcomes."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
@@ -54,6 +64,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell and hedge tell fixed; resilience ruling: distractor C names resilience_level as the misconception; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set"
-  }
+    "notes": "s5 adversarial review: high-severity length tell and hedge tell fixed; resilience ruling: distractor C names resilience_level as the misconception; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E meas_type-controls-mitigation, +F raw=True result flag"
+  },
+  "display_count": 4
 }

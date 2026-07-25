@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Enable gate twirling, which measures and then inverts the readout confusion matrix for you"
+    },
+    {
+      "key": "E",
+      "text": "Apply Probabilistic Error Cancellation to the counts, inverting the learned noise channel shot by shot"
+    },
+    {
+      "key": "F",
+      "text": "Fit the histogram to a maximum-likelihood estimate of the ideal distribution, with no calibration run"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "SamplerV2 has no `resilience_level` — the assignment raises — and a resilience level would not build a readout-calibration matrix in any case.",
       "C": "Zero-Noise Extrapolation mitigates *expectation values* by amplifying gate noise and extrapolating; it is not defined on individual sampled bitstrings.",
-      "D": "Twirling randomizes coherent gate/measurement noise into a simpler stochastic form; it neither measures nor inverts the readout confusion matrix."
+      "D": "Twirling randomizes coherent gate/measurement noise into a simpler stochastic form; it neither measures nor inverts the readout confusion matrix.",
+      "E": "PEC is an expectation-value technique: it reweights sampled circuits with signed quasi-probabilities, which cannot be applied to individual bitstrings. Readout correction on counts is a confusion-matrix problem.",
+      "F": "Without calibration data there is nothing to tell the fit what the device's readout error looks like; M3-style methods are maximum-likelihood fits *given* a measured assignment matrix."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
@@ -54,6 +64,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; resilience ruling: distractor B names resilience_level as Estimator-only; added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set"
-  }
+    "notes": "s5 adversarial review: high-severity length tell fixed; resilience ruling: distractor B names resilience_level as Estimator-only; added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E PEC on bitstrings, +F calibration-free MLE"
+  },
+  "display_count": 4
 }

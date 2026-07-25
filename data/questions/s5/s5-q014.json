@@ -25,6 +25,14 @@
     {
       "key": "D",
       "text": "It is an alias for `options.twirling.enable_measure = True`, turning on measurement twirling"
+    },
+    {
+      "key": "E",
+      "text": "The options object rejects direct assignment; primitive options have to be passed to the constructor"
+    },
+    {
+      "key": "F",
+      "text": "The unknown name lands in `options.experimental`, which the service then ignores"
     }
   ],
   "answer": [
@@ -35,7 +43,9 @@
     "distractors": {
       "A": "Nothing is stored silently: the options model forbids extra attributes and validates on assignment, so the line throws immediately instead of being ignored.",
       "B": "Readout mitigation of expectation values (TREX) is reached through EstimatorV2 resilience settings; the Sampler has no mitigation stage to switch on.",
-      "D": "There is no aliasing. Measurement twirling has to be set explicitly via `options.twirling.enable_measure`; `resilience_level` simply does not exist on the Sampler."
+      "D": "There is no aliasing. Measurement twirling has to be set explicitly via `options.twirling.enable_measure`; `resilience_level` simply does not exist on the Sampler.",
+      "E": "`sampler.options` is writable — setting a real field such as `default_shots` works. And the constructor is no escape hatch: `SamplerV2(mode=backend, options={'resilience_level': 1})` raises the same validation error.",
+      "F": "`experimental` is a real field, but it is an opt-in dict you fill yourself — it does not absorb misspelled or foreign option names. The assignment is rejected outright."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
@@ -49,7 +59,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nsampler = SamplerV2(mode=backend)\n\nraised = False\nerr = \"\"\ntry:\n    sampler.options.resilience_level = 1\nexcept Exception as e:\n    raised = True\n    err = f\"{type(e).__name__}: {str(e)[:140]}\"\n\nhas_attr = hasattr(sampler.options, \"resilience_level\")\n\nevidence, proven = {}, []\n# C: it raises; SamplerV2 has no resilience_level (that's an Estimator option)\nC = raised and (not has_attr)\n# B: it enables readout mitigation\nB = (not raised) and has_attr\n# A: silently does nothing\nA = (not raised)\n# D: it sets measurement twirling\nD = (not raised)\nevidence[\"C\"] = f\"setting resilience_level raised={raised} ({err}); hasattr={has_attr}\"\nevidence[\"B\"] = f\"no silent success: raised={raised}\"\nevidence[\"A\"] = f\"no silent success: raised={raised}\"\nevidence[\"D\"] = f\"no silent success: raised={raised}\"\nfor k, val in [(\"C\", C), (\"B\", B), (\"A\", A), (\"D\", D)]:\n    if val:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"raised\": raised, \"error\": err, \"has_resilience_level\": has_attr}})\n"
+    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nsampler = SamplerV2(mode=backend)\n\nraised = False\nerr = \"\"\ntry:\n    sampler.options.resilience_level = 1\nexcept Exception as e:\n    raised = True\n    err = f\"{type(e).__name__}: {str(e)[:140]}\"\n\nhas_attr = hasattr(sampler.options, \"resilience_level\")\n\nevidence, proven = {}, []\n# C: it raises; SamplerV2 has no resilience_level (that's an Estimator option)\nC = raised and (not has_attr)\n# B: it enables readout mitigation\nB = (not raised) and has_attr\n# A: silently does nothing\nA = (not raised)\n# D: it sets measurement twirling\nD = (not raised)\nevidence[\"C\"] = f\"setting resilience_level raised={raised} ({err}); hasattr={has_attr}\"\nevidence[\"B\"] = f\"no silent success: raised={raised}\"\nevidence[\"A\"] = f\"no silent success: raised={raised}\"\nevidence[\"D\"] = f\"no silent success: raised={raised}\"\nfor k, val in [(\"C\", C), (\"B\", B), (\"A\", A), (\"D\", D)]:\n    if val:\n        proven.append(k)\n\ntry:\n    s2 = SamplerV2(mode=backend)\n    s2.options.default_shots = 64\n    writable = (s2.options.default_shots == 64)\nexcept Exception:\n    writable = False\nctor_ok, ctor_err = False, \"\"\ntry:\n    SamplerV2(mode=backend, options={\"resilience_level\": 1})\n    ctor_ok = True\nexcept Exception as e:\n    ctor_err = type(e).__name__\nE_ok = (not writable) and ctor_ok\nevidence[\"E\"] = (f\"options are writable for real fields (default_shots assignment worked = {writable}); \"\n                 f\"routing resilience_level through the constructor failed too ({ctor_err}) -> claim holds={E_ok}\")\nif E_ok:\n    proven.append(\"E\")\n\nexp = getattr(sampler.options, \"experimental\", None)\nF_ok = (not raised) and bool(exp)\nevidence[\"F\"] = (f\"the assignment was rejected (raised={raised}); options.experimental is {exp!r} \"\n                 f\"and absorbed nothing -> claim holds={F_ok}\")\nif F_ok:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"raised\": raised, \"error\": err, \"has_resilience_level\": has_attr}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -66,6 +76,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: resilience ruling applied: correct answer states library reality and the explanation reconciles it with the exam objective wording; format tell fixed (all options now code-formatted); length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set"
-  }
+    "notes": "s5 adversarial review: resilience ruling applied: correct answer states library reality and the explanation reconciles it with the exam objective wording; format tell fixed (all options now code-formatted); length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E options-are-read-only, +F experimental-absorbs-unknown-fields"
+  },
+  "display_count": 5
 }

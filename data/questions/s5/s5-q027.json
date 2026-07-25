@@ -28,6 +28,10 @@
     {
       "key": "E",
       "text": "`twirling.num_randomizations`"
+    },
+    {
+      "key": "F",
+      "text": "`twirling.shots_per_twirl`"
     }
   ],
   "answer": [
@@ -39,7 +43,8 @@
     "correct": "The twirling options group controls Pauli twirling of gates and measurements: `enable_gates` and `enable_measure` toggle each kind, `num_randomizations` sets how many random twirls to average over, and `shots_per_randomization`/`strategy` complete the group. `twirling_level` and `readout` are not fields of this group, so assigning them raises a validation error.",
     "distractors": {
       "A": "There is no `twirling_level`. Twirling is toggled per kind (`enable_gates`, `enable_measure`) and tuned via `num_randomizations`/`shots_per_randomization`; there is no single integer level.",
-      "D": "Measurement (readout) twirling is controlled by `enable_measure`; no field called `readout_symmetrization` exists, so assigning it fails validation."
+      "D": "Measurement (readout) twirling is controlled by `enable_measure`; no field called `readout_symmetrization` exists, so assigning it fails validation.",
+      "F": "Near-miss name: the real field is `shots_per_randomization`. Assigning `shots_per_twirl` is rejected by the options validator."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview",
@@ -52,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nevidence, proven = {}, []\n\ndef try_field(key, field, value):\n    try:\n        s = SamplerV2(mode=backend)\n        setattr(s.options.twirling, field, value)\n        evidence[key] = f\"twirling.{field} = {value!r}: accepted (real field)\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"twirling.{field}: rejected -> {type(e).__name__}: {str(e)[:70]}\"\n\ntry_field(\"B\", \"enable_gates\", True)\ntry_field(\"C\", \"enable_measure\", True)\ntry_field(\"E\", \"num_randomizations\", 8)\ntry_field(\"A\", \"twirling_level\", 2)\ntry_field(\"D\", \"readout_symmetrization\", True)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"accepted\": proven}})\n"
+    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nevidence, proven = {}, []\n\ndef try_field(key, field, value):\n    try:\n        s = SamplerV2(mode=backend)\n        setattr(s.options.twirling, field, value)\n        evidence[key] = f\"twirling.{field} = {value!r}: accepted (real field)\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"twirling.{field}: rejected -> {type(e).__name__}: {str(e)[:70]}\"\n\ntry_field(\"B\", \"enable_gates\", True)\ntry_field(\"C\", \"enable_measure\", True)\ntry_field(\"E\", \"num_randomizations\", 8)\ntry_field(\"A\", \"twirling_level\", 2)\ntry_field(\"D\", \"readout_symmetrization\", True)\n\ntry_field(\"F\", \"shots_per_twirl\", 8)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"accepted\": proven}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -69,6 +74,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: distractor E renamed to a more plausible fake field; proof updated to match; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B/C/D/E -> answer now B+C+E (option texts swapped, keys/proof remapped)"
-  }
+    "notes": "s5 adversarial review: distractor E renamed to a more plausible fake field; proof updated to match; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B/C/D/E -> answer now B+C+E (option texts swapped, keys/proof remapped) | pool wave: +F shots_per_twirl near-miss name"
+  },
+  "display_count": 5
 }

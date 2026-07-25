@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Read qubit 0 from the `get_counts()` keys instead, which are indexed with qubit 0 first"
+    },
+    {
+      "key": "E",
+      "text": "Switch to `get_int_counts()` and pull qubit 0 out of each integer key with `(k >> 1) & 1`"
+    },
+    {
+      "key": "F",
+      "text": "Put a `qc.barrier()` in front of `measure_all()` so the transpiler cannot reorder the `x(0)`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "The bit ordering is a display convention, not a consequence of `measure_all()`. Explicit measurement into bit 0 still places qubit 0 at the rightmost character, so `b[0]` still reads the wrong qubit.",
       "C": "This is a deterministic indexing error, not statistical noise. More shots do not move qubit 0 to index 0.",
-      "D": "`get_counts()` keys are the same little-endian bitstrings, so index 0 of a key is still the highest qubit, not qubit 0."
+      "D": "`get_counts()` keys are the same little-endian bitstrings, so index 0 of a key is still the highest qubit, not qubit 0.",
+      "E": "The shift reads the wrong bit: qubit 0 is the LOW bit of the integer key, so `k & 1` is what you want. The executed run shows the dominant key and both extractions.",
+      "F": "Nothing was reordered — the value is in the bitstring, just at the other end. The executed run adds the barrier and `b[0]` is still `'0'` almost every shot."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
@@ -47,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n\ndef run_bitstrings(explicit=False, shots=3000):\n    qc = QuantumCircuit(2, 2) if explicit else QuantumCircuit(2)\n    qc.x(0)  # only qubit 0 excited\n    if explicit:\n        qc.measure(0, 0); qc.measure(1, 1)\n    else:\n        qc.measure_all()\n    isa = pm.run(qc)\n    s = SamplerV2(mode=backend); s.options.simulator.seed_simulator = 11\n    field = \"c\" if explicit else \"meas\"\n    return getattr(s.run([isa], shots=shots).result()[0].data, field).get_bitstrings()\n\nbs = run_bitstrings()\nfrac1_at_0 = sum(b[0] == \"1\" for b in bs) / len(bs)     # leftmost char\nfrac1_at_last = sum(b[-1] == \"1\" for b in bs) / len(bs)  # rightmost char (qubit 0)\n\nevidence, proven = {}, []\n# B: qubit 0 is the LAST character (little-endian); read bs[-1]\nB_ok = frac1_at_last > 0.8 and frac1_at_0 < 0.2\nevidence[\"B\"] = f\"reading bs[-1] gives '1' in {frac1_at_last:.2%} of shots vs bs[0] only {frac1_at_0:.2%} -> qubit 0 is the last char = {B_ok}\"\nif B_ok:\n    proven.append(\"B\")\n\n# A: 'switch to explicit measure(0,0), then bs[0] reads qubit 0'\nbs_e = run_bitstrings(explicit=True)\nfrac1_at_0_e = sum(b[0] == \"1\" for b in bs_e) / len(bs_e)\nA_ok = frac1_at_0_e > 0.8\nevidence[\"A\"] = f\"after explicit measure(0,0), bs[0]=='1' in {frac1_at_0_e:.2%} of shots -> still not qubit 0 at index 0 = {A_ok}\"\nif A_ok:\n    proven.append(\"A\")\n\n# C: 'use more shots and it will read correctly at bs[0]'\nbs_more = run_bitstrings(shots=9000)\nfrac1_at_0_more = sum(b[0] == \"1\" for b in bs_more) / len(bs_more)\nC_ok = frac1_at_0_more > 0.8\nevidence[\"C\"] = f\"with 9000 shots, bs[0]=='1' in {frac1_at_0_more:.2%} -> more shots does not move qubit 0 to index 0 = {C_ok}\"\nif C_ok:\n    proven.append(\"C\")\n\n# D: 'use get_counts() to read qubit 0' -> dominant key's [0] char\nfrom collections import Counter\ndom = Counter(bs).most_common(1)[0][0]\nD_ok = (dom[0] == \"1\")\nevidence[\"D\"] = f\"dominant bitstring is {dom!r}; its index-0 char is {dom[0]!r} -> get_counts/dominant[0] reads qubit 0 = {D_ok}\"\nif D_ok:\n    proven.append(\"D\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"frac1_at_0\": frac1_at_0, \"frac1_at_last\": frac1_at_last, \"dominant\": dom}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n\ndef run_bitstrings(explicit=False, shots=3000):\n    qc = QuantumCircuit(2, 2) if explicit else QuantumCircuit(2)\n    qc.x(0)  # only qubit 0 excited\n    if explicit:\n        qc.measure(0, 0); qc.measure(1, 1)\n    else:\n        qc.measure_all()\n    isa = pm.run(qc)\n    s = SamplerV2(mode=backend); s.options.simulator.seed_simulator = 11\n    field = \"c\" if explicit else \"meas\"\n    return getattr(s.run([isa], shots=shots).result()[0].data, field).get_bitstrings()\n\nbs = run_bitstrings()\nfrac1_at_0 = sum(b[0] == \"1\" for b in bs) / len(bs)     # leftmost char\nfrac1_at_last = sum(b[-1] == \"1\" for b in bs) / len(bs)  # rightmost char (qubit 0)\n\nevidence, proven = {}, []\n# B: qubit 0 is the LAST character (little-endian); read bs[-1]\nB_ok = frac1_at_last > 0.8 and frac1_at_0 < 0.2\nevidence[\"B\"] = f\"reading bs[-1] gives '1' in {frac1_at_last:.2%} of shots vs bs[0] only {frac1_at_0:.2%} -> qubit 0 is the last char = {B_ok}\"\nif B_ok:\n    proven.append(\"B\")\n\n# A: 'switch to explicit measure(0,0), then bs[0] reads qubit 0'\nbs_e = run_bitstrings(explicit=True)\nfrac1_at_0_e = sum(b[0] == \"1\" for b in bs_e) / len(bs_e)\nA_ok = frac1_at_0_e > 0.8\nevidence[\"A\"] = f\"after explicit measure(0,0), bs[0]=='1' in {frac1_at_0_e:.2%} of shots -> still not qubit 0 at index 0 = {A_ok}\"\nif A_ok:\n    proven.append(\"A\")\n\n# C: 'use more shots and it will read correctly at bs[0]'\nbs_more = run_bitstrings(shots=9000)\nfrac1_at_0_more = sum(b[0] == \"1\" for b in bs_more) / len(bs_more)\nC_ok = frac1_at_0_more > 0.8\nevidence[\"C\"] = f\"with 9000 shots, bs[0]=='1' in {frac1_at_0_more:.2%} -> more shots does not move qubit 0 to index 0 = {C_ok}\"\nif C_ok:\n    proven.append(\"C\")\n\n# D: 'use get_counts() to read qubit 0' -> dominant key's [0] char\nfrom collections import Counter\ndom = Counter(bs).most_common(1)[0][0]\nD_ok = (dom[0] == \"1\")\nevidence[\"D\"] = f\"dominant bitstring is {dom!r}; its index-0 char is {dom[0]!r} -> get_counts/dominant[0] reads qubit 0 = {D_ok}\"\nif D_ok:\n    proven.append(\"D\")\n\nqcE = QuantumCircuit(2); qcE.x(0); qcE.measure_all()\nsE = SamplerV2(mode=backend); sE.options.simulator.seed_simulator = 11\nicE = sE.run([pm.run(qcE)], shots=3000).result()[0].data.meas.get_int_counts()\ndomE = max(icE, key=icE.get)\nE_ok = (((domE >> 1) & 1) == 1)\nevidence[\"E\"] = (f\"dominant get_int_counts() key is {domE}; (k >> 1) & 1 = {(domE >> 1) & 1} while k & 1 = {domE & 1} \"\n                 f\"-> the shifted expression reads qubit 0 = {E_ok}\")\nif E_ok:\n    proven.append(\"E\")\n\nqcF = QuantumCircuit(2); qcF.x(0); qcF.barrier(); qcF.measure_all()\nsF = SamplerV2(mode=backend); sF.options.simulator.seed_simulator = 11\nbsF = sF.run([pm.run(qcF)], shots=3000).result()[0].data.meas.get_bitstrings()\nfracF = sum(b[0] == \"1\" for b in bsF) / len(bsF)\nF_ok = fracF > 0.8\nevidence[\"F\"] = (f\"with a barrier before measure_all(), b[0]=='1' in {fracF:.2%} of shots \"\n                 f\"-> the barrier does not move qubit 0 to index 0 = {F_ok}\")\nif F_ok:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"frac1_at_0\": frac1_at_0, \"frac1_at_last\": frac1_at_last, \"dominant\": dom}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -64,6 +74,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped)"
-  }
+    "notes": "s5 adversarial review: length rebalanced; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E wrong bit-shift on integer keys, +F barrier-fixes-ordering"
+  },
+  "display_count": 4
 }

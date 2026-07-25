@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`4096` — the sampler ignores `shots` and applies its default shot count"
+    },
+    {
+      "key": "E",
+      "text": "`1` — `get_counts()` hands back normalized probabilities, which add up to one"
+    },
+    {
+      "key": "F",
+      "text": "`2000` — each of the two measured qubits is tallied over the 1000 shots"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Shots are not divided among qubits — every shot measures the full register once, producing one bitstring; all 1000 bitstrings are tallied.",
       "B": "This confuses the number of *distinct outcomes* with the number of shots. get_counts() returns a dict whose keys are the distinct bitstrings but whose values sum to the shot count.",
-      "D": "4096 is the shot count the Qiskit Runtime Sampler falls back to when no shots are specified anywhere, but an explicit `shots=1000` on run() has higher precedence and is obeyed."
+      "D": "4096 is the shot count the Qiskit Runtime Sampler falls back to when no shots are specified anywhere, but an explicit `shots=1000` on run() has higher precedence and is obeyed.",
+      "E": "That is the V1 quasi-distribution habit. `BitArray.get_counts()` returns integer tallies, not probabilities: the executed run summed to the shot count, not to 1.",
+      "F": "Counts are tallied per *bitstring*, not per qubit: one shot contributes exactly one key, whatever its width. The executed run summed to the shot count."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
@@ -47,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)\nresult = sampler.run([isa], shots=1000).result()\ncounts = result[0].data.meas.get_counts()\nobserved = sum(counts.values())\n\ncandidates = {\"C\": 1000, \"B\": 2, \"A\": 500, \"D\": 4096}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims sum(counts.values())={v}; executed run gave {observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"counts\": counts, \"sum\": observed, \"distinct_bitstrings\": len(counts)}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)\nresult = sampler.run([isa], shots=1000).result()\ncounts = result[0].data.meas.get_counts()\nobserved = sum(counts.values())\n\ncandidates = {\"C\": 1000, \"B\": 2, \"A\": 500, \"D\": 4096}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims sum(counts.values())={v}; executed run gave {observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nfor k, v, why in [(\"E\", 1, \"option E claims get_counts() is normalized to 1\"),\n                  (\"F\", 2000, \"option F claims each of the 2 qubits is tallied over the 1000 shots\")]:\n    match = (v == observed)\n    evidence[k] = f\"{why}: claimed sum={v}, executed run gave {observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"counts\": counts, \"sum\": observed, \"distinct_bitstrings\": len(counts)}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -64,6 +74,7 @@
     "model": "claude-opus (generation agent, section s5)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "s5 adversarial review: option D changed 1024->4096 (1024 is a local BackendSamplerV2 artifact, not the Runtime default); options rebalanced for length; proof candidate updated; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged"
-  }
+    "notes": "s5 adversarial review: option D changed 1024->4096 (1024 is a local BackendSamplerV2 artifact, not the Runtime default); options rebalanced for length; proof candidate updated; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E normalized-probabilities habit, +F per-qubit double count"
+  },
+  "display_count": 5
 }

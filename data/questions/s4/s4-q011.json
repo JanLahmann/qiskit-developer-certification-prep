@@ -15,7 +15,7 @@
     },
     {
       "key": "B",
-      "text": "Session mode"
+      "text": "Session mode, which generally keeps the jobs closest together in time."
     },
     {
       "key": "C",
@@ -33,7 +33,7 @@
     "correct": "All jobs are independent and available at the outset, so they can be scheduled collectively in a batch: you wait through the queue only once, the classical pre-processing runs in parallel, and the jobs run closely together to limit drift, while you still get each job's result individually. Because sessions are generally more expensive, batch is preferred whenever dedicated access is not required.",
     "distractors": {
       "A": "Plain job mode creates no scheduling relationship between jobs — each waits in the queue separately with no guarantee they run close together.",
-      "B": "A session would work but is generally more expensive; the docs recommend batch whenever you do not need a session's dedicated exclusive access.",
+      "B": "A session does keep jobs tightly together, but it is generally more expensive; the docs recommend batch whenever you do not need a session's dedicated access.",
       "D": "Opening a session per setting multiplies session overhead and cost while giving independent jobs no benefit."
     },
     "citations": [
@@ -52,7 +52,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged + lengthened the session distractor (absolute-tell fix)."
   }
 }

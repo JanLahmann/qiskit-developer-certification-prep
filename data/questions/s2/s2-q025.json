@@ -19,11 +19,11 @@
     },
     {
       "key": "C",
-      "text": "Sorted in ascending bitstring order ('00','01','10','11'); returns a matplotlib `Figure`."
+      "text": "Sorted in ascending bitstring order ('00','01','10','11'); returns a `Figure`."
     },
     {
       "key": "D",
-      "text": "Sorted ascending, but the call returns an `Axes` object rather than a `Figure`."
+      "text": "Sorted ascending, but the call returns an `Axes` object instead of a matplotlib `Figure`."
     }
   ],
   "answer": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern pass: correct option shortened off the top-length tie so the longest/avoid-longest heuristics both sit at chance"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

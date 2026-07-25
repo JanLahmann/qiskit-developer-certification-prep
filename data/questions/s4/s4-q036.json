@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "Transpile to an ISA circuit and map the observable to its layout before running: `isa = pm.run(qc); mapped = obs.apply_layout(isa.layout); estimator.run([(isa, mapped)])`."
+      "text": "Transpile to an ISA circuit and map the observable onto its layout: `isa = pm.run(qc); mapped = obs.apply_layout(isa.layout)`."
     },
     {
       "key": "B",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "Pass the backend as a second argument to run: `estimator.run([(qc, obs)], backend)`."
+      "text": "Pass the backend to `run` as a second argument so the primitive transpiles the abstract circuit for you: `estimator.run([(qc, obs)], backend)`."
     }
   ],
   "answer": [
@@ -34,7 +34,7 @@
     "distractors": {
       "B": "Shot count has nothing to do with the failure; the abstract circuit is still not an ISA circuit, so raising `default_shots` still raises the same error.",
       "C": "Nesting does not transpile anything; the circuit is still non-ISA, so `run([[qc, obs]])` still raises `IBMInputValueError`.",
-      "D": "`run` does not take a positional backend; adding one raises `TypeError`, and it still would not solve the missing transpilation."
+      "D": "`run` does not take a positional backend and never transpiles for you; the extra argument raises `TypeError`, and the abstract circuit would still not be an ISA circuit."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/hello-world",
@@ -53,8 +53,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened+stem-echoed the positional-backend distractor (length-tell fix)."
   },
   "freshness": {
     "verified_against": {
@@ -63,7 +64,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

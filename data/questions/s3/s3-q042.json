@@ -28,15 +28,20 @@
     {
       "key": "E",
       "text": "`sampling`"
+    },
+    {
+      "key": "F",
+      "text": "`translation`"
     }
   ],
   "answer": [
     "A",
     "B",
-    "D"
+    "D",
+    "F"
   ],
   "explanation": {
-    "correct": "The preset pipeline's stages are init, layout, routing, translation, optimization, and scheduling. So `layout`, `routing`, and `scheduling` are real stages.",
+    "correct": "The preset pipeline's stages are init, layout, routing, translation, optimization, and scheduling — so `layout`, `routing`, `translation`, and `scheduling` are all real stages of `pm.stages`.",
     "distractors": {
       "C": "`mitigation` is an error-mitigation concept applied at runtime by the primitives, not a transpiler stage.",
       "E": "`sampling` refers to the Sampler primitive's execution, not a transpilation stage."
@@ -52,13 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=5, seed=42)\npm = generate_preset_pass_manager(optimization_level=2, backend=backend, seed_transpiler=42)\nstages = set(pm.stages)\nopts = {\"A\": \"layout\", \"B\": \"routing\", \"C\": \"mitigation\", \"D\": \"scheduling\", \"E\": \"sampling\"}\nclaims = {k: (v in stages) for k, v in opts.items()}\nevidence = {k: f\"pm.stages={tuple(pm.stages)}; is '{opts[k]}' a stage? {claims[k]}\" for k in opts}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"stages\": list(pm.stages)}})\n"
+    "proof_script": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=5, seed=42)\npm = generate_preset_pass_manager(optimization_level=2, backend=backend, seed_transpiler=42)\nstages = set(pm.stages)\nopts = {\"A\": \"layout\", \"B\": \"routing\", \"C\": \"mitigation\", \"D\": \"scheduling\",\n        \"E\": \"sampling\", \"F\": \"translation\"}\nclaims = {k: (v in stages) for k, v in opts.items()}\nevidence = {k: f\"pm.stages={tuple(pm.stages)}; is '{opts[k]}' a stage? {claims[k]}\" for k in opts}\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"stages\": list(pm.stages)}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "multi-select answer count varied (every s3 multi shipped exactly 3 correct options): added option F `translation`, a real preset stage, making this a 4-of-6 item; re-proved"
   },
   "freshness": {
     "verified_against": {
@@ -67,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

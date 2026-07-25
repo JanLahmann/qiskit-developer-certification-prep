@@ -6,20 +6,20 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "Using the Qiskit Runtime REST API, how do you submit a Sampler primitive job to run a circuit?",
+  "stem": "You are driving the Qiskit Runtime REST API from your own HTTP client. How do you submit a Sampler primitive job?",
   "code": null,
   "options": [
     {
       "key": "A",
-      "text": "Send an HTTP `POST` to the `/api/v1/jobs` endpoint with a JSON body whose `program_id` is `\"sampler\"`."
+      "text": "Send an HTTP `POST` to `/api/v1/jobs` with `\"program_id\": \"sampler\"` in the JSON request body."
     },
     {
       "key": "B",
-      "text": "Send an HTTP `GET` to `/api/v1/jobs?primitive=SamplerV2`."
+      "text": "Send an HTTP `GET` to `/api/v1/jobs?primitive=SamplerV2` and read the new job from the response."
     },
     {
       "key": "C",
-      "text": "Send an HTTP `POST` to a dedicated `/api/v1/sampler` endpoint."
+      "text": "Send an HTTP `POST` to a dedicated `/api/v1/sampler` endpoint, with the PUBs in the body."
     },
     {
       "key": "D",
@@ -30,15 +30,15 @@
     "A"
   ],
   "explanation": {
-    "correct": "Primitive jobs are created with a `POST` to the `/api/v1/jobs` endpoint. The primitive is selected by the `program_id` field in the JSON body, whose valid values are the lowercase strings `\"sampler\"` and `\"estimator\"`. The circuits are passed as OpenQASM 3 strings inside `params.pubs`.",
+    "correct": "Every primitive job is created by posting to the single `/api/v1/jobs` endpoint. The JSON body selects the primitive through `program_id`, whose documented values are the lower-case service names `sampler` and `estimator`; alongside it go `backend` and a `params` object holding the PUBs, with each circuit supplied as an OpenQASM 3 string. The response returns the job `id`, which you then poll for status and results.",
     "distractors": {
-      "B": "Job creation is a `POST` (it changes state), not a `GET`, and the primitive is chosen via the `program_id` body field, not a query parameter.",
-      "C": "There is no per-primitive endpoint; all primitive jobs go through the single `/api/v1/jobs` endpoint, differentiated by `program_id`.",
-      "D": "`program_id` takes the lowercase service names `\"sampler\"`/`\"estimator\"`, not the Python class names such as `\"SamplerV2\"`."
+      "B": "Creating a job changes server state, so it is a `POST`. `GET /api/v1/jobs` is the *listing* endpoint, and the primitive is never chosen through a query parameter.",
+      "C": "There is no per-primitive endpoint. One job endpoint serves both primitives, distinguished only by the `program_id` field.",
+      "D": "`SamplerV2` is the Python class name in `qiskit-ibm-runtime`. Over REST the field takes the service-side program name, which is the lower-case `sampler`."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-runtime-rest",
-      "https://quantum.cloud.ibm.com/docs/guides/primitives-rest-api"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-rest-api",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-runtime-rest/tags/jobs"
     ]
   },
   "proof": {
@@ -51,7 +51,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s8 r1: carried-forward flag CONFIRMED and fixed — the cited guides/primitives-rest-api returns 200 but redirects to guides/primitives ('Introduction to primitives'), which says nothing about REST and does not support the keyed answer. Replaced with guides/sampler-rest-api, which shows the exact POST to https://quantum.cloud.ibm.com/api/v1/jobs with 'program_id': 'sampler' and params.pubs, and with the REST reference's Jobs tag (POST /v1/jobs, program_id body field). Length tell removed. | length rank rebalanced (correct option no longer shortest)"
   }
 }

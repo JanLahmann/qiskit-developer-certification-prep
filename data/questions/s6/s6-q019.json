@@ -6,7 +6,7 @@
   ],
   "type": "multi",
   "difficulty": 2,
-  "stem": "Select all of the following that are error MITIGATION techniques for the Estimator — methods that post-process results from an ensemble of circuits to reduce bias in expectation values (as opposed to error suppression, which prevents errors before/during execution).",
+  "stem": "Select all of the following that are error MITIGATION techniques for the Estimator \u2014 methods that post-process results from an ensemble of circuits to reduce bias in expectation values (as opposed to error suppression, which prevents errors before/during execution).",
   "code": null,
   "options": [
     {
@@ -38,7 +38,7 @@
   "explanation": {
     "correct": "Error mitigation runs an ensemble of related circuits and post-processes their outputs to reduce bias in expectation values. TREX mitigates readout error, ZNE amplifies noise then extrapolates to the zero-noise limit, and PEC expresses the ideal result as a quasi-probabilistic combination of noisy circuits (unbiased, but with sampling overhead). All three are mitigation.",
     "distractors": {
-      "A": "Dynamical decoupling is error SUPPRESSION: it inserts pulse sequences on idle qubits to prevent decoherence before it happens — it does not post-process results.",
+      "A": "Dynamical decoupling is error SUPPRESSION: it inserts pulse sequences on idle qubits to prevent decoherence before it happens \u2014 it does not post-process results.",
       "D": "Choosing a higher transpiler optimization_level reduces gate count during compilation; it is a circuit-optimization setting, not a runtime error-mitigation post-processing method."
     },
     "citations": [
@@ -56,7 +56,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag)"
   }
 }

@@ -5,53 +5,65 @@
     "s6o1"
   ],
   "type": "mcq",
-  "difficulty": 1,
-  "stem": "You are researching your own error-mitigation method and want EstimatorV2 to return raw, unmitigated expectation values (turning off all built-in error mitigation and suppression). Which setting does this?",
+  "difficulty": 2,
+  "stem": "You have enabled zero-noise extrapolation on an EstimatorV2 with `estimator.options.resilience.zne_mitigation = True`, and you want the noise to be amplified at the four scale factors 1, 3, 5 and 7 before the extrapolation step. Which assignment configures those scale factors?",
   "code": null,
   "options": [
     {
       "key": "A",
-      "text": "`estimator.options.resilience_level = 2`"
+      "text": "`estimator.options.resilience.zne.extrapolator = [1, 3, 5, 7]`"
     },
     {
       "key": "B",
-      "text": "`estimator.options.resilience_level = 1`"
+      "text": "`estimator.options.resilience.zne.amplifier = [1, 3, 5, 7]`"
     },
     {
       "key": "C",
-      "text": "`estimator.options.resilience.zne_mitigation = True`"
+      "text": "`estimator.options.twirling.num_randomizations = [1, 3, 5, 7]`"
     },
     {
       "key": "D",
-      "text": "`estimator.options.resilience_level = 0`"
+      "text": "`estimator.options.resilience.zne.noise_factors = [1, 3, 5, 7]`"
     }
   ],
   "answer": [
     "D"
   ],
   "explanation": {
-    "correct": "Resilience level 0 means 'no mitigation' — it turns off the built-in error mitigation and suppression so the Estimator returns raw expectation values. This is the documented way to disable everything when you plan to apply your own mitigation.",
+    "correct": "ZNE has two stages: noise amplification, then extrapolation. The scale factors used in the amplification stage are the `resilience.zne.noise_factors` sub-option — a list of floats, each >= 1. It accepts the list and leaves the other ZNE knobs (amplifier, extrapolator) at their defaults.",
     "distractors": {
-      "A": "Level 2 is the most aggressive built-in setting (readout mitigation plus ZNE and gate twirling) — the opposite of turning mitigation off.",
-      "B": "Level 1 is the default and still applies readout-error mitigation (TREX); it does not give raw, unmitigated values.",
-      "C": "Enabling zne_mitigation adds zero-noise extrapolation — that is more mitigation, not less."
+      "A": "`zne.extrapolator` is a real sub-option, but it chooses the fitting function used to extrapolate to zero noise (exponential, linear, polynomial_degree_k, ...), not the noise scale factors; a list of numbers fails its validation.",
+      "B": "`zne.amplifier` is a real sub-option that selects HOW noise is amplified (for example gate folding versus PEA), not at which factors; passing numbers to it fails validation.",
+      "C": "`twirling.num_randomizations` controls how many random Pauli-twirled instances of a circuit are run — a twirling knob unrelated to ZNE's noise scaling — and it expects a single integer, not a list."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/estimator-options",
-      "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
     ]
   },
   "proof": {
-    "status": "conceptual",
-    "artifact": null
+    "status": "executed",
+    "artifact": "proofs/s6-q020.json"
   },
   "verification": {
-    "mode": "none"
+    "mode": "script",
+    "proof_script": "\nfrom qiskit_ibm_runtime import EstimatorOptions\n\n# EstimatorOptions is exactly the object behind `estimator.options`, and its\n# pydantic validation is what accepts or rejects each assignment.\nevidence = {}\nproven = []\n\ndef attempt(key, label, fn):\n    opts = EstimatorOptions()\n    try:\n        fn(opts)\n        evidence[key] = f\"{label} = [1, 3, 5, 7] ACCEPTED -> {opts.resilience.zne}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"{label} = [1, 3, 5, 7] raises {type(e).__name__}: \" + \" \".join(str(e).split())[:170]\n\nattempt(\"A\", \"resilience.zne.extrapolator\",\n        lambda o: setattr(o.resilience.zne, \"extrapolator\", [1, 3, 5, 7]))\nattempt(\"B\", \"resilience.zne.amplifier\",\n        lambda o: setattr(o.resilience.zne, \"amplifier\", [1, 3, 5, 7]))\nattempt(\"C\", \"twirling.num_randomizations\",\n        lambda o: setattr(o.twirling, \"num_randomizations\", [1, 3, 5, 7]))\nattempt(\"D\", \"resilience.zne.noise_factors\",\n        lambda o: setattr(o.resilience.zne, \"noise_factors\", [1, 3, 5, 7]))\n\nopts = EstimatorOptions()\nopts.resilience.zne.noise_factors = [1, 3, 5, 7]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"stored_noise_factors\": list(opts.resilience.zne.noise_factors)}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s6: REWORKED — old resilience_level=0 question was a near-duplicate of a community practice question (jaccard 0.42) and redundant with q028A; replaced with ZNE noise_factors configuration, now an executed attempt-proof"
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-25",
+    "stale": false
   }
 }

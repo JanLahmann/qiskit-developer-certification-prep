@@ -8,6 +8,7 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import clsx from 'clsx';
 import CodeBlock from '@theme/CodeBlock';
 import type {BankQuestion} from '@site/src/lib/bank';
+import {OPTION_LETTERS, shuffledOptions} from '@site/src/lib/bank';
 import {renderInline} from '@site/src/lib/md';
 import {recordAnswer, toggleFlag} from '@site/src/lib/storage';
 import styles from './styles.module.css';
@@ -48,6 +49,12 @@ export type QuizCardProps = {
    * selection; no interaction, no stat recording.
    */
   review?: string[];
+  /**
+   * seed for the option-position shuffle. Pass the exam-paper seed so review
+   * shows the same layout the candidate saw; omit for a fresh random layout
+   * per mount (practice). Stored keys never carry positional signal on screen.
+   */
+  shuffleSeed?: number;
 };
 
 export default function QuizCard({
@@ -56,6 +63,7 @@ export default function QuizCard({
   onNext,
   keyboard = true,
   review,
+  shuffleSeed,
 }: QuizCardProps): React.ReactElement {
   const [selected, setSelected] = useState<Set<string>>(
     () => new Set(review ?? []),
@@ -63,6 +71,7 @@ export default function QuizCard({
   const [checked, setChecked] = useState(!!review);
   const [flagged, setFlagged] = useState(false);
   const [showAllExplanations, setShowAllExplanations] = useState(false);
+  const [salt, setSalt] = useState<number>(() => (Math.random() * 4294967296) >>> 0);
 
   const isMulti = q.type === 'multi';
   const answerSet = useMemo(() => new Set(q.answer), [q]);
@@ -72,8 +81,27 @@ export default function QuizCard({
     setSelected(new Set(review ?? []));
     setChecked(!!review);
     setShowAllExplanations(false);
+    if (shuffleSeed === undefined) {
+      setSalt((Math.random() * 4294967296) >>> 0);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q.id]);
+
+  // Display order: stored option keys are grading-internal; on-screen letters
+  // come from position after a seeded shuffle.
+  const displayOpts = useMemo(
+    () => shuffledOptions(q, shuffleSeed ?? salt),
+    [q, shuffleSeed, salt],
+  );
+  const letterOf = useMemo(() => {
+    const m = new Map<string, string>();
+    displayOpts.forEach((o, i) => m.set(o.key, OPTION_LETTERS[i]));
+    return m;
+  }, [displayOpts]);
+  const answerLetters = useMemo(
+    () => q.answer.map((k) => letterOf.get(k) ?? k).sort(),
+    [q, letterOf],
+  );
 
   const correct =
     checked &&
@@ -125,13 +153,13 @@ export default function QuizCard({
         return;
       }
       const upper = e.key.toUpperCase();
-      const keys = q.options.map((o) => o.key);
-      if (keys.includes(upper)) {
-        toggle(upper);
+      const letterIdx = OPTION_LETTERS.indexOf(upper);
+      if (letterIdx >= 0 && letterIdx < displayOpts.length) {
+        toggle(displayOpts[letterIdx].key);
       } else if (/^[1-6]$/.test(e.key)) {
         const idx = Number(e.key) - 1;
-        if (idx < keys.length) {
-          toggle(keys[idx]);
+        if (idx < displayOpts.length) {
+          toggle(displayOpts[idx].key);
         }
       } else if (e.key === 'Enter') {
         if (!checked) {
@@ -145,7 +173,7 @@ export default function QuizCard({
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [keyboard, q, toggle, check, checked, onNext]);
+  }, [keyboard, q, displayOpts, toggle, check, checked, onNext]);
 
   const proofBadge =
     q.proof.status === 'executed' ? (
@@ -195,7 +223,7 @@ export default function QuizCard({
       ) : null}
 
       <div className={styles.options} role={isMulti ? 'group' : 'radiogroup'}>
-        {q.options.map((opt) => {
+        {displayOpts.map((opt) => {
           const isSelected = selected.has(opt.key);
           const isAnswer = answerSet.has(opt.key);
           const stateClass = !checked
@@ -223,7 +251,7 @@ export default function QuizCard({
                 disabled={checked}
                 role={isMulti ? 'checkbox' : 'radio'}
                 aria-checked={isSelected}>
-                <span className={styles.optionKey}>{opt.key}</span>
+                <span className={styles.optionKey}>{letterOf.get(opt.key)}</span>
                 <span>{renderInline(opt.text)}</span>
               </button>
               {showExplain ? (
@@ -247,7 +275,7 @@ export default function QuizCard({
               Check answer
             </button>
             <span className={styles.kbdHint}>
-              keys: A–{q.options[q.options.length - 1]?.key} select · Enter check
+              keys: A–{OPTION_LETTERS[displayOpts.length - 1]} select · Enter check
             </span>
           </>
         ) : (
@@ -257,7 +285,7 @@ export default function QuizCard({
                 styles.result,
                 correct ? styles.resultCorrect : styles.resultWrong,
               )}>
-              {correct ? 'Correct.' : `Not quite — answer: ${q.answer.join(', ')}.`}
+              {correct ? 'Correct.' : `Not quite — answer: ${answerLetters.join(', ')}.`}
             </span>
             {onNext ? (
               <button
@@ -280,7 +308,7 @@ export default function QuizCard({
       {checked ? (
         <div className={styles.explainBox}>
           <div>
-            <strong>Why {q.answer.join(' + ')}:</strong>{' '}
+            <strong>Why {answerLetters.join(' + ')}:</strong>{' '}
             {renderInline(q.explanation.correct)}
           </div>
 
@@ -288,9 +316,10 @@ export default function QuizCard({
             <details className={styles.proofDetails}>
               <summary>Execution proof — what actually happened</summary>
               <ul className={styles.proofEvidence}>
-                {q.options.map((opt) => (
+                {displayOpts.map((opt) => (
                   <li key={opt.key}>
-                    <strong>{opt.key}:</strong> {q.proof.evidence?.[opt.key]}
+                    <strong>{letterOf.get(opt.key)}:</strong>{' '}
+                    {q.proof.evidence?.[opt.key]}
                   </li>
                 ))}
               </ul>

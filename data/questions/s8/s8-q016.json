@@ -53,8 +53,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s8 round 1: survived unchanged (citations re-fetched 200 and re-read, proof evidence discriminates every option, no second defensible answer, no meta-pattern flag); all four options are exactly equal length, so the length heuristics sit at chance here"
   },
   "freshness": {
     "verified_against": {
@@ -63,7 +64,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

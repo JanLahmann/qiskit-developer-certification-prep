@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "`sampler.options.dynamical_decoupling.enable = True`"
+      "text": "`sampler.options.resilience.dynamical_decoupling = True`"
     },
     {
       "key": "B",
@@ -23,22 +23,23 @@
     },
     {
       "key": "D",
-      "text": "`sampler.options.resilience.dynamical_decoupling = True`"
+      "text": "`sampler.options.dynamical_decoupling.enable = True`"
     }
   ],
   "answer": [
-    "A"
+    "D"
   ],
   "explanation": {
     "correct": "Dynamical decoupling is configured through the nested options object: `options.dynamical_decoupling` is an options group whose `.enable` flag turns the feature on. Setting `options.dynamical_decoupling.enable = True` is the supported form.",
     "distractors": {
+      "A": "SamplerV2 has no `resilience` options group (that concept lives on the Estimator). Accessing `options.resilience` fails; DD lives directly under `options.dynamical_decoupling`.",
       "B": "`dynamical_decoupling` is an options *group*, not a boolean. Assigning `True` to the whole group fails validation — you must set its `.enable` field.",
-      "C": "`run()` does not accept a `dynamical_decoupling` keyword; options are configured on `sampler.options`, not passed to `run()`. This raises a TypeError.",
-      "D": "SamplerV2 has no `resilience` options group (that concept lives on the Estimator). Accessing `options.resilience` fails; DD lives directly under `options.dynamical_decoupling`."
+      "C": "`run()` does not accept a `dynamical_decoupling` keyword; options are configured on `sampler.options`, not passed to `run()`. This raises a TypeError."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/configure-error-suppression",
-      "https://quantum.cloud.ibm.com/docs/guides/specify-runtime-options"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-options"
     ]
   },
   "proof": {
@@ -47,7 +48,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(1); qc.h(0); qc.measure_all()\nisa = pm.run(qc)\n\nevidence, proven = {}, []\n\n# A: sampler.options.dynamical_decoupling.enable = True\ntry:\n    s = SamplerV2(mode=backend)\n    s.options.dynamical_decoupling.enable = True\n    ok_state = (s.options.dynamical_decoupling.enable is True)\n    s.run([isa], shots=64).result()  # still runs\n    evidence[\"A\"] = f\"set options.dynamical_decoupling.enable=True: OK, enable now {s.options.dynamical_decoupling.enable}, job ran\"\n    if ok_state:\n        proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\n# B: sampler.options.dynamical_decoupling = True\ntry:\n    s = SamplerV2(mode=backend)\n    s.options.dynamical_decoupling = True\n    evidence[\"B\"] = \"assigning the whole group = True: unexpectedly accepted\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\n# C: run kwarg\ntry:\n    SamplerV2(mode=backend).run([isa], dynamical_decoupling=True)\n    evidence[\"C\"] = \"run(dynamical_decoupling=True): unexpectedly accepted\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\n# D: options.resilience.dynamical_decoupling\ntry:\n    s = SamplerV2(mode=backend)\n    s.options.resilience.dynamical_decoupling = True\n    evidence[\"D\"] = \"options.resilience.dynamical_decoupling: unexpectedly accepted\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(1); qc.h(0); qc.measure_all()\nisa = pm.run(qc)\n\nevidence, proven = {}, []\n\n# D: sampler.options.dynamical_decoupling.enable = True\ntry:\n    s = SamplerV2(mode=backend)\n    s.options.dynamical_decoupling.enable = True\n    ok_state = (s.options.dynamical_decoupling.enable is True)\n    s.run([isa], shots=64).result()  # still runs\n    evidence[\"D\"] = f\"set options.dynamical_decoupling.enable=True: OK, enable now {s.options.dynamical_decoupling.enable}, job ran\"\n    if ok_state:\n        proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\n# B: sampler.options.dynamical_decoupling = True\ntry:\n    s = SamplerV2(mode=backend)\n    s.options.dynamical_decoupling = True\n    evidence[\"B\"] = \"assigning the whole group = True: unexpectedly accepted\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\n# C: run kwarg\ntry:\n    SamplerV2(mode=backend).run([isa], dynamical_decoupling=True)\n    evidence[\"C\"] = \"run(dynamical_decoupling=True): unexpectedly accepted\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\n# A: options.resilience.dynamical_decoupling\ntry:\n    s = SamplerV2(mode=backend)\n    s.options.resilience.dynamical_decoupling = True\n    evidence[\"A\"] = \"options.resilience.dynamical_decoupling: unexpectedly accepted\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -56,13 +57,14 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "s5 adversarial review: citations refreshed only (no tells flagged); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set"
   }
 }

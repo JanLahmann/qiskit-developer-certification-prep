@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "When its first job begins execution."
+      "text": "When its first job begins running."
     },
     {
       "key": "B",
@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "When you exit the context manager."
+      "text": "When you exit the context manager block."
     },
     {
       "key": "D",
@@ -52,7 +52,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — made the correct option the shortest (shortest-option calibration). Also: de-code-formatted a distractor (format-tell fix)."
   }
 }

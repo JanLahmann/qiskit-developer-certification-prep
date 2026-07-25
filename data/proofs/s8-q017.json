@@ -2,15 +2,16 @@
   "question": "s8-q017",
   "verdict": {
     "answer": [
-      "A"
+      "D"
     ],
     "evidence": {
-      "A": "gates preserved=True; global_phase 1.5708 -> 0.0 (lost=True); qc2==qc=False",
-      "B": "qc2 exactly equals qc (incl. global phase)? False",
-      "C": "qasm2.dumps raised? False ",
-      "D": "global phase preserved and h dropped? False (h count in qc2=1)"
+      "A": "claim=qc2 == qc via a gphase statement; emitted text contains 'gphase'=False; qc2 == qc is False",
+      "B": "claim=qasm2.dumps raises QASM2ExportError; export actually raised=False ; emitted text='OPENQASM 2.0;\\ninclude \"qelib1.inc\";\\nqreg q[1];\\nh q[0];'",
+      "C": "claim=phase kept and h dropped; qc2.global_phase=0.0 (original 1.5708), h count in qc2=1",
+      "D": "claim=gates kept, phase lost; count_ops preserved=True ({'h': 1} -> {'h': 1}); global_phase 1.5708 -> 0.0 (lost=True); qc2 == qc is False"
     },
     "observed": {
+      "dumped": "OPENQASM 2.0;\ninclude \"qelib1.inc\";\nqreg q[1];\nh q[0];",
       "gp_orig": 1.5707963267948966,
       "gp_rt": 0.0,
       "ops_equal": true,
@@ -23,9 +24,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.4,
+  "wall_seconds": 1.1,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"gates preserved=True; global_phase 1.5708 -> 0.0 (lost=True); qc2==qc=False\", \"B\": \"qc2 exactly equals qc (incl. global phase)? False\", \"C\": \"qasm2.dumps raised? False \", \"D\": \"global phase preserved and h dropped? False (h count in qc2=1)\"}, \"observed\": {\"gp_orig\": 1.5707963267948966, \"gp_rt\": 0.0, \"ops_equal\": true, \"circ_equal\": false}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"claim=qc2 == qc via a gphase statement; emitted text contains 'gphase'=False; qc2 == qc is False\", \"B\": \"claim=qasm2.dumps raises QASM2ExportError; export actually raised=False ; emitted text='OPENQASM 2.0;\\\\ninclude \\\"qelib1.inc\\\";\\\\nqreg q[1];\\\\nh q[0];'\", \"C\": \"claim=phase kept and h dropped; qc2.global_phase=0.0 (original 1.5708), h count in qc2=1\", \"D\": \"claim=gates kept, phase lost; count_ops preserved=True ({'h': 1} -> {'h': 1}); global_phase 1.5708 -> 0.0 (lost=True); qc2 == qc is False\"}, \"observed\": {\"dumped\": \"OPENQASM 2.0;\\ninclude \\\"qelib1.inc\\\";\\nqreg q[1];\\nh q[0];\", \"gp_orig\": 1.5707963267948966, \"gp_rt\": 0.0, \"ops_equal\": true, \"circ_equal\": false}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

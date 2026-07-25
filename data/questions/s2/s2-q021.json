@@ -11,11 +11,11 @@
   "options": [
     {
       "key": "A",
-      "text": "The two highest-count bitstrings ('00' and '11') plus one aggregated bar labeled 'rest'."
+      "text": "The two highest-count bitstrings plus one 'rest' bar holding all other outcomes."
     },
     {
       "key": "B",
-      "text": "Only the two highest-count bitstrings ('00' and '11'); the other outcomes are dropped entirely."
+      "text": "Just the two highest-count bitstrings ('00' and '11'); the other outcomes are dropped."
     },
     {
       "key": "C",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "All four bitstrings; `number_to_keep` only changes the figure width."
+      "text": "The four original bitstrings; `number_to_keep` just widens the figure."
     }
   ],
   "answer": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern pass: absolute tell inverted deliberately — absolutes removed from distractors B/D and the (factually true) 'all other outcomes' kept in the correct option"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

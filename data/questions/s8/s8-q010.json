@@ -6,35 +6,35 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "You export a small circuit to OpenQASM 3 with `qiskit.qasm3.dumps(qc)`. Which string is returned exactly?",
+  "stem": "The circuit below is exported with `qiskit.qasm3.dumps(qc)` and the result is printed. Which string is printed exactly, character for character?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\n\nprint(qasm3.dumps(qc))",
   "options": [
     {
       "key": "A",
-      "text": "```\nOPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit[1] c;\nqubit[1] q;\nh q[0];\nc[0] = measure q[0];\n```"
+      "text": "```\nOPENQASM 3.0;\ninclude \"stdgates.inc\";\nqubit[1] q;\nbit[1] c;\nh q[0];\nc[0] = measure q[0];\n```"
     },
     {
       "key": "B",
-      "text": "```\nOPENQASM 3.0;\ninclude \"stdgates.inc\";\ncreg c[1];\nqreg q[1];\nh q[0];\nc[0] = measure q[0];\n```"
+      "text": "```\nOPENQASM 3;\ninclude \"stdgates.inc\";\nbit[1] c;\nqubit[1] q;\nh q[0];\nc[0] = measure q[0];\n```"
     },
     {
       "key": "C",
-      "text": "```\nOPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit[1] c;\nqubit[1] q;\nh q[0];\nmeasure q[0] -> c[0];\n```"
+      "text": "```\nOPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit[1] c;\nqubit[1] q;\nh q[0];\nc[0] = measure q[0];\n```"
     },
     {
       "key": "D",
-      "text": "```\nOPENQASM 3.0;\ninclude \"qelib1.inc\";\nbit[1] c;\nqubit[1] q;\nh q[0];\nc[0] = measure q[0];\n```"
+      "text": "```\nOPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit c;\nqubit[1] q;\nh q[0];\nc = measure q[0];\n```"
     }
   ],
   "answer": [
-    "A"
+    "C"
   ],
   "explanation": {
-    "correct": "OpenQASM 3 declares classical and quantum data with the `bit[n]`/`qubit[n]` keywords (not `creg`/`qreg`), pulls its standard gates from `stdgates.inc`, and writes measurement as an assignment `c[0] = measure q[0];`. Qiskit's exporter lists the classical `bit` declaration before the `qubit` declaration, exactly matching option A.",
+    "correct": "Qiskit's OpenQASM 3 exporter opens with the full version literal `OPENQASM 3.0;`, then `include \"stdgates.inc\";`, and then declares the circuit's registers **classical first**: the `ClassicalRegister` becomes `bit[1] c;` and the `QuantumRegister` becomes `qubit[1] q;`. Gate names are emitted exactly as they are spelled in `stdgates.inc`, which is lower-case `h`, and the measurement is an assignment, `c[0] = measure q[0];`.",
     "distractors": {
-      "B": "`creg`/`qreg` are the OpenQASM 2 register keywords. OpenQASM 3 replaced them with `bit[n]` and `qubit[n]`; mixing the v2 keywords under a `3.0` header is invalid.",
-      "C": "`measure q[0] -> c[0];` is the OpenQASM 2 measurement arrow syntax. OpenQASM 3 uses an assignment, `c[0] = measure q[0];`.",
-      "D": "`qelib1.inc` is the OpenQASM 2 include file. OpenQASM 3 programs include `stdgates.inc` for the standard gate set."
+      "A": "Declaration order is reversed. The exporter walks the circuit's classical registers before its quantum registers, so `bit[1] c;` is emitted above `qubit[1] q;` -- the reverse order is a different string even though it would be an equally legal OpenQASM 3 program.",
+      "B": "The version statement is written with the minor version: Qiskit emits `OPENQASM 3.0;`, not the bare `OPENQASM 3;` form that appears in much of the language specification's prose.",
+      "D": "This assumes the exporter collapses a width-1 register to a scalar. It does not: a `ClassicalRegister` always becomes a sized `bit[n]` declaration, indexed on assignment, even when `n == 1`. The bare `bit c;` form with a scalar assignment is what a *loose* `Clbit` (one added with `add_bits` rather than as part of a register) would produce."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3",
@@ -47,13 +47,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nobserved = qasm3.dumps(qc)\n\ncandidates = {\n    \"A\": 'OPENQASM 3.0;\\ninclude \"stdgates.inc\";\\nbit[1] c;\\nqubit[1] q;\\nh q[0];\\nc[0] = measure q[0];\\n',\n    \"B\": 'OPENQASM 3.0;\\ninclude \"stdgates.inc\";\\ncreg c[1];\\nqreg q[1];\\nh q[0];\\nc[0] = measure q[0];\\n',\n    \"C\": 'OPENQASM 3.0;\\ninclude \"stdgates.inc\";\\nbit[1] c;\\nqubit[1] q;\\nh q[0];\\nmeasure q[0] -> c[0];\\n',\n    \"D\": 'OPENQASM 3.0;\\ninclude \"qelib1.inc\";\\nbit[1] c;\\nqubit[1] q;\\nh q[0];\\nc[0] = measure q[0];\\n',\n}\nevidence = {}\nproven = []\nfor key, text in candidates.items():\n    match = (observed == text)\n    evidence[key] = f\"option {key} equals qasm3.dumps output? {match} (option repr={text!r})\"\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"dumps\": observed}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nobserved = qasm3.dumps(qc)\n\ncandidates = {\n    \"A\": 'OPENQASM 3.0;\\ninclude \"stdgates.inc\";\\nqubit[1] q;\\nbit[1] c;\\nh q[0];\\nc[0] = measure q[0];\\n',\n    \"B\": 'OPENQASM 3;\\ninclude \"stdgates.inc\";\\nbit[1] c;\\nqubit[1] q;\\nh q[0];\\nc[0] = measure q[0];\\n',\n    \"C\": 'OPENQASM 3.0;\\ninclude \"stdgates.inc\";\\nbit[1] c;\\nqubit[1] q;\\nh q[0];\\nc[0] = measure q[0];\\n',\n    \"D\": 'OPENQASM 3.0;\\ninclude \"stdgates.inc\";\\nbit c;\\nqubit[1] q;\\nh q[0];\\nc = measure q[0];\\n',\n}\nevidence = {}\nproven = []\nfor key, text in candidates.items():\n    match = (observed == text or observed == text.rstrip(\"\\n\"))\n    first_diff = None\n    if not match:\n        a, b = observed.splitlines(), text.rstrip(\"\\n\").splitlines()\n        for i in range(max(len(a), len(b))):\n            la = a[i] if i < len(a) else \"<missing>\"\n            lb = b[i] if i < len(b) else \"<missing>\"\n            if la != lb:\n                first_diff = f\"line {i + 1}: emitted {la!r} vs option {lb!r}\"\n                break\n    evidence[key] = (\n        f\"option {key} equals qasm3.dumps output verbatim? {match}\"\n        + (f\" — first difference: {first_diff}\" if first_diff else \"\")\n    )\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"dumps\": observed, \"lines\": observed.splitlines()}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s8 r1: answer A->C; distractors rebuilt (decl order / version literal / gate-name case) so the item no longer duplicates q014+q016+q018 discriminators | replaced the case-only distractor (H vs h) — it collided with the correct option under the audit's case-insensitive duplicate check and was a fiddly discriminator; now contrasts register bit[1] against loose-Clbit scalar bit, verified empirically both ways. Proof now reports the first differing line."
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

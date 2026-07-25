@@ -1,0 +1,392 @@
+[
+  {
+    "n": 1,
+    "stem": "What is the output of the following Qiskit code?\n\n```\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)\n\nqc_inv = qc.inverse()\ndisplay(qc_inv.draw('mpl'))\n\n```",
+    "code": "qc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)\n\nqc_inv = qc.inverse()\ndisplay(qc_inv.draw('mpl'))",
+    "options": {
+      "A": "![1.png](q_photos/1.png)",
+      "B": "![2.png](q_photos/2.png)",
+      "C": "![3.png](q_photos/3.png)",
+      "D": "![4.png](q_photos/4.png)"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "answer_note": "<Details>\n<br/>\nB) Since to inverse the circuit you have to reverse the order and dagger the gates\n\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 2,
+    "stem": "Which method correctly prepares the following state?\n$$\n|\\psi(\\vec{x}^{(1)})\\rangle = \\frac{1}{\\sqrt{105}}(4|00\\rangle+8|01\\rangle+5|10\\rangle+0|11\\rangle)\n$$",
+    "code": null,
+    "options": {
+      "A": "```\ndesired_state = [\n    1 / math.sqrt(105) * 4,\n    1 / math.sqrt(105) * 8,\n    1 / math.sqrt(105) * 5,\n    1 / math.sqrt(105) * 0,\n]\n\nqc = QuantumCircuit(2)\nqc.initialize(desired_state, [0, 1])\n```",
+      "B": "```\ndesired_state = [\n    1 / math.sqrt(105) * 0,\n    1 / math.sqrt(105) * 5,\n    1 / math.sqrt(105) * 8,\n    1 / math.sqrt(105) * 4,\n]\n\nqc = QuantumCircuit(2)\nqc.initialize(desired_state, [0, 1])\n```",
+      "C": "```\ndesired_state = [\n    1 / math.sqrt(105) * 0,\n    1 / math.sqrt(105) * 5,\n    1 / math.sqrt(105) * 8,\n    1 / math.sqrt(105) * 4,\n]\n\nqc = QuantumCircuit(2)\nqc.prepare(desired_state, [0, 1])\n```",
+      "D": "```\ndesired_state = [\n    1 / math.sqrt(105) * 4,\n    1 / math.sqrt(105) * 8,\n    1 / math.sqrt(105) * 5,\n    1 / math.sqrt(105) * 0,\n]\n\nqc = QuantumCircuit(2)\nqc.prepare(desired_state, [0, 1])\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "answer_note": "<Details>\n<br/>\nA)\n```\ndesired_state = [\n    1 / math.sqrt(105) * 4,\n    1 / math.sqrt(105) * 8,\n    1 / math.sqrt(105) * 5,\n    1 / math.sqrt(105) * 0,\n]\n\nqc = QuantumCircuit(2)\nqc.initialize(desired_state, [0, 1])\n```\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 3,
+    "stem": "Which classical-data embedding method encodes an $N$-dimensional input into $\\lceil \\log_2 N \\rceil$ qubits?",
+    "code": null,
+    "options": {
+      "A": "Basic encoding",
+      "B": "Angle encoding",
+      "C": "Amplitude encoding",
+      "D": "ZZ-feature encoding"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "answer_note": "<Details>\n<br/>\nC) Amplitude encoding\n</Details>",
+    "has_code": false
+  },
+  {
+    "n": 4,
+    "stem": "What is the effect of calling `qc.barrier()` on a quantum circuit `qc`?",
+    "code": null,
+    "options": {
+      "A": "It only adds a visual separator to the circuit.",
+      "B": "It raises an error because `qc.barrier()` requires a qubit register argument.",
+      "C": "It inserts a barrier that prevents the transpiler from reordering or combining gates across that point in the circuit.",
+      "D": "It raises an error because the correct way to add a barrier is `qc.append(barrier())`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "answer_note": "<Details>\n<br/>\nC) It adds a barrier such that during transpilation gates on each site of the barrier does not get mixed\n\n\n\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 5,
+    "stem": "Which method of drawing a timeline diagram is correct?",
+    "code": null,
+    "options": {
+      "A": "```\nfrom qiskit.visualization.timeline import draw\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0,1)\n\nqc = transpile(qc, backend, layout_method='trivial')\ndraw(qc)\n```",
+      "B": "```\nfrom qiskit.visualization.timeline import draw\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0,1)\n\nbackend = GenericBackendV2(5)\n\nqc = transpile(qc, backend, layout_method='trivial')\ndraw(target=qc, backend=backend.target)\n```",
+      "C": "```\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0,1)\n\nbackend = GenericBackendV2(5)\n\nqc = transpile(qc, backend, layout_method='trivial')\nqc.draw(method=\"timeline\")\n```",
+      "D": "```\nfrom qiskit.visualization.timeline import draw\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0,1)\n\nbackend = GenericBackendV2(5)\n\nqc = transpile(qc, backend, layout_method='trivial')\ndraw(qc, target=backend.target)\n```"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "answer_note": "<Details>\n<br/>\nD)\n```\nfrom qiskit.visualization.timeline import draw\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0,1)\n\nbackend = GenericBackendV2(5)\n\nqc = transpile(qc, backend, layout_method='trivial')\ndraw(qc, target=backend.target)\n```\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 6,
+    "stem": "Which Qiskit visualization is used to display how logical (virtual) qubits are mapped onto physical qubits of a backend?",
+    "code": null,
+    "options": {
+      "A": "Qsphere visualization",
+      "B": "Gate map visualization",
+      "C": "DAG visualization",
+      "D": "Hinton diagram"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "answer_note": "<Details>\n<br/>\nB) Gate map visualization\n</Details>",
+    "has_code": false
+  },
+  {
+    "n": 7,
+    "stem": "Which of the following Qiskit code snippets correctly defines a single-qubit\nquantum circuit where the rotation angle $\\theta$ of an RX gate is parameterized\nby the quadratic expression $\\theta = x^2 + 2x + 1$?**",
+    "code": null,
+    "options": {
+      "A": "```\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter(\"theta\")\nx = Parameter(\"x\")\ntheta = x**2 + 2*x +1\n\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\n```",
+      "B": "```\nfrom qiskit.variational import Parameter\n\nx = Parameter(\"x\")\ntheta = x**2 + 2*x +1\n\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\n```",
+      "C": "```\nfrom qiskit.variational import Parameter\n\nx = Parameter(\"x\")\ntheta = x**2 + 2*x +1\n\nqc = QuantumCircuit(1)\nqc.rx(0, theta)\n```",
+      "D": "```\nfrom qiskit.circuit import Parameter\n\nx = Parameter(\"x\")\ntheta = x**2 + 2*x +1\n\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\n```",
+      "E": "```\nfrom qiskit.circuit import Parameter\n\nx = Parameter(\"x\")\ntheta = x**2 + 2*x +1\n\nqc = QuantumCircuit(1)\nqc.rx(0)\nqc.assign_parameters({rx:theta})\n```"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "answer_note": "<Details>\n<br/>\nD)\n```\nfrom qiskit.circuit import Parameter\n\nx = Parameter(\"x\")\ntheta = x**2 + 2*x +1\n\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\n```\n\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 8,
+    "stem": "In Qiskit, which of the following is the correct syntax to apply the sine function to a `Parameter` object named `phi`?",
+    "code": null,
+    "options": {
+      "A": "`expr = sin(phi)`",
+      "B": "`expr = phi.sin()`",
+      "C": "`expr = apply_sin(phi)`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "answer_note": "<Details>\n<br/>\nB)\n```\nexpr = phi.sin()\n```\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 9,
+    "stem": "Which of the following Qiskit code snippets correctly transpiles a logical quantum circuit `qc` for execution on a specific physical `backend`?",
+    "code": null,
+    "options": {
+      "A": "```\ntranspiled_qc = transpile(qc, backend=backend)\n```",
+      "B": "```\npass_manager = generate_preset_pass_manager(backend=backend)\ntranspiled_qc = pass_manager.transpile(qc)\n```",
+      "C": "```\npass_manager = generate_preset_pass_manager(backend=backend)\ntranspiled_qc = pass_manager.run(qc)\n```",
+      "D": "Both A) and B) are correct",
+      "E": "Both A) and C) are correct"
+    },
+    "stated_answer": [
+      "A",
+      "C",
+      "E"
+    ],
+    "answer_note": "<Details>\n<br/>\nE) Both A) and C) are correct\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 10,
+    "stem": "When working with variational quantum circuits that require consecutive executions where each circuit depends on the output of the previous run, which execution method is most appropriate?",
+    "code": null,
+    "options": {
+      "A": "Job mode",
+      "B": "Batch mode",
+      "C": "Session mode"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "answer_note": "<Details>\n<br/>\nC) Session mode\n\n</Details>",
+    "has_code": false
+  },
+  {
+    "n": 11,
+    "stem": "Given a `sampler` instance and a quantum circuit `qc`, how would you submit a job for execution?",
+    "code": null,
+    "options": {
+      "A": "`job = sampler.run([qc])`",
+      "B": "`job = sampler.execute(qc)`",
+      "C": "`job = sampler.run(qc)`",
+      "D": "`job = qc.run(sampler)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "answer_note": "<Details>\n<br/>\nA) `job = sampler.run([qc])`\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 12,
+    "stem": "What is the correct way to initialize batch mode for a given `backend`?",
+    "code": null,
+    "options": {
+      "A": "```\nsampler = Sampler(mode=\"batch\")\n```",
+      "B": "```\nsampler = Sampler(backend=backend)\njob = sampler.run([qc], mode=\"batch\")\n```",
+      "C": "```\nsampler = Sampler(mode=\"batch\", backend=backend)\n```",
+      "D": "```\nbatch = Batch(backend=backend)\nsampler = Sampler(mode=batch)\n```"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "answer_note": "<Details>\n<br/>\nD)\n```\nbatch = Batch(backend=backend)\nsampler = Sampler(mode=batch)\n```\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 13,
+    "stem": "Which error suppression and error mitigation options are available for the Sampler primitive? Select all that apply.",
+    "code": null,
+    "options": {
+      "A": "Zero-noise estimation",
+      "B": "Pauli Twirling",
+      "C": "Dynamical decoupling",
+      "D": "Twirling Readout Error Extinction (T-REx)"
+    },
+    "stated_answer": [
+      "B",
+      "C"
+    ],
+    "answer_note": "<Details>\n<br/>\nB) Pauli Twirling and C) Dynamical decoupling\n\n</Details>",
+    "has_code": false
+  },
+  {
+    "n": 14,
+    "stem": "Which code snippet correctly submits a quantum circuit `qc` for sampling probabilities on a specified `backend`?",
+    "code": null,
+    "options": {
+      "A": "```\nsampler = Sampler(backend=backend)\njob = sampler.run([qc])\n```",
+      "B": "```\njob = backend.run(qc, mode=\"sampler\")\n```",
+      "C": "```\nsampler = Sampler(backend=backend)\njob = sampler.run(qc)\n```",
+      "D": "```\njob = backend.run([qc], mode=\"sampler\")\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "answer_note": "<Details>\n<br/>\nA)\n```\nsampler = Sampler(backend=backend)\njob = sampler.run([qc])\n```\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 15,
+    "stem": "Given a `sampler` instance, how would you enable Pauli Twirling and Dynamical Decoupling options?",
+    "code": null,
+    "options": {
+      "A": "```\nsampler.twirling = True\nsampler.dynamical_decoupling = True\n```",
+      "B": "```\nsampler.twirling.enable_gates = True\nsampler.dynamical_decoupling.enable = True\n```",
+      "C": "```\nsampler.options.twirling.enable_gates = True\nsampler.options.dynamical_decoupling.enable = True\n```",
+      "D": "```\nsampler.options.twirling = True\nsampler.options.dynamical_decoupling = True\n```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "answer_note": "<Details>\n<br/>\nC)\n```\nsampler.options.twirling.enable_gates = True\nsampler.options.dynamical_decoupling.enable = True\n```\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 16,
+    "stem": "Which error suppression and error mitigation options are available for the Estimator primitive? Select all that apply.",
+    "code": null,
+    "options": {
+      "A": "Zero-noise estimation",
+      "B": "Pauli Twirling",
+      "C": "Dynamical decoupling",
+      "D": "Twirling Readout Error Extinction (T-REx)"
+    },
+    "stated_answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer_note": "<Details>\n<br/>\nA), B), C) and D) (All choices)\n\n</Details>",
+    "has_code": false
+  },
+  {
+    "n": 17,
+    "stem": "Which code snippet correctly submits a quantum circuit `qc` for estimating expectation value for `obs` on a specified `backend`?",
+    "code": null,
+    "options": {
+      "A": "```\nobs = SparsePauliOp(\"ZZ\")\nestimator = Estimator(backend=backend)\njob = estimator.run([qc, obs])\n```",
+      "B": "```\nobs = SparsePauliOp(\"ZZ\")\njob = backend.run(qc, obs mode=\"estimator\")\n```",
+      "C": "```\nobs = SparsePauliOp(\"ZZ\")\nestimator = Estimator(backend=backend)\njob = estimator.run(qc, obs)\n```",
+      "D": "```\nobs = SparsePauliOp(\"ZZ\")\njob = backend.run([qc, obs], mode=\"estimator\")\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "answer_note": "<Details>\n<br/>\nA)\n```\nobs = SparsePauliOp(\"ZZ\")\nestimator = Estimator(backend=backend)\njob = estimator.run([qc, obs])\n```\n\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 18,
+    "stem": "Given a `estimator` instance, how would you enable Zero Noise Estimation and Twirling Readout Error Extinction (T-REx) options?",
+    "code": null,
+    "options": {
+      "A": "```\nestimator.options.resilience.zne_mitigation = True\nestimator.options.resilience.measure_mitigation = True\n```",
+      "B": "```\nestimator.resilience.zne_mitigation = True\nestimator.resilience.measure_mitigation = True\n```",
+      "C": "```\nestimator.zne_mitigation = True\nestimator.measure_mitigation = True\n```",
+      "D": "```\nestimator.options.zne_mitigation = True\nestimator.options.measure_mitigation = True\n```"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "answer_note": "<Details>\n<br/>\nA)\n```\nestimator.options.resilience.zne_mitigation = True\nestimator.options.resilience.measure_mitigation = True\n```\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 19,
+    "stem": "Given an `EstimatorResult` object `results`, how do you retrieve the expectation values?",
+    "code": null,
+    "options": {
+      "A": "`evs = results.data.evs`",
+      "B": "`evs = results[0].data.evs`",
+      "C": "`evs = results.evs`",
+      "D": "`evs = results[0].evs`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "answer_note": "<Details>\n<br/>\nB) `evs = results[0].data.evs`\n\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 20,
+    "stem": "Given a `service` instance and a `job_id`, how do you retrieve the corresponding job?",
+    "code": null,
+    "options": {
+      "A": "`retrieved_job = service.job(job_id)`",
+      "B": "`retrieved_job = service.from_id(job_id)`",
+      "C": "`retrieved_job = service.jobs[job_id]`",
+      "D": "`retrieved_job = service.find_job(job_id)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "answer_note": "<Details>\n<br/>\nA) `retrieved_job = service.job(job_id)`\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 21,
+    "stem": "What is the behavior of `job.result()` if the job has not yet finished executing when this line is reached?\n\n```\njob = sampler.run([(isa_circuit, params)])\n...\nresults = job.result()\n```",
+    "code": "job = sampler.run([(isa_circuit, params)])\n...\nresults = job.result()",
+    "options": {
+      "A": "An error is raised, but the job continues running in the background.",
+      "B": "An error is raised and the job is aborted.",
+      "C": "`results` is assigned `None` until the job completes.",
+      "D": "`job.result()` blocks execution until the job finishes and the result is available."
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "answer_note": "<Details>\n<br/>\nD) `job.result()` blocks execution until the job finishes and the result is available.\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 22,
+    "stem": "Why will the following code fail to export the quantum circuit `qc`?\n\n```python\nwith open(\"qasm_file.txt\", \"w\") as f:\n    dumps(qc, f)\n```",
+    "code": "with open(\"qasm_file.txt\", \"w\") as f:\n    dumps(qc, f)",
+    "options": {
+      "A": "QASM files can only be exported to `.json` files.",
+      "B": "An `Exporter` instance must be created first, from which the `dumps` method should be called.",
+      "C": "The syntax is incorrect, it should be `f.dumps(qc)`.",
+      "D": "The syntax is wrong, `dump(qc, f)` should be used to export to a file."
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "answer_note": "<Details>\n<br/>\nD) The syntax is wrong, `dump(qc, f)` should be used to export to a file.\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 23,
+    "stem": "After calling `response = requests.post(url, data=data)`, how do you verify that the request was successful?",
+    "code": null,
+    "options": {
+      "A": "`assert response[\"status_code\"] == True`",
+      "B": "`assert response[\"status_code\"] == 200`",
+      "C": "`assert response.status_code == 200`",
+      "D": "`assert response.status_code == True`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "answer_note": "<Details>\n<br/>\nC) `assert response.status_code == 200`\n</Details>",
+    "has_code": true
+  },
+  {
+    "n": 24,
+    "stem": "Where do you obtain the bearer token used for authenticating requests to the Qiskit Runtime REST API?",
+    "code": null,
+    "options": {
+      "A": "The bearer token is the same as the API key.",
+      "B": "The bearer token is the CRN token.",
+      "C": "Submit a request to the REST API with your API key to obtain a bearer token.",
+      "D": "The bearer token is the IAM ID."
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "answer_note": "<Details>\n<br/>\nC) Submit a request to the REST API with your API key to obtain a bearer token.\n</Details>",
+    "has_code": false
+  }
+]

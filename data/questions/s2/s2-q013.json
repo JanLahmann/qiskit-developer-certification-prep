@@ -11,19 +11,19 @@
   "options": [
     {
       "key": "A",
-      "text": "`with qc.if_test((qc.clbits[0], 1)):` then `qc.x(0)` inside the block"
+      "text": "`with qc.if_test((qc.clbits[0], 1)):` then `qc.x(0)`"
     },
     {
       "key": "B",
-      "text": "`qc.x(0).c_if(qc.clbits[0], 1)`"
+      "text": "`qc.x(0).c_if(qc.clbits[0], 1)` — the `InstructionSet` method"
     },
     {
       "key": "C",
-      "text": "`qc.x(0).condition = (qc.clbits[0], 1)`"
+      "text": "`qc.x(0).condition = (qc.clbits[0], 1)` — set the attribute"
     },
     {
       "key": "D",
-      "text": "`qc.x(0, condition=(qc.clbits[0], 1))`"
+      "text": "`qc.x(0, condition=(qc.clbits[0], 1))` — a gate keyword argument"
     }
   ],
   "answer": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern pass: high length tell cleared (correct option trimmed, all four options given a parallel short tail)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

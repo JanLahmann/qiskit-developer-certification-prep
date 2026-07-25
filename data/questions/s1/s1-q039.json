@@ -15,7 +15,7 @@
     },
     {
       "key": "B",
-      "text": "0.5 — any nonzero rotation yields an equal superposition"
+      "text": "0.5 — any nonzero rotation angle yields an equal superposition"
     },
     {
       "key": "C",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "0.25 = sin²(π/6) — for RY(θ)|0⟩, P(1) = sin²(θ/2)"
+      "text": "0.25 = sin²(π/6) — for RY(θ)|0⟩, P(1) is always sin²(θ/2)"
     }
   ],
   "answer": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "absolute-wording tell cleared (correct option now carries the absolute)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

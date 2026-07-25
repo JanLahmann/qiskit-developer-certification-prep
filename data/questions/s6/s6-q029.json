@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "None — the default resilience level is 0 (raw, unmitigated results)."
+      "text": "No error mitigation \u2014 the default resilience level is 0."
     },
     {
       "key": "B",
@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "Zero-noise extrapolation, because the default resilience level is 2."
+      "text": "Zero-noise extrapolation and gate twirling, because the default resilience level is 2."
     },
     {
       "key": "D",
@@ -32,8 +32,8 @@
   "explanation": {
     "correct": "The default `resilience_level` for the Estimator is 1, which applies minimal-cost mitigation: readout-error mitigation via Twirled Readout Error eXtinction (TREX). You get some mitigation for free unless you explicitly lower the level to 0.",
     "distractors": {
-      "A": "The default is level 1, not 0; you would have to set resilience_level = 0 explicitly to get raw, unmitigated results.",
-      "C": "ZNE is applied at level 2, but that is not the default — the default is level 1.",
+      "A": "The default is level 1, not 0; you have to set `resilience_level = 0` explicitly to get raw, unmitigated results.",
+      "C": "ZNE and gate twirling are what level 2 adds, but level 2 is not the default \u2014 the default is level 1, whose only technique is readout mitigation.",
       "D": "The default is not the maximum; only level-1 (readout) mitigation runs unless you raise the level."
     },
     "citations": [
@@ -50,7 +50,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s6: distractors A/C reworded to carry the same 'error mitigation'/'default' vocabulary as the key (stem-echo tell)"
   }
 }

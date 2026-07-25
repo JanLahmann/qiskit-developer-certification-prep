@@ -11,11 +11,11 @@
   "options": [
     {
       "key": "A",
-      "text": "Named registers make the circuit execute faster on hardware."
+      "text": "Named registers usually make the circuit execute faster on hardware."
     },
     {
       "key": "B",
-      "text": "They let you address qubits and bits by meaningful groups and names (e.g. `data[0]`, `anc[0]`), improving readability and letting one circuit hold several logically-distinct registers."
+      "text": "They let you address qubits by role, e.g. `data[0]` and `anc[0]`, which keeps larger circuits readable."
     },
     {
       "key": "C",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "Named registers are required by the transpiler; a circuit built with `QuantumCircuit(4)` cannot be transpiled."
+      "text": "Named registers are required by the transpiler, which refuses a circuit built with the bare `QuantumCircuit(4)` form."
     }
   ],
   "answer": [
@@ -34,7 +34,7 @@
     "distractors": {
       "A": "Register naming is purely structural metadata; it has no effect on execution speed.",
       "C": "Any qubit can be measured regardless of whether it lives in a user-named register; `QuantumCircuit(4)` qubits are measurable too.",
-      "D": "Circuits built with the integer form transpile perfectly well; named registers are not a transpiler requirement."
+      "D": "Circuits built with the integer form transpile perfectly well; the transpiler never inspects register names."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -51,7 +51,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor D given substance, distractor A now hedges)"
   }
 }

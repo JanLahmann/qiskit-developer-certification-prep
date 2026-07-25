@@ -19,11 +19,11 @@
     },
     {
       "key": "C",
-      "text": "Index 2: the state |q1 q0⟩ = |10⟩ — qubit 1 is 1 and qubit 0 is 0"
+      "text": "Index 2 — labels read |q1 q0⟩, so qubit 1 is the one that is set"
     },
     {
       "key": "D",
-      "text": "Index 1: label '10' means qubit 0 = 1 and qubit 1 = 0"
+      "text": "Index 1 — reading left to right, '10' sets qubit 0 = 1 and qubit 1 = 0"
     }
   ],
   "answer": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "length tell cleared (correct trimmed, distractor D spells out the reversed reading)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

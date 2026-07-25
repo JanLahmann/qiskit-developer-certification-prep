@@ -11,19 +11,19 @@
   "options": [
     {
       "key": "A",
-      "text": "`777` — `get_bitstrings()` returns one entry per shot"
+      "text": "`777` — one entry per shot, in the order they were taken"
     },
     {
       "key": "B",
-      "text": "`2` — one entry per qubit"
+      "text": "`2` — one entry per measured qubit in the register"
     },
     {
       "key": "C",
-      "text": "`4` — one entry per possible 2-bit outcome"
+      "text": "`4` — one entry per distinct 2-bit outcome that can occur"
     },
     {
       "key": "D",
-      "text": "`1` — a single concatenated string of all shots"
+      "text": "`1` — the shots come back concatenated into a single string"
     }
   ],
   "answer": [
@@ -37,8 +37,8 @@
       "D": "It returns a list of separate bitstrings (one per shot), not one giant concatenated string."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
     ]
   },
   "proof": {
@@ -56,13 +56,14 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "s5 adversarial review: length rebalanced; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages)"
   }
 }

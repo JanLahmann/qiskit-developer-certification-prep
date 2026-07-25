@@ -11,19 +11,19 @@
   "options": [
     {
       "key": "A",
-      "text": "Level 0 needs many CX gates (it keeps the trivial layout and routes with SWAPs), while level 1 chooses a layout placing the two qubits adjacently, needing just one CX."
+      "text": "Level 0 keeps the trivial layout and routes with SWAPs (many CX); level 1 picks an adjacent pair, needing one CX."
     },
     {
       "key": "B",
-      "text": "Both levels produce exactly one CX; the optimization level does not influence qubit layout."
+      "text": "Both levels typically produce one CX; the optimization level does not influence qubit layout."
     },
     {
       "key": "C",
-      "text": "Level 0 produces one CX; level 1 inserts SWAPs and ends up with more CX gates."
+      "text": "Level 0 produces exactly one CX; level 1 inserts SWAPs to satisfy the line coupling map and ends up with more CX gates."
     },
     {
       "key": "D",
-      "text": "Both levels raise an error because a CX between non-adjacent qubits cannot be routed on a line."
+      "text": "Both levels raise an error because a CX between non-adjacent qubits is not routable on a line."
     }
   ],
   "answer": [
@@ -34,7 +34,7 @@
     "distractors": {
       "B": "Layout selection is part of the optimization level: level 0 uses a trivial layout while level 1+ actively searches for a good one, so the CX counts differ.",
       "C": "It is the other way around — the higher level reduces the count by choosing a better layout; level 0 is the expensive one here.",
-      "D": "Routing on a line always succeeds by inserting SWAPs; it never raises for a single CX."
+      "D": "Routing on a line succeeds by inserting SWAPs; a single CX never makes the router give up."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor C given substance and the absolute, distractor B now hedges)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

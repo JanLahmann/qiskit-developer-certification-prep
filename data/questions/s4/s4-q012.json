@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "It prints counts split roughly 50/50 between `'00'` and `'11'` — the primitive transpiles the circuit automatically before running."
+      "text": "It prints counts split roughly 50/50 between `'00'` and `'11'` — the primitive transpiles the abstract gates to the backend's ISA automatically."
     },
     {
       "key": "B",
@@ -32,7 +32,7 @@
   "explanation": {
     "correct": "Runtime primitives require ISA circuits: the circuit must already conform to the backend's instruction set architecture (native basis gates and qubit connectivity). Passing an un-transpiled circuit raises `IBMInputValueError` (`the instruction h on qubits (0,) is not supported by the target system`). You must build a preset pass manager and transpile first.",
     "distractors": {
-      "A": "V2 primitives do NOT auto-transpile for the target; you must produce an ISA circuit yourself. This is a common V1-to-V2 migration misconception.",
+      "A": "V2 primitives do NOT auto-transpile the abstract gates for the target; you must produce an ISA circuit yourself. This is a common V1-to-V2 migration misconception.",
       "C": "The error is not a `TranspilerError` — nothing is being transpiled. The primitive itself rejects the non-ISA circuit with `IBMInputValueError`.",
       "D": "Unsupported instructions are never silently dropped; that would change the computation. The circuit is rejected outright."
     },
@@ -53,8 +53,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened + stem-echoed the auto-transpile distractor."
   },
   "freshness": {
     "verified_against": {
@@ -63,7 +64,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

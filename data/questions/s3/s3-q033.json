@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "A circuit using only `rz`, `sx`, and `cx`, with every `cx` acting on a physically-adjacent qubit pair."
+      "text": "A circuit using only `rz`, `sx`, and `cx`, with every `cx` on a physically-adjacent pair."
     },
     {
       "key": "B",
@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "A circuit with a `cx` between qubit 0 and qubit 4 (not adjacent on the line)."
+      "text": "A circuit with a `cx` between qubit 0 and qubit 4, which are not adjacent on the linear coupling map."
     },
     {
       "key": "D",
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "length tell cleared (correct trimmed, distractor C spells out the coupling-map violation)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

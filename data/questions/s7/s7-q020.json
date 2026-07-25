@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "`1.0` -- a scalar expectation value"
+      "text": "`1.0` -- a scalar expectation value (a 0-d NumPy array)"
     },
     {
       "key": "D",
@@ -47,13 +47,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\nimport numpy as np\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nevs = StatevectorEstimator(seed=0).run([(qc, SparsePauliOp(\"ZZ\"))]).result()[0].data.evs\nval = float(evs); scalar = (np.ndim(evs) == 0)\nnumeric_claim = {\"B\": 0.0, \"C\": 1.0}\nevidence = {}; proven = []\nevidence[\"A\"] = f\"evs is a scalar float {round(val,6)} (ndim={np.ndim(evs)}), not a counts dict -> False\"\nevidence[\"D\"] = f\"evs is a scalar float {round(val,6)}, not a probability list -> False\"\nfor k, claim in numeric_claim.items():\n    ok = scalar and abs(val - claim) < 1e-6\n    evidence[k] = f\"evs={round(val,6)}; option claims scalar {claim} -> match={ok}\"\n    if ok: proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": val}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\nimport numpy as np\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nevs = StatevectorEstimator(seed=0).run([(qc, SparsePauliOp(\"ZZ\"))]).result()[0].data.evs\nval = float(evs); scalar = (np.ndim(evs) == 0)\n\nevidence = {}; proven = []\n# A and D claim container-like results: attempt the access each one implies.\ntry:\n    got = evs[\"00\"]\n    evidence[\"A\"] = f\"evs['00'] returned {got} -> dict-like -> True\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = (f\"evs['00'] raised {type(e).__name__}: {str(e)[:60]}; evs is \"\n                     f\"{type(evs).__name__} ndim={np.ndim(evs)} value {round(val, 6)} -> False\")\ntry:\n    got = list(evs)\n    evidence[\"D\"] = f\"list(evs) returned {got} -> sequence of probabilities -> True\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = (f\"list(evs) raised {type(e).__name__}: {str(e)[:60]}; evs is a scalar \"\n                     f\"{round(val, 6)}, not a 2-element list -> False\")\nfor k, claim in {\"B\": 0.0, \"C\": 1.0}.items():\n    ok = scalar and abs(val - claim) < 1e-6\n    evidence[k] = f\"evs={round(val, 6)} (ndim={np.ndim(evs)}); option claims scalar {claim} -> match={ok}\"\n    if ok: proven.append(k)\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {\"evs\": val, \"ndim\": int(np.ndim(evs))}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s7: proof strengthened — A and D are now attempted (subscript / list()) instead of narrated"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

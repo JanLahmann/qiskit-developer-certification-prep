@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "`{0: a, 7: b}` -- each bitstring read as a binary integer"
+      "text": "`{0: a, 7: b}` -- bitstrings as binary integers"
     },
     {
       "key": "D",
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s7: correct option C tightened so a distractor is the longest (kills length tell)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

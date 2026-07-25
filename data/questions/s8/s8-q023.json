@@ -6,39 +6,39 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You are calling the Qiskit Runtime REST API directly (for example, with curl). How must your credential be supplied on each request?",
+  "stem": "You are calling the Qiskit Runtime REST API directly, for example with curl. How is your credential presented on each request?",
   "code": null,
   "options": [
     {
       "key": "A",
-      "text": "In an HTTP header `Authorization: Bearer <TOKEN>`, where `<TOKEN>` is an IBM Cloud IAM access (bearer) token."
+      "text": "In an `X-API-Key: <API_KEY>` header carrying the API key created on the IBM Quantum Platform dashboard."
     },
     {
       "key": "B",
-      "text": "In an `X-API-Key: <API_KEY>` header containing your raw IBM Cloud API key."
+      "text": "In an `Authorization: Bearer <TOKEN>` header, where `<TOKEN>` is an IBM Cloud IAM access token."
     },
     {
       "key": "C",
-      "text": "With HTTP Basic authentication: `Authorization: Basic <base64(username:password)>`."
+      "text": "With HTTP Basic authentication: `Authorization: Basic <base64(user:password)>`."
     },
     {
       "key": "D",
-      "text": "As a URL query parameter, e.g. `...?apikey=<API_KEY>`."
+      "text": "As a query parameter on the request URL, such as `/api/v1/jobs?apikey=<API_KEY>`."
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
-    "correct": "Every Qiskit Runtime REST API call must carry an IBM Cloud Identity and Access Management (IAM) bearer token in the `Authorization: Bearer <TOKEN>` header (alongside a `Service-CRN` header identifying the instance and an `IBM-API-Version` header). The bearer token is obtained by exchanging your API key at the IAM token endpoint.",
+    "correct": "Requests carry an IBM Cloud Identity and Access Management (IAM) bearer token in the `Authorization` header, in the form `Authorization: Bearer <TOKEN>`. The documented curl calls pair it with a `Service-CRN` header naming the Qiskit Runtime instance and an `IBM-API-Version` header pinning the API version. The token itself is not your API key: you mint it by exchanging the key at the IAM token endpoint.",
     "distractors": {
-      "B": "The raw API key is not sent on API calls; it is first exchanged for a short-lived IAM bearer token, which travels in the `Authorization` header (not an `X-API-Key` header).",
-      "C": "The Runtime REST API uses bearer-token auth, not HTTP Basic auth with username/password.",
-      "D": "Credentials go in the `Authorization` header, not as a query-string parameter; putting secrets in the URL is neither required nor supported here."
+      "A": "`X-API-Key` is a common convention elsewhere, but not here. The raw key never travels on Runtime API calls; it is exchanged for a short-lived bearer token first.",
+      "C": "Basic authentication carries a user name and password pair. The Runtime REST API is IAM-based and expects the `Bearer` scheme instead.",
+      "D": "Credentials belong in headers. Query strings are logged by proxies and server access logs, and the API does not read a credential from the URL in any case."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-runtime-rest",
-      "https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api"
+      "https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-runtime-rest"
     ]
   },
   "proof": {
@@ -51,7 +51,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s8 r1: answer A->B (position rebalance); length tell removed (1.31 -> correct no longer longest); both citations re-fetched 200 and re-read — cloud-setup-rest-api shows the 'authorization: Bearer <BEARER_TOKEN>' + 'Service-CRN' curl call and the API reference states the IAM bearer token is required on every call | length rank rebalanced (correct option no longer longest)"
   }
 }

@@ -6,12 +6,12 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "You have a raw counts dictionary from 1024 shots. Compared with `plot_histogram(counts)`, what does `plot_distribution(counts)` display for the same data?",
+  "stem": "These counts come from a run with `shots=1024` explicitly set (500 + 500 + 20 + 4 = 1024). Compared with `plot_histogram(counts)`, what does `plot_distribution(counts)` display for the same data?",
   "code": "from qiskit.visualization import plot_histogram, plot_distribution\n\ncounts = {\"00\": 500, \"11\": 500, \"01\": 20, \"10\": 4}\n# plot_histogram(counts)  vs  plot_distribution(counts)",
   "options": [
     {
       "key": "A",
-      "text": "`plot_distribution` normalizes the bars into a distribution summing to 1, whereas `plot_histogram` shows the raw integer counts (summing to the shot total)."
+      "text": "`plot_distribution` normalizes the bars to probabilities summing to 1; `plot_histogram` plots raw counts."
     },
     {
       "key": "B",
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern pass: high length tell cleared (correct option trimmed); shot count made explicit in the stem so no answer rests on an unstated default"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

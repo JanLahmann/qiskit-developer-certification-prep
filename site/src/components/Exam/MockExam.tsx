@@ -13,7 +13,13 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import CodeBlock from '@theme/CodeBlock';
 import type {BankQuestion, SectionBank} from '@site/src/lib/bank';
-import {loadAllSections, mulberry32, seededShuffle} from '@site/src/lib/bank';
+import {
+  loadAllSections,
+  mulberry32,
+  seededShuffle,
+  shuffledOptions,
+  OPTION_LETTERS,
+} from '@site/src/lib/bank';
 import {renderInline} from '@site/src/lib/md';
 import {getMockState, recordMockAttempt, type MockAttempt} from '@site/src/lib/storage';
 import QuizCard from '../Quiz/QuizCard';
@@ -376,7 +382,7 @@ export default function MockExam(): React.ReactElement {
           </div>
           {q.code ? <CodeBlock language="python">{q.code}</CodeBlock> : null}
           <div className={quizStyles.options}>
-            {q.options.map((opt) => (
+            {shuffledOptions(q, paper.seed).map((opt, i) => (
               <button
                 key={opt.key}
                 type="button"
@@ -385,7 +391,7 @@ export default function MockExam(): React.ReactElement {
                   selected.has(opt.key) && quizStyles.optionSelected,
                 )}
                 onClick={() => toggle(opt.key)}>
-                <span className={quizStyles.optionKey}>{opt.key}</span>
+                <span className={quizStyles.optionKey}>{OPTION_LETTERS[i]}</span>
                 <span>{renderInline(opt.text)}</span>
               </button>
             ))}
@@ -527,6 +533,7 @@ export default function MockExam(): React.ReactElement {
           question={q}
           review={answers[q.id] ?? []}
           keyboard={false}
+          shuffleSeed={a.seed}
         />
       ))}
 

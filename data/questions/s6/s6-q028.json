@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "Higher resilience levels reduce total runtime because fewer circuits are executed."
+      "text": "Higher resilience levels typically reduce total runtime, because fewer circuits are executed."
     },
     {
       "key": "D",
@@ -27,19 +27,24 @@
     },
     {
       "key": "E",
-      "text": "The maximum supported resilience_level is 5."
+      "text": "Setting `resilience_level = 3` turns on probabilistic error cancellation (PEC)."
+    },
+    {
+      "key": "F",
+      "text": "Options you set explicitly are applied on top of the base settings a resilience level defines."
     }
   ],
   "answer": [
     "A",
     "B",
-    "D"
+    "D",
+    "F"
   ],
   "explanation": {
-    "correct": "The resilience level is a coarse cost/accuracy dial: level 0 = no mitigation, level 1 (the default) = readout-error mitigation via TREX, and level 2 = level 1 plus zero-noise extrapolation and gate twirling. Higher levels give more accurate (less biased) results at greater cost.",
+    "correct": "The resilience level is a coarse cost/accuracy dial: level 0 = no mitigation, level 1 (the default) = readout-error mitigation via TREX, and level 2 = level 1 plus zero-noise extrapolation and gate twirling. Higher levels give more accurate (less biased) results at greater cost. A resilience level is only a base set of options: anything you set yourself (for example turning measurement mitigation back off at level 1) is applied in addition to it.",
     "distractors": {
-      "C": "Higher levels run MORE circuits (an ensemble for mitigation) and take longer, not less — they trade runtime for accuracy.",
-      "E": "The supported values are 0, 1, and 2; there is no level 5 (setting it raises a validation error)."
+      "C": "Higher levels run MORE circuits (an ensemble for mitigation) and take longer, not less \u2014 they trade runtime for accuracy.",
+      "E": "Level 3 does not exist for EstimatorV2 \u2014 the supported choices are 0, 1 and 2, and setting 3 raises a validation error. PEC is reached through the individual option `resilience.pec_mitigation`, not through a resilience level."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management",
@@ -56,7 +61,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s6: hedge added to distractor C (hedge tell); E replaced with the plausible 'level 3 = PEC' misconception | added true option F (explicit options layer on top of the resilience level) so the section's multi-selects no longer all have exactly 3 correct answers"
   }
 }

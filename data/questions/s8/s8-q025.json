@@ -6,44 +6,44 @@
   ],
   "type": "multi",
   "difficulty": 2,
-  "stem": "You are authenticating to the Qiskit Runtime REST API. Regarding the IBM Cloud IAM bearer token used in the `Authorization` header, select the TWO correct statements.",
+  "stem": "Your client authenticates to the Qiskit Runtime REST API with an IBM Cloud IAM bearer token in the `Authorization` header. Select the TWO correct statements about that token.",
   "code": null,
   "options": [
     {
       "key": "A",
-      "text": "You obtain the token by sending a `POST` to the IAM token endpoint (`https://iam.cloud.ibm.com/identity/token`) with `grant_type=urn:ibm:params:oauth:grant-type:apikey` and your API key."
+      "text": "It is your IBM Cloud API key itself, sent verbatim after the `Bearer` keyword."
     },
     {
       "key": "B",
-      "text": "The bearer token is simply your permanent IBM Cloud API key, sent verbatim."
+      "text": "It arrives in the `access_token` field of the response body of your first `POST /api/v1/jobs` call, so the first job doubles as a login."
     },
     {
       "key": "C",
-      "text": "The token is temporary (it expires, for example after about one hour); once it expires you must request a new one."
+      "text": "You mint it by `POST`ing to `https://iam.cloud.ibm.com/identity/token` with `grant_type=urn:ibm:params:oauth:grant-type:apikey` and your API key."
     },
     {
       "key": "D",
-      "text": "The token never expires and can be reused indefinitely across sessions."
+      "text": "Once issued it stays valid indefinitely, so a long-running client can hold on to a single token."
     },
     {
       "key": "E",
-      "text": "The token is returned to you in the response body of your first `POST /api/v1/jobs` call."
+      "text": "It is short-lived: the token response reports `expires_in` of 3600 seconds, after which you request a fresh one."
     }
   ],
   "answer": [
-    "A",
-    "C"
+    "C",
+    "E"
   ],
   "explanation": {
-    "correct": "The bearer token is minted by exchanging your API key at the IAM token endpoint (a `POST` with the apikey grant type), and it is short-lived -- the response's `expires_in` is on the order of an hour, after which you must obtain a fresh token. These are the two correct statements.",
+    "correct": "The API key and the bearer token are two different credentials. The long-lived key is exchanged at the IBM Cloud IAM token endpoint -- a form-encoded `POST` to `https://iam.cloud.ibm.com/identity/token` carrying `grant_type=urn:ibm:params:oauth:grant-type:apikey` and `apikey=<your key>` (C). What comes back is a short-lived credential: the documented response reports `\"expires_in\": 3600`, and the reference describes a bearer token as a temporary credential that expires after no more than one hour, so a long-running client has to refresh it (E). Read `expires_in` from the response rather than hard-coding an interval.",
     "distractors": {
-      "B": "The API key and the bearer token are different: the key is long-lived and is exchanged for the temporary token; the raw key is not used as the bearer token.",
-      "D": "Bearer tokens expire (see `expires_in`, typically ~3600 seconds); they cannot be reused indefinitely.",
-      "E": "The token comes from the IAM token endpoint, not from the job-submission endpoint; you must already hold a valid token to call `/api/v1/jobs`."
+      "A": "This is the single most common REST mistake: the key authenticates you *to IAM*, and only the token IAM returns goes into the `Authorization` header.",
+      "B": "Job submission requires a valid token to succeed at all, so it cannot be the thing that issues one. The token comes from the separate IAM endpoint, before any Runtime call.",
+      "D": "Bearer tokens carry an expiry. Holding one indefinitely produces `401 Unauthorized` responses once the hour is up."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-runtime-rest",
-      "https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api"
+      "https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-runtime-rest"
     ]
   },
   "proof": {
@@ -56,7 +56,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s8 r1: carried-forward flag checked — citations were NOT swapped here; both pages re-fetched 200 and re-read, and both show the IAM token POST with the apikey grant type and the expires_in=3600 response, so the keyed claims are directly supported. Answers moved A,C -> C,E so the section's two multi-select items differ in both answer count and answer letters; length tell removed."
   }
 }

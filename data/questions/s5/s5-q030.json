@@ -11,34 +11,34 @@
   "options": [
     {
       "key": "A",
-      "text": "Samples drawn from the circuit's output probability distribution — per-shot measurement bitstrings that you can histogram into (quasi-)probabilities"
+      "text": "Expectation values of the observables attached to the submitted circuit"
     },
     {
       "key": "B",
-      "text": "The exact complex amplitudes of the circuit's output statevector"
+      "text": "The exact complex amplitudes of the circuit's output statevector, one per basis state"
     },
     {
       "key": "C",
-      "text": "Expectation values of a set of observables"
+      "text": "Samples from the circuit's output distribution — per-shot bitstrings"
     },
     {
       "key": "D",
-      "text": "The single most-likely measurement outcome of the circuit"
+      "text": "The single most likely measurement outcome of the circuit, together with its estimated probability"
     }
   ],
   "answer": [
-    "A"
+    "C"
   ],
   "explanation": {
     "correct": "'Sampling' means repeatedly executing the circuit and recording the measured bitstring each shot — draws from the distribution the circuit defines over computational-basis states. The Sampler returns those per-shot samples (as a BitArray); estimating probabilities is then just counting frequencies. It never returns amplitudes or expectation values.",
     "distractors": {
-      "B": "Amplitudes are hidden by measurement — sampling only sees classical outcomes with probabilities |amplitude|^2. Statevectors are available from simulators (quantum_info), not from a hardware Sampler.",
-      "C": "Expectation values of observables are the job of the Estimator primitive, not the Sampler.",
-      "D": "The Sampler returns the full collection of shot outcomes, not a single winner; a distribution over many shots is the whole point."
+      "A": "Expectation values of observables are EstimatorV2's job; a Sampler PUB carries no observable at all.",
+      "B": "Amplitudes are hidden by measurement — sampling only sees classical outcomes with probabilities |amplitude|^2. Statevectors come from simulators (`qiskit.quantum_info`), not from a Sampler.",
+      "D": "The Sampler returns the whole collection of shot outcomes, not a single winner; the distribution over many shots is the entire point."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/primitives",
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output"
     ]
   },
   "proof": {
@@ -51,7 +51,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped)"
   }
 }

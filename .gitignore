@@ -218,3 +218,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Luke-J-Miller raw bank: unlicensed, 1000+ questions — validate locally, never commit
+/data/community/raw/luke/

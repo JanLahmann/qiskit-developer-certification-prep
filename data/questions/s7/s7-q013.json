@@ -5,40 +5,40 @@
     "s7o1"
   ],
   "type": "mcq",
-  "difficulty": 1,
-  "stem": "The circuit measures into a `ClassicalRegister` named `ans`. After running it with a SamplerV2, which expression returns the counts for that register?",
-  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(2, \"q\")\nans = ClassicalRegister(2, \"ans\")\nqc = QuantumCircuit(qr, ans)\nqc.h(0); qc.cx(0, 1)\nqc.measure(qr, ans)\n\n# result = sampler.run([isa]).result()",
+  "difficulty": 3,
+  "stem": "An EstimatorV2 job ran on a noisy 5-qubit backend with `default_precision=0.02`, and you hold the first pub result in `pub`. Which expression gives the standard error the primitive actually achieved for that expectation value?",
+  "code": "# estimator.options.default_precision = 0.02\n# result = estimator.run([(isa_circuit, observable)]).result()\npub = result[0]",
   "options": [
     {
       "key": "A",
-      "text": "`result[0].data.meas.get_counts()`"
+      "text": "`pub.data.evs.std()`"
     },
     {
       "key": "B",
-      "text": "`result[0].data.c.get_counts()`"
+      "text": "`pub.stds`"
     },
     {
       "key": "C",
-      "text": "`result[0].data.get_counts()`"
+      "text": "`pub.metadata[\"target_precision\"]`"
     },
     {
       "key": "D",
-      "text": "`result[0].data.ans.get_counts()`"
+      "text": "`pub.data.stds`"
     }
   ],
   "answer": [
     "D"
   ],
   "explanation": {
-    "correct": "The DataBin exposes one field per classical register, named after the register. Here the register is `ans`, so the BitArray lives at `data.ans`.",
+    "correct": "An estimator DataBin carries two parallel arrays: `evs` (the estimates) and `stds` (the standard error of each estimate), so the achieved uncertainty is `pub.data.stds`. It is derived from the run itself: the proof reproduces the observed value exactly as sqrt((1 - evs^2)/shots) from the pub's own shot count, which is what a shot-noise-limited standard error must be.",
     "distractors": {
-      "A": "`meas` is the auto-generated field name only when you use `measure_all()`; it does not exist here.",
-      "B": "`c` is the default register name only for `QuantumCircuit(n, m)`; this circuit named its register `ans`.",
-      "C": "A DataBin has no `get_counts()`; you must select a register field first."
+      "A": "`.std()` is NumPy's spread over the returned estimates. For one pub with no parameter sweep `evs` is a 0-d array, so this is 0.0 -- it says nothing about the sampling error of the estimate.",
+      "B": "The estimates and their errors live on the DataBin, not on the pub result itself; `pub.stds` raises `AttributeError` (the same level confusion as `pub.evs`).",
+      "C": "`target_precision` is the precision you REQUESTED (0.02). The primitive takes enough shots to beat it, so the achieved standard error is a different, smaller number (about 0.0096 here)."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.DataBin",
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/primitives"
     ]
   },
   "proof": {
@@ -47,13 +47,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(2, \"q\"); ans = ClassicalRegister(2, \"ans\")\nqc = QuantumCircuit(qr, ans); qc.h(0); qc.cx(0, 1); qc.measure(qr, ans)\nresult = StatevectorSampler(seed=42).run([qc], shots=200).result()\n\nevidence = {}; proven = []\ndef attempt(key, fn):\n    try:\n        v = fn()\n        ok = isinstance(v, dict) and sum(v.values()) == 200\n        evidence[key] = f\"returned {type(v).__name__}={str(v)[:50]}; valid counts={ok}\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\nattempt(\"A\", lambda: result[0].data.meas.get_counts())\nattempt(\"B\", lambda: result[0].data.c.get_counts())\nattempt(\"C\", lambda: result[0].data.get_counts())\nattempt(\"D\", lambda: result[0].data.ans.get_counts())\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"register_names\": list(result[0].data.keys())}})\n"
+    "proof_script": "import math\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\npm = generate_preset_pass_manager(optimization_level=1, backend=backend, seed_transpiler=42)\nisa = pm.run(qc)\nobs = SparsePauliOp(\"ZZ\").apply_layout(isa.layout)\nest = EstimatorV2(mode=backend)\nest.options.default_precision = 0.02\nest.options.simulator.seed_simulator = 42\npub = est.run([(isa, obs)]).result()[0]\n\nev = float(pub.data.evs)\nshots = pub.metadata[\"shots\"]\ntarget = pub.metadata[\"target_precision\"]\n# Independent prediction of a shot-noise-limited standard error, computed from\n# the pub's own evs and shot count (not from the stds field).\npredicted = math.sqrt(max(0.0, 1.0 - ev ** 2) / shots)\n\ndef is_achieved_error(x):\n    try:\n        x = float(x)\n    except Exception:\n        return False\n    return x > 0.0 and abs(x - predicted) <= 0.1 * predicted\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        v = fn()\n        ok = is_achieved_error(v)\n        evidence[key] = (f\"returned {float(v):.6f}; independent prediction \"\n                         f\"sqrt((1-evs^2)/shots)={predicted:.6f} \"\n                         f\"(evs={ev:.4f}, shots={shots}, requested precision={target}) -> match={ok}\")\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\ncheck(\"A\", lambda: pub.data.evs.std())\ncheck(\"B\", lambda: pub.stds)\ncheck(\"C\", lambda: pub.metadata[\"target_precision\"])\ncheck(\"D\", lambda: pub.data.stds)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"evs\": ev, \"stds\": float(pub.data.stds), \"shots\": shots,\n                           \"target_precision\": target,\n                           \"predicted_shot_noise\": round(predicted, 6)}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s7: REWRITTEN — old version duplicated q032 (named-register access) and a community item; now tests EstimatorV2 stds vs requested precision, with a non-circular proof (stds reproduced from evs+shots)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

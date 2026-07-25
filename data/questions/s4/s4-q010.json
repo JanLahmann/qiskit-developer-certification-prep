@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "Job mode (submit each iteration as a separate individual job)"
+      "text": "Job mode — submit each iteration as its own job, which usually reaches the QPU sooner than holding a session open."
     },
     {
       "key": "D",
@@ -33,7 +33,7 @@
     "correct": "A session gives dedicated, exclusive access to the QPU for a window, so an iterative workload whose next input depends on the previous result runs back-to-back without each job re-entering the fair-share queue. This is the documented use case for sessions: iterative workloads requiring frequent classical-quantum communication.",
     "distractors": {
       "A": "Batch mode is for independent jobs that are all available at the outset; here each iteration's parameters depend on the previous result, so the jobs cannot be submitted together and batching provides no benefit.",
-      "C": "Submitting each iteration as a separate job sends every iteration back through the queue, maximizing wall-clock time and device drift — the opposite of the goal.",
+      "C": "Submitting each iteration as a separate job sends every iteration back through the fair-share queue, so it does not reach the QPU sooner — each job waits its own turn, which is exactly what a session avoids.",
       "D": "The iterations cannot be one job: iteration n+1's parameters are computed classically from iteration n's result, so they are unknown when the job would be submitted."
     },
     "citations": [
@@ -52,7 +52,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the job-mode distractor (absolute-tell fix)."
   }
 }

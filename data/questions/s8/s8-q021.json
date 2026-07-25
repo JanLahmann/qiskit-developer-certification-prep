@@ -2,56 +2,68 @@
   "id": "s8-q021",
   "section": "s8",
   "objectives": [
-    "s8o1"
+    "s8o3"
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "In OpenQASM 3, how do the declarations `bit[4] c;` and `int[4] n;` differ, and how does Qiskit's OpenQASM 3 importer (`qiskit.qasm3.loads`) handle each?",
-  "code": null,
+  "stem": "A deployment installs the `qiskit` package but not the optional `qiskit-qasm3-import` package. On that machine a script imports `qiskit.qasm3`, exports a circuit with `dumps`, and later reads a program back with `loads`. What is the outcome of the two calls?",
+  "code": "from qiskit import QuantumCircuit, qasm3\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\n\ntext = qasm3.dumps(qc)      # export direction\nback = qasm3.loads(text)    # import direction",
   "options": [
     {
       "key": "A",
-      "text": "`bit[4]` is a register of four classical bits (imported as a `ClassicalRegister`); `int[4]` is a single 4-bit signed integer, which the Qiskit importer does not currently support parsing."
+      "text": "Both calls succeed: `qiskit.qasm3` ships a self-contained exporter and importer, and the extra package only makes parsing faster."
     },
     {
       "key": "B",
-      "text": "Both declare 4-bit signed integers and are interchangeable; the importer maps each to a Python `int`."
+      "text": "`loads` succeeds but `dumps` raises `MissingOptionalLibraryError`, because writing OpenQASM 3 is the direction that needs the extra package."
     },
     {
       "key": "C",
-      "text": "`bit[4]` is a 4-bit signed integer and `int[4]` is a register of four bits; the importer treats them the other way around."
+      "text": "Both calls raise `MissingOptionalLibraryError`, since the entire `qiskit.qasm3` module is a thin wrapper around `qiskit-qasm3-import`."
     },
     {
       "key": "D",
-      "text": "Both are imported as `ClassicalRegister` objects of length 4."
+      "text": "`dumps` succeeds and returns the program text, while `loads` raises `MissingOptionalLibraryError` -- only the import direction depends on `qiskit-qasm3-import`."
     }
   ],
   "answer": [
-    "A"
+    "D"
   ],
   "explanation": {
-    "correct": "`bit` is the classical-bit type: `bit[4]` is an array of four bits, which Qiskit represents as a `ClassicalRegister` (and `bit` as a single `Clbit`). `int[n]` is a distinct scalar type -- an n-bit signed integer. Qiskit's OpenQASM 3 importer supports `bit`/`bit[n]` register declarations but does not currently parse `int` variable declarations (feature table: `int` is unsupported for import).",
+    "correct": "The OpenQASM 3 exporter is written in Qiskit itself, so `qasm3.dump`/`dumps` work with nothing more than `qiskit` installed. The importer is not: `qasm3.load`/`loads` delegate to the separately distributed `qiskit-qasm3-import` package and are guarded by a lazy dependency check, so without it they raise `MissingOptionalLibraryError: \"The \\'qiskit_qasm3_import\\' library is required to use \\'loading from OpenQASM 3\\'\"`. This asymmetry is specific to OpenQASM 3 -- `qiskit.qasm2` implements both directions natively.",
     "distractors": {
-      "B": "`bit` and `int` are different types: one is an array of bits, the other a signed integer. They are not interchangeable, and `int` declarations are not importable at all.",
-      "C": "The roles are reversed. `bit[4]` is the bit array (-> `ClassicalRegister`); `int[4]` is the integer scalar.",
-      "D": "Only `bit[4]` maps to a `ClassicalRegister`. `int[4]` is a scalar integer type and is not imported as a register (in fact it is not parsed by the importer)."
+      "A": "Assumes symmetry with `qiskit.qasm2`, which does ship both directions. For OpenQASM 3 the importer genuinely is not part of the `qiskit` package, and the dependency is functional, not a speed-up.",
+      "B": "The asymmetry runs the other way. Export is the native side; it is reading OpenQASM 3 that needs the third-party parser.",
+      "C": "`qiskit.qasm3` itself is part of Qiskit -- importing the module always works, and so does the whole exporter. Only the two loading entry points are gated."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
-      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3"
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3",
+      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table"
     ]
   },
   "proof": {
-    "status": "conceptual",
-    "artifact": null
+    "status": "executed",
+    "artifact": "proofs/s8-q021.json"
   },
   "verification": {
-    "mode": "none"
+    "mode": "script",
+    "proof_script": "\n# Make the observation independent of whether this machine happens to have\n# qiskit-qasm3-import installed: block that module outright, then exercise\n# both directions.\nimport sys, warnings, importlib.abc\nwarnings.filterwarnings(\"ignore\")\n\nclass _Block(importlib.abc.MetaPathFinder):\n    def find_spec(self, name, path=None, target=None):\n        if name == \"qiskit_qasm3_import\" or name.startswith(\"qiskit_qasm3_import.\"):\n            raise ImportError(\"blocked for this proof: \" + name)\n        return None\n\nsys.meta_path.insert(0, _Block())\nfor _m in [m for m in sys.modules if m.startswith(\"qiskit_qasm3_import\")]:\n    del sys.modules[_m]\n\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\n\ndumps_ok, dumps_err, text = False, \"\", None\ntry:\n    text = qasm3.dumps(qc)\n    dumps_ok = isinstance(text, str) and text.startswith(\"OPENQASM 3.0\")\nexcept Exception as e:\n    dumps_err = f\"{type(e).__name__}: {str(e)[:120]}\"\n\nloads_ok, loads_exc, loads_msg = False, None, \"\"\ntry:\n    qasm3.loads(text if text is not None else \"OPENQASM 3.0;\\n\")\n    loads_ok = True\nexcept Exception as e:\n    loads_exc, loads_msg = type(e).__name__, str(e)[:160]\n\nmissing_lib = (loads_exc == \"MissingOptionalLibraryError\")\ndumps_missing_lib = (not dumps_ok and \"MissingOptionalLibrary\" in dumps_err)\n\nclaim = {\n    \"A\": (dumps_ok and loads_ok),\n    \"B\": (loads_ok and dumps_missing_lib),\n    \"C\": (dumps_missing_lib and missing_lib),\n    \"D\": (dumps_ok and missing_lib),\n}\nevidence = {\n    \"A\": f\"claim=both succeed; qasm3.dumps succeeded={dumps_ok} (returned {len(text) if text else 0} chars), \"\n         f\"qasm3.loads succeeded={loads_ok} (raised {loads_exc})\",\n    \"B\": f\"claim=loads works, dumps raises MissingOptionalLibraryError; dumps raised={not dumps_ok} \"\n         f\"{dumps_err!r}; loads succeeded={loads_ok}\",\n    \"C\": f\"claim=both raise MissingOptionalLibraryError; dumps raised MissingOptionalLibraryError=\"\n         f\"{dumps_missing_lib}; loads raised MissingOptionalLibraryError={missing_lib}\",\n    \"D\": f\"claim=dumps works, loads raises MissingOptionalLibraryError; dumps returned \"\n         f\"{type(text).__name__} starting with 'OPENQASM 3.0'={dumps_ok}; loads raised {loads_exc}: \"\n         f\"{loads_msg!r}; is MissingOptionalLibraryError={missing_lib}\",\n}\nproven = [k for k, v in claim.items() if v]\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"dumps_head\": (text or \"\").splitlines()[:2],\n                           \"loads_exception\": loads_exc, \"loads_message\": loads_msg}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s8 r1: REWRITTEN — the old item (bit[4] vs int[4] importability) was a near-duplicate of q022, which tests the same feature-table rows; replaced with the qasm3 export/import asymmetry (dumps is native, loads needs qiskit-qasm3-import), a genuine section gap, and upgraded from conceptual to an executed proof that blocks the module so the observation does not depend on whether the verifying machine has it installed. Answer keyed D."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-25",
+    "stale": false
   }
 }

@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "`|000⟩` and `|111⟩`, each with amplitude 1/√2 (a GHZ state)."
+      "text": "Only `|000⟩` and `|111⟩`, each with amplitude 1/√2 (a GHZ state)."
     },
     {
       "key": "B",
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'only'; the predicted values are unchanged)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

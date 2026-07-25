@@ -1,0 +1,357 @@
+[
+  {
+    "n": 1,
+    "stem": "The tensor multiplications of A by B can be obtained by the `A.tensor(B)` command. How to perform the tensor multiplication of B by A?",
+    "code": null,
+    "options": {
+      "A": "`B.tensor(A)`",
+      "B": "`A.expand(B)`",
+      "C": "None of the answers above are correct"
+    },
+    "stated_answer": [
+      "A",
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 2,
+    "stem": "How to compute fidelity of two channels?",
+    "code": null,
+    "options": {
+      "A": "F = channel_fidelity(opA, opB)",
+      "B": "F  = process_fidelity(opA, opB)",
+      "C": "F = fidelity(opA, opB)"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 3,
+    "stem": "Which of the classes below stores linear operators as density matrix?",
+    "code": null,
+    "options": {
+      "A": "SparsePauliOp",
+      "B": "Pauli",
+      "C": "Operator"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 4,
+    "stem": "Suppose you're visualizing the quantum circuit with text. You want to limit the line length to 50 characters. Which of below would do that?",
+    "code": null,
+    "options": {
+      "A": "`circuit.draw(output=\"mpl\")`",
+      "B": "`circuit.draw(output=\"text\", truncate=True, max_width=50)`",
+      "C": "`circuit.draw(output=\"text\", fold=50)`",
+      "D": "`circuit.draw(output=\"text\", max_width=50)`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 5,
+    "stem": "How would you sort the sampling results of a bell state such that the first value sampled to the left of the visualization is 11 and the rightmost one is 00?",
+    "code": null,
+    "options": {
+      "A": "`sort=\"increasing\"`",
+      "B": "`sort=\"asc\"`",
+      "C": "`order=\"desc\"`",
+      "D": "`order=\"decreasing\"`",
+      "E": "None of the above"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 6,
+    "stem": "You'd like to display a quantum state density matrix in such a way that you see separately real and imaginary amplitudes. What kinds of visualization would you choose?",
+    "code": null,
+    "options": {
+      "A": "QSphere",
+      "B": "Bloch Sphere",
+      "C": "City",
+      "D": "Hinton",
+      "E": "LaTex"
+    },
+    "stated_answer": [
+      "A",
+      "D"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 7,
+    "stem": "You take a look at the transpiled ISA circuit. You see it has no consecutive 1-qubit gates that are the inverses of each other, but you can see the number of qubits are the same as in the original quantum circuit. Furthermore, you see that on one of the qubits there is a number of rotations around the Y axis that could be summed up to one rotation by `π/2` radians. What would you do to fix both of those issues?",
+    "code": null,
+    "options": {
+      "A": "Switch from optimization level 0 to optimization level 1",
+      "B": "Switch from optimization level 1 to optimization level 2",
+      "C": "Switch from optimization level 3 to optimization level 2"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 8,
+    "stem": "You are given a quantum circuit which input, say `k`, is a number of parameters it will consider during the execution. What can you do to optimally create all of the parameters needed?",
+    "code": null,
+    "options": {
+      "A": "```\n    parameters=[]\nfor i in range (k):\n    newParam = Parameter(f\"hi{i}\")\n    parameters.append(newParam)\n    ```\n\nB) ```\n    import numpy as np\n    parameters = Parameter(np.arange(0,k))\n    ```",
+      "C": "```\n    parameters = ParameterVector(\"hi\", k)\n    ```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 9,
+    "stem": "You are given a task to estimate the heat transfer between two parts of a factory. You need to encode the data into the quantum circuit. What kind of qiskit circuit will you use?",
+    "code": null,
+    "options": {
+      "A": "N-local circuit, imported as `n_local`",
+      "B": "Data-encoding circuit with the use of `zz_feature_map`",
+      "C": "Data-encoding circuit with the use of Amplitude Encoding",
+      "D": "Time-evolution circuit imported as `PauliEvolutionGate`",
+      "E": "Time-evolution circuit imported as `TimeEvolutionGate`"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 10,
+    "stem": "Suppose you have a quantum circuit for finding a ground state energy of water. You would like to run this on a IBM quantum machine of your choice. What execution mode would you choose?",
+    "code": null,
+    "options": {
+      "A": "Batch",
+      "B": "Job",
+      "C": "Session",
+      "D": "None of the above"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 11,
+    "stem": "Suppose you are given the following piece of code concerning the running of EstimatorV2 :\n`job = estimator.run([(param_values, isa_circuit, isa_observable)])`\n\nIs this piece of code valid?",
+    "code": null,
+    "options": {
+      "A": "Yes, because PUB has all of the elements",
+      "B": "Yes, because parameter values are provided",
+      "C": "No, as the order of the PUB elements is incorrect",
+      "D": "None of the above"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 12,
+    "stem": "You are asked to do the estimation of a quantum circuit. The backend you should use is provided by the external provider. You also know this provider implements `Backend` interface. What could you use to create the estimator out in this situation?",
+    "code": null,
+    "options": {
+      "A": "EstimatorV2",
+      "B": "EstimatorBackendV2",
+      "C": "BackendSamplerV2",
+      "D": "BackendEstimatorV2",
+      "E": "ExternalEstimator"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 13,
+    "stem": "Suppose you build a GHZ state circuit for 3 qubits i.e. the state such that after the measurement it will collapse to either |000> or |111>. You choose a backend that has 156 qubits. Then, you transpile the circuit into the ISA one. How many qubits will have the ISA circuit?",
+    "code": null,
+    "options": {
+      "A": "3 qubits",
+      "B": "153 qubits",
+      "C": "156 qubits"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 14,
+    "stem": "You have a non-parametrized circuit that you want to execute exactly 512 times. Which of the pieces of code below can do this?",
+    "code": null,
+    "options": {
+      "A": "`job = sampler.run([qc_circuit], shots=512)`",
+      "B": "`job = sampler.run([qc_circuit, observables, param_values], shots=512)`",
+      "C": "`job = sampler.run([qc_circuit, param_values], shots=512)`",
+      "D": "`job = sampler.run([qc_circuit, _, 512])`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 15,
+    "stem": "You have the following observables given. You want to group them with `group_commuting` function, so you can compute them from a fingle measurement. However, you want to commute basing on the whole operator, not on a per-qubit basis - how can you do this?",
+    "code": null,
+    "options": {
+      "A": "`op.group_commuting(group_wise=True)`",
+      "B": "`op.group_commuting(group_wise=False)`",
+      "C": "`op.group_commuting(per_qubit=False)`",
+      "D": "`op.group_commuting(op_as_whole=True)`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 16,
+    "stem": "You have the Parameter value set being an array of dimensions (1,4) and the observables array being an array of (10,1) dimensions. What will be the dimensions of the Estimator Broadcasting estimates?",
+    "code": null,
+    "options": {
+      "A": "1x1",
+      "B": "1x4",
+      "C": "10x4",
+      "D": "4x10",
+      "E": "None of the above"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 17,
+    "stem": "You have a backend of 10 qubits. You want to run a circuit concerning only 1 qubit with an Estimator primitive. You transpiled the circuit and obtained the ISA observable which is `IIIXIIIIII`, `IIIZIIIIII`, with coeffs `[1.+0.j], [1+0.4.j]`. Why is this observable invalid?",
+    "code": null,
+    "options": {
+      "A": "The number of backend qubits and the original circuit one are incompatible with each other",
+      "B": "Pauli strings can be composed only from the `I, X and Y` letters",
+      "C": "Coefficients must be real numbers",
+      "D": "None of the above"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 18,
+    "stem": "The quantum circuit has been executed on estimator. You take a look at the first `PubResult` in the array of results. Let's say you store it in the variable named `data`. How can you check the standard error of the mean of expectation value estimates?",
+    "code": null,
+    "options": {
+      "A": "`data.stde`",
+      "B": "`data.stds`",
+      "C": "`data.errors.stds`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 19,
+    "stem": "How do you save the job results to the disk with the use of Qiskit and Python?",
+    "code": null,
+    "options": {
+      "A": "As a text file",
+      "B": "As a JSON file",
+      "C": "As an Avro file",
+      "D": "As an XML file"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 20,
+    "stem": "Suppose you have a system calling IBM Quantum computers every single day to perform analysis of a chemical molecule. You want to check all of the calls after 1st of April. What parameter of the `service.jobs` function can help you with this?",
+    "code": null,
+    "options": {
+      "A": "created_after",
+      "B": "start_time",
+      "C": "time_interval"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 21,
+    "stem": "Where can you check your job status?",
+    "code": null,
+    "options": {
+      "A": "`job.status()` in python program",
+      "B": "`job.current_state()` in python program",
+      "C": "In the Workload table on IBM Quantum Platform"
+    },
+    "stated_answer": [
+      "A",
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 22,
+    "stem": "Can you use physical qubits inside the gate statements?",
+    "code": null,
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false
+  },
+  {
+    "n": 23,
+    "stem": "You have a custom quantum gate that is constructed in QASM3. Assuming it is stored in a python variable named `special_gate`, how can you convert it to quantum circuit?",
+    "code": null,
+    "options": {
+      "A": "``` import qiskit.qasm3\n    qc = qiskit.qasm.convert(special_gate)```",
+      "B": "``` qc = qiskit.loads_qasm3(special_gate)```",
+      "C": "``` import qiskit.qasm3\n    qc = qiskit.qasm3.loads(special_gate)```"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true
+  },
+  {
+    "n": 24,
+    "stem": "You want to write a quantum circuit in QASM. You know you will need only the commonly used gates like `X` or `CX`. What should you place at the beginning of your code?",
+    "code": null,
+    "options": {
+      "A": "Nothing - standard gates are automatically imported",
+      "B": "`include \"stdgates.inc\";`",
+      "C": "`import \"stdgates.inc\";`",
+      "D": "`include \"standardgates.inc\";`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true
+  }
+]

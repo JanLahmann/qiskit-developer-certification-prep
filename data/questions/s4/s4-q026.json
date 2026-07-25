@@ -15,7 +15,7 @@
     },
     {
       "key": "B",
-      "text": "It runs fine; using only the backend's basis gates is sufficient, so connectivity does not matter."
+      "text": "It runs fine: once every gate is in the backend's native basis set, the primitive executes the circuit even on qubits that are not adjacent, without routing."
     },
     {
       "key": "C",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "It raises an error: `cx` on qubits (0, 4) is not supported because those qubits are not connected — the circuit still must be routed to the coupling map, not just expressed in basis gates."
+      "text": "It raises an error: `cx` on qubits (0, 4) is not supported — an ISA circuit must match the coupling map, not only the basis gates."
     }
   ],
   "answer": [
@@ -33,7 +33,7 @@
     "correct": "An ISA circuit must satisfy BOTH the native basis gates AND the device's qubit connectivity. Using only basis gates is not enough: a two-qubit gate between non-adjacent qubits raises `IBMInputValueError` (`the instruction cx on qubits (0, 4) is not supported by the target system`). A preset pass manager would route it by inserting SWAPs.",
     "distractors": {
       "A": "FakeManilaV2 has five qubits, so a 5-qubit circuit fits; the problem is the non-adjacent CX, not the circuit width.",
-      "B": "Connectivity absolutely matters; a CX between unconnected qubits is not executable and is rejected.",
+      "B": "Connectivity matters as much as the basis set: a CX between qubits that are not adjacent is not executable and is rejected before anything runs.",
       "C": "The primitive does NOT auto-route; routing (SWAP insertion) is the transpiler's job, which you must run before submitting."
     },
     "citations": [
@@ -53,8 +53,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+stem-echoed the basis-gates-are-enough distractor (length/stem-echo fix)."
   },
   "freshness": {
     "verified_against": {
@@ -63,7 +64,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

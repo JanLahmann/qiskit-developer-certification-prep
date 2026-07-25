@@ -1,0 +1,929 @@
+[
+  {
+    "n": 1,
+    "qid": "S1-001",
+    "section": 1,
+    "stem": "What does an X gate do to $\\ket{0}$?",
+    "code": null,
+    "options": {
+      "A": "Creates $\\ket{+}$",
+      "B": "Maps it to $\\ket{1}$",
+      "C": "Measures the qubit",
+      "D": "Adds a global phase only"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section1_perform_operations.yaml"
+  },
+  {
+    "n": 2,
+    "qid": "S1-002",
+    "section": 1,
+    "stem": "Which gate maps $\\ket{0}$ to $\\ket{+}$?",
+    "code": null,
+    "options": {
+      "A": "X",
+      "B": "Z",
+      "C": "H",
+      "D": "CX"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section1_perform_operations.yaml"
+  },
+  {
+    "n": 3,
+    "qid": "S1-003",
+    "section": 1,
+    "stem": "What is the result of applying Z to $\\ket{1}$?",
+    "code": null,
+    "options": {
+      "A": "$\\ket{0}$",
+      "B": "$\\ket{1}$",
+      "C": "$-\\ket{1}$",
+      "D": "$\\ket{+}$"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section1_perform_operations.yaml"
+  },
+  {
+    "n": 4,
+    "qid": "S1-004",
+    "section": 1,
+    "stem": "Which Pauli operator has eigenstates $\\ket{+}$ and $\\ket{-}$",
+    "code": null,
+    "options": {
+      "A": "X",
+      "B": "Y",
+      "C": "Z",
+      "D": "I"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section1_perform_operations.yaml"
+  },
+  {
+    "n": 5,
+    "qid": "S1-005",
+    "section": 1,
+    "stem": "What is the expectation value of measuring observable Z on state $\\ket{+}$",
+    "code": null,
+    "options": {
+      "A": "+1",
+      "B": "-1",
+      "C": "$+\\frac{1}{2}$",
+      "D": "0"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section1_perform_operations.yaml"
+  },
+  {
+    "n": 6,
+    "qid": "S1-006",
+    "section": 1,
+    "stem": "Starting from $\\ket{0}$, the sequence $Rx(\\frac{\\pi}{2})$, $Rz(\\frac{\\pi}{2})$, $Ry(\\frac{-\\pi}{2})$ is applied. What single $R(\\theta,\\phi)$ gate is this sequence equivalent to?",
+    "code": null,
+    "options": {
+      "A": "$R(2\\pi,0)$",
+      "B": "$R(\\pi,\\frac{\\pi}{2})$",
+      "C": "$R(\\frac{3\\pi}{2},2\\pi)$",
+      "D": "$R(\\frac{\\pi}{2},0)$"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section1_perform_operations.yaml"
+  },
+  {
+    "n": 7,
+    "qid": "S1-007",
+    "section": 1,
+    "stem": "Given the following code fragment, what is the approximate probability that a measurement would result in a bit value of 1?",
+    "code": "from qiskit import QuantumCircuit\nfrom numpy import pi\nqc = QuantumCircuit(1)\nqc.reset(0)\nqc.sx(0)\nqc.rx(pi/2,0)\nqc.measure_all()\n",
+    "options": {
+      "A": "0.75",
+      "B": "0.0",
+      "C": "0.5",
+      "D": "1.0"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true,
+    "source_file": "lkaucic-section1_perform_operations.yaml"
+  },
+  {
+    "n": 8,
+    "qid": "S1-008",
+    "section": 1,
+    "stem": "In Pauli('XIZZ') which qubit gets X assuming little-endian notation?",
+    "code": null,
+    "options": {
+      "A": "3",
+      "B": "2",
+      "C": "1",
+      "D": "0"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section1_perform_operations.yaml"
+  },
+  {
+    "n": 9,
+    "qid": "S2-001",
+    "section": 2,
+    "stem": "What does the Bloch sphere represent?",
+    "code": null,
+    "options": {
+      "A": "Only classical bits",
+      "B": "Single-qubit pure states",
+      "C": "Only two-qubit entangled states",
+      "D": "Classical probability distributions only"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section2_visualization.yaml"
+  },
+  {
+    "n": 10,
+    "qid": "S2-002",
+    "section": 2,
+    "stem": "Which state lies on the positive X axis of the Bloch sphere?",
+    "code": null,
+    "options": {
+      "A": "$\\ket{0}$",
+      "B": "$\\ket{1}$",
+      "C": "$\\ket{+}$",
+      "D": "$\\ket{-}$"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section2_visualization.yaml"
+  },
+  {
+    "n": 11,
+    "qid": "S2-003",
+    "section": 2,
+    "stem": "Which code would generate the following qsphere?",
+    "code": null,
+    "options": {
+      "A": "{'code': 'from qiskit import QuantumCircuit\\nfrom qiskit.visualization import plot\\\\_state\\\\_qsphere\\nqc = QuantumCircuit(2)\\nqc.h(0)\\nqc.cx(0,1)\\nqc.rz(np.pi/2,1)\\nqc.draw(\"mpl\")\\nplot\\\\_state\\\\_qsphere(qc)\\n'}",
+      "B": "{'code': 'from qiskit import QuantumCircuit\\nfrom qiskit.visualization import plot\\\\_state\\\\_qsphere\\nqc = QuantumCircuit(2)\\nqc.h(0)\\nqc.rx(np.pi/2,1)\\nqc.cx(0,1)\\nqc.draw(\"mpl\")\\nplot\\\\_state\\\\_qsphere(qc)\\n'}",
+      "C": "{'code': 'from qiskit import QuantumCircuit\\nfrom qiskit.visualization import plot\\\\_state\\\\_qsphere\\nqc = QuantumCircuit(2)\\nqc.h(0)\\nqc.cx(0,1)\\nqc.draw(\"mpl\")\\nplot\\\\_state\\\\_qsphere(qc)\\n'}",
+      "D": "{'code': 'from qiskit import QuantumCircuit\\nfrom qiskit.visualization import plot\\\\_state\\\\_qsphere\\nqc = QuantumCircuit(2)\\nqc.h(0)\\nqc.y(1)\\nqc.rx(np.pi/2,1)\\nqc.h(0)\\nplot\\\\_state\\\\_qsphere(qc)\\n'}"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true,
+    "source_file": "lkaucic-section2_visualization.yaml"
+  },
+  {
+    "n": 12,
+    "qid": "S2-004",
+    "section": 2,
+    "stem": "Which circuit is most consistent with the following Estimator output graph?",
+    "code": null,
+    "options": {
+      "A": "{'image': 'assets/circuits/circ3.png'}",
+      "B": "{'image': 'assets/circuits/circ2.png'}",
+      "C": "{'image': 'assets/circuits/circ1.png'}",
+      "D": "{'image': 'assets/circuits/bell.png'}"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section2_visualization.yaml"
+  },
+  {
+    "n": 13,
+    "qid": "S2-005",
+    "section": 2,
+    "stem": "Two states give identical histograms, but different qsphere colors. What differs?",
+    "code": null,
+    "options": {
+      "A": "global phase",
+      "B": "relative phase",
+      "C": "amplitude magnitude",
+      "D": "measurement basis"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section2_visualization.yaml"
+  },
+  {
+    "n": 14,
+    "qid": "S3-001",
+    "section": 3,
+    "stem": "Which code correctly creates a two-qubit quantum circuit?",
+    "code": null,
+    "options": {
+      "A": "QuantumCircuit()",
+      "B": "QuantumCircuit(2)",
+      "C": "Circuit(2)",
+      "D": "QuantumRegister.create(2)"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section3_create_circuits.yaml"
+  },
+  {
+    "n": 15,
+    "qid": "S3-002",
+    "section": 3,
+    "stem": "What does the following circuit prepare?",
+    "code": "qc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\n",
+    "options": {
+      "A": "$\\ket{00}$",
+      "B": "$\\ket{11}$",
+      "C": "$\\frac{1}{\\sqrt{2}}(\\ket{00}+\\ket{11})$",
+      "D": "$\\frac{1}{\\sqrt{2}}(\\ket{01}+\\ket{10})$"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "lkaucic-section3_create_circuits.yaml"
+  },
+  {
+    "n": 16,
+    "qid": "S3-003",
+    "section": 3,
+    "stem": "Which one of the following images is the output from the code below:",
+    "code": "from qiskit import *\nfrom math import pi\n\nqubits = QuantumRegister(2)\nclbits = ClassicalRegister(2)\nqc = QuantumCircuit(qubits,clbits)\n(q0, q1) = qubits\n(c1, c2) = clbits\n\nqc.h(0)\nqc.z(1)\nqc.barrier()\nqc.measure(q0, c1)\nwith qc.if_test((c1,1)) as else_:\n    qc.x(q1)\nwith else_:\n    qc.rx(pi, q1)\nqc.barrier()\nqc.measure(q1,c2)\nqc.draw(output=\"mpl\",plot_barriers=False)\n",
+    "options": {
+      "A": "{'image': 'assets/circuits/if_choices_1/a.png'}",
+      "B": "{'image': 'assets/circuits/if_choices_1/b.png'}",
+      "C": "{'image': 'assets/circuits/if_choices_1/c.png'}",
+      "D": "{'image': 'assets/circuits/if_choices_1/d.png'}"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true,
+    "source_file": "lkaucic-section3_create_circuits.yaml"
+  },
+  {
+    "n": 17,
+    "qid": "S3-004",
+    "section": 3,
+    "stem": "Which of the following passes are used in heuristic stage of transpilation layout stage?",
+    "code": null,
+    "options": {
+      "A": "TrivialLayout",
+      "B": "DenseLayout",
+      "C": "VF2Layout",
+      "D": "SabreLayout"
+    },
+    "stated_answer": [
+      "B",
+      "D"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section3_create_circuits.yaml"
+  },
+  {
+    "n": 18,
+    "qid": "S3-005",
+    "section": 3,
+    "stem": "Which of the following is used for optimization considering code below? Assume all prerequisties were imported.",
+    "code": "qc = QuantumCircuit(10)\nqc.h(0)\nfor i in range(9):\n    qc.cx(i,i+1)\nservice = QiskitRuntimeService()\nbackend = service.least_busy()\npm = generate_preset_pass_manager(2,backend=backend)\nqc_isa = pm.run(qc)\n",
+    "options": {
+      "A": "TrivialLayout",
+      "B": "CXCancellation",
+      "C": "CommutativeCancellation",
+      "D": "KAK Decomposition"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "lkaucic-section3_create_circuits.yaml"
+  },
+  {
+    "n": 19,
+    "qid": "S3-006",
+    "section": 3,
+    "stem": "Which of the circuits below is possible output for the code below?",
+    "code": "from qiskit import *\nfrom qiskit_ibm_runtime import QiskitRuntimeService\nfrom qiskit.transpiler.preset_passmanagers import (\n  generate_preset_pass_manager, )\nfrom math import pi\n\nqc = QuantumCircuit(4)\nqc.h(0)\nfor i in range(2):\n    qc.cx(i,i+1)\nqc.z(1)\nqc.rx(pi,1)\nservice = QiskitRuntimeService()\nbackend = service.least_busy()\npm = generate_preset_pass_manager(\n    optimization_level=1,\n    basis_gates=[\"rx\",\"cx\",\"h\"],\n    coupling_map=[[0,2],[1,3],[1,2]]\n)\nqc_isa = pm.run(qc)\nqc_isa.draw(\"mpl\",idle_wires=True)\n",
+    "options": {
+      "A": "{'image': 'assets/circuits/transpilation_choices_1/c.png'}",
+      "B": "{'image': 'assets/circuits/transpilation_choices_1/b.png'}",
+      "C": "{'image': 'assets/circuits/transpilation_choices_1/d.png'}",
+      "D": "{'image': 'assets/circuits/transpilation_choices_1/a.png'}"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true,
+    "source_file": "lkaucic-section3_create_circuits.yaml"
+  },
+  {
+    "n": 20,
+    "qid": "S3-007",
+    "section": 3,
+    "stem": "Which of the following are transpiler stages?",
+    "code": null,
+    "options": {
+      "A": "Layout",
+      "B": "Routing",
+      "C": "Decomposing",
+      "D": "Scheduling"
+    },
+    "stated_answer": [
+      "A",
+      "B",
+      "D"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section3_create_circuits.yaml"
+  },
+  {
+    "n": 21,
+    "qid": "S4-001",
+    "section": 4,
+    "stem": "What is the purpose of transpilation?",
+    "code": null,
+    "options": {
+      "A": "To convert a circuit into backend-compatible instructions",
+      "B": "To measure all qubits automatically",
+      "C": "To create a statevector",
+      "D": "To define an observable"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section4_run_circuits.yaml"
+  },
+  {
+    "n": 22,
+    "qid": "S4-002",
+    "section": 4,
+    "stem": "Why may SWAP gates be inserted during transpilation?",
+    "code": null,
+    "options": {
+      "A": "To reset qubits",
+      "B": "To satisfy hardware connectivity constraints",
+      "C": "To increase shot count",
+      "D": "To remove all noise"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section4_run_circuits.yaml"
+  },
+  {
+    "n": 23,
+    "qid": "S4-003",
+    "section": 4,
+    "stem": "What does layout refer to in transpilation?",
+    "code": null,
+    "options": {
+      "A": "Mapping virtual qubits to physical qubits",
+      "B": "Choosing the number of shots",
+      "C": "Drawing the circuit",
+      "D": "Choosing classical register names"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section4_run_circuits.yaml"
+  },
+  {
+    "n": 24,
+    "qid": "S4-004",
+    "section": 4,
+    "stem": "Consider a parameterized circuit given by the code below. What is the shape of evs? Assume necessary imports",
+    "code": "theta1 = Parameter(\"theta1\")\ntheta2 = Parameter(\"theta2\")\n\nqc = QuantumCircuit(2)\nqc.ry(theta1, 0)\nqc.ry(theta2, 1)\n\nobservables = [\n    [SparsePauliOp(\"ZI\")],\n    [SparsePauliOp(\"IZ\")]\n]\n\nparameter_values = [\n    [[0, 0], [pi / 2, 0], [pi / 2, pi/ 2]]\n]\n\n\nbackend = AerSimulator()\nestimator = Estimator(mode=backend)\n\npub = (qc, observables, parameter_values)\n\njob = estimator.run([pub])\nresult = job.result()\n\nprint(result[0].data.evs.shape)\n",
+    "options": {
+      "A": "(2,)",
+      "B": "(3,2)",
+      "C": "(2,3)",
+      "D": "Error due to shapes not being broadcastable"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "lkaucic-section4_run_circuits.yaml"
+  },
+  {
+    "n": 25,
+    "qid": "S5-001",
+    "section": 5,
+    "stem": "What does the Sampler primitive primarily return?",
+    "code": null,
+    "options": {
+      "A": "Expectation values",
+      "B": "Measurement samples or bitstring results",
+      "C": "Only statevectors",
+      "D": "Only transpiled circuits"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section5_sampler.yaml"
+  },
+  {
+    "n": 26,
+    "qid": "S5-002",
+    "section": 5,
+    "stem": "When is Sampler more appropriate than Estimator?",
+    "code": null,
+    "options": {
+      "A": "When you need bitstring measurement outcomes",
+      "B": "When you need expectation values of observables",
+      "C": "When you need to draw a circuit",
+      "D": "When you need to create a backend"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section5_sampler.yaml"
+  },
+  {
+    "n": 27,
+    "qid": "S5-003",
+    "section": 5,
+    "stem": "Which of these options is unique to Sampler?",
+    "code": null,
+    "options": {
+      "A": "default\\_shots",
+      "B": "default\\_precision",
+      "C": "shots\\_per\\_randomization",
+      "D": "none of the above"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section5_sampler.yaml"
+  },
+  {
+    "n": 28,
+    "qid": "S5-004",
+    "section": 5,
+    "stem": "What happens if you run Sampler on a circuit without measurements?",
+    "code": null,
+    "options": {
+      "A": "Code won't run and error will be returner",
+      "B": "Sampler will add measurements by itself and run the job",
+      "C": "Job will run and result will be empty",
+      "D": "none of the above"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section5_sampler.yaml"
+  },
+  {
+    "n": 29,
+    "qid": "S6-001",
+    "section": 6,
+    "stem": "What does the Estimator primitive primarily compute?",
+    "code": null,
+    "options": {
+      "A": "Bitstring counts",
+      "B": "Expectation values of observables",
+      "C": "Circuit diagrams",
+      "D": "Backend coupling maps"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section6_estimator.yaml"
+  },
+  {
+    "n": 30,
+    "qid": "S6-002",
+    "section": 6,
+    "stem": "Which object is commonly used to represent Pauli observables in Qiskit?",
+    "code": null,
+    "options": {
+      "A": "QuantumCircuit",
+      "B": "SparsePauliOp",
+      "C": "ClassicalRegister",
+      "D": "PassManager"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section6_estimator.yaml"
+  },
+  {
+    "n": 31,
+    "qid": "S6-003",
+    "section": 6,
+    "stem": "What are return values of the Estimator when the observable is Pauli Z on a single qubit?",
+    "code": null,
+    "options": {
+      "A": "0 or 1",
+      "B": "$\\ket{0}$ or $\\ket{1}$",
+      "C": "a real number between -1 and +1",
+      "D": "a real number between 0 and +1"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section6_estimator.yaml"
+  },
+  {
+    "n": 32,
+    "qid": "S6-004",
+    "section": 6,
+    "stem": "If a qubit measured in Z basis has probabilities $P(0)=0.7$ and $P(1)=0.3$ what is the expectation value of Z",
+    "code": null,
+    "options": {
+      "A": "$1.0$",
+      "B": "$0.7$",
+      "C": "$-1.0$",
+      "D": "$0.4$"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section6_estimator.yaml"
+  },
+  {
+    "n": 33,
+    "qid": "S6-005",
+    "section": 6,
+    "stem": "Which of these is not a valid Estimator PUB entry?",
+    "code": null,
+    "options": {
+      "A": "a single parametarized quantum circuit",
+      "B": "a single quantum circuit that contains no parameters",
+      "C": "target precision",
+      "D": "number of shots"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section6_estimator.yaml"
+  },
+  {
+    "n": 34,
+    "qid": "S6-006",
+    "section": 6,
+    "stem": "Which techniques are commonly configured directly through dedicated Estimator option groups rather than relying only on resilience\\_level",
+    "code": null,
+    "options": {
+      "A": "Dynamical decoupling",
+      "B": "Twirled readout error extinction",
+      "C": "Pauli Twirling",
+      "D": "Zero Noise Extrapolation"
+    },
+    "stated_answer": [
+      "A",
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section6_estimator.yaml"
+  },
+  {
+    "n": 35,
+    "qid": "S6-007",
+    "section": 6,
+    "stem": "Which of these is not a valid Estimator PUB entry?",
+    "code": null,
+    "options": {
+      "A": "a single parametarized quantum circuit",
+      "B": "a single quantum circuit that contains no parameters",
+      "C": "target precision",
+      "D": "number of shots"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section6_estimator.yaml"
+  },
+  {
+    "n": 36,
+    "qid": "S6-008",
+    "section": 6,
+    "stem": "A Qiskit Runtime Estimator job is executed with precision = 0.02. The precision value is then changed to 0.01, while all other settings remain unchanged. Which of the following best describes the expected effect?",
+    "code": null,
+    "options": {
+      "A": "Fewer shots are used",
+      "B": "Precision only affects Sampler, not Estimator",
+      "C": "target precision",
+      "D": "Backend changes automatically to the Sampler"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section6_estimator.yaml"
+  },
+  {
+    "n": 37,
+    "qid": "S6-009",
+    "section": 6,
+    "stem": "If the observable is identity I, what expectation value should Estimator ideally return for any normalized state?",
+    "code": null,
+    "options": {
+      "A": "0",
+      "B": "-1",
+      "C": "Depends on the number of shots",
+      "D": "1"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section6_estimator.yaml"
+  },
+  {
+    "n": 38,
+    "qid": "S7-001",
+    "section": 7,
+    "stem": "What does increasing the number of shots usually improve?",
+    "code": null,
+    "options": {
+      "A": "Sampling precision",
+      "B": "Circuit depth",
+      "C": "Qubit connectivity",
+      "D": "Gate fidelity automatically"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section7_results_analysis.yaml"
+  },
+  {
+    "n": 39,
+    "qid": "S7-002",
+    "section": 7,
+    "stem": "Which visualization is commonly used for measurement counts?",
+    "code": null,
+    "options": {
+      "A": "Histogram",
+      "B": "Bloch sphere only",
+      "C": "Circuit drawer only",
+      "D": "Density matrix table only"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section7_results_analysis.yaml"
+  },
+  {
+    "n": 40,
+    "qid": "S7-003",
+    "section": 7,
+    "stem": "What is the default value for NAME\\_OF\\_CREG in the sampler PUB output?",
+    "code": null,
+    "options": {
+      "A": "clbit",
+      "B": "meas",
+      "C": "evs",
+      "D": "pubs"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section7_results_analysis.yaml"
+  },
+  {
+    "n": 41,
+    "qid": "S7-004",
+    "section": 7,
+    "stem": "Given the code below, how would you retrieve probability distribution from sampler results? Assume all components have been imported correctly.",
+    "code": "qbits = QuantumRegister(2,\"qbits\")\nclbits = ClassicalRegister(2,\"clbits\")\nqc = QuantumCircuit(qbits, clbits)\n(q0, q1) = qbits\n(c0, c1) = clbits\nqc.h(0)\nqc.cx(0,1)\nqc.measure(qbits,clbits)\nservice = QiskitRuntimeService()\nbackend = service.least_busy()\npm = generate_preset_pass_manager(backend=backend,optimization_level=2)\nqc_isa = pm.run(qc)\nsampler = SamplerV2(mode=backend)\njob =sampler.run([qc_isa])\nresult = job.result()\n",
+    "options": {
+      "A": "counts = result[0].data.meas.get\\_counts()",
+      "B": "counts = result[0].data.clbits.get\\_counts()",
+      "C": "counts = result[0].data.evs.get\\_counts()",
+      "D": "counts = result[0].data.stds.get\\_counts()"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true,
+    "source_file": "lkaucic-section7_results_analysis.yaml"
+  },
+  {
+    "n": 42,
+    "qid": "S7-005",
+    "section": 7,
+    "stem": "Given the code below, how would you retrieve probability distribution from sampler results? Assume all components have been imported correctly.",
+    "code": "qbits = QuantumRegister(2,\"qbits\")\nclbits = ClassicalRegister(2,\"clbits\")\nqc = QuantumCircuit(qbits, clbits)\n(q0, q1) = qbits\n(c0, c1) = clbits\nqc.h(0)\nqc.cx(0,1)\nqc.measure_all()\nservice = QiskitRuntimeService()\nbackend = service.least_busy()\npm = generate_preset_pass_manager(backend=backend,optimization_level=2)\nqc_isa = pm.run(qc)\nsampler = SamplerV2(mode=backend)\njob =sampler.run([qc_isa])\nresult = job.result()\n",
+    "options": {
+      "A": "counts = result[0].data.meas.get\\_counts()",
+      "B": "counts = result[0].data.clbits.get\\_counts()",
+      "C": "counts = result[0].data.evs.get\\_counts()",
+      "D": "counts = result[0].data.stds.get\\_counts()"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true,
+    "source_file": "lkaucic-section7_results_analysis.yaml"
+  },
+  {
+    "n": 43,
+    "qid": "S7-006",
+    "section": 7,
+    "stem": "How long can you access previously submitted jobs?",
+    "code": null,
+    "options": {
+      "A": "Jobs are retained for 30 days after completion",
+      "B": "Jobs are retained for 1 year after completion",
+      "C": "Undeleted job data is retained for three years while you continue using the service",
+      "D": "Jobs are permanently accessible unless manually deleted"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section7_results_analysis.yaml"
+  },
+  {
+    "n": 44,
+    "qid": "S7-007",
+    "section": 7,
+    "stem": "You can access your submitted jobs by providing QiskitRuntimeService().jobs() method which of the following?",
+    "code": null,
+    "options": {
+      "A": "date jobs were created after",
+      "B": "date jobs were created before",
+      "C": "CRN",
+      "D": "API key"
+    },
+    "stated_answer": [
+      "A",
+      "B",
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section7_results_analysis.yaml"
+  },
+  {
+    "n": 45,
+    "qid": "S7-008",
+    "section": 7,
+    "stem": "Which of these are valid JobStatus values?",
+    "code": null,
+    "options": {
+      "A": "INITIALIZING",
+      "B": "INTERRUPTED",
+      "C": "CANCELLED",
+      "D": "WAITING"
+    },
+    "stated_answer": [
+      "A",
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section7_results_analysis.yaml"
+  },
+  {
+    "n": 46,
+    "qid": "S7-009",
+    "section": 7,
+    "stem": "Which of these you can't access when fetching session details via Session.detail()?",
+    "code": null,
+    "options": {
+      "A": "backend\\_name",
+      "B": "mode",
+      "C": "max\\_time",
+      "D": "none of the above"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section7_results_analysis.yaml"
+  },
+  {
+    "n": 47,
+    "qid": "S8-001",
+    "section": 8,
+    "stem": "OpenQASM is best described as:",
+    "code": null,
+    "options": {
+      "A": "A language for representing quantum programs",
+      "B": "A physical quantum processor",
+      "C": "A Python plotting library",
+      "D": "A classical database system"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section8_openqasm.yaml"
+  },
+  {
+    "n": 48,
+    "qid": "S8-002",
+    "section": 8,
+    "stem": "When exporting Qiskit code to OpenQASM 3 as a file, which of these method has to be used?",
+    "code": null,
+    "options": {
+      "A": "export\\_to\\_qasm()",
+      "B": "dumps()",
+      "C": "qiskit\\_to\\_qasm()",
+      "D": "dump()"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section8_openqasm.yaml"
+  },
+  {
+    "n": 49,
+    "qid": "S8-003",
+    "section": 8,
+    "stem": "Which OpenQASM 3 variable declaration corresponds to Qiskit's ClassicalRegister declaration?",
+    "code": null,
+    "options": {
+      "A": "bit",
+      "B": "clreq[ ]",
+      "C": "bit[ ]",
+      "D": "clbit[ ]"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section8_openqasm.yaml"
+  },
+  {
+    "n": 50,
+    "qid": "S8-004",
+    "section": 8,
+    "stem": "Which of the following state vectors corresponds to the following OpenQASM 3 code?",
+    "code": "OPENQASM 3;\ninclude \"stdgates.inc\";\n\nqubit[2] q;\nbit[2] c;\n\nh q[0];\ncx q[1], q[0];\nz q[1];\n",
+    "options": {
+      "A": "$\\frac{\\sqrt{2}}{2}\\ket{00} + \\frac{\\sqrt{2}}{2}\\ket{01}$",
+      "B": "$\\frac{1}{\\sqrt{2}}\\ket{00} + \\frac{1}{\\sqrt{2}}\\ket{11}$",
+      "C": "$\\frac{\\sqrt{2}}{2}\\ket{00} - \\frac{\\sqrt{2}}{2}\\ket{01}$",
+      "D": "$\\frac{1}{\\sqrt{2}}\\ket{00} - \\frac{1}{\\sqrt{2}}\\ket{11}$"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true,
+    "source_file": "lkaucic-section8_openqasm.yaml"
+  },
+  {
+    "n": 51,
+    "qid": "S8-005",
+    "section": 8,
+    "stem": "Which of these are OpenQASM 3 features?",
+    "code": null,
+    "options": {
+      "A": "while loops",
+      "B": "angle",
+      "C": "try/catch",
+      "D": "barrier"
+    },
+    "stated_answer": [
+      "A",
+      "B",
+      "D"
+    ],
+    "has_code": false,
+    "source_file": "lkaucic-section8_openqasm.yaml"
+  }
+]

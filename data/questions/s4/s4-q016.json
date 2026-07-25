@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "`SamplerV2` has no `backend=` parameter; the execution target is passed through `mode=` — use `SamplerV2(mode=backend)`."
+      "text": "`SamplerV2` has no `backend=` parameter; the execution target goes through `mode=`."
     },
     {
       "key": "B",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "`run()` needs the backend as a second argument: `sampler.run([isa], backend)`."
+      "text": "`run()` usually takes the backend as its second argument now that the constructor no longer accepts one: `sampler.run([isa], backend)`."
     }
   ],
   "answer": [
@@ -34,7 +34,7 @@
     "distractors": {
       "B": "`SamplerV2` from `qiskit_ibm_runtime` is the correct Runtime primitive and works fine once `mode=` is used — the import is not the problem.",
       "C": "The circuit is passed to `run()` as a PUB, not to the constructor; `sampler.run([isa])` is correct.",
-      "D": "`run()` takes only the iterable of PUBs (plus keyword options like `shots`); adding the backend as a positional argument raises `TypeError`."
+      "D": "`run()` takes only the iterable of PUBs (plus keyword options such as `shots`); there is no positional backend on `run()` either, so adding one raises `TypeError`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/hello-world",
@@ -53,8 +53,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened+hedged run() distractor (length/absolute-tell fix)."
   },
   "freshness": {
     "verified_against": {
@@ -63,7 +64,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "`('layout', 'routing', 'translation', 'optimization')` — four stages."
+      "text": "`('layout', 'routing', 'translation', 'optimization')` — four stages, no init and no scheduling."
     },
     {
       "key": "B",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "`('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling')` — six stages."
+      "text": "`('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling')` — all six, by default."
     }
   ],
   "answer": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "wording rebalanced in the meta-pattern pass (correct option now carries the true 'all six'/'by default', distractor A names what it drops)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

@@ -6,35 +6,35 @@
   ],
   "type": "mcq",
   "difficulty": 3,
-  "stem": "A single-qubit circuit has a non-zero global phase (`qc.global_phase = pi/2`) and one `h` gate. You round-trip it through OpenQASM 2 with `qc2 = qasm2.loads(qasm2.dumps(qc))`. Which statement about `qc2` is correct?",
+  "stem": "The single-qubit circuit below is given a non-zero global phase and one `h` gate, then round-tripped through OpenQASM 2: it is exported with `qasm2.dumps` and the resulting text is immediately re-imported with `qasm2.loads` to produce `qc2`. Which statement about that round trip is correct?",
   "code": "import math\nfrom qiskit import QuantumCircuit, qasm2\n\nqc = QuantumCircuit(1)\nqc.global_phase = math.pi / 2\nqc.h(0)\n\nqc2 = qasm2.loads(qasm2.dumps(qc))",
   "options": [
     {
       "key": "A",
-      "text": "The gate sequence is preserved, but the global phase is dropped (`qc2.global_phase == 0`), so `qc2 != qc`."
+      "text": "`qc2 == qc` holds: the exporter writes the phase as a `gphase` statement, which the OpenQASM 2 importer reads back into `global_phase`."
     },
     {
       "key": "B",
-      "text": "`qc2` is exactly equal to `qc`, global phase included."
+      "text": "`qasm2.dumps(qc)` raises `QASM2ExportError`, because a non-zero global phase has no OpenQASM 2 representation at all."
     },
     {
       "key": "C",
-      "text": "`qasm2.dumps(qc)` raises, because a non-zero global phase cannot be exported to OpenQASM 2."
+      "text": "`qc2.global_phase` still equals pi/2, but the `h` gate is absorbed into that phase and disappears from the circuit."
     },
     {
       "key": "D",
-      "text": "The global phase survives, but the `h` gate is lost in the round-trip."
+      "text": "The gate sequence survives entirely unchanged, but `qc2.global_phase` is 0, so `qc2 != qc`."
     }
   ],
   "answer": [
-    "A"
+    "D"
   ],
   "explanation": {
-    "correct": "OpenQASM 2 has no way to represent a circuit-level global phase, so the exporter simply omits it (it does not error). Re-importing gives a circuit whose gates match but whose `global_phase` is 0, hence `qc2 != qc`. Global phase (`gphase`) is an OpenQASM 3 concept.",
+    "correct": "OpenQASM 2 has no syntax for a circuit-level global phase -- `gphase` is an OpenQASM 3 statement. Qiskit's v2 exporter therefore drops the phase silently instead of raising: the emitted text is just `OPENQASM 2.0; include \"qelib1.inc\"; qreg q[1]; h q[0];`. Re-importing gives a circuit with the same `h` gate but `global_phase == 0`, and because `QuantumCircuit.__eq__` compares the global phase too, `qc2 != qc`. Global phase is unobservable on its own, but it matters once the circuit is used as a controlled sub-block.",
     "distractors": {
-      "B": "Equality also compares `global_phase`; since that value is not carried through OpenQASM 2, the circuits are not equal.",
-      "C": "The export succeeds; the global phase is silently discarded rather than raising an error.",
-      "D": "The gates are faithfully preserved; it is the global phase, not the `h`, that is lost."
+      "A": "`gphase` exists only in OpenQASM 3. Nothing in the emitted OpenQASM 2 text records the phase, so there is nothing for the importer to read back.",
+      "B": "The export succeeds. Qiskit discards the unrepresentable phase quietly here; it raises `QASM2ExportError` for things it cannot express at all, such as general control flow.",
+      "C": "It is the phase, not the gate, that is lost. Gate instructions map one-to-one onto OpenQASM 2 statements, so the `h` survives the round trip intact."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
@@ -47,13 +47,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport math\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm2\n\nqc = QuantumCircuit(1)\nqc.global_phase = math.pi / 2\nqc.h(0)\n\nraised = False\nerr = \"\"\ntry:\n    dumped = qasm2.dumps(qc)\n    qc2 = qasm2.loads(dumped)\nexcept Exception as e:\n    raised = True\n    err = f\"{type(e).__name__}: {str(e)[:100]}\"\n    qc2 = None\n\ngp_orig = float(qc.global_phase)\ngp_rt = None if qc2 is None else float(qc2.global_phase)\nops_equal = (qc2 is not None and qc.count_ops() == qc2.count_ops())\ncirc_equal = (qc2 is not None and qc2 == qc)\ngp_lost = (qc2 is not None and abs(gp_orig) > 1e-9 and abs(gp_rt) < 1e-9)\n\nclaim = {\n    \"A\": (ops_equal and gp_lost and not circ_equal),\n    \"B\": circ_equal,\n    \"C\": raised,\n    \"D\": (qc2 is not None and abs(gp_rt - gp_orig) < 1e-9 and qc2.count_ops().get(\"h\", 0) == 0),\n}\nevidence = {\n    \"A\": f\"gates preserved={ops_equal}; global_phase {round(gp_orig,4)} -> {None if gp_rt is None else round(gp_rt,4)} (lost={gp_lost}); qc2==qc={circ_equal}\",\n    \"B\": f\"qc2 exactly equals qc (incl. global phase)? {circ_equal}\",\n    \"C\": f\"qasm2.dumps raised? {raised} {err}\",\n    \"D\": f\"global phase preserved and h dropped? {claim['D']} (h count in qc2={None if qc2 is None else qc2.count_ops().get('h',0)})\",\n}\nproven = [k for k, v in claim.items() if v]\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"gp_orig\": gp_orig, \"gp_rt\": gp_rt, \"ops_equal\": ops_equal, \"circ_equal\": circ_equal}})\n"
+    "proof_script": "\nimport math\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm2\n\nqc = QuantumCircuit(1)\nqc.global_phase = math.pi / 2\nqc.h(0)\n\nraised = False\nerr = \"\"\ndumped = None\ntry:\n    dumped = qasm2.dumps(qc)\n    qc2 = qasm2.loads(dumped)\nexcept Exception as e:\n    raised = True\n    err = f\"{type(e).__name__}: {str(e)[:100]}\"\n    qc2 = None\n\ngp_orig = float(qc.global_phase)\ngp_rt = None if qc2 is None else float(qc2.global_phase)\nops_equal = (qc2 is not None and qc.count_ops() == qc2.count_ops())\ncirc_equal = (qc2 is not None and qc2 == qc)\ngp_lost = (qc2 is not None and abs(gp_orig) > 1e-9 and abs(gp_rt) < 1e-9)\nmentions_gphase = (dumped is not None and \"gphase\" in dumped)\nh_count = None if qc2 is None else qc2.count_ops().get(\"h\", 0)\n\nclaim = {\n    \"A\": circ_equal,\n    \"B\": raised,\n    \"C\": (qc2 is not None and gp_rt is not None and abs(gp_rt - gp_orig) < 1e-9 and h_count == 0),\n    \"D\": (ops_equal and gp_lost and not circ_equal),\n}\nevidence = {\n    \"A\": f\"claim=qc2 == qc via a gphase statement; emitted text contains 'gphase'={mentions_gphase}; \"\n         f\"qc2 == qc is {circ_equal}\",\n    \"B\": f\"claim=qasm2.dumps raises QASM2ExportError; export actually raised={raised} {err}; \"\n         f\"emitted text={dumped!r}\",\n    \"C\": f\"claim=phase kept and h dropped; qc2.global_phase={None if gp_rt is None else round(gp_rt, 4)} \"\n         f\"(original {round(gp_orig, 4)}), h count in qc2={h_count}\",\n    \"D\": f\"claim=gates kept, phase lost; count_ops preserved={ops_equal} ({dict(qc.count_ops())} -> \"\n         f\"{None if qc2 is None else dict(qc2.count_ops())}); global_phase {round(gp_orig, 4)} -> \"\n         f\"{None if gp_rt is None else round(gp_rt, 4)} (lost={gp_lost}); qc2 == qc is {circ_equal}\",\n}\nproven = [k for k, v in claim.items() if v]\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"dumped\": dumped, \"gp_orig\": gp_orig, \"gp_rt\": gp_rt,\n                           \"ops_equal\": ops_equal, \"circ_equal\": circ_equal}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s8 r1: answer A->D (position rebalance); stem rewritten to be self-contained (spells out the dumps-then-loads round trip and names qc2) and no longer writes 'pi/2' where the code uses math.pi/2; absolute-word tell removed; proof now also observes whether the emitted OpenQASM 2 text contains 'gphase' | absolute-word tell cleared (correct option now also carries an absolute)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

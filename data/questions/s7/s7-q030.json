@@ -6,7 +6,7 @@
   ],
   "type": "multi",
   "difficulty": 2,
-  "stem": "Calling `session.details()` on a Runtime `Session` returns a dictionary. Which of the following are actual keys in that dictionary? (Select all that apply.)",
+  "stem": "Calling `session.details()` on a `Session` attached to a live IBM Quantum service returns a dictionary of session metadata. Which of the following are actual keys in that dictionary? (Select all that apply.)",
   "code": "details = session.details()",
   "options": [
     {
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "`shots`"
+      "text": "`max_time`"
     },
     {
       "key": "E",
@@ -37,14 +37,14 @@
   "answer": [
     "A",
     "C",
+    "D",
     "E"
   ],
   "explanation": {
-    "correct": "`session.details()` reports session-level lifecycle and usage metadata: `state` (open/active/inactive/closed), `accepting_jobs`, `last_job_started`/`last_job_completed`, plus `max_time`, `usage_time`, `mode`, and timestamps. Per-job data (a queue position, shot count, or the results themselves) is NOT part of it.",
+    "correct": "`Session.details()` describes the session itself, not its jobs: `state` (open / active / inactive / closed), `accepting_jobs`, `max_time` (the maximum session length allowed by your plan), the lifecycle timestamps `last_job_started` / `last_job_completed` / `started_at` / `closed_at` / `activated_at`, plus `id`, `backend_name`, `interactive_timeout`, `active_timeout`, `mode` and `usage_time`. Note that the dictionary comes from the server: in local testing mode (a Session built on a fake backend) `details()` returns `None`, because there is no server-side session to describe.",
     "distractors": {
-      "B": "A queue position is a per-job property, not part of the session details.",
-      "D": "`shots` is a per-job execution setting, not a session-details key.",
-      "F": "Results belong to individual jobs (`job.result()`), not to `session.details()`."
+      "B": "A queue position is a per-job property reported by the job/Workloads view, not part of the session description.",
+      "F": "Results belong to individual jobs (`job.result()`); a session never carries result data."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/session#details",
@@ -61,7 +61,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s7: stem made honest about where the dict comes from (None in local mode); option D `shots` -> the real key `max_time`, so the answer count varies across the section's multi-selects (3/3/4)"
   }
 }

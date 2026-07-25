@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "Only `00` and `11`, roughly 50/50 — qubit 1 always ends up matching qubit 0."
+      "text": "Only `00` and `11`, roughly 50/50 each."
     }
   ],
   "answer": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "high length tell cleared (correct option's gloss trimmed to match the other outcome options; the predicted values are unchanged) | option text de-duplicated against s3-q026 (identical outcome gloss played both roles across the bank)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

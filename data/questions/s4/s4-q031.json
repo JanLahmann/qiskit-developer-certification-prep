@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "Fifty independent circuits, all known upfront, that you want to clear the queue as cheaply as possible."
+      "text": "Fifty independent circuits, all known upfront, that you want to push through the queue as cheaply as possible in one go."
     },
     {
       "key": "B",
@@ -27,7 +27,7 @@
     },
     {
       "key": "E",
-      "text": "A large collection of unrelated benchmarking circuits where minimizing cost is the priority."
+      "text": "A large collection of unrelated benchmarking circuits, where minimizing cost usually matters more than latency."
     }
   ],
   "answer": [
@@ -39,7 +39,7 @@
     "distractors": {
       "A": "Independent circuits known upfront that you want to run cheaply are the classic case for batch mode, which is generally less expensive than a session.",
       "D": "A single circuit run should use job mode; a session gives no queuing benefit for the first (only) job and costs more.",
-      "E": "Cost-sensitive, independent benchmarking circuits belong in batch mode, not a more expensive session."
+      "E": "Cost-sensitive, independent benchmarking circuits belong in batch mode, not in a more expensive session."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
@@ -57,7 +57,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened + hedged distractors (length/absolute-tell fix)."
   }
 }

@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "It still contains a `t` gate, because `t` is a standard gate kept as-is."
+      "text": "It still contains a `t` gate, because `t` is typically kept as a standard gate."
     },
     {
       "key": "B",
@@ -32,7 +32,7 @@
   "explanation": {
     "correct": "The translation stage rewrites every gate into the target's basis. Since neither `h` nor `t` is a basis gate, both are decomposed into `rz`/`sx` (and the two-qubit `cx` stays), so the ISA circuit contains no `h` or `t`.",
     "distractors": {
-      "A": "`t` is not in this backend's basis, so it cannot survive — it is translated away.",
+      "A": "`t` is not in this backend's basis, so it cannot survive — it is translated away like any other non-basis gate.",
       "B": "`h` is also absent from the basis and is likewise rewritten; it does not remain either.",
       "D": "A gate outside the basis is translated, not rejected — transpilation succeeds without error."
     },
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "absolute-wording tell cleared (distractor A now hedges)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

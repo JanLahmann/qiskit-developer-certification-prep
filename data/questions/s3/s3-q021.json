@@ -19,11 +19,11 @@
     },
     {
       "key": "C",
-      "text": "`rx = 2π ≈ 6.283`, `rz = π/2 ≈ 1.571` — only the coefficient is applied; the added constant is dropped."
+      "text": "`rx = 2π ≈ 6.283`, `rz = π/2 ≈ 1.571` — just the coefficient is applied; the added constant is dropped."
     },
     {
       "key": "D",
-      "text": "It raises an error because gate angles must be plain `Parameter`s, not expressions."
+      "text": "It raises an error because gate angles must typically be plain `Parameter`s, not expressions."
     }
   ],
   "answer": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "absolute-wording tell cleared (absolute removed from distractor C; distractor D now hedges)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

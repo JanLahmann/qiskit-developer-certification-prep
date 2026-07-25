@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "The session stops accepting new jobs."
+      "text": "The session stops accepting any new jobs."
     },
     {
       "key": "E",
@@ -56,7 +56,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — true absolute added to a correct option (absolute-tell fix)."
   }
 }

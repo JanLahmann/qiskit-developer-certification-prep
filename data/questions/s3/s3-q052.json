@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "A mix of `00` and `11`, roughly 50/50."
+      "text": "A mix of `00` and `11`, close to 50/50."
     }
   ],
   "answer": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "hedge wording rebalanced in the meta-pattern pass (hedged wording now sits with the correct option's DEFAULT-branch reasoning)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

@@ -2,42 +2,43 @@
   "id": "s1-q021",
   "section": "s1",
   "objectives": [
-    "s1o1"
+    "s1o1",
+    "s1o2"
   ],
   "type": "predict-output",
   "difficulty": 3,
-  "stem": "What does `Pauli('Z').dot(Pauli('X'))` evaluate to (`.dot` is the product Z·X, keeping the phase)?",
-  "code": "from qiskit.quantum_info import Pauli\n\nprint(Pauli('Z').dot(Pauli('X')).to_label())",
+  "stem": "The two single-qubit operators below are combined with `compose` and the result is applied to |0⟩. What does this print?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator, Statevector\n\nh = QuantumCircuit(1)\nh.h(0)\ns = QuantumCircuit(1)\ns.s(0)\n\nop = Operator(h).compose(Operator(s))\nprint(np.round(Statevector.from_label('0').evolve(op).data, 4))",
   "options": [
     {
       "key": "A",
-      "text": "`iY` — Z·X = iY"
+      "text": "[0.7071, 0.7071j] — `compose` applies H first, then S"
     },
     {
       "key": "B",
-      "text": "`-iY` — Z·X = −iY"
+      "text": "[0.7071, 0.7071] — `compose` applies its argument S first, and S leaves |0⟩ alone"
     },
     {
       "key": "C",
-      "text": "`iX` — the product stays on the letter X"
+      "text": "[1, 0] — H and S compose to the identity here"
     },
     {
       "key": "D",
-      "text": "`Y` — the product is Y with no phase"
+      "text": "[0.7071, −0.7071j] — `compose` conjugates its argument, applying S† after H"
     }
   ],
   "answer": [
     "A"
   ],
   "explanation": {
-    "correct": "The cyclic Pauli products carry +i: X·Y = iZ, Y·Z = iX, and Z·X = iY. So `Pauli('Z').dot(Pauli('X'))` returns 'iY'.",
+    "correct": "`A.compose(B)` composes in circuit (time) order: A acts first, then B. As matrices that is B·A — the mirror image of `A.dot(B)` = A·B. So `Operator(h).compose(Operator(s))` is S·H, the same operator as a circuit with `h` then `s`. Acting on |0⟩: H gives |+⟩, then S multiplies the |1⟩ amplitude by i, leaving (|0⟩ + i|1⟩)/√2 = [0.7071, 0.7071j].",
     "distractors": {
-      "B": "−iY is X·Z (the reversed order). Z·X is the cyclic direction, giving +iY. This is the classic sign trap.",
-      "C": "The product of Z and X lands on Y, not X; only the phase is imaginary.",
-      "D": "The Pauli class keeps the phase, so the result is iY, not a bare Y."
+      "B": "This reads `compose` as a plain matrix product with the argument on the right (H·S), i.e. S acting first. That is what `.dot` does: `Operator(h).dot(Operator(s))` on |0⟩ really does give [0.7071, 0.7071], because S leaves |0⟩ untouched and H then makes |+⟩.",
+      "C": "H is its own inverse, but S is not H's inverse, so nothing cancels. S·H is a genuine unitary that maps |0⟩ to (|0⟩ + i|1⟩)/√2.",
+      "D": "`compose` neither inverts nor conjugates its argument — that would be `Operator(h).compose(Operator(s).adjoint())`, which gives [0.7071, −0.7071j]. S† is a different gate (`sdg`) from S."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/guides/operator-class",
       "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
     ]
   },
@@ -47,13 +48,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit.quantum_info import Pauli\nres = Pauli('Z').dot(Pauli('X'))\nlbl = res.to_label()\nY = np.array([[0, -1j], [1j, 0]], dtype=complex)\nclaims = {\"A\": \"iY\", \"B\": \"-iY\", \"C\": \"iX\", \"D\": \"Y\"}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = (lbl == c)\n    evidence[k] = f\"Pauli('Z').dot(Pauli('X')).to_label() = '{lbl}'; option {k} claims '{c}' -> match={m}\"\n    if m:\n        proven.append(k)\nevidence[\"A\"] += f\"  (cross-check: matrix == iY? {bool(np.allclose(res.to_matrix(), 1j * Y))})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": lbl}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator, Statevector\n\nh = QuantumCircuit(1)\nh.h(0)\ns = QuantumCircuit(1)\ns.s(0)\n\nop = Operator(h).compose(Operator(s))\ngot = Statevector.from_label(\"0\").evolve(op).data\n\nr = 1 / np.sqrt(2)\ncands = {\n    \"A\": np.array([r, 1j * r]),\n    \"B\": np.array([r, r]),\n    \"C\": np.array([1.0, 0.0]),\n    \"D\": np.array([r, -1j * r]),\n}\nmatch = {k: bool(np.allclose(got, v, atol=1e-9)) for k, v in cands.items()}\n\nhs = QuantumCircuit(1)\nhs.h(0)\nhs.s(0)\nsame_as_h_then_s = bool(np.allclose(op.data, Operator(hs).data))\nmatrix_rule = bool(np.allclose(op.data, Operator(s).data @ Operator(h).data))\ndot_val = Statevector.from_label(\"0\").evolve(Operator(h).dot(Operator(s))).data\nadj_val = Statevector.from_label(\"0\").evolve(\n    Operator(h).compose(Operator(s).adjoint())).data\n\nfmt = lambda v: str(np.round(v, 4))\nevidence = {\n    \"A\": f\"observed statevector {fmt(got)}; compose equals the matrix product S@H? \"\n         f\"{matrix_rule}; identical to the circuit h-then-s? {same_as_h_then_s} -> {match['A']}\",\n    \"B\": f\"[0.7071, 0.7071] is what you get when S acts FIRST; that is dot, not compose: \"\n         f\"Operator(h).dot(Operator(s)) on |0> gives {fmt(dot_val)} -> {match['B']}\",\n    \"C\": f\"the composition is not the identity; its matrix is {fmt(op.data)} -> {match['C']}\",\n    \"D\": f\"compose does not adjoint its argument; S-dagger after H would give \"\n         f\"{fmt(adj_val)} -> {match['D']}\",\n}\nproven = [k for k, v in match.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"statevector\": fmt(got), \"compose_equals_S_at_H\": matrix_rule,\n                           \"equals_circuit_h_then_s\": same_as_h_then_s,\n                           \"dot_statevector\": fmt(dot_val)}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "retargeted in the s1 meta-pattern pass: the original item (Z·X = iY) duplicated q013/q014 — q014 option C states that identity verbatim as a correct option — and s1 was already heavy on Pauli-label ordering. Now tests `Operator.compose` argument order (self acts first, matrix B·A) vs `.dot`, an uncovered quantum_info manipulation point."
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +64,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

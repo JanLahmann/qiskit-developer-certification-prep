@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "The number of shots defaults to 0; set `shots=1024` so the measurement resolves"
+      "text": "The circuit is missing Aer's `qc.save_statevector()` call; add it before the measure"
     },
     {
       "key": "B",
@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "Measurement is not a unitary and adds classical bits; build the statevector from the measurement-free circuit (drop `measure`)"
+      "text": "Measurement is not unitary, so `from_instruction` cannot evolve it; drop `measure`"
     },
     {
       "key": "D",
@@ -33,7 +33,7 @@
     "correct": "`Statevector.from_instruction` simulates unitary evolution and cannot process a `measure` (which is non-unitary and involves classical bits). The fix is to remove the measurement and take the statevector of the pure-unitary circuit.",
     "distractors": {
       "D": "`from_instruction` takes no backend argument and does not run on hardware; the error is about the measurement, not a missing backend.",
-      "A": "`Statevector.from_instruction` is an exact algebraic evolution with no concept of shots; adding shots does not apply.",
+      "A": "`Statevector.from_instruction` is exact algebraic evolution of a unitary circuit; it needs no save instruction. Appending Aer's `save_statevector()` makes matters worse — that instruction is not unitary either, so `from_instruction` raises on it as well.",
       "B": "`Statevector` represents superpositions fine (H|0⟩ works). Switching to `DensityMatrix.from_instruction` on the same circuit raises the same measurement error, so it is not the fix."
     },
     "citations": [
@@ -47,13 +47,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import inspect\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, DensityMatrix\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nraised = False\nmsg = \"\"\ntry:\n    Statevector.from_instruction(qc)\nexcept Exception as e:\n    raised = True\n    msg = f\"{type(e).__name__}: {e}\"\nqc2 = QuantumCircuit(1)\nqc2.h(0)\nworks = False\ntry:\n    Statevector.from_instruction(qc2)\n    works = True\nexcept Exception:\n    works = False\nhas_backend = \"backend\" in inspect.signature(Statevector.from_instruction).parameters\ndm_raised = False\ntry:\n    DensityMatrix.from_instruction(qc)\nexcept Exception:\n    dm_raised = True\nabout_measure = (\"classical\" in msg.lower()) or (\"measure\" in msg.lower())\nA_ok = raised and works and about_measure\nevidence = {\n    \"C\": f\"measured circuit raised [{msg[:80]}]; measurement-free circuit works={works}; cause is the measurement -> {A_ok}\",\n    \"D\": f\"Statevector.from_instruction has a 'backend' parameter? {has_backend}; error is about the measurement, not a backend -> False\",\n    \"A\": \"Statevector.from_instruction is exact (no shots parameter); 'set shots' does not apply -> False\",\n    \"B\": f\"DensityMatrix.from_instruction on the SAME measured circuit also raised? {dm_raised}; the class is not the cause -> False\",\n}\nproven = [\"C\"] if A_ok else []\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"error\": msg[:140], \"free_circuit_works\": works, \"has_backend_param\": has_backend}})\n"
+    "proof_script": "import inspect\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, DensityMatrix\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nraised = False\nmsg = \"\"\ntry:\n    Statevector.from_instruction(qc)\nexcept Exception as e:\n    raised = True\n    msg = f\"{type(e).__name__}: {e}\"\n\nqc2 = QuantumCircuit(1)\nqc2.h(0)\nworks = False\ntry:\n    Statevector.from_instruction(qc2)\n    works = True\nexcept Exception:\n    works = False\n\nsig = inspect.signature(Statevector.from_instruction).parameters\nhas_backend = \"backend\" in sig\nhas_shots = \"shots\" in sig\n\ndm_raised = False\ntry:\n    DensityMatrix.from_instruction(qc)\nexcept Exception:\n    dm_raised = True\n\n# Distractor A: append Aer's save_statevector and re-try.\nsave_raised = None\nsave_msg = \"\"\ntry:\n    import qiskit_aer  # noqa: F401\n    qc3 = QuantumCircuit(1, 1)\n    qc3.h(0)\n    qc3.save_statevector()\n    qc3.measure(0, 0)\n    try:\n        Statevector.from_instruction(qc3)\n        save_raised = False\n    except Exception as e:\n        save_raised = True\n        save_msg = f\"{type(e).__name__}: {e}\"\nexcept Exception as e:\n    save_raised = \"aer-unavailable\"\n    save_msg = repr(e)\n\nabout_measure = (\"classical\" in msg.lower()) or (\"measure\" in msg.lower())\nC_ok = raised and works and about_measure\nevidence = {\n    \"A\": f\"no save instruction is needed: the measurement-free circuit works={works}; \"\n         f\"appending Aer save_statevector still raises? {save_raised} [{save_msg[:60]}] -> False\",\n    \"B\": f\"DensityMatrix.from_instruction on the SAME measured circuit also raised? {dm_raised}; \"\n         f\"the class is not the cause -> False\",\n    \"C\": f\"measured circuit raised [{msg[:80]}]; measurement-free circuit works={works}; \"\n         f\"cause is the measurement -> {C_ok}\",\n    \"D\": f\"Statevector.from_instruction has a 'backend' parameter? {has_backend} \"\n         f\"(it has no 'shots' parameter either: {has_shots}); the error is about the \"\n         f\"measurement, not a backend -> False\",\n}\nproven = [\"C\"] if C_ok else []\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"error\": msg[:140], \"free_circuit_works\": works,\n                           \"has_backend_param\": has_backend, \"has_shots_param\": has_shots,\n                           \"save_statevector_still_raises\": save_raised}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "length tell cleared; distractor A no longer hangs on an unstated shots default"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

@@ -5,41 +5,40 @@
     "s7o1"
   ],
   "type": "mcq",
-  "difficulty": 1,
-  "stem": "A SamplerV2 job whose circuit ended with `measure_all()` has completed, and you hold the returned `result` object. Which expression returns the measurement counts as a Python dict such as `{'00': 512, '11': 512}`?",
-  "code": "# the executed circuit ended with qc.measure_all()\n# result = sampler.run([isa_circuit]).result()",
+  "difficulty": 2,
+  "stem": "Your kernel is about to shut down and you want to keep a completed SamplerV2 `result` on disk so a later session can reload it as a real result object. Which save/load pair round-trips it?",
+  "code": "import json\nfrom qiskit_ibm_runtime import RuntimeEncoder, RuntimeDecoder\n\n# result = sampler.run([isa_circuit]).result()\n# ... write result to result.json, read it back in a new kernel ...",
   "options": [
     {
       "key": "A",
-      "text": "`result[0].data.meas.get_counts()`"
+      "text": "`json.dump(result, f, cls=RuntimeEncoder)`, then `json.load(f, cls=RuntimeDecoder)`"
     },
     {
       "key": "B",
-      "text": "`result.get_counts()`"
+      "text": "`json.dump(result, f)`, then `json.load(f)` -- a PrimitiveResult is plain JSON data"
     },
     {
       "key": "C",
-      "text": "`result[0].get_counts()`"
+      "text": "`json.dump(result, f, cls=RuntimeDecoder)`, then `json.load(f, cls=RuntimeEncoder)`"
     },
     {
       "key": "D",
-      "text": "`result.quasi_dists[0]`"
+      "text": "`result.to_json()` to a string, then `PrimitiveResult.from_json(...)` to rebuild the object"
     }
   ],
   "answer": [
     "A"
   ],
   "explanation": {
-    "correct": "A SamplerV2 job returns a PrimitiveResult: a sequence of one PubResult per PUB. Index the pub with `result[0]`, reach its `.data` (a DataBin), select the register field (`meas`, auto-named by `measure_all()`), then call `BitArray.get_counts()`.",
+    "correct": "A V2 result is not plain JSON: `PrimitiveResult`, `DataBin` and `BitArray` are custom containers. `RuntimeEncoder` is a `json.JSONEncoder` subclass (so it goes with `dump`) and `RuntimeDecoder` is a `json.JSONDecoder` subclass (so it goes with `load`). The reloaded object is a real PrimitiveResult again -- `result[0].data.meas.get_counts()` still works, with identical counts.",
     "distractors": {
-      "B": "`get_counts()` on the top-level result is the Qiskit V1 `Result` API; a V2 PrimitiveResult has no such method.",
-      "C": "`SamplerPubResult` (what `result[0]` is) has no `get_counts`; counts live one level deeper, inside `.data.<register>`.",
-      "D": "`quasi_dists` is the V1 `Sampler` output; SamplerV2 returns per-shot bitstrings in a BitArray, not quasi-probability dicts."
+      "B": "Plain `json.dump` raises `TypeError: Object of type PrimitiveResult is not JSON serializable`; the V2 containers need the Runtime encoder.",
+      "C": "Encoder and decoder are swapped. `json.dump(..., cls=RuntimeDecoder)` fails because `json` hands encoder keyword arguments to the class (`TypeError: JSONDecoder.__init__() got an unexpected keyword argument 'skipkeys'`).",
+      "D": "`to_json`/`from_json` do not exist on `PrimitiveResult` (`AttributeError`); Runtime serialization goes through the encoder/decoder classes with the standard `json` module."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.PrimitiveResult",
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray"
+      "https://quantum.cloud.ibm.com/docs/guides/save-jobs",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.PrimitiveResult"
     ]
   },
   "proof": {
@@ -48,13 +47,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nresult = StatevectorSampler(seed=42).run([qc], shots=1000).result()\n\nevidence = {}; proven = []\ndef attempt(key, fn):\n    try:\n        v = fn()\n        ok = isinstance(v, dict) and sum(v.values()) == 1000\n        evidence[key] = f\"returned {type(v).__name__}={str(v)[:60]}; counts-dict summing to shots={ok}\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\nattempt(\"A\", lambda: result[0].data.meas.get_counts())\nattempt(\"B\", lambda: result.get_counts())\nattempt(\"C\", lambda: result[0].get_counts())\nattempt(\"D\", lambda: result.quasi_dists[0])\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"A_counts\": result[0].data.meas.get_counts()}})\n"
+    "proof_script": "import json\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit_ibm_runtime import RuntimeEncoder, RuntimeDecoder\n\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nresult = StatevectorSampler(seed=42).run([qc], shots=400).result()\norig = result[0].data.meas.get_counts()\n\ndef roundtrip(dump_kwargs, load_kwargs, path):\n    with open(path, \"w\") as fh:\n        json.dump(result, fh, **dump_kwargs)\n    with open(path) as fh:\n        return json.load(fh, **load_kwargs)\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        back = fn()\n        got = back[0].data.meas.get_counts()\n        ok = (got == orig)\n        evidence[key] = (f\"round-trip returned {type(back).__name__}; reloaded counts {got} \"\n                         f\"== original {orig} -> {ok}\")\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\ncheck(\"A\", lambda: roundtrip({\"cls\": RuntimeEncoder}, {\"cls\": RuntimeDecoder}, \"a.json\"))\ncheck(\"B\", lambda: roundtrip({}, {}, \"b.json\"))\ncheck(\"C\", lambda: roundtrip({\"cls\": RuntimeDecoder}, {\"cls\": RuntimeEncoder}, \"c.json\"))\ndef _d():\n    s = result.to_json()\n    from qiskit.primitives import PrimitiveResult\n    return PrimitiveResult.from_json(s)\ncheck(\"D\", _d)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"original_counts\": orig}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s7: REWRITTEN — old version duplicated q024 (pub indexing) and echoed a community item; now tests RuntimeEncoder/RuntimeDecoder round-trip (executed proof, kills the 1.42x length tell)"
   },
   "freshness": {
     "verified_against": {
@@ -63,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

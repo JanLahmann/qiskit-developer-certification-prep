@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "Job mode (`mode=backend`, with no session or batch context)."
+      "text": "Job mode — submit the single primitive request with `mode=backend`."
     },
     {
       "key": "B",
@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "Batch mode, to reduce the single job's queuing time."
+      "text": "Batch mode (`mode=batch`), which typically reduces the queuing time of a single request."
     },
     {
       "key": "D",
@@ -33,7 +33,7 @@
     "correct": "The guidance is explicit: always use job mode to submit a single primitive request. Job mode is easiest for a small experiment and may even run sooner than batch.",
     "distractors": {
       "B": "A session does not give a single job priority over other users, and it costs more; its benefits appear only across multiple jobs.",
-      "C": "The queuing time does not decrease for the first job in a batch, so batching one job gives no benefit.",
+      "C": "The queuing time does not decrease for the first job submitted in a batch, so batching a single request gives no benefit.",
       "D": "It does make a difference: sessions and batches add overhead/cost without helping a single job, whereas job mode is the recommended, lightest choice."
     },
     "citations": [
@@ -51,7 +51,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — code-formatted + hedged the batch distractor (format/absolute-tell fix). Also: correct option now carries the stem vocabulary (stem-echo calibration). Also: levelled stem vocabulary across the options (stem-echo fix)."
   }
 }

@@ -12,7 +12,7 @@
   "options": [
     {
       "key": "A",
-      "text": "`default_precision` must be a positive number (it is a target standard error, e.g. 0.01); 0 is invalid."
+      "text": "`default_precision` must be strictly positive (it is a target standard error); `0` is invalid."
     },
     {
       "key": "B",
@@ -24,7 +24,7 @@
     },
     {
       "key": "D",
-      "text": "Precision cannot be set on `options`; it can only be passed to `run()`."
+      "text": "Precision cannot be set on `options` at all; it is only accepted as the `precision` keyword of `run()`."
     }
   ],
   "answer": [
@@ -35,7 +35,7 @@
     "distractors": {
       "B": "Precision is a real-valued target standard error, not an integer shot count; a float like 0.01 is perfectly valid, so the fix is not to make it an integer.",
       "C": "`default_precision` does exist on EstimatorOptions; `default_shots` is a separate option, not a substitute for the invalid value.",
-      "D": "You can set `default_precision` on `estimator.options`; you may also pass `precision` to `run()`, but setting it on options is valid — the value 0 is the actual problem."
+      "D": "`default_precision` is a documented EstimatorOptions field and setting it on `estimator.options` is perfectly legal; `precision` in `run()` is an additional, higher-precedence route, not the only one. The value 0 is the actual problem."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s6: A tightened and D extended to remove the length tell"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

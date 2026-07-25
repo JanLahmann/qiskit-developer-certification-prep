@@ -11,19 +11,19 @@
   "options": [
     {
       "key": "A",
-      "text": "The circuit has no classical bits; create it as `QuantumCircuit(2, 2)` (or add a `ClassicalRegister`) so there are bits to store the outcomes."
+      "text": "The circuit has no classical bits; create it as `QuantumCircuit(2, 2)` or add a `ClassicalRegister`."
     },
     {
       "key": "B",
-      "text": "`measure` cannot take lists of qubits/bits; you must measure each qubit in a separate call."
+      "text": "`measure` does not accept parallel lists of qubits and clbits; each qubit typically needs its own separate call."
     },
     {
       "key": "C",
-      "text": "The `measure` method does not exist; you must call `qc.measure_all()` instead."
+      "text": "The `measure` method does not exist on `QuantumCircuit`; you have to call `qc.measure_all()` instead."
     },
     {
       "key": "D",
-      "text": "The qubits must be measured before the CX gate, not after it."
+      "text": "The qubits have to be measured before the CX gate, not after it."
     }
   ],
   "answer": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor B given substance and a hedge)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

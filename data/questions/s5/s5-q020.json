@@ -11,39 +11,40 @@
   "options": [
     {
       "key": "A",
-      "text": "`sampler.options.default_shots`"
+      "text": "`sampler.options.default_shots` — shots used when a run specifies none"
     },
     {
       "key": "B",
-      "text": "`sampler.options.dynamical_decoupling.enable`"
+      "text": "`sampler.options.resilience_level` — picks the mitigation level to apply"
     },
     {
       "key": "C",
-      "text": "`sampler.options.twirling.enable_gates`"
+      "text": "`sampler.options.dynamical_decoupling.enable` — turns DD sequences on"
     },
     {
       "key": "D",
-      "text": "`sampler.options.resilience_level`"
+      "text": "`sampler.options.twirling.enable_gates` — turns on Pauli twirling of gates"
     },
     {
       "key": "E",
-      "text": "`sampler.options.optimization_level`"
+      "text": "`sampler.options.optimization_level` — picks the default transpiler preset"
     }
   ],
   "answer": [
     "A",
-    "B",
-    "C"
+    "C",
+    "D"
   ],
   "explanation": {
-    "correct": "SamplerV2 options cover sampling and error-handling: `default_shots`, the `dynamical_decoupling` group (error suppression), and the `twirling` group (Pauli/measurement twirling), plus execution and simulator settings. `resilience_level` is an EstimatorV2 option, and `optimization_level` is a transpiler setting (used when building the pass manager) — neither exists on the Sampler, so setting them raises a validation error.",
+    "correct": "SamplerOptions defines `default_shots`, `dynamical_decoupling`, `twirling`, `execution` and `experimental`, and inherits `simulator`, `environment` and `max_execution_time`. So `default_shots`, `dynamical_decoupling.enable` and `twirling.enable_gates` all assign cleanly. `resilience_level` belongs to EstimatorV2 and `optimization_level` is a transpiler argument; the options model forbids extra attributes, so both raise a validation error.",
     "distractors": {
-      "D": "`resilience_level` selects Estimator mitigation strategies for expectation values; the Sampler returns raw samples and has no such option.",
-      "E": "`optimization_level` is a transpiler argument (e.g. to `generate_preset_pass_manager`), not a primitive option. The Sampler validates and rejects it."
+      "B": "`resilience_level` selects EstimatorV2 mitigation strategies for expectation values. The Sampler returns raw samples and its options model has no such attribute.",
+      "E": "`optimization_level` is a transpiler argument (e.g. to `generate_preset_pass_manager`), not a primitive option — transpilation happens before the job is submitted."
     },
     "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
       "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
     ]
   },
   "proof": {
@@ -52,7 +53,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nevidence, proven = {}, []\n\ndef try_set(key, fn, label):\n    try:\n        fn(SamplerV2(mode=backend))\n        evidence[key] = f\"{label}: accepted (valid SamplerV2 option)\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"{label}: rejected -> {type(e).__name__}: {str(e)[:80]}\"\n\ntry_set(\"A\", lambda s: setattr(s.options, \"default_shots\", 2048), \"options.default_shots = 2048\")\ntry_set(\"B\", lambda s: setattr(s.options.dynamical_decoupling, \"enable\", True), \"options.dynamical_decoupling.enable = True\")\ntry_set(\"C\", lambda s: setattr(s.options.twirling, \"enable_gates\", True), \"options.twirling.enable_gates = True\")\ntry_set(\"D\", lambda s: setattr(s.options, \"resilience_level\", 1), \"options.resilience_level = 1\")\ntry_set(\"E\", lambda s: setattr(s.options, \"optimization_level\", 3), \"options.optimization_level = 3\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"accepted\": proven}})\n"
+    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nevidence, proven = {}, []\n\ndef try_set(key, fn, label):\n    try:\n        fn(SamplerV2(mode=backend))\n        evidence[key] = f\"{label}: accepted (valid SamplerV2 option)\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"{label}: rejected -> {type(e).__name__}: {str(e)[:80]}\"\n\ntry_set(\"A\", lambda s: setattr(s.options, \"default_shots\", 2048), \"options.default_shots = 2048\")\ntry_set(\"C\", lambda s: setattr(s.options.dynamical_decoupling, \"enable\", True), \"options.dynamical_decoupling.enable = True\")\ntry_set(\"D\", lambda s: setattr(s.options.twirling, \"enable_gates\", True), \"options.twirling.enable_gates = True\")\ntry_set(\"B\", lambda s: setattr(s.options, \"resilience_level\", 1), \"options.resilience_level = 1\")\ntry_set(\"E\", lambda s: setattr(s.options, \"optimization_level\", 3), \"options.optimization_level = 3\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"accepted\": proven}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -61,13 +62,14 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "s5 adversarial review: hedge tell fixed (glosses give correct and wrong options the same register); resilience ruling: resilience_level kept as a proven-invalid Sampler option; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved B/C/D -> answer now A+C+D (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set"
   }
 }

@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "`assign_parameters` must be called before transpilation, otherwise the parameters are lost."
+      "text": "`assign_parameters` must be called before transpilation, otherwise the parameters are lost in the layout stage."
     },
     {
       "key": "D",
@@ -57,8 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "length tell cleared (distractor C names the stage it blames)"
   },
   "freshness": {
     "verified_against": {
@@ -67,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

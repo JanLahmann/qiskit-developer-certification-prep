@@ -6,16 +6,29 @@
     "badge_title": "IBM Certified Quantum Computation using Qiskit v2.X Developer - Associate",
     "status": "active",
     "released": "2025",
-    "predecessor": { "code": "C1000-112", "title": "IBM Certified Associate Developer - Quantum Computation using Qiskit v0.2X", "retired": "2025-09-30" },
+    "predecessor": {
+      "code": "C1000-112",
+      "title": "IBM Certified Associate Developer - Quantum Computation using Qiskit v0.2X",
+      "retired": "2025-09-30"
+    },
     "target_stack": "Qiskit SDK v2.x + Qiskit Runtime primitives (SamplerV2 / EstimatorV2)",
     "questions": 68,
     "minutes": 90,
     "pass_score": 47,
     "pass_pct": 69,
-    "question_types": ["multiple-choice", "multi-select"],
+    "question_types": [
+      "multiple-choice",
+      "multi-select"
+    ],
     "language": "English",
-    "cost_usd": { "value": 200, "confidence": "medium" },
-    "delivery": { "value": "Pearson VUE (test center or OnVUE online proctored)", "confidence": "medium" },
+    "cost_usd": {
+      "value": 200,
+      "confidence": "medium"
+    },
+    "delivery": {
+      "value": "Pearson VUE (test center or OnVUE online proctored)",
+      "confidence": "medium"
+    },
     "official_page": "https://www.ibm.com/training/certification/ibm-certified-quantum-computation-using-qiskit-v2x-developer-associate-C9008400",
     "announcement": "https://www.ibm.com/quantum/blog/qiskit-v2x-developer-certification",
     "sample_test": {
@@ -47,8 +60,14 @@
       "title": "Perform quantum operations",
       "weight_pct": 16,
       "objectives": [
-        { "id": "s1o1", "text": "Define Pauli Operators" },
-        { "id": "s1o2", "text": "Apply quantum operations" }
+        {
+          "id": "s1o1",
+          "text": "Define Pauli Operators"
+        },
+        {
+          "id": "s1o2",
+          "text": "Apply quantum operations"
+        }
       ],
       "scope_notes": [
         "Pauli matrices and tensor products (e.g. Pauli('XZ') ordering and matrix form)",
@@ -57,9 +76,21 @@
         "Measurement probabilities from prepared states (e.g. after RY(theta))"
       ],
       "resources": [
-        { "title": "Operators overview", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/operators-overview" },
-        { "title": "Operator class", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/operator-class" },
-        { "title": "qiskit.quantum_info API", "type": "api", "url": "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info" }
+        {
+          "title": "Operators overview",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+        },
+        {
+          "title": "Operator class",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/operator-class"
+        },
+        {
+          "title": "qiskit.quantum_info API",
+          "type": "api",
+          "url": "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+        }
       ]
     },
     {
@@ -68,9 +99,18 @@
       "title": "Visualize quantum circuits, measurements, and states",
       "weight_pct": 11,
       "objectives": [
-        { "id": "s2o1", "text": "Visualize quantum circuits" },
-        { "id": "s2o2", "text": "Visualize quantum measurements" },
-        { "id": "s2o3", "text": "Visualize quantum states" }
+        {
+          "id": "s2o1",
+          "text": "Visualize quantum circuits"
+        },
+        {
+          "id": "s2o2",
+          "text": "Visualize quantum measurements"
+        },
+        {
+          "id": "s2o3",
+          "text": "Visualize quantum states"
+        }
       ],
       "scope_notes": [
         "circuit.draw() variants incl. mpl output and conditional-circuit rendering",
@@ -79,10 +119,26 @@
         "Statevector plots: identify state from visualization and vice versa"
       ],
       "resources": [
-        { "title": "Visualize circuits", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits" },
-        { "title": "Visualize results", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/visualize-results" },
-        { "title": "Plot quantum states", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states" },
-        { "title": "qiskit.visualization API", "type": "api", "url": "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization" }
+        {
+          "title": "Visualize circuits",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits"
+        },
+        {
+          "title": "Visualize results",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/visualize-results"
+        },
+        {
+          "title": "Plot quantum states",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states"
+        },
+        {
+          "title": "qiskit.visualization API",
+          "type": "api",
+          "url": "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+        }
       ]
     },
     {
@@ -91,10 +147,22 @@
       "title": "Create quantum circuits",
       "weight_pct": 18,
       "objectives": [
-        { "id": "s3o1", "text": "Construct basic quantum circuits" },
-        { "id": "s3o2", "text": "Construct dynamic circuits" },
-        { "id": "s3o3", "text": "Construct parameterized circuits" },
-        { "id": "s3o4", "text": "Transpile and optimize circuits" }
+        {
+          "id": "s3o1",
+          "text": "Construct basic quantum circuits"
+        },
+        {
+          "id": "s3o2",
+          "text": "Construct dynamic circuits"
+        },
+        {
+          "id": "s3o3",
+          "text": "Construct parameterized circuits"
+        },
+        {
+          "id": "s3o4",
+          "text": "Transpile and optimize circuits"
+        }
       ],
       "scope_notes": [
         "QuantumCircuit, QuantumRegister/ClassicalRegister, composing and measuring",
@@ -103,14 +171,47 @@
         "generate_preset_pass_manager, optimization levels 0-3, ISA circuits, transpiler stages, pass managers"
       ],
       "resources": [
-        { "title": "Construct circuits", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/construct-circuits" },
-        { "title": "Circuit library", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/circuit-library" },
-        { "title": "Classical feedforward and control flow", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow" },
-        { "title": "Introduction to transpilation", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/transpile" },
-        { "title": "Transpiler stages", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages" },
-        { "title": "Set transpiler optimization level", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/set-optimization" },
-        { "title": "Transpile with pass managers", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers" },
-        { "title": "Video: Introduction to transpilation", "type": "video", "url": null, "note": "URL to be resolved from Qiskit YouTube channel" }
+        {
+          "title": "Construct circuits",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+        },
+        {
+          "title": "Circuit library",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/circuit-library"
+        },
+        {
+          "title": "Classical feedforward and control flow",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow"
+        },
+        {
+          "title": "Introduction to transpilation",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/transpile"
+        },
+        {
+          "title": "Transpiler stages",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages"
+        },
+        {
+          "title": "Set transpiler optimization level",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/set-optimization"
+        },
+        {
+          "title": "Transpile with pass managers",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers"
+        },
+        {
+          "title": "Video: Intro to Transpilation (Matthew Treinish, QDC24)",
+          "type": "video",
+          "url": "https://www.youtube.com/watch?v=TmXlUUFMUgI",
+          "note": "Official Qiskit channel; verified 2026-07-25"
+        }
       ],
       "resource_gaps": [
         "'Parameterized circuits' guide from the Advocate Guide has no standalone slug in the current docs; content lives in construct-circuits — verify live anchor",
@@ -123,8 +224,14 @@
       "title": "Run quantum circuits",
       "weight_pct": 15,
       "objectives": [
-        { "id": "s4o1", "text": "Differentiate execution modes to optimize job queuing" },
-        { "id": "s4o2", "text": "Run quantum circuits with a real hardware in the IBM Runtime provider" }
+        {
+          "id": "s4o1",
+          "text": "Differentiate execution modes to optimize job queuing"
+        },
+        {
+          "id": "s4o2",
+          "text": "Run quantum circuits with a real hardware in the IBM Runtime provider"
+        }
       ],
       "scope_notes": [
         "Execution modes: single job, session (dedicated access), batch (parallel independent jobs) — when to use which",
@@ -133,11 +240,31 @@
         "Open Plan vs paid plans, queuing implications"
       ],
       "resources": [
-        { "title": "Execution modes", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/execution-modes" },
-        { "title": "Choose execution mode", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode" },
-        { "title": "Get started with primitives", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/get-started-with-primitives" },
-        { "title": "Run jobs in a session", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session" },
-        { "title": "Run jobs in a batch", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch" }
+        {
+          "title": "Execution modes",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+        },
+        {
+          "title": "Choose execution mode",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode"
+        },
+        {
+          "title": "Get started with the Sampler primitive",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/get-started-with-sampler"
+        },
+        {
+          "title": "Run jobs in a session",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session"
+        },
+        {
+          "title": "Run jobs in a batch",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch"
+        }
       ],
       "resource_gaps": [
         "'Execute on hardware' guide name has no exact slug; mapped to run-jobs-session/run-jobs-batch + hello-world"
@@ -149,9 +276,18 @@
       "title": "Use the sampler primitive",
       "weight_pct": 12,
       "objectives": [
-        { "id": "s5o1", "text": "Set sampler primitive options such as resilience levels" },
-        { "id": "s5o2", "text": "Bypass runtime error mitigations and implement your own" },
-        { "id": "s5o3", "text": "Understand the theoretical background behind the sampler primitive" }
+        {
+          "id": "s5o1",
+          "text": "Set sampler primitive options such as resilience levels"
+        },
+        {
+          "id": "s5o2",
+          "text": "Bypass runtime error mitigations and implement your own"
+        },
+        {
+          "id": "s5o3",
+          "text": "Understand the theoretical background behind the sampler primitive"
+        }
       ],
       "scope_notes": [
         "SamplerV2: run([isa_circuit]), PUB structure, default_shots semantics",
@@ -160,12 +296,37 @@
         "Manual/custom mitigation when bypassing runtime defaults"
       ],
       "resources": [
-        { "title": "Introduction to primitives", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/primitives" },
-        { "title": "Runtime options overview", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview" },
-        { "title": "Specify runtime options", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/specify-runtime-options" },
-        { "title": "Primitive inputs and outputs (PUBs)", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output" },
-        { "title": "qiskit-ibm-runtime API (SamplerV2)", "type": "api", "url": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime" },
-        { "title": "Video: An Introduction to Qiskit Runtime Primitives V2", "type": "video", "url": null, "note": "URL to be resolved from Qiskit YouTube channel" }
+        {
+          "title": "Introduction to primitives",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/primitives"
+        },
+        {
+          "title": "Runtime options overview",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview"
+        },
+        {
+          "title": "Sampler options",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/sampler-options"
+        },
+        {
+          "title": "Primitive inputs and outputs (PUBs)",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+        },
+        {
+          "title": "qiskit-ibm-runtime API (SamplerV2)",
+          "type": "api",
+          "url": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+        },
+        {
+          "title": "Video: An Introduction to Qiskit Runtime Primitives Version 2 (Chris Wood, QGSS 2024)",
+          "type": "video",
+          "url": "https://www.youtube.com/watch?v=OuYz02clnx4",
+          "note": "Official Qiskit channel; verified 2026-07-25"
+        }
       ]
     },
     {
@@ -174,8 +335,14 @@
       "title": "Use the estimator primitive",
       "weight_pct": 12,
       "objectives": [
-        { "id": "s6o1", "text": "Set estimator primitive options such as resilience levels" },
-        { "id": "s6o2", "text": "Understand the theoretical background behind the estimator primitive" }
+        {
+          "id": "s6o1",
+          "text": "Set estimator primitive options such as resilience levels"
+        },
+        {
+          "id": "s6o2",
+          "text": "Understand the theoretical background behind the estimator primitive"
+        }
       ],
       "scope_notes": [
         "EstimatorV2: PUB = (circuit, observables, parameter_values, precision)",
@@ -184,12 +351,47 @@
         "Observables: SparsePauliOp, apply_layout for ISA alignment"
       ],
       "resources": [
-        { "title": "Runtime options overview", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview" },
-        { "title": "Configure error mitigation", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/configure-error-mitigation" },
-        { "title": "Configure error suppression", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/configure-error-suppression" },
-        { "title": "Error mitigation and suppression techniques", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques" },
-        { "title": "Specify observables in the Pauli basis", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli" },
-        { "title": "Video: An Introduction to Qiskit Runtime Primitives V2", "type": "video", "url": null, "note": "URL to be resolved from Qiskit YouTube channel" }
+        {
+          "title": "Runtime options overview",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview"
+        },
+        {
+          "title": "Get started with the Estimator primitive",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/get-started-with-estimator"
+        },
+        {
+          "title": "Estimator options",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+        },
+        {
+          "title": "Estimator noise management",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
+        },
+        {
+          "title": "Configure error mitigation",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/configure-error-mitigation"
+        },
+        {
+          "title": "Error mitigation and suppression techniques",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
+        },
+        {
+          "title": "Specify observables in the Pauli basis",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+        },
+        {
+          "title": "Video: An Introduction to Qiskit Runtime Primitives Version 2 (Chris Wood, QGSS 2024)",
+          "type": "video",
+          "url": "https://www.youtube.com/watch?v=OuYz02clnx4",
+          "note": "Official Qiskit channel; verified 2026-07-25"
+        }
       ]
     },
     {
@@ -198,8 +400,14 @@
       "title": "Retrieve and analyze the results of quantum circuits",
       "weight_pct": 10,
       "objectives": [
-        { "id": "s7o1", "text": "Retrieve previous experiment results (session/runtime)" },
-        { "id": "s7o2", "text": "Monitor jobs" }
+        {
+          "id": "s7o1",
+          "text": "Retrieve previous experiment results (session/runtime)"
+        },
+        {
+          "id": "s7o2",
+          "text": "Monitor jobs"
+        }
       ],
       "scope_notes": [
         "service.job(job_id), job.result(), job.status()",
@@ -208,8 +416,16 @@
         "Analyzing counts and expectation values"
       ],
       "resources": [
-        { "title": "Save and retrieve jobs", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/save-jobs" },
-        { "title": "Monitor or cancel a job", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/monitor-job" }
+        {
+          "title": "Save and retrieve jobs",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/save-jobs"
+        },
+        {
+          "title": "Monitor or cancel a job",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/monitor-job"
+        }
       ]
     },
     {
@@ -218,10 +434,22 @@
       "title": "Operate with OpenQASM",
       "weight_pct": 6,
       "objectives": [
-        { "id": "s8o1", "text": "Structure types in OpenQASM 3 programs" },
-        { "id": "s8o2", "text": "Interpret OpenQASM semantics for versions 2 and 3" },
-        { "id": "s8o3", "text": "Interoperate different versions of OpenQASM with Qiskit" },
-        { "id": "s8o4", "text": "Interact with the Qiskit IBM Runtime REST API" }
+        {
+          "id": "s8o1",
+          "text": "Structure types in OpenQASM 3 programs"
+        },
+        {
+          "id": "s8o2",
+          "text": "Interpret OpenQASM semantics for versions 2 and 3"
+        },
+        {
+          "id": "s8o3",
+          "text": "Interoperate different versions of OpenQASM with Qiskit"
+        },
+        {
+          "id": "s8o4",
+          "text": "Interact with the Qiskit IBM Runtime REST API"
+        }
       ],
       "scope_notes": [
         "OpenQASM 3 classical types (incl. complex), casting rules",
@@ -230,22 +458,74 @@
         "Runtime REST API basics: auth, submitting primitive jobs over REST"
       ],
       "resources": [
-        { "title": "Introduction to OpenQASM", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/introduction-to-qasm" },
-        { "title": "OpenQASM feature table", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table" },
-        { "title": "OpenQASM 3 and the Qiskit SDK", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3" },
-        { "title": "OpenQASM 2 and the Qiskit SDK", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm2" },
-        { "title": "OpenQASM types and casting", "type": "external", "url": "https://openqasm.com/language/types.html" },
-        { "title": "OpenQASM syntax (spec)", "type": "external", "url": "https://openqasm.com/language/" },
-        { "title": "Qiskit Runtime REST API", "type": "api", "url": "https://quantum.cloud.ibm.com/docs/guides/primitives-rest-api" }
+        {
+          "title": "Introduction to OpenQASM",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/introduction-to-qasm"
+        },
+        {
+          "title": "OpenQASM feature table",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table"
+        },
+        {
+          "title": "OpenQASM 3 and the Qiskit SDK",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3"
+        },
+        {
+          "title": "OpenQASM 2 and the Qiskit SDK",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm2"
+        },
+        {
+          "title": "OpenQASM types and casting",
+          "type": "external",
+          "url": "https://openqasm.com/language/types.html"
+        },
+        {
+          "title": "OpenQASM syntax (spec)",
+          "type": "external",
+          "url": "https://openqasm.com/language/"
+        },
+        {
+          "title": "Qiskit Runtime REST API",
+          "type": "api",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/sampler-rest-api"
+        }
       ]
     }
   ],
   "global_resources": [
-    { "title": "IBM Quantum Learning: Understanding Quantum Information and Computation (John Watrous)", "type": "course", "url": "https://quantum.cloud.ibm.com/learning/courses/basics-of-quantum-information", "note": "First course of the Watrous series; theory foundation" },
-    { "title": "IBM Quantum Learning: Quantum Computing in Practice", "type": "course", "url": "https://quantum.cloud.ibm.com/learning/courses/quantum-computing-in-practice", "note": "Applied Qiskit + Runtime patterns" },
-    { "title": "Official Sample Test (21 questions)", "type": "sample-test", "url": "https://www.ibm.com/training/certification/ibm-certified-quantum-computation-using-qiskit-v2x-developer-associate-C9008400", "note": "Linked from the exam page" },
-    { "title": "Qiskit YouTube: Preparing for Qiskit Developer Certification 2.0", "type": "video", "url": null, "note": "URL to be resolved" },
-    { "title": "IBM Quantum Platform setup (run on real hardware)", "type": "guide", "url": "https://quantum.cloud.ibm.com/docs/guides/cloud-setup" }
+    {
+      "title": "IBM Quantum Learning: Understanding Quantum Information and Computation (John Watrous)",
+      "type": "course",
+      "url": "https://quantum.cloud.ibm.com/learning/courses/basics-of-quantum-information",
+      "note": "First course of the Watrous series; theory foundation"
+    },
+    {
+      "title": "IBM Quantum Learning: Quantum Computing in Practice",
+      "type": "course",
+      "url": "https://quantum.cloud.ibm.com/learning/courses/quantum-computing-in-practice",
+      "note": "Applied Qiskit + Runtime patterns"
+    },
+    {
+      "title": "Official Sample Test (21 questions)",
+      "type": "sample-test",
+      "url": "https://www.ibm.com/training/certification/ibm-certified-quantum-computation-using-qiskit-v2x-developer-associate-C9008400",
+      "note": "Linked from the exam page"
+    },
+    {
+      "title": "Qiskit YouTube: Qiskit Developer Certification 2.0 — How to Prepare",
+      "type": "video",
+      "url": "https://www.youtube.com/watch?v=FbSvk2krtSk",
+      "note": "Official Qiskit channel; verified 2026-07-25"
+    },
+    {
+      "title": "IBM Quantum Platform setup (run on real hardware)",
+      "type": "guide",
+      "url": "https://quantum.cloud.ibm.com/docs/guides/cloud-setup"
+    }
   ],
   "advocate_context": {
     "program": "Qiskit Advocate Program 2.0 (relaunched July 2025)",

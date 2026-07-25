@@ -11,19 +11,19 @@
   "options": [
     {
       "key": "A",
-      "text": "`'001'` — Qiskit prints bitstrings little-endian, so classical bit 0 (qubit 0) is the rightmost character"
+      "text": "`'001'` — bitstrings are little-endian, so classical bit 0 is the rightmost character"
     },
     {
       "key": "B",
-      "text": "`'100'` — qubit 0 is the leftmost character in the bitstring"
+      "text": "`'100'` — bitstrings are big-endian, so classical bit 0 is the leftmost character of the key"
     },
     {
       "key": "C",
-      "text": "`'111'` — flipping any qubit flips the whole register"
+      "text": "`'111'` — measuring one excited qubit latches the whole classical register to 1"
     },
     {
       "key": "D",
-      "text": "`'000'` — X on qubit 0 has no effect on the measured bits"
+      "text": "`'000'` — the X gate is cancelled by transpilation before the measurement runs"
     }
   ],
   "answer": [
@@ -33,12 +33,12 @@
     "correct": "Qiskit uses little-endian bit ordering: in the printed bitstring the classical bit with the highest index is on the left and bit 0 is on the right. Only qubit 0 is excited, and it is measured into classical bit 0, so the rightmost character is 1 and the rest are 0 -> '001'.",
     "distractors": {
       "B": "This assumes big-endian ordering (qubit 0 leftmost). Qiskit is little-endian, so qubit 0 lands in the rightmost position, giving '001', not '100'.",
-      "C": "X acts only on the qubit it targets; qubits 1 and 2 stay in |0>. The register does not collectively flip.",
-      "D": "X on qubit 0 flips it to |1>, so its measured bit is 1, not 0 — the outcome cannot be all zeros."
+      "C": "X acts only on the qubit it targets, and each measure writes one classical bit; qubits 1 and 2 stay in |0>, so the register does not collectively flip.",
+      "D": "Transpilation preserves the circuit's semantics — it re-expresses X in the backend basis rather than removing it — so the measured bit is 1, not 0."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
     ]
   },
   "proof": {
@@ -56,13 +56,14 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "s5 adversarial review: high-severity length tell fixed; distractor D rewritten to a real misconception (transpilation removes gates) instead of a bare negation; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages)"
   }
 }

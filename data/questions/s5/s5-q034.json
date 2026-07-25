@@ -12,39 +12,39 @@
   "options": [
     {
       "key": "A",
-      "text": "By default SamplerV2 applies no measurement-error mitigation; the returned counts are raw samples"
+      "text": "`options.resilience_level` selects which built-in mitigation strategy the sampler applies"
     },
     {
       "key": "B",
-      "text": "Dynamical decoupling is an error-*suppression* technique you can turn on via `options.dynamical_decoupling.enable`"
+      "text": "Twirling lowers the number of qubits that are measured, which usually reduces readout error"
     },
     {
       "key": "C",
-      "text": "Setting `options.resilience_level` selects the sampler's built-in mitigation strategy"
+      "text": "By default SamplerV2 applies no measurement-error mitigation; counts are raw samples"
     },
     {
       "key": "D",
-      "text": "Twirling reduces the number of qubits that get measured"
+      "text": "The sampler post-processes its data internally, so you cannot add your own mitigation"
     },
     {
       "key": "E",
-      "text": "Because the sampler post-processes the data internally, you cannot add your own mitigation"
+      "text": "Dynamical decoupling is error *suppression*, enabled via `options.dynamical_decoupling.enable`"
     }
   ],
   "answer": [
-    "A",
-    "B"
+    "C",
+    "E"
   ],
   "explanation": {
     "correct": "SamplerV2 returns raw samples with no automatic readout mitigation (A), and its error-handling knobs are error *suppression* (dynamical decoupling) and twirling — DD is enabled through `options.dynamical_decoupling.enable` (B). Everything downstream (readout calibration, post-selection) is left to you.",
     "distractors": {
-      "C": "`resilience_level` is an EstimatorV2 option for expectation-value mitigation; SamplerV2 has no such option, so it cannot select any built-in mitigation.",
-      "D": "Twirling inserts randomized Pauli/measurement operations to tailor noise; it does not change how many qubits are measured.",
-      "E": "The opposite is true: the sampler returns un-mitigated per-shot data precisely so you *can* apply your own mitigation afterward."
+      "A": "`resilience_level` is an EstimatorV2 option for expectation-value mitigation; SamplerOptions has no such attribute, so the assignment raises and no built-in strategy is selected.",
+      "B": "Twirling inserts randomized Pauli/measurement operations to tailor noise into a stochastic form; it changes neither how many qubits are measured nor the register width.",
+      "D": "The opposite is true: the sampler returns un-mitigated per-shot data precisely so that you can apply your own mitigation afterward."
     },
     "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
       "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
-      "https://quantum.cloud.ibm.com/docs/guides/configure-error-suppression",
       "https://quantum.cloud.ibm.com/docs/guides/primitives"
     ]
   },
@@ -58,7 +58,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "s5 adversarial review: length, hedge and absolute-wording tells fixed; resilience ruling: option C stays a distractor and names the Estimator-only option; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B/C/D/E -> answer now C+E (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set"
   }
 }

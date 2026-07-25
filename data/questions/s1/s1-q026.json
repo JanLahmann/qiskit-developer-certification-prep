@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "[1, 0] — RZ has no effect on |0⟩ at all"
+      "text": "[1, 0] — a diagonal gate leaves the |0⟩ amplitude untouched"
     }
   ],
   "answer": [
@@ -32,7 +32,7 @@
   "explanation": {
     "correct": "RZ(θ) = diag(e^{−iθ/2}, e^{iθ/2}). On |0⟩ it multiplies the amplitude by e^{−iθ/2} = e^{−iπ/4} = 0.7071 − 0.7071j. Because |0⟩ is an eigenstate, this is a global phase — the measurement probabilities are unchanged — but `Statevector.from_instruction` still records it.",
     "distractors": {
-      "D": "Although the phase is unobservable in isolation (probabilities stay [1,0]), Qiskit's statevector explicitly carries the e^{−iπ/4} factor, so the amplitude is not exactly 1.",
+      "D": "Being diagonal does not mean acting trivially: RZ's upper diagonal entry is e^{−iθ/2}, not 1. The phase is unobservable in isolation (probabilities stay [1,0]), but `Statevector.from_instruction` still records the e^{−iπ/4} factor.",
       "A": "RZ is diagonal; it never creates a superposition. Only RX/RY move population between |0⟩ and |1⟩.",
       "B": "The |0⟩ (upper) diagonal entry is e^{−iθ/2}, with a minus sign. A +θ/2 phase would be the |1⟩ entry."
     },
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "absolute-wording tell cleared (distractor D rewritten without an absolute)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

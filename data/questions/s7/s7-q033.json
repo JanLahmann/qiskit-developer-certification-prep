@@ -6,39 +6,39 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "In a script using Qiskit SDK 2.x and `qiskit-ibm-runtime`, you want to wait for a submitted `job` to finish and then read its results. Which approach is correct?",
-  "code": "job = sampler.run([isa_circuit])\n# wait for completion, then read results",
+  "stem": "A script using Qiskit SDK 2.x and `qiskit-ibm-runtime` 0.4x submits a Sampler job and should log the job's state while it waits, then read the results. Which statement about the returned `job` is correct?",
+  "code": "job = sampler.run([isa_circuit])\n# log the state, then read the results",
   "options": [
     {
       "key": "A",
-      "text": "Call `qiskit.tools.job_monitor(job)` to block until it finishes"
+      "text": "`qiskit.tools.job_monitor(job)` prints live status updates and returns the result once the job finishes"
     },
     {
       "key": "B",
-      "text": "Loop on `job.done()` until it returns True, then call `job.output()`"
+      "text": "`job.status()` returns a `JobStatus` enum member, so compare it with `JobStatus.RUNNING` imported from `qiskit.providers.jobstatus`"
     },
     {
       "key": "C",
-      "text": "Call `job.result()` -- it blocks until completion and returns the result; poll `job.status()` if you want progress"
+      "text": "`job.status()` returns a string such as `\"QUEUED\"` or `\"RUNNING\"`; `job.result()` then blocks until the job finishes"
     },
     {
       "key": "D",
-      "text": "Call `job.wait()`, then `job.get_counts()`"
+      "text": "`job.status()` itself blocks until the job reaches a final state, so calling it before `job.result()` would stall the script"
     }
   ],
   "answer": [
     "C"
   ],
   "explanation": {
-    "correct": "`job.result()` is the blocking call that returns the PrimitiveResult; `job.status()` reports the state if you want to monitor progress. That is the supported pattern in the current runtime.",
+    "correct": "In `qiskit-ibm-runtime` 0.4x a `RuntimeJobV2` reports its state as a plain string -- one of `INITIALIZING`, `QUEUED`, `RUNNING`, `CANCELLED`, `DONE`, `ERROR` -- which is why the docs write `if j.status() == \"DONE\"`. `status()` is a cheap non-blocking query, while `job.result()` is the blocking call that waits for completion and returns the PrimitiveResult. The convenience predicates `job.done()`, `job.errored()` and `job.wait_for_final_state()` are built on that same string.",
     "distractors": {
-      "A": "`qiskit.tools.job_monitor` was part of Qiskit <= 0.x and was REMOVED in Qiskit 1.0+; it does not exist in 2.x.",
-      "B": "There are no `job.done()`/`job.output()` methods on a RuntimeJob.",
-      "D": "There is no `job.wait()`; and `get_counts()` is a BitArray method, not a job method."
+      "A": "`qiskit.tools` (with `job_monitor`) was removed in Qiskit 1.0 and does not exist in 2.x; no monitor helper returns the result either.",
+      "B": "Returning a `JobStatus` enum is the V1 provider habit. RuntimeJobV2 returns a string, so comparing it with an enum member is quietly always False -- a loop written that way never exits.",
+      "D": "`status()` does not wait; it queries the current state. `job.wait_for_final_state()` (or `result()`) is what blocks, and calling `status()` only after `result()` defeats the point of logging progress."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/monitor-job",
-      "https://quantum.cloud.ibm.com/docs/guides/save-jobs"
+      "https://quantum.cloud.ibm.com/docs/guides/save-jobs",
+      "https://quantum.cloud.ibm.com/docs/guides/monitor-job"
     ]
   },
   "proof": {
@@ -51,7 +51,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s7: REWRITTEN — old version duplicated q028 ('result() blocks') and its rationale wrongly claimed job.done() does not exist (it does); now tests the string-valued job.status() of runtime 0.4x vs the V1 JobStatus enum habit"
   }
 }

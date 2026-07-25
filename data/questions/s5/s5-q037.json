@@ -11,32 +11,33 @@
   "options": [
     {
       "key": "A",
-      "text": "Characterize readout with calibration circuits to build an assignment (confusion) matrix, then apply its inverse to the measured counts (e.g. a matrix-based method such as M3)"
+      "text": "Invert an assignment (confusion) matrix measured from calibration circuits (e.g. with M3)"
     },
     {
       "key": "B",
-      "text": "Raise `sampler.options.resilience_level` until the readout error disappears"
+      "text": "Raise `sampler.options.resilience_level` until the readout error is mitigated away"
     },
     {
       "key": "C",
-      "text": "Apply Zero-Noise Extrapolation directly to the bitstrings"
+      "text": "Apply Zero-Noise Extrapolation to the returned bitstrings, extrapolating each shot to the zero-noise limit"
     },
     {
       "key": "D",
-      "text": "Turn on gate twirling, which mathematically inverts the readout confusion matrix"
+      "text": "Enable gate twirling, which measures and then inverts the readout confusion matrix for you"
     }
   ],
   "answer": [
     "A"
   ],
   "explanation": {
-    "correct": "Readout error is a classical relabeling of measured bits, captured by an assignment/confusion matrix measured from calibration circuits (prepare each basis state, see what you read). Inverting (or least-squares inverting) that matrix corrects the counts — the approach used by tools like mthree (M3). The Sampler's raw counts are exactly the input such a method needs.",
+    "correct": "Readout error is a classical relabeling of measured bits, captured by an assignment/confusion matrix that you measure with calibration circuits (prepare each basis state, record what you read back). Inverting — or least-squares inverting — that matrix corrects the counts. The Sampler's raw per-shot data is exactly the input such a method needs, which is why this correction is done by you in post-processing (with your own code or an external package such as mthree/M3), not by a runtime option: the Sampler's own noise-management options are dynamical decoupling and Pauli twirling only.",
     "distractors": {
-      "B": "SamplerV2 has no `resilience_level`; that Estimator option cannot be set here, and it would not build a readout-calibration matrix anyway.",
-      "C": "Zero-Noise Extrapolation mitigates errors in *expectation values* by scaling gate noise (an Estimator technique); it is not defined on raw sampled bitstrings.",
-      "D": "Twirling randomizes coherent gate/measurement noise into a simpler stochastic form; it does not measure or invert the readout confusion matrix."
+      "B": "SamplerV2 has no `resilience_level` — the assignment raises — and a resilience level would not build a readout-calibration matrix in any case.",
+      "C": "Zero-Noise Extrapolation mitigates *expectation values* by amplifying gate noise and extrapolating; it is not defined on individual sampled bitstrings.",
+      "D": "Twirling randomizes coherent gate/measurement noise into a simpler stochastic form; it neither measures nor inverts the readout confusion matrix."
     },
     "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
       "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
       "https://quantum.cloud.ibm.com/docs/guides/primitives"
     ]
@@ -51,7 +52,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "s5 adversarial review: high-severity length tell fixed; resilience ruling: distractor B names resilience_level as Estimator-only; added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set"
   }
 }

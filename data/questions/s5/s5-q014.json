@@ -12,34 +12,35 @@
   "options": [
     {
       "key": "A",
-      "text": "It raises an error — `SamplerV2` has no `resilience_level`; that option belongs to `EstimatorV2`"
+      "text": "It is silently accepted and ignored, because `SamplerV2.options` stores unknown keys without applying them"
     },
     {
       "key": "B",
-      "text": "It enables T-REx readout error mitigation on the sampled counts"
+      "text": "It enables T-REx readout mitigation on the sampled counts, as `resilience_level=1` does"
     },
     {
       "key": "C",
-      "text": "It is accepted but silently ignored, because the sampler has no mitigation"
+      "text": "It raises a validation error: `SamplerV2` has no `resilience_level`; that option is `EstimatorV2`'s"
     },
     {
       "key": "D",
-      "text": "It is an alias that turns on measurement twirling"
+      "text": "It is an alias for `options.twirling.enable_measure = True`, turning on measurement twirling"
     }
   ],
   "answer": [
-    "A"
+    "C"
   ],
   "explanation": {
-    "correct": "`resilience_level` is an EstimatorV2 option — resilience levels drive expectation-value mitigation such as TREX/ZNE. SamplerV2 exposes no `resilience_level`; assigning it raises a validation error ('no such attribute'). The Sampler's error-handling options are `dynamical_decoupling`, `twirling`, and execution/simulator settings — it returns raw samples and leaves mitigation to you.",
+    "correct": "`resilience_level` is an EstimatorV2 option: resilience levels drive expectation-value mitigation such as TREX and ZNE. SamplerV2Options exposes only `default_shots`, `dynamical_decoupling`, `twirling`, `execution`, `experimental` (plus the inherited `simulator`/`environment` groups), and the options object validates assignments, so this line raises a pydantic ValidationError ('Object has no attribute resilience_level'). Note the exam objective is worded 'set sampler primitive options such as resilience levels' — in qiskit-ibm-runtime the resilience level is the Estimator's knob; the Sampler's error-handling options are dynamical decoupling and twirling.",
     "distractors": {
-      "B": "Readout mitigation on expectation values (TREX) is reached through Estimator resilience settings, not through a Sampler option — the Sampler has none.",
-      "C": "It is not silently ignored: the options object validates attributes and raises on an unknown one, so the line throws immediately.",
-      "D": "There is no aliasing. Measurement twirling is set explicitly via `options.twirling.enable_measure`; `resilience_level` simply does not exist on the Sampler."
+      "A": "Nothing is stored silently: the options model forbids extra attributes and validates on assignment, so the line throws immediately instead of being ignored.",
+      "B": "Readout mitigation of expectation values (TREX) is reached through EstimatorV2 resilience settings; the Sampler has no mitigation stage to switch on.",
+      "D": "There is no aliasing. Measurement twirling has to be set explicitly via `options.twirling.enable_measure`; `resilience_level` simply does not exist on the Sampler."
     },
     "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
       "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
     ]
   },
   "proof": {
@@ -48,7 +49,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nsampler = SamplerV2(mode=backend)\n\nraised = False\nerr = \"\"\ntry:\n    sampler.options.resilience_level = 1\nexcept Exception as e:\n    raised = True\n    err = f\"{type(e).__name__}: {str(e)[:140]}\"\n\nhas_attr = hasattr(sampler.options, \"resilience_level\")\n\nevidence, proven = {}, []\n# A: it raises; SamplerV2 has no resilience_level (that's an Estimator option)\nA = raised and (not has_attr)\n# B: it enables readout mitigation\nB = (not raised) and has_attr\n# C: silently does nothing\nC = (not raised)\n# D: it sets measurement twirling\nD = (not raised)\nevidence[\"A\"] = f\"setting resilience_level raised={raised} ({err}); hasattr={has_attr}\"\nevidence[\"B\"] = f\"no silent success: raised={raised}\"\nevidence[\"C\"] = f\"no silent success: raised={raised}\"\nevidence[\"D\"] = f\"no silent success: raised={raised}\"\nfor k, val in [(\"A\", A), (\"B\", B), (\"C\", C), (\"D\", D)]:\n    if val:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"raised\": raised, \"error\": err, \"has_resilience_level\": has_attr}})\n"
+    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nsampler = SamplerV2(mode=backend)\n\nraised = False\nerr = \"\"\ntry:\n    sampler.options.resilience_level = 1\nexcept Exception as e:\n    raised = True\n    err = f\"{type(e).__name__}: {str(e)[:140]}\"\n\nhas_attr = hasattr(sampler.options, \"resilience_level\")\n\nevidence, proven = {}, []\n# C: it raises; SamplerV2 has no resilience_level (that's an Estimator option)\nC = raised and (not has_attr)\n# B: it enables readout mitigation\nB = (not raised) and has_attr\n# A: silently does nothing\nA = (not raised)\n# D: it sets measurement twirling\nD = (not raised)\nevidence[\"C\"] = f\"setting resilience_level raised={raised} ({err}); hasattr={has_attr}\"\nevidence[\"B\"] = f\"no silent success: raised={raised}\"\nevidence[\"A\"] = f\"no silent success: raised={raised}\"\nevidence[\"D\"] = f\"no silent success: raised={raised}\"\nfor k, val in [(\"C\", C), (\"B\", B), (\"A\", A), (\"D\", D)]:\n    if val:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"raised\": raised, \"error\": err, \"has_resilience_level\": has_attr}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -57,13 +58,14 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "s5 adversarial review: resilience ruling applied: correct answer states library reality and the explanation reconciles it with the exam objective wording; format tell fixed (all options now code-formatted); length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set"
   }
 }

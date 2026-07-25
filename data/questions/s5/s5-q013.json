@@ -11,33 +11,33 @@
   "options": [
     {
       "key": "A",
-      "text": "Transpile the circuit to an ISA circuit for the backend first (e.g. with `generate_preset_pass_manager`), then run the ISA circuit"
+      "text": "Nest the circuit in one more list — `sampler.run([[qc]])` — so it is read as a PUB"
     },
     {
       "key": "B",
-      "text": "Wrap the circuit in one more list: `sampler.run([[qc]])`"
+      "text": "Transpile `qc` for the backend with `generate_preset_pass_manager`, then run the ISA circuit"
     },
     {
       "key": "C",
-      "text": "Just pass a shots count: `sampler.run([qc], shots=1024)`"
+      "text": "Pass an explicit shot count — `sampler.run([qc], shots=1024)` — since PUBs without shots are rejected"
     },
     {
       "key": "D",
-      "text": "Construct the sampler with no mode: `SamplerV2().run([qc])`"
+      "text": "Drop the execution target and let the primitive transpile: `SamplerV2().run([qc])`"
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
     "correct": "Runtime primitives only accept ISA circuits — circuits whose gates and connectivity already match the backend's target. The raw circuit here uses gates (like the Toffoli) that are not in the backend basis, so `run` raises an input-validation error. Transpiling with a preset pass manager for the backend produces the ISA circuit that runs successfully.",
     "distractors": {
-      "B": "The problem is not the list nesting — a single list of PUBs is already correct. Nesting changes nothing about the circuit still being non-ISA, so it still fails.",
-      "C": "Adding `shots` does not make a non-ISA circuit acceptable; the validation error is about gates/connectivity, not the shot count.",
-      "D": "Dropping the mode removes the execution target entirely and does not transpile anything; the circuit is still non-ISA and construction/run fails."
+      "A": "The problem is not list nesting — a single list of PUBs is already the correct structure. Nesting changes nothing about the circuit still being non-ISA.",
+      "C": "Shots are optional, not required, and adding them does not make a non-ISA circuit acceptable: the validation error is about gates and connectivity.",
+      "D": "The primitive never transpiles for you. Dropping the mode removes the execution target entirely and the circuit is still non-ISA."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-primitives",
+      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-sampler",
       "https://quantum.cloud.ibm.com/docs/guides/transpile"
     ]
   },
@@ -47,7 +47,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\n\ndef fresh_circuit():\n    qc = QuantumCircuit(3)\n    qc.h(0); qc.cx(0, 1); qc.ccx(0, 1, 2); qc.measure_all()\n    return qc\n\n# Show the bug: running the un-transpiled circuit\nbuggy_err = None\ntry:\n    SamplerV2(mode=backend).run([fresh_circuit()], shots=128).result()\nexcept Exception as e:\n    buggy_err = f\"{type(e).__name__}: {str(e)[:120]}\"\n\nevidence, proven = {}, []\n\n# A: transpile to ISA with a preset pass manager, then run\ntry:\n    pm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n    isa = pm.run(fresh_circuit())\n    c = SamplerV2(mode=backend).run([isa], shots=128).result()[0].data.meas.get_counts()\n    A_ok = sum(c.values()) == 128\n    evidence[\"A\"] = f\"transpile->ISA then run: SUCCESS, counts sum={sum(c.values())}\"\nexcept Exception as e:\n    A_ok = False\n    evidence[\"A\"] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\nif A_ok:\n    proven.append(\"A\")\n\n# B: nest in an extra list\ntry:\n    SamplerV2(mode=backend).run([[fresh_circuit()]], shots=128).result()\n    evidence[\"B\"] = \"nested list [[qc]]: unexpectedly succeeded\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"still raised {type(e).__name__}: {str(e)[:110]}\"\n\n# C: just add shots\ntry:\n    SamplerV2(mode=backend).run([fresh_circuit()], shots=1024).result()\n    evidence[\"C\"] = \"adding shots: unexpectedly succeeded\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"still raised {type(e).__name__}: {str(e)[:110]}\"\n\n# D: SamplerV2 with no mode\ntry:\n    SamplerV2().run([fresh_circuit()], shots=128).result()\n    evidence[\"D\"] = \"SamplerV2() no mode: unexpectedly succeeded\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"buggy_error\": buggy_err}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\n\ndef fresh_circuit():\n    qc = QuantumCircuit(3)\n    qc.h(0); qc.cx(0, 1); qc.ccx(0, 1, 2); qc.measure_all()\n    return qc\n\n# Show the bug: running the un-transpiled circuit\nbuggy_err = None\ntry:\n    SamplerV2(mode=backend).run([fresh_circuit()], shots=128).result()\nexcept Exception as e:\n    buggy_err = f\"{type(e).__name__}: {str(e)[:120]}\"\n\nevidence, proven = {}, []\n\n# B: transpile to ISA with a preset pass manager, then run\ntry:\n    pm = generate_preset_pass_manager(backend=backend, optimization_level=1)\n    isa = pm.run(fresh_circuit())\n    c = SamplerV2(mode=backend).run([isa], shots=128).result()[0].data.meas.get_counts()\n    B_ok = sum(c.values()) == 128\n    evidence[\"B\"] = f\"transpile->ISA then run: SUCCESS, counts sum={sum(c.values())}\"\nexcept Exception as e:\n    B_ok = False\n    evidence[\"B\"] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\nif B_ok:\n    proven.append(\"B\")\n\n# A: nest in an extra list\ntry:\n    SamplerV2(mode=backend).run([[fresh_circuit()]], shots=128).result()\n    evidence[\"A\"] = \"nested list [[qc]]: unexpectedly succeeded\"\n    proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"still raised {type(e).__name__}: {str(e)[:110]}\"\n\n# C: just add shots\ntry:\n    SamplerV2(mode=backend).run([fresh_circuit()], shots=1024).result()\n    evidence[\"C\"] = \"adding shots: unexpectedly succeeded\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"still raised {type(e).__name__}: {str(e)[:110]}\"\n\n# D: SamplerV2 with no mode\ntry:\n    SamplerV2().run([fresh_circuit()], shots=128).result()\n    evidence[\"D\"] = \"SamplerV2() no mode: unexpectedly succeeded\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"buggy_error\": buggy_err}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -56,13 +56,14 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "s5 adversarial review: high-severity length tell fixed; distractor C now encodes the 'shots are mandatory' misconception; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped)"
   }
 }

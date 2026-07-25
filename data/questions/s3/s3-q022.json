@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "`qc.assign_parameters({x: [0.1, 0.2, 0.3]})` binds the entire vector in one call."
+      "text": "`qc.assign_parameters({x: [0.1, 0.2, 0.3]})` binds all three parameters in one call."
     },
     {
       "key": "D",
@@ -36,7 +36,7 @@
     "C"
   ],
   "explanation": {
-    "correct": "A `ParameterVector('x', 3)` creates 3 distinct parameters named `x[0..2]` (A, B). You can bind the whole vector at once by using it as a single dict key mapped to a list of values (C).",
+    "correct": "A `ParameterVector('x', 3)` creates 3 distinct parameters named `x[0..2]` (A, B). Using the vector itself as a single dict key mapped to a list of values binds all three of them at once (C).",
     "distractors": {
       "D": "Each index is a distinct `Parameter`; `x[0]` and `x[1]` are different objects that bind to different values.",
       "E": "A `ParameterVector` can be bound in one call (`{x: [...]}`) OR element by element — not only element-by-element."
@@ -57,8 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'all three')"
   },
   "freshness": {
     "verified_against": {
@@ -67,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

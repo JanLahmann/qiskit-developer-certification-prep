@@ -15,7 +15,7 @@
     },
     {
       "key": "B",
-      "text": "Qubit 1 — Z is the middle factor"
+      "text": "Qubit 1 — the default reading puts Z in the middle slot"
     },
     {
       "key": "C",
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "absolute-wording tell cleared (distractor B now hedges, so the correct option needs no absolute)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

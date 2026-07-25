@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "{'10': 1.0} — qubit 0 is the leftmost bit in the string"
+      "text": "{'10': 1.0} — `probabilities_dict` writes qubit 0 as the leftmost character"
     },
     {
       "key": "B",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "{'01': 1.0} — bitstrings are ordered q1q0, so flipping qubit 0 gives '01'"
+      "text": "{'01': 1.0} — keys are ordered q1q0, so flipping qubit 0 gives '01'"
     }
   ],
   "answer": [
@@ -32,7 +32,7 @@
   "explanation": {
     "correct": "Qiskit orders bitstrings as q_{n-1}…q_0, so the rightmost character is qubit 0. Flipping only qubit 0 of |00⟩ gives the bitstring '01' with probability 1.",
     "distractors": {
-      "A": "This reverses the bit order. Qubit 0 is the rightmost character, so its flip shows up on the right of the string ('01'), not the left ('10').",
+      "A": "This reverses the bit order. `probabilities_dict` keys are q_{n-1}…q_0, so qubit 0 is the RIGHTMOST character and its flip shows up as '01', not '10'.",
       "B": "X was applied to qubit 0 only; qubit 1 stays 0, so the string is '01', not '11'.",
       "C": "X flips |0⟩ to |1⟩ on qubit 0 — a very measurable change; the outcome '01' occurs with certainty."
     },
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "length tell cleared (correct trimmed, distractor A names the API it misreads)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

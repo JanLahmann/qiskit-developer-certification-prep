@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "Build the observable for the ISA circuit with `iobs = obs.apply_layout(isa.layout)` and pass `iobs`."
+      "text": "Expand the observable onto all 5 physical qubits with `iobs = obs.apply_layout(isa.layout)` and pass `iobs`."
     },
     {
       "key": "B",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "Replace the `SparsePauliOp` with the plain string `\"ZZ\"`."
+      "text": "Replace the `SparsePauliOp` with the plain Pauli string `\"ZZ\"`, which the primitive widens to the circuit automatically."
     }
   ],
   "answer": [
@@ -34,7 +34,7 @@
     "distractors": {
       "B": "Estimator circuits do not carry measurement instructions (the primitive measures the observable itself), and measure_all() does not change the observable's qubit count — the width mismatch remains.",
       "C": "run() has no `backend=` keyword (the target is fixed by `mode=` at construction), and even if it did, it would not resize a 2-qubit observable to the 5-qubit ISA circuit.",
-      "D": "A string 'ZZ' is still a 2-qubit observable; changing the Python type does not align it to the 5-qubit ISA circuit, so the same ValueError is raised."
+      "D": "A bare label 'ZZ' is still a 2-qubit observable and the primitive does not silently widen it to the circuit — changing the Python type leaves the same ValueError."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s6: A/D relengthened (length + absolute-wording tells); D rationale sharpened"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

@@ -15,7 +15,7 @@
     },
     {
       "key": "B",
-      "text": "It raises a `ValueError`: the 2-qubit observable does not match the transpiled circuit's qubit count — the observable must be mapped with `obs.apply_layout(isa.layout)` first."
+      "text": "It raises a `ValueError`: the observable must have the same qubit count as the transpiled circuit, and it no longer does."
     },
     {
       "key": "C",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "It raises `IBMInputValueError` because the observable is not an ISA operator."
+      "text": "It raises `IBMInputValueError`: the Estimator rejects the pair because the observable was never mapped to the transpiled circuit's layout with `apply_layout`."
     }
   ],
   "answer": [
@@ -34,7 +34,7 @@
     "distractors": {
       "A": "No value is produced — the mismatch is caught before any expectation value is computed.",
       "C": "The observable is not silently ignored; a mismatched observable is a hard error.",
-      "D": "The error is a plain `ValueError` about qubit counts, not `IBMInputValueError`; the failure is the observable/circuit size mismatch, not an ISA-instruction problem."
+      "D": "The diagnosis is right but the exception is not: a size mismatch between circuit and observable is a plain `ValueError` raised by the Estimator's PUB validation, not `IBMInputValueError`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/hello-world",
@@ -53,8 +53,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct B, lengthened+stem-echoed wrong-exception distractor (length/stem-echo fix)."
   },
   "freshness": {
     "verified_against": {
@@ -63,7 +64,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

@@ -24,11 +24,11 @@
     },
     {
       "key": "D",
-      "text": "Call `service.job()` with no arguments to get every past job at once"
+      "text": "Call `service.job()` without a job ID -- it then returns your whole job history"
     },
     {
       "key": "E",
-      "text": "Nothing can be done -- results live only in local RAM and are lost on a kernel restart"
+      "text": "Results live in local RAM, so a kernel restart discards them for good"
     }
   ],
   "answer": [
@@ -37,10 +37,10 @@
     "C"
   ],
   "explanation": {
-    "correct": "`service.jobs()` returns your recent jobs and can be filtered by backend, creation date, or state; you then call `.result()` on the chosen job. The Workloads page lists every submission with its ID. Because IBM Quantum persists results server-side, a kernel restart does not lose them.",
+    "correct": "`service.jobs()` returns your recent jobs and accepts filters (`backend_name`, `created_after`, `session_id`, `pending`, ...); you then call `.result()` on the job you want. The IBM Quantum Platform Workloads page lists your submitted jobs together with their IDs (the save-jobs guide points there for exactly this purpose). Results are stored server-side, so a kernel restart does not lose them.",
     "distractors": {
-      "D": "`service.job()` requires a specific job ID argument; the plural `service.jobs()` is what lists many.",
-      "E": "Results are stored server-side by IBM Quantum, so they are recoverable after a restart."
+      "D": "`service.job()` is the singular lookup and requires a job ID (`TypeError` without one); listing many jobs is what the plural `service.jobs()` does, and it pages with `limit` (default 10) rather than dumping everything.",
+      "E": "IBM Quantum stores the results of every job server-side; that is the whole point of `service.job(job_id)` and of the save-jobs guide."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/save-jobs",
@@ -57,7 +57,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s7: D/E rephrased without absolute wording (kills absolute-distractor tell); Workloads-page option C confirmed against the live save-jobs guide"
   }
 }

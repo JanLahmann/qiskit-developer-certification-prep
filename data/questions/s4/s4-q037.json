@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "Single jobs submitted in a batch are always redirected to a simulator."
+      "text": "A batch always dispatches the wrapped single circuit to a simulator for validation first, so it never waits in the queue."
     },
     {
       "key": "B",
@@ -19,11 +19,11 @@
     },
     {
       "key": "C",
-      "text": "The batch cancels the single job because a batch requires at least two jobs."
+      "text": "The batch usually cancels a lone job, because a batch requires at least two jobs to schedule."
     },
     {
       "key": "D",
-      "text": "The queuing time does not decrease for the first job submitted within a batch (or session), so wrapping a single job in a batch provides no queuing benefit."
+      "text": "The queuing time does not decrease for the first job in a batch, so a single circuit gains nothing from one."
     }
   ],
   "answer": [
@@ -32,9 +32,9 @@
   "explanation": {
     "correct": "Batching helps by scheduling multiple jobs together and parallelizing their classical processing. But the first job in a batch still waits in the normal queue, so a batch (or session) provides no benefit when there is only one job.",
     "distractors": {
-      "A": "Execution target is set by the mode/backend, not by whether a job is in a batch; nothing redirects it to a simulator.",
+      "A": "Nothing validates a batch on a simulator first; the execution target is set by the mode/backend, and the job queues on the QPU exactly as it would in job mode.",
       "B": "Batch benefits come from parallel scheduling across jobs, not from circuit size; there is no gate-count threshold.",
-      "C": "A batch does not require or enforce a minimum of two jobs, and it does not cancel a lone job."
+      "C": "A batch does not require or enforce a minimum of two jobs, and it never cancels a lone job."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
@@ -52,7 +52,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+hedged distractors (length/stem-echo/absolute-tell fix). Also: stem-echo calibration (correct option now carries the stem vocabulary). Also: levelled stem vocabulary across the options (stem-echo fix)."
   }
 }

@@ -20,7 +20,7 @@
     },
     {
       "key": "C",
-      "text": "0.5 — only the X⊗X term contributes"
+      "text": "0.5 — the X⊗X term is the one that contributes"
     },
     {
       "key": "D",
@@ -53,8 +53,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "absolute-wording tell cleared (absolute removed from distractor C)"
   },
   "freshness": {
     "verified_against": {
@@ -63,7 +64,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

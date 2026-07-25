@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "It is undefined; `StatevectorEstimator` has no `stds` field."
+      "text": "Undefined — `StatevectorEstimator` has no `stds` field."
     }
   ],
   "answer": [
@@ -51,8 +51,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s6: D tightened so the key is (deliberately) the longest option here; proof re-checked: stds=0.0 still discriminates because evs=1.0 refutes B and hasattr refutes D"
   },
   "freshness": {
     "verified_against": {
@@ -61,7 +62,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

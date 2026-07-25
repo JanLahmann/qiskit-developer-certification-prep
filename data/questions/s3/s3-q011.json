@@ -15,15 +15,15 @@
     },
     {
       "key": "B",
-      "text": "It adds a new 2-bit classical register named `meas` plus a barrier, then measures each qubit into the matching new bit."
+      "text": "By default it adds a fresh 2-bit register `meas`, inserts a barrier, then measures every qubit into it."
     },
     {
       "key": "C",
-      "text": "It adds 2 classical bits to a register named `c` and inserts no barrier."
+      "text": "It adds 2 classical bits to an auto-created register named `c` and inserts no barrier before the measurements."
     },
     {
       "key": "D",
-      "text": "It measures only qubits that already carry gates, adding a single classical bit."
+      "text": "It measures just the qubits that already carry gates, adding a single classical bit."
     }
   ],
   "answer": [
@@ -33,8 +33,8 @@
     "correct": "`measure_all()` creates a fresh `ClassicalRegister` named `meas` sized to the number of qubits, inserts a `barrier` across all qubits, and measures qubit i into `meas[i]`. It is the convenient one-call way to read out an entire circuit.",
     "distractors": {
       "A": "`measure_all()` never errors on a register-less circuit — it creates the classical bits for you (unlike `measure`, which needs existing bits).",
-      "C": "The auto-created register is named `meas`, not `c`, and `measure_all()` DOES insert a barrier before the measurements by default.",
-      "D": "Measuring only active qubits is what `measure_active()` does; `measure_all()` measures every qubit."
+      "C": "The auto-created register is named `meas`, not `c`, and `measure_all()` does insert a barrier ahead of the measurements.",
+      "D": "Measuring just the active qubits is what `measure_active()` does; `measure_all()` measures every qubit in the circuit."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed and now carries the true 'every'/'by default', distractor C given substance)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

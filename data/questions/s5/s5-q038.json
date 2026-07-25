@@ -11,34 +11,34 @@
   "options": [
     {
       "key": "A",
-      "text": "It roughly halves — sampling (shot) error scales like 1/sqrt(N), so 4x the shots gives about 2x smaller error"
+      "text": "It drops to a quarter, because the sampling error scales like 1/N with the shot count"
     },
     {
       "key": "B",
-      "text": "It drops to a quarter, scaling like 1/N with the number of shots"
+      "text": "It roughly halves — shot error scales like 1/sqrt(N)"
     },
     {
       "key": "C",
-      "text": "It is essentially unchanged — statistical error depends on the hardware, not the shot count"
+      "text": "It barely moves — statistical error is set by the device's noise level, not by the shot count"
     },
     {
       "key": "D",
-      "text": "It roughly doubles, because more shots accumulate more noise"
+      "text": "It roughly doubles, because a longer job accumulates more drift and readout error"
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
     "correct": "Counting outcomes is a Monte-Carlo estimate of a probability. The standard error of a frequency is sqrt(p(1-p)/N), i.e. it shrinks like 1/sqrt(N). Quadrupling the shots (1000 -> 4000) multiplies the error by 1/sqrt(4) = 1/2. This is why halving the error costs 4x the shots — the same shots<->precision trade-off that underlies the primitives.",
     "distractors": {
-      "B": "Sampling error scales like 1/sqrt(N), not 1/N. You would need 16x the shots (not 4x) to quarter the error.",
+      "A": "Sampling error scales like 1/sqrt(N), not 1/N. You would need 16x the shots (not 4x) to quarter the error.",
       "C": "Shot noise is a property of finite sampling and clearly decreases with more shots; it is not fixed by the hardware.",
       "D": "More shots reduce, not increase, the statistical uncertainty of the estimate; the error goes down like 1/sqrt(N)."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/primitives",
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output"
     ]
   },
   "proof": {
@@ -51,7 +51,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "s5 adversarial review: length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped)"
   }
 }

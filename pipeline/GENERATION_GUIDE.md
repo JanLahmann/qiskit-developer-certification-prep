@@ -39,12 +39,27 @@ wave that follows generation (agent gate). Questions that violate it get killed.
    `explanation.distractors[key]` text must NAME the misconception.
 4. **Options**: 4 options (A–D) standard; 5–6 allowed for `multi`. Alphabetical key order.
    Similar length/register (no "longest answer is correct" tells). No "All of the above".
-5. **Explanations teach**: `explanation.correct` explains the mechanism, not just the fact.
+5. **No test-wise tells** (enforced by `pipeline/audit_meta_patterns.py --gate` in CI; a
+   pilot user passed questions blind via "longest option wins"). A knowledge-free guesser
+   must stay at chance. Concretely:
+   - **Length**: the correct option must not be strictly longer than every distractor
+     (audit flags high severity at ≥1.4× the longest distractor). Tighten the correct
+     option; give distractors substantive plausible-but-wrong content — never filler.
+   - **Position**: distribute answer keys ≈ uniformly across your section (s4, s5, and
+     s8 each shipped 100% answer-"A" before review caught it — the generator's default
+     habit is to write the correct option first; consciously vary it).
+   - **Wording style**: hedged wording ("typically", "by default") must not appear only
+     in correct options, nor absolutes ("always", "never", "only") only in distractors.
+   - **Stem echo**: the correct option must not be the only one reusing the stem's
+     vocabulary or exact docs terminology; distractors need equally authentic API names.
+   - **Formatting**: don't code-format only the correct option (or only the distractors).
+   - **Multi-select**: vary the number of correct options between questions.
+6. **Explanations teach**: `explanation.correct` explains the mechanism, not just the fact.
    Cite 1–3 URLs from your section's `resources` in syllabus.json (other
    `quantum.cloud.ibm.com/docs/...` URLs allowed if genuinely better).
-6. **Coverage**: spread questions across ALL objectives and scope_notes of your section;
+7. **Coverage**: spread questions across ALL objectives and scope_notes of your section;
    tag `objectives` honestly (the mock exam samples by these tags).
-7. **Version honesty**: target Qiskit 2.5 behavior as proven by execution. Don't test
+8. **Version honesty**: target Qiskit 2.5 behavior as proven by execution. Don't test
    trivia that changed within the 2.x line unless the question is explicitly about it
    AND the proof pins it.
 

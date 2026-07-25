@@ -1,0 +1,60 @@
+
+- id: S8-001
+  section: 8
+  question: "OpenQASM is best described as:"
+  choices:
+    A: "A language for representing quantum programs"
+    B: "A physical quantum processor"
+    C: "A Python plotting library"
+    D: "A classical database system"
+  answer: A
+
+- id: S8-002
+  section: 8
+  question: "When exporting Qiskit code to OpenQASM 3 as a file, which of these method has to be used?"
+  choices:
+    A: "export\\_to\\_qasm()"
+    B: "dumps()"
+    C: "qiskit\\_to\\_qasm()"
+    D: "dump()"
+  answer: B
+
+- id: S8-003
+  section: 8
+  question: "Which OpenQASM 3 variable declaration corresponds to Qiskit's ClassicalRegister declaration?"
+  choices:
+    A: "bit"
+    B: "clreq[ ]"
+    C: "bit[ ]"
+    D: "clbit[ ]"
+  answer: C
+
+- id: S8-004
+  section: 8
+  question: "Which of the following state vectors corresponds to the following OpenQASM 3 code?"
+  code: |
+    OPENQASM 3;
+    include "stdgates.inc";
+
+    qubit[2] q;
+    bit[2] c;
+
+    h q[0];
+    cx q[1], q[0];
+    z q[1];
+  choices:
+    A: "$\\frac{\\sqrt{2}}{2}\\ket{00} + \\frac{\\sqrt{2}}{2}\\ket{01}$"
+    B: "$\\frac{1}{\\sqrt{2}}\\ket{00} + \\frac{1}{\\sqrt{2}}\\ket{11}$"
+    C: "$\\frac{\\sqrt{2}}{2}\\ket{00} - \\frac{\\sqrt{2}}{2}\\ket{01}$"
+    D: "$\\frac{1}{\\sqrt{2}}\\ket{00} - \\frac{1}{\\sqrt{2}}\\ket{11}$"
+  answer: A
+
+- id: S8-005
+  section: 8
+  question: "Which of these are OpenQASM 3 features?"
+  choices:
+    A: "while loops"
+    B: "angle"
+    C: "try/catch"
+    D: "barrier"
+  answer: [A,B,D]

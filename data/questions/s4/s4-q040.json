@@ -15,11 +15,11 @@
     },
     {
       "key": "B",
-      "text": "The account that was saved most recently."
+      "text": "The account that was saved last."
     },
     {
       "key": "C",
-      "text": "`open_acct`, because free (Open) plans are always preferred."
+      "text": "`open_acct`, because free (Open) plans always take precedence."
     },
     {
       "key": "D",
@@ -34,7 +34,7 @@
     "distractors": {
       "A": "It does not raise — the alphabetical-last account is selected as the fallback.",
       "B": "Save order is not the tiebreaker; alphabetical name order is.",
-      "C": "There is no automatic preference for Open/free plans when choosing among SAVED named accounts; the alphabetical rule applies."
+      "C": "There is no automatic preference for free (Open) plans when choosing among SAVED named accounts; the alphabetical rule applies."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/initialize-account"
@@ -50,7 +50,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — removed hedge pile-up from the distractors (avoid-hedged calibration)."
   }
 }

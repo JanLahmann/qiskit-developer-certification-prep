@@ -15,11 +15,11 @@
     },
     {
       "key": "B",
-      "text": "1.0 — |0⟩ always gives the |+⟩ outcome in the X basis"
+      "text": "1.0 — |0⟩ always gives the |+⟩ outcome when measured in the X basis"
     },
     {
       "key": "C",
-      "text": "0.0 — |0⟩ is orthogonal to |+⟩"
+      "text": "0.0 — |0⟩ and |+⟩ are orthogonal, so this outcome may not occur"
     },
     {
       "key": "D",
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "absolute-wording tell cleared (distractor C now hedges, so the correct option needs no absolute)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

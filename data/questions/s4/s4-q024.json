@@ -11,15 +11,15 @@
   "options": [
     {
       "key": "A",
-      "text": "Sessions automatically re-learn the noise model before every single job, which batch cannot do."
+      "text": "Sessions automatically re-learn the noise model before every single job of an iterative workload, so PEC always uses fresh calibration data; batch cannot."
     },
     {
       "key": "B",
-      "text": "Only sessions support error mitigation; batch and job mode disable PEC entirely."
+      "text": "Only sessions support error mitigation; batch and job mode typically disable PEC entirely."
     },
     {
       "key": "C",
-      "text": "In a dedicated session the jobs run close together, so a noise model learned once stays valid for subsequent jobs; in batch or job mode the next job may sit in the queue long enough that the noise model becomes stale."
+      "text": "In a dedicated session the jobs run close together, so a noise model learned once stays valid for the jobs that follow."
     },
     {
       "key": "D",
@@ -32,7 +32,7 @@
   "explanation": {
     "correct": "A session's dedicated window keeps jobs running tightly together, so you can learn the noise model once and reuse it while it is still accurate. In batch or job mode a later job can spend so long in the queue that the device drifts and the learned model becomes stale.",
     "distractors": {
-      "A": "The advantage is learning the model ONCE and reusing it, not re-learning it before every job.",
+      "A": "The advantage is learning the model ONCE and reusing it while it is still accurate, not re-learning it before every job.",
       "B": "Error mitigation options are available in all execution modes; the mode affects scheduling and how long a learned model stays valid, not whether mitigation is allowed.",
       "D": "PEC is a software post-processing technique; it does not recalibrate hardware. The benefit of a session is timing, not physical recalibration."
     },
@@ -51,7 +51,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C, lengthened+hedged distractors (length/hedge/absolute-tell fix)."
   }
 }

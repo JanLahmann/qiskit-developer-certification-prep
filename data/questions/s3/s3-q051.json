@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "It raises, because one `Parameter` object cannot be reused across two gates."
+      "text": "It raises, because a `Parameter` object may not be reused across two gates."
     },
     {
       "key": "D",
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "absolute-wording tell cleared (distractor C now hedges instead of using an absolute)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

@@ -2,13 +2,13 @@
   "question": "s8-q013",
   "verdict": {
     "answer": [
-      "A"
+      "D"
     ],
     "evidence": {
-      "A": "produced str; valid OpenQASM (starts with 'OPENQASM')=True",
-      "B": "raised TypeError: dumps() got an unexpected keyword argument 'strict'",
-      "C": "raised QASM2ExportError: 'OpenQASM 2 only supports register-equality conditions'",
-      "D": "produced str; valid OpenQASM (starts with 'OPENQASM')=False"
+      "A": "raised TypeError: dumps() got an unexpected keyword argument 'strict'",
+      "B": "raised QASM2ExportError: 'OpenQASM 2 only supports register-equality conditions'",
+      "C": "produced str; valid OpenQASM (starts with 'OPENQASM')=False",
+      "D": "produced str; valid OpenQASM (starts with 'OPENQASM')=True; contains an 'if (' block=True"
     },
     "observed": {
       "bug": "QASM2ExportError: 'OpenQASM 2 only supports register-equality conditions'"
@@ -20,9 +20,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.87,
+  "wall_seconds": 1.08,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"produced str; valid OpenQASM (starts with 'OPENQASM')=True\", \"B\": \"raised TypeError: dumps() got an unexpected keyword argument 'strict'\", \"C\": \"raised QASM2ExportError: 'OpenQASM 2 only supports register-equality conditions'\", \"D\": \"produced str; valid OpenQASM (starts with 'OPENQASM')=False\"}, \"observed\": {\"bug\": \"QASM2ExportError: 'OpenQASM 2 only supports register-equality conditions'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"raised TypeError: dumps() got an unexpected keyword argument 'strict'\", \"B\": \"raised QASM2ExportError: 'OpenQASM 2 only supports register-equality conditions'\", \"C\": \"produced str; valid OpenQASM (starts with 'OPENQASM')=False\", \"D\": \"produced str; valid OpenQASM (starts with 'OPENQASM')=True; contains an 'if (' block=True\"}, \"observed\": {\"bug\": \"QASM2ExportError: 'OpenQASM 2 only supports register-equality conditions'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

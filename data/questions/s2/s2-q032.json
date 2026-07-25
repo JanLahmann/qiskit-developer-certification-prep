@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "The amplitude magnitude — the |01> node stands for a larger amplitude than |10>."
+      "text": "The amplitude magnitude — the |01> node usually carries a larger amplitude than |10>."
     },
     {
       "key": "B",
@@ -32,7 +32,7 @@
   "explanation": {
     "correct": "On a q-sphere a node's SIZE encodes the amplitude magnitude and its COLOR encodes the amplitude's complex phase. Here |01> and |10> have equal magnitude (same size) but the Z gate multiplies the |01> branch by −1, giving it phase π versus phase 0 for |10> — so the colors differ.",
     "distractors": {
-      "A": "The two amplitudes have equal magnitude (the nodes are the same size); magnitude is shown by size, not color.",
+      "A": "The two amplitudes have equal magnitude (the nodes are the same size), and magnitude is shown by node size, not by color.",
       "C": "|01> and |10> have the same Hamming weight (one 1-bit each), so a color difference cannot be encoding Hamming weight — it is the phase that differs.",
       "D": "q-sphere nodes ARE color-coded by phase; the difference is meaningful, not an artifact."
     },
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern pass: absolute tell cleared by hedging distractor A instead of moving an absolute into the correct option"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

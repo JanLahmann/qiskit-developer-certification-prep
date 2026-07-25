@@ -11,34 +11,34 @@
   "options": [
     {
       "key": "A",
-      "text": "`1000` — the counts across all outcomes always add up to the number of shots"
+      "text": "`500` — the 1000 shots are split evenly across the two measured qubits"
     },
     {
       "key": "B",
-      "text": "`2` — a Bell state only produces the outcomes `00` and `11`"
+      "text": "`2` — a Bell state yields only the outcomes `00` and `11`, so the sum is 2"
     },
     {
       "key": "C",
-      "text": "`500` — the shots are split evenly between the two measured qubits"
+      "text": "`1000` — the tallies over all observed bitstrings sum to the shot count used for the run"
     },
     {
       "key": "D",
-      "text": "`1024` — the sampler always uses its 1024 default shots"
+      "text": "`4096` — the sampler ignores `shots` and applies its default shot count"
     }
   ],
   "answer": [
-    "A"
+    "C"
   ],
   "explanation": {
     "correct": "get_counts() tallies every shot into its observed bitstring, so the counts sum to the total number of shots that were run. Here shots=1000 was passed explicitly, so the tallies sum to 1000 regardless of how many distinct bitstrings (2, 3, or 4) actually appear.",
     "distractors": {
+      "A": "Shots are not divided among qubits — every shot measures the full register once, producing one bitstring; all 1000 bitstrings are tallied.",
       "B": "This confuses the number of *distinct outcomes* with the number of shots. get_counts() returns a dict whose keys are the distinct bitstrings but whose values sum to the shot count.",
-      "C": "Shots are not divided among qubits — every shot measures the full register once, producing one bitstring; all 1000 bitstrings are tallied.",
-      "D": "1024 is only the default when no shots are supplied. Here `shots=1000` overrides the default, so exactly 1000 shots run."
+      "D": "4096 is the shot count the Qiskit Runtime Sampler falls back to when no shots are specified anywhere, but an explicit `shots=1000` on run() has higher precedence and is obeyed."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
     ]
   },
   "proof": {
@@ -47,7 +47,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)\nresult = sampler.run([isa], shots=1000).result()\ncounts = result[0].data.meas.get_counts()\nobserved = sum(counts.values())\n\ncandidates = {\"A\": 1000, \"B\": 2, \"C\": 500, \"D\": 1024}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims sum(counts.values())={v}; executed run gave {observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"counts\": counts, \"sum\": observed, \"distinct_bitstrings\": len(counts)}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)\nresult = sampler.run([isa], shots=1000).result()\ncounts = result[0].data.meas.get_counts()\nobserved = sum(counts.values())\n\ncandidates = {\"C\": 1000, \"B\": 2, \"A\": 500, \"D\": 4096}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims sum(counts.values())={v}; executed run gave {observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"counts\": counts, \"sum\": observed, \"distinct_bitstrings\": len(counts)}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -56,13 +56,14 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "s5 adversarial review: option D changed 1024->4096 (1024 is a local BackendSamplerV2 artifact, not the Runtime default); options rebalanced for length; proof candidate updated; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged"
   }
 }

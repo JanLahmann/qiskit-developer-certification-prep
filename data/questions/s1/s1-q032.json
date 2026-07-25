@@ -11,19 +11,19 @@
   "options": [
     {
       "key": "A",
-      "text": "|11⟩ → |00⟩: both qubits flip when both are 1"
+      "text": "|11⟩ → |00⟩: a controlled gate flips both qubits when both are 1"
     },
     {
       "key": "B",
-      "text": "|01⟩ → |11⟩ and |11⟩ → |01⟩; |00⟩ and |10⟩ unchanged (target qubit 1 flips when control qubit 0 = 1)"
+      "text": "|01⟩ → |11⟩ and |11⟩ → |01⟩; |00⟩ and |10⟩ are left alone"
     },
     {
       "key": "C",
-      "text": "|10⟩ → |11⟩ and |11⟩ → |10⟩ (qubit 1 flips whenever qubit 1 is already 1)"
+      "text": "|10⟩ → |11⟩ and |11⟩ → |10⟩: here the control is qubit 1 and the target is qubit 0"
     },
     {
       "key": "D",
-      "text": "|10⟩ → |01⟩: the gate simply swaps the two qubits"
+      "text": "|10⟩ → |01⟩: `cx(0, 1)` simply swaps the two qubit states"
     }
   ],
   "answer": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "length + stem-echo tells cleared (correct trimmed, distractor C carries the API vocabulary)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

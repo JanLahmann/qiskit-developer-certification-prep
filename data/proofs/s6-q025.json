@@ -5,13 +5,14 @@
       "C"
     ],
     "evidence": {
-      "A": "transpiling does NOT fix it: still ValueError (the 2-qubit observable now mismatches an even wider ISA circuit)",
-      "B": "measure_all does NOT fix it: still ValueError (observable still spans 2 of 3 qubits)",
-      "C": "a 3-qubit label 'IZZ' runs: <IZZ> on GHZ = 1.000 (buggy 2-qubit obs failed: ValueError: The number of qubits of the circuit (3) does not match the number of qubits of the ()-th o)",
-      "D": "run(num_qubits=3) raises TypeError: run() has no such kwarg and cannot resize the observable"
+      "A": "refuted: the 4-entry PUB (bell, obs, None, 0.01) IS accepted and returns evs=1.0000, so a PUB can carry a precision value",
+      "B": "refuted: 0.1 in the same slot raises the identical ValueError: Length of () inconsistent with last dimension of [0.1] \u2014 the magnitude is irrelevant",
+      "C": "confirmed: moving 0.01 to the fourth slot, (bell, obs, None, 0.01), runs and gives evs=1.0000; the equivalent run(precision=0.01) gives evs=1.0000 (the buggy 3-slot PUB had failed with ValueError: Length of () inconsistent with last dimension of [0.01])",
+      "D": "refuted: (bell, [obs], 0.01) still raises ValueError: Length of () inconsistent with last dimension of [0.01] \u2014 0.01 is still sitting in the parameter_values slot"
     },
     "observed": {
-      "buggy_error": "ValueError: The number of qubits of the circuit (3) does not match the number of qubits of the ()-th o"
+      "buggy_error": "ValueError: Length of () inconsistent with last dimension of [0.01]",
+      "evs_with_precision_in_slot_4": 1.0000123015335747
     }
   },
   "versions": {
@@ -20,9 +21,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.41,
+  "wall_seconds": 1.16,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"transpiling does NOT fix it: still ValueError (the 2-qubit observable now mismatches an even wider ISA circuit)\", \"B\": \"measure_all does NOT fix it: still ValueError (observable still spans 2 of 3 qubits)\", \"C\": \"a 3-qubit label 'IZZ' runs: <IZZ> on GHZ = 1.000 (buggy 2-qubit obs failed: ValueError: The number of qubits of the circuit (3) does not match the number of qubits of the ()-th o)\", \"D\": \"run(num_qubits=3) raises TypeError: run() has no such kwarg and cannot resize the observable\"}, \"observed\": {\"buggy_error\": \"ValueError: The number of qubits of the circuit (3) does not match the number of qubits of the ()-th o\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"refuted: the 4-entry PUB (bell, obs, None, 0.01) IS accepted and returns evs=1.0000, so a PUB can carry a precision value\", \"B\": \"refuted: 0.1 in the same slot raises the identical ValueError: Length of () inconsistent with last dimension of [0.1] \\u2014 the magnitude is irrelevant\", \"C\": \"confirmed: moving 0.01 to the fourth slot, (bell, obs, None, 0.01), runs and gives evs=1.0000; the equivalent run(precision=0.01) gives evs=1.0000 (the buggy 3-slot PUB had failed with ValueError: Length of () inconsistent with last dimension of [0.01])\", \"D\": \"refuted: (bell, [obs], 0.01) still raises ValueError: Length of () inconsistent with last dimension of [0.01] \\u2014 0.01 is still sitting in the parameter_values slot\"}, \"observed\": {\"buggy_error\": \"ValueError: Length of () inconsistent with last dimension of [0.01]\", \"evs_with_precision_in_slot_4\": 1.0000123015335747}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

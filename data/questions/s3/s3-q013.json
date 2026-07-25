@@ -15,15 +15,15 @@
     },
     {
       "key": "B",
-      "text": "`compose` returns a new circuit and does not modify `base` in place; fix with `base = base.compose(add_on)` or `base.compose(add_on, inplace=True)`."
+      "text": "By default `compose` returns a new circuit instead of mutating `base`; fix with `base = base.compose(add_on)` or `inplace=True`."
     },
     {
       "key": "C",
-      "text": "`add_on` must be converted with `add_on.to_gate()` before it can be composed."
+      "text": "`add_on` has to be converted with `add_on.to_gate()` before it can be composed."
     },
     {
       "key": "D",
-      "text": "`base` needs a classical register before `compose` takes effect."
+      "text": "`base` needs a classical register before `compose` takes effect; without one the composed gates are typically dropped on the floor."
     }
   ],
   "answer": [
@@ -34,7 +34,7 @@
     "distractors": {
       "A": "`compose` works fine for single-qubit gates — the problem is only that the returned circuit was discarded; `append` is not required.",
       "C": "`to_gate()` is optional; you can compose whole circuits directly. It is unrelated to the in-place behavior.",
-      "D": "Classical registers have nothing to do with composing gates; the X is lost purely because the return value was ignored."
+      "D": "Classical registers have nothing to do with composing gates, and nothing is silently dropped; the X is lost purely because the return value was ignored."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor D given substance and a hedge, absolute removed from distractor C)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

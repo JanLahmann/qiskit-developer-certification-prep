@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "Jobs finish faster, because mitigation lets the estimator use fewer shots."
+      "text": "Jobs typically finish faster, because mitigation lets the estimator use fewer shots."
     },
     {
       "key": "B",
@@ -30,7 +30,7 @@
     "C"
   ],
   "explanation": {
-    "correct": "Higher resilience levels build more resilience against errors by running and post-processing larger ensembles of circuits (e.g. ZNE's noise-amplified copies at level 2). This yields more accurate, less biased expectation values but takes longer and consumes more QPU time — a cost/accuracy trade-off.",
+    "correct": "Higher resilience levels build more resilience against errors by running and post-processing larger ensembles of circuits (e.g. ZNE's noise-amplified copies at level 2). This yields more accurate, less biased expectation values but takes longer and consumes more QPU time \u2014 a cost/accuracy trade-off.",
     "distractors": {
       "A": "Mitigation adds overhead (extra circuits and shots), so higher levels are slower, not faster.",
       "B": "Resilience level controls error mitigation, not qubit selection, and it clearly changes runtime.",
@@ -50,7 +50,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s6: hedge added to distractor A (absolute-wording tell)"
   }
 }

@@ -5,15 +5,15 @@
       "A"
     ],
     "evidence": {
-      "A": "returned dict={'11': 497, '00': 503}; counts-dict summing to shots=True",
-      "B": "raised AttributeError: 'PrimitiveResult' object has no attribute 'get_counts'",
-      "C": "raised AttributeError: 'SamplerPubResult' object has no attribute 'get_counts'",
-      "D": "raised AttributeError: 'PrimitiveResult' object has no attribute 'quasi_dists'"
+      "A": "round-trip returned PrimitiveResult; reloaded counts {'11': 198, '00': 202} == original {'11': 198, '00': 202} -> True",
+      "B": "raised TypeError: Object of type PrimitiveResult is not JSON serializable",
+      "C": "raised TypeError: JSONDecoder.__init__() got an unexpected keyword argument 'skipkeys'",
+      "D": "raised AttributeError: 'PrimitiveResult' object has no attribute 'to_json'"
     },
     "observed": {
-      "A_counts": {
-        "11": 497,
-        "00": 503
+      "original_counts": {
+        "11": 198,
+        "00": 202
       }
     }
   },
@@ -23,9 +23,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.49,
+  "wall_seconds": 1.66,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"returned dict={'11': 497, '00': 503}; counts-dict summing to shots=True\", \"B\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'get_counts'\", \"C\": \"raised AttributeError: 'SamplerPubResult' object has no attribute 'get_counts'\", \"D\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'quasi_dists'\"}, \"observed\": {\"A_counts\": {\"11\": 497, \"00\": 503}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"round-trip returned PrimitiveResult; reloaded counts {'11': 198, '00': 202} == original {'11': 198, '00': 202} -> True\", \"B\": \"raised TypeError: Object of type PrimitiveResult is not JSON serializable\", \"C\": \"raised TypeError: JSONDecoder.__init__() got an unexpected keyword argument 'skipkeys'\", \"D\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'to_json'\"}, \"observed\": {\"original_counts\": {\"11\": 198, \"00\": 202}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

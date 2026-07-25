@@ -5,13 +5,14 @@
       "C"
     ],
     "evidence": {
-      "A": "evs is a scalar float 1.0 (ndim=0), not a counts dict -> False",
-      "D": "evs is a scalar float 1.0, not a probability list -> False",
-      "B": "evs=1.0; option claims scalar 0.0 -> match=False",
-      "C": "evs=1.0; option claims scalar 1.0 -> match=True"
+      "A": "evs['00'] raised IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis; evs is ndarray ndim=0 value 1.0 -> False",
+      "D": "list(evs) raised TypeError: iteration over a 0-d array; evs is a scalar 1.0, not a 2-element list -> False",
+      "B": "evs=1.0 (ndim=0); option claims scalar 0.0 -> match=False",
+      "C": "evs=1.0 (ndim=0); option claims scalar 1.0 -> match=True"
     },
     "observed": {
-      "evs": 0.9999999999999998
+      "evs": 0.9999999999999998,
+      "ndim": 0
     }
   },
   "versions": {
@@ -20,9 +21,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.88,
+  "wall_seconds": 1.13,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"evs is a scalar float 1.0 (ndim=0), not a counts dict -> False\", \"D\": \"evs is a scalar float 1.0, not a probability list -> False\", \"B\": \"evs=1.0; option claims scalar 0.0 -> match=False\", \"C\": \"evs=1.0; option claims scalar 1.0 -> match=True\"}, \"observed\": {\"evs\": 0.9999999999999998}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"evs['00'] raised IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis; evs is ndarray ndim=0 value 1.0 -> False\", \"D\": \"list(evs) raised TypeError: iteration over a 0-d array; evs is a scalar 1.0, not a 2-element list -> False\", \"B\": \"evs=1.0 (ndim=0); option claims scalar 0.0 -> match=False\", \"C\": \"evs=1.0 (ndim=0); option claims scalar 1.0 -> match=True\"}, \"observed\": {\"evs\": 0.9999999999999998, \"ndim\": 0}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

@@ -11,15 +11,15 @@
   "options": [
     {
       "key": "A",
-      "text": "Replace it with a context manager: `with qc.if_test((cr, 1)):` then `qc.x(0)`. `.c_if()` was removed in Qiskit 2.0."
+      "text": "Replace it with the control-flow context manager `with qc.if_test((cr, 1)):` and put `qc.x(0)` in its body."
     },
     {
       "key": "B",
-      "text": "Change `c_if(cr, 1)` to `c_if(cr[0], 1)`; the condition must reference a single bit."
+      "text": "Change `c_if(cr, 1)` to `c_if(cr[0], 1)`; the condition must reference a single bit rather than a whole register."
     },
     {
       "key": "C",
-      "text": "Call `qc = qc.decompose()` before the conditional so `.c_if()` becomes available."
+      "text": "Call `qc = qc.decompose()` first; `.c_if()` is usually available again once composite gates are expanded."
     },
     {
       "key": "D",
@@ -33,7 +33,7 @@
     "correct": "The `InstructionSet.c_if` method was removed in Qiskit 2.0. Conditionals are now built with the control-flow context manager `with qc.if_test((cr, 1)):`, whose body holds the conditioned gates.",
     "distractors": {
       "B": "`.c_if()` no longer exists at all — indexing the register to `cr[0]` still raises `AttributeError`; the method itself is gone.",
-      "C": "`decompose()` expands composite gates and has nothing to do with conditionals; it does not restore `.c_if()`.",
+      "C": "`decompose()` expands composite gates and has nothing to do with conditionals; it never restores `.c_if()`.",
       "D": "Gate methods like `x()` have no `condition` keyword; passing one raises a `TypeError`. Conditions go through `if_test`."
     },
     "citations": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "length tell + absolute-wording tell cleared (correct trimmed, distractor B given substance, distractor C now hedges)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

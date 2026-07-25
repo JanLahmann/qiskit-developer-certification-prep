@@ -7,7 +7,7 @@
   "type": "spot-bug",
   "difficulty": 2,
   "stem": "After running a `SamplerV2` job, this code tries to plot the measurement results but raises `AttributeError`. Which change plots the histogram correctly?",
-  "code": "from qiskit.visualization import plot_histogram\n\n# result = SamplerV2(mode=backend).run([isa_qc]).result()\ndata = result[0].data.meas      # a BitArray\nfig = plot_histogram(data)      # AttributeError",
+  "code": "from qiskit.visualization import plot_histogram\n\n# result = SamplerV2(mode=backend).run([isa_qc], shots=1024).result()\ndata = result[0].data.meas      # a BitArray\nfig = plot_histogram(data)      # AttributeError",
   "options": [
     {
       "key": "A",
@@ -47,13 +47,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\nfrom qiskit.visualization import plot_histogram\nimport matplotlib\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\nisa = generate_preset_pass_manager(backend=backend, optimization_level=1, seed_transpiler=42).run(qc)\nresult = SamplerV2(mode=backend).run([isa], shots=256).result()\n\ndef is_fig(x):\n    return isinstance(x, matplotlib.figure.Figure)\n\ncalls = {\n    \"A\": lambda: plot_histogram(result[0].data),\n    \"B\": lambda: plot_histogram(result[0]),\n    \"C\": lambda: plot_histogram(result[0].data.meas.get_counts()),\n    \"D\": lambda: plot_histogram(result[0].data.meas, shots=1024),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        r = fn()\n        ok = is_fig(r)\n        evidence[k] = f\"call returned {type(r).__name__}; is Figure={ok}\"\n        if ok:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"meas_type\": type(result[0].data.meas).__name__},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\nfrom qiskit.visualization import plot_histogram\nimport matplotlib\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\nisa = generate_preset_pass_manager(backend=backend, optimization_level=1, seed_transpiler=42).run(qc)\nresult = SamplerV2(mode=backend).run([isa], shots=1024).result()\n\ndef is_fig(x):\n    return isinstance(x, matplotlib.figure.Figure)\n\ncalls = {\n    \"A\": lambda: plot_histogram(result[0].data),\n    \"B\": lambda: plot_histogram(result[0]),\n    \"C\": lambda: plot_histogram(result[0].data.meas.get_counts()),\n    \"D\": lambda: plot_histogram(result[0].data.meas, shots=1024),\n}\nevidence = {}\nproven = []\nfor k, fn in calls.items():\n    try:\n        r = fn()\n        ok = is_fig(r)\n        evidence[k] = f\"call returned {type(r).__name__}; is Figure={ok}\"\n        if ok:\n            proven.append(k)\n    except Exception as e:\n        evidence[k] = f\"raised {type(e).__name__}: {str(e)[:90]}\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"meas_type\": type(result[0].data.meas).__name__},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern pass: shots made explicit (1024) in the stem code and proof so distractor D's `shots=1024` cannot be read as an unstated default"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

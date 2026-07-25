@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "Valid optimization levels are 0, 1, 2, and 3; level 4 does not exist, so it raises a `ValueError`."
+      "text": "Valid optimization levels are 0, 1, 2, and 3; level 4 does not exist and raises a `ValueError`."
     },
     {
       "key": "B",
@@ -19,11 +19,11 @@
     },
     {
       "key": "C",
-      "text": "`optimization_level` must be passed as a string, e.g. `'4'`."
+      "text": "`optimization_level` has to be passed as a string, e.g. `'4'`."
     },
     {
       "key": "D",
-      "text": "Level 4 is valid but requires `seed_transpiler` to be set first."
+      "text": "Level 4 is valid but usually requires `seed_transpiler` to be set first."
     }
   ],
   "answer": [
@@ -34,7 +34,7 @@
     "distractors": {
       "B": "There is no level 4 for any backend type; the range is 0-3 regardless of real or fake hardware.",
       "C": "`optimization_level` is an integer argument; passing a string is not the fix and level 4 still would not exist.",
-      "D": "`seed_transpiler` is unrelated; even with a seed, level 4 is invalid."
+      "D": "`seed_transpiler` is unrelated and only fixes the random seed; even with a seed, level 4 is invalid."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "length tell + absolute-wording tell cleared (correct trimmed, absolute left in distractor B only, distractor D now hedges)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

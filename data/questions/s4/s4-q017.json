@@ -15,11 +15,11 @@
     },
     {
       "key": "B",
-      "text": "Sessions cannot run more than one job, so they cannot handle a set of circuits."
+      "text": "A session can hold only one job at a time, so a set of independent circuits would have to be spread across many separate sessions, one per circuit."
     },
     {
       "key": "C",
-      "text": "Sessions are generally more expensive than batches, so you should use batch whenever you do not need a session's dedicated exclusive access."
+      "text": "Sessions cost more than batches, so batch is generally the better choice unless you need the exclusive access that only a session provides."
     },
     {
       "key": "D",
@@ -33,7 +33,7 @@
     "correct": "Sessions provide dedicated, exclusive access but at higher usage cost. The docs recommend using batch whenever you don't need that dedicated access — as with a set of independent jobs — because batch delivers the same parallel classical processing and single queue wait more cheaply.",
     "distractors": {
       "A": "Batch jobs do not get priority over other users; they are not even exclusive. It is sessions that reserve the QPU.",
-      "B": "Sessions are explicitly designed for multi-job workloads; a session can run many jobs.",
+      "B": "Sessions are explicitly designed for multi-job workloads: one session runs many jobs back-to-back, so nothing forces one session per circuit.",
       "D": "Both primitives run in sessions (and in batches and job mode); the mode is passed via `mode=`."
     },
     "citations": [
@@ -51,7 +51,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C + true absolute in it, lengthened session distractor (length/hedge/absolute-tell fix). Also: hedge restored to the correct option (hedge-heuristic calibration)."
   }
 }

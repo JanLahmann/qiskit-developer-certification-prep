@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "`ibm_cloud`"
+      "text": "`ibm_cloud` — the channel name used by the older IBM Cloud service"
     },
     {
       "key": "B",
@@ -19,11 +19,11 @@
     },
     {
       "key": "C",
-      "text": "`ibm_quantum`"
+      "text": "`ibm_quantum` — the legacy IBM Quantum Platform channel"
     },
     {
       "key": "D",
-      "text": "`local`"
+      "text": "`local` — the local testing channel"
     }
   ],
   "answer": [
@@ -51,7 +51,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — gave every channel option a descriptor so the correct one is no longer the longest."
   }
 }

@@ -11,19 +11,19 @@
   "options": [
     {
       "key": "A",
-      "text": "1200 — every parameter set gets its own 200 shots (6 x 200)"
+      "text": "1200 — each of the 6 parameter sets runs 200 shots"
     },
     {
       "key": "B",
-      "text": "200 — the 200 shots are shared across the whole sweep"
+      "text": "200 — the sweep shares a single 200-shot budget overall"
     },
     {
       "key": "C",
-      "text": "6 — one execution per parameter value"
+      "text": "6 — one execution per parameter value in the sweep array"
     },
     {
       "key": "D",
-      "text": "34 — 200 shots divided among the 6 parameter sets"
+      "text": "34 — the 200 shots are divided up among the 6 parameter sets"
     }
   ],
   "answer": [
@@ -37,8 +37,8 @@
       "D": "Shots are not divided across the sweep; each parameter set receives the full 200 shots."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
-      "https://quantum.cloud.ibm.com/docs/guides/specify-runtime-options"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-options"
     ]
   },
   "proof": {
@@ -56,13 +56,14 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "s5 adversarial review: length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages)"
   }
 }

@@ -19,11 +19,11 @@
     },
     {
       "key": "C",
-      "text": "`plot_bloch_vector` takes a 3-number Bloch vector [x, y, z]; `plot_bloch_multivector` takes a quantum state and draws one sphere per qubit."
+      "text": "`plot_bloch_vector` takes a Bloch vector [x, y, z]; `plot_bloch_multivector` takes a quantum state."
     },
     {
       "key": "D",
-      "text": "Both take a 3-number vector [x, y, z]; `plot_bloch_multivector` just repeats it on several spheres."
+      "text": "Both take a 3-number vector [x, y, z]; `plot_bloch_multivector` usually repeats it across several spheres."
     }
   ],
   "answer": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern pass: length tell cleared (correct option trimmed) and absolute tell cleared by hedging distractor D, leaving distractor A's absolute in place"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

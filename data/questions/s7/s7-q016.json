@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "`bits.get_counts()[0]`"
+      "text": "`[b for b in bits.get_bitstrings() if b[-2] == \"0\"]`"
     }
   ],
   "answer": [
@@ -34,7 +34,7 @@
     "distractors": {
       "A": "`slice_bits` selects which BITS to keep (dropping columns), not which shots; it would shrink `num_bits`.",
       "C": "`slice_shots` selects shots by POSITION index, not by their measured value.",
-      "D": "`get_counts()` returns a dict; indexing it with the integer `0` is a KeyError, not a filter."
+      "D": "This does select the right shots, but it returns a plain list of strings: `num_bits`/`num_shots` and every BitArray method (`get_counts`, `postselect`, `expectation_values`) are gone, so it is not a BitArray."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
@@ -47,13 +47,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.primitives.containers import BitArray\n\nqc = QuantumCircuit(2); qc.h(0); qc.h(1); qc.measure_all()\nbits = StatevectorSampler(seed=3).run([qc], shots=400).result()[0].data.meas\norig_bits = bits.num_bits\nref = sum(1 for b in bits.get_bitstrings() if b[-2] == \"0\")  # qubit 1 == 0\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        if isinstance(r, BitArray):\n            ok = (r.num_bits == orig_bits and r.num_shots == ref)\n            evidence[key] = f\"BitArray num_bits={r.num_bits}, num_shots={r.num_shots}; want bits={orig_bits}, shots={ref} -> {ok}\"\n        else:\n            ok = False\n            evidence[key] = f\"returned {type(r).__name__} (not a full-width BitArray) -> False\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\ncheck(\"A\", lambda: bits.slice_bits([1]))\ncheck(\"B\", lambda: bits.postselect([1], [0]))\ncheck(\"C\", lambda: bits.slice_shots([0]))\ncheck(\"D\", lambda: bits.get_counts()[0])\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"shots_with_q1_zero\": ref, \"num_bits\": orig_bits}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.primitives.containers import BitArray\n\nqc = QuantumCircuit(2); qc.h(0); qc.h(1); qc.measure_all()\nbits = StatevectorSampler(seed=3).run([qc], shots=400).result()[0].data.meas\norig_bits = bits.num_bits\nref = sum(1 for b in bits.get_bitstrings() if b[-2] == \"0\")  # qubit 1 == 0\n\nevidence = {}; proven = []\ndef check(key, fn):\n    try:\n        r = fn()\n        if isinstance(r, BitArray):\n            ok = (r.num_bits == orig_bits and r.num_shots == ref)\n            evidence[key] = f\"BitArray num_bits={r.num_bits}, num_shots={r.num_shots}; want bits={orig_bits}, shots={ref} -> {ok}\"\n        else:\n            ok = False\n            evidence[key] = f\"returned {type(r).__name__} (not a full-width BitArray) -> False\"\n        if ok: proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:100]}\"\n\ncheck(\"A\", lambda: bits.slice_bits([1]))\ncheck(\"B\", lambda: bits.postselect([1], [0]))\ncheck(\"C\", lambda: bits.slice_shots([0]))\ncheck(\"D\", lambda: [b for b in bits.get_bitstrings() if b[-2] == \"0\"])\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"shots_with_q1_zero\": ref, \"num_bits\": orig_bits}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s7: D replaced by a hand-filtered bitstring list (real misconception; kills length tell)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

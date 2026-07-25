@@ -15,7 +15,7 @@
     },
     {
       "key": "B",
-      "text": "`<FakeManilaV2 object ...>` — it returns the backend object itself."
+      "text": "`<FakeManilaV2 object ...>` — typically the backend object itself."
     },
     {
       "key": "C",
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the returns-the-object distractor (absolute-tell fix)."
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

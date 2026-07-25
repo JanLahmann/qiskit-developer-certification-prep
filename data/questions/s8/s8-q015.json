@@ -6,35 +6,35 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "A file begins with the line `OPENQASM 3.0;` and uses `qubit`/`bit` declarations. A teammate tries to load it with `qiskit.qasm2.loads(program)`. What is the result?",
+  "stem": "A teammate has a program text that starts with the line `OPENQASM 3.0;` and declares its registers as `qubit[2] q;` and `bit[2] c;`. They pass that text to `qiskit.qasm2.loads`. What happens?",
   "code": "from qiskit import qasm2\n\n# program starts with 'OPENQASM 3.0;' and declares qubit[2] q; bit[2] c; ...\ncircuit = qasm2.loads(program)",
   "options": [
     {
       "key": "A",
-      "text": "It raises `QASM2ParseError`: `qasm2.loads` handles only OpenQASM 2.0, and the version statement declares 3.0."
+      "text": "`qasm2.loads` returns a `QuantumCircuit`: the version statement is informational, and the rest of the OpenQASM text parses cleanly."
     },
     {
       "key": "B",
-      "text": "It loads successfully; the version statement is ignored and the rest is parsed as OpenQASM 2."
+      "text": "It raises `QASM2ParseError`: the importer requires the exact header `OPENQASM 2.0;`."
     },
     {
       "key": "C",
-      "text": "It loads, silently downgrading the OpenQASM 3 features to their OpenQASM 2 equivalents."
+      "text": "`qasm2.loads` returns a `QuantumCircuit` in which the `qubit`/`bit` declarations have been rewritten as their `qreg`/`creg` equivalents."
     },
     {
       "key": "D",
-      "text": "It raises `ModuleNotFoundError` because `stdgates.inc` cannot be located."
+      "text": "It raises `QASM3ImporterError`, because `stdgates.inc` is not on the OpenQASM 2 include path."
     }
   ],
   "answer": [
-    "A"
+    "B"
   ],
   "explanation": {
-    "correct": "The OpenQASM 2 parser checks the version statement and accepts only `OPENQASM 2.0`. A `3.0` header makes `qasm2.loads` raise `QASM2ParseError` ('can only handle OpenQASM 2.0, but given 3.0'). The two language versions have separate importers: use `qiskit.qasm3.loads` for OpenQASM 3.",
+    "correct": "The two OpenQASM versions have entirely separate importers in Qiskit. `qiskit.qasm2` implements the OpenQASM 2 grammar, and the very first thing its parser does is validate the version statement, so a `3.0` header aborts the parse immediately with `QASM2ParseError: '<input>:1,9: can only handle OpenQASM 2.0, but given 3.0'` -- the `qubit`/`bit` declarations are never even reached. OpenQASM 3 text must go to `qiskit.qasm3.loads`.",
     "distractors": {
-      "B": "The version line is not ignored; the v2 parser validates it and rejects anything other than 2.0.",
-      "C": "There is no automatic v3->v2 downgrade. The importers are version-specific and the v2 parser stops at the header.",
-      "D": "The failure happens at the version check, before any include resolution, and it is a `QASM2ParseError`, not a missing-module error."
+      "A": "The version statement is not informational. The v2 grammar treats it as a checked token and rejects any value other than `2.0`.",
+      "C": "There is no v3-to-v2 translation layer. The importers are version-specific; nothing rewrites `qubit`/`bit` into `qreg`/`creg`.",
+      "D": "`QASM3ImporterError` belongs to `qiskit.qasm3`, and include resolution happens well after the version check -- which is where this program actually fails."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm2",
@@ -47,13 +47,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import qasm2\n\nprogram = (\n    'OPENQASM 3.0;\\n'\n    'include \"stdgates.inc\";\\n'\n    'qubit[2] q;\\n'\n    'bit[2] c;\\n'\n    'h q[0];\\n'\n    'c[0] = measure q[0];\\n'\n)\n\noutcome, exc_name, msg = \"loaded\", None, \"\"\ntry:\n    qasm2.loads(program)\nexcept Exception as e:\n    outcome, exc_name, msg = \"raised\", type(e).__name__, str(e)[:140]\n\nis_parse_error = (outcome == \"raised\" and exc_name == \"QASM2ParseError\")\nloaded = (outcome == \"loaded\")\nis_modnotfound = (outcome == \"raised\" and exc_name == \"ModuleNotFoundError\")\n\nevidence = {\n    \"A\": f\"qasm2.loads(3.0 program) -> {outcome} {exc_name or ''} ({msg}); claim=QASM2ParseError on version -> match={is_parse_error}\",\n    \"B\": f\"claim=loads, version ignored; actually loaded={loaded}\",\n    \"C\": f\"claim=loads with silent downgrade; actually loaded={loaded}\",\n    \"D\": f\"claim=ModuleNotFoundError for stdgates.inc; actual exception={exc_name}; match={is_modnotfound}\",\n}\nproven = []\nif is_parse_error:\n    proven.append(\"A\")\nif loaded:\n    proven.extend([\"B\", \"C\"])\nif is_modnotfound:\n    proven.append(\"D\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": outcome, \"exception\": exc_name}})\n"
+    "proof_script": "\nfrom qiskit import qasm2\n\nprogram = (\n    'OPENQASM 3.0;\\n'\n    'include \"stdgates.inc\";\\n'\n    'qubit[2] q;\\n'\n    'bit[2] c;\\n'\n    'h q[0];\\n'\n    'c[0] = measure q[0];\\n'\n)\n\noutcome, exc_name, msg = \"loaded\", None, \"\"\nresult = None\ntry:\n    result = qasm2.loads(program)\nexcept Exception as e:\n    outcome, exc_name, msg = \"raised\", type(e).__name__, str(e)[:140]\n\nloaded = (outcome == \"loaded\")\nis_parse_error = (outcome == \"raised\" and exc_name == \"QASM2ParseError\")\nis_qasm3_err = (outcome == \"raised\" and exc_name == \"QASM3ImporterError\")\nmentions_version = (\"2.0\" in msg and \"3.0\" in msg)\n\nevidence = {\n    \"A\": f\"claim=returns a QuantumCircuit, version line informational; actually returned a circuit={loaded} \"\n         f\"(outcome={outcome} {exc_name or ''})\",\n    \"B\": f\"claim=QASM2ParseError on the version header; observed exception={exc_name} message={msg!r}; \"\n         f\"message cites both version numbers={mentions_version}; match={is_parse_error}\",\n    \"C\": f\"claim=returns a circuit with qubit/bit rewritten to qreg/creg; actually returned a circuit={loaded}\",\n    \"D\": f\"claim=QASM3ImporterError over stdgates.inc; observed exception={exc_name}; \"\n         f\"message mentions stdgates={'stdgates' in msg}; match={is_qasm3_err}\",\n}\nproven = []\nif loaded:\n    proven.extend([\"A\", \"C\"])\nif is_parse_error:\n    proven.append(\"B\")\nif is_qasm3_err:\n    proven.append(\"D\")\n\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {\"outcome\": outcome, \"exception\": exc_name, \"message\": msg}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s8 r1: answer A->B (position rebalance); killed the stem-echo tell by giving the distractors equally authentic API vocabulary, killed the length tell, replaced the implausible ModuleNotFoundError distractor with QASM3ImporterError; proof now checks the error message text | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

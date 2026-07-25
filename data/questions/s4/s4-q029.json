@@ -11,11 +11,11 @@
   "options": [
     {
       "key": "A",
-      "text": "You get each job's results individually, so you can cancel the remaining jobs if early results are unsatisfactory, or re-submit only the one job that failed."
+      "text": "You get each job's results separately, so you can usually cancel the rest early or re-run only the job that failed."
     },
     {
       "key": "B",
-      "text": "Batch mode guarantees exclusive access to the QPU for the whole run."
+      "text": "Batch mode reserves the QPU exclusively for the whole run, so no other user's jobs interleave with your batched circuits."
     },
     {
       "key": "C",
@@ -32,7 +32,7 @@
   "explanation": {
     "correct": "Partitioning into multiple batched jobs makes results more flexible to work with: you receive each job's result separately, so you can stop early by cancelling remaining jobs, or re-run just a failed job instead of the entire workload.",
     "distractors": {
-      "B": "Batch mode does not give exclusive access — that is a session feature. Batched jobs share the QPU.",
+      "B": "Batch mode does not give exclusive access — that is a session feature. Batched jobs share the QPU with everyone else's.",
       "C": "Error mitigation is controlled by primitive options, not by the execution mode; batching does not change it.",
       "D": "Batched jobs still consume QPU usage and count against cost; batching does not make execution free."
     },
@@ -51,7 +51,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened exclusivity distractor (length-tell fix). Also: hedge added to the correct option (hedge-heuristic calibration)."
   }
 }

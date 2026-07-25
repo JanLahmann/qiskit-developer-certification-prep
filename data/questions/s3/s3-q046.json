@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "`|01⟩` — `b` (identity) lands on the higher-order qubit and `a` (X) on the lower one."
+      "text": "`|01⟩` — `b` (identity) is usually placed on the higher-order qubit and `a` (X) on the lower one."
     },
     {
       "key": "B",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "`|10⟩` — `a` occupies the higher-order qubit, so its X sets q1 to 1 while q0 stays 0."
+      "text": "`|10⟩` — `a` takes the higher-order qubit, so q1 is 1 and q0 stays 0."
     }
   ],
   "answer": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "answer-longest tie broken and absolute-wording tell cleared (correct option's gloss trimmed, distractor A now hedges; the predicted values are unchanged)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

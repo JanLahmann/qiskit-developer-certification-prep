@@ -11,11 +11,11 @@
   "options": [
     {
       "key": "A",
-      "text": "Hardware executes only ISA circuits: gates must be expressed in the device's native basis, and every two-qubit gate must act on physically-connected qubits — transpilation rewrites and routes the circuit to satisfy both."
+      "text": "Hardware runs only ISA circuits: the transpiler is designed to put every gate in the native basis and route two-qubit gates onto connected pairs."
     },
     {
       "key": "B",
-      "text": "Transpilation is optional; the V2 primitives silently convert any abstract circuit at submission time, so it only saves a little runtime."
+      "text": "Transpilation is optional: the V2 primitives silently convert any abstract circuit at submission time, so skipping it only costs a little extra runtime."
     },
     {
       "key": "C",
@@ -38,7 +38,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/transpile",
-      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-primitives"
+      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-sampler"
     ]
   },
   "proof": {
@@ -51,7 +51,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "high length tell cleared (correct trimmed, distractor B given substance); dead citation guides/get-started-with-primitives (404) replaced with guides/get-started-with-sampler, which states that circuits must be transformed to instruction-set-architecture (ISA) form before a primitive runs them"
   }
 }

@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "Exactly `+1.0`, with no effect from device noise."
+      "text": "Exactly `+1.0` — `apply_layout` maps the observable onto the calibrated qubits, so device noise cancels out of the expectation value."
     },
     {
       "key": "B",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "A value close to `+1` but slightly below it (roughly `+0.9`), because the two qubits are strongly Z-correlated and noise only slightly reduces the correlation."
+      "text": "A value close to `+1` but slightly below — roughly `+0.9`, since the Bell state stays Z-correlated and noise only trims it."
     }
   ],
   "answer": [
@@ -32,7 +32,7 @@
   "explanation": {
     "correct": "In the Bell state the two qubits' Z outcomes are perfectly correlated, so `<ZZ>` is `+1` ideally. On a noisy device the measured value is close to but a bit below `+1` (about `+0.9` here), reflecting the small reduction from noise.",
     "distractors": {
-      "A": "Real device noise reduces the magnitude below 1; you should not expect exactly +1.0 from hardware.",
+      "A": "`apply_layout` only re-indexes the observable to match the transpiled circuit; it does nothing about noise, so the measured value stays below +1.",
       "B": "`<ZZ>` near 0 would mean the qubits are uncorrelated in Z, which is not true for a Bell state.",
       "C": "`<ZZ>` near -1 would mean anti-correlation (outcomes like 01/10 dominating); the Bell state gives 00/11, i.e. positive correlation."
     },
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+stem-echoed the noise-free distractor (length-tell fix). Also: stem-echo calibration."
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

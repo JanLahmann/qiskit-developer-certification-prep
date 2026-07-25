@@ -11,34 +11,34 @@
   "options": [
     {
       "key": "A",
-      "text": "50 — a shot count given in the PUB overrides the `default_shots` option"
+      "text": "1050 — the PUB shot count is added on top of the option's default value"
     },
     {
       "key": "B",
-      "text": "1000 — the `default_shots` option always wins over a PUB value"
+      "text": "1000 — `options.default_shots` takes precedence over any PUB shot count"
     },
     {
       "key": "C",
-      "text": "1050 — the PUB shots are added to the default"
+      "text": "50 — a shot count given inside the PUB overrides the `default_shots` option value"
     },
     {
       "key": "D",
-      "text": "500 — the two settings are averaged"
+      "text": "500 — the PUB value and the option value are averaged for the run"
     }
   ],
   "answer": [
-    "A"
+    "C"
   ],
   "explanation": {
-    "correct": "Shots resolve most-specific-first: a value inside the PUB (slot 3) takes precedence over `options.default_shots`, which itself takes precedence over the built-in 1024 fallback. Here the PUB specifies 50, so exactly 50 shots run despite `default_shots = 1000`.",
+    "correct": "Shots resolve most-specific-first: a value carried in the PUB (slot 3) wins over the `shots=` keyword on run(), which wins over `options.default_shots`, which wins over the runtime's own fallback. Here the PUB specifies 50, so exactly 50 shots run despite `default_shots = 1000`.",
     "distractors": {
+      "A": "Shot settings are not additive; the more specific PUB value replaces the default rather than summing with it.",
       "B": "The default is only a fallback for PUBs that omit shots. A PUB that carries its own shot count overrides it, so 50 wins, not 1000.",
-      "C": "Shot settings are not additive; the more specific PUB value replaces the default rather than summing with it.",
       "D": "There is no averaging of shot counts. Precedence is a strict override, giving 50."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/specify-runtime-options",
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-options",
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output"
     ]
   },
   "proof": {
@@ -47,7 +47,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(1); qc.h(0); qc.measure_all()\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)\nsampler.options.default_shots = 1000\n# single PUB carrying its own shots in slot 3\nobserved = sampler.run([(isa, None, 50)]).result()[0].data.meas.num_shots\n\ncandidates = {\"A\": 50, \"B\": 1000, \"C\": 1050, \"D\": 500}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims {v} shots; with default_shots=1000 and PUB shots=50, observed num_shots={observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"default_shots\": 1000, \"pub_shots\": 50, \"num_shots\": observed}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(1); qc.h(0); qc.measure_all()\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)\nsampler.options.default_shots = 1000\n# single PUB carrying its own shots in slot 3\nobserved = sampler.run([(isa, None, 50)]).result()[0].data.meas.num_shots\n\ncandidates = {\"C\": 50, \"B\": 1000, \"A\": 1050, \"D\": 500}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims {v} shots; with default_shots=1000 and PUB shots=50, observed num_shots={observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"default_shots\": 1000, \"pub_shots\": 50, \"num_shots\": observed}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -56,13 +56,14 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "s5 adversarial review: length rebalanced; explanation now states the full documented precedence chain; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged"
   }
 }

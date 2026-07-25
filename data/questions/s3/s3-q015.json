@@ -15,7 +15,7 @@
     },
     {
       "key": "B",
-      "text": "`qc.width()` returns 3."
+      "text": "`qc.width()` returns 3, since `width()` counts the qubits and not the classical bits."
     },
     {
       "key": "C",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "`qc.depth()` equals `qc.size()`."
+      "text": "`qc.depth()` equals `qc.size()`, since no two operations on distinct qubits overlap in this circuit."
     },
     {
       "key": "E",
@@ -39,7 +39,7 @@
     "correct": "`num_qubits`=3 and `num_clbits`=2 (A). `size()` counts all 5 operations: 1 H + 2 CX + 2 measures (C). `width()` returns qubits + classical bits = 3 + 2 = 5, so it equals `num_qubits + num_clbits` (E).",
     "distractors": {
       "B": "`width()` returns qubits PLUS classical bits (5 here), not the qubit count. Confusing `width()` with `num_qubits` is a common slip.",
-      "D": "`depth()` is the longest gate path (4 here), while `size()` is the total operation count (5); they are different metrics and are not equal for this circuit."
+      "D": "`depth()` is the longest gate path (4 here), while `size()` is the total operation count (5); the H and the first CX do share a layer, so the two metrics differ."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
@@ -57,8 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "length tell + stem-echo tell cleared (distractor B given substance and the stem's own vocabulary) | stem-echo tell cleared (distractors B and D given the stem's own vocabulary)"
   },
   "freshness": {
     "verified_against": {
@@ -67,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

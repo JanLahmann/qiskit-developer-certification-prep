@@ -15,15 +15,15 @@
     },
     {
       "key": "B",
-      "text": "`SamplerV2(mode=backend, shots=4096)`"
+      "text": "`SamplerV2(mode=backend, shots=4096)` — a constructor keyword"
     },
     {
       "key": "C",
-      "text": "`SamplerV2(mode=backend, default_shots=4096)`"
+      "text": "`SamplerV2(mode=backend, default_shots=4096)` — a constructor keyword"
     },
     {
       "key": "D",
-      "text": "`s = SamplerV2(mode=backend); s.shots = 4096`"
+      "text": "`s = SamplerV2(mode=backend); s.shots = 4096` — a plain attribute"
     }
   ],
   "answer": [
@@ -32,13 +32,13 @@
   "explanation": {
     "correct": "The primitive constructor takes an `options` mapping (or a `SamplerOptions` object); `default_shots` is a key inside it. `SamplerV2(mode=backend, options={\"default_shots\": 4096})` makes every subsequent no-shots run use 4096. A per-run `shots=` argument would still override it.",
     "distractors": {
-      "B": "There is no `shots` parameter on the SamplerV2 constructor; shots are a run argument or the `default_shots` option. This raises a TypeError.",
-      "C": "`default_shots` is not a top-level constructor keyword either — it lives inside the `options` mapping. Passing it directly raises a TypeError.",
-      "D": "SamplerV2 has no `shots` attribute controlling defaults; assigning `s.shots` just sets an unused Python attribute, so no-shots runs still fall back to 1024."
+      "B": "There is no `shots` parameter on the SamplerV2 constructor; shots are a run() argument or the `default_shots` option. This raises a TypeError.",
+      "C": "`default_shots` is not a top-level constructor keyword either — it lives inside the `options` mapping (or a `SamplerOptions` object). Passing it directly raises a TypeError.",
+      "D": "SamplerV2 has no `shots` attribute controlling defaults; assigning `s.shots` just sets an unused Python attribute, and no-shots runs keep using the fallback shot count."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/specify-runtime-options",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-options",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
     ]
   },
   "proof": {
@@ -56,13 +56,14 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "s5 adversarial review: length rebalanced; explanation no longer asserts a 1024 fallback (that number is a local BackendSamplerV2 artifact, not the Runtime default); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages)"
   }
 }

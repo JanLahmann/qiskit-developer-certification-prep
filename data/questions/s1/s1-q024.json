@@ -15,7 +15,7 @@
     },
     {
       "key": "B",
-      "text": "Replace `qc.s(0)` with `qc.z(0)` — Z supplies the −i phase"
+      "text": "Replace `qc.s(0)` with `qc.z(0)` — Z is S squared, so it supplies the −i phase"
     },
     {
       "key": "C",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "Replace `qc.s(0)` with `qc.sdg(0)` — S applies +i, but S† (sdg) applies the −i phase"
+      "text": "Replace `qc.s(0)` with `qc.sdg(0)` — S† (sdg) applies the −i phase"
     }
   ],
   "answer": [
@@ -33,7 +33,7 @@
     "correct": "S = diag(1, i) applies a +i phase, producing (|0⟩ + i|1⟩)/√2 — the opposite of the target. The inverse gate S† (`sdg`) = diag(1, −i) gives the desired (|0⟩ − i|1⟩)/√2.",
     "distractors": {
       "A": "S applies +i, not −i; the code produces (|0⟩ + i|1⟩)/√2, which is why it is wrong.",
-      "B": "Z applies a phase of −1 (not −i), giving (|0⟩ − |1⟩)/√2 = |−⟩ — a real amplitude, not the imaginary −i.",
+      "B": "Z = S² is true, but squaring diag(1, i) gives diag(1, −1), not diag(1, −i). Z produces (|0⟩ − |1⟩)/√2 = |−⟩ — a real amplitude, not the imaginary −i.",
       "C": "T applies e^{iπ/4}, producing (|0⟩ + e^{iπ/4}|1⟩)/√2, neither +i nor −i."
     },
     "citations": [
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "high-severity length tell cleared (correct trimmed, distractor B given substance)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

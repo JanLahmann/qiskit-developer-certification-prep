@@ -15,7 +15,7 @@
     },
     {
       "key": "B",
-      "text": "A larger `precision` value requests a more accurate result."
+      "text": "A larger `precision` value generally requests a more accurate result."
     },
     {
       "key": "C",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "It is supplied to `run()` under the keyword name `shots`."
+      "text": "It is supplied to `run()` under the keyword name `shots`, just as for SamplerV2."
     },
     {
       "key": "E",
@@ -55,7 +55,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s6: hedge added to B and D extended (hedge + length tells)"
   }
 }

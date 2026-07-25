@@ -72,9 +72,24 @@ jobs:
           name: links-summary
           path: links-summary.json
 
+  meta-pattern-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit bank for answer-revealing meta-patterns
+        run: python pipeline/audit_meta_patterns.py --gate
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: meta-pattern-audit
+          path: data/audits/meta_pattern_audit.json
+
   report:
-    needs: [verify-pinned, probe-latest, check-links]
-    if: always() && (needs.verify-pinned.result == 'failure' || needs.check-links.result == 'failure')
+    needs: [verify-pinned, probe-latest, check-links, meta-pattern-gate]
+    if: always() && (needs.verify-pinned.result == 'failure' || needs.check-links.result == 'failure' || needs.meta-pattern-gate.result == 'failure')
     runs-on: ubuntu-latest
     steps:
       - name: Open drift issue
@@ -88,6 +103,7 @@ jobs:
               `- verify-pinned: ${{ toJSON(needs.verify-pinned.result) }}`,
               `- probe-latest: ${{ toJSON(needs.probe-latest.result) }} (advisory)`,
               `- check-links: ${{ toJSON(needs.check-links.result) }}`,
+              `- meta-pattern-gate: ${{ toJSON(needs.meta-pattern-gate.result) }}`,
               '',
               `See run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               '',

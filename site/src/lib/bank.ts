@@ -96,3 +96,27 @@ export function seededShuffle<T>(items: T[], rand: () => number): T[] {
   }
   return arr;
 }
+
+export function hashString(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+/**
+ * Options in display order for one question. Positions are shuffled per
+ * (seed, question id) so the stored answer key carries no positional signal;
+ * the same seed always reproduces the same layout (mock-exam review/replay).
+ * Stored option keys stay authoritative for grading, stats, and proofs —
+ * only the on-screen letters change.
+ */
+export function shuffledOptions(q: BankQuestion, seed: number): BankOption[] {
+  const rand = mulberry32((seed ^ hashString(q.id)) >>> 0);
+  return seededShuffle(q.options, rand);
+}
+
+/** Letters used for on-screen option labels, by display position. */
+export const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];

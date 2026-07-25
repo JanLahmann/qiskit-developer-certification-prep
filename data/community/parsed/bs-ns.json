@@ -1,0 +1,1124 @@
+[
+  {
+    "n": 1,
+    "tier": "easy",
+    "stem": "Given:\n\n```python\nfrom qiskit.quantum_info import Pauli\n\np = Pauli(\"YZ\")\n```\n\nWhat is the correct interpretation of this Pauli operator?",
+    "code": "from qiskit.quantum_info import Pauli\n\np = Pauli(\"YZ\")",
+    "options": {
+      "A": "$Z$ acts on qubit 0 and $Y$ acts on qubit 1",
+      "B": "$Y$ acts on qubit 0 and $Z$ acts on qubit 1",
+      "C": "Apply $Y$ then $Z$ sequentially to the same qubit",
+      "D": "Controlled-$Z$ followed by $Y$"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 2,
+    "tier": "easy",
+    "stem": "A qubit is initialized in state $|0\\rangle$.\n\nThe following gate is applied:\n\n```python\nqc.ry(np.pi/2, 0)\n```\n\nWhat is the probability of measuring $1$?",
+    "code": "qc.ry(np.pi/2, 0)",
+    "options": {
+      "A": "$0$",
+      "B": "$\\frac{1}{4}$",
+      "C": "$\\frac{1}{2}$",
+      "D": "$1$"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 3,
+    "tier": "easy",
+    "stem": "Consider:\n\n```python\nqc.h(0)\nqc.cx(0,1)\n```\n\nWhich state is produced?",
+    "code": "qc.h(0)\nqc.cx(0,1)",
+    "options": {
+      "A": "$\\frac{|00\\rangle + |11\\rangle}{\\sqrt{2}}$",
+      "B": "$\\frac{|00\\rangle + |01\\rangle}{\\sqrt{2}}$",
+      "C": "$\\frac{|10\\rangle + |11\\rangle}{\\sqrt{2}}$",
+      "D": "$|00\\rangle$"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 4,
+    "tier": "easy",
+    "stem": "What is the purpose of a `ClassicalRegister`?",
+    "code": null,
+    "options": {
+      "A": "Store amplitudes",
+      "B": "Store measurement outcomes",
+      "C": "Store ancilla qubits",
+      "D": "Optimize circuits"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 5,
+    "tier": "easy",
+    "stem": "Consider:\n\n```python\ntheta = Parameter(\"θ\")\n\nqc.rx(theta,0)\n```\n\nWhy are parameters useful?",
+    "code": "theta = Parameter(\"θ\")\n\nqc.rx(theta,0)",
+    "options": {
+      "A": "They automatically optimize circuits",
+      "B": "They perform error mitigation",
+      "C": "They export OpenQASM",
+      "D": "They allow reuse of a circuit with different values"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 6,
+    "tier": "easy",
+    "stem": "Starting from $|0\\rangle$:\n\n```python\nqc.x(0)\nqc.h(0)\n```\n\nWhat is the final state?",
+    "code": "qc.x(0)\nqc.h(0)",
+    "options": {
+      "A": "$\\frac{|0\\rangle + |1\\rangle}{\\sqrt{2}}$",
+      "B": "$\\frac{|0\\rangle - |1\\rangle}{\\sqrt{2}}$",
+      "C": "$|1\\rangle$",
+      "D": "$|0\\rangle$"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 7,
+    "tier": "easy",
+    "stem": "Which function visualizes a quantum state on Bloch spheres?",
+    "code": null,
+    "options": {
+      "A": "`plot_histogram`",
+      "B": "`plot_gate_map`",
+      "C": "`plot_bloch_multivector`",
+      "D": "`circuit.draw()`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 8,
+    "tier": "easy",
+    "stem": "A SamplerV2 job returns: $P(00)=0.5$ and $P(11)=0.5$\n\nIf 1000 shots are used, how many counts of `11` are expected?",
+    "code": null,
+    "options": {
+      "A": "0",
+      "B": "250",
+      "C": "500",
+      "D": "1000"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 9,
+    "tier": "easy",
+    "stem": "What is the primary difference between SamplerV2 and EstimatorV2?",
+    "code": null,
+    "options": {
+      "A": "Sampler returns measurement distributions while Estimator returns expectation values.",
+      "B": "Sampler only works on simulators.",
+      "C": "Estimator returns bitstrings.",
+      "D": "They are identical."
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 10,
+    "tier": "easy",
+    "stem": "Which is a valid EstimatorV2 PUB?",
+    "code": null,
+    "options": {
+      "A": "(circuit, shots, backend)",
+      "B": "(circuit, observable, parameter_values, precision)",
+      "C": "(observable, circuit, optimization_level)",
+      "D": "(circuit, observable, noise_model)"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 11,
+    "tier": "easy",
+    "stem": "What is the primary purpose of transpilation?",
+    "code": null,
+    "options": {
+      "A": "Execute a circuit on a backend",
+      "B": "Convert counts into probabilities",
+      "C": "Apply error mitigation",
+      "D": "Convert a circuit into a backend-compatible optimized circuit"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 12,
+    "tier": "easy",
+    "stem": "What is generally true about:\n\n```python\noptimization_level=3\n```",
+    "code": "optimization_level=3",
+    "options": {
+      "A": "No optimization is performed",
+      "B": "It performs the most aggressive optimization",
+      "C": "It guarantees the shortest possible circuit",
+      "D": "It only works on simulators"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 13,
+    "tier": "easy",
+    "stem": "Consider:\n\n```python\nwith qc.if_test((0, 1)):\n    qc.x(1)\n```\n\nWhat does the condition mean?",
+    "code": "with qc.if_test((0, 1)):\n    qc.x(1)",
+    "options": {
+      "A": "Apply X if classical bit 0 equals 1",
+      "B": "Apply X if qubit 1 equals 1",
+      "C": "Apply X on qubit 0",
+      "D": "Apply X if the circuit depth equals 1"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 14,
+    "tier": "easy",
+    "stem": "Which execution mode is best suited for iterative variational algorithms?",
+    "code": null,
+    "options": {
+      "A": "Job mode",
+      "B": "Session mode",
+      "C": "Batch mode",
+      "D": "OpenQASM mode"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 15,
+    "tier": "easy",
+    "stem": "Which statement about Batch mode is correct?",
+    "code": null,
+    "options": {
+      "A": "It groups a large collection of jobs for efficient execution",
+      "B": "It is required by EstimatorV2",
+      "C": "It enables classical control flow",
+      "D": "It only works on simulators"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 16,
+    "tier": "easy",
+    "stem": "Which Sampler option inserts idle-gate sequences to reduce decoherence?",
+    "code": null,
+    "options": {
+      "A": "Twirling",
+      "B": "Resilience",
+      "C": "Dynamical decoupling",
+      "D": "Precision"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 17,
+    "tier": "easy",
+    "stem": "Which Estimator resilience technique attempts to estimate the zero-noise value?",
+    "code": null,
+    "options": {
+      "A": "Dynamical decoupling",
+      "B": "Zero Noise Extrapolation (ZNE)",
+      "C": "Circuit cutting",
+      "D": "Statevector simulation"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 18,
+    "tier": "easy",
+    "stem": "Suppose the precision changes from 0.015 to 0.035\n\nWhat generally happens?",
+    "code": null,
+    "options": {
+      "A": "More shots are required",
+      "B": "The same number of shots are required",
+      "C": "Fewer shots are required",
+      "D": "The job fails"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 19,
+    "tier": "easy",
+    "stem": "Consider the Bell-state circuit:\n\n```python\nqc.h(0)\nqc.cx(0,1)\n```\n\nWhich measurement outcomes are observed ideally?",
+    "code": "qc.h(0)\nqc.cx(0,1)",
+    "options": {
+      "A": "`01` and `10`",
+      "B": "`00` and `11`",
+      "C": "All four outcomes equally",
+      "D": "Only `00`"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 20,
+    "tier": "easy",
+    "stem": "Which function is commonly used to visualize measurement frequencies?",
+    "code": null,
+    "options": {
+      "A": "`plot_bloch_multivector`",
+      "B": "`plot_state_qsphere`",
+      "C": "`plot_histogram`",
+      "D": "`plot_gate_map`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 21,
+    "tier": "easy",
+    "stem": "Which OpenQASM 3 type is a valid classical type?",
+    "code": null,
+    "options": {
+      "A": "`complex`",
+      "B": "`qudit`",
+      "C": "`quantum`",
+      "D": "`unitary`"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 22,
+    "tier": "easy",
+    "stem": "Which statement about the Pauli-$X$ gate is correct?",
+    "code": null,
+    "options": {
+      "A": "It leaves both basis states unchanged",
+      "B": "It swaps $|0\\rangle$ and $|1\\rangle$",
+      "C": "It adds a phase to $|1\\rangle$",
+      "D": "It creates superposition"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 23,
+    "tier": "easy",
+    "stem": "What is the matrix dimension of:\n\n```python\nPauli(\"ZZ\")\n```",
+    "code": "Pauli(\"ZZ\")",
+    "options": {
+      "A": "$2\\times2$",
+      "B": "$2\\times4$",
+      "C": "$4\\times4$",
+      "D": "$8\\times8$"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 24,
+    "tier": "easy",
+    "stem": "Starting from $|0\\rangle$:\n\n```python\nqc.h(0)\nqc.z(0)\n```\n\nWhat is the final state?",
+    "code": "qc.h(0)\nqc.z(0)",
+    "options": {
+      "A": "$\\frac{|0\\rangle+|1\\rangle}{\\sqrt{2}}$",
+      "B": "$\\frac{|0\\rangle-|1\\rangle}{\\sqrt{2}}$",
+      "C": "$|1\\rangle$",
+      "D": "$-|0\\rangle$"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 25,
+    "tier": "easy",
+    "stem": "What is returned by:\n\n```python\njob = sampler.run(...)\n```",
+    "code": "job = sampler.run(...)",
+    "options": {
+      "A": "A `QuantumCircuit`",
+      "B": "A Job object",
+      "C": "A histogram",
+      "D": "A backend"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 26,
+    "tier": "easy",
+    "stem": "Which statement about the Pauli-$Z$ gate is correct?",
+    "code": null,
+    "options": {
+      "A": "It swaps $|0\\rangle$ and $|1\\rangle$",
+      "B": "It transforms $|0\\rangle$ into $-|0\\rangle$",
+      "C": "It leaves $|0\\rangle$ unchanged and adds a phase to $|1\\rangle$",
+      "D": "It creates superposition"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 27,
+    "tier": "easy",
+    "stem": "Starting from $|0\\rangle$:\n\n```python\nqc.ry(theta,0)\n```\n\nwith\n\n$theta = 0$\n\nWhat is the final state?",
+    "code": "qc.ry(theta,0)",
+    "options": {
+      "A": "$|0\\rangle$",
+      "B": "$|1\\rangle$",
+      "C": "$\\frac{|0\\rangle+|1\\rangle}{\\sqrt{2}}$",
+      "D": "$\\frac{|0\\rangle-|1\\rangle}{\\sqrt{2}}$"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 28,
+    "tier": "easy",
+    "stem": "Which statement best describes a Session?",
+    "code": null,
+    "options": {
+      "A": "A visualization tool",
+      "B": "A mechanism that groups related primitive calls",
+      "C": "An OpenQASM exporter",
+      "D": "A transpiler pass"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 29,
+    "tier": "easy",
+    "stem": "Which function exports a circuit to OpenQASM 3?",
+    "code": null,
+    "options": {
+      "A": "```python\nqc.to_openqasm3()\n```",
+      "B": "```python\nqiskit.qasm3.export()\n```",
+      "C": "```python\nexport_to_qasm3()\n```",
+      "D": "```python\nqiskit.qasm3.dump()\n```"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 30,
+    "tier": "easy",
+    "stem": "Starting from $|00\\rangle$:\n\n```python\nqc.x(1)\nqc.cx(1,0)\n```\n\nWhat is the final state?",
+    "code": "qc.x(1)\nqc.cx(1,0)",
+    "options": {
+      "A": "$|00\\rangle$",
+      "B": "$|01\\rangle$",
+      "C": "$|11\\rangle$",
+      "D": "$\\frac{|00\\rangle+|11\\rangle}{\\sqrt{2}}$"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 31,
+    "tier": "easy",
+    "stem": "What best describes Pauli twirling?",
+    "code": null,
+    "options": {
+      "A": "A technique that converts coherent errors into stochastic Pauli errors",
+      "B": "A Bloch sphere visualization method",
+      "C": "A transpilation optimization pass",
+      "D": "A circuit export format"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 32,
+    "tier": "easy",
+    "stem": "Which primitive computes expectation values?",
+    "code": null,
+    "options": {
+      "A": "SamplerV2",
+      "B": "Transpiler",
+      "C": "EstimatorV2",
+      "D": "Session"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 33,
+    "tier": "easy",
+    "stem": "Consider:\n\n```python\nqc.h(0)\nqc.measure_all()\n```\n\nWhat measurement distribution is expected ideally?",
+    "code": "qc.h(0)\nqc.measure_all()",
+    "options": {
+      "A": "`{'0': 1.0}`",
+      "B": "`{'1': 1.0}`",
+      "C": "`{'0': 0.5, '1': 0.5}`",
+      "D": "`{'00': 0.5, '11': 0.5}`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 34,
+    "tier": "easy",
+    "stem": "Which object is commonly used to represent observables in Qiskit?",
+    "code": null,
+    "options": {
+      "A": "`ClassicalRegister`",
+      "B": "`QuantumRegister`",
+      "C": "`SparsePauliOp`",
+      "D": "`PassManager`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 35,
+    "tier": "easy",
+    "stem": "Which job status indicates successful completion?",
+    "code": null,
+    "options": {
+      "A": "`RUNNING`",
+      "B": "`QUEUED`",
+      "C": "`DONE`",
+      "D": "`INITIALIZING`"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 36,
+    "tier": "easy",
+    "stem": "Starting from $|0\\rangle$:\n\n```python\nqc.h(0)\nqc.h(0)\n```\n\nWhat is the final state?",
+    "code": "qc.h(0)\nqc.h(0)",
+    "options": {
+      "A": "$|0\\rangle$",
+      "B": "$|1\\rangle$",
+      "C": "$\\frac{|0\\rangle+|1\\rangle}{\\sqrt{2}}$",
+      "D": "$\\frac{|0\\rangle-|1\\rangle}{\\sqrt{2}}$"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 37,
+    "tier": "easy",
+    "stem": "Consider:\n\n```python\nStatevector.from_label(\"+\")\n```\n\nWhich state does this represent?",
+    "code": "Statevector.from_label(\"+\")",
+    "options": {
+      "A": "$|0\\rangle$",
+      "B": "$|1\\rangle$",
+      "C": "$\\frac{|0\\rangle+|1\\rangle}{\\sqrt{2}}$",
+      "D": "$\\frac{|0\\rangle-|1\\rangle}{\\sqrt{2}}$"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 38,
+    "tier": "easy",
+    "stem": "What does broadcasting allow in Runtime primitives?",
+    "code": null,
+    "options": {
+      "A": "Automatic combinations of circuits, observables, and parameter sets",
+      "B": "Sending jobs to every backend simultaneously",
+      "C": "Duplicating qubits",
+      "D": "A Sampler-only feature"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 39,
+    "tier": "easy",
+    "stem": "What best describes the output of SamplerV2?",
+    "code": null,
+    "options": {
+      "A": "Expectation values",
+      "B": "Measurement distributions",
+      "C": "Transpiled circuits",
+      "D": "OpenQASM source code"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-01-easy-test.ipynb"
+  },
+  {
+    "n": 1,
+    "tier": "harder",
+    "stem": "Consider:\n\n```python\nqc.h(0)\nqc.cx(0,1)\n```\n\nThe observable is:\n\n```python\nSparsePauliOp([\"ZZ\"])\n```\n\nWhat is the value of $\\langle ZZ \\rangle$?",
+    "code": "qc.h(0)\nqc.cx(0,1)",
+    "options": {
+      "A": "$-1$",
+      "B": "$0$",
+      "C": "$1$",
+      "D": "Depends on the number of shots"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 2,
+    "tier": "harder",
+    "stem": "Consider:\n\n```python\nqc.h(0)\nqc.cx(0,1)\nqc.z(0)\n```\n\nWhich Bell state is produced?",
+    "code": "qc.h(0)\nqc.cx(0,1)\nqc.z(0)",
+    "options": {
+      "A": "$|\\Phi^+\\rangle$",
+      "B": "$|\\Phi^-\\rangle$",
+      "C": "$|\\Psi^+\\rangle$",
+      "D": "$|\\Psi^-\\rangle$"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 3,
+    "tier": "harder",
+    "stem": "For the Bell state\n\n$|\\Phi^+\\rangle=\\frac{|00\\rangle+|11\\rangle}{\\sqrt{2}}$\n\nwhat is $\\langle XX \\rangle$?",
+    "code": null,
+    "options": {
+      "A": "$-1$",
+      "B": "$0$",
+      "C": "$1$",
+      "D": "$2$"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 4,
+    "tier": "harder",
+    "stem": "For\n\n$|\\Phi^+\\rangle=\\frac{|00\\rangle+|11\\rangle}{\\sqrt{2}}$\n\nwhat is $\\langle ZI \\rangle$?",
+    "code": null,
+    "options": {
+      "A": "$-1$",
+      "B": "$0$",
+      "C": "$1$",
+      "D": "$2$"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 5,
+    "tier": "harder",
+    "stem": "Consider:\n\n```python\ntheta = Parameter(\"θ\")\n\npub = (\n    circuit,\n    observable,\n    [[0],[1],[2]]\n)\n```\n\nThe circuit contains exactly one parameter.\n\nHow many expectation values are computed?",
+    "code": "theta = Parameter(\"θ\")\n\npub = (\n    circuit,\n    observable,\n    [[0],[1],[2]]\n)",
+    "options": {
+      "A": "1",
+      "B": "2",
+      "C": "3",
+      "D": "6"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 6,
+    "tier": "harder",
+    "stem": "Consider:\n\n```python\nqc.ry(np.pi/2,0)\n```\n\nWhat is the value of $\\langle X \\rangle$?",
+    "code": "qc.ry(np.pi/2,0)",
+    "options": {
+      "A": "$-1$",
+      "B": "$0$",
+      "C": "$\\frac{\\sqrt{2}}{2}$",
+      "D": "$1$"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 7,
+    "tier": "harder",
+    "stem": "For\n\n$|-\\rangle=\\frac{|0\\rangle-|1\\rangle}{\\sqrt{2}}$\n\nwhat is $\\langle X\\rangle$?",
+    "code": null,
+    "options": {
+      "A": "$-1$",
+      "B": "$0$",
+      "C": "$1$",
+      "D": "Depends on the number of shots"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 8,
+    "tier": "harder",
+    "stem": "Consider:\n\n```python\nfrom qiskit.quantum_info import Pauli\n\nPauli(\"XYZ\")\n```\n\nWhich qubit is acted upon by $Z$?",
+    "code": "from qiskit.quantum_info import Pauli\n\nPauli(\"XYZ\")",
+    "options": {
+      "A": "q0",
+      "B": "q1",
+      "C": "q2",
+      "D": "all qubits"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 9,
+    "tier": "harder",
+    "stem": "Consider:\n\n```python\npub = (\n    circuit,\n    [obs1, obs2],\n    [[0],[np.pi/2],[np.pi]]\n)\n```\n\nHow many expectation values are produced?",
+    "code": "pub = (\n    circuit,\n    [obs1, obs2],\n    [[0],[np.pi/2],[np.pi]]\n)",
+    "options": {
+      "A": "2",
+      "B": "3",
+      "C": "5",
+      "D": "6"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 10,
+    "tier": "harder",
+    "stem": "For\n\n$|\\Psi^-\\rangle=\\frac{|01\\rangle-|10\\rangle}{\\sqrt{2}}$\n\nwhat is\n\n$\\langle XX+YY+ZZ\\rangle$ ?",
+    "code": null,
+    "options": {
+      "A": "$-3$",
+      "B": "$-1$",
+      "C": "$1$",
+      "D": "$3$"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 11,
+    "tier": "harder",
+    "stem": "Consider the Bell state:\n\n$|\\Phi^+\\rangle=\\frac{|00\\rangle+|11\\rangle}{\\sqrt{2}}$\n\nWhat is the value of:\n\n$\\langle XX + YY \\rangle$",
+    "code": null,
+    "options": {
+      "A": "$-2$",
+      "B": "$-1$",
+      "C": "$0$",
+      "D": "$2$"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 12,
+    "tier": "harder",
+    "stem": "Consider:\n\n```python\npub = (\n    circuit,\n    [[obs1], [obs2], [obs3]],\n    [[0], [1], [2], [3]]\n)\n```\n\nThe circuit contains exactly one parameter.\n\nWhat is the shape of the expectation-value grid?",
+    "code": "pub = (\n    circuit,\n    [[obs1], [obs2], [obs3]],\n    [[0], [1], [2], [3]]\n)",
+    "options": {
+      "A": "3 × 4",
+      "B": "4 × 3",
+      "C": "7",
+      "D": "12 × 12"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 13,
+    "tier": "harder",
+    "stem": "Starting from $|00\\rangle$:\n\n```python\nqc.x(0)\nqc.h(0)\nqc.cx(0,1)\nqc.z(1)\n```\n\nWhich Bell state is produced?",
+    "code": "qc.x(0)\nqc.h(0)\nqc.cx(0,1)\nqc.z(1)",
+    "options": {
+      "A": "$|\\Phi^+\\rangle$",
+      "B": "$|\\Phi^-\\rangle$",
+      "C": "$|\\Psi^+\\rangle$",
+      "D": "$|\\Psi^-\\rangle$"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 14,
+    "tier": "harder",
+    "stem": "For\n\n$|\\Psi^+\\rangle=\\frac{|01\\rangle+|10\\rangle}{\\sqrt{2}}$\n\nwhat is:\n\n$\\langle XX - YY + ZZ\\rangle$",
+    "code": null,
+    "options": {
+      "A": "$-1$",
+      "B": "$0$",
+      "C": "$1$",
+      "D": "$3$"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 15,
+    "tier": "harder",
+    "stem": "A qubit is prepared as:\n\n$R_y(\\pi/4)|0\\rangle$\n\nEstimator evaluates:\n\n$\\langle X+Z\\rangle$\n\nWhat is returned?",
+    "code": null,
+    "options": {
+      "A": "$0$",
+      "B": "$\\sqrt{2}$",
+      "C": "$1$",
+      "D": "$\\frac{\\sqrt{2}}{2}$"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 16,
+    "tier": "harder",
+    "stem": "Consider:\n\n```python\nqc.h(0)\nqc.cx(0,1)\nqc.h(1)\n```\n\nWhat state is produced?",
+    "code": "qc.h(0)\nqc.cx(0,1)\nqc.h(1)",
+    "options": {
+      "A": "$\\frac{|00\\rangle+|01\\rangle+|10\\rangle-|11\\rangle}{2}$",
+      "B": "$\\frac{|00\\rangle+|01\\rangle-|10\\rangle+|11\\rangle}{2}$",
+      "C": "$|\\Phi^+\\rangle$",
+      "D": "$|\\Psi^+\\rangle$"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 17,
+    "tier": "harder",
+    "stem": "Starting from:\n\n$|\\Phi^+\\rangle=\\frac{|00\\rangle+|11\\rangle}{\\sqrt{2}}$\n\nApply $Z$ to qubit 0 and $Z$ to qubit 1.\n\nWhich state is obtained?",
+    "code": null,
+    "options": {
+      "A": "$|\\Phi^+\\rangle$",
+      "B": "$|\\Phi^-\\rangle$",
+      "C": "$|\\Psi^+\\rangle$",
+      "D": "$|\\Psi^-\\rangle$"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 18,
+    "tier": "harder",
+    "stem": "Consider:\n\n```python\nfrom qiskit.quantum_info import SparsePauliOp\n\nobs = SparsePauliOp([\"XX\", \"ZZ\"])\n```\n\nand the Bell state\n\n$|\\Phi^+\\rangle=\\frac{|00\\rangle+|11\\rangle}{\\sqrt{2}}$\n\nWhat is:\n\n$\\langle XX + ZZ \\rangle$",
+    "code": "from qiskit.quantum_info import SparsePauliOp\n\nobs = SparsePauliOp([\"XX\", \"ZZ\"])",
+    "options": {
+      "A": "$-2$",
+      "B": "$0$",
+      "C": "$1$",
+      "D": "$2$"
+    },
+    "stated_answer": [
+      "D"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 19,
+    "tier": "harder",
+    "stem": "For\n\n$|\\Phi^-\\rangle=\\frac{|00\\rangle-|11\\rangle}{\\sqrt{2}}$\n\nwhat is:\n\n$\\langle XX + YY - ZZ\\rangle$",
+    "code": null,
+    "options": {
+      "A": "$-3$",
+      "B": "$-1$",
+      "C": "$1$",
+      "D": "$3$"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 20,
+    "tier": "harder",
+    "stem": "Consider:\n\n```python\nqc.h(0)\nqc.cx(0,1)\nqc.h(0)\nqc.h(1)\n```\n\nWhat is the resulting state?",
+    "code": "qc.h(0)\nqc.cx(0,1)\nqc.h(0)\nqc.h(1)",
+    "options": {
+      "A": "$|00\\rangle$",
+      "B": "$\\frac{|00\\rangle+|01\\rangle+|10\\rangle+|11\\rangle}{2}$",
+      "C": "$\\frac{|00\\rangle+|11\\rangle}{\\sqrt{2}}$",
+      "D": "$\\frac{|00\\rangle+|01\\rangle+|10\\rangle-|11\\rangle}{2}$"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 21,
+    "tier": "harder",
+    "stem": "Consider:\n\n```python\nqc.h(0)\nqc.cx(0,1)\nqc.x(0)\n```\n\nWhich Bell state is produced?",
+    "code": "qc.h(0)\nqc.cx(0,1)\nqc.x(0)",
+    "options": {
+      "A": "$|\\Phi^+\\rangle$",
+      "B": "$|\\Phi^-\\rangle$",
+      "C": "$|\\Psi^+\\rangle$",
+      "D": "$|\\Psi^-\\rangle$"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 22,
+    "tier": "harder",
+    "stem": "A qubit is prepared as:\n\n```python\nqc.ry(np.pi/3, 0)\n```\n\nWhat is the value of $\\langle Z\\rangle$?",
+    "code": "qc.ry(np.pi/3, 0)",
+    "options": {
+      "A": "$\\frac{1}{2}$",
+      "B": "$\\frac{\\sqrt{3}}{2}$",
+      "C": "$-\\frac{1}{2}$",
+      "D": "$-\\frac{\\sqrt{3}}{2}$"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 24,
+    "tier": "harder",
+    "stem": "Starting from $|00\\rangle$:\n\n```python\nqc.x(0)\nqc.h(0)\nqc.cx(0,1)\n```\n\nWhich Bell state is produced?",
+    "code": "qc.x(0)\nqc.h(0)\nqc.cx(0,1)",
+    "options": {
+      "A": "$|\\Phi^+\\rangle$",
+      "B": "$|\\Phi^-\\rangle$",
+      "C": "$|\\Psi^+\\rangle$",
+      "D": "$|\\Psi^-\\rangle$"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 25,
+    "tier": "harder",
+    "stem": "For\n\n$|\\Phi^+\\rangle=\\frac{|00\\rangle+|11\\rangle}{\\sqrt{2}}$\n\nwhat is $\\langle YY\\rangle$?",
+    "code": null,
+    "options": {
+      "A": "$-1$",
+      "B": "$0$",
+      "C": "$1$",
+      "D": "$2$"
+    },
+    "stated_answer": [
+      "A"
+    ],
+    "has_code": false,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 26,
+    "tier": "harder",
+    "stem": "A qubit is prepared as:\n\n```python\nqc.rx(np.pi/2, 0)\n```\n\nWhat is the value of $\\langle Z\\rangle$?",
+    "code": "qc.rx(np.pi/2, 0)",
+    "options": {
+      "A": "$-1$",
+      "B": "$0$",
+      "C": "$1$",
+      "D": "$\\frac{\\sqrt{2}}{2}$"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 27,
+    "tier": "harder",
+    "stem": "Consider:\n\n```python\nqc.h(0)\nqc.cx(0,1)\nqc.x(1)\n```\n\nWhich Bell state is produced?",
+    "code": "qc.h(0)\nqc.cx(0,1)\nqc.x(1)",
+    "options": {
+      "A": "$|\\Phi^+\\rangle$",
+      "B": "$|\\Phi^-\\rangle$",
+      "C": "$|\\Psi^+\\rangle$",
+      "D": "$|\\Psi^-\\rangle$"
+    },
+    "stated_answer": [
+      "C"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  },
+  {
+    "n": 28,
+    "tier": "harder",
+    "stem": "Consider:\n\n```python\nqc.h(0)\nqc.cx(0,1)\nqc.z(0)\nqc.x(1)\n```\n\nWhich Bell state is produced?",
+    "code": "qc.h(0)\nqc.cx(0,1)\nqc.z(0)\nqc.x(1)",
+    "options": {
+      "A": "$|\\Psi^+\\rangle$",
+      "B": "$|\\Psi^-\\rangle$",
+      "C": "$|\\Phi^+\\rangle$",
+      "D": "$|\\Phi^-\\rangle$"
+    },
+    "stated_answer": [
+      "B"
+    ],
+    "has_code": true,
+    "source_file": "bs-ns-02-harder-test.ipynb"
+  }
+]

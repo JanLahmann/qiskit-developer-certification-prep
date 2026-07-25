@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "The session is automatically extended until the queue empties."
+      "text": "The session is automatically extended, usually until the queue empties."
     },
     {
       "key": "B",
@@ -52,7 +52,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the auto-extension distractor (absolute-tell fix)."
   }
 }

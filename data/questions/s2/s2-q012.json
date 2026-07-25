@@ -15,7 +15,7 @@
     },
     {
       "key": "B",
-      "text": "The control and target roles of two-qubit gates such as CX are swapped."
+      "text": "The control and target roles of two-qubit gates such as `cx` are usually swapped."
     },
     {
       "key": "C",
@@ -32,7 +32,7 @@
   "explanation": {
     "correct": "`reverse_bits` is a rendering-only option: it flips the top-to-bottom order in which the qubit (and clbit) wires are drawn. By default Qiskit puts qubit 0 on top; with `reverse_bits=True` the highest-index qubit goes on top, so `q_1` moves above `q_0`. The circuit's operations and its results are untouched.",
     "distractors": {
-      "B": "Reversing the drawing order never changes gate semantics — the control and target qubits of a CX keep their roles; only their vertical positions in the picture move.",
+      "B": "Reversing the drawing order never changes gate semantics — the control and target qubits of a `cx` keep their roles; only their vertical positions in the picture move.",
       "C": "It reorders the qubit wires themselves (and clbits too), not merely classical-bit labels.",
       "D": "`draw()` only produces a picture; it does not execute the circuit, so it cannot change any measurement counts or their endianness."
     },
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern pass: format tell cleared (distractor B now code-formatted) and absolute tell cleared (distractor B hedges, so distractor C keeps its absolute)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

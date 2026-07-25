@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "`qc` still has 1 free parameter, and `bound` is a new circuit with 0 free parameters."
+      "text": "By default `qc` still has 1 free parameter, and `bound` is a new circuit with 0 free parameters."
     },
     {
       "key": "D",
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "hedge wording rebalanced in the meta-pattern pass (the correct option now states the `inplace=False` default alongside distractor D)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

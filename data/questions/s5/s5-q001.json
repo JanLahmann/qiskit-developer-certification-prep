@@ -11,19 +11,19 @@
   "options": [
     {
       "key": "A",
-      "text": "`job = sampler.run([isa_qc])`"
+      "text": "`job = sampler.run([isa_qc])` — a list holding one PUB"
     },
     {
       "key": "B",
-      "text": "`job = sampler.run(isa_qc)`"
+      "text": "`job = sampler.run(isa_qc)` — the bare circuit, unwrapped"
     },
     {
       "key": "C",
-      "text": "`job = sampler.run([isa_qc], backend)`"
+      "text": "`job = sampler.run([isa_qc], backend)` — target passed positionally"
     },
     {
       "key": "D",
-      "text": "`job = sampler.run([isa_qc], backend=backend)`"
+      "text": "`job = sampler.run([isa_qc], backend=backend)` — target passed by keyword"
     }
   ],
   "answer": [
@@ -32,13 +32,13 @@
   "explanation": {
     "correct": "SamplerV2.run() takes an iterable of PUBs (Primitive Unified Blocs). A bare ISA circuit is a valid PUB-like element, but it must be wrapped in a list: `sampler.run([isa_qc])`. The backend is not passed to run() — it was already bound via `mode=` when the primitive was constructed.",
     "distractors": {
-      "B": "V1 primitives accepted bare circuits, but SamplerV2.run() requires an iterable of PUBs — passing the circuit unwrapped raises an error.",
-      "C": "run() has no positional backend parameter — execution target is fixed by `mode=` at construction time; this raises a TypeError.",
-      "D": "There is no `backend=` keyword on run() — that's a V1-migration misconception; the mode is set on the primitive itself."
+      "B": "V1 primitives accepted a bare circuit, but SamplerV2.run() iterates its argument as a sequence of PUBs, so an unwrapped circuit is rejected.",
+      "C": "run() has no positional backend parameter — the execution target is fixed by `mode=` at construction time; a second positional argument raises a TypeError.",
+      "D": "There is no `backend=` keyword on run() either; that is a V1-migration habit. The only keyword run() accepts is `shots`."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-primitives",
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-sampler",
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output"
     ]
   },
   "proof": {
@@ -52,9 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude (orchestrator seed)",
-    "adversarial_rounds": 0,
-    "reviewed": false,
-    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank."
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | s5 adversarial review: distractor texts lengthened/labelled so the correct option is not the odd one out; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages)"
   },
   "freshness": {
     "verified_against": {
@@ -63,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

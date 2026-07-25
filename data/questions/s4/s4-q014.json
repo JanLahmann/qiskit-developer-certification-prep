@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "The classical pre-processing (for example, compilation) of the jobs runs in parallel, so a batch finishes significantly faster than running the same jobs serially."
+      "text": "Classical pre-processing of the jobs runs in parallel, so a batch finishes faster than the same jobs run serially."
     },
     {
       "key": "B",
@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "Batch mode reserves the QPU exclusively, so no other users' jobs or calibration jobs can run during the batch."
+      "text": "Batch mode reserves the QPU exclusively for the duration of the batch, so no other users' jobs and no calibration jobs can be interleaved with yours."
     },
     {
       "key": "D",
@@ -37,7 +37,7 @@
   "explanation": {
     "correct": "Batch parallelizes the classical processing of independent jobs and packs their quantum execution tightly, so a batch completes faster than serial submission. However, batched jobs are not guaranteed to run in submission order and do NOT get exclusive access — other users' jobs and calibration jobs may run in between if there is capacity.",
     "distractors": {
-      "C": "Exclusive access (no other users' jobs, no calibration jobs) is the defining feature of SESSION mode, not batch. Batch jobs share the QPU.",
+      "C": "Exclusive access for the whole window (no other users' jobs, no calibration jobs) is the defining feature of SESSION mode, not batch. Batch jobs share the QPU.",
       "D": "The queuing time does not decrease for the first job submitted within a batch, so batching gives no benefit for a single job.",
       "E": "It is SESSION mode that Open Plan users cannot use. Batch mode is available on the Open Plan (with a shorter maximum TTL)."
     },
@@ -57,7 +57,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened exclusivity distractor (length-tell fix)."
   }
 }

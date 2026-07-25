@@ -11,11 +11,11 @@
   "options": [
     {
       "key": "A",
-      "text": "The session runs normally — the Open Plan supports all three execution modes."
+      "text": "The session opens normally — on the free Open Plan all three execution modes accept jobs."
     },
     {
       "key": "B",
-      "text": "Open Plan users cannot submit session jobs; the workload must run in job mode or batch mode instead."
+      "text": "Open Plan users cannot submit session jobs; job mode or batch mode is the recommended path."
     },
     {
       "key": "C",
@@ -32,7 +32,7 @@
   "explanation": {
     "correct": "The documentation states explicitly that Open Plan users cannot submit session jobs; their workloads must run in job mode or batch mode. Sessions (dedicated, exclusive access) are reserved for paid plans.",
     "distractors": {
-      "A": "The Open Plan does NOT support sessions; only job and batch mode are available to it.",
+      "A": "The Open Plan does NOT accept session jobs; only job mode and batch mode are available to it.",
       "C": "Sessions are not merely limited on the Open Plan — they cannot be submitted at all.",
       "D": "It is the reverse: batch mode IS available on the Open Plan (with a 10-minute max TTL); sessions are not."
     },
@@ -52,7 +52,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — stem-echoed the Open-Plan distractor. Also: hedge moved into the correct option (hedge-heuristic calibration)."
   }
 }

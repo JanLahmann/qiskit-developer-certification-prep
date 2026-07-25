@@ -6,39 +6,39 @@
   ],
   "type": "spot-bug",
   "difficulty": 3,
-  "stem": "This code estimates a correlator on a 3-qubit GHZ state but raises `ValueError: The number of qubits of the circuit (3) does not match the number of qubits of the ()-th observable (2)`. What is the correct fix?",
-  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nghz = QuantumCircuit(3)\nghz.h(0)\nghz.cx(0, 1)\nghz.cx(1, 2)\nobs = SparsePauliOp(\"ZZ\")   # <-- intended to correlate all three qubits\n\nprint(StatevectorEstimator().run([(ghz, obs)]).result()[0].data.evs)",
+  "stem": "This snippet asks for a target standard error of 0.01 on a circuit that has no parameters, but the run raises `ValueError: Length of () inconsistent with last dimension of [0.01]`. What is wrong?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nbell = QuantumCircuit(2)\nbell.h(0)\nbell.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\n\nest = StatevectorEstimator()\njob = est.run([(bell, obs, 0.01)])   # <-- raises\n",
   "options": [
     {
       "key": "A",
-      "text": "Transpile the circuit with a preset pass manager before running."
+      "text": "A PUB may hold at most two entries — the circuit and its observable — so a precision value cannot be carried inside a PUB."
     },
     {
       "key": "B",
-      "text": "Add `ghz.measure_all()` before passing the circuit to the estimator."
+      "text": "`0.01` is below the smallest precision the estimator accepts; the same slot works with a looser value such as `0.1`."
     },
     {
       "key": "C",
-      "text": "Use an observable whose label spans all three qubits, e.g. `SparsePauliOp(\"IZZ\")` or `\"ZZZ\"`."
+      "text": "The third PUB entry is `parameter_values`; precision is the fourth, so the PUB should read `(bell, obs, None, 0.01)`."
     },
     {
       "key": "D",
-      "text": "Pass `num_qubits=3` to `estimator.run(...)`."
+      "text": "The observable has to be wrapped in a list, `[obs]`, so that the PUB carries a broadcastable observable array."
     }
   ],
   "answer": [
     "C"
   ],
   "explanation": {
-    "correct": "An observable must act on exactly as many qubits as the circuit. The circuit has 3 qubits but 'ZZ' is a 2-qubit operator. Writing a 3-character label (e.g. 'IZZ' to correlate qubits 0 and 1, or 'ZZZ' for all three) makes the observable span all 3 qubits and the PUB becomes valid.",
+    "correct": "An Estimator PUB is ordered (circuit, observables, parameter_values, precision). The value 0.01 landed in the third slot, so it was read as a parameter-value array — and the circuit binds no parameters, hence the shape complaint about `()` versus `[0.01]`. Passing `None` for the empty parameter slot puts 0.01 where precision belongs; `est.run([(bell, obs)], precision=0.01)` is the equivalent run-level form.",
     "distractors": {
-      "A": "Transpiling does not change the observable's qubit count; it can even widen the circuit further (padding to the device size), leaving the same mismatch.",
-      "B": "Estimator circuits carry no measurements, and measure_all() does not alter the observable — the 2-vs-3 qubit mismatch remains.",
-      "D": "`run()` has no `num_qubits` keyword; you cannot resize the observable from the run call — the observable itself must be defined over 3 qubits."
+      "A": "A PUB is not limited to two entries: the 4-element form (circuit, observables, parameter_values, precision) is accepted and runs — the entries are positional, which is exactly what this bug is about.",
+      "B": "There is no lower bound being hit here: the identical error appears with 0.1 in that slot, because the complaint is about a parameter-value SHAPE, not about the magnitude of the precision.",
+      "D": "Wrapping the observable as `[obs]` changes the observable array's shape but leaves 0.01 in the parameter_values slot, so the same ValueError is raised — it misreads a parameter-shape error as an observable-shape error."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
     ]
   },
   "proof": {
@@ -47,13 +47,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nest = StatevectorEstimator()\nghz = QuantumCircuit(3); ghz.h(0); ghz.cx(0, 1); ghz.cx(1, 2)\nobs2 = SparsePauliOp(\"ZZ\")   # only 2 qubits -> the bug\n\nbuggy_err = None\ntry:\n    est.run([(ghz, obs2)]).result()\nexcept Exception as e:\n    buggy_err = f\"{type(e).__name__}: {str(e)[:90]}\"\n\nevidence = {}\nproven = []\n# A: transpile the circuit first\ntry:\n    pm = generate_preset_pass_manager(backend=FakeManilaV2(), optimization_level=1, seed_transpiler=42)\n    isa = pm.run(ghz)\n    est.run([(isa, obs2)]).result()\n    evidence[\"A\"] = \"transpiling made it run (unexpected)\"; proven.append(\"A\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"transpiling does NOT fix it: still {type(e).__name__} (the 2-qubit observable now mismatches an even wider ISA circuit)\"\n# B: add measure_all\ntry:\n    g2 = ghz.copy(); g2.measure_all()\n    est.run([(g2, obs2)]).result()\n    evidence[\"B\"] = \"measure_all made it run (unexpected)\"; proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = f\"measure_all does NOT fix it: still {type(e).__name__} (observable still spans 2 of 3 qubits)\"\n# C: 3-qubit observable label\ntry:\n    ev = float(np.asarray(est.run([(ghz, SparsePauliOp(\"IZZ\"))]).result()[0].data.evs))\n    evidence[\"C\"] = f\"a 3-qubit label 'IZZ' runs: <IZZ> on GHZ = {ev:.3f} (buggy 2-qubit obs failed: {buggy_err})\"; proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"3-qubit observable still failed {type(e).__name__}\"\n# D: num_qubits kwarg to run\ntry:\n    est.run([(ghz, obs2)], num_qubits=3).result()\n    evidence[\"D\"] = \"run(num_qubits=3) accepted (unexpected)\"; proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"run(num_qubits=3) raises {type(e).__name__}: run() has no such kwarg and cannot resize the observable\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"buggy_error\": buggy_err}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nest = StatevectorEstimator(seed=7)\nbell = QuantumCircuit(2); bell.h(0); bell.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\n\nbuggy = None\ntry:\n    est.run([(bell, obs, 0.01)]).result()\nexcept Exception as e:\n    buggy = f\"{type(e).__name__}: {str(e)[:110]}\"\n\nevidence = {}\nproven = []\n\n# A: \"a PUB can hold at most two entries, precision cannot live in a PUB\"\ntry:\n    ev4 = float(np.asarray(est.run([(bell, obs, None, 0.01)]).result()[0].data.evs))\n    evidence[\"A\"] = (f\"refuted: the 4-entry PUB (bell, obs, None, 0.01) IS accepted and returns \"\n                     f\"evs={ev4:.4f}, so a PUB can carry a precision value\")\nexcept Exception as e:\n    evidence[\"A\"] = f\"the 4-entry PUB also raised {type(e).__name__}\"\n    proven.append(\"A\")\n    ev4 = None\n\n# B: \"0.01 is too small; 0.1 in the same slot works\"\ntry:\n    est.run([(bell, obs, 0.1)]).result()\n    evidence[\"B\"] = \"0.1 in the third slot ran (unexpected)\"\n    proven.append(\"B\")\nexcept Exception as e:\n    evidence[\"B\"] = (f\"refuted: 0.1 in the same slot raises the identical {type(e).__name__}: \"\n                     f\"{str(e)[:80]} — the magnitude is irrelevant\")\n\n# C: \"third slot is parameter_values; precision is the fourth\"\ntry:\n    ev = float(np.asarray(est.run([(bell, obs, None, 0.01)]).result()[0].data.evs))\n    ev_run = float(np.asarray(est.run([(bell, obs)], precision=0.01).result()[0].data.evs))\n    evidence[\"C\"] = (f\"confirmed: moving 0.01 to the fourth slot, (bell, obs, None, 0.01), runs and \"\n                     f\"gives evs={ev:.4f}; the equivalent run(precision=0.01) gives evs={ev_run:.4f} \"\n                     f\"(the buggy 3-slot PUB had failed with {buggy})\")\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"the 4-entry PUB raised {type(e).__name__}: {str(e)[:100]}\"\n\n# D: \"wrap the observable in a list\"\ntry:\n    est.run([(bell, [obs], 0.01)]).result()\n    evidence[\"D\"] = \"wrapping the observable in a list ran (unexpected)\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = (f\"refuted: (bell, [obs], 0.01) still raises {type(e).__name__}: {str(e)[:80]} \"\n                     f\"— 0.01 is still sitting in the parameter_values slot\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"buggy_error\": buggy, \"evs_with_precision_in_slot_4\": ev4}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 0,
-    "reviewed": false
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "adversarial s6: REWORKED — old 'observable width' spot-bug duplicated q013 (same ValueError, same measure_all distractor); replaced with PUB entry ordering (circuit, observables, parameter_values, precision), a scope_note not otherwise covered"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

@@ -11,7 +11,7 @@
   "options": [
     {
       "key": "A",
-      "text": "0 — the backend runs the 3-qubit Toffoli directly."
+      "text": "0 — the backend typically executes a 3-qubit Toffoli natively, so no CX gates are needed."
     },
     {
       "key": "B",
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "6 or more CX — the Toffoli is decomposed into many one- and two-qubit basis gates, and routing on a line adds still more."
+      "text": "6 or more CX — the Toffoli decomposition alone needs six."
     }
   ],
   "answer": [
@@ -32,7 +32,7 @@
   "explanation": {
     "correct": "`ccx` is neither a basis gate nor a two-qubit gate, so it is decomposed. A Toffoli already needs 6 CX in an all-to-all decomposition, and routing it on a linear coupling map inserts additional CX (via SWAPs), giving well over 6 CX in practice.",
     "distractors": {
-      "A": "`ccx` is not in the basis and acts on 3 qubits; hardware cannot run it directly, so it must be decomposed into CX-based gates.",
+      "A": "No IBM backend offers a native 3-qubit gate; `ccx` sits outside the basis and has to be decomposed into CX-based gates.",
       "B": "One CX is nowhere near enough to realize a Toffoli — the standard decomposition alone needs 6.",
       "C": "The minimal Toffoli decomposition already uses 6 CX; on a line with routing the count is even higher, so it is not in the 2-5 range."
     },
@@ -52,8 +52,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
-    "reviewed": false
+    "adversarial_rounds": 2,
+    "reviewed": false,
+    "notes": "high length tell + stem-echo + absolute-wording tells cleared (correct option's gloss trimmed, distractor A given substance and a hedge; the predicted values are unchanged)"
   },
   "freshness": {
     "verified_against": {
@@ -62,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-20",
+    "verified_on": "2026-07-25",
     "stale": false
   }
 }

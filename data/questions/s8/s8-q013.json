@@ -25,6 +25,14 @@
     {
       "key": "D",
       "text": "Export with `qasm3.dumps(qc)`, whose target language has structured control flow."
+    },
+    {
+      "key": "E",
+      "text": "Fall back to the legacy circuit method that predates the modules: `qc.qasm()`."
+    },
+    {
+      "key": "F",
+      "text": "Write to a file rather than a string: `qasm2.dump(qc, f)` instead."
     }
   ],
   "answer": [
@@ -35,7 +43,9 @@
     "distractors": {
       "A": "`strict` is not a parameter of `qasm2.dumps` at all, so this raises `TypeError`. And no flag could help: the limitation is in the OpenQASM 2 language, not in the exporter's strictness.",
       "B": "`decompose()` expands one level of gate definitions; it does not touch control-flow operations, so the `IfElseOp` survives and `qasm2.dumps` raises the same `QASM2ExportError`.",
-      "C": "`str(qc)` returns the ASCII art circuit drawing. It is not an OpenQASM program in either version and cannot be fed back to any importer."
+      "C": "`str(qc)` returns the ASCII art circuit drawing. It is not an OpenQASM program in either version and cannot be fed back to any importer.",
+      "E": "`QuantumCircuit.qasm()` was removed in Qiskit 1.0 in favour of the `qasm2`/`qasm3` modules, so this raises `AttributeError`. Even while it existed it emitted OpenQASM 2 and would have hit the same language limit.",
+      "F": "`dump` and `dumps` share one exporter and one set of language restrictions; writing to a file changes the destination, not the target language. `qasm2.dump(qc, f)` raises the identical `QASM2ExportError`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
@@ -48,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm2, qasm3\n\ndef build():\n    qc = QuantumCircuit(1, 1)\n    qc.h(0)\n    qc.measure(0, 0)\n    with qc.if_test((qc.clbits[0], 1)):\n        qc.x(0)\n    return qc\n\n# Demonstrate the bug: the original qasm2.dumps call fails.\ntry:\n    qasm2.dumps(build())\n    bug = \"no error (unexpected)\"\nexcept Exception as e:\n    bug = f\"{type(e).__name__}: {str(e)[:110]}\"\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        out = fn()\n        ok = isinstance(out, str) and out.strip().startswith(\"OPENQASM\")\n        extra = \"\"\n        if ok:\n            extra = f\"; contains an 'if (' block={'if (' in out}\"\n        evidence[key] = f\"produced {type(out).__name__}; valid OpenQASM (starts with 'OPENQASM')={ok}{extra}\"\n        if ok:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\nattempt(\"A\", lambda: qasm2.dumps(build(), strict=False))\nattempt(\"B\", lambda: qasm2.dumps(build().decompose()))\nattempt(\"C\", lambda: str(build()))\nattempt(\"D\", lambda: qasm3.dumps(build()))\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug\": bug}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm2, qasm3\nimport io\n\ndef build():\n    qc = QuantumCircuit(1, 1)\n    qc.h(0)\n    qc.measure(0, 0)\n    with qc.if_test((qc.clbits[0], 1)):\n        qc.x(0)\n    return qc\n\n# Demonstrate the bug: the original qasm2.dumps call fails.\ntry:\n    qasm2.dumps(build())\n    bug = \"no error (unexpected)\"\nexcept Exception as e:\n    bug = f\"{type(e).__name__}: {str(e)[:110]}\"\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        out = fn()\n        ok = isinstance(out, str) and out.strip().startswith(\"OPENQASM\")\n        extra = \"\"\n        if ok:\n            extra = f\"; contains an 'if (' block={'if (' in out}\"\n        evidence[key] = f\"produced {type(out).__name__}; valid OpenQASM (starts with 'OPENQASM')={ok}{extra}\"\n        if ok:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:110]}\"\n\nattempt(\"A\", lambda: qasm2.dumps(build(), strict=False))\nattempt(\"B\", lambda: qasm2.dumps(build().decompose()))\nattempt(\"C\", lambda: str(build()))\nattempt(\"D\", lambda: qasm3.dumps(build()))\nattempt(\"E\", lambda: build().qasm())\nattempt(\"F\", lambda: qasm2.dump(build(), io.StringIO()))\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"bug\": bug}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->D (position rebalance); proof now also observes that the qasm3 output actually contains an 'if (' block, not merely that it starts with OPENQASM"
+    "notes": "adversarial s8 r1: answer A->D (position rebalance); proof now also observes that the qasm3 output actually contains an 'if (' block, not merely that it starts with OPENQASM | pool wave: +E the legacy QuantumCircuit.qasm() method still exists, +F dump is less restricted than dumps"
   },
   "freshness": {
     "verified_against": {
@@ -66,5 +76,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

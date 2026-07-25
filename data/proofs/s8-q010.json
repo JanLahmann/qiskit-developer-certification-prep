@@ -8,7 +8,9 @@
       "A": "option A equals qasm3.dumps output verbatim? False \u2014 first difference: line 3: emitted 'bit[1] c;' vs option 'qubit[1] q;'",
       "B": "option B equals qasm3.dumps output verbatim? False \u2014 first difference: line 1: emitted 'OPENQASM 3.0;' vs option 'OPENQASM 3;'",
       "C": "option C equals qasm3.dumps output verbatim? True",
-      "D": "option D equals qasm3.dumps output verbatim? False \u2014 first difference: line 3: emitted 'bit[1] c;' vs option 'bit c;'"
+      "D": "option D equals qasm3.dumps output verbatim? False \u2014 first difference: line 3: emitted 'bit[1] c;' vs option 'bit c;'",
+      "E": "option E equals qasm3.dumps output verbatim? False \u2014 first difference: line 3: emitted 'bit[1] c;' vs option 'qreg q[1];'",
+      "F": "option F equals qasm3.dumps output verbatim? False \u2014 first difference: line 2: emitted 'include \"stdgates.inc\";' vs option 'include \"qelib1.inc\";'"
     },
     "observed": {
       "dumps": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit[1] c;\nqubit[1] q;\nh q[0];\nc[0] = measure q[0];\n",
@@ -28,9 +30,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.08,
+  "wall_seconds": 1.79,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"option A equals qasm3.dumps output verbatim? False \\u2014 first difference: line 3: emitted 'bit[1] c;' vs option 'qubit[1] q;'\", \"B\": \"option B equals qasm3.dumps output verbatim? False \\u2014 first difference: line 1: emitted 'OPENQASM 3.0;' vs option 'OPENQASM 3;'\", \"C\": \"option C equals qasm3.dumps output verbatim? True\", \"D\": \"option D equals qasm3.dumps output verbatim? False \\u2014 first difference: line 3: emitted 'bit[1] c;' vs option 'bit c;'\"}, \"observed\": {\"dumps\": \"OPENQASM 3.0;\\ninclude \\\"stdgates.inc\\\";\\nbit[1] c;\\nqubit[1] q;\\nh q[0];\\nc[0] = measure q[0];\\n\", \"lines\": [\"OPENQASM 3.0;\", \"include \\\"stdgates.inc\\\";\", \"bit[1] c;\", \"qubit[1] q;\", \"h q[0];\", \"c[0] = measure q[0];\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"option A equals qasm3.dumps output verbatim? False \\u2014 first difference: line 3: emitted 'bit[1] c;' vs option 'qubit[1] q;'\", \"B\": \"option B equals qasm3.dumps output verbatim? False \\u2014 first difference: line 1: emitted 'OPENQASM 3.0;' vs option 'OPENQASM 3;'\", \"C\": \"option C equals qasm3.dumps output verbatim? True\", \"D\": \"option D equals qasm3.dumps output verbatim? False \\u2014 first difference: line 3: emitted 'bit[1] c;' vs option 'bit c;'\", \"E\": \"option E equals qasm3.dumps output verbatim? False \\u2014 first difference: line 3: emitted 'bit[1] c;' vs option 'qreg q[1];'\", \"F\": \"option F equals qasm3.dumps output verbatim? False \\u2014 first difference: line 2: emitted 'include \\\"stdgates.inc\\\";' vs option 'include \\\"qelib1.inc\\\";'\"}, \"observed\": {\"dumps\": \"OPENQASM 3.0;\\ninclude \\\"stdgates.inc\\\";\\nbit[1] c;\\nqubit[1] q;\\nh q[0];\\nc[0] = measure q[0];\\n\", \"lines\": [\"OPENQASM 3.0;\", \"include \\\"stdgates.inc\\\";\", \"bit[1] c;\", \"qubit[1] q;\", \"h q[0];\", \"c[0] = measure q[0];\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

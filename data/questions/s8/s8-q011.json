@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`qasm3.dump(f, qc)`"
+    },
+    {
+      "key": "E",
+      "text": "`qasm3.dumps(qc, file=f)`"
+    },
+    {
+      "key": "F",
+      "text": "`qasm3.dump(qc, \"circuit.qasm\")`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "`dumps` (with the trailing 's', for 'string') returns the program as a `str` and takes only the circuit; passing a file object raises `TypeError: dumps() takes 1 positional argument but 2 were given`.",
       "C": "`dump` requires a stream argument, so `qasm3.dump(qc)` alone raises `TypeError` (missing 'stream'); `dump` also returns `None`, so it never yields text to hand to `f.write`.",
-      "D": "The argument order is reversed. `dump(circuit, stream)` expects the circuit first; passing the file object as the circuit raises `AttributeError` because the stream has no `.qubits`."
+      "D": "The argument order is reversed. `dump(circuit, stream)` expects the circuit first; passing the file object as the circuit raises `AttributeError` because the stream has no `.qubits`.",
+      "E": "`dumps` has no `file` parameter. Its keyword arguments are forwarded to the exporter object, so an unknown one raises `TypeError: Exporter.__init__() got an unexpected keyword argument 'file'` -- and `dumps` returns the text rather than writing it anywhere.",
+      "F": "`dump`'s second argument is the open stream itself, not a path: handed a string it calls `.write` on it and raises `AttributeError: 'str' object has no attribute 'write'`. The file-name habit comes from `qasm2.load`, the one call in this family that really does take a path."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm3\nimport io\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    buf = io.StringIO()\n    try:\n        ret = fn(buf)\n        content = buf.getvalue()\n        ok = content.startswith(\"OPENQASM 3.0\")\n        evidence[key] = (\n            f\"no error; return={type(ret).__name__}; file object received \"\n            f\"{len(content)} chars, valid OpenQASM 3 (starts with 'OPENQASM 3.0')={ok}\"\n        )\n        if ok:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nattempt(\"A\", lambda f: qasm3.dumps(qc, f))\nattempt(\"B\", lambda f: qasm3.dump(qc, f))\nattempt(\"C\", lambda f: f.write(qasm3.dump(qc)))\nattempt(\"D\", lambda f: qasm3.dump(f, qc))\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm3\nimport io\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    buf = io.StringIO()\n    try:\n        ret = fn(buf)\n        content = buf.getvalue()\n        ok = content.startswith(\"OPENQASM 3.0\")\n        evidence[key] = (\n            f\"no error; return={type(ret).__name__}; file object received \"\n            f\"{len(content)} chars, valid OpenQASM 3 (starts with 'OPENQASM 3.0')={ok}\"\n        )\n        if ok:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nattempt(\"A\", lambda f: qasm3.dumps(qc, f))\nattempt(\"B\", lambda f: qasm3.dump(qc, f))\nattempt(\"C\", lambda f: f.write(qasm3.dump(qc)))\nattempt(\"D\", lambda f: qasm3.dump(f, qc))\nattempt(\"E\", lambda f: qasm3.dumps(qc, file=f))\nattempt(\"F\", lambda f: qasm3.dump(qc, \"circuit.qasm\"))\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->B (position rebalance); option texts swapped, proof remapped"
+    "notes": "adversarial s8 r1: answer A->B (position rebalance); option texts swapped, proof remapped | pool wave: +E dumps takes a file= keyword, +F dump's second argument is a path rather than the open stream"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

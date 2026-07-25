@@ -64,6 +64,7 @@
     "model": "claude-opus (generation agent, section s8)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s8 r1: carried-forward flag resolved — re-read the live feature table (fetched 200) and confirmed every keyed row (bit ok/ClassicalRegister note 3, complex unsupported, duration+stretch unparseable note 6); stem now scopes the claim explicitly to that table's Qiskit SDK column and its definition of 'supported' rather than asserting timeless language facts; widened to select-THREE of six with answers B/D/F so the two multi-select items no longer share the 'two correct, one is A' shape; new const-vs-pi distractor"
-  }
+    "notes": "adversarial s8 r1: carried-forward flag resolved — re-read the live feature table (fetched 200) and confirmed every keyed row (bit ok/ClassicalRegister note 3, complex unsupported, duration+stretch unparseable note 6); stem now scopes the claim explicitly to that table's Qiskit SDK column and its definition of 'supported' rather than asserting timeless language facts; widened to select-THREE of six with answers B/D/F so the two multi-select items no longer share the 'two correct, one is A' shape; new const-vs-pi distractor | pool wave: display_count 5 (rotation only) -- 3-correct multi already at the 6-option schema cap, so no distractor can be added"
+  },
+  "display_count": 5
 }

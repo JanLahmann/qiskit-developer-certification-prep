@@ -28,6 +28,10 @@
     {
       "key": "E",
       "text": "It is short-lived: the token response reports `expires_in` of 3600 seconds, after which you request a fresh one."
+    },
+    {
+      "key": "F",
+      "text": "It is scoped to one Qiskit Runtime instance -- the one named by the `Service-CRN` header -- so a client working with two instances mints a separate token for each."
     }
   ],
   "answer": [
@@ -39,7 +43,8 @@
     "distractors": {
       "A": "This is the single most common REST mistake: the key authenticates you *to IAM*, and only the token IAM returns goes into the `Authorization` header.",
       "B": "Job submission requires a valid token to succeed at all, so it cannot be the thing that issues one. The token comes from the separate IAM endpoint, before any Runtime call.",
-      "D": "Bearer tokens carry an expiry. Holding one indefinitely produces `401 Unauthorized` responses once the hour is up."
+      "D": "Bearer tokens carry an expiry. Holding one indefinitely produces `401 Unauthorized` responses once the hour is up.",
+      "F": "The IAM token is an account-level credential and carries no instance scope. Which Qiskit Runtime instance a call targets is chosen by the separate `Service-CRN` header, so one token serves as many instances as your account can reach."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api",
@@ -58,6 +63,7 @@
     "model": "claude-opus (generation agent, section s8)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s8 r1: carried-forward flag checked — citations were NOT swapped here; both pages re-fetched 200 and re-read, and both show the IAM token POST with the apikey grant type and the expires_in=3600 response, so the keyed claims are directly supported. Answers moved A,C -> C,E so the section's two multi-select items differ in both answer count and answer letters; length tell removed."
-  }
+    "notes": "adversarial s8 r1: carried-forward flag checked — citations were NOT swapped here; both pages re-fetched 200 and re-read, and both show the IAM token POST with the apikey grant type and the expires_in=3600 response, so the keyed claims are directly supported. Answers moved A,C -> C,E so the section's two multi-select items differ in both answer count and answer letters; length tell removed. | pool wave: +F the IAM token is scoped to a single Runtime instance (options cap 6 reached, one distractor added)"
+  },
+  "display_count": 5
 }

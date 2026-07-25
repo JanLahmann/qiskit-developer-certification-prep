@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "As a query parameter on the request URL, such as `/api/v1/jobs?apikey=<API_KEY>`."
+    },
+    {
+      "key": "E",
+      "text": "In an `Authorization: Bearer <API_KEY>` header, sending the IBM Cloud API key itself as the bearer token."
+    },
+    {
+      "key": "F",
+      "text": "In the `Service-CRN` header that names the Qiskit Runtime instance, which doubles as the credential."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "`X-API-Key` is a common convention elsewhere, but not here. The raw key never travels on Runtime API calls; it is exchanged for a short-lived bearer token first.",
       "C": "Basic authentication carries a user name and password pair. The Runtime REST API is IAM-based and expects the `Bearer` scheme instead.",
-      "D": "Credentials belong in headers. Query strings are logged by proxies and server access logs, and the API does not read a credential from the URL in any case."
+      "D": "Credentials belong in headers. Query strings are logged by proxies and server access logs, and the API does not read a credential from the URL in any case.",
+      "E": "Right header, wrong credential. The API key is what you present *to IAM*; the `Bearer` value is the short-lived access token IAM hands back in exchange for it.",
+      "F": "`Service-CRN` does travel with every Runtime REST call, but it identifies which instance to run and bill on -- it is not a secret and it authenticates nothing. The credential rides in `Authorization`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s8)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->B (position rebalance); length tell removed (1.31 -> correct no longer longest); both citations re-fetched 200 and re-read — cloud-setup-rest-api shows the 'authorization: Bearer <BEARER_TOKEN>' + 'Service-CRN' curl call and the API reference states the IAM bearer token is required on every call | length rank rebalanced (correct option no longer longest)"
-  }
+    "notes": "adversarial s8 r1: answer A->B (position rebalance); length tell removed (1.31 -> correct no longer longest); both citations re-fetched 200 and re-read — cloud-setup-rest-api shows the 'authorization: Bearer <BEARER_TOKEN>' + 'Service-CRN' curl call and the API reference states the IAM bearer token is required on every call | length rank rebalanced (correct option no longer longest) | pool wave: +E the API key sent verbatim as the bearer token, +F the Service-CRN header treated as the credential"
+  },
+  "display_count": 4
 }

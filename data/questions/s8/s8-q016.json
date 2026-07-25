@@ -25,6 +25,14 @@
     {
       "key": "D",
       "text": "`bit c[3];` and `qubit q[2];`"
+    },
+    {
+      "key": "E",
+      "text": "`bit[2] c;` and `qubit[2] q;`"
+    },
+    {
+      "key": "F",
+      "text": "`int[3] c;` and `qubit[2] q;`"
     }
   ],
   "answer": [
@@ -35,7 +43,9 @@
     "distractors": {
       "B": "The widths are swapped: there are 3 classical bits and 2 qubits, so it must be `bit[3]` and `qubit[2]`.",
       "C": "`creg`/`qreg` with the size after the name is OpenQASM 2 syntax, not OpenQASM 3.",
-      "D": "`bit c[3];` uses C-style array syntax. In OpenQASM 3 the width goes on the type (`bit[3] c;`), not on the identifier."
+      "D": "`bit c[3];` uses C-style array syntax. In OpenQASM 3 the width goes on the type (`bit[3] c;`), not on the identifier.",
+      "E": "The classical register is not sized to the number of qubits. The circuit's 3 classical bits give `bit[3] c;`; each width is read from its own register.",
+      "F": "`int[n]` is a classical *integer* type in OpenQASM 3, not a register of measurement bits. Qiskit exports a `ClassicalRegister` as `bit[n]`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3",
@@ -48,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(2, 3)   # 2 qubits, 3 classical bits\nqc.h(0)\nlines = qasm3.dumps(qc).splitlines()\n\ncandidates = {\n    \"A\": [\"bit[3] c;\", \"qubit[2] q;\"],\n    \"B\": [\"bit[2] c;\", \"qubit[3] q;\"],\n    \"C\": [\"creg c[3];\", \"qreg q[2];\"],\n    \"D\": [\"bit c[3];\", \"qubit q[2];\"],\n}\nevidence = {}\nproven = []\nfor key, pair in candidates.items():\n    ok = all(line in lines for line in pair)\n    evidence[key] = f\"both of {pair} present as emitted lines? {ok}\"\n    if ok:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"lines\": lines}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(2, 3)   # 2 qubits, 3 classical bits\nqc.h(0)\nlines = qasm3.dumps(qc).splitlines()\n\ncandidates = {\n    \"A\": [\"bit[3] c;\", \"qubit[2] q;\"],\n    \"B\": [\"bit[2] c;\", \"qubit[3] q;\"],\n    \"C\": [\"creg c[3];\", \"qreg q[2];\"],\n    \"D\": [\"bit c[3];\", \"qubit q[2];\"],\n    \"E\": [\"bit[2] c;\", \"qubit[2] q;\"],\n    \"F\": [\"int[3] c;\", \"qubit[2] q;\"],\n}\nevidence = {}\nproven = []\nfor key, pair in candidates.items():\n    ok = all(line in lines for line in pair)\n    evidence[key] = f\"both of {pair} present as emitted lines? {ok}\"\n    if ok:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"lines\": lines}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s8 round 1: survived unchanged (citations re-fetched 200 and re-read, proof evidence discriminates every option, no second defensible answer, no meta-pattern flag); all four options are exactly equal length, so the length heuristics sit at chance here"
+    "notes": "adversarial s8 round 1: survived unchanged (citations re-fetched 200 and re-read, proof evidence discriminates every option, no second defensible answer, no meta-pattern flag); all four options are exactly equal length, so the length heuristics sit at chance here | pool wave: +E the classical register is sized to the qubit count, +F classical bits are declared with int[n]"
   },
   "freshness": {
     "verified_against": {
@@ -66,5 +76,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

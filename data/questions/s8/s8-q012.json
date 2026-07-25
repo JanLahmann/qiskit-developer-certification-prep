@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`circuit = QuantumCircuit.from_qasm_file(program)`"
+    },
+    {
+      "key": "E",
+      "text": "`circuit = qiskit.qasm3.loads(program)`"
+    },
+    {
+      "key": "F",
+      "text": "`circuit = qasm2.load(io.StringIO(program))`"
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "`qasm2.load` expects a file name or path-like object, not the program text. Handed the program string it tries to open a file with that name and raises `FileNotFoundError`.",
       "C": "`qasm2.parse` is a submodule of `qiskit.qasm2`, not a callable function; `qasm2.parse(program)` raises `TypeError: 'module' object is not callable`.",
-      "D": "This confuses the two legacy helpers. `QuantumCircuit.from_qasm_str` would accept program text, but `from_qasm_file` takes a path, so it raises `FileNotFoundError` here."
+      "D": "This confuses the two legacy helpers. `QuantumCircuit.from_qasm_str` would accept program text, but `from_qasm_file` takes a path, so it raises `FileNotFoundError` here.",
+      "E": "OpenQASM 2 text needs the OpenQASM 2 parser. `qiskit.qasm3.loads` is a different importer -- and one that is not even part of the `qiskit` package: without the optional `qiskit-qasm3-import` extension it raises `MissingOptionalLibraryError` before it ever looks at the text.",
+      "F": "`qasm2.load` takes a file name or path-like object, not an already-open file object; it calls `os.fspath` on its argument, so a `StringIO` raises `TypeError`. The `json` analogy breaks here -- reading from an open handle is not part of the `qasm2` API."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm2",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm2\n\nprogram = (\n    'OPENQASM 2.0;\\n'\n    'include \"qelib1.inc\";\\n'\n    'qreg q[2];\\n'\n    'creg c[2];\\n'\n    'h q[0];\\n'\n    'cx q[0], q[1];\\n'\n    'measure q -> c;\\n'\n)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        r = fn()\n        ok = isinstance(r, QuantumCircuit)\n        detail = f\"num_qubits={r.num_qubits}, num_clbits={r.num_clbits}\" if ok else \"\"\n        evidence[key] = f\"returned {type(r).__name__} (QuantumCircuit={ok}) {detail}\".strip()\n        if ok:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nattempt(\"A\", lambda: qasm2.loads(program))\nattempt(\"B\", lambda: qasm2.load(program))\nattempt(\"C\", lambda: qasm2.parse(program))\nattempt(\"D\", lambda: QuantumCircuit.from_qasm_file(program))\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm2, qasm3\nimport io\n\nprogram = (\n    'OPENQASM 2.0;\\n'\n    'include \"qelib1.inc\";\\n'\n    'qreg q[2];\\n'\n    'creg c[2];\\n'\n    'h q[0];\\n'\n    'cx q[0], q[1];\\n'\n    'measure q -> c;\\n'\n)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        r = fn()\n        ok = isinstance(r, QuantumCircuit)\n        detail = f\"num_qubits={r.num_qubits}, num_clbits={r.num_clbits}\" if ok else \"\"\n        evidence[key] = f\"returned {type(r).__name__} (QuantumCircuit={ok}) {detail}\".strip()\n        if ok:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nattempt(\"A\", lambda: qasm2.loads(program))\nattempt(\"B\", lambda: qasm2.load(program))\nattempt(\"C\", lambda: qasm2.parse(program))\nattempt(\"D\", lambda: QuantumCircuit.from_qasm_file(program))\nattempt(\"E\", lambda: qasm3.loads(program))\nattempt(\"F\", lambda: qasm2.load(io.StringIO(program)))\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s8 r1: replaced weak reverse-direction distractor (qasm2.dumps) with the legacy from_qasm_file/from_qasm_str confusion; verified from_qasm_str still exists in 2.5 so it is deliberately NOT offered (it would be a second correct answer)"
+    "notes": "adversarial s8 r1: replaced weak reverse-direction distractor (qasm2.dumps) with the legacy from_qasm_file/from_qasm_str confusion; verified from_qasm_str still exists in 2.5 so it is deliberately NOT offered (it would be a second correct answer) | pool wave: +E one loader parses both OpenQASM versions (qasm3.loads on v2 text), +F qasm2.load accepts an open file object like json.load"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

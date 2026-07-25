@@ -25,6 +25,14 @@
     {
       "key": "D",
       "text": "`parameter theta;`"
+    },
+    {
+      "key": "E",
+      "text": "`input float theta;`"
+    },
+    {
+      "key": "F",
+      "text": "`input double theta;`"
     }
   ],
   "answer": [
@@ -35,7 +43,9 @@
     "distractors": {
       "B": "Omitting the `input` modifier would declare an ordinary (uninitialized) local variable, not a run-time input. The exporter marks unbound parameters as `input`.",
       "C": "Although gate rotation angles are conceptually angles, Qiskit exports unbound parameters as `float[64]`, not the `angle` type.",
-      "D": "`parameter` is not an OpenQASM 3 keyword; run-time-supplied values use the `input` modifier."
+      "D": "`parameter` is not an OpenQASM 3 keyword; run-time-supplied values use the `input` modifier.",
+      "E": "OpenQASM 3's `float` is a sized type and Qiskit emits the width explicitly, so a bare `float` never appears in the program text.",
+      "F": "`double` is a C type, not an OpenQASM 3 one. Widths are written on the type in brackets, so the double-precision scalar is spelled `float[64]`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
@@ -48,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit import qasm3\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\nlines = qasm3.dumps(qc).splitlines()\n\ncandidates = {\n    \"A\": \"input float[64] theta;\",\n    \"B\": \"float[64] theta;\",\n    \"C\": \"input angle theta;\",\n    \"D\": \"parameter theta;\",\n}\nevidence = {}\nproven = []\nfor key, line in candidates.items():\n    present = line in lines\n    evidence[key] = f\"line {line!r} present as an emitted OpenQASM 3 line? {present}\"\n    if present:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"lines\": lines}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit import qasm3\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\nlines = qasm3.dumps(qc).splitlines()\n\ncandidates = {\n    \"A\": \"input float[64] theta;\",\n    \"B\": \"float[64] theta;\",\n    \"C\": \"input angle theta;\",\n    \"D\": \"parameter theta;\",\n    \"E\": \"input float theta;\",\n    \"F\": \"input double theta;\",\n}\nevidence = {}\nproven = []\nfor key, line in candidates.items():\n    present = line in lines\n    evidence[key] = f\"line {line!r} present as an emitted OpenQASM 3 line? {present}\"\n    if present:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"lines\": lines}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s8 round 1: survived unchanged (citations re-fetched 200 and re-read, proof evidence discriminates every option, no second defensible answer, no meta-pattern flag); correct option is deliberately left as the longest here (ratio 1.20) -- the section needs a few such items so that 'longest option wins' scores at chance rather than below it"
+    "notes": "adversarial s8 round 1: survived unchanged (citations re-fetched 200 and re-read, proof evidence discriminates every option, no second defensible answer, no meta-pattern flag); correct option is deliberately left as the longest here (ratio 1.20) -- the section needs a few such items so that 'longest option wins' scores at chance rather than below it | pool wave: +E unsized bare float, +F the C spelling double for the double-precision type"
   },
   "freshness": {
     "verified_against": {
@@ -66,5 +76,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 5
 }

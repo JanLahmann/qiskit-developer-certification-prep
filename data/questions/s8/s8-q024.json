@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "Send an HTTP `POST` to `/api/v1/jobs` with `program_id` set to the class name `\"SamplerV2\"`."
+    },
+    {
+      "key": "E",
+      "text": "Send an HTTP `POST` to `/api/v1/jobs` naming the primitive in a `primitive_id` field of the body."
+    },
+    {
+      "key": "F",
+      "text": "Send an HTTP `PUT` to `/api/v1/jobs/<id>` with `\"program_id\": \"sampler\"`, creating the job under an id you pick."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "B": "Creating a job changes server state, so it is a `POST`. `GET /api/v1/jobs` is the *listing* endpoint, and the primitive is never chosen through a query parameter.",
       "C": "There is no per-primitive endpoint. One job endpoint serves both primitives, distinguished only by the `program_id` field.",
-      "D": "`SamplerV2` is the Python class name in `qiskit-ibm-runtime`. Over REST the field takes the service-side program name, which is the lower-case `sampler`."
+      "D": "`SamplerV2` is the Python class name in `qiskit-ibm-runtime`. Over REST the field takes the service-side program name, which is the lower-case `sampler`.",
+      "E": "The body field is `program_id`, not `primitive_id`, and its value is the service-side program name (`sampler` or `estimator`), not a separate primitive selector.",
+      "F": "Job ids are assigned by the service and come back in the `POST` response; there is no client-chosen id and no `PUT` route for creating a job."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-rest-api",
@@ -53,6 +63,7 @@
     "model": "claude-opus (generation agent, section s8)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s8 r1: carried-forward flag CONFIRMED and fixed — the cited guides/primitives-rest-api returns 200 but redirects to guides/primitives ('Introduction to primitives'), which says nothing about REST and does not support the keyed answer. Replaced with guides/sampler-rest-api, which shows the exact POST to https://quantum.cloud.ibm.com/api/v1/jobs with 'program_id': 'sampler' and params.pubs, and with the REST reference's Jobs tag (POST /v1/jobs, program_id body field). Length tell removed. | length rank rebalanced (correct option no longer shortest)"
-  }
+    "notes": "adversarial s8 r1: carried-forward flag CONFIRMED and fixed — the cited guides/primitives-rest-api returns 200 but redirects to guides/primitives ('Introduction to primitives'), which says nothing about REST and does not support the keyed answer. Replaced with guides/sampler-rest-api, which shows the exact POST to https://quantum.cloud.ibm.com/api/v1/jobs with 'program_id': 'sampler' and params.pubs, and with the REST reference's Jobs tag (POST /v1/jobs, program_id body field). Length tell removed. | length rank rebalanced (correct option no longer shortest) | pool wave: +E the body field named primitive_id, +F PUT to a client-chosen job id"
+  },
+  "display_count": 4
 }

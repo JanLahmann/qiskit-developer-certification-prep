@@ -24,6 +24,14 @@
     {
       "key": "D",
       "text": "`mygate` is resolved as a `stdgates.inc` gate, so the body calls it with no declaration written."
+    },
+    {
+      "key": "E",
+      "text": "A `gate` declaration is emitted, but under a mangled name such as `circuit_0`."
+    },
+    {
+      "key": "F",
+      "text": "The gate becomes an OpenQASM 2 style `opaque mygate q[0];` declaration, with its gate body omitted."
     }
   ],
   "answer": [
@@ -34,7 +42,9 @@
     "distractors": {
       "A": "Inlining is what a transpiler pass such as `decompose()` would do. The exporter does not flatten the instruction; the `rz`/`h` pair appears inside the `gate` block, not in the circuit body.",
       "C": "Custom `gate` declarations are ordinary OpenQASM 3, so nothing raises. (Hardware execution is a separate matter -- the circuit must still be transpiled to the backend ISA first.)",
-      "D": "`mygate` is not in `stdgates.inc`; nothing would define it for a reader of the program, which is exactly why the exporter has to write the declaration out."
+      "D": "`mygate` is not in `stdgates.inc`; nothing would define it for a reader of the program, which is exactly why the exporter has to write the declaration out.",
+      "E": "The declaration keeps the name the sub-circuit was given -- the emitted line is `gate mygate _gate_q_0 { ... }`. It is the gate's *parameters* that get generated names (`_gate_q_0`), not the gate itself.",
+      "F": "`opaque` is the OpenQASM 2 device for declaring a gate with no body. OpenQASM 3 has real gate definitions and Qiskit uses them, so the exported program carries the `rz`/`h` body rather than an opaque stub."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
@@ -47,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nsub = QuantumCircuit(1, name=\"mygate\")\nsub.rz(0.5, 0)\nsub.h(0)\nqc = QuantumCircuit(1)\nqc.append(sub.to_gate(), [0])\n\nraised = False\nerr = \"\"\nout = \"\"\ntry:\n    out = qasm3.dumps(qc)\nexcept Exception as e:\n    raised = True\n    err = f\"{type(e).__name__}: {str(e)[:100]}\"\n\nlines = [l.strip() for l in out.splitlines()]\nhas_gate_def = any(l.startswith(\"gate mygate\") for l in lines)\nuses_gate = any(l.startswith(\"mygate \") for l in lines)\nbody_lines = [l for l in lines if not l.startswith((\"OPENQASM\", \"include\", \"gate \", \"}\"))]\ninlined = (not has_gate_def) and any(l.startswith(\"rz(\") for l in body_lines)\n\nclaim = {\n    \"A\": inlined,\n    \"B\": (has_gate_def and uses_gate and not raised),\n    \"C\": raised,\n    \"D\": (not has_gate_def and not raised),\n}\nevidence = {\n    \"A\": f\"claim=inlined with no declaration; a 'gate mygate ...' declaration is present={has_gate_def}, \"\n         f\"so inlined={inlined}\",\n    \"B\": f\"claim=declaration emitted then invoked; export raised={raised}; \"\n         f\"'gate mygate ...' declaration emitted={has_gate_def}; invoked as 'mygate ...'={uses_gate}\",\n    \"C\": f\"claim=export raises QASM3ExporterError; export actually raised={raised} {err}\",\n    \"D\": f\"claim=treated as a stdgates.inc gate so no declaration is written; declaration actually \"\n         f\"present={has_gate_def}\",\n}\nproven = [k for k, v in claim.items() if v]\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"dumps\": out, \"lines\": lines}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nsub = QuantumCircuit(1, name=\"mygate\")\nsub.rz(0.5, 0)\nsub.h(0)\nqc = QuantumCircuit(1)\nqc.append(sub.to_gate(), [0])\n\nraised = False\nerr = \"\"\nout = \"\"\ntry:\n    out = qasm3.dumps(qc)\nexcept Exception as e:\n    raised = True\n    err = f\"{type(e).__name__}: {str(e)[:100]}\"\n\nlines = [l.strip() for l in out.splitlines()]\nhas_gate_def = any(l.startswith(\"gate mygate\") for l in lines)\nuses_gate = any(l.startswith(\"mygate \") for l in lines)\nbody_lines = [l for l in lines if not l.startswith((\"OPENQASM\", \"include\", \"gate \", \"}\"))]\ninlined = (not has_gate_def) and any(l.startswith(\"rz(\") for l in body_lines)\ndecl_names = [l.split()[1] for l in lines if l.startswith(\"gate \") and len(l.split()) > 1]\nhas_opaque = (\"opaque\" in out)\n\nclaim = {\n    \"A\": inlined,\n    \"B\": (has_gate_def and uses_gate and not raised),\n    \"C\": raised,\n    \"D\": (not has_gate_def and not raised),\n    \"E\": (bool(decl_names) and \"mygate\" not in decl_names),\n    \"F\": has_opaque,\n}\nevidence = {\n    \"A\": f\"claim=inlined with no declaration; a 'gate mygate ...' declaration is present={has_gate_def}, \"\n         f\"so inlined={inlined}\",\n    \"B\": f\"claim=declaration emitted then invoked; export raised={raised}; \"\n         f\"'gate mygate ...' declaration emitted={has_gate_def}; invoked as 'mygate ...'={uses_gate}\",\n    \"C\": f\"claim=export raises QASM3ExporterError; export actually raised={raised} {err}\",\n    \"D\": f\"claim=treated as a stdgates.inc gate so no declaration is written; declaration actually \"\n         f\"present={has_gate_def}\",\n    \"E\": f\"claim=the declaration is emitted under a mangled name; gate declaration names actually \"\n         f\"emitted={decl_names}; match={claim['E']}\",\n    \"F\": f\"claim=exported as an OpenQASM 2 style opaque declaration with the body omitted; the word \"\n         f\"opaque appears in the output={has_opaque}; a full gate declaration with a body is \"\n         f\"present={has_gate_def}\",\n}\nproven = [k for k, v in claim.items() if v]\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"dumps\": out, \"lines\": lines}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
     "adversarial_rounds": 1,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->B (position rebalance); absolute-word tell and length tell removed; proof now ignores gate-block interiors when testing the 'inlined' claim | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged"
+    "notes": "adversarial s8 r1: answer A->B (position rebalance); absolute-word tell and length tell removed; proof now ignores gate-block interiors when testing the 'inlined' claim | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E the custom gate is renamed/mangled in the declaration, +F custom gates become OpenQASM 2 style opaque declarations"
   },
   "freshness": {
     "verified_against": {
@@ -65,5 +75,6 @@
     },
     "verified_on": "2026-07-25",
     "stale": false
-  }
+  },
+  "display_count": 4
 }

@@ -779,3 +779,111 @@ and died with it.
 - **4-correct multis at the 6-option cap still cannot pool** (s7-q030, the section's
   only skip; `display_count` would need to be >= 6 to leave 2 displayed distractors
   yet must be < len(options)). Fourth instance after s3-q042, s4's note and s6-q028.
+
+## Verified library facts (s8 pool wave — OpenQASM, 2026-07-25, qiskit 2.5.0)
+
+- **`qasm3.dumps` forwards its kwargs to the `Exporter` constructor**, so any
+  unknown one raises `TypeError: Exporter.__init__() got an unexpected keyword
+  argument '...'` (verified with `file=`). It never writes to a stream.
+- **`qasm3.dump(circuit, stream)` calls `.write` on its second argument**: a
+  path string raises `AttributeError: 'str' object has no attribute 'write'`.
+  Signature is `(circuit, stream, **kwargs)`. The mirror-image trap is
+  **`qasm2.load(filename)`**, which calls `os.fspath` — an open `StringIO`
+  raises `TypeError: argument should be a str or an os.PathLike object ...`.
+  So in this family exactly one call takes a path and one takes a stream; both
+  near-misses are clean, cheap distractors.
+- **`qasm3.loads` on OpenQASM *2* text raises `MissingOptionalLibraryError`
+  before it parses anything** (the optional-dependency guard runs first). That
+  makes "one loader handles both versions" refutable without the extra package
+  installed and without a meta-path block — a plain `try/except` in an
+  `attempt()` harness is sufficient handling. It also means
+  **`QASM3ImporterError` is a safe distractor exception**: that error only
+  exists once `qiskit-qasm3-import` IS installed.
+- **`QuantumCircuit.qasm()` is gone in 2.5** (`AttributeError`) — removed in
+  1.0 in favour of the `qasm2`/`qasm3` modules. Companion to the ledger's
+  `from_qasm_str`/`from_qasm_file` entry (those two still exist).
+- **`qasm2.dump` and `qasm2.dumps` share one exporter and one set of language
+  limits**: `qasm2.dump(qc_with_if_test, stream)` raises the same
+  `QASM2ExportError: 'OpenQASM 2 only supports register-equality conditions'`.
+  "Write to a file instead" is never a fix.
+- **DANGER on that same question:** because the limit is *register*-equality,
+  rewriting the condition as `if_test((qc.cregs[0], 1))` genuinely EXPORTS —
+  it is a SECOND CORRECT ANSWER on "make the OpenQASM 2 export succeed" stems.
+  Rejected as a pool draft; never offer it.
+- **`qasm2.dumps` on a circuit with a non-zero `global_phase` emits no phase at
+  all** — the text is exactly `OPENQASM 2.0; include "qelib1.inc"; qreg q[1];
+  h q[0];`, with no `gphase` and no `u(...)` rewrite, and **re-importing that
+  text raises nothing**. Both "the phase is folded into the gate" and "the
+  re-import chokes on a `gphase` line" refute against a single emitted string.
+- **The qasm3 exporter preserves the custom gate's NAME and mangles only its
+  parameters**: the emitted declaration is `gate mygate _gate_q_0 { rz(0.5)
+  _gate_q_0; h _gate_q_0; }`. So "the declaration is emitted under a mangled
+  name" is a safe refuted option. `opaque` never appears in v3 output (it is
+  an OpenQASM 2 device) — a second safe option on the same stem.
+- **`qasm3.dumps` output for `QuantumCircuit(2, 3)` is exactly**
+  `OPENQASM 3.0;` / `include "stdgates.inc";` / `bit[3] c;` / `qubit[2] q;` /
+  `h q[0];` — classical register first, width on the type, no `creg`/`qreg`.
+
+## Pool-craft rules (s8 pool wave, 2026-07-25 — 15/16 pooled, 29 new distractors)
+
+- **s8 started perfectly balanced (longest 26.8%, shortest 26.8%,
+  avoid_longest 24.4%), which is the hardest starting point to pool**: the s7
+  discipline (all new distractors longer than the correct option) would have
+  driven `shortest_option` to ~39%. When a section starts INSIDE the band, the
+  wave must be planned as arithmetic, not as a rule: budget every question's
+  post-pool contribution before drafting. Sorting by `s` (existing distractors
+  shorter than the correct option) and using the s7 table
+  (`C(5-s,3)/10` = 1.0/0.4/0.1/0 for s=0/1/2/>=3) predicted the finish to
+  within 0.5 points on all three heuristics.
+- **The mixed pair is the tool the earlier waves lacked.** On a question whose
+  correct option is currently TIED-longest, adding one distractor LONGER and
+  one SHORTER lands `longest_option` at exactly 0.25 for that question (s8-q010:
+  0.5 tied -> 0.25), versus 0.7 for two-shorter (s7's keeper trick) or 0 for
+  two-longer. Three settings from one question — use it to trim the aggregate
+  instead of rewriting content.
+- **On correct-is-shortest questions (s=0), one shorter + one longer takes the
+  question from 1.00 to 0.40 on `shortest_option`** (the s5 rule, re-derived).
+  Three such edits (q015/q017/q019) were exactly what kept s8 from overshooting;
+  each buys ~0.043 of section-level `shortest_option` at 14 single-answer
+  questions.
+- **A section with ZERO hedge words and near-zero absolutes is a trap in the
+  other direction.** s8's `most_hedged`/`avoid_hedged` coverage was 0.0 — which
+  means any single hedge or absolute word added to a pool distractor turns a
+  dormant heuristic on. `absolute_distractor_tell` fires the moment a distractor
+  carries an absolute while the correct option does not and nothing hedges, so
+  in such sections the cheapest policy is to draft every pool distractor
+  absolute-free and hedge-free. Two drafts were reworded for a stray "only".
+  (The s3 corollary still applies where it can: q017 and q021 have absolutes in
+  the correct option and were immune.)
+- **Explanations are NOT scanned by `question_flags`** (it reads option texts
+  only) — absolutes and hedges in the distractor explanations are free. Worth
+  knowing before contorting explanatory prose.
+- **Pooling a 5-option multi:** `display_count: 4` on a 2-correct/4-distractor
+  multi exposes 2-distractor variants, which re-opened both `stem_echo_tell`
+  and `format_tell` on s8-q025 (the variant that dropped the one backticked
+  distractor left the correct options as the only code-formatted ones).
+  `display_count: 5` (drop-one) cleared both. Rule: **prefer dc=5 on multis** —
+  their variants have far fewer distractors to hide a tell behind, and multis
+  contribute nothing to the length aggregates anyway.
+- **Verbatim-output pool distractors are the cheapest of all**: on
+  predict-output questions whose proof compares an emitted string or line to a
+  candidate dict, a new option costs one dict entry and the harness writes its
+  own ATTEMPTED/REFUTED evidence (q010, q014, q016, q020). Match the option's
+  character count to the section's needs by choosing WHICH line to corrupt —
+  swapping `bit[1] c;`/`qubit[1] q;` for `qreg`/`creg` plus an arrow measure
+  runs +1 char, swapping `stdgates.inc` for `qelib1.inc` runs -2.
+- **`str(exception)` is often already quoted.** A `msg.startswith("<input>:1,")`
+  check on a `QASM2ParseError` returns False because `str(e)` is
+  `'<input>:1,9: ...'` INCLUDING the quotes — the evidence then reads
+  "reported on line one=False" and describes reality backwards. Use `in`, not
+  `startswith`, on exception text, and read the rendered evidence for every new
+  key before declaring the batch done (caught live on s8-q015).
+- **3-correct multis at the 6-option cap pool by rotation only** (s8-q022,
+  `display_count: 5`) — fifth instance of the cap constraint after s3-q042,
+  s4-q039, s6-q028 and s7-q030.
+- s8 final: `longest_option` 25.0%, `shortest_option` 24.3%, `avoid_longest`
+  25.8% (baseline 23.9%), positions 27.9–34.7% exam-weighted (keys 4/4/3/3),
+  0 blockers/warnings, 4 low `length_tell` residuals (3 inherited keepers +
+  s8-q010's one-variant mixed pair), lint findings unchanged from the pre-wave
+  baseline (0). `similar_twin_member` 42.0% at 49% coverage -> 32.9% exam
+  estimate, accepted residual as in s4/s5/s6/s7.

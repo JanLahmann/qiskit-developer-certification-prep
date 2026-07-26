@@ -1176,3 +1176,260 @@ and died with it.
 - **Two objectives, five primers.** s6 and s7 each have only two syllabus
   objectives but four-plus scope areas, so s6 carries 2+2 primers and s7 carries
   3+2 — extending the s4/s5 rule. Every primer stayed in the 340-435 word band.
+
+## Verified library facts (s1/s2 official-alignment fix wave, 2026-07-26, qiskit 2.5.0)
+
+Circuit library (official task 1.2 — the bank had ZERO coverage):
+
+- **The n-local CLASSES are deprecated, the lowercase FUNCTIONS are the 2.x way.**
+  `EfficientSU2`, `RealAmplitudes`, `TwoLocal`, `NLocal`, `QFT` and
+  `BlueprintCircuit` all emit `DeprecationWarning: ... deprecated as of Qiskit 2.1.
+  It will be removed in Qiskit 3.0. Use the function ... instead`. The functions
+  (`efficient_su2`, `real_amplitudes`, `n_local`, `quantum_volume`, …) return a
+  plain **`QuantumCircuit`** — still parameterized, nothing is pre-bound.
+  Both forms still give the same parameter counts, so a question may key either;
+  prefer the function form.
+- **Parameter counts, measured:** `efficient_su2(n, reps=r).num_parameters ==
+  2*n*(r+1)` (4 qubits, reps 2 -> **24**; reps 1 -> 16, reps 3 -> 32);
+  `skip_final_rotation_layer=True` drops it to `2*n*r` (**16**).
+  `real_amplitudes(n, reps=r) == n*(r+1)` (4 qubits, reps 2 -> **12**).
+  There is one rotation layer MORE than `reps` by default.
+- **Gate sets, measured (`count_ops`):** `real_amplitudes(3)` = `{ry: 12, cx: 6}`
+  — the ONLY ry+cx member; `efficient_su2(3)` = `{ry: 12, rz: 12, cx: 6}`;
+  `pauli_two_design(3, seed=7)` = `{rz, cz, ry, rx}`; `quantum_volume(3, seed=7)`
+  = `{unitary: 3}` with **0 parameters**; `zz_feature_map(3)` and
+  `pauli_feature_map(3)` are **identical** (`{p: 12, cx: 12, h: 6}`, 3 params) —
+  never offer both as separate options; `excitation_preserving(3)` =
+  `{rz: 12, Interaction: 9}`. `real_amplitudes` default entanglement is
+  `reverse_linear` (3 qubits, reps 1 -> 2 `cx`; `'full'` -> 3).
+- **`QFTGate(n)`'s constructor takes ONLY `num_qubits`**: `do_swaps=` and
+  `approximation_degree=` are `TypeError` (they belonged to the deprecated `QFT`
+  class). `qc.append(QFTGate(n), …).decompose().count_ops()` = n `h`,
+  n(n−1)/2 `cp`, ⌊n/2⌋ `swap` — measured `{h: 4, cp: 6, swap: 2}` for n=4 and
+  `{h: 3, cp: 3, swap: 1}` for n=3. One decompose step never reaches `cx`
+  (that is translation, i.e. the transpiler). `QFTGate(4).inverse().name ==
+  'qft_dg'`; the gate's own name is `'qft'`, so pre-decompose `count_ops` is
+  `{'qft': 1}`.
+- `random_circuit(n, depth)` defaults to `measure=False` (0 clbits);
+  `measure=True` adds one `measure` per qubit.
+
+Device visualization (official task 2.2 — also ZERO coverage before this wave):
+
+- **Graphviz is NOT installed in the pinned env.** `plot_gate_map`,
+  `plot_error_map`, `plot_circuit_layout` and `plot_coupling_map` all end in
+  `MissingOptionalLibraryError: The 'Graphviz' library is required to use
+  'plot_coupling_map'` — the pip `graphviz` package would not help, the BINARY is
+  needed. **Workaround used by s2-q036/q037/q038:** stub
+  `qiskit.visualization.gate_map.plot_coupling_map` (bind its real signature with
+  `inspect.signature`, capture the arguments, return a bare
+  `matplotlib.figure.Figure`). Everything above the leaf renderer — input
+  validation, coupling-map extraction, colour and label computation — runs
+  unmodified, so the proof asserts on what Qiskit actually computes. The rendered
+  image is the only thing not exercised; say so in the provenance notes.
+- **What each device plot forwards to `plot_coupling_map` (FakeManilaV2, 5q):**
+  `plot_gate_map(backend)` -> `num_qubits=5`, the 8 directed coupling pairs,
+  `qubit_color=None`, `line_color=None` (uniform drawing; `plot_directed=True`
+  changes only the arrowheads). `plot_error_map(backend)` -> **5 distinct** per-qubit
+  colours and **4 distinct** per-link colours, computed from calibration.
+  `plot_circuit_layout(isa, backend)` -> a **2-tone** highlight
+  (`['#648fff',…,'black','black']`) plus `qubit_labels=['', '', '', '0', '1']`
+  (the VIRTUAL indices on the occupied physical qubits). "Distinct colour count > 2
+  on both qubits and links" is a clean, executable discriminator for
+  error-map-vs-the-others.
+- **Input-type refutations, all verified (no Graphviz needed — they raise first):**
+  `plot_gate_map(counts_dict)` / `plot_gate_map(CouplingMap)` -> `AttributeError:
+  ... has no attribute 'num_qubits'`; `plot_gate_map(QuantumCircuit)` /
+  `plot_gate_map(Target)` -> `AttributeError: ... has no attribute 'coupling_map'`;
+  `plot_error_map(counts_dict)` -> `AttributeError: 'dict' object has no attribute
+  'name'`; `plot_histogram(backend)` -> `AttributeError: ... has no attribute
+  'values'`; `plot_circuit_layout(backend, qc)` -> `AttributeError: ... has no
+  attribute '_layout'`; `plot_circuit_layout(isa, backend, view='bogus')` ->
+  `VisualizationError: Layout view must be 'virtual' or 'physical'.`
+- **`plot_circuit_layout(untranspiled, backend)` -> `QiskitError: 'Circuit has no
+  layout. Perhaps it has not been transpiled.'` at EVERY optimization level** —
+  `transpile` is functional, so `qc.layout` stays `None` after a level-3 run while
+  the returned circuit carries a `TranspileLayout`. A clean spot-bug stem, and
+  `view="physical"` is a safe refuted "fix" (the check runs before the view).
+- **`plot_histogram(counts)` returns a Figure whose axis x-tick labels are the
+  outcome bitstrings** (`['00', '11']`) — the observable post-condition that
+  refutes "the histogram shows the device", since a mere `attempt()` scores it as
+  "it ran" (the s4 harness trap). Equivalent post-condition for the device plots:
+  did the call reach the coupling-map renderer at all?
+- **`Statevector.sample_counts(shots, qargs=None)` returns a
+  `qiskit.result.Counts`** whose keys are `np.str_` bitstrings and whose values are
+  `int64` summing EXACTLY to `shots`; only nonzero-amplitude outcomes appear
+  (Bell -> `00`/`11` only). It takes **no `seed` argument** — determinism comes from
+  `sv.seed(1234)` on the Statevector, which reproduces the same counts across fresh
+  objects. `sample_memory(shots)` is the per-shot `ndarray`. No measurement
+  instruction is needed (and adding one would break `from_instruction`).
+  `plot_histogram(sv.sample_counts(n))` works directly.
+
+## Craft rules (s1/s2 fix wave, 2026-07-26)
+
+- **A whole-basis question CAN be pooled by widening the register.** The ledger's
+  earlier "s2-q031 cannot pool" note was correct for 2 qubits (all four basis
+  states were already options, so any fifth option would not be a basis state = a
+  tell). Rewriting the same q-sphere item on **3 qubits** (`h(1)`, `x(2)`) offers
+  6 of the 8 basis states, keeps every option a legal basis state, and supports
+  `display_count: 5` (2 correct + 3 of 4 distractors). Endianness misreads supply
+  two distractors for free (`|001>` and `|011>` are `|100>`/`|110>` read
+  backwards), a "forgot the X" state supplies a third and a "H on the wrong qubit"
+  state the fourth. Generalizes: widen the register before declaring a
+  value-space exhausted.
+- **`lint_proof_drift` punishes MENTIONING a kwarg you do not pin.** A kwarg
+  `lhs=rhs` in evidence is only a finding when the corpus talks about `lhs` yet
+  shows neither the pair nor the value — so adding `qubit_labels`/`num_qubits` to
+  an explanation to "cover" the evidence would CREATE findings. Leave such names
+  out of the question text, or quote the exact pair. Corollary: any
+  `something=True/False/None` is exempt (BOOL_RHS), which is why
+  `skip_final_rotation_layer=True`, `do_swaps=False` and `plot_directed=True` are
+  free to report.
+- **Position skew is cheapest to fix by rotating the keys, not the content.**
+  s2 `position_A` sat at 37.5% (warn line 0.40) after this wave's first draft;
+  re-lettering one spot-bug's options so the answer moved A -> D took it to 33.1%
+  at zero content cost. Do this before touching option text.
+- **On a 6-option / `display_count: 5` question the length arithmetic is trivial:**
+  make ALL five distractors shorter than the correct option for a keeper, or keep
+  TWO distractors longer than it so no drop-one variant can flip it. Three of the
+  seven new questions were made keepers deliberately (s1-q048, s2-q036, s2-q037);
+  the bank aggregate moved 23.2% -> 23.9% `longest_option`, 22.2% -> 22.4%
+  `shortest_option`, 24.8% -> 24.4% `avoid_longest`, 0 blockers/warnings.
+- **`zz_feature_map` vs `pauli_feature_map` are the same circuit** — a reminder
+  that "two plausible library calls" must be diffed by `count_ops` before both
+  are used as options in one question.
+
+## Verified library facts (s3/s4/s7/s8 official-alignment fix wave, 2026-07-26)
+
+Broadcasting pattern NAMES (official task 4.2 / sample topic 12 — the bank had
+the mechanics but never the names):
+
+- **guides/primitive-input-output names exactly four patterns**, verbatim:
+  *Broadcast single observable* (parameters `(5,)` x observables `()` -> `(5,)`),
+  *Zip* (`(5,)` x `(5,)` -> `(5,)`), *Outer/Product* (`(1, 6)` x `(4, 1)` ->
+  `(4, 6)`) and *Standard nd generalization* (`(3, 6)` x `(2, 3, 1)` ->
+  `(2, 3, 6)`). There is no "all-to-all" wording on the live page — the audit's
+  guess at the name was wrong; use these four. The page also states the three
+  NumPy rules and that each `SparsePauliOp` counts as ONE element whatever its
+  term count.
+- **Measured on `StatevectorEstimator` (2026-07-26):** with a ONE-parameter
+  circuit the parameter array's shape IS the parameter-value-set shape, so
+  `(1, 4)` x `(3, 1)` -> `evs.shape (3, 4)`; `(3,)` x `(3,)` -> `(3,)`;
+  `(3,)` x `()` -> `(3,)`; `(3, 1)` x `(3,)` -> `(3, 3)`; `(2, 3)` x `(4, 2, 1)`
+  -> `(4, 2, 3)`; `(3,)` x `(4,)` raises `ValueError: The observables shape (4,)
+  and the parameter values shape (3,) are not broadcastable.` With a TWO-parameter
+  circuit the trailing axis is consumed instead (`(5, 2)` -> `(5,)`), confirming
+  the s5/s7 entries. `ObservablesArray.coerce(obs).shape` is the cheap way to
+  report an observables-array shape in evidence.
+- **Zip and broadcast-single-observable produce the SAME result shape** — the
+  only executable discriminator is the observables-array shape (`()` vs equal to
+  the parameter shape). Any zip question must score on that, not on `evs.shape`.
+
+Job state / primitive containers (official task 7.2):
+
+- **`RuntimeJobV2` predicates can be executed with NO service and NO network:**
+  `_set_status_and_error_message` short-circuits when `_status` is already in
+  `JOB_FINAL_STATES`, so a subclass whose `__init__` just sets `self._status`
+  runs the real inherited `status()/done()/errored()/cancelled()/in_final_state()`.
+  Measured: `DONE` -> done True / in_final_state True; `CANCELLED` -> done False,
+  cancelled True, in_final_state True; `ERROR` -> errored True. This unblocks
+  executed s7o2 questions, which the s6/s7 study wave had declared impossible.
+- **`JobStatus.DONE.value` is the sentence `'job has successfully run'`**, so
+  `status() == JobStatus.DONE` is False against the string and `status().name`
+  raises `AttributeError: 'str' object has no attribute 'name'`. `qiskit.providers.JobStatus`
+  has SEVEN members (INITIALIZING, QUEUED, VALIDATING, RUNNING, CANCELLED, DONE,
+  ERROR) — one more (`VALIDATING`) than the runtime `Literal`. There is no
+  `FAILED` state anywhere.
+- **The local reference primitives return `JobStatus` ENUM members**, not strings:
+  `StatevectorSampler().run(...).status()` is `JobStatus.DONE`. So the
+  string-vs-enum contrast is a *Runtime vs reference primitive* fact, not a
+  universal one — scope every status question to `RuntimeJobV2`.
+- **`BasePrimitiveJob` lives in `qiskit.primitives`** (not importable from
+  `qiskit.primitives.base`); its abstract methods are exactly `cancel, cancelled,
+  done, in_final_state, result, running, status` (+ concrete `job_id`) — note
+  **no `errored`**, which is a `RuntimeJobV2` extra. `PrimitiveJob` and
+  `RuntimeJobV2` are both instances of it.
+- **A Sampler pub result's exact type is `SamplerPubResult`** (MRO
+  `SamplerPubResult -> PubResult -> object`), so "it is a `PubResult`" is TRUE by
+  isinstance and FALSE as a type name — word such options as `type(x).__name__`.
+- **`Session.status()` and `details()["state"]` use different vocabularies**
+  (api/qiskit-ibm-runtime/session, fetched 2026-07-26): `status()` returns
+  `Pending` / `In progress, accepting new jobs` / `In progress, not accepting new
+  jobs` / `Closed` / `None`, while `state` is `open|active|inactive|closed`.
+  `interactive_timeout` = max IDLE time between jobs before deactivation,
+  `active_timeout` = max time active, `max_time` = total allowed length,
+  `usage_time` = time a QPU is committed to a job (not wall clock).
+
+OpenQASM 3 types (official task 8.1) and REST (task 8.4):
+
+- **`qiskit-qasm3-import` is NOT installed** in the pinned env (re-checked
+  2026-07-26: `ModuleNotFoundError`) — the s8 pool-wave entry stands, and the
+  brief for this wave was wrong on that point. OpenQASM type questions are
+  therefore conceptual; and even with the package, Qiskit's importer is narrower
+  than the language, so a `loads()` proof would refute perfectly legal OpenQASM.
+- **openqasm.com answers this environment's fetch tool with HTTP 403** (the whole
+  site, including `/versions/3.0/index.html`) — a user-agent block, not a dead
+  page. Spec content was read from `raw.githubusercontent.com/openqasm/openqasm/
+  main/source/language/types.rst`. `syllabus.json` already cites the UNVERSIONED
+  `https://openqasm.com/language/types.html`; the new s8 questions cite the
+  versioned `.../versions/3.0/language/types.html` as briefed. **Not machine-verified
+  from here — check_links is the arbiter.**
+- **Spec facts, quoted:** the special types (no C equivalent) are `bit`, `angle`,
+  `duration`, `stretch`; the standard ones `bool`, `int`, `uint`, `float`,
+  `complex`. `complex` takes a FLOAT type in its designator
+  (`complex[float[64]] c;`) and bare `complex` means `complex[float]` — never
+  offer bare `complex` as a wrong option, but `complex[64]` IS invalid. There is
+  no `string`, `char`, `real` or `unsigned` type. Casting: the lesser operand is
+  promoted (`complex` > `float` > `int`/`uint`, wider beats narrower); `bool` and
+  scalar `bit` are interchangeable; `bit[n]` <-> `int[m]`/`uint[m]`/`angle[m]`
+  only when `m == n`; nothing casts to or from `duration` (divide by a duration);
+  `float` -> `angle[m]` takes the nearest value modulo 2pi (ties toward a zero
+  LSB), not truncation; width designators must be `const`.
+- **Runtime REST jobs endpoints, read off the live reference** (both
+  `api/qiskit-runtime-rest` and `api/qiskit-runtime-rest/tags/jobs` fetched 200):
+  `POST /api/v1/jobs`, `GET /api/v1/jobs`, `GET|DELETE /api/v1/jobs/{id}`,
+  `POST /api/v1/jobs/{id}/cancel`, `GET /api/v1/jobs/{id}/logs`,
+  `GET /api/v1/jobs/{id}/metrics`, **`GET /api/v1/jobs/{id}/results`**,
+  `PUT /api/v1/jobs/{id}/tags`; sessions are `POST /api/v1/sessions`, backends
+  `GET /api/v1/backends`. Headers: `Authorization: Bearer <IAM token>`,
+  `Service-CRN`, `IBM-API-Version: <YYYY-MM-DD>`, `Accept: application/json`,
+  plus `Content-Type` on bodies. The `eu-de` region swaps the host only.
+
+Circuit/transpiler (official minor gaps):
+
+- **`2 * Parameter('th')` is a `ParameterExpression`**, `isinstance(expr, Parameter)`
+  is False (`Parameter.__mro__` is `Parameter -> ParameterExpression -> object`),
+  the circuit still reports ONE free parameter, and `expr.bind({th: 0.5})` returns
+  a (bound) `ParameterExpression`, never a float. `ParameterVectorElement`
+  subclasses `Parameter`.
+- **Stage membership of a level-2 preset, measured by walking
+  `stage.to_flow_controller().tasks` recursively** (`PassManager.passes()` no
+  longer exists in 2.5): layout = SetLayout, VF2Layout, BarrierBeforeFinalMeasurements,
+  SabreLayout, FullAncillaAllocation, EnlargeWithAncilla, ApplyLayout;
+  routing = CheckMap, BarrierBeforeFinalMeasurements, SabreSwap, VF2PostLayout,
+  ApplyLayout, FilterOpNodes; translation = UnitarySynthesis, HighLevelSynthesis,
+  BasisTranslator; optimization = TwoQubitPeepholeOptimization, ... ,
+  Optimize1qGatesDecomposition, CommutativeCancellation, ... ; init (levels 2/3)
+  contains ConsolidateBlocks and Split2QUnitaries. **Traps:** `BasisTranslator`
+  appears in THREE stages (init, translation, optimization) and `ApplyLayout` in
+  two (layout, routing) — never use either as a "which stage" distractor without
+  saying which stage is being asked about; `ConsolidateBlocks` is an INIT pass at
+  level 2, not an optimization pass (Qiskit 2.5 replaced that role with
+  `TwoQubitPeepholeOptimization`); at level 1 the layout stage additionally holds
+  TrivialLayout and CheckMap.
+
+Craft notes from this wave:
+
+- **`None` in an option text is an ABSOLUTE word** to the audit's tokenizer
+  (`word_set` lowercases, so `None` -> `none`). A distractor saying "`details()`
+  returns `None`" turned on `absolute_distractor_tell` on the drop-one variant
+  that removed the only hedged distractor — fixed by hedging a second distractor.
+  Same class of surprise as the ledger's `measure_all` -> "all" note.
+- **A 6-option / dc=5 question needs TWO distractors longer than the correct
+  option**, and the cheapest way to get there is to lengthen two distractors
+  rather than trim the answer (s7-q035: correct 161 chars vs longest distractor
+  143 fired a low `length_tell` until two distractors were extended past it).
+- 10 new questions moved the bank aggregates 23.9% -> 23.2% `longest_option`
+  (predict-output triples and single-class-name option sets are equal-length
+  ballast, worth 0.25 each), `shortest_option` unchanged at 22.4%,
+  `avoid_longest` 24.4% -> 24.3%, positions 29.6-30.7%, 0 blockers/warnings,
+  one deliberate low `length_tell` residual (s7-q036).

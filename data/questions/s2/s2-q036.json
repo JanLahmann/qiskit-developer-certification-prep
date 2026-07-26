@@ -1,0 +1,80 @@
+{
+  "id": "s2-q036",
+  "section": "s2",
+  "objectives": [
+    "s2o2"
+  ],
+  "type": "spot-bug",
+  "difficulty": 2,
+  "stem": "This snippet should show which physical qubits of the 5-qubit device the transpiled circuit occupies, but the final line raises instead of returning a figure. What is wrong, and what fixes it?",
+  "code": "from qiskit import QuantumCircuit, transpile\nfrom qiskit.visualization import plot_circuit_layout\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\n\nisa = transpile(qc, backend, seed_transpiler=7)\nfig = plot_circuit_layout(qc, backend)",
+  "options": [
+    {
+      "key": "A",
+      "text": "The two arguments are the wrong way round: `plot_circuit_layout(backend, qc)` puts the device first"
+    },
+    {
+      "key": "B",
+      "text": "A layout is recorded from `optimization_level=3` upwards; re-transpile there and plot `qc` again"
+    },
+    {
+      "key": "C",
+      "text": "The second argument has to be a coupling map: pass `backend.coupling_map` together with `isa`"
+    },
+    {
+      "key": "D",
+      "text": "`plot_circuit_layout` only reads a layout off the circuit it is given, and `qc` has none — plot `isa` instead"
+    },
+    {
+      "key": "E",
+      "text": "The second argument has to be the device description: pass `backend.target` together with `isa`"
+    },
+    {
+      "key": "F",
+      "text": "A routed circuit needs `view=\"physical\"`; add that keyword to the call on `qc`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "`transpile` is a function, not an in-place mutation: it returns a NEW circuit and leaves the original untouched. The layout — the virtual-to-physical qubit mapping chosen during transpilation — is attached to that returned circuit as `isa.layout`, while `qc.layout` stays `None`. `plot_circuit_layout` reads exactly that attribute, so handing it the pre-transpilation circuit raises `QiskitError: 'Circuit has no layout. Perhaps it has not been transpiled.'`. Plotting `isa` produces the figure, with the occupied physical qubits highlighted and labelled by their virtual index.",
+    "distractors": {
+      "A": "The signature is `plot_circuit_layout(circuit, backend)`. Swapping the arguments makes the function look for a layout on the backend object, which fails with an `AttributeError` instead.",
+      "B": "Every optimization level records a layout on its output circuit; the level is irrelevant here. What matters is that the layout lives on the circuit `transpile` returns, so re-running it and then plotting `qc` again raises the same error.",
+      "C": "A `CouplingMap` is not a backend: the function needs the full device description to place the nodes. Passing one raises an `AttributeError` about a missing qubit count — and it never gets far enough to matter when the circuit has no layout anyway.",
+      "E": "A `Target` describes the instructions a device supports but is not a backend either, so the plotter cannot pull a coupling map off it and raises an `AttributeError`.",
+      "F": "The `view` keyword chooses whether the labels show virtual or physical qubit indices; both settings need a circuit that already carries a layout, so this changes nothing about the failure."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q036.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import inspect\nimport matplotlib.figure as mfig\nimport qiskit.visualization.gate_map as gm\nfrom qiskit import QuantumCircuit, transpile\nfrom qiskit.visualization import plot_circuit_layout\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\n# The Graphviz BINARY is absent in this sandbox, so the leaf renderer\n# plot_coupling_map is stubbed out. Every input check and every colour/label\n# decision above it still runs for real, and we capture what reaches it.\n_sig = inspect.signature(gm.plot_coupling_map)\n_cap = {}\n\n\ndef _stub(*a, **kw):\n    _cap.clear()\n    _cap.update(_sig.bind(*a, **kw).arguments)\n    return mfig.Figure()\n\n\ngm.plot_coupling_map = _stub\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\nisa = transpile(qc, backend, seed_transpiler=7)\n\n\ndef attempt(fn):\n    _cap.clear()\n    try:\n        r = fn()\n        return {\"ok\": True, \"what\": type(r).__name__, \"cap\": dict(_cap)}\n    except Exception as e:\n        return {\"ok\": False, \"what\": type(e).__name__ + \": \" + str(e)[:80], \"cap\": {}}\n\n\nbuggy = attempt(lambda: plot_circuit_layout(qc, backend))\n\n\ndef relevel():\n    transpile(qc, backend, optimization_level=3, seed_transpiler=7)\n    return plot_circuit_layout(qc, backend)\n\n\ntries = {\n    \"A\": (\"plot_circuit_layout(backend, qc)\", lambda: plot_circuit_layout(backend, qc)),\n    \"B\": (\"re-transpiling at optimization_level=3, then plotting qc\", relevel),\n    \"C\": (\"plot_circuit_layout(isa, backend.coupling_map)\", lambda: plot_circuit_layout(isa, backend.coupling_map)),\n    \"D\": (\"plotting isa\", lambda: plot_circuit_layout(isa, backend)),\n    \"E\": (\"plot_circuit_layout(isa, backend.target)\", lambda: plot_circuit_layout(isa, backend.target)),\n    \"F\": (\"plot_circuit_layout(qc, backend, view='physical')\", lambda: plot_circuit_layout(qc, backend, view=\"physical\")),\n}\nevidence = {}\nproven = []\nobserved = {\"failing_line\": buggy[\"what\"], \"layout_on_original\": str(qc.layout)}\nfor k, (label, fn) in tries.items():\n    r = attempt(fn)\n    marks = r[\"cap\"].get(\"qubit_labels\")\n    fixed = bool(r[\"ok\"] and marks is not None and any(m for m in marks))\n    observed[k] = r[\"what\"]\n    if r[\"ok\"]:\n        evidence[k] = (f\"{label} -> returned a {r['what']}; the device renderer was handed the\"\n                       f\" per-qubit labels {marks} over {r['cap'].get('num_qubits')} physical\"\n                       f\" qubits -> the occupied qubits are shown? {fixed}\")\n    else:\n        evidence[k] = f\"{label} -> {r['what']}; no figure, so it is not the fix ({fixed})\"\n    if fixed:\n        proven.append(k)\nevidence[\"D\"] = (\"the snippet's last line raises \" + buggy[\"what\"] + \" because the untranspiled\"\n                 \" circuit reports a layout of \" + str(qc.layout) + \"; \" + evidence[\"D\"])\nobserved[\"layout_on_original_after_relevel\"] = str(qc.layout)\nevidence[\"B\"] += f\"  (after a level-3 run the ORIGINAL circuit still reports a layout of {qc.layout})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (s1/s2 official-alignment fix wave)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "plot_circuit_layout coverage gap from data/audits/official_alignment.md (task 2.2). Graphviz binary absent in the pinned env: the proof stubs the leaf renderer plot_coupling_map and asserts on what the real code forwards to it."
+  },
+  "display_count": 5,
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

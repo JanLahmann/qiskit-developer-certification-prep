@@ -1,0 +1,80 @@
+{
+  "id": "s3-q055",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "A preset pass manager is built for a 5-qubit backend at optimization level 2, and you inspect the passes that make up each of its six stages. Which of these named passes is one that the `routing` stage runs?",
+  "code": "pm = generate_preset_pass_manager(backend=backend, optimization_level=2)\nprint(pm.stages)   # ('init', 'layout', 'routing', 'translation', 'optimization', 'scheduling')\n# which pass shows up inside pm.routing?",
+  "options": [
+    {
+      "key": "A",
+      "text": "`SabreLayout`"
+    },
+    {
+      "key": "B",
+      "text": "`VF2Layout`"
+    },
+    {
+      "key": "C",
+      "text": "`ConsolidateBlocks`"
+    },
+    {
+      "key": "D",
+      "text": "`SabreSwap`"
+    },
+    {
+      "key": "E",
+      "text": "`BasisTranslator`"
+    },
+    {
+      "key": "F",
+      "text": "`Optimize1qGatesDecomposition`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "Routing is the stage that makes two-qubit gates physically executable by inserting SWAPs along the coupling map, and `SabreSwap` is the pass that does it in every preset level. Reading the whole level-2 stack tells the story of the six stages: `init` normalizes and pre-optimizes the abstract circuit, `layout` chooses the virtual-to-physical mapping (`VF2Layout` first, then `SabreLayout`), `routing` runs `CheckMap` and `SabreSwap` and then re-scores the mapping with `VF2PostLayout`, `translation` rewrites gates into the target basis, `optimization` cleans up the ISA circuit, and `scheduling` is present but empty unless a scheduling method is requested.",
+    "distractors": {
+      "A": "`SabreLayout` belongs to the LAYOUT stage. It is the easiest one to misplace, because it internally trials routing to score candidate layouts — but its output is a layout, and the SWAPs are inserted downstream.",
+      "B": "`VF2Layout` also belongs to the layout stage: it looks for a perfect subgraph match so that no SWAPs are needed at all. Its post-routing sibling `VF2PostLayout` is the pass that does appear in the routing stage.",
+      "C": "`ConsolidateBlocks` runs in the INIT stage at levels 2 and 3, where it collects runs of gates into unitary blocks before layout is chosen.",
+      "E": "`BasisTranslator` is the workhorse of the TRANSLATION stage (it also appears in init and in the optimization stage's re-translation loop). Translating gates and routing them are separate concerns.",
+      "F": "`Optimize1qGatesDecomposition` runs in the OPTIMIZATION stage, after the circuit is already routed and translated."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q055.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=2)\n\n\ndef pass_names(stage_pm):\n    out = []\n\n    def walk(task):\n        if hasattr(task, \"tasks\"):\n            for sub in task.tasks:\n                walk(sub)\n        else:\n            out.append(type(task).__name__)\n\n    for task in stage_pm.to_flow_controller().tasks:\n        walk(task)\n    return out\n\n\nstages = {s: pass_names(getattr(pm, s)) for s in pm.stages if getattr(pm, s) is not None}\nrouting = stages[\"routing\"]\nclaims = {\n    \"A\": \"SabreLayout\",\n    \"B\": \"VF2Layout\",\n    \"C\": \"ConsolidateBlocks\",\n    \"D\": \"SabreSwap\",\n    \"E\": \"BasisTranslator\",\n    \"F\": \"Optimize1qGatesDecomposition\",\n}\nflags = {k: (v in routing) for k, v in claims.items()}\nevidence = {}\nfor k, cls in claims.items():\n    where = sorted(s for s, names in stages.items() if cls in names) or [\"no preset stage\"]\n    evidence[k] = (\n        f\"the routing stage of the level-2 preset runs {routing}; \"\n        f\"`{cls}` is found in stage(s) {where} -> match={flags[k]}\"\n    )\nemit_verdict({\n    \"answer\": sorted(k for k, v in flags.items() if v),\n    \"evidence\": evidence,\n    \"observed\": {\"stages\": stages},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "official-alignment minor gap: only two transpiler pass classes were ever named in the bank. The proof enumerates every stage of the level-2 preset pass manager by walking its flow controllers, so each option is placed in the stage that actually contains it (measured, not recited) — note BasisTranslator legitimately appears in init/translation/optimization and ConsolidateBlocks in init at this level."
+  },
+  "display_count": 5,
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

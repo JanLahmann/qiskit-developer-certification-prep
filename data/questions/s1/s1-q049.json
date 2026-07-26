@@ -1,0 +1,80 @@
+{
+  "id": "s1-q049",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "The Quantum Fourier Transform is applied to a 4-qubit register with the library gate `QFTGate`, and the circuit is then expanded one level. What does the last line print?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit.library import QFTGate\n\nqc = QuantumCircuit(4)\nqc.append(QFTGate(4), range(4))\n\nprint(dict(qc.decompose().count_ops()))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`{'qft': 1}`"
+    },
+    {
+      "key": "B",
+      "text": "`{'h': 4, 'cp': 6, 'swap': 2}`"
+    },
+    {
+      "key": "C",
+      "text": "`{'h': 4, 'cp': 6}`"
+    },
+    {
+      "key": "D",
+      "text": "`{'h': 4, 'cx': 6, 'swap': 2}`"
+    },
+    {
+      "key": "E",
+      "text": "`{'h': 4, 'cp': 12, 'swap': 2}`"
+    },
+    {
+      "key": "F",
+      "text": "`{'h': 4, 'cp': 6, 'swap': 4}`"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "The textbook QFT on n qubits is one Hadamard per qubit plus one controlled-phase rotation for each unordered pair of qubits, followed by a bit-reversal made of swaps. For n = 4 that is 4 `h`, 4*3/2 = 6 `cp`, and 2 `swap` gates (a 4-qubit reversal swaps two pairs). `QFTGate` stores that circuit as its definition, so a single `decompose()` step replaces the opaque `qft` instruction with exactly those gates.",
+    "distractors": {
+      "A": "`decompose()` expands one level of definitions, and `QFTGate` has a definition — it is a library gate, not a hardware primitive. `{'qft': 1}` is what `count_ops()` reports before the expansion.",
+      "C": "The bit-reversal swaps belong to the definition; `QFTGate` takes no argument to suppress them (its constructor accepts a qubit count and nothing else). The deprecated `QFT` class was the one with `do_swaps`.",
+      "D": "One `decompose()` step stops at the controlled-phase gates. Turning each `cp` into `cx` plus single-qubit rotations is a translation to a hardware basis, which is the transpiler's job, not `decompose()`'s.",
+      "E": "One rotation per *unordered* pair: qubit i controls a phase on qubit j once, not once in each direction. Counting ordered pairs doubles the true number.",
+      "F": "Reversing a register of 4 qubits takes floor(4/2) = 2 swaps — the outer pair and the inner pair. One swap per qubit would undo half of the reversal."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/circuit_library",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.QFTGate"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q049.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit.library import QFTGate\n\nqc = QuantumCircuit(4)\nqc.append(QFTGate(4), range(4))\nbefore = {g: int(v) for g, v in qc.count_ops().items()}\nops = {g: int(v) for g, v in qc.decompose().count_ops().items()}\nclaims = {\n    \"A\": {\"qft\": 1},\n    \"B\": {\"h\": 4, \"cp\": 6, \"swap\": 2},\n    \"C\": {\"h\": 4, \"cp\": 6},\n    \"D\": {\"h\": 4, \"cx\": 6, \"swap\": 2},\n    \"E\": {\"h\": 4, \"cp\": 12, \"swap\": 2},\n    \"F\": {\"h\": 4, \"cp\": 6, \"swap\": 4},\n}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = bool(ops == c)\n    evidence[k] = f\"executed decompose().count_ops() = {ops}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nevidence[\"A\"] += f\"  (before the expansion the circuit holds {before}, so one step does open the gate up)\"\ntry:\n    QFTGate(4, do_swaps=False)\n    swaps_optional = \"accepted\"\nexcept TypeError as e:\n    swaps_optional = type(e).__name__ + \": \" + str(e)[:70]\nevidence[\"C\"] += f\"  (asking QFTGate to skip the reversal is {swaps_optional})\"\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"before_decompose\": before, \"after_decompose\": ops, \"skip_reversal\": swaps_optional},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (s1/s2 official-alignment fix wave)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Circuit-library coverage gap from data/audits/official_alignment.md (task 1.2). Gate counts measured on qiskit 2.5.0."
+  },
+  "display_count": 5,
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

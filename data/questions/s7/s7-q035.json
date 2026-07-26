@@ -1,0 +1,69 @@
+{
+  "id": "s7-q035",
+  "section": "s7",
+  "objectives": [
+    "s7o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "A dashboard watches a long-running session on a real QPU by calling both `session.status()` and `session.details()` every minute. Which statement about what those two calls report is correct?",
+  "code": "state = session.details()[\"state\"]\nheadline = session.status()",
+  "options": [
+    {
+      "key": "A",
+      "text": "`details()[\"state\"]` and `status()` carry the same value, because `status()` simply reads the `state` field out of the details dictionary."
+    },
+    {
+      "key": "B",
+      "text": "`details()[\"state\"]` is one of `open`, `active`, `inactive` or `closed`, while `status()` returns wording such as `Pending` or `In progress, accepting new jobs`."
+    },
+    {
+      "key": "C",
+      "text": "`details()[\"interactive_timeout\"]` is the longest a session may run in total, so it is the field a dashboard should compare against `max_time` when it decides whether to reopen."
+    },
+    {
+      "key": "D",
+      "text": "`details()[\"accepting_jobs\"]` flips to False when `max_time` expires, so it stays True after `session.close()` while the queued jobs finish."
+    },
+    {
+      "key": "E",
+      "text": "`details()[\"usage_time\"]` measures wall-clock time since the session was created, so it typically keeps growing even while the session sits idle between two of its jobs."
+    },
+    {
+      "key": "F",
+      "text": "`details()` returns `None` unless the session was built with `create_new=False`, so a dashboard has to fall back on `status()` for a live session."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "The two calls speak different vocabularies. `details()` is the machine-readable description of the session: its `state` field takes one of `open`, `active`, `inactive` or `closed`, alongside `accepting_jobs`, `max_time`, `interactive_timeout`, `active_timeout`, `usage_time`, `mode` and the lifecycle timestamps. `status()` is the human-readable headline and returns a different set of strings — `Pending` (created, not yet active), `In progress, accepting new jobs`, `In progress, not accepting new jobs`, `Closed`, or `None` when no status details are available. Knowing which vocabulary belongs to which call is what the exam tests: an equality check written against the wrong set silently never matches.",
+    "distractors": {
+      "A": "They are related but not identical: `status()` folds the `accepting_jobs` flag into its wording (which is why it has two `In progress` variants), and its strings are not the `state` values.",
+      "C": "Wrong field. `interactive_timeout` is the maximum IDLE time allowed between jobs before the session is deactivated; the session's total allowed length is `max_time`, and `active_timeout` bounds how long it can stay active.",
+      "D": "Backwards. `close()` is precisely the call that stops the session accepting new jobs while queued and running jobs finish, so `accepting_jobs` goes False well before `max_time` would expire.",
+      "E": "`usage_time` is billed usage, defined as the time a quantum system is committed to completing a job — an idle session accumulates none of it, which is why an idle window costs you nothing but the timeout.",
+      "F": "`create_new` controls whether a new server-side session is created (it is set False by `Session.from_id`); it does not gate `details()`. The real gotcha is local testing mode, where there is no server-side session and `details()` returns `None`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/session",
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "official-alignment gap task 7.2: session.details() was a single point of failure (only s7-q030, which asks which KEYS exist). This one asks what the values MEAN and contrasts details() with status(). Conceptual by necessity — both calls return None in local testing mode, so nothing is observable without a live service; every claim is checked against the api/qiskit-ibm-runtime/session page (details() key list and status() string list, fetched 2026-07-26)."
+  },
+  "display_count": 5
+}

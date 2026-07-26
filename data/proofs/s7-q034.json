@@ -1,0 +1,38 @@
+{
+  "question": "s7-q034",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "A": "status() returned 'DONE' (a str); comparing it to the enum member gives False -> match=False",
+      "B": "reading .name off the returned value gives AttributeError: 'str' object has no attribute 'name' -> match=False",
+      "C": "status() returned 'DONE', isinstance of str is True, and the string comparison gives True -> match=True",
+      "D": "a job whose state is CANCELLED reports in_final_state()=True; the terminal states are ('DONE', 'CANCELLED', 'ERROR') -> match=False",
+      "E": "the same cancelled job reports done()=False and an errored job reports done()=False -> match=False",
+      "F": "the terminal states are ('DONE', 'CANCELLED', 'ERROR'); the errored job reports 'ERROR' with errored()=True -> match=False"
+    },
+    "observed": {
+      "status": "DONE",
+      "type": "str",
+      "final_states": [
+        "DONE",
+        "CANCELLED",
+        "ERROR"
+      ],
+      "enum_equal": false,
+      "name_attr": "AttributeError: 'str' object has no attribute 'name'"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.06,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"status() returned 'DONE' (a str); comparing it to the enum member gives False -> match=False\", \"B\": \"reading .name off the returned value gives AttributeError: 'str' object has no attribute 'name' -> match=False\", \"C\": \"status() returned 'DONE', isinstance of str is True, and the string comparison gives True -> match=True\", \"D\": \"a job whose state is CANCELLED reports in_final_state()=True; the terminal states are ('DONE', 'CANCELLED', 'ERROR') -> match=False\", \"E\": \"the same cancelled job reports done()=False and an errored job reports done()=False -> match=False\", \"F\": \"the terminal states are ('DONE', 'CANCELLED', 'ERROR'); the errored job reports 'ERROR' with errored()=True -> match=False\"}, \"observed\": {\"status\": \"DONE\", \"type\": \"str\", \"final_states\": [\"DONE\", \"CANCELLED\", \"ERROR\"], \"enum_equal\": false, \"name_attr\": \"AttributeError: 'str' object has no attribute 'name'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

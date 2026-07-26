@@ -82,3 +82,28 @@ task 8.4: 3 facts). Fix wave adds facts alongside questions for each gap area.
 **Aligned.** Blueprint fidelity is now verified verbatim; no NDA proximity to the sample test; no
 uncovered official task. Six thin areas queued for a generation fix wave; syllabus provenance blocks
 upgraded to "verified 2026-07-26".
+
+## Postscript — fix wave shipped (same day)
+
+All six material gaps closed with **17 new questions** (bank 243 → 260; 204 executed proofs, 56
+conceptual, 0 failures) plus 17 new cram facts, in two sequential agent waves:
+
+- **s1** +3: circuit library (`efficient_su2` parameter count, `QFTGate` decomposition, library-ansatz
+  recognition) — task 1.2 covered.
+- **s2** +4: `plot_gate_map` / `plot_error_map` / `plot_circuit_layout` (task 2.2) +
+  `Statevector.sample_counts`; s2-q031 widened to 3 qubits so its whole-basis option set gained
+  rotation room (now display_count 5).
+- **s3** +2: `ParameterExpression` typing; named pass → stage mapping (`SabreSwap` = routing).
+- **s4** +2: the docs' NAMED broadcasting patterns (zip, outer/product, broadcast-single-observable,
+  standard nd generalization — names verified verbatim against the live `primitive-input-output` page).
+- **s7** +3: `RuntimeJobV2.status()` string semantics + `in_final_state()`, a second
+  `session.details()` item (single-point-of-failure removed), `SamplerPubResult`/`BasePrimitiveJob`
+  naming — task 7.2 no longer thin.
+- **s8** +3: OpenQASM 3 type inventory + width-matched `bit[n]`→`uint[m]` casting (openqasm.com
+  spec-sourced), REST `GET /v1/jobs/{id}/results` — tasks 8.1/8.4 reinforced.
+
+Post-wave gates (orchestrator-run, full bank): verify 204/204 proven, meta-pattern audit 0 blockers /
+0 warnings (longest-option 23.2 %, positions ≤ 30.7 %), drift lint at the 19-finding known baseline,
+check_links 85/85. Known limitation recorded in the ledger: the three device-plot proofs stub the leaf
+renderer (no graphviz in the venv) — argument forwarding is proven by execution, the rendered image
+itself is not.

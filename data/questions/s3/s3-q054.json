@@ -1,0 +1,80 @@
+{
+  "id": "s3-q054",
+  "section": "s3",
+  "objectives": [
+    "s3o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A parameterized rotation is built from a scaled parameter rather than the parameter itself. What does the snippet print?",
+  "code": "th = Parameter(\"th\")\nexpr = 2 * th\n\nqc = QuantumCircuit(1)\nqc.rz(expr, 0)\n\nprint(type(expr).__name__, isinstance(expr, Parameter), len(qc.parameters))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`ParameterExpression False 1`"
+    },
+    {
+      "key": "B",
+      "text": "`Parameter True 1`"
+    },
+    {
+      "key": "C",
+      "text": "`ParameterExpression True 1`"
+    },
+    {
+      "key": "D",
+      "text": "`ParameterExpression False 0`"
+    },
+    {
+      "key": "E",
+      "text": "`float False 1`"
+    },
+    {
+      "key": "F",
+      "text": "`ParameterExpression False 2`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Arithmetic on a `Parameter` builds a symbolic `ParameterExpression`: `2 * th` is a new expression object that remembers the operation and the parameters inside it. The inheritance runs one way only — `Parameter` is a subclass of `ParameterExpression`, so every `Parameter` is an expression, but a product is a plain `ParameterExpression` and `isinstance(expr, Parameter)` is False. What the circuit tracks is the free parameters, not the expressions: `qc.parameters` reports the single `Parameter` `th` that has to be bound, so `assign_parameters({th: 0.7})` gives the gate an angle of 1.4. `.parameters` on the expression itself gives the same set.",
+    "distractors": {
+      "B": "Assumes arithmetic returns another `Parameter`. Names belong to `Parameter` objects; a derived expression has no name of its own, which is why the class differs.",
+      "C": "Gets the class right but the direction of the subclass relationship wrong: `Parameter` inherits from `ParameterExpression`, not the other way round, so an expression is not an instance of `Parameter`.",
+      "D": "Assumes a circuit only tracks parameters passed in bare. The circuit walks into the expression and registers the free parameters it finds, so the count is 1, not 0.",
+      "E": "Nothing is evaluated at build time — `th` has no value yet. Even after `expr.bind({th: 0.5})` the result is still a `ParameterExpression` (a bound one), which you then cast with `float(...)`.",
+      "F": "Double-counts, as though the expression and its parameter were separate entries. `qc.parameters` is a set-like view of the free parameters, and there is one here."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.ParameterExpression",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q054.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\nth = Parameter(\"th\")\nexpr = 2 * th\nqc = QuantumCircuit(1)\nqc.rz(expr, 0)\nprinted = f\"{type(expr).__name__} {isinstance(expr, Parameter)} {len(qc.parameters)}\"\n\nclaims = {\n    \"A\": \"ParameterExpression False 1\",\n    \"B\": \"Parameter True 1\",\n    \"C\": \"ParameterExpression True 1\",\n    \"D\": \"ParameterExpression False 0\",\n    \"E\": \"float False 1\",\n    \"F\": \"ParameterExpression False 2\",\n}\nflags = {k: (v == printed) for k, v in claims.items()}\nevidence = {\n    k: f\"the script printed '{printed}'; this option predicts '{v}' -> match={flags[k]}\"\n    for k, v in claims.items()\n}\nevidence[\"B\"] += f\"; the circuit's free parameters are {[type(p).__name__ for p in qc.parameters]}, while the product itself is a {type(expr).__name__}\"\nevidence[\"C\"] += f\"; the class chain of Parameter is {[c.__name__ for c in Parameter.__mro__]}, so the subclass relation runs the other way\"\nevidence[\"E\"] += f\"; binding a value keeps the symbolic type: type(expr.bind({{th: 0.5}})).__name__ = {type(expr.bind({th: 0.5})).__name__}\"\nemit_verdict({\n    \"answer\": sorted(k for k, v in flags.items() if v),\n    \"evidence\": evidence,\n    \"observed\": {\"printed\": printed, \"free_parameters\": [str(p) for p in qc.parameters]},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "official-alignment minor gap: `ParameterExpression` is an officially referenced class that appeared once in the bank and never as an answer. Executed: the printed triple, the Parameter MRO, and the type surviving bind() are all observed."
+  },
+  "display_count": 5,
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

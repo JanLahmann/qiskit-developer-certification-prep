@@ -2,19 +2,21 @@
   "question": "s2-q031",
   "verdict": {
     "answer": [
-      "C",
-      "D"
+      "D",
+      "F"
     ],
     "evidence": {
-      "A": "basis |00>: |amplitude|=0 -> node present=False",
-      "B": "basis |01>: |amplitude|=0 -> node present=False",
-      "C": "basis |10>: |amplitude|=0.7071 -> node present=True",
-      "D": "basis |11>: |amplitude|=0.7071 -> node present=True"
+      "A": "basis |000>: |amplitude|=0 -> node present=False",
+      "B": "basis |001>: |amplitude|=0 -> node present=False",
+      "C": "basis |011>: |amplitude|=0 -> node present=False",
+      "D": "basis |100>: |amplitude|=0.7071 -> node present=True",
+      "E": "basis |101>: |amplitude|=0 -> node present=False",
+      "F": "basis |110>: |amplitude|=0.7071 -> node present=True"
     },
     "observed": {
       "nonzero_basis": [
-        "10",
-        "11"
+        "100",
+        "110"
       ]
     }
   },
@@ -24,9 +26,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.4,
+  "wall_seconds": 1.07,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"C\", \"D\"], \"evidence\": {\"A\": \"basis |00>: |amplitude|=0 -> node present=False\", \"B\": \"basis |01>: |amplitude|=0 -> node present=False\", \"C\": \"basis |10>: |amplitude|=0.7071 -> node present=True\", \"D\": \"basis |11>: |amplitude|=0.7071 -> node present=True\"}, \"observed\": {\"nonzero_basis\": [\"10\", \"11\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\", \"F\"], \"evidence\": {\"A\": \"basis |000>: |amplitude|=0 -> node present=False\", \"B\": \"basis |001>: |amplitude|=0 -> node present=False\", \"C\": \"basis |011>: |amplitude|=0 -> node present=False\", \"D\": \"basis |100>: |amplitude|=0.7071 -> node present=True\", \"E\": \"basis |101>: |amplitude|=0 -> node present=False\", \"F\": \"basis |110>: |amplitude|=0.7071 -> node present=True\"}, \"observed\": {\"nonzero_basis\": [\"100\", \"110\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

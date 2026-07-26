@@ -1,0 +1,46 @@
+{
+  "question": "s2-q039",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "executed: the returned Counts has keys ['00', '11'] \u2014 the zero-amplitude outcomes are absent, so there is no four-way split",
+      "B": "executed: the values are ['int64'] adding up to 2048, not probabilities; probabilities_dict() is the call that returns {'00': 0.5, '11': 0.5}",
+      "C": "executed: the call raised no exception and returned a Counts from a circuit with no measurement",
+      "D": "executed: a Counts with keys ['00', '11'] and ['int64'] values adding up to 2048",
+      "E": "executed: the result is a Counts holding 2 entries, not one per shot; sample_memory is the call that returns a per-shot sequence",
+      "F": "executed: the key types are ['str_'] (bitstring labels), never int"
+    },
+    "observed": {
+      "type": "Counts",
+      "keys": [
+        "00",
+        "11"
+      ],
+      "key_types": [
+        "str_"
+      ],
+      "value_types": [
+        "int64"
+      ],
+      "total_shots": 2048,
+      "probabilities_dict": {
+        "00": 0.5,
+        "11": 0.5
+      },
+      "plot_histogram_returns": "Figure"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.37,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"executed: the returned Counts has keys ['00', '11'] \\u2014 the zero-amplitude outcomes are absent, so there is no four-way split\", \"B\": \"executed: the values are ['int64'] adding up to 2048, not probabilities; probabilities_dict() is the call that returns {'00': 0.5, '11': 0.5}\", \"C\": \"executed: the call raised no exception and returned a Counts from a circuit with no measurement\", \"D\": \"executed: a Counts with keys ['00', '11'] and ['int64'] values adding up to 2048\", \"E\": \"executed: the result is a Counts holding 2 entries, not one per shot; sample_memory is the call that returns a per-shot sequence\", \"F\": \"executed: the key types are ['str_'] (bitstring labels), never int\"}, \"observed\": {\"type\": \"Counts\", \"keys\": [\"00\", \"11\"], \"key_types\": [\"str_\"], \"value_types\": [\"int64\"], \"total_shots\": 2048, \"probabilities_dict\": {\"00\": 0.5, \"11\": 0.5}, \"plot_histogram_returns\": \"Figure\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

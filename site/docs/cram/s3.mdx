@@ -94,6 +94,7 @@ Two consequences worth carrying into the exam. First, reusing ONE `Parameter` ob
 - `ParameterVector('x', 3)` creates parameters named `x[0]`, `x[1]`, `x[2]`; `{x: [0.1, 0.2, 0.3]}` binds all three at once, and `x[3]` raises `IndexError` (no auto-growth). — ⚙️ proven in [`s3-q022`](/docs/sections/s3)
 - Parameter EXPRESSIONS are evaluated at bind time: with `t = π`, `rx(2*t)` becomes 2π ≈ 6.283 and `rz(t + π/2)` becomes 3π/2 ≈ 4.712. — ⚙️ proven in [`s3-q021`](/docs/sections/s3)
 - Parameters survive transpilation — transpile once, then bind: the ISA circuit still holds its parameter, binding drops it to zero, and the bound circuit keeps its layout (no second transpile). — ⚙️ proven in [`s3-q050`](/docs/sections/s3)
+- Arithmetic on a `Parameter` builds a `ParameterExpression`, not another `Parameter`: `2 * th` is an expression for which `isinstance(expr, Parameter)` is False (the subclass relation runs the other way), while the circuit still reports the single free `Parameter` in `qc.parameters`. Binding keeps the symbolic type — cast with `float(...)` if you need a number. — ⚙️ proven in [`s3-q054`](/docs/sections/s3)
 
 ## Transpile and optimize circuits
 
@@ -126,6 +127,7 @@ How much the level matters is mostly a layout story. A single `cx(0, 4)` on a fi
 - The translation stage rewrites every non-basis gate: after transpiling to a `{cx, rz, sx, x, id}` basis, neither `h` nor `t` survives. — ⚙️ proven in [`s3-q037`](/docs/sections/s3)
 - Higher levels buy more optimization at the cost of longer compile times, but not always a better circuit — the docs' own example gives identical two-qubit gate counts at levels 1 and 2, and only level 3 (KAK resynthesis) improves on them. — 📖 [set-optimization](https://quantum.cloud.ibm.com/docs/guides/set-optimization)
 - Docs level table: 0 = no optimization with `TrivialLayout`, 1 = light (trivial/VF2 layout + 1Q optimization + `InverseCancellation`), 2 = medium (no trivial layout + `CommutativeCancellation`), 3 = level 2 plus KAK resynthesis of two-qubit blocks and unitarity-breaking passes. — 📖 [set-optimization](https://quantum.cloud.ibm.com/docs/guides/set-optimization)
+- Named passes and their stages, read off a level-2 preset: `VF2Layout` and `SabreLayout` in `layout`; `CheckMap`, `SabreSwap` and `VF2PostLayout` in `routing`; `BasisTranslator` in `translation` (it also appears in `init` and in the optimization stage's re-translation loop); `Optimize1qGatesDecomposition` in `optimization`; `ConsolidateBlocks` in `init`. — ⚙️ proven in [`s3-q055`](/docs/sections/s3)
 
 
 ---

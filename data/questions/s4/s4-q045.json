@@ -1,0 +1,80 @@
+{
+  "id": "s4-q045",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The *Primitive inputs and outputs* guide gives a name to each common way an Estimator PUB combines its parameter-value array with its observables array. A colleague submits the PUB below, whose parameter-value set has shape `(1, 4)` and whose observables array has shape `(3, 1)`. Which named pattern is this, and what comes back?",
+  "code": "theta = Parameter(\"theta\")\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.ry(theta, 0)\n\nparams = np.linspace(0.0, 1.0, 4).reshape(1, 4)                 # shape (1, 4)\nobs = [[SparsePauliOp(\"ZI\")], [SparsePauliOp(\"IZ\")], [SparsePauliOp(\"ZZ\")]]  # shape (3, 1)\n\nevs = StatevectorEstimator().run([(qc, obs, params)]).result()[0].data.evs",
+  "options": [
+    {
+      "key": "A",
+      "text": "Zip — `evs.shape` is `(4,)`, one estimate per parameter value."
+    },
+    {
+      "key": "B",
+      "text": "Broadcast single observable — `evs.shape` is `(1, 4)`."
+    },
+    {
+      "key": "C",
+      "text": "Standard nd generalization — `evs.shape` is `(1, 3, 4)`."
+    },
+    {
+      "key": "D",
+      "text": "Outer/product — `evs.shape` is `(3, 4)`, one estimate per observable and parameter value."
+    },
+    {
+      "key": "E",
+      "text": "Outer/product — `evs.shape` is `(4, 3)`, because the parameter axis leads and the observable axis trails."
+    },
+    {
+      "key": "F",
+      "text": "The two arrays are not broadcastable against each other, so `run()` raises a `ValueError` before estimating."
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "Broadcasting works exactly as it does in NumPy: shapes are compared from the rightmost axis leftwards, and a length-1 axis stretches to meet the other array. `(1, 4)` against `(3, 1)` therefore gives `(3, 4)` — the length-1 rows of the parameter array stretch over the three observables and the length-1 column of the observables array stretches over the four parameter values, so every observable is estimated at every parameter value. That is the case the guide labels *outer/product*, and the Estimator returns one expectation value per element of the broadcast shape: 12 numbers in a `(3, 4)` array.",
+    "distractors": {
+      "A": "*Zip* is the pattern where both arrays already have the SAME shape and are matched element by element, giving one estimate per pair. Here the arrays differ, and no axis is consumed by pairing.",
+      "B": "*Broadcast single observable* is the row of the table where the observables array is a scalar (shape `()`), so one observable is reused for every parameter value. This PUB carries three observables.",
+      "C": "*Standard nd generalization* is the row where the observables array has MORE dimensions than the parameter array (the guide's example pairs a 2-d parameter set with a 3-d observables array). Both arrays here are 2-d, and no third axis appears in the result.",
+      "E": "The pattern is named correctly, but the result axes follow the broadcast, not a fixed convention: the observables axis of length 3 sits first because it is the axis that survives from the observables array.",
+      "F": "Broadcasting only fails when two corresponding axes disagree and neither is 1. Here every pair of axes has a 1 on one side, which is precisely the compatible case."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/estimator-v2"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q045.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.ry(theta, 0)\nparams = np.linspace(0.0, 1.0, 4).reshape(1, 4)\nobs = [[SparsePauliOp(\"ZI\")], [SparsePauliOp(\"IZ\")], [SparsePauliOp(\"ZZ\")]]\n\nraised, shape, size = None, None, None\ntry:\n    evs = StatevectorEstimator().run([(qc, obs, params)]).result()[0].data.evs\n    shape = tuple(int(x) for x in evs.shape)\n    size = int(evs.size)\nexcept ValueError as exc:\n    raised = f\"{type(exc).__name__}: {exc}\"\n\nclaims = {\n    \"A\": (\"zip\", (4,)),\n    \"B\": (\"broadcast single observable\", (1, 4)),\n    \"C\": (\"standard nd generalization\", (1, 3, 4)),\n    \"D\": (\"outer/product\", (3, 4)),\n    \"E\": (\"outer/product\", (4, 3)),\n}\nflags = {k: (shape == v[1]) for k, v in claims.items()}\nflags[\"F\"] = raised is not None\nevidence = {}\nfor k, (name, want) in claims.items():\n    evidence[k] = (\n        f\"parameter set (1, 4) with observables (3, 1) -> observed evs.shape {shape}, \"\n        f\"{size} estimates; this option claims '{name}' with shape {want} -> match={flags[k]}\"\n    )\nevidence[\"D\"] += \"; every observable is estimated at every parameter value, the guide's outer/product row\"\nevidence[\"E\"] += \"; the pattern name fits but the observable axis is observed first, not last\"\nevidence[\"F\"] = f\"the run completed and returned an array of shape {shape} (raised={raised}) -> match={flags['F']}\"\nemit_verdict({\n    \"answer\": sorted(k for k, v in flags.items() if v),\n    \"evidence\": evidence,\n    \"observed\": {\"evs_shape\": shape, \"evs_size\": size, \"raised\": raised},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "official-alignment gap task 4.2: the guide's NAMED broadcasting patterns (broadcast single observable / zip / outer-product / standard nd generalization) were never tested, only the shape mechanics. Shapes chosen differently from the guide's own example figures; proof executes the pairing and reads evs.shape."
+  },
+  "display_count": 5,
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

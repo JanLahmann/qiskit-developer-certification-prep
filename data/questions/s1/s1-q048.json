@@ -1,0 +1,80 @@
+{
+  "id": "s1-q048",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A hardware-efficient ansatz is built with the Qiskit 2.x circuit-library function `efficient_su2`. What does the last line print?",
+  "code": "from qiskit.circuit.library import efficient_su2\n\nansatz = efficient_su2(4, reps=2)\nprint(ansatz.num_parameters)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`8` — two rotation angles per qubit, since `reps` repeats only the entangling block"
+    },
+    {
+      "key": "B",
+      "text": "`12` — `num_qubits * (reps + 1)`, one rotation angle per qubit per layer"
+    },
+    {
+      "key": "C",
+      "text": "`16` — `2 * num_qubits * reps`, with no rotation layer after the last block"
+    },
+    {
+      "key": "D",
+      "text": "`24` — `2 * num_qubits * (reps + 1)`, an `ry` and an `rz` per qubit in every rotation layer"
+    },
+    {
+      "key": "E",
+      "text": "`32` — `2 * num_qubits * (reps + 2)`, a rotation layer on both sides of each block"
+    },
+    {
+      "key": "F",
+      "text": "`0` — the function form hands back a circuit whose angles are already bound"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "`efficient_su2` alternates a rotation layer (an `ry` followed by an `rz` on every qubit, so 2 angles per qubit) with an entangling `cx` layer, and `reps` counts the alternating blocks. Because a final rotation layer is appended after the last entangler, there are `reps + 1` rotation layers in total: 2 x 4 x (2 + 1) = 24 free parameters. The entangling `cx` gates carry no angles.",
+    "distractors": {
+      "A": "This treats the rotation angles as shared across repetitions. Every rotation layer gets its own fresh parameters; `reps` multiplies the angle count, it does not reuse it.",
+      "B": "`num_qubits * (reps + 1)` is the `real_amplitudes` count — that ansatz uses one `ry` per qubit per layer. `efficient_su2` places two rotations (`ry` and `rz`) per qubit, doubling it.",
+      "C": "This drops the trailing rotation layer. It is the count you would get from `efficient_su2(4, reps=2, skip_final_rotation_layer=True)`; with the default the last block is followed by one more rotation layer.",
+      "E": "There is one rotation layer more than `reps`, not two: the layers alternate rotation-entangle-rotation-entangle-rotation, giving `reps + 1` rotation layers.",
+      "F": "The function returns a plain `QuantumCircuit` that is still parameterized — the angles are `ParameterVector` elements you bind later with `assign_parameters`. Only the class-based builders were deprecated in Qiskit 2.1, not the parameterization."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/circuit_library",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.efficient_su2"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q048.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.circuit.library import efficient_su2, real_amplitudes\n\nansatz = efficient_su2(4, reps=2)\nn = int(ansatz.num_parameters)\ntrimmed = int(efficient_su2(4, reps=2, skip_final_rotation_layer=True).num_parameters)\nry_only = int(real_amplitudes(4, reps=2).num_parameters)\nclaims = {\"A\": 8, \"B\": 12, \"C\": 16, \"D\": 24, \"E\": 32, \"F\": 0}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    m = bool(n == c)\n    evidence[k] = f\"executed efficient_su2(4, reps=2).num_parameters = {n}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nevidence[\"B\"] += f\"  (real_amplitudes(4, reps=2), the ry-only ansatz, is the circuit with {ry_only} parameters)\"\nevidence[\"C\"] += f\"  (skip_final_rotation_layer=True drops it to {trimmed})\"\nops = {g: int(v) for g, v in ansatz.count_ops().items()}\nevidence[\"F\"] += f\"  (the returned circuit is still unbound: count_ops = {ops})\"\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\n        \"num_parameters\": n,\n        \"count_ops\": ops,\n        \"without_final_rotation_layer\": trimmed,\n        \"real_amplitudes_params\": ry_only,\n    },\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (s1/s2 official-alignment fix wave)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Circuit-library coverage gap from data/audits/official_alignment.md (task 1.2). Parameter counts measured on qiskit 2.5.0."
+  },
+  "display_count": 5,
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

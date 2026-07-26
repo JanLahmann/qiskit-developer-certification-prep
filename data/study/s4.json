@@ -217,12 +217,28 @@
         "type": "citation",
         "ref": "https://quantum.cloud.ibm.com/docs/guides/get-started-with-sampler"
       }
+    },
+    {
+      "objective": "s4o2",
+      "fact_md": "The guide gives the broadcasting patterns names: *broadcast single observable* (observables shape `()`, reused at every parameter value), *zip* (identically shaped arrays matched element by element), *outer/product* (a `(1, 4)` parameter set with a `(3, 1)` observables array gives `(3, 4)` = every observable at every parameter value) and *standard nd generalization* (the observables array carries an extra leading axis).",
+      "source": {
+        "type": "proof",
+        "ref": "s4-q045"
+      }
+    },
+    {
+      "objective": "s4o2",
+      "fact_md": "Zip is the one pattern that does not multiply the work: `(3,)` parameters with `(3,)` observables give three estimates. Beware its look-alikes — a single observable over the same parameters returns the same `(3,)` shape but is *broadcast single observable*, `(3, 1)` against `(3,)` is a product, and `(3,)` against `(4,)` is simply a `ValueError`.",
+      "source": {
+        "type": "proof",
+        "ref": "s4-q046"
+      }
     }
   ],
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (s4/s5 quick-study generation agent)",
     "fact_checked": true,
-    "notes": "Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json and only EXECUTED questions with an artifact are cited (s4 conceptual qids q001/q010/q011/q014/q015/q017/q019/q020/q022/q024/q025/q027/q029/q030/q031/q033/q035/q037/q039/q040/q041 are cited through their guide instead). Every citation-sourced fact was confirmed by fetching the page text (execution-modes: batch ordering/exclusivity and the first-job queuing note; choose-execution-mode: batch-unless/always-job-mode/sessions-more-expensive; max-execution-time: TTL starts at first job, queued jobs fail; run-jobs-batch: interactive TTL 1 min, 8 h paid / 10 min Open; run-jobs-session: Open Plan cannot submit session jobs, close semantics; initialize-account: default channel ibm_quantum_platform and the last-alphabetically rule; save-credentials: token=, $HOME/.qiskit/qiskit-ibm.json; local-testing-mode: fake provider / Aer as mode=; get-started-with-sampler: least_busy(operational=True, simulator=False)). Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0): least_busy accepts filters=, save_account has token= and no api_key, a no-mode primitive inside `with Session(...)` inherits the session and runs, Session/Batch public API is backend/cancel/close/details/from_id/service/session_id/status/usage, session.details() and session.session_id are None locally while session.backend() returns 'fake_manila', and a fake-backend run with no shots falls back to 1024 (vs the Runtime service's 4096). Consistent with the REVIEW_LEDGER s4 pool wave; no contradictions."
+    "notes": "Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json and only EXECUTED questions with an artifact are cited (s4 conceptual qids q001/q010/q011/q014/q015/q017/q019/q020/q022/q024/q025/q027/q029/q030/q031/q033/q035/q037/q039/q040/q041 are cited through their guide instead). Every citation-sourced fact was confirmed by fetching the page text (execution-modes: batch ordering/exclusivity and the first-job queuing note; choose-execution-mode: batch-unless/always-job-mode/sessions-more-expensive; max-execution-time: TTL starts at first job, queued jobs fail; run-jobs-batch: interactive TTL 1 min, 8 h paid / 10 min Open; run-jobs-session: Open Plan cannot submit session jobs, close semantics; initialize-account: default channel ibm_quantum_platform and the last-alphabetically rule; save-credentials: token=, $HOME/.qiskit/qiskit-ibm.json; local-testing-mode: fake provider / Aer as mode=; get-started-with-sampler: least_busy(operational=True, simulator=False)). Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0): least_busy accepts filters=, save_account has token= and no api_key, a no-mode primitive inside `with Session(...)` inherits the session and runs, Session/Batch public API is backend/cancel/close/details/from_id/service/session_id/status/usage, session.details() and session.session_id are None locally while session.backend() returns 'fake_manila', and a fake-backend run with no shots falls back to 1024 (vs the Runtime service's 4096). Consistent with the REVIEW_LEDGER s4 pool wave; no contradictions. | official-alignment fix wave (2026-07-26): two s4o2 facts added for the guide's NAMED broadcasting patterns (task 4.2 gap), sourced by the new executed questions s4-q045 and s4-q046. The pattern names are quoted from guides/primitive-input-output as fetched 2026-07-26 ('Broadcast single observable', 'Zip', 'Outer/Product', 'Standard nd generalization'); every shape claim in the facts was measured with StatevectorEstimator on a one-parameter circuit — (1,4)x(3,1) -> (3,4), (3,)x(3,) -> (3,), (3,)x() -> (3,), (3,1)x(3,) -> (3,3), (2,3)x(4,2,1) -> (4,2,3), and (3,)x(4,) raises ValueError."
   }
 }

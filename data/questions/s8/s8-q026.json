@@ -1,0 +1,69 @@
+{
+  "id": "s8-q026",
+  "section": "s8",
+  "objectives": [
+    "s8o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "You are reviewing a hand-written OpenQASM 3 program and want to keep only declarations the language actually defines. Exactly one of the following lines is a legal classical declaration in OpenQASM 3. Which one?",
+  "code": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nqubit[2] q;\nbit[2] c;\n// ... one of the following declarations follows",
+  "options": [
+    {
+      "key": "A",
+      "text": "`char flag;`"
+    },
+    {
+      "key": "B",
+      "text": "`complex[64] amp;`"
+    },
+    {
+      "key": "C",
+      "text": "`real[64] theta;`"
+    },
+    {
+      "key": "D",
+      "text": "`angle[16] phi;`"
+    },
+    {
+      "key": "E",
+      "text": "`string label;`"
+    },
+    {
+      "key": "F",
+      "text": "`unsigned[8] shots;`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "`angle` is one of OpenQASM 3's four *special* classical types — the ones with no C equivalent — alongside `bit`, `duration` and `stretch`; the standard ones are `bool`, `int`, `uint`, `float` and `complex`. Sized types carry their width in a designator, so `angle[16] phi;` declares a 16-bit fixed-point angle, interpreted modulo 2π and promoted like an unsigned integer when mixed with other angles. Everything else in the language's classical inventory follows the same `type[size] name;` shape: `int[32] n;`, `uint[8] k;`, `float[64] x;`, `bit[4] c;`.",
+    "distractors": {
+      "A": "There is no character type in OpenQASM 3: the language has no text data at all, so nothing like `char` or a character literal exists.",
+      "B": "Right type, wrong designator. A complex number is declared `complex[float[size]] amp;` — the designator names the floating-point type used for the two components — and a bare `complex` is shorthand for `complex[float]`. A raw bit width in the brackets is not accepted.",
+      "C": "`real` is the Verilog/VHDL spelling. OpenQASM 3 calls its floating-point type `float`, declared as `float[64] theta;`.",
+      "E": "There is no string type. The only place quoted text appears is the `include \"stdgates.inc\";` directive and bit-literal initializers such as `bit[8] b = \"00001111\";`.",
+      "F": "The unsigned integer type is spelled `uint`, so this would be `uint[8] shots;`. C's `unsigned` modifier is not part of the grammar."
+    },
+    "citations": [
+      "https://openqasm.com/versions/3.0/language/types.html",
+      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "official-alignment gap task 8.1: the OpenQASM 3 type system was covered only through Qiskit's feature table. Authored from the openqasm.com 3.0 types page (type inventory + declaration grammar), with an option set of its own — no execution is possible here because `qiskit-qasm3-import` is NOT installed in the pinned env (re-checked 2026-07-26: ModuleNotFoundError), and Qiskit's importer is in any case narrower than the language, so a loads()-based proof would refute legal OpenQASM."
+  },
+  "display_count": 5
+}

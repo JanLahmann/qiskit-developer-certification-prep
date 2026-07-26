@@ -1,0 +1,38 @@
+{
+  "question": "s1-q049",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "executed decompose().count_ops() = {'cp': 6, 'h': 4, 'swap': 2}; option A claims {'qft': 1} -> match=False  (before the expansion the circuit holds {'qft': 1}, so one step does open the gate up)",
+      "B": "executed decompose().count_ops() = {'cp': 6, 'h': 4, 'swap': 2}; option B claims {'h': 4, 'cp': 6, 'swap': 2} -> match=True",
+      "C": "executed decompose().count_ops() = {'cp': 6, 'h': 4, 'swap': 2}; option C claims {'h': 4, 'cp': 6} -> match=False  (asking QFTGate to skip the reversal is TypeError: QFTGate.__init__() got an unexpected keyword argument 'do_swaps')",
+      "D": "executed decompose().count_ops() = {'cp': 6, 'h': 4, 'swap': 2}; option D claims {'h': 4, 'cx': 6, 'swap': 2} -> match=False",
+      "E": "executed decompose().count_ops() = {'cp': 6, 'h': 4, 'swap': 2}; option E claims {'h': 4, 'cp': 12, 'swap': 2} -> match=False",
+      "F": "executed decompose().count_ops() = {'cp': 6, 'h': 4, 'swap': 2}; option F claims {'h': 4, 'cp': 6, 'swap': 4} -> match=False"
+    },
+    "observed": {
+      "before_decompose": {
+        "qft": 1
+      },
+      "after_decompose": {
+        "cp": 6,
+        "h": 4,
+        "swap": 2
+      },
+      "skip_reversal": "TypeError: QFTGate.__init__() got an unexpected keyword argument 'do_swaps'"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.11,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"executed decompose().count_ops() = {'cp': 6, 'h': 4, 'swap': 2}; option A claims {'qft': 1} -> match=False  (before the expansion the circuit holds {'qft': 1}, so one step does open the gate up)\", \"B\": \"executed decompose().count_ops() = {'cp': 6, 'h': 4, 'swap': 2}; option B claims {'h': 4, 'cp': 6, 'swap': 2} -> match=True\", \"C\": \"executed decompose().count_ops() = {'cp': 6, 'h': 4, 'swap': 2}; option C claims {'h': 4, 'cp': 6} -> match=False  (asking QFTGate to skip the reversal is TypeError: QFTGate.__init__() got an unexpected keyword argument 'do_swaps')\", \"D\": \"executed decompose().count_ops() = {'cp': 6, 'h': 4, 'swap': 2}; option D claims {'h': 4, 'cx': 6, 'swap': 2} -> match=False\", \"E\": \"executed decompose().count_ops() = {'cp': 6, 'h': 4, 'swap': 2}; option E claims {'h': 4, 'cp': 12, 'swap': 2} -> match=False\", \"F\": \"executed decompose().count_ops() = {'cp': 6, 'h': 4, 'swap': 2}; option F claims {'h': 4, 'cp': 6, 'swap': 4} -> match=False\"}, \"observed\": {\"before_decompose\": {\"qft\": 1}, \"after_decompose\": {\"cp\": 6, \"h\": 4, \"swap\": 2}, \"skip_reversal\": \"TypeError: QFTGate.__init__() got an unexpected keyword argument 'do_swaps'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

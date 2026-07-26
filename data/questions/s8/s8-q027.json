@@ -1,0 +1,69 @@
+{
+  "id": "s8-q027",
+  "section": "s8",
+  "objectives": [
+    "s8o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "OpenQASM 3 promotes some values implicitly and demands an explicit cast for others, and a few conversions it refuses outright. Which statement about its casting and declaration rules is correct?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "In `x + y` where `x` is `int[32]` and `y` is `float[64]`, `y` is truncated to `int[32]` before the addition happens."
+    },
+    {
+      "key": "B",
+      "text": "A scalar `bit` cannot stand in for a `bool` in an expression; an explicit cast is required in either direction."
+    },
+    {
+      "key": "C",
+      "text": "A `duration` can be cast to `float` with `float(d)`, yielding its length in seconds."
+    },
+    {
+      "key": "D",
+      "text": "The width in a declaration such as `int[n] k;` may be any expression, including one whose value is known at run time."
+    },
+    {
+      "key": "E",
+      "text": "A `bit[n]` value casts to `uint[m]` only when the two widths match; otherwise you have to slice it first."
+    },
+    {
+      "key": "F",
+      "text": "Casting a `float` to `angle[m]` truncates the value toward zero."
+    }
+  ],
+  "answer": [
+    "E"
+  ],
+  "explanation": {
+    "correct": "Conversions between `bit` registers and integers are pure re-interpretations of a bit pattern — the bits are read as a little-endian two's-complement value — so the language allows them only when no bits would be invented or discarded: `bit[n]` casts to `int[m]`/`uint[m]` only when `m == n`, and the same width rule governs the reverse direction and `bit[n]` to `angle[m]`. If the widths differ you slice the register first. Contrast that with the ordinary numeric types, where the promotion order `complex > float > int/uint` (and wider beats narrower) silently converts the lesser operand of a binary operation to the greater.",
+    "distractors": {
+      "A": "Promotion runs the other way: in a binary operation the LESSER type is cast to the greater, so the `int[32]` becomes a `float[64]` and the sum is a float. Truncation only happens on an explicit cast to an integer type.",
+      "B": "`bool` and scalar `bit` are interchangeable as values — wherever a value implicitly casts to `bool` it also casts to `bit`, and vice versa. The width rule above applies to `bit[n]` registers, not to the single-bit case.",
+      "C": "Casting to or from `duration` is not allowed at all. To get a number out of a duration you divide it by another duration (`float a = d / 1ns;`), which is a division that yields a plain float, not a cast.",
+      "D": "Type widths are compile-time information: the designator has to be a `const` expression, which is exactly why the language defines `const` and constant-folds operations on `const` operands.",
+      "F": "A float converts to `angle[m]` by taking the nearest representable value modulo 2π, with ties resolved toward a zero least-significant bit. Truncation toward zero is what a cast to an integer type does."
+    },
+    "citations": [
+      "https://openqasm.com/versions/3.0/language/types.html",
+      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "official-alignment gap task 8.1: no casting-rules item existed. Every claim comes from the openqasm.com 3.0 types page — 'Casting specifics' (bit[n] <-> int[m]/uint[m]/angle[m] only when the widths are equal; no casting to or from duration; float -> angle takes the nearest value modulo 2pi), the implicit-promotion order complex > float > int/uint, the bool/bit interchangeability rule, and the compile-time-constant rule for width designators. Not executable: qiskit-qasm3-import is absent from the pinned env and Qiskit's importer does not implement classical casting anyway."
+  },
+  "display_count": 5
+}

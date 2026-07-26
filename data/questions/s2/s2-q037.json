@@ -1,0 +1,80 @@
+{
+  "id": "s2-q037",
+  "section": "s2",
+  "objectives": [
+    "s2o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "Before choosing which qubits to run on, you want the diagram of the QPU itself: a node per qubit and a line between the qubit pairs that support a two-qubit gate. Which call draws it?",
+  "code": "from qiskit.visualization import plot_gate_map, plot_histogram\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\ncounts = {\"00\": 512, \"11\": 512}",
+  "options": [
+    {
+      "key": "A",
+      "text": "`plot_histogram(counts)` — the bar chart of measured outcomes"
+    },
+    {
+      "key": "B",
+      "text": "`plot_gate_map(counts)` — the counts mapping already names the qubits"
+    },
+    {
+      "key": "C",
+      "text": "`plot_histogram(backend)` — the histogram plotter reads a device's wiring"
+    },
+    {
+      "key": "D",
+      "text": "`plot_gate_map(backend.coupling_map)` — hand the drawer the qubit pairs directly"
+    },
+    {
+      "key": "E",
+      "text": "`plot_gate_map(backend.target)` — the target lists the device's instructions"
+    },
+    {
+      "key": "F",
+      "text": "`plot_gate_map(backend)` — the device drawer takes a backend and reads its connectivity"
+    }
+  ],
+  "answer": [
+    "F"
+  ],
+  "explanation": {
+    "correct": "`plot_gate_map` is one of Qiskit's device-visualization functions: its first parameter is a `BackendV2`, from which it reads the qubit count and the coupling map before drawing one node per qubit and one line per connected pair. The IBM Quantum docs describe the result as \"a diagram that indicates the pairs of qubits that support two-qubit gate operations between them\". Nothing about measurement outcomes is involved — the figure is a property of the hardware, not of a job.",
+    "distractors": {
+      "A": "This is the measurement plot, not a device plot: its bars are the outcome bitstrings and its x axis is labelled with them. It says nothing about which qubits are physically connected.",
+      "B": "The right function, the wrong input. A counts mapping carries outcome labels, not hardware topology, so the call fails with an `AttributeError` about a missing qubit count.",
+      "C": "The histogram plotter expects a mapping of outcomes to frequencies and immediately asks the argument for its values, so a backend raises an `AttributeError`. Swapping in a backend does not turn it into a device drawer.",
+      "D": "A `CouplingMap` alone does not carry the qubit count or the plane coordinates the drawer needs, so it raises. The function that accepts raw connectivity is `plot_coupling_map`, whose first argument is the number of qubits.",
+      "E": "A `Target` describes which instructions run on which qubits, but the gate-map drawer looks for a coupling map on its argument and a `Target` does not expose one under that name."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/qpu-information",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q037.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import inspect\nimport matplotlib.figure as mfig\nimport qiskit.visualization.gate_map as gm\nfrom qiskit.visualization import plot_gate_map, plot_histogram\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\n# The Graphviz BINARY is absent in this sandbox, so the leaf renderer\n# plot_coupling_map is stubbed out; all argument handling above it runs for\n# real and we record exactly what reaches the renderer.\n_sig = inspect.signature(gm.plot_coupling_map)\n_cap = {}\n\n\ndef _stub(*a, **kw):\n    _cap.clear()\n    _cap.update(_sig.bind(*a, **kw).arguments)\n    return mfig.Figure()\n\n\ngm.plot_coupling_map = _stub\n\nbackend = FakeManilaV2()\ncounts = {\"00\": 512, \"11\": 512}\nlinks = [list(p) for p in backend.coupling_map]\n\n\ndef attempt(fn):\n    _cap.clear()\n    try:\n        r = fn()\n        return {\"ok\": True, \"what\": type(r).__name__, \"cap\": dict(_cap), \"fig\": r}\n    except Exception as e:\n        return {\"ok\": False, \"what\": type(e).__name__ + \": \" + str(e)[:80], \"cap\": {}, \"fig\": None}\n\n\ntries = {\n    \"A\": (\"plot_histogram(counts)\", lambda: plot_histogram(counts)),\n    \"B\": (\"plot_gate_map(counts)\", lambda: plot_gate_map(counts)),\n    \"C\": (\"plot_histogram(backend)\", lambda: plot_histogram(backend)),\n    \"D\": (\"plot_gate_map(backend.coupling_map)\", lambda: plot_gate_map(backend.coupling_map)),\n    \"E\": (\"plot_gate_map(backend.target)\", lambda: plot_gate_map(backend.target)),\n    \"F\": (\"plot_gate_map(backend)\", lambda: plot_gate_map(backend)),\n}\nevidence = {}\nproven = []\nobserved = {\"device_links\": links}\nhist_ticks = None\nfor k, (label, fn) in tries.items():\n    r = attempt(fn)\n    drew_map = bool(r[\"ok\"] and [list(p) for p in (r[\"cap\"].get(\"coupling_map\") or [])] == links)\n    observed[k] = r[\"what\"]\n    if r[\"ok\"]:\n        evidence[k] = (f\"{label} -> returned a {r['what']}; did it reach the coupling-map renderer?\"\n                       f\" {bool(r['cap'])}; were the device's qubit pairs the thing drawn? {drew_map}\")\n    else:\n        evidence[k] = f\"{label} -> {r['what']}; no connectivity diagram is produced ({drew_map})\"\n    if k == \"A\" and r[\"fig\"] is not None:\n        hist_ticks = [t.get_text() for t in r[\"fig\"].axes[0].get_xticklabels()]\n    if drew_map:\n        proven.append(k)\nevidence[\"A\"] += f\"  (its x axis is labelled with the outcome bitstrings {hist_ticks}, not with qubits)\"\nevidence[\"F\"] += f\"  (the renderer received the backend's {len(links)} directed qubit pairs {links})\"\nobserved[\"histogram_xticklabels\"] = hist_ticks\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (s1/s2 official-alignment fix wave)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "plot_gate_map coverage gap from data/audits/official_alignment.md (task 2.2). Graphviz binary absent in the pinned env: the proof stubs the leaf renderer plot_coupling_map and asserts on what the real code forwards to it."
+  },
+  "display_count": 5,
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

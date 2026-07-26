@@ -25,6 +25,8 @@ OpenQASM 2 knew only two aggregate declarations: `qreg` and `creg`. OpenQASM 3 r
 - Qiskit exports classical registers as `bit[n] c;` even at width 1; loose `Clbit`s become bare `bit _bit0;`. — ⚙️ proven in [`s8-q010`](/docs/sections/s8)
 - The feature table's Qiskit column documents `bit` as supported (mapped to `Clbit`/`ClassicalRegister`) while `duration` and `stretch` declarations are unparseable. — 📖 [qasm-feature-table](https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table)
 - An unbound `Parameter` exports to OpenQASM 3 as an `input float[64]` declaration — the circuit becomes a parameterized program. — ⚙️ proven in [`s8-q020`](/docs/sections/s8)
+- The OpenQASM 3 classical types are `bool`, `int[n]`, `uint[n]`, `float[n]`, `complex[float[n]]`, `bit[n]`, `angle[n]`, `duration` and `stretch` — the last four being the 'special' types with no C equivalent. There is no `string`, `char`, `real` or `unsigned`, and a complex declaration takes a FLOAT type in its designator (`complex[float[64]] c;`), never a bare bit width. — 📖 [types.html](https://openqasm.com/versions/3.0/language/types.html)
+- Casting rules: in a binary operation the LESSER type is promoted (`complex` &gt; `float` &gt; `int`/`uint`, wider beats narrower); `bool` and scalar `bit` are interchangeable as values; `bit[n]` converts to `int[m]`/`uint[m]`/`angle[m]` only when `m == n`; nothing casts to or from `duration` (divide by a duration instead); and a width designator must be a `const` expression. — 📖 [types.html](https://openqasm.com/versions/3.0/language/types.html)
 
 ## Interpret OpenQASM semantics
 
@@ -69,6 +71,7 @@ Everything the primitives do through Python can be done over REST. Authenticatio
 - IAM token exchange: `POST` the IBM Cloud API key with the apikey grant type; the bearer token expires after 3600 seconds (`expires_in: 3600`). — 📖 [cloud-setup-rest-api](https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api)
 - Submitting a Sampler job over REST is `POST /v1/jobs` with `'program_id': 'sampler'` and your circuits inside `params.pubs`. — 📖 [sampler-rest-api](https://quantum.cloud.ibm.com/docs/guides/sampler-rest-api)
 - Every Runtime REST call after authentication carries two headers: the IAM bearer token and `Service-CRN` (the instance identifier — it is not itself a credential). — 📖 [cloud-setup-rest-api](https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api)
+- Results are a sub-resource of the job: `GET /api/v1/jobs/{id}/results` returns the final result, while `GET /api/v1/jobs/{id}` returns details, `/logs` and `/metrics` return diagnostics, `POST /api/v1/jobs/{id}/cancel` cancels and `DELETE /api/v1/jobs/{id}` removes a job already in a terminal state. — 📖 [jobs](https://quantum.cloud.ibm.com/docs/api/qiskit-runtime-rest/tags/jobs)
 
 
 ---

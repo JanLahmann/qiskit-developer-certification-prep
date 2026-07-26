@@ -1,0 +1,81 @@
+{
+  "id": "s7-q036",
+  "section": "s7",
+  "objectives": [
+    "s7o1",
+    "s7o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "The snippet below runs a Bell circuit on the reference Sampler and then asks the returned objects what they are. What does it print?",
+  "code": "from qiskit.primitives import BasePrimitiveJob, StatevectorSampler\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\njob = StatevectorSampler().run([qc], shots=64)\nres = job.result()\nprint(isinstance(job, BasePrimitiveJob), type(res).__name__, type(res[0]).__name__)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`True PrimitiveResult PubResult`"
+    },
+    {
+      "key": "B",
+      "text": "`False PrimitiveResult SamplerPubResult`"
+    },
+    {
+      "key": "C",
+      "text": "`True SamplerResult SamplerPubResult`"
+    },
+    {
+      "key": "D",
+      "text": "`True PrimitiveResult DataBin`"
+    },
+    {
+      "key": "E",
+      "text": "`True PrimitiveResult BitArray`"
+    },
+    {
+      "key": "F",
+      "text": "`True PrimitiveResult SamplerPubResult`"
+    }
+  ],
+  "answer": [
+    "F"
+  ],
+  "explanation": {
+    "correct": "`BasePrimitiveJob` is the abstract job interface shared by every V2 primitive: the reference primitives return a `PrimitiveJob` and Runtime returns a `RuntimeJobV2`, and both are instances of it, which is why `result()`, `status()`, `done()`, `cancelled()`, `running()`, `in_final_state()` and `cancel()` are available whichever primitive you used. The result container is a `PrimitiveResult`, indexed by PUB; each element of a SAMPLER result is a `SamplerPubResult` — the Sampler-specific subclass of `PubResult` that adds shot-level conveniences such as `join_data()`. Its `.data` is the `DataBin`, and the `BitArray` sits one layer further in, under the register name.",
+    "distractors": {
+      "A": "Right family, wrong class: `SamplerPubResult` inherits from `PubResult`, so `isinstance(res[0], PubResult)` is True — but `type(...).__name__` reports the actual class, which is the Sampler-specific subclass.",
+      "B": "Assumes `BasePrimitiveJob` describes only Runtime jobs. It is defined in `qiskit.primitives` and the local `PrimitiveJob` implements it, which is what makes local and Runtime job handles interchangeable.",
+      "C": "`SamplerResult` was the V1 container (with `quasi_dists` and `metadata` lists). V2 replaced it with `PrimitiveResult`; the name no longer appears in a V2 workflow.",
+      "D": "The `DataBin` is one layer further in: it is `res[0].data`, not `res[0]`.",
+      "E": "The `BitArray` is deeper still — `res[0].data.meas` — and holds the shot data itself."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/primitives"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q036.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import BasePrimitiveJob, StatevectorSampler\n\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\njob = StatevectorSampler().run([qc], shots=64)\nres = job.result()\nprinted = f\"{isinstance(job, BasePrimitiveJob)} {type(res).__name__} {type(res[0]).__name__}\"\n\nclaims = {\n    \"A\": \"True PrimitiveResult PubResult\",\n    \"B\": \"False PrimitiveResult SamplerPubResult\",\n    \"C\": \"True SamplerResult SamplerPubResult\",\n    \"D\": \"True PrimitiveResult DataBin\",\n    \"E\": \"True PrimitiveResult BitArray\",\n    \"F\": \"True PrimitiveResult SamplerPubResult\",\n}\nflags = {k: (v == printed) for k, v in claims.items()}\nevidence = {\n    k: f\"the script printed '{printed}'; this option predicts '{v}' -> match={flags[k]}\"\n    for k, v in claims.items()\n}\nevidence[\"A\"] += f\"; the pub's class chain is {[c.__name__ for c in type(res[0]).__mro__]}, so it is a PubResult by inheritance while its own class name is not\"\nevidence[\"B\"] += f\"; the local job object is a {type(job).__name__} and the abstract methods it implements are {sorted(BasePrimitiveJob.__abstractmethods__)}\"\nevidence[\"D\"] += f\"; the data bin is one layer in: type(res[0].data).__name__ = {type(res[0].data).__name__}\"\nevidence[\"E\"] += f\"; the bit array is deeper still: type(res[0].data.meas).__name__ = {type(res[0].data.meas).__name__}\"\nemit_verdict({\n    \"answer\": sorted(k for k, v in flags.items() if v),\n    \"evidence\": evidence,\n    \"observed\": {\n        \"printed\": printed,\n        \"job_type\": type(job).__name__,\n        \"interface_methods\": sorted(BasePrimitiveJob.__abstractmethods__),\n    },\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "official-alignment minor gap: SamplerPubResult appeared twice (distractor-only) and BasePrimitiveJob never — neither had ever been an answer. The proof also records the interface's abstract method set (cancel/cancelled/done/in_final_state/result/running/status) so the evidence teaches what the interface guarantees."
+  },
+  "display_count": 5,
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

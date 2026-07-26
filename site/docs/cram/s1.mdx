@@ -69,6 +69,9 @@ For rotations, two memorized formulas answer most probability questions without 
 - For RY(θ)|0⟩ the probability of outcome 1 is sin²(θ/2) — θ = π/3 gives exactly 0.25. — ⚙️ proven in [`s1-q039`](/docs/sections/s1)
 - For the same state ⟨Z⟩ = cos θ — at θ = π/3 the expectation value is 0.5, not sin/cos of the half angle. — ⚙️ proven in [`s1-q040`](/docs/sections/s1)
 - Setting `qc.global_phase` changes nothing observable: exact probabilities are identical and a seeded sampling run returns the same counts as the phase-free circuit. — ⚙️ proven in [`s1-q027`](/docs/sections/s1)
+- `efficient_su2(n, reps=r)` has `2·n·(r+1)` free parameters — an `ry` and an `rz` on every qubit, and one rotation layer MORE than `reps` because a final rotation layer follows the last entangler: `efficient_su2(4, reps=2)` gives 24, and `skip_final_rotation_layer=True` drops it to 16. — ⚙️ proven in [`s1-q048`](/docs/sections/s1)
+- `real_amplitudes` is the RY-only sibling of `efficient_su2`: its gate set is exactly `ry` + `cx` (so `n·(reps+1)` parameters, 12 at the default reps=3 on 3 qubits), while `efficient_su2` adds the `rz` layer. `quantum_volume` carries no free parameters at all. — ⚙️ proven in [`s1-q050`](/docs/sections/s1)
+- `QFTGate(n)` takes only a qubit count (no `do_swaps`, no `approximation_degree` — those belonged to the deprecated `QFT` class). One `decompose()` opens it into n `h`, n(n−1)/2 `cp` and ⌊n/2⌋ `swap`: for n = 4 that is `{'h': 4, 'cp': 6, 'swap': 2}`, never `cx` (translating `cp` to a hardware basis is the transpiler's job). — ⚙️ proven in [`s1-q049`](/docs/sections/s1)
 
 
 ---

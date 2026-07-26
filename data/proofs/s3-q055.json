@@ -1,0 +1,91 @@
+{
+  "question": "s3-q055",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "the routing stage of the level-2 preset runs ['CheckMap', 'BarrierBeforeFinalMeasurements', 'SabreSwap', 'VF2PostLayout', 'ApplyLayout', 'FilterOpNodes']; `SabreLayout` is found in stage(s) ['layout'] -> match=False",
+      "B": "the routing stage of the level-2 preset runs ['CheckMap', 'BarrierBeforeFinalMeasurements', 'SabreSwap', 'VF2PostLayout', 'ApplyLayout', 'FilterOpNodes']; `VF2Layout` is found in stage(s) ['layout'] -> match=False",
+      "C": "the routing stage of the level-2 preset runs ['CheckMap', 'BarrierBeforeFinalMeasurements', 'SabreSwap', 'VF2PostLayout', 'ApplyLayout', 'FilterOpNodes']; `ConsolidateBlocks` is found in stage(s) ['init'] -> match=False",
+      "D": "the routing stage of the level-2 preset runs ['CheckMap', 'BarrierBeforeFinalMeasurements', 'SabreSwap', 'VF2PostLayout', 'ApplyLayout', 'FilterOpNodes']; `SabreSwap` is found in stage(s) ['routing'] -> match=True",
+      "E": "the routing stage of the level-2 preset runs ['CheckMap', 'BarrierBeforeFinalMeasurements', 'SabreSwap', 'VF2PostLayout', 'ApplyLayout', 'FilterOpNodes']; `BasisTranslator` is found in stage(s) ['init', 'optimization', 'translation'] -> match=False",
+      "F": "the routing stage of the level-2 preset runs ['CheckMap', 'BarrierBeforeFinalMeasurements', 'SabreSwap', 'VF2PostLayout', 'ApplyLayout', 'FilterOpNodes']; `Optimize1qGatesDecomposition` is found in stage(s) ['optimization'] -> match=False"
+    },
+    "observed": {
+      "stages": {
+        "init": [
+          "UnitarySynthesis",
+          "HighLevelSynthesis",
+          "BasisTranslator",
+          "ElidePermutations",
+          "RemoveDiagonalGatesBeforeMeasure",
+          "RemoveIdentityEquivalent",
+          "InverseCancellation",
+          "ContractIdleWiresInControlFlow",
+          "CommutativeCancellation",
+          "ConsolidateBlocks",
+          "Split2QUnitaries"
+        ],
+        "layout": [
+          "SetLayout",
+          "VF2Layout",
+          "BarrierBeforeFinalMeasurements",
+          "SabreLayout",
+          "FullAncillaAllocation",
+          "EnlargeWithAncilla",
+          "ApplyLayout"
+        ],
+        "routing": [
+          "CheckMap",
+          "BarrierBeforeFinalMeasurements",
+          "SabreSwap",
+          "VF2PostLayout",
+          "ApplyLayout",
+          "FilterOpNodes"
+        ],
+        "translation": [
+          "UnitarySynthesis",
+          "HighLevelSynthesis",
+          "BasisTranslator"
+        ],
+        "optimization": [
+          "TwoQubitPeepholeOptimization",
+          "Size",
+          "Depth",
+          "FixedPoint",
+          "FixedPoint",
+          "RemoveIdentityEquivalent",
+          "Optimize1qGatesDecomposition",
+          "CommutativeCancellation",
+          "ContractIdleWiresInControlFlow",
+          "GatesInBasis",
+          "UnitarySynthesis",
+          "HighLevelSynthesis",
+          "BasisTranslator",
+          "Size",
+          "Depth",
+          "FixedPoint",
+          "FixedPoint"
+        ],
+        "scheduling": [
+          "ContainsInstruction",
+          "TimeUnitConversion",
+          "InstructionDurationCheck",
+          "ConstrainedReschedule"
+        ]
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.1,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"the routing stage of the level-2 preset runs ['CheckMap', 'BarrierBeforeFinalMeasurements', 'SabreSwap', 'VF2PostLayout', 'ApplyLayout', 'FilterOpNodes']; `SabreLayout` is found in stage(s) ['layout'] -> match=False\", \"B\": \"the routing stage of the level-2 preset runs ['CheckMap', 'BarrierBeforeFinalMeasurements', 'SabreSwap', 'VF2PostLayout', 'ApplyLayout', 'FilterOpNodes']; `VF2Layout` is found in stage(s) ['layout'] -> match=False\", \"C\": \"the routing stage of the level-2 preset runs ['CheckMap', 'BarrierBeforeFinalMeasurements', 'SabreSwap', 'VF2PostLayout', 'ApplyLayout', 'FilterOpNodes']; `ConsolidateBlocks` is found in stage(s) ['init'] -> match=False\", \"D\": \"the routing stage of the level-2 preset runs ['CheckMap', 'BarrierBeforeFinalMeasurements', 'SabreSwap', 'VF2PostLayout', 'ApplyLayout', 'FilterOpNodes']; `SabreSwap` is found in stage(s) ['routing'] -> match=True\", \"E\": \"the routing stage of the level-2 preset runs ['CheckMap', 'BarrierBeforeFinalMeasurements', 'SabreSwap', 'VF2PostLayout', 'ApplyLayout', 'FilterOpNodes']; `BasisTranslator` is found in stage(s) ['init', 'optimization', 'translation'] -> match=False\", \"F\": \"the routing stage of the level-2 preset runs ['CheckMap', 'BarrierBeforeFinalMeasurements', 'SabreSwap', 'VF2PostLayout', 'ApplyLayout', 'FilterOpNodes']; `Optimize1qGatesDecomposition` is found in stage(s) ['optimization'] -> match=False\"}, \"observed\": {\"stages\": {\"init\": [\"UnitarySynthesis\", \"HighLevelSynthesis\", \"BasisTranslator\", \"ElidePermutations\", \"RemoveDiagonalGatesBeforeMeasure\", \"RemoveIdentityEquivalent\", \"InverseCancellation\", \"ContractIdleWiresInControlFlow\", \"CommutativeCancellation\", \"ConsolidateBlocks\", \"Split2QUnitaries\"], \"layout\": [\"SetLayout\", \"VF2Layout\", \"BarrierBeforeFinalMeasurements\", \"SabreLayout\", \"FullAncillaAllocation\", \"EnlargeWithAncilla\", \"ApplyLayout\"], \"routing\": [\"CheckMap\", \"BarrierBeforeFinalMeasurements\", \"SabreSwap\", \"VF2PostLayout\", \"ApplyLayout\", \"FilterOpNodes\"], \"translation\": [\"UnitarySynthesis\", \"HighLevelSynthesis\", \"BasisTranslator\"], \"optimization\": [\"TwoQubitPeepholeOptimization\", \"Size\", \"Depth\", \"FixedPoint\", \"FixedPoint\", \"RemoveIdentityEquivalent\", \"Optimize1qGatesDecomposition\", \"CommutativeCancellation\", \"ContractIdleWiresInControlFlow\", \"GatesInBasis\", \"UnitarySynthesis\", \"HighLevelSynthesis\", \"BasisTranslator\", \"Size\", \"Depth\", \"FixedPoint\", \"FixedPoint\"], \"scheduling\": [\"ContainsInstruction\", \"TimeUnitConversion\", \"InstructionDurationCheck\", \"ConstrainedReschedule\"]}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

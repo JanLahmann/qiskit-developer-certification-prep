@@ -1,0 +1,80 @@
+{
+  "id": "s2-q038",
+  "section": "s2",
+  "objectives": [
+    "s2o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "You want one picture of the device in which each qubit node and each two-qubit link is shaded according to its calibrated error rate, so you can pick the healthiest region of the chip. `isa` is a circuit already transpiled for `backend`. Which call produces that picture?",
+  "code": "from qiskit.visualization import (\n    plot_circuit_layout,\n    plot_error_map,\n    plot_gate_map,\n    plot_histogram,\n)\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\ncounts = {\"00\": 512, \"11\": 512}",
+  "options": [
+    {
+      "key": "A",
+      "text": "`plot_gate_map(backend)` — the connectivity diagram, drawn in a single uniform colour"
+    },
+    {
+      "key": "B",
+      "text": "`plot_circuit_layout(isa, backend)` — highlights the physical qubits the circuit occupies"
+    },
+    {
+      "key": "C",
+      "text": "`plot_error_map(backend)` — nodes and links shaded from the backend's calibration data"
+    },
+    {
+      "key": "D",
+      "text": "`plot_gate_map(backend, plot_directed=True)` — arrows shaded by the error of each link"
+    },
+    {
+      "key": "E",
+      "text": "`plot_error_map(counts)` — the error map inferred from the spread of measured outcomes"
+    },
+    {
+      "key": "F",
+      "text": "`plot_histogram(counts)` — the outcome distribution the error rates are read off from"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "The three device plots differ in what they colour, not in what they draw: all of them lay out the same qubit graph. `plot_error_map` is the one that pulls the backend's calibration data and turns it into a colour scale — one shade per qubit from its readout and single-qubit gate errors, one shade per link from its two-qubit gate error — plus the marginal error bars around the map. That is why its only other parameters are cosmetic (`figsize`, `show_title`, `qubit_coordinates`): the data comes entirely from the backend you pass in.",
+    "distractors": {
+      "A": "`plot_gate_map` draws the same node-and-link graph but passes no per-qubit or per-link colours to the renderer, so every node looks identical. It answers \"what is connected to what\", not \"what is noisy\".",
+      "B": "`plot_circuit_layout` colours the graph with a two-tone highlight — the physical qubits the transpiled circuit uses versus the ones it does not — and labels them with their virtual indices. Two colours, chosen by the layout, not by calibration.",
+      "D": "`plot_directed` only turns the undirected lines into arrows showing the control-target orientation. It adds no calibration data, so the figure still carries a single colour.",
+      "E": "Error rates come from the backend's calibration, not from a counts mapping: `plot_error_map` immediately asks its argument for a device name, so a dict raises an `AttributeError`.",
+      "F": "A histogram shows how often each outcome occurred. Even a very skewed distribution cannot be attributed to individual qubits or links, and the figure has no device layout in it at all."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_error_map",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q038.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import inspect\nimport matplotlib.figure as mfig\nimport qiskit.visualization.gate_map as gm\nfrom qiskit import QuantumCircuit, transpile\nfrom qiskit.visualization import plot_circuit_layout, plot_error_map, plot_gate_map, plot_histogram\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\n# The Graphviz BINARY is absent in this sandbox, so the leaf renderer\n# plot_coupling_map is stubbed out; every colour decision above it still runs\n# for real and we capture the colours it is handed.\n_sig = inspect.signature(gm.plot_coupling_map)\n_cap = {}\n\n\ndef _stub(*a, **kw):\n    _cap.clear()\n    _cap.update(_sig.bind(*a, **kw).arguments)\n    return mfig.Figure()\n\n\ngm.plot_coupling_map = _stub\n\nbackend = FakeManilaV2()\ncounts = {\"00\": 512, \"11\": 512}\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\nisa = transpile(qc, backend, seed_transpiler=7)\n\n\ndef attempt(fn):\n    _cap.clear()\n    try:\n        r = fn()\n        return {\"ok\": True, \"what\": type(r).__name__, \"cap\": dict(_cap)}\n    except Exception as e:\n        return {\"ok\": False, \"what\": type(e).__name__ + \": \" + str(e)[:80], \"cap\": {}}\n\n\ntries = {\n    \"A\": (\"plot_gate_map(backend)\", lambda: plot_gate_map(backend)),\n    \"B\": (\"plot_circuit_layout(isa, backend)\", lambda: plot_circuit_layout(isa, backend)),\n    \"C\": (\"plot_error_map(backend)\", lambda: plot_error_map(backend)),\n    \"D\": (\"plot_gate_map(backend, plot_directed=True)\", lambda: plot_gate_map(backend, plot_directed=True)),\n    \"E\": (\"plot_error_map(counts)\", lambda: plot_error_map(counts)),\n    \"F\": (\"plot_histogram(counts)\", lambda: plot_histogram(counts)),\n}\nevidence = {}\nproven = []\nobserved = {}\nfor k, (label, fn) in tries.items():\n    r = attempt(fn)\n    qcol = r[\"cap\"].get(\"qubit_color\")\n    lcol = r[\"cap\"].get(\"line_color\")\n    nq = len(set(qcol)) if isinstance(qcol, list) else 0\n    nl = len(set(lcol)) if isinstance(lcol, list) else 0\n    graded = bool(nq > 2 and nl > 2)\n    observed[k] = {\"result\": r[\"what\"], \"distinct_qubit_shades\": nq, \"distinct_link_shades\": nl}\n    if r[\"ok\"]:\n        evidence[k] = (f\"{label} -> {r['what']}; the device renderer received {nq} distinct qubit\"\n                       f\" shades and {nl} distinct link shades -> a graded per-qubit AND per-link\"\n                       f\" scale? {graded}\")\n    else:\n        evidence[k] = f\"{label} -> {r['what']}; nothing is drawn, so there is no error scale ({graded})\"\n    if graded:\n        proven.append(k)\nevidence[\"A\"] += \"  (no colours at all are forwarded: every node and every link is drawn alike)\"\nevidence[\"B\"] += \"  (its two shades are the used/unused highlight, not a calibration scale)\"\nevidence[\"D\"] += \"  (the arrows change orientation only; the colour arguments stay empty)\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (s1/s2 official-alignment fix wave)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "plot_error_map / plot_gate_map / plot_circuit_layout discrimination — coverage gap from data/audits/official_alignment.md (task 2.2). Graphviz binary absent in the pinned env: the proof stubs the leaf renderer plot_coupling_map and asserts on the colour arrays the real code forwards to it."
+  },
+  "display_count": 5,
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

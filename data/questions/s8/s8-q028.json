@@ -1,0 +1,69 @@
+{
+  "id": "s8-q028",
+  "section": "s8",
+  "objectives": [
+    "s8o4"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "A pipeline with no Qiskit installed drives Runtime over plain HTTPS. It has already submitted an Estimator job with `POST https://quantum.cloud.ibm.com/api/v1/jobs`, kept the `id` from the response, and polled until the job reached a terminal state. Which request now returns the primitive result itself?",
+  "code": "curl -X POST 'https://quantum.cloud.ibm.com/api/v1/jobs' \\\n  -H 'Authorization: Bearer <TOKEN>' \\\n  -H 'Service-CRN: <CRN>' \\\n  -H 'IBM-API-Version: <YYYY-MM-DD>' \\\n  -H 'Content-Type: application/json' \\\n  --data-raw '{ \"program_id\": \"estimator\", ... }'\n# response: { \"id\": \"<JOB_ID>\" }   -> now fetch the result",
+  "options": [
+    {
+      "key": "A",
+      "text": "`GET /api/v1/jobs/{id}` — the job-details response embeds the result once the job is done."
+    },
+    {
+      "key": "B",
+      "text": "`POST /api/v1/jobs/{id}/results` — the result is produced by posting the job id back to the results endpoint."
+    },
+    {
+      "key": "C",
+      "text": "`GET /api/v1/jobs/{id}/results` — the endpoint that returns the final result of that job."
+    },
+    {
+      "key": "D",
+      "text": "`GET /api/v1/jobs/{id}/metrics` — the metrics endpoint carries the result payload next to the timings."
+    },
+    {
+      "key": "E",
+      "text": "`GET /api/v1/results/{id}` — results live in a top-level collection of their own, keyed by job id."
+    },
+    {
+      "key": "F",
+      "text": "`GET /api/v1/jobs/{id}/logs` — the log endpoint streams back the result data as the job produces it."
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "Results have their own sub-resource under the job: `GET /api/v1/jobs/{id}/results` returns the final result of that job. It is a plain GET carrying the same three headers every Runtime REST call needs — `Authorization: Bearer <token>` (an IAM token, not your API key), `Service-CRN` identifying the instance, and `IBM-API-Version` — plus `Accept: application/json`; only requests with a body add `Content-Type`. The rest of the jobs family follows the same shape: `GET /api/v1/jobs` lists jobs, `GET /api/v1/jobs/{id}` returns details, `GET /api/v1/jobs/{id}/logs` and `/metrics` return logs and metrics, `POST /api/v1/jobs/{id}/cancel` cancels, and `DELETE /api/v1/jobs/{id}` removes a job that has already reached a terminal state.",
+    "distractors": {
+      "A": "This is the *details* endpoint: it reports the job's status, backend, program id, tags and timestamps. The result data is a separate sub-resource, which is why polling this endpoint never yields the expectation values.",
+      "B": "Wrong verb. Submitting work is the only POST in this flow (`POST /api/v1/jobs`); retrieving is a GET, and there is no operation that re-posts an id to produce a result.",
+      "D": "`/metrics` reports execution bookkeeping — timestamps and usage — for the job. Useful for accounting, empty of primitive data.",
+      "E": "Results are not a top-level collection; every result is addressed through its job. There is no `/api/v1/results` path.",
+      "F": "`/logs` returns the job's log output, the REST counterpart of `job.logs()`. It is diagnostic text, not the PUB results, and it is not a stream."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-runtime-rest",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-runtime-rest/tags/jobs"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "official-alignment gap task 8.4: the bank's three REST questions covered authentication and the job POST only. Endpoint list read off the live REST reference (fetched 2026-07-26): jobs POST/GET, jobs/{id} GET+DELETE, jobs/{id}/cancel POST, jobs/{id}/logs GET, jobs/{id}/metrics GET, jobs/{id}/results GET, jobs/{id}/tags PUT; headers Authorization / Service-CRN / IBM-API-Version / Accept. Conceptual by nature — calling the endpoint needs live credentials."
+  },
+  "display_count": 5
+}

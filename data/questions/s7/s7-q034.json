@@ -1,0 +1,80 @@
+{
+  "id": "s7-q034",
+  "section": "s7",
+  "objectives": [
+    "s7o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "A script submits a Sampler job to a QPU and then polls the returned `RuntimeJobV2` in a loop until the work is over. Which statement about the state that job reports is correct for `qiskit-ibm-runtime`?",
+  "code": "job = SamplerV2(mode=backend).run([isa_circuit])\nwhile not job.in_final_state():\n    time.sleep(5)\n# ... which check tells you the job finished successfully?",
+  "options": [
+    {
+      "key": "A",
+      "text": "`job.status()` hands back a `JobStatus` enum member, so `job.status() == JobStatus.DONE` is the comparison that ends the polling loop."
+    },
+    {
+      "key": "B",
+      "text": "`job.status().name` is the documented way to read the state, because the returned value is an enum member named after its state."
+    },
+    {
+      "key": "C",
+      "text": "`job.status()` hands back a plain string, so `job.status() == \"DONE\"` is the comparison that ends the polling loop."
+    },
+    {
+      "key": "D",
+      "text": "`job.in_final_state()` turns True just for a job that ran to completion; a cancelled job keeps it False."
+    },
+    {
+      "key": "E",
+      "text": "`job.done()` is True for a job that has stopped for whatever reason, so cancelled and errored jobs satisfy it too."
+    },
+    {
+      "key": "F",
+      "text": "A job that fails ends in the state `FAILED`, which is the string `job.errored()` compares the reported state against."
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "In `qiskit-ibm-runtime` the job state is a plain string. `RuntimeJobV2.status()` is typed in the API reference as `Literal['INITIALIZING', 'QUEUED', 'RUNNING', 'CANCELLED', 'DONE', 'ERROR']`, and the official examples compare it directly to `\"DONE\"`. Every boolean predicate on the job is built on that string: `done()` is literally `status() == \"DONE\"`, `cancelled()` and `errored()` test the other two terminal strings, and `in_final_state()` tests membership in the class constant `JOB_FINAL_STATES`, which is `('DONE', 'CANCELLED', 'ERROR')`. So a loop that exits on `in_final_state()` still has to ask which terminal state it landed in.",
+    "distractors": {
+      "A": "The V1 habit. `qiskit.providers.JobStatus` is still importable, and that is the trap: comparing the returned string to an enum member is False for every state, so a loop written this way never exits.",
+      "B": "Follows from the same misconception. Since the returned value is a string, asking it for `.name` raises `AttributeError: 'str' object has no attribute 'name'` rather than yielding the state.",
+      "D": "Confuses 'finished' with 'succeeded'. Cancellation and failure are terminal too — all three of `DONE`, `CANCELLED` and `ERROR` are in `JOB_FINAL_STATES`, which is exactly why the loop above needs a second check afterwards.",
+      "E": "The mirror-image confusion: `done()` is the narrow predicate (`status() == \"DONE\"`), while `in_final_state()` is the broad one. A cancelled job reports `done()` as False.",
+      "F": "There is no `FAILED` state in Runtime; a failed job reports `ERROR`, and `errored()` compares against that string. `error_message()` is where the reason lives."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/runtime-job-v2",
+      "https://quantum.cloud.ibm.com/docs/guides/monitor-job"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q034.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nfrom qiskit_ibm_runtime import RuntimeJobV2\nfrom qiskit.providers import JobStatus\n\n\nclass _StatePin(RuntimeJobV2):\n    \"\"\"A RuntimeJobV2 whose reported state is pinned locally.\n\n    `_set_status_and_error_message` short-circuits for terminal states, so the\n    inherited predicates run unmodified with no service call and no network.\n    \"\"\"\n\n    def __init__(self, state):\n        self._status = state\n\n\ndone, cancelled, errored = _StatePin(\"DONE\"), _StatePin(\"CANCELLED\"), _StatePin(\"ERROR\")\nstate = done.status()\nis_str = isinstance(state, str)\nenum_eq = bool(state == JobStatus.DONE)\ntry:\n    state.name\n    name_err = None\nexcept AttributeError as exc:\n    name_err = f\"{type(exc).__name__}: {exc}\"\nfinals = tuple(RuntimeJobV2.JOB_FINAL_STATES)\n\nflags = {\n    \"A\": enum_eq,\n    \"B\": name_err is None,\n    \"C\": bool(is_str and state == \"DONE\"),\n    \"D\": not cancelled.in_final_state(),\n    \"E\": bool(cancelled.done() and errored.done()),\n    \"F\": \"FAILED\" in finals,\n}\nevidence = {\n    \"A\": f\"status() returned {state!r} (a {type(state).__name__}); comparing it to the enum member gives {enum_eq} -> match={flags['A']}\",\n    \"B\": f\"reading .name off the returned value gives {name_err} -> match={flags['B']}\",\n    \"C\": f\"status() returned {state!r}, isinstance of str is {is_str}, and the string comparison gives {state == 'DONE'} -> match={flags['C']}\",\n    \"D\": f\"a job whose state is CANCELLED reports in_final_state()={cancelled.in_final_state()}; the terminal states are {finals} -> match={flags['D']}\",\n    \"E\": f\"the same cancelled job reports done()={cancelled.done()} and an errored job reports done()={errored.done()} -> match={flags['E']}\",\n    \"F\": f\"the terminal states are {finals}; the errored job reports {errored.status()!r} with errored()={errored.errored()} -> match={flags['F']}\",\n}\nemit_verdict({\n    \"answer\": sorted(k for k, v in flags.items() if v),\n    \"evidence\": evidence,\n    \"observed\": {\n        \"status\": state,\n        \"type\": type(state).__name__,\n        \"final_states\": list(finals),\n        \"enum_equal\": enum_eq,\n        \"name_attr\": name_err,\n    },\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "official-alignment gap task 7.2 (job monitoring had 4 questions; JobStatus appeared once). Executed without a service: a RuntimeJobV2 subclass pins the state string, and because _set_status_and_error_message short-circuits on terminal states the inherited status()/done()/errored()/in_final_state() logic runs untouched. The enum-vs-string comparison and the missing FAILED state are both observed, not asserted."
+  },
+  "display_count": 5,
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

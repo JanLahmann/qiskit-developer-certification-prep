@@ -1,0 +1,56 @@
+{
+  "question": "s1-q050",
+  "verdict": {
+    "answer": [
+      "E"
+    ],
+    "evidence": {
+      "A": "built efficient_su2(3): the executed circuit contains {'ry': 12, 'rz': 12, 'cx': 6} with 24 free parameters -> gate set is exactly ry plus cx? False",
+      "B": "built zz_feature_map(3): the executed circuit contains {'p': 12, 'cx': 12, 'h': 6} with 3 free parameters -> gate set is exactly ry plus cx? False",
+      "C": "built pauli_two_design(3, seed=7): the executed circuit contains {'rz': 6, 'cz': 6, 'ry': 5, 'rx': 4} with 12 free parameters -> gate set is exactly ry plus cx? False",
+      "D": "built quantum_volume(3, seed=7): the executed circuit contains {'unitary': 3} with 0 free parameters -> gate set is exactly ry plus cx? False",
+      "E": "built real_amplitudes(3): the executed circuit contains {'ry': 12, 'cx': 6} with 12 free parameters -> gate set is exactly ry plus cx? True",
+      "F": "built excitation_preserving(3): the executed circuit contains {'rz': 12, 'Interaction': 9} with 21 free parameters -> gate set is exactly ry plus cx? False"
+    },
+    "observed": {
+      "efficient_su2(3)": {
+        "ry": 12,
+        "rz": 12,
+        "cx": 6
+      },
+      "zz_feature_map(3)": {
+        "p": 12,
+        "cx": 12,
+        "h": 6
+      },
+      "pauli_two_design(3, seed=7)": {
+        "rz": 6,
+        "cz": 6,
+        "ry": 5,
+        "rx": 4
+      },
+      "quantum_volume(3, seed=7)": {
+        "unitary": 3
+      },
+      "real_amplitudes(3)": {
+        "ry": 12,
+        "cx": 6
+      },
+      "excitation_preserving(3)": {
+        "rz": 12,
+        "Interaction": 9
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.07,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"built efficient_su2(3): the executed circuit contains {'ry': 12, 'rz': 12, 'cx': 6} with 24 free parameters -> gate set is exactly ry plus cx? False\", \"B\": \"built zz_feature_map(3): the executed circuit contains {'p': 12, 'cx': 12, 'h': 6} with 3 free parameters -> gate set is exactly ry plus cx? False\", \"C\": \"built pauli_two_design(3, seed=7): the executed circuit contains {'rz': 6, 'cz': 6, 'ry': 5, 'rx': 4} with 12 free parameters -> gate set is exactly ry plus cx? False\", \"D\": \"built quantum_volume(3, seed=7): the executed circuit contains {'unitary': 3} with 0 free parameters -> gate set is exactly ry plus cx? False\", \"E\": \"built real_amplitudes(3): the executed circuit contains {'ry': 12, 'cx': 6} with 12 free parameters -> gate set is exactly ry plus cx? True\", \"F\": \"built excitation_preserving(3): the executed circuit contains {'rz': 12, 'Interaction': 9} with 21 free parameters -> gate set is exactly ry plus cx? False\"}, \"observed\": {\"efficient_su2(3)\": {\"ry\": 12, \"rz\": 12, \"cx\": 6}, \"zz_feature_map(3)\": {\"p\": 12, \"cx\": 12, \"h\": 6}, \"pauli_two_design(3, seed=7)\": {\"rz\": 6, \"cz\": 6, \"ry\": 5, \"rx\": 4}, \"quantum_volume(3, seed=7)\": {\"unitary\": 3}, \"real_amplitudes(3)\": {\"ry\": 12, \"cx\": 6}, \"excitation_preserving(3)\": {\"rz\": 12, \"Interaction\": 9}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

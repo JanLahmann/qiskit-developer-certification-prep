@@ -1,0 +1,80 @@
+{
+  "id": "s2-q039",
+  "section": "s2",
+  "objectives": [
+    "s2o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "No backend and no primitive are involved here: the data behind the histogram is sampled straight from the statevector. What is bound to `counts`?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_histogram\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\n\nsv = Statevector.from_instruction(qc)\nsv.seed(1234)\ncounts = sv.sample_counts(2048)\nfig = plot_histogram(counts)",
+  "options": [
+    {
+      "key": "A",
+      "text": "A `Counts` mapping over the four bitstrings, each near a quarter of the shots"
+    },
+    {
+      "key": "B",
+      "text": "`{'00': 0.5, '11': 0.5}` — the two nonzero probabilities rather than shot tallies"
+    },
+    {
+      "key": "C",
+      "text": "A `QiskitError`: the circuit carries no measurement, so there is nothing to sample"
+    },
+    {
+      "key": "D",
+      "text": "A `Counts` mapping keyed `00` and `11`, summing to 2048"
+    },
+    {
+      "key": "E",
+      "text": "A length-2048 array of sampled bitstrings, one entry per shot"
+    },
+    {
+      "key": "F",
+      "text": "A `Counts` mapping keyed by the integers 0 and 3, the two basis-state indices"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "`Statevector.sample_counts(shots)` draws `shots` samples from the state's probability distribution and returns a `qiskit.result.Counts` object — the same bitstring-to-integer mapping a Sampler result gives you, which is exactly what `plot_histogram` wants. The Bell state has amplitude only on `00` and `11`, so those are the only keys, and the integer values always add up to the requested shot count. `sv.seed(1234)` makes the draw reproducible.",
+    "distractors": {
+      "A": "The sampler can only return outcomes the state actually has amplitude on. `01` and `10` have amplitude zero in a Bell state, so they never appear as keys — a uniform four-way split would be the result for two independent Hadamards.",
+      "B": "That is what `sv.probabilities_dict()` returns. `sample_counts` reports a shot tally, so its values are integers that sum to the shot count; sampling noise means the two bars are close to but rarely exactly equal.",
+      "C": "Sampling reads the amplitudes directly, so no measurement instruction is needed — and adding one would break the line above, since `Statevector.from_instruction` refuses a circuit with classical bits.",
+      "E": "One entry per shot is what `sample_memory(shots)` returns. `sample_counts` aggregates those samples into a mapping whose length is the number of distinct outcomes.",
+      "F": "The keys are bitstring labels, not state indices: `sample_counts` returns strings such as `11`. Integer keys are what `BitArray.get_int_counts()` produces on a primitive result."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q039.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_histogram\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nsv = Statevector.from_instruction(qc)\nsv.seed(1234)\nraised = None\ntry:\n    counts = sv.sample_counts(2048)\nexcept Exception as e:\n    raised = type(e).__name__\n    counts = {}\n\nkind = type(counts).__name__\nkeys = sorted(str(k) for k in counts)\nkey_types = sorted({type(k).__name__ for k in counts})\nval_types = sorted({type(v).__name__ for v in counts.values()})\ntotal = int(sum(int(v) for v in counts.values()))\nintegral = all(float(v).is_integer() for v in counts.values())\nprobs = {str(k): round(float(v), 3) for k, v in sv.probabilities_dict().items()}\nfig = plot_histogram(counts)\n\nevidence = {\n    \"A\": (f\"executed: the returned {kind} has keys {keys} — the zero-amplitude outcomes are\"\n          f\" absent, so there is no four-way split\"),\n    \"B\": (f\"executed: the values are {val_types} adding up to {total}, not probabilities;\"\n          f\" probabilities_dict() is the call that returns {probs}\"),\n    \"C\": (f\"executed: the call raised {raised or 'no exception'} and returned a {kind}\"\n          f\" from a circuit with no measurement\"),\n    \"D\": f\"executed: a {kind} with keys {keys} and {val_types} values adding up to {total}\",\n    \"E\": (f\"executed: the result is a {kind} holding {len(counts)} entries, not one per shot;\"\n          f\" sample_memory is the call that returns a per-shot sequence\"),\n    \"F\": f\"executed: the key types are {key_types} (bitstring labels), never int\",\n}\nproven = []\nif kind == \"Counts\" and keys == [\"00\", \"11\"] and integral and total == 2048:\n    proven.append(\"D\")\nif keys == sorted([\"00\", \"01\", \"10\", \"11\"]):\n    proven.append(\"A\")\nif counts and not integral:\n    proven.append(\"B\")\nif raised is not None:\n    proven.append(\"C\")\nif kind != \"Counts\" and len(counts) == 2048:\n    proven.append(\"E\")\nif \"int\" in key_types:\n    proven.append(\"F\")\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\n        \"type\": kind,\n        \"keys\": keys,\n        \"key_types\": key_types,\n        \"value_types\": val_types,\n        \"total_shots\": total,\n        \"probabilities_dict\": probs,\n        \"plot_histogram_returns\": type(fig).__name__,\n    },\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (s1/s2 official-alignment fix wave)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Statevector.sample_counts coverage gap from data/audits/official_alignment.md (0 prior hits). Determinism via Statevector.seed."
+  },
+  "display_count": 5,
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

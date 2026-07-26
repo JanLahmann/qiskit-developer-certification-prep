@@ -1,0 +1,80 @@
+{
+  "id": "s1-q050",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "You want a 3-qubit hardware-efficient variational ansatz whose gate set is nothing but `ry` rotations and `cx` entanglers, so that every amplitude it can prepare stays real. Which single circuit-library call builds it?",
+  "code": "from qiskit.circuit.library import (\n    efficient_su2,\n    excitation_preserving,\n    pauli_two_design,\n    quantum_volume,\n    real_amplitudes,\n    zz_feature_map,\n)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`efficient_su2(3)` — the SU(2) ansatz, which layers an `ry` and an `rz` on each qubit"
+    },
+    {
+      "key": "B",
+      "text": "`zz_feature_map(3)` — the second-order data-encoding map built from `h` and `p` gates"
+    },
+    {
+      "key": "C",
+      "text": "`pauli_two_design(3, seed=7)` — randomly drawn `rx`/`ry`/`rz` layers with `cz` entanglers"
+    },
+    {
+      "key": "D",
+      "text": "`quantum_volume(3, seed=7)` — stacked layers of Haar-random two-qubit unitary blocks"
+    },
+    {
+      "key": "E",
+      "text": "`real_amplitudes(3)` — alternating `ry` layers and `cx` entanglement"
+    },
+    {
+      "key": "F",
+      "text": "`excitation_preserving(3)` — `rz` rotations around particle-number-preserving blocks"
+    }
+  ],
+  "answer": [
+    "E"
+  ],
+  "explanation": {
+    "correct": "`real_amplitudes` is the RY-only member of the n-local family: it alternates a layer of `ry` rotations (one parameter per qubit) with a `cx` entanglement layer, and nothing else. Because RY and CX both have real matrices, every state it can prepare has real amplitudes — hence the name. Since Qiskit 2.1 the function form is the supported entry point; the `RealAmplitudes` class still works but is deprecated for removal in 3.0.",
+    "distractors": {
+      "A": "`efficient_su2` is the same skeleton with a *pair* of rotations per qubit — `ry` then `rz`. The `rz` layer makes amplitudes complex and doubles the parameter count, so its gate set is not RY+CX.",
+      "B": "A feature map encodes classical data, it is not a variational ansatz: its parameters are the input features. `zz_feature_map` builds Hadamards and phase gates around its entanglers.",
+      "C": "The Pauli two-design draws its rotation axes randomly from X, Y and Z, and it entangles with `cz`. Its amplitudes are not restricted to the reals.",
+      "D": "`quantum_volume` is a benchmarking circuit of random two-qubit unitary blocks. It carries no free parameters at all, so there is nothing for an optimizer to vary.",
+      "F": "The excitation-preserving ansatz conserves particle number using `rz` rotations and two-qubit interaction blocks; that structure is chosen for chemistry problems, not for a plain RY+CX ansatz."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/circuit_library",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.real_amplitudes"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q050.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.circuit.library import (efficient_su2, excitation_preserving, pauli_two_design,\n                                    quantum_volume, real_amplitudes, zz_feature_map)\n\nbuilders = {\n    \"A\": (\"efficient_su2(3)\", lambda: efficient_su2(3)),\n    \"B\": (\"zz_feature_map(3)\", lambda: zz_feature_map(3)),\n    \"C\": (\"pauli_two_design(3, seed=7)\", lambda: pauli_two_design(3, seed=7)),\n    \"D\": (\"quantum_volume(3, seed=7)\", lambda: quantum_volume(3, seed=7)),\n    \"E\": (\"real_amplitudes(3)\", lambda: real_amplitudes(3)),\n    \"F\": (\"excitation_preserving(3)\", lambda: excitation_preserving(3)),\n}\ntarget = {\"ry\", \"cx\"}\nevidence = {}\nproven = []\nobserved = {}\nfor k, (label, fn) in builders.items():\n    circ = fn()\n    ops = {g: int(v) for g, v in circ.count_ops().items()}\n    observed[label] = ops\n    m = bool(set(ops) == target)\n    evidence[k] = (f\"built {label}: the executed circuit contains {ops} with\"\n                   f\" {int(circ.num_parameters)} free parameters\"\n                   f\" -> gate set is exactly ry plus cx? {m}\")\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (s1/s2 official-alignment fix wave)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Circuit-library coverage gap from data/audits/official_alignment.md (task 1.2). Gate sets measured on qiskit 2.5.0."
+  },
+  "display_count": 5,
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

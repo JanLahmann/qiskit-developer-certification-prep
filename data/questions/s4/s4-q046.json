@@ -1,0 +1,80 @@
+{
+  "id": "s4-q046",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "Among the broadcasting patterns named in the *Primitive inputs and outputs* guide is one called **zip**. Which pairing of a parameter-value array with an observables array, submitted as a single Estimator PUB, is that pattern?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Parameter values of shape `(3,)` with one `SparsePauliOp`, whose observables-array shape is `()`."
+    },
+    {
+      "key": "B",
+      "text": "Parameter values of shape `(1, 3)` with an observables array of shape `(2, 1)`."
+    },
+    {
+      "key": "C",
+      "text": "Parameter values of shape `(2, 3)` with an observables array of shape `(4, 2, 1)`."
+    },
+    {
+      "key": "D",
+      "text": "Parameter values of shape `(3,)` with an observables array of shape `(4,)`."
+    },
+    {
+      "key": "E",
+      "text": "Parameter values of shape `(3,)` with an observables array of shape `(3,)`."
+    },
+    {
+      "key": "F",
+      "text": "Parameter values of shape `(3, 1)` with an observables array of shape `(3,)`."
+    }
+  ],
+  "answer": [
+    "E"
+  ],
+  "explanation": {
+    "correct": "*Zip* is the pattern where the two arrays already agree: identically shaped parameter and observables arrays are matched element by element, so the nth observable is estimated at the nth parameter value and the result keeps that same shape — three estimates from `(3,)` and `(3,)`, not nine. It is the one pattern where adding observables does not multiply the amount of work.",
+    "distractors": {
+      "A": "A scalar observables array is the guide's *broadcast single observable* row: the one observable is reused at every parameter value. The result shape is the same `(3,)`, which is why this pairing is the easiest one to mistake for zip.",
+      "B": "A `(1, 3)` parameter array against a `(2, 1)` observables array broadcasts to `(2, 3)` — every observable at every parameter value. That is *outer/product*.",
+      "C": "Here the observables array carries one dimension more than the parameter array, which broadcasts to `(4, 2, 3)`. That is the guide's *standard nd generalization* row.",
+      "D": "Shapes `(3,)` and `(4,)` disagree on their only axis and neither is 1, so nothing is zipped: the PUB is rejected with a `ValueError` about the shapes not being broadcastable.",
+      "F": "The extra trailing axis breaks the element-by-element match: `(3, 1)` against `(3,)` broadcasts into a product rather than a pairing, so this is outer/product written with a shape that looks like zip."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/estimator-v2"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q046.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.primitives.containers import ObservablesArray\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.ry(theta, 0)\nest = StatevectorEstimator()\nz, x, y, zz = (SparsePauliOp(p) for p in (\"ZI\", \"XI\", \"YI\", \"ZZ\"))\n\npairings = {\n    \"A\": (np.zeros((3,)), zz),\n    \"B\": (np.zeros((1, 3)), [[z], [x]]),\n    \"C\": (np.zeros((2, 3)), [[[z], [x]], [[y], [zz]], [[z], [y]], [[x], [zz]]]),\n    \"D\": (np.zeros((3,)), [z, x, y, zz]),\n    \"E\": (np.zeros((3,)), [z, x, y]),\n    \"F\": (np.zeros((3, 1)), [z, x, y]),\n}\nflags, evidence, observed = {}, {}, {}\nfor key, (params, obs) in pairings.items():\n    par_shape = tuple(int(i) for i in np.asarray(params).shape)\n    obs_shape = tuple(int(i) for i in ObservablesArray.coerce(obs).shape)\n    try:\n        res_shape = tuple(int(i) for i in est.run([(qc, obs, params)]).result()[0].data.evs.shape)\n        err = None\n    except ValueError as exc:\n        res_shape, err = None, type(exc).__name__\n    is_zip = bool(obs_shape != () and obs_shape == par_shape and res_shape == par_shape)\n    flags[key] = is_zip\n    observed[key] = {\"params\": par_shape, \"observables\": obs_shape, \"evs\": res_shape, \"error\": err}\n    evidence[key] = (\n        f\"parameters {par_shape} with observables {obs_shape} -> evs {res_shape}\"\n        f\"{'' if err is None else ' (' + err + ': the shapes do not broadcast)'}; \"\n        f\"zip requires two equally shaped non-scalar arrays matched element by element -> match={is_zip}\"\n    )\nemit_verdict({\n    \"answer\": sorted(k for k, v in flags.items() if v),\n    \"evidence\": evidence,\n    \"observed\": observed,\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "official-alignment gap task 4.2 (pattern NAMES). Companion to s4-q045, asked in the reverse direction. Every pairing is executed: the proof reports the coerced observables-array shape, the parameter-array shape and the resulting evs shape, and scores zip as 'two equally shaped non-scalar arrays, result keeps that shape'."
+  },
+  "display_count": 5,
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

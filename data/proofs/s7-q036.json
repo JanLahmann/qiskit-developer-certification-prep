@@ -1,0 +1,40 @@
+{
+  "question": "s7-q036",
+  "verdict": {
+    "answer": [
+      "F"
+    ],
+    "evidence": {
+      "A": "the script printed 'True PrimitiveResult SamplerPubResult'; this option predicts 'True PrimitiveResult PubResult' -> match=False; the pub's class chain is ['SamplerPubResult', 'PubResult', 'object'], so it is a PubResult by inheritance while its own class name is not",
+      "B": "the script printed 'True PrimitiveResult SamplerPubResult'; this option predicts 'False PrimitiveResult SamplerPubResult' -> match=False; the local job object is a PrimitiveJob and the abstract methods it implements are ['cancel', 'cancelled', 'done', 'in_final_state', 'result', 'running', 'status']",
+      "C": "the script printed 'True PrimitiveResult SamplerPubResult'; this option predicts 'True SamplerResult SamplerPubResult' -> match=False",
+      "D": "the script printed 'True PrimitiveResult SamplerPubResult'; this option predicts 'True PrimitiveResult DataBin' -> match=False; the data bin is one layer in: type(res[0].data).__name__ = DataBin",
+      "E": "the script printed 'True PrimitiveResult SamplerPubResult'; this option predicts 'True PrimitiveResult BitArray' -> match=False; the bit array is deeper still: type(res[0].data.meas).__name__ = BitArray",
+      "F": "the script printed 'True PrimitiveResult SamplerPubResult'; this option predicts 'True PrimitiveResult SamplerPubResult' -> match=True"
+    },
+    "observed": {
+      "printed": "True PrimitiveResult SamplerPubResult",
+      "job_type": "PrimitiveJob",
+      "interface_methods": [
+        "cancel",
+        "cancelled",
+        "done",
+        "in_final_state",
+        "result",
+        "running",
+        "status"
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.06,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"F\"], \"evidence\": {\"A\": \"the script printed 'True PrimitiveResult SamplerPubResult'; this option predicts 'True PrimitiveResult PubResult' -> match=False; the pub's class chain is ['SamplerPubResult', 'PubResult', 'object'], so it is a PubResult by inheritance while its own class name is not\", \"B\": \"the script printed 'True PrimitiveResult SamplerPubResult'; this option predicts 'False PrimitiveResult SamplerPubResult' -> match=False; the local job object is a PrimitiveJob and the abstract methods it implements are ['cancel', 'cancelled', 'done', 'in_final_state', 'result', 'running', 'status']\", \"C\": \"the script printed 'True PrimitiveResult SamplerPubResult'; this option predicts 'True SamplerResult SamplerPubResult' -> match=False\", \"D\": \"the script printed 'True PrimitiveResult SamplerPubResult'; this option predicts 'True PrimitiveResult DataBin' -> match=False; the data bin is one layer in: type(res[0].data).__name__ = DataBin\", \"E\": \"the script printed 'True PrimitiveResult SamplerPubResult'; this option predicts 'True PrimitiveResult BitArray' -> match=False; the bit array is deeper still: type(res[0].data.meas).__name__ = BitArray\", \"F\": \"the script printed 'True PrimitiveResult SamplerPubResult'; this option predicts 'True PrimitiveResult SamplerPubResult' -> match=True\"}, \"observed\": {\"printed\": \"True PrimitiveResult SamplerPubResult\", \"job_type\": \"PrimitiveJob\", \"interface_methods\": [\"cancel\", \"cancelled\", \"done\", \"in_final_state\", \"result\", \"running\", \"status\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

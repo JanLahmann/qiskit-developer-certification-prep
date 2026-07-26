@@ -21,7 +21,7 @@
           "text": "Apply quantum operations"
         }
       ],
-      "bankCount": 37
+      "bankCount": 40
     },
     {
       "id": "s2",
@@ -42,7 +42,7 @@
           "text": "Visualize quantum states"
         }
       ],
-      "bankCount": 26
+      "bankCount": 30
     },
     {
       "id": "s3",
@@ -67,7 +67,7 @@
           "text": "Transpile and optimize circuits"
         }
       ],
-      "bankCount": 44
+      "bankCount": 46
     },
     {
       "id": "s4",
@@ -84,7 +84,7 @@
           "text": "Demonstrate understanding of how to run quantum circuits with real hardware using Qiskit Runtime primitives and applying broadcasting rules"
         }
       ],
-      "bankCount": 36
+      "bankCount": 38
     },
     {
       "id": "s5",
@@ -139,7 +139,7 @@
           "text": "Monitor jobs"
         }
       ],
-      "bankCount": 24
+      "bankCount": 27
     },
     {
       "id": "s8",
@@ -164,7 +164,7 @@
           "text": "Interact with the Qiskit IBM Runtime REST API"
         }
       ],
-      "bankCount": 16
+      "bankCount": 19
     }
   ]
 }

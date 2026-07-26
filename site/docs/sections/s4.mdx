@@ -15,13 +15,14 @@ import DoqExtras from '@site/src/components/DoqExtras';
 
 ## What the exam expects
 
-- **Differentiate execution modes to optimize job queuing** (`s4o1`)
-- **Run quantum circuits with a real hardware in the IBM Runtime provider** (`s4o2`)
+- **Demonstrate an understanding of execution modes such as: session with dedicated, priority, and batch mode** (`s4o1`)
+- **Demonstrate understanding of how to run quantum circuits with real hardware using Qiskit Runtime primitives and applying broadcasting rules** (`s4o2`)
 
 <details>
 <summary>Scope notes — what to actually master</summary>
 
 - Execution modes: single job, session (dedicated access), batch (parallel independent jobs) — when to use which
+- Broadcasting rules for primitive inputs (official task 4.2 subtopics: primitives, broadcasting rules, input/output, jobs)
 - QiskitRuntimeService, backend selection (least_busy), Session/Batch context managers
 - Primitives take ISA circuits (transpile first)
 - Open Plan vs paid plans, queuing implications
@@ -41,8 +42,9 @@ The exam is based on these official IBM materials. Study them first; the drills 
 | [Get started with the Sampler primitive](https://quantum.cloud.ibm.com/docs/guides/get-started-with-sampler) | guide |
 | [Run jobs in a session](https://quantum.cloud.ibm.com/docs/guides/run-jobs-session) | guide |
 | [Run jobs in a batch](https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch) | guide |
+| [IBM Quantum Patterns (execute on hardware)](https://quantum.cloud.ibm.com/docs/guides/intro-to-patterns) | guide |
 
-<DoqExtras slugs={["execution-modes", "choose-execution-mode", "get-started-with-sampler", "run-jobs-session", "run-jobs-batch"]} />
+<DoqExtras slugs={["execution-modes", "choose-execution-mode", "get-started-with-sampler", "run-jobs-session", "run-jobs-batch", "intro-to-patterns"]} />
 
 ## Drill — verified practice
 

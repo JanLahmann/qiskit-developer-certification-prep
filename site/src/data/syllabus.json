@@ -77,11 +77,11 @@
       "objectives": [
         {
           "id": "s4o1",
-          "text": "Differentiate execution modes to optimize job queuing"
+          "text": "Demonstrate an understanding of execution modes such as: session with dedicated, priority, and batch mode"
         },
         {
           "id": "s4o2",
-          "text": "Run quantum circuits with a real hardware in the IBM Runtime provider"
+          "text": "Demonstrate understanding of how to run quantum circuits with real hardware using Qiskit Runtime primitives and applying broadcasting rules"
         }
       ],
       "bankCount": 36
@@ -94,7 +94,7 @@
       "objectives": [
         {
           "id": "s5o1",
-          "text": "Set sampler primitive options such as resilience levels"
+          "text": "Set sampler primitive options such as dynamical decoupling"
         },
         {
           "id": "s5o2",
@@ -132,7 +132,7 @@
       "objectives": [
         {
           "id": "s7o1",
-          "text": "Retrieve previous experiment results (session/runtime)"
+          "text": "Retrieve previous experiment results (session/Qiskit Runtime)"
         },
         {
           "id": "s7o2",
@@ -153,7 +153,7 @@
         },
         {
           "id": "s8o2",
-          "text": "Interpret OpenQASM semantics for versions 2 and 3"
+          "text": "Interpret OpenQASM semantics"
         },
         {
           "id": "s8o3",

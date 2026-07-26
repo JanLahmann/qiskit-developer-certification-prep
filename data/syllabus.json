@@ -33,7 +33,7 @@
     "announcement": "https://www.ibm.com/quantum/blog/qiskit-v2x-developer-certification",
     "sample_test": {
       "questions": 21,
-      "note": "Official free Sample Test linked from the exam page; optional paid Assessment Exam also exists.",
+      "note": "Official free Sample Test PDF, publicly downloadable from the exam page (verified 2026-07-26, question count confirmed). Optional paid Assessment Exam also exists.",
       "walkthroughs": [
         "https://schrodinteq.github.io/ibmcertsamplev2x01/",
         "https://schrodinteq.github.io/ibmcertsamplev2x02/"
@@ -41,12 +41,13 @@
     }
   },
   "provenance": {
-    "section_titles": "Official (IBM Advocate Guide: Qiskit v2.X Certification PDF; matches exam-page snippets). Confidence: high.",
-    "weights": "Triangulated from three independent public sources (official-page search snippet, EDUSUM, ppalme review); sum = 100. Confidence: high. Not yet read verbatim off the exam page (fetch blocked); re-verify when reachable.",
-    "objectives": "Official wording from IBM 'Advocate Guide: Qiskit v2.X Certification' (IBM Quantum PDF distributed to advocates; topic list mirrors the public exam page). Confidence: high.",
+    "section_titles": "VERIFIED VERBATIM 2026-07-26 against the official Study Guide PDF (C1000-179_STU, downloaded from the public ibm.com exam page). Confidence: verified.",
+    "weights": "VERIFIED VERBATIM 2026-07-26 against the official Study Guide PDF and the rendered exam page: 16/11/18/15/12/12/10/6, sum 100. Confidence: verified.",
+    "objectives": "VERIFIED 2026-07-26 against the official Study Guide PDF TASK list (sha256 e9ac9881989dbaba…, kept out of the repo). s4o1/s4o2/s5o1/s7o1/s8o2 wording updated to the study guide's; s5o2 is an Advocate-Guide extra (marked with a note); our s3 objective ORDER differs from the guide's task order (guide: dynamic, parameterized, transpile, basic) — ids are stable so order kept, cosmetic only. Confidence: verified.",
     "scope_notes": "Synthesized from the official 21-question sample test, first-hand exam reviews, and docs; guidance for question generation, NOT official blueprint text.",
-    "resources": "Resource names verbatim from the IBM Advocate Guide; mapped to quantum.cloud.ibm.com URLs; slug existence verified against a Qiskit/documentation clone (2026-03 state). Liveness check pending in CI.",
-    "nda_note": "Everything here derives from public/officially-distributed prep material. No actual exam content."
+    "resources": "Resource names from the IBM Advocate Guide + official Study Guide REFERENCES lists; mapped to quantum.cloud.ibm.com URLs; verified by check_links.py in CI.",
+    "alignment_audit": "Full official-alignment audit 2026-07-26 (task #25): see data/audits/official_alignment.md. Anti-duplication scan vs the 21-question sample test: max token-Jaccard 0.214 (threshold 0.5) — no near-duplicates.",
+    "nda_note": "Everything here derives from public/officially-distributed prep material. No actual exam content; official PDFs are analyzed locally and never committed."
   },
   "domains": {
     "docs": "https://quantum.cloud.ibm.com/docs",
@@ -226,15 +227,16 @@
       "objectives": [
         {
           "id": "s4o1",
-          "text": "Differentiate execution modes to optimize job queuing"
+          "text": "Demonstrate an understanding of execution modes such as: session with dedicated, priority, and batch mode"
         },
         {
           "id": "s4o2",
-          "text": "Run quantum circuits with a real hardware in the IBM Runtime provider"
+          "text": "Demonstrate understanding of how to run quantum circuits with real hardware using Qiskit Runtime primitives and applying broadcasting rules"
         }
       ],
       "scope_notes": [
         "Execution modes: single job, session (dedicated access), batch (parallel independent jobs) — when to use which",
+        "Broadcasting rules for primitive inputs (official task 4.2 subtopics: primitives, broadcasting rules, input/output, jobs)",
         "QiskitRuntimeService, backend selection (least_busy), Session/Batch context managers",
         "Primitives take ISA circuits (transpile first)",
         "Open Plan vs paid plans, queuing implications"
@@ -264,10 +266,16 @@
           "title": "Run jobs in a batch",
           "type": "guide",
           "url": "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch"
+        },
+        {
+          "title": "IBM Quantum Patterns (execute on hardware)",
+          "type": "guide",
+          "url": "https://quantum.cloud.ibm.com/docs/guides/intro-to-patterns",
+          "note": "The study guide's 'execute-on-hardware' reference redirects here (verified 2026-07-26)."
         }
       ],
       "resource_gaps": [
-        "'Execute on hardware' guide name has no exact slug; mapped to run-jobs-session/run-jobs-batch + hello-world"
+        "Official 'guides/execute-on-hardware' reference (tasks 4.1/4.2) redirects to guides/intro-to-patterns; listed under the target slug per check_links redirect policy"
       ]
     },
     {
@@ -278,11 +286,12 @@
       "objectives": [
         {
           "id": "s5o1",
-          "text": "Set sampler primitive options such as resilience levels"
+          "text": "Set sampler primitive options such as dynamical decoupling"
         },
         {
           "id": "s5o2",
-          "text": "Bypass runtime error mitigations and implement your own"
+          "text": "Bypass runtime error mitigations and implement your own",
+          "note": "Not in the official study guide (Advocate Guide origin); retained as extra coverage beyond the guide."
         },
         {
           "id": "s5o3",
@@ -397,7 +406,7 @@
       "objectives": [
         {
           "id": "s7o1",
-          "text": "Retrieve previous experiment results (session/runtime)"
+          "text": "Retrieve previous experiment results (session/Qiskit Runtime)"
         },
         {
           "id": "s7o2",
@@ -435,7 +444,7 @@
         },
         {
           "id": "s8o2",
-          "text": "Interpret OpenQASM semantics for versions 2 and 3"
+          "text": "Interpret OpenQASM semantics"
         },
         {
           "id": "s8o3",

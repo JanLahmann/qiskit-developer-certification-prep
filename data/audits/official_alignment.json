@@ -1,0 +1,1648 @@
+{
+  "audit": {
+    "task": "#25 official-alignment audit",
+    "date": "2026-07-26",
+    "sources": {
+      "study_guide": "C1000-179_STU_StudyGuideQiskitv2.pdf, downloaded 2026-07-26 from the public ibm.com exam page (unauthenticated getExam API), sha256 e9ac9881989dbaba7a0b3c9332cb8391b7046f26bbcb58ec443c789d0d62dd80 — analyzed locally, NOT committed",
+      "sample_test": "C1000-179_SAM_SampleTestQiskitv2.pdf, same channel, sha256 8d191ff0be9dcdf4d5e03c8f8bb1e613b7e21a2bb5f5fb6bc79eb2d816c8989c — analyzed locally, NOT committed; 21 questions",
+      "note": "Both PDFs are public. This audit stores topic labels and statistics only — no official question text."
+    },
+    "bank_state": "243 questions, 28 cram primers, 216 cram facts (pre-fix-wave)"
+  },
+  "syllabus_fidelity": {
+    "weights": "VERIFIED exact: 16/11/18/15/12/12/10/6 (sum 100)",
+    "exam_facts": "68 questions / 90 min / pass 47 — verified from the rendered exam page 2026-07-26",
+    "section_titles": "VERIFIED verbatim, all 8",
+    "objective_wording_fixes_applied": [
+      "s4o1 -> official task 4.1 wording (execution modes: session with dedicated, priority, and batch mode)",
+      "s4o2 -> official task 4.2 wording (real hardware + broadcasting rules)",
+      "s5o1 -> 'such as dynamical decoupling' (official; also technically correct — SamplerV2 has no resilience_level)",
+      "s7o1 -> '(session/Qiskit Runtime)'",
+      "s8o2 -> 'Interpret OpenQASM semantics' (dropped non-official 'for versions 2 and 3')"
+    ],
+    "known_cosmetic_deltas": [
+      "s3 objective order differs from official task order (ids stable; content 1:1)",
+      "s5o2 'Bypass runtime error mitigations' is an Advocate-Guide extra with no official TASK; folds under official 5.1 (annotated in syllabus.json)"
+    ],
+    "study_guide_task_count": 21
+  },
+  "anti_duplication": {
+    "method": "token-Jaccard, sample stem+options vs each bank question stem+code+options, stopworded",
+    "threshold": 0.5,
+    "bank_size": 243,
+    "max_similarity_observed": 0.214,
+    "flagged": [],
+    "verdict": "PASS — no near-duplicates; top pairs manually reviewed (topical neighbors only)",
+    "per_sample_top3": [
+      {
+        "sample_q": 1,
+        "top": [
+          {
+            "qid": "s1-q013",
+            "jaccard": 0.079
+          },
+          {
+            "qid": "s1-q016",
+            "jaccard": 0.077
+          },
+          {
+            "qid": "s1-q020",
+            "jaccard": 0.074
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 2,
+        "top": [
+          {
+            "qid": "s1-q023",
+            "jaccard": 0.133
+          },
+          {
+            "qid": "s1-q045",
+            "jaccard": 0.118
+          },
+          {
+            "qid": "s2-q027",
+            "jaccard": 0.107
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 3,
+        "top": [
+          {
+            "qid": "s6-q027",
+            "jaccard": 0.214
+          },
+          {
+            "qid": "s1-q040",
+            "jaccard": 0.2
+          },
+          {
+            "qid": "s1-q039",
+            "jaccard": 0.177
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 4,
+        "top": [
+          {
+            "qid": "s3-q045",
+            "jaccard": 0.171
+          },
+          {
+            "qid": "s2-q017",
+            "jaccard": 0.158
+          },
+          {
+            "qid": "s8-q016",
+            "jaccard": 0.146
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 5,
+        "top": [
+          {
+            "qid": "s1-q023",
+            "jaccard": 0.121
+          },
+          {
+            "qid": "s2-q031",
+            "jaccard": 0.116
+          },
+          {
+            "qid": "s1-q044",
+            "jaccard": 0.114
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 6,
+        "top": [
+          {
+            "qid": "s1-q023",
+            "jaccard": 0.143
+          },
+          {
+            "qid": "s2-q031",
+            "jaccard": 0.135
+          },
+          {
+            "qid": "s2-q032",
+            "jaccard": 0.128
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 7,
+        "top": [
+          {
+            "qid": "s8-q020",
+            "jaccard": 0.195
+          },
+          {
+            "qid": "s1-q043",
+            "jaccard": 0.116
+          },
+          {
+            "qid": "s3-q021",
+            "jaccard": 0.116
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 8,
+        "top": [
+          {
+            "qid": "s7-q031",
+            "jaccard": 0.1
+          },
+          {
+            "qid": "s5-q024",
+            "jaccard": 0.093
+          },
+          {
+            "qid": "s7-q019",
+            "jaccard": 0.082
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 9,
+        "top": [
+          {
+            "qid": "s2-q017",
+            "jaccard": 0.195
+          },
+          {
+            "qid": "s2-q010",
+            "jaccard": 0.175
+          },
+          {
+            "qid": "s7-q011",
+            "jaccard": 0.149
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 10,
+        "top": [
+          {
+            "qid": "s4-q039",
+            "jaccard": 0.153
+          },
+          {
+            "qid": "s4-q015",
+            "jaccard": 0.111
+          },
+          {
+            "qid": "s4-q035",
+            "jaccard": 0.106
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 11,
+        "top": [
+          {
+            "qid": "s4-q019",
+            "jaccard": 0.116
+          },
+          {
+            "qid": "s4-q013",
+            "jaccard": 0.114
+          },
+          {
+            "qid": "s7-q026",
+            "jaccard": 0.111
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 12,
+        "top": [
+          {
+            "qid": "s5-q030",
+            "jaccard": 0.044
+          },
+          {
+            "qid": "s4-q035",
+            "jaccard": 0.039
+          },
+          {
+            "qid": "s5-q022",
+            "jaccard": 0.038
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 13,
+        "top": [
+          {
+            "qid": "s4-q034",
+            "jaccard": 0.163
+          },
+          {
+            "qid": "s5-q019",
+            "jaccard": 0.154
+          },
+          {
+            "qid": "s5-q033",
+            "jaccard": 0.13
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 14,
+        "top": [
+          {
+            "qid": "s4-q043",
+            "jaccard": 0.119
+          },
+          {
+            "qid": "s4-q034",
+            "jaccard": 0.116
+          },
+          {
+            "qid": "s5-q033",
+            "jaccard": 0.113
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 15,
+        "top": [
+          {
+            "qid": "s6-q017",
+            "jaccard": 0.107
+          },
+          {
+            "qid": "s6-q038",
+            "jaccard": 0.075
+          },
+          {
+            "qid": "s6-q031",
+            "jaccard": 0.07
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 16,
+        "top": [
+          {
+            "qid": "s6-q029",
+            "jaccard": 0.212
+          },
+          {
+            "qid": "s6-q028",
+            "jaccard": 0.14
+          },
+          {
+            "qid": "s6-q019",
+            "jaccard": 0.123
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 17,
+        "top": [
+          {
+            "qid": "s6-q016",
+            "jaccard": 0.115
+          },
+          {
+            "qid": "s5-q022",
+            "jaccard": 0.094
+          },
+          {
+            "qid": "s7-q013",
+            "jaccard": 0.091
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 18,
+        "top": [
+          {
+            "qid": "s4-q001",
+            "jaccard": 0.062
+          },
+          {
+            "qid": "s7-q030",
+            "jaccard": 0.059
+          },
+          {
+            "qid": "s4-q039",
+            "jaccard": 0.055
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 19,
+        "top": [
+          {
+            "qid": "s7-q030",
+            "jaccard": 0.098
+          },
+          {
+            "qid": "s4-q010",
+            "jaccard": 0.064
+          },
+          {
+            "qid": "s4-q001",
+            "jaccard": 0.06
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 20,
+        "top": [
+          {
+            "qid": "s8-q022",
+            "jaccard": 0.068
+          },
+          {
+            "qid": "s8-q016",
+            "jaccard": 0.054
+          },
+          {
+            "qid": "s7-q031",
+            "jaccard": 0.048
+          }
+        ],
+        "flagged": []
+      },
+      {
+        "sample_q": 21,
+        "top": [
+          {
+            "qid": "s8-q011",
+            "jaccard": 0.122
+          },
+          {
+            "qid": "s8-q020",
+            "jaccard": 0.114
+          },
+          {
+            "qid": "s8-q014",
+            "jaccard": 0.098
+          }
+        ],
+        "flagged": []
+      }
+    ]
+  },
+  "coverage": {
+    "study_guide_tasks": [
+      {
+        "task": "1.1",
+        "label": "Define Pauli Operators",
+        "our_objective_ids": [
+          "s1o1"
+        ],
+        "question_ids": [
+          "s1-q010",
+          "s1-q012",
+          "s1-q013",
+          "s1-q014",
+          "s1-q015",
+          "s1-q016",
+          "s1-q017",
+          "s1-q018",
+          "s1-q019",
+          "s1-q020",
+          "s1-q021",
+          "s1-q033"
+        ],
+        "question_count": 12,
+        "cram": {
+          "primers": 1,
+          "facts": 8
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.quantum_info.Pauli"
+        ],
+        "reference_topics_covered": "yes|Pauli labels/right-to-left ordering, phase prefixes, tensor vs expand, dot vs compose, to_matrix, commutation and SparsePauliOp are all exercised.",
+        "verdict": "covered",
+        "note": "12 questions + 1 primer + 8 facts; direct hit on the sample-test Pauli-to_matrix item shape."
+      },
+      {
+        "task": "1.2",
+        "label": "Apply quantum operations",
+        "our_objective_ids": [
+          "s1o2"
+        ],
+        "question_ids": [
+          "s1-q001",
+          "s1-q019",
+          "s1-q021",
+          "s1-q022",
+          "s1-q023",
+          "s1-q024",
+          "s1-q025",
+          "s1-q026",
+          "s1-q027",
+          "s1-q028",
+          "s1-q029",
+          "s1-q030",
+          "s1-q031",
+          "s1-q032",
+          "s1-q033",
+          "s1-q034",
+          "s1-q035",
+          "s1-q036",
+          "s1-q037",
+          "s1-q038",
+          "s1-q039",
+          "s1-q040",
+          "s1-q041",
+          "s1-q042",
+          "s1-q043",
+          "s1-q044",
+          "s1-q045",
+          "s1-q047"
+        ],
+        "question_count": 28,
+        "cram": {
+          "primers": 1,
+          "facts": 14
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/circuit_library",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.circuit.QuantumCircuit"
+        ],
+        "reference_topics_covered": "partial|Gate action, phases, Statevector/Operator and measurement probabilities are deep, but the circuit_library reference page (QFT, RealAmplitudes, EfficientSU2, TwoLocal/n_local, QuantumVolume, MCXGate, random_circuit) has ZERO questions and ZERO cram facts.",
+        "verdict": "thin",
+        "note": "28 questions + 1 primer + 14 facts, but all on standard 1-2 qubit gates; the parameterized/algorithmic circuit library is absent even though it is one of only two references for this TASK."
+      },
+      {
+        "task": "2.1",
+        "label": "Visualize quantum circuits",
+        "our_objective_ids": [
+          "s2o1"
+        ],
+        "question_ids": [
+          "s2-q010",
+          "s2-q011",
+          "s2-q012",
+          "s2-q013",
+          "s2-q014",
+          "s2-q015",
+          "s2-q016",
+          "s2-q017",
+          "s2-q018"
+        ],
+        "question_count": 9,
+        "cram": {
+          "primers": 1,
+          "facts": 9
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/guides/visualize-circuits"
+        ],
+        "reference_topics_covered": "yes|draw() output modes (text/mpl/latex), circuit_drawer function, style/idle_wires/reverse_bits/initial_state, mpl-figure return types.",
+        "verdict": "covered",
+        "note": "9 questions + 1 primer + 9 facts."
+      },
+      {
+        "task": "2.2",
+        "label": "Visualize quantum measurements",
+        "our_objective_ids": [
+          "s2o2"
+        ],
+        "question_ids": [
+          "s2-q019",
+          "s2-q020",
+          "s2-q021",
+          "s2-q022",
+          "s2-q023",
+          "s2-q024",
+          "s2-q025"
+        ],
+        "question_count": 7,
+        "cram": {
+          "primers": 1,
+          "facts": 8
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/guides/classical-feedforward-and-control-flow",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/visualization",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.visualization.plot_gate_map"
+        ],
+        "reference_topics_covered": "partial|plot_histogram is well covered (6 items: number_to_keep, sort order, legend/overlay, DataBin->counts). plot_gate_map has ZERO hits anywhere in the repo (nor plot_error_map / plot_coupling_map / plot_circuit_layout). Rendering of a classical-feedforward circuit is touched by only one construction-flavoured item (s2-q013).",
+        "verdict": "thin",
+        "note": "7 questions + 1 primer + 8 facts. An explicitly-referenced API (plot_gate_map) is entirely uncovered."
+      },
+      {
+        "task": "2.3",
+        "label": "Visualize quantum states",
+        "our_objective_ids": [
+          "s2o3"
+        ],
+        "question_ids": [
+          "s2-q026",
+          "s2-q027",
+          "s2-q028",
+          "s2-q029",
+          "s2-q030",
+          "s2-q031",
+          "s2-q032",
+          "s2-q033",
+          "s2-q034",
+          "s2-q035"
+        ],
+        "question_count": 10,
+        "cram": {
+          "primers": 1,
+          "facts": 9
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.visualization.plot_bloch_multivector",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.visualization.plot_state_qsphere"
+        ],
+        "reference_topics_covered": "yes|plot_bloch_multivector 6 items (sphere count, axis/arrow, Bell-state reduced states, input types), plot_state_qsphere 3 items (node placement, colour=phase, draw_qsphere method).",
+        "verdict": "covered",
+        "note": "10 questions + 1 primer + 9 facts."
+      },
+      {
+        "task": "3.1",
+        "label": "Construct dynamic circuits",
+        "our_objective_ids": [
+          "s3o2"
+        ],
+        "question_ids": [
+          "s3-q023",
+          "s3-q024",
+          "s3-q025",
+          "s3-q026",
+          "s3-q027",
+          "s3-q028",
+          "s3-q029",
+          "s3-q052",
+          "s3-q053"
+        ],
+        "question_count": 9,
+        "cram": {
+          "primers": 1,
+          "facts": 8
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/guides/classical-feedforward-and-control-flow"
+        ],
+        "reference_topics_covered": "yes|if_test/else_, switch/case, for_loop, mid-circuit measurement, removal of c_if in 2.x, when a dynamic circuit is genuinely required.",
+        "verdict": "covered",
+        "note": "9 questions + 1 primer + 8 facts. NOTE our objective numbering is s3o2 while the official TASK number is 3.1."
+      },
+      {
+        "task": "3.2",
+        "label": "Construct parameterized circuits",
+        "our_objective_ids": [
+          "s3o3"
+        ],
+        "question_ids": [
+          "s3-q017",
+          "s3-q018",
+          "s3-q019",
+          "s3-q020",
+          "s3-q021",
+          "s3-q022",
+          "s3-q049",
+          "s3-q050",
+          "s3-q051"
+        ],
+        "question_count": 9,
+        "cram": {
+          "primers": 1,
+          "facts": 9
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.circuit.Parameter",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.circuit.QuantumCircuit",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.circuit.ParameterExpression"
+        ],
+        "reference_topics_covered": "partial|Parameter, ParameterVector, assign_parameters (list/dict/partial binding), immutability of the original circuit and parameter-order rules are covered. ParameterExpression appears in exactly ONE question (s3-q021, and only as a distractor label); arithmetic on expressions is tested behaviourally but the class API (bind, subs, is_real, gradient, sympify) is not.",
+        "verdict": "covered",
+        "note": "9 questions + 1 primer + 9 facts; matches sample-test item 7 exactly (Parameter vs ParameterExpression vs string)."
+      },
+      {
+        "task": "3.3",
+        "label": "Transpile and optimize circuits",
+        "our_objective_ids": [
+          "s3o4"
+        ],
+        "question_ids": [
+          "s3-q030",
+          "s3-q031",
+          "s3-q032",
+          "s3-q033",
+          "s3-q034",
+          "s3-q035",
+          "s3-q036",
+          "s3-q037",
+          "s3-q038",
+          "s3-q039",
+          "s3-q040",
+          "s3-q041",
+          "s3-q042",
+          "s3-q043",
+          "s3-q044"
+        ],
+        "question_count": 15,
+        "cram": {
+          "primers": 1,
+          "facts": 13
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/guides/transpiler-stages",
+          "https://quantum.cloud.ibm.com/docs/en/guides/transpile-with-pass-managers",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/transpiler_passes"
+        ],
+        "reference_topics_covered": "partial|generate_preset_pass_manager, optimization levels 0-3, StagedPassManager stage names, layout/routing/translation/scheduling behaviour and ISA reasoning are strong. The transpiler_passes API page is nearly untouched: only TrivialLayout and CommutativeCancellation are ever named (1 mention each); SabreLayout/SabreSwap/VF2Layout/VF2PostLayout/BasisTranslator/UnitarySynthesis/Collect2qBlocks/ConsolidateBlocks/ElidePermutations/HighLevelSynthesis/PadDynamicalDecoupling never appear.",
+        "verdict": "covered",
+        "note": "15 questions + 1 primer + 13 facts; stage-level coverage good, pass-class-level coverage thin."
+      },
+      {
+        "task": "3.4",
+        "label": "Construct basic quantum circuits",
+        "our_objective_ids": [
+          "s3o1"
+        ],
+        "question_ids": [
+          "s3-q010",
+          "s3-q011",
+          "s3-q012",
+          "s3-q013",
+          "s3-q014",
+          "s3-q015",
+          "s3-q016",
+          "s3-q045",
+          "s3-q046",
+          "s3-q047",
+          "s3-q048"
+        ],
+        "question_count": 11,
+        "cram": {
+          "primers": 1,
+          "facts": 9
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/circuit",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.circuit.QuantumCircuit"
+        ],
+        "reference_topics_covered": "yes|QuantumRegister/ClassicalRegister, compose vs append (in-place trap), measure/measure_all with explicit bit mapping, depth/size/width, register naming.",
+        "verdict": "covered",
+        "note": "11 questions + 1 primer + 9 facts; covers sample-test item 8 (which register stores a measurement)."
+      },
+      {
+        "task": "4.1",
+        "label": "Demonstrate an understanding of execution modes (session with dedicated/priority, batch)",
+        "our_objective_ids": [
+          "s4o1"
+        ],
+        "question_ids": [
+          "s4-q001",
+          "s4-q010",
+          "s4-q011",
+          "s4-q013",
+          "s4-q014",
+          "s4-q015",
+          "s4-q017",
+          "s4-q020",
+          "s4-q022",
+          "s4-q024",
+          "s4-q027",
+          "s4-q028",
+          "s4-q029",
+          "s4-q031",
+          "s4-q033",
+          "s4-q035",
+          "s4-q037",
+          "s4-q038",
+          "s4-q039",
+          "s4-q041"
+        ],
+        "question_count": 20,
+        "cram": {
+          "primers": 1,
+          "facts": 12
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/guides/execute-on-hardware",
+          "https://quantum.cloud.ibm.com/docs/en/guides/execution-modes",
+          "https://quantum.cloud.ibm.com/docs/en/guides/choose-execution-mode",
+          "https://quantum.cloud.ibm.com/docs/en/guides/run-jobs-batch"
+        ],
+        "reference_topics_covered": "yes|job/session/batch selection, dedicated vs priority language, interactive vs max TTL, session close semantics, Open Plan restrictions, when batch does NOT help.",
+        "verdict": "covered",
+        "note": "20 questions + 1 primer + 12 facts. Strongest-covered TASK relative to weight."
+      },
+      {
+        "task": "4.2",
+        "label": "Run circuits on real hardware with Runtime primitives, applying broadcasting rules",
+        "our_objective_ids": [
+          "s4o2"
+        ],
+        "question_ids": [
+          "s4-q012",
+          "s4-q013",
+          "s4-q016",
+          "s4-q018",
+          "s4-q019",
+          "s4-q021",
+          "s4-q023",
+          "s4-q025",
+          "s4-q026",
+          "s4-q028",
+          "s4-q030",
+          "s4-q032",
+          "s4-q034",
+          "s4-q036",
+          "s4-q038",
+          "s4-q040",
+          "s4-q042",
+          "s4-q043",
+          "s4-q044"
+        ],
+        "question_count": 19,
+        "cram": {
+          "primers": 2,
+          "facts": 11
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/guides/execute-on-hardware",
+          "https://quantum.cloud.ibm.com/docs/en/guides/primitives",
+          "https://quantum.cloud.ibm.com/docs/en/guides/primitive-input-output",
+          "https://quantum.cloud.ibm.com/docs/en/guides/run-jobs-session"
+        ],
+        "reference_topics_covered": "partial|Primitives/ISA requirement, QiskitRuntimeService, least_busy, mode= argument, PUB submission and job/result plumbing are covered. Broadcasting is covered MECHANICALLY (shapes, sweep counts: s5-q016/017/023/035/039, s6-q023/024/025) but the docs' NAMED broadcasting patterns and their diagrams -- exactly what sample item 12 asks -- are never named anywhere in the bank or cram.",
+        "verdict": "covered",
+        "note": "19 questions (+ ~7 broadcasting items filed under s5/s6) + 2 primers + 11 facts."
+      },
+      {
+        "task": "5.1",
+        "label": "Set sampler primitive options such as dynamical decoupling",
+        "our_objective_ids": [
+          "s5o1",
+          "s5o2"
+        ],
+        "question_ids": [
+          "s5-q001",
+          "s5-q014",
+          "s5-q019",
+          "s5-q020",
+          "s5-q021",
+          "s5-q026",
+          "s5-q027",
+          "s5-q028",
+          "s5-q031",
+          "s5-q033",
+          "s5-q034",
+          "s5-q037"
+        ],
+        "question_count": 12,
+        "cram": {
+          "primers": 2,
+          "facts": 15
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/guides/get-started-with-primitives",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/options-sampler-options",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/options-twirling-options",
+          "https://quantum.cloud.ibm.com/docs/en/guides/error-mitigation-and-suppression-techniques"
+        ],
+        "reference_topics_covered": "yes|dynamical_decoupling.enable/sequence_type, twirling group fields (12 questions mention twirling), default_shots, seed_simulator, the 'Sampler has no resilience_level' trap, and manual/custom mitigation when bypassing runtime defaults.",
+        "verdict": "covered",
+        "note": "14 questions (9 on s5o1 + 5 on s5o2) + 2 primers + 15 facts. NOTE our s5o2 ('Bypass runtime error mitigations and implement your own') has NO counterpart TASK in the official study guide; it folds under 5.1."
+      },
+      {
+        "task": "5.2",
+        "label": "Understand the theoretical background behind the sampler primitive",
+        "our_objective_ids": [
+          "s5o3"
+        ],
+        "question_ids": [
+          "s5-q010",
+          "s5-q011",
+          "s5-q013",
+          "s5-q015",
+          "s5-q016",
+          "s5-q017",
+          "s5-q018",
+          "s5-q022",
+          "s5-q023",
+          "s5-q024",
+          "s5-q025",
+          "s5-q029",
+          "s5-q030",
+          "s5-q032",
+          "s5-q035",
+          "s5-q036",
+          "s5-q038",
+          "s5-q039"
+        ],
+        "question_count": 18,
+        "cram": {
+          "primers": 1,
+          "facts": 16
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/guides/get-started-with-primitives",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/sampler-v2",
+          "https://quantum.cloud.ibm.com/docs/en/migration-guides/v2-primitives"
+        ],
+        "reference_topics_covered": "yes|run([pub]) call shape, per-shot BitArray semantics, DataBin/register naming, PUB shapes and broadcasting, shots accounting, V1->V2 migration traps (s4-q016).",
+        "verdict": "covered",
+        "note": "18 questions + 1 primer + 16 facts."
+      },
+      {
+        "task": "6.1",
+        "label": "Set estimator primitive options (such as resilience levels)",
+        "our_objective_ids": [
+          "s6o1"
+        ],
+        "question_ids": [
+          "s6-q014",
+          "s6-q016",
+          "s6-q017",
+          "s6-q019",
+          "s6-q020",
+          "s6-q021",
+          "s6-q026",
+          "s6-q028",
+          "s6-q029",
+          "s6-q031",
+          "s6-q032",
+          "s6-q034",
+          "s6-q039"
+        ],
+        "question_count": 13,
+        "cram": {
+          "primers": 2,
+          "facts": 13
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/options-estimator-options",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/options-twirling-options",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/options-resilience-options-v2",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/options-zne-options"
+        ],
+        "reference_topics_covered": "yes|resilience_level 0/1/2 validation and defaults, resilience.zne_mitigation vs resilience.zne.{amplifier,noise_factors,extrapolator}, pec_mitigation, measure_mitigation/TREX, twirling group, dynamical_decoupling; cram primer enumerates the full nested option tree with documented defaults.",
+        "verdict": "covered",
+        "note": "13 questions + 2 primers + 13 facts. Best cram-to-API alignment in the bank."
+      },
+      {
+        "task": "6.2",
+        "label": "Understand the theoretical background behind the estimator primitive",
+        "our_objective_ids": [
+          "s6o2"
+        ],
+        "question_ids": [
+          "s6-q010",
+          "s6-q011",
+          "s6-q012",
+          "s6-q013",
+          "s6-q015",
+          "s6-q016",
+          "s6-q017",
+          "s6-q018",
+          "s6-q022",
+          "s6-q023",
+          "s6-q024",
+          "s6-q025",
+          "s6-q027",
+          "s6-q030",
+          "s6-q031",
+          "s6-q033",
+          "s6-q035",
+          "s6-q036",
+          "s6-q037",
+          "s6-q038"
+        ],
+        "question_count": 20,
+        "cram": {
+          "primers": 2,
+          "facts": 19
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/guides/primitives",
+          "https://quantum.cloud.ibm.com/docs/en/guides/error-mitigation-and-suppression-techniques"
+        ],
+        "reference_topics_covered": "yes|PUB tuple (circuit, observables, parameter_values, precision), precision<->shots quadratic law, SparsePauliOp construction, apply_layout, observable arrays/broadcasting, evs/stds result access, suppression vs mitigation split.",
+        "verdict": "covered",
+        "note": "20 questions + 2 primers + 19 facts; covers sample items 15 and 17 head-on."
+      },
+      {
+        "task": "7.1",
+        "label": "Retrieve previous experiment results (session/Qiskit Runtime)",
+        "our_objective_ids": [
+          "s7o1"
+        ],
+        "question_ids": [
+          "s7-q010",
+          "s7-q011",
+          "s7-q012",
+          "s7-q013",
+          "s7-q014",
+          "s7-q015",
+          "s7-q016",
+          "s7-q017",
+          "s7-q018",
+          "s7-q019",
+          "s7-q020",
+          "s7-q021",
+          "s7-q022",
+          "s7-q023",
+          "s7-q024",
+          "s7-q025",
+          "s7-q026",
+          "s7-q027",
+          "s7-q029",
+          "s7-q031",
+          "s7-q032"
+        ],
+        "question_count": 21,
+        "cram": {
+          "primers": 3,
+          "facts": 21
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.primitives.SamplerPubResult",
+          "https://quantum.cloud.ibm.com/docs/en/guides/save-jobs",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/runtime-job",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.primitives.BasePrimitiveJob"
+        ],
+        "reference_topics_covered": "partial|service.job(job_id)/service.jobs(), job.result(), PrimitiveResult/PubResult indexing, DataBin/BitArray access, get_counts, register-name traps and result serialization are all covered. The two class names in the references are near-absent as such: SamplerPubResult appears twice and only as DISTRACTOR text (s5-q011 F, s5-q039 B); BasePrimitiveJob appears ZERO times (its method surface -- result/status/cancel/job_id/done/in_final_state -- is nevertheless exercised).",
+        "verdict": "covered",
+        "note": "21 questions + 3 primers + 21 facts; behavioural coverage is strong, class-name recognition is the soft spot."
+      },
+      {
+        "task": "7.2",
+        "label": "Monitor jobs",
+        "our_objective_ids": [
+          "s7o2"
+        ],
+        "question_ids": [
+          "s7-q027",
+          "s7-q028",
+          "s7-q030",
+          "s7-q033"
+        ],
+        "question_count": 4,
+        "cram": {
+          "primers": 2,
+          "facts": 8
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/providers",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.providers.JobStatus",
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/session"
+        ],
+        "reference_topics_covered": "partial|session.details() is covered exactly once (s7-q030) and JobStatus exactly once (s7-q033, where it is the correct answer). The qiskit.providers module page (BackendV2, JobV1/JobStatus enum members QUEUED/RUNNING/DONE/CANCELLED/ERROR, provider interface) is otherwise untested; job.cancel is covered by s7-q028.",
+        "verdict": "thin",
+        "note": "only 4 questions + 2 primers + 8 facts for a TASK that is half of a 10%-weight section AND supplies one of the 21 sample items."
+      },
+      {
+        "task": "8.1",
+        "label": "Structure types in OpenQASM 3 programs",
+        "our_objective_ids": [
+          "s8o1"
+        ],
+        "question_ids": [
+          "s8-q016",
+          "s8-q020",
+          "s8-q022"
+        ],
+        "question_count": 3,
+        "cram": {
+          "primers": 1,
+          "facts": 3
+        },
+        "reference_urls": [
+          "https://openqasm.com/versions/3.0/language/types.html"
+        ],
+        "reference_topics_covered": "partial|s8-q022 (multi) reads the feature table across int[n]/bit[n]/angle/complex/const/duration/stretch, and s8-q016/q020 cover emitted bit[]/int[]/float declarations. The openqasm.com types page itself -- type widths, implicit vs explicit casting rules, bool/uint/float/angle/complex casting, arrays -- is not tested anywhere.",
+        "verdict": "thin",
+        "note": "3 questions + 1 primer + 3 facts, and only one of the three is genuinely about the OpenQASM 3 type system. Sample item 20 lands squarely here."
+      },
+      {
+        "task": "8.2",
+        "label": "Interpret OpenQASM semantics",
+        "our_objective_ids": [
+          "s8o2"
+        ],
+        "question_ids": [
+          "s8-q013",
+          "s8-q014",
+          "s8-q015",
+          "s8-q018"
+        ],
+        "question_count": 4,
+        "cram": {
+          "primers": 1,
+          "facts": 4
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit/qasm3"
+        ],
+        "reference_topics_covered": "yes|qasm3 vs qasm2 register declarations (qubit[]/bit[] vs qreg/creg), include files (stdgates.inc vs qelib1.inc), control-flow support differences, version-string semantics.",
+        "verdict": "covered",
+        "note": "4 questions tagged s8o2 (+4 more s8o3 items that carry the same semantics) + 1 primer + 4 facts."
+      },
+      {
+        "task": "8.3",
+        "label": "Interoperate different versions of OpenQASM with Qiskit",
+        "our_objective_ids": [
+          "s8o3"
+        ],
+        "question_ids": [
+          "s8-q010",
+          "s8-q011",
+          "s8-q012",
+          "s8-q013",
+          "s8-q016",
+          "s8-q017",
+          "s8-q019",
+          "s8-q020",
+          "s8-q021",
+          "s8-q022"
+        ],
+        "question_count": 10,
+        "cram": {
+          "primers": 1,
+          "facts": 4
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/guides/interoperate-qiskit-qasm3"
+        ],
+        "reference_topics_covered": "yes|dumps/dump/loads/load for both qasm2 and qasm3, file-stream export, the qiskit-qasm3-import optional-dependency asymmetry, round-trip of global phase, custom gates, unbound Parameters.",
+        "verdict": "covered",
+        "note": "10 questions + 1 primer + 4 facts; covers sample item 21 exactly."
+      },
+      {
+        "task": "8.4",
+        "label": "Interact with the Qiskit IBM Runtime REST API",
+        "our_objective_ids": [
+          "s8o4"
+        ],
+        "question_ids": [
+          "s8-q023",
+          "s8-q024",
+          "s8-q025"
+        ],
+        "question_count": 3,
+        "cram": {
+          "primers": 1,
+          "facts": 3
+        },
+        "reference_urls": [
+          "https://quantum.cloud.ibm.com/docs/en/api/qiskit-runtime-rest"
+        ],
+        "reference_topics_covered": "partial|Bearer/IAM auth header, POST /jobs submission with a QASM/PUB payload and required program_id/backend fields, and token-scope behaviour are covered at a conceptual level. Endpoint inventory (GET /jobs/{id}/results, /backends, /sessions, /instances), response codes and pagination are not.",
+        "verdict": "thin",
+        "note": "only 3 questions + 1 primer + 3 facts for a full official TASK; smallest per-TASK coverage in the bank."
+      }
+    ],
+    "sample_test_topics": [
+      {
+        "n": 1,
+        "topic": "Pauli two-qubit label -> to_matrix",
+        "section": "s1",
+        "covering_question_ids": [
+          "s1-q010",
+          "s1-q012",
+          "s1-q015",
+          "s1-q016",
+          "s1-q018",
+          "s1-q020",
+          "s1-q033"
+        ],
+        "covering_cram_facts": 8,
+        "verdict": "covered",
+        "note": "Direct analogue: our items ask the same label-ordering / to_matrix question in both directions, incl. a spot-bug on ZI vs IZ."
+      },
+      {
+        "n": 2,
+        "topic": "TGate global phase on |1>",
+        "section": "s1",
+        "covering_question_ids": [
+          "s1-q022",
+          "s1-q026",
+          "s1-q027",
+          "s1-q028"
+        ],
+        "covering_cram_facts": 14,
+        "verdict": "covered",
+        "note": "s1-q022 is T applied to |1> asked as a statevector; s1-q028 is the same shape for p(pi/2); s1-q027 covers QuantumCircuit.global_phase explicitly."
+      },
+      {
+        "n": 3,
+        "topic": "Measurement probability after ry(pi/2)",
+        "section": "s1",
+        "covering_question_ids": [
+          "s1-q039",
+          "s1-q040",
+          "s1-q045",
+          "s1-q047"
+        ],
+        "covering_cram_facts": 14,
+        "verdict": "covered",
+        "note": "s1-q039 is RY(pi/3) -> P(1); same computation, different angle. Note none of ours uses the exact ry(pi/2) -> 0.5 case."
+      },
+      {
+        "n": 4,
+        "topic": "draw(mpl) of an if_test/else circuit",
+        "section": "s2",
+        "covering_question_ids": [
+          "s2-q013",
+          "s3-q026",
+          "s3-q053"
+        ],
+        "covering_cram_facts": 8,
+        "verdict": "thin",
+        "note": "We test how to BUILD the conditional (s2-q013) and what it OUTPUTS (s3-q026), but never how a classical-feedforward block RENDERS. The official reference for TASK 2.2 is the classical-feedforward guide, so this framing is deliberate on IBM's side."
+      },
+      {
+        "n": 5,
+        "topic": "plot_histogram of Statevector.sample_counts",
+        "section": "s2",
+        "covering_question_ids": [
+          "s2-q019",
+          "s2-q020",
+          "s2-q021",
+          "s2-q024",
+          "s2-q025"
+        ],
+        "covering_cram_facts": 8,
+        "verdict": "covered",
+        "note": "Histogram semantics well covered. Two sub-gaps: Statevector.sample_counts / sample_memory appear ZERO times in the repo, and we never ask 'which figure is produced' with image options."
+      },
+      {
+        "n": 6,
+        "topic": "Identify the circuit behind a q-sphere figure",
+        "section": "s2",
+        "covering_question_ids": [
+          "s2-q029",
+          "s2-q031",
+          "s2-q032"
+        ],
+        "covering_cram_facts": 9,
+        "verdict": "thin",
+        "note": "We cover q-sphere node placement and phase colouring, but never reverse-engineer a circuit from a figure; only 3 q-sphere items total."
+      },
+      {
+        "n": 7,
+        "topic": "Parameter vs ParameterExpression for an unbound angle",
+        "section": "s3",
+        "covering_question_ids": [
+          "s3-q017",
+          "s3-q018",
+          "s3-q019",
+          "s3-q021",
+          "s3-q022",
+          "s3-q050"
+        ],
+        "covering_cram_facts": 9,
+        "verdict": "covered",
+        "note": "s3-q021 has the ParameterExpression-wrapper misconception as an explicit distractor (option F), which is precisely the official item's distractor d."
+      },
+      {
+        "n": 8,
+        "topic": "Which register stores measurement results",
+        "section": "s3",
+        "covering_question_ids": [
+          "s3-q011",
+          "s3-q014",
+          "s3-q045",
+          "s3-q047",
+          "s3-q048"
+        ],
+        "covering_cram_facts": 9,
+        "verdict": "covered",
+        "note": "Recall-level item; ours are harder (bit-mapping and CircuitError variants) but the fact is covered."
+      },
+      {
+        "n": 9,
+        "topic": "Output circuit of generate_preset_pass_manager with coupling_map/initial_layout",
+        "section": "s3",
+        "covering_question_ids": [
+          "s3-q032",
+          "s3-q033",
+          "s3-q035",
+          "s3-q037",
+          "s3-q041",
+          "s3-q043"
+        ],
+        "covering_cram_facts": 13,
+        "verdict": "covered",
+        "note": "s3-q043 is initial_layout on a 5-qubit backend; s3-q032/041 are routing on a line. Ours ask for gate counts/ISA facts rather than 'which drawn circuit'."
+      },
+      {
+        "n": 10,
+        "topic": "Which three are Qiskit Runtime execution modes",
+        "section": "s4",
+        "covering_question_ids": [
+          "s4-q001",
+          "s4-q017",
+          "s4-q035",
+          "s4-q039"
+        ],
+        "covering_cram_facts": 12,
+        "verdict": "covered",
+        "note": "s4-q039 is a 'Which THREE' multi item on execution modes -- structurally identical."
+      },
+      {
+        "n": 11,
+        "topic": "Correct way to open a Session",
+        "section": "s4",
+        "covering_question_ids": [
+          "s4-q013",
+          "s4-q015",
+          "s4-q021",
+          "s4-q028",
+          "s4-q038"
+        ],
+        "covering_cram_facts": 12,
+        "verdict": "covered",
+        "note": "s4-q028 is the same 'which snippet correctly opens a session and runs' shape."
+      },
+      {
+        "n": 12,
+        "topic": "Name the array-broadcasting pattern shown in a diagram",
+        "section": "s4",
+        "covering_question_ids": [
+          "s5-q016",
+          "s5-q017",
+          "s5-q023",
+          "s5-q035",
+          "s6-q023",
+          "s6-q024",
+          "s6-q025"
+        ],
+        "covering_cram_facts": 9,
+        "verdict": "thin",
+        "note": "Broadcasting MECHANICS are covered well (7 items on shapes and execution counts) but the docs' NAMED patterns / diagram-recognition framing is absent: 'all-to-all', 'standard multidimensional array generalization' etc. never occur in a broadcasting sense anywhere in the bank."
+      },
+      {
+        "n": 13,
+        "topic": "Meaning of SamplerOptions.default_shots",
+        "section": "s5",
+        "covering_question_ids": [
+          "s5-q020",
+          "s5-q026",
+          "s5-q033"
+        ],
+        "covering_cram_facts": 9,
+        "verdict": "covered",
+        "note": "s5-q026 is default_shots vs per-PUB shots precedence; s5-q033 is the setter. Definitional framing ('number of times we run the circuit') is implicit rather than asked directly."
+      },
+      {
+        "n": 14,
+        "topic": "Valid SamplerV2.run(...) invocation",
+        "section": "s5",
+        "covering_question_ids": [
+          "s5-q001",
+          "s5-q013",
+          "s5-q018",
+          "s5-q039"
+        ],
+        "covering_cram_facts": 16,
+        "verdict": "covered",
+        "note": "s5-q001 and s5-q013 are the same 'which call shape is valid' item, incl. the bare-circuit-not-in-a-list error."
+      },
+      {
+        "n": 15,
+        "topic": "Effect on shots of loosening Estimator precision",
+        "section": "s6",
+        "covering_question_ids": [
+          "s6-q016",
+          "s6-q017",
+          "s6-q025",
+          "s6-q038"
+        ],
+        "covering_cram_facts": 19,
+        "verdict": "covered",
+        "note": "s6-q017 is the tighten-precision direction of the identical question; s6-q038 is a multi on the precision<->shots law."
+      },
+      {
+        "n": 16,
+        "topic": "Which mitigation is available via resilience options (ZNE)",
+        "section": "s6",
+        "covering_question_ids": [
+          "s6-q019",
+          "s6-q020",
+          "s6-q021",
+          "s6-q026",
+          "s6-q028"
+        ],
+        "covering_cram_facts": 13,
+        "verdict": "covered",
+        "note": "s6-q019 is the exact 'which of these are mitigation (not suppression)' discrimination, incl. the DD and Pauli-twirling distractors."
+      },
+      {
+        "n": 17,
+        "topic": "Estimator PUB tuple format",
+        "section": "s6",
+        "covering_question_ids": [
+          "s6-q010",
+          "s6-q012",
+          "s6-q025",
+          "s6-q031"
+        ],
+        "covering_cram_facts": 19,
+        "verdict": "covered",
+        "note": "s6-q025 is a spot-bug on exactly the (circuit, observable, parameter_values, precision) slot order."
+      },
+      {
+        "n": 18,
+        "topic": "Purpose of a Qiskit Runtime session",
+        "section": "s7",
+        "covering_question_ids": [
+          "s4-q001",
+          "s4-q015",
+          "s4-q017",
+          "s4-q022",
+          "s4-q031",
+          "s4-q041"
+        ],
+        "covering_cram_facts": 12,
+        "verdict": "covered",
+        "note": "Content covered, but ALL of it is filed under our section 4. IBM places this conceptual item in exam Section 7 -- a cross-section placement mismatch that would distort mock-exam stratification."
+      },
+      {
+        "n": 19,
+        "topic": "Keys returned by session.details()",
+        "section": "s7",
+        "covering_question_ids": [
+          "s7-q030"
+        ],
+        "covering_cram_facts": 8,
+        "verdict": "thin",
+        "note": "Exactly one covering item (s7-q030, a multi listing state / last-job timestamps / mode). Single point of failure for a topic that IBM chose to put in a 21-question sample."
+      },
+      {
+        "n": 20,
+        "topic": "OpenQASM 3 classical data types (complex)",
+        "section": "s8",
+        "covering_question_ids": [
+          "s8-q022"
+        ],
+        "covering_cram_facts": 3,
+        "verdict": "thin",
+        "note": "Only s8-q022 touches the type inventory, and it does so through the Qiskit feature table rather than the OpenQASM 3 type system itself. No item asks 'which of these is a valid OpenQASM 3 classical type'."
+      },
+      {
+        "n": 21,
+        "topic": "Export a circuit to OpenQASM 3 into a file stream",
+        "section": "s8",
+        "covering_question_ids": [
+          "s8-q010",
+          "s8-q011"
+        ],
+        "covering_cram_facts": 4,
+        "verdict": "covered",
+        "note": "s8-q011 is dump-to-open-file-object vs dumps-to-string -- the same discrimination as the official item."
+      }
+    ],
+    "gaps": [
+      {
+        "source": "study_guide 2.2",
+        "topic": "plot_gate_map (and plot_error_map / plot_coupling_map / plot_circuit_layout)",
+        "severity": "material",
+        "suggestion": "ZERO occurrences across 243 questions and 216 cram facts, yet it is one of three explicit references for TASK 2.2. Add 2-3 items: what plot_gate_map takes as input (a BackendV2 / coupling map), what it renders (qubit connectivity, not results), and plot_gate_map vs plot_error_map vs plot_circuit_layout."
+      },
+      {
+        "source": "study_guide 1.2",
+        "topic": "Qiskit circuit library (circuit_library API page)",
+        "severity": "material",
+        "suggestion": "ZERO hits for QFT/QFTGate, RealAmplitudes, EfficientSU2, TwoLocal, n_local, QuantumVolume, MCXGate, random_circuit. One of only two references for TASK 1.2 (16%-weight section). Add 2-3 items on constructing a library circuit and on its parameter count."
+      },
+      {
+        "source": "study_guide 7.2 | sample 19",
+        "topic": "qiskit.providers module + JobStatus enum",
+        "severity": "material",
+        "suggestion": "4 questions / 8 facts total for s7o2; JobStatus appears in exactly 1 question and session.details() in exactly 1. Add items on JobStatus enum members and terminal vs non-terminal states, and a second session.details() item so sample-item-19 coverage is not a single point of failure."
+      },
+      {
+        "source": "study_guide 4.2 | sample 12",
+        "topic": "Named array-broadcasting patterns from primitive-input-output",
+        "severity": "material",
+        "suggestion": "Shape mechanics are covered by 7 items, but the named patterns IBM asks about ('all-to-all', 'standard multidimensional array generalization', SU2-style diagrams) never appear. Add 1-2 items that name the pattern given a parameter/observable array pairing."
+      },
+      {
+        "source": "study_guide 8.1 | sample 20",
+        "topic": "OpenQASM 3 type system and casting rules",
+        "severity": "material",
+        "suggestion": "s8o1 has 3 questions / 3 facts, and only s8-q022 is really about types -- via the Qiskit feature table, not openqasm.com. Add a 'which is a valid OpenQASM 3 classical type' item (complex/uint/angle/bool/duration/stretch vs char/class/enum) and one on implicit vs explicit casting."
+      },
+      {
+        "source": "study_guide 8.4",
+        "topic": "Qiskit Runtime REST API endpoint surface",
+        "severity": "material",
+        "suggestion": "3 questions / 3 facts. Auth and job POST are covered; result retrieval, backend/session/instance endpoints and response handling are not. Add 1-2 items."
+      },
+      {
+        "source": "study_guide 3.3",
+        "topic": "Named transpiler passes (transpiler_passes API page)",
+        "severity": "minor",
+        "suggestion": "Only TrivialLayout and CommutativeCancellation are ever named. Stage-level coverage is strong, so this is a recall-level top-up: add 1-2 items mapping pass classes (SabreLayout/SabreSwap, VF2Layout, BasisTranslator, ConsolidateBlocks) to their stage."
+      },
+      {
+        "source": "study_guide 7.1",
+        "topic": "SamplerPubResult / BasePrimitiveJob class names",
+        "severity": "minor",
+        "suggestion": "Behaviour is thoroughly covered but the two referenced class names appear 2x (distractor-only) and 0x respectively. Add one item that names SamplerPubResult as the per-PUB result type and one on the BasePrimitiveJob method surface."
+      },
+      {
+        "source": "study_guide 3.2",
+        "topic": "ParameterExpression class API",
+        "severity": "minor",
+        "suggestion": "Expressions are tested behaviourally (s3-q021) but ParameterExpression is named only once, as a distractor. IBM lists it as a top-level reference for TASK 3.2; add one item on when a Parameter becomes a ParameterExpression."
+      },
+      {
+        "source": "sample 5",
+        "topic": "Statevector.sample_counts / sample_memory",
+        "severity": "minor",
+        "suggestion": "ZERO occurrences in the repo; the official item builds its histogram from state.sample_counts(shots=1024). Add one item that samples counts from a Statevector."
+      },
+      {
+        "source": "sample 4 | sample 6 | sample 9 | sample 12",
+        "topic": "Figure-recognition item format",
+        "severity": "minor",
+        "suggestion": "4 of 21 official items (19%) present IMAGES as options. Our bank has zero image-bearing items -- an entire question FORMAT of the real exam is unrehearsed. Either add rendered-figure items or add an explicit 'read the ASCII/text drawing' surrogate."
+      },
+      {
+        "source": "sample 18",
+        "topic": "Cross-section placement of session-concept items",
+        "severity": "minor",
+        "suggestion": "IBM asks 'what is the purpose of a Runtime session' inside exam Section 7 (10% weight); all six of our covering items sit in section s4. Mock-exam stratification by section will under-fill s7 and over-fill s4 relative to the real blueprint."
+      },
+      {
+        "source": "study_guide (syllabus resources)",
+        "topic": "syllabus.json resource list is guide-weighted; the official guide is API-weighted",
+        "severity": "minor",
+        "suggestion": "25 of 43 official reference URLs are /api/ pages; 28 of 43 official URLs are absent from syllabus.json resources, including every options-*-options page, runtime-job, session, providers, JobStatus, SamplerPubResult, BasePrimitiveJob, transpiler_passes, circuit, circuit_library, Parameter, ParameterExpression, plot_gate_map, plot_bloch_multivector, plot_state_qsphere, qasm3, qiskit-runtime-rest, get-started-with-primitives and migration-guides/v2-primitives. Question explanations already cite 16 distinct API pages, so this is a syllabus-metadata lag, not a content lag."
+      },
+      {
+        "source": "study_guide 4.1/4.2",
+        "topic": "syllabus.json records guides/execute-on-hardware as a non-existent slug",
+        "severity": "minor",
+        "suggestion": "syllabus.json s4.resource_gaps says \"'Execute on hardware' guide name has no exact slug\", but the official study guide references https://quantum.cloud.ibm.com/docs/en/guides/execute-on-hardware verbatim under BOTH TASK 4.1 and 4.2. The slug exists; remove the resource_gap note and add the URL."
+      },
+      {
+        "source": "study_guide (structure)",
+        "topic": "Study guide has 21 TASKs, not 17",
+        "severity": "minor",
+        "suggestion": "Section task counts are 2/3/4/2/2/2/2/4 = 21. Any downstream artefact assuming 17 TASKs is wrong."
+      },
+      {
+        "source": "study_guide 5",
+        "topic": "Our objective s5o2 has no official TASK",
+        "severity": "minor",
+        "suggestion": "The official Section 5 has exactly two TASKs (5.1 options incl. dynamical decoupling, 5.2 theory). Our s5o2 'Bypass runtime error mitigations and implement your own' (5 questions, 1 primer, 6 facts) is unmapped; it is defensible content but should be shown as folded into 5.1, and note that official 5.1 is worded 'such as dynamical decoupling' where our s5o1 says 'such as resilience levels' -- the Sampler has no resilience_level, so IBM's wording is the safer one."
+      },
+      {
+        "source": "study_guide 3",
+        "topic": "Section 3 objective ORDER differs from official",
+        "severity": "minor",
+        "suggestion": "Official 3.1 dynamic / 3.2 parameterized / 3.3 transpile / 3.4 basic; ours s3o1 basic / s3o2 dynamic / s3o3 parameterized / s3o4 transpile. Content maps 1:1 but any UI that shows 'objective 3.1' will mislabel."
+      }
+    ]
+  },
+  "style": {
+    "sample_test": {
+      "n_items": 21,
+      "code_bearing_items": 12,
+      "code_bearing_pct": 57.1,
+      "stem_code_block_items": 7,
+      "stem_code_block_pct": 33.3,
+      "image_option_items": 4,
+      "image_option_pct": 19.0,
+      "multi_select_items": 2,
+      "multi_select_pct": 9.5,
+      "multi_select_ids": [
+        10,
+        19
+      ],
+      "option_count_distribution": {
+        "4": 19,
+        "5": 1,
+        "6": 1
+      },
+      "output_prediction_items": 7,
+      "output_prediction_pct": 33.3,
+      "stem_words_median": 14,
+      "stem_words_range": [
+        10,
+        28
+      ],
+      "code_block_lines_median": 5,
+      "code_block_lines_range": [
+        4,
+        14
+      ],
+      "difficulty_judgment": "Predominantly recall / single-step application. ~9 of 21 are pure recall (2,8,10,13,16,17,18,19,20,21-ish), ~8 require one evaluation step, and only 12 (broadcast-pattern naming) and 6/9 (figure recognition) demand real synthesis.",
+      "stem_words_mean": 16.9
+    },
+    "our_bank": {
+      "n_items": 243,
+      "code_bearing_stem_block": 185,
+      "code_bearing_stem_block_pct": 76.1,
+      "code_in_options_pct": 81.1,
+      "code_anywhere_pct": 92.6,
+      "image_option_items": 0,
+      "image_option_pct": 0.0,
+      "multi_select_items": 29,
+      "multi_select_pct": 11.9,
+      "authored_option_count_distribution": {
+        "6": 194,
+        "5": 48,
+        "4": 1
+      },
+      "displayed_option_count_distribution": {
+        "4": 178,
+        "5": 61,
+        "null": 4
+      },
+      "output_prediction_items": 78,
+      "output_prediction_pct": 32.1,
+      "type_distribution": {
+        "mcq": 111,
+        "predict-output": 78,
+        "multi": 29,
+        "spot-bug": 25
+      },
+      "stem_words_median": 23,
+      "stem_words_mean": 23.7,
+      "stem_words_range": [
+        4,
+        59
+      ],
+      "code_block_lines_median": 6,
+      "code_block_lines_mean": 6.4,
+      "code_block_lines_range": [
+        1,
+        15
+      ],
+      "option_words_median": 10.0,
+      "option_words_mean": 9.9,
+      "difficulty_distribution": {
+        "1": 69,
+        "2": 126,
+        "3": 48
+      },
+      "answer_key_distribution": {
+        "A": 74,
+        "B": 74,
+        "C": 72,
+        "D": 61,
+        "E": 10,
+        "F": 3
+      },
+      "per_section_counts": {
+        "s1": 37,
+        "s2": 26,
+        "s3": 44,
+        "s4": 36,
+        "s5": 30,
+        "s6": 30,
+        "s7": 24,
+        "s8": 16
+      }
+    },
+    "deviations": [
+      "Stem-code share 76.1% vs sample 57.1% (33.3% if only stem code blocks count) -- our bank is markedly more code-heavy. Recommendation: keep, but ensure each section retains a few prose-only recall items (s1 currently has 0 of 37 without code).",
+      "Multi-select share 11.9% vs sample 9.5% -- well matched; no change needed.",
+      "Authored option counts are 6 (194) or 5 (48); the sample test uses 4 options for 19 of 21 items. Displayed counts (4 for 178, 5 for 61) land the bank in the right place, so this is a display-layer success. Recommendation: raise the share of display_count=4 for single-answer items and reserve 5-6 for multi.",
+      "4 multi items carry display_count=null (s2-q031, s3-q042, s6-q028, s7-q030) and will fall back to whatever the renderer defaults to. Recommendation: set display_count explicitly on all four.",
+      "One item authored with only 4 options (s2-q031) has no room for display rotation. Recommendation: extend its pool to 5-6.",
+      "Stem length: sample median 14 words (mean 16.9, range 10-28) vs ours median 23 (mean 23.7, range 4-59) -- our stems are ~64% longer because they carry scenario framing the official items omit. Recommendation: no functional change needed, but trim the longest 10% (stems above ~45 words) so timing practice stays realistic at 79 s/question. Code blocks: sample median 5 lines (range 4-14) vs ours median 6 (range 1-15) -- matched.",
+      "Output-prediction share 32.1% (78 of 243) vs 33.3% of the sample -- an excellent match, and the single strongest style alignment in the bank.",
+      "ZERO image-bearing items vs 19% of the sample test (4 of 21: draw(mpl) output, histogram figure, q-sphere figure, broadcasting diagram). This is the largest format divergence. Recommendation: add a small set of figure-recognition items (rendered PNG/SVG options, or text-drawing surrogates for circuit rendering).",
+      "Difficulty skews harder than the sample: 48 of 243 (19.8%) are difficulty 3 and only 69 (28.4%) are difficulty 1, whereas roughly 40-45% of the sample items are pure recall. Recommendation: this is defensible for a prep bank, but the timed mock-exam sampler should over-weight difficulty 1-2 so a 68-item mock feels like the real 90-minute paper.",
+      "Answer-key balance is good across A-D (74/74/72/61) with E/F rare (10/3), consistent with display_count 4-5 rotation. No action.",
+      "Section volumes track weights loosely: s3 44 items / 18% weight and s8 16 items / 6% weight are proportionate, but s7 has 24 items for a 10% weight while s2 has 26 for 11%; s4 (36 items, 15%) is over-served relative to s7. Recommendation: the s7o2 shortfall (4 items) is the real imbalance to fix."
+    ]
+  }
+}

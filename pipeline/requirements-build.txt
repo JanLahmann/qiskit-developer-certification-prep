@@ -1,0 +1,7 @@
+# Deps for the artifact builders only (build_site_data / build_study /
+# build_anki / build_epub) — no Qiskit needed: builders read data/ JSON and
+# proof artifacts, they never execute quantum code. The full pinned stack for
+# proof execution lives in requirements.lock.
+jsonschema==4.26.0
+genanki==0.13.1
+EbookLib==0.20

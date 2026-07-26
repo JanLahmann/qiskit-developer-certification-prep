@@ -44,6 +44,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: pipeline/requirements-build.txt
+      - name: Install builder deps (no Qiskit — builders only read data/)
+        run: pip install -q -r pipeline/requirements-build.txt
+      - name: Generate site data + cram pages + Anki decks + EPUB
+        run: |
+          python pipeline/build_site_data.py
+          python pipeline/build_study.py
+          python pipeline/build_anki.py
+          python pipeline/build_epub.py
       - uses: actions/setup-node@v4
         with:
           node-version: 20

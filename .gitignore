@@ -221,3 +221,12 @@ __marimo__/
 
 # Luke-J-Miller raw bank: unlicensed, 1000+ questions — validate locally, never commit
 /data/community/raw/luke/
+
+# CertiQ: generated at build time by pipeline/build_*.py — CI regenerates
+# these in the deploy workflow; run the builders locally before `npm start`.
+site/src/data/bank/
+site/src/data/syllabus.json
+site/static/downloads/
+site/docs/sections/
+site/docs/cram/
+site/docs/flashcards.mdx

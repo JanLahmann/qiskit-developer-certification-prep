@@ -30,8 +30,20 @@ data/syllabus.json  ──►  generation agents (per section, GENERATION_GUIDE.
 |---|---|
 | `.venv/bin/python pipeline/verify_bank.py` | Verify + freshness-stamp the whole bank (CI gate; `--check` for read-only, `--section sX` to scope, `--only <qid>` for one) |
 | `.venv/bin/python pipeline/build_site_data.py` | Compile bank + syllabus into site data and section pages |
-| `.venv/bin/python pipeline/build_anki.py` | Build Anki `.apkg` decks |
+| `.venv/bin/python pipeline/build_study.py` | Render cram sheets from `data/study/` |
+| `.venv/bin/python pipeline/build_anki.py` | Build Anki `.apkg` decks (+ `site/docs/flashcards.mdx`) |
+| `.venv/bin/python pipeline/build_epub.py` | Build the study-book EPUB |
 | `python pipeline/check_links.py` | Liveness-check all official resource links (needs network) |
+
+## Generated artifacts are NOT committed
+
+`site/src/data/bank/`, `site/src/data/syllabus.json`, `site/docs/sections/`,
+`site/docs/cram/`, `site/docs/flashcards.mdx` and `site/static/downloads/`
+are gitignored. The deploy workflow regenerates them (gate → the four
+builders → `npm run build`), so a content push can never ship stale decks or
+pages. **Local dev:** run the four builders above once before `npm start`
+(deps beyond the stdlib: `pipeline/requirements-build.txt` — no Qiskit
+needed; the full `.venv` also works).
 
 ## Environment
 
@@ -57,5 +69,5 @@ a `drift-watchdog` issue.
 1. Update `data/syllabus.json` if the exam changed (watchdog will have told you).
 2. Launch per-section generation agents per `GENERATION_GUIDE.md` (quota table
    inside; IDs continue from the highest existing qNNN).
-3. `verify_bank.py` until clean → adversarial wave → `build_site_data.py` →
-   `build_anki.py` → commit.
+3. `verify_bank.py` until clean → adversarial wave → commit `data/` (questions,
+   proofs, study). CI regenerates all site artifacts on push.

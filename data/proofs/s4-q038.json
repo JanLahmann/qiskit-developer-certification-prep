@@ -5,7 +5,7 @@
       "B"
     ],
     "evidence": {
-      "B": "constructed and ran in the session: evs=0.8745",
+      "B": "constructed and ran in the session: evs=0.8848",
       "A": "raised TypeError: EstimatorV2.__init__() got an unexpected keyword argument 'session'",
       "C": "raised ValueError: mode must be of type Backend, Session, Batch or None",
       "D": "raised TypeError: EstimatorV2.__init__() got an unexpected keyword argument 'backend'",
@@ -24,9 +24,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.27,
+  "wall_seconds": 1.54,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"B\": \"constructed and ran in the session: evs=0.8745\", \"A\": \"raised TypeError: EstimatorV2.__init__() got an unexpected keyword argument 'session'\", \"C\": \"raised ValueError: mode must be of type Backend, Session, Batch or None\", \"D\": \"raised TypeError: EstimatorV2.__init__() got an unexpected keyword argument 'backend'\", \"E\": \"raised AttributeError: 'Session' object has no attribute 'estimator'\", \"F\": \"mode is a constructor parameter, not an EstimatorOptions field; raised ValidationError: 1 validation error for EstimatorOptions\\nmode\\n  Unexpected keyword argument [type=unexpected_keyword_argument, input_valu\"}, \"observed\": {\"proven\": [\"B\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"B\": \"constructed and ran in the session: evs=0.8848\", \"A\": \"raised TypeError: EstimatorV2.__init__() got an unexpected keyword argument 'session'\", \"C\": \"raised ValueError: mode must be of type Backend, Session, Batch or None\", \"D\": \"raised TypeError: EstimatorV2.__init__() got an unexpected keyword argument 'backend'\", \"E\": \"raised AttributeError: 'Session' object has no attribute 'estimator'\", \"F\": \"mode is a constructor parameter, not an EstimatorOptions field; raised ValidationError: 1 validation error for EstimatorOptions\\nmode\\n  Unexpected keyword argument [type=unexpected_keyword_argument, input_valu\"}, \"observed\": {\"proven\": [\"B\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

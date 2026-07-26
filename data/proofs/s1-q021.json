@@ -24,7 +24,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.12,
+  "wall_seconds": 1.55,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"observed statevector [0.7071+0.j     0.    +0.7071j]; compose equals the matrix product S@H? True; identical to the circuit h-then-s? True -> True\", \"B\": \"[0.7071, 0.7071] is what you get when S acts FIRST; that is dot, not compose: Operator(h).dot(Operator(s)) on |0> gives [0.7071+0.j 0.7071+0.j] -> False\", \"C\": \"the composition is not the identity; its matrix is [[0.7071+0.j     0.7071+0.j    ]\\n [0.    +0.7071j 0.    -0.7071j]] -> False\", \"D\": \"compose does not adjoint its argument; S-dagger after H would give [0.7071+0.j     0.    -0.7071j] -> False\", \"E\": \"S is diag(1, i): it phases the |1> amplitude, so the i cannot sit on the |0> amplitude; observed [0.7071+0.j     0.    +0.7071j] -> False\"}, \"observed\": {\"statevector\": \"[0.7071+0.j     0.    +0.7071j]\", \"compose_equals_S_at_H\": true, \"equals_circuit_h_then_s\": true, \"dot_statevector\": \"[0.7071+0.j 0.7071+0.j]\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

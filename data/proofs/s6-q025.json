@@ -23,7 +23,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.12,
+  "wall_seconds": 1.28,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"refuted: the 4-entry PUB (bell, obs, None, 0.01) IS accepted and returns evs=1.0000, so a PUB can carry a precision value\", \"B\": \"refuted: 0.1 in the same slot raises the identical ValueError: Length of () inconsistent with last dimension of [0.1] \\u2014 the magnitude is irrelevant\", \"C\": \"confirmed: moving 0.01 to the fourth slot, (bell, obs, None, 0.01), runs and gives evs=1.0000; the equivalent run(precision=0.01) gives evs=1.0000 (the buggy 3-slot PUB had failed with ValueError: Length of () inconsistent with last dimension of [0.01])\", \"D\": \"refuted: (bell, [obs], 0.01) still raises ValueError: Length of () inconsistent with last dimension of [0.01] \\u2014 0.01 is still sitting in the parameter_values slot\", \"E\": \"refuted: putting the float in the observable slot raises TypeError: Invalid observable type: <class 'float'> \\u2014 PUB slots are ordered, not searched by value\", \"F\": \"refuted: the list-shaped PUB is coerced identically and raises the same ValueError: Length of () inconsistent with last dimension of [0.01] \\u2014 brackets are not the problem\"}, \"observed\": {\"buggy_error\": \"ValueError: Length of () inconsistent with last dimension of [0.01]\", \"evs_with_precision_in_slot_4\": 1.0000123015335747}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

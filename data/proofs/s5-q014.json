@@ -24,7 +24,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.16,
+  "wall_seconds": 1.33,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"C\": \"setting resilience_level raised=True (ValidationError: 1 validation error for SamplerOptions\\nresilience_level\\n  Object has no attribute 'resilience_level' [type=no_such_attribute, input_value=1, ); hasattr=False\", \"B\": \"no silent success: raised=True\", \"A\": \"no silent success: raised=True\", \"D\": \"no silent success: raised=True\", \"E\": \"options are writable for real fields (default_shots assignment worked = True); routing resilience_level through the constructor failed too (ValidationError) -> claim holds=False\", \"F\": \"the assignment was rejected (raised=True); options.experimental is Unset and absorbed nothing -> claim holds=False\"}, \"observed\": {\"raised\": true, \"error\": \"ValidationError: 1 validation error for SamplerOptions\\nresilience_level\\n  Object has no attribute 'resilience_level' [type=no_such_attribute, input_value=1, \", \"has_resilience_level\": false}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

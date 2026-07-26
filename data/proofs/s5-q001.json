@@ -15,10 +15,10 @@
     "observed": {
       "backend": "fake_manila",
       "counts_A": {
-        "11": 459,
-        "00": 509,
+        "11": 446,
+        "00": 516,
         "10": 36,
-        "01": 20
+        "01": 26
       }
     }
   },
@@ -28,9 +28,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.73,
+  "wall_seconds": 1.61,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"call succeeded on fake_manila: returned job, result()[0].data.meas gave counts over 4 bitstrings (shot count supplied by the local test backend)\", \"B\": \"call raised ValueError: An invalid Sampler pub-like was given (<class 'qiskit._accelerate.circuit.CircuitInstruction'>). If you want to run a single circuit, you need to wrap it with `\", \"C\": \"call raised TypeError: SamplerV2.run() takes 2 positional arguments but 3 were given\", \"D\": \"call raised TypeError: SamplerV2.run() got an unexpected keyword argument 'backend'\", \"E\": \"call raised TypeError: SamplerV2.run() got an unexpected keyword argument 'circuits'\", \"F\": \"call raised TypeError: shots must be an integer\"}, \"observed\": {\"backend\": \"fake_manila\", \"counts_A\": {\"11\": 459, \"00\": 509, \"10\": 36, \"01\": 20}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"call succeeded on fake_manila: returned job, result()[0].data.meas gave counts over 4 bitstrings (shot count supplied by the local test backend)\", \"B\": \"call raised ValueError: An invalid Sampler pub-like was given (<class 'qiskit._accelerate.circuit.CircuitInstruction'>). If you want to run a single circuit, you need to wrap it with `\", \"C\": \"call raised TypeError: SamplerV2.run() takes 2 positional arguments but 3 were given\", \"D\": \"call raised TypeError: SamplerV2.run() got an unexpected keyword argument 'backend'\", \"E\": \"call raised TypeError: SamplerV2.run() got an unexpected keyword argument 'circuits'\", \"F\": \"call raised TypeError: shots must be an integer\"}, \"observed\": {\"backend\": \"fake_manila\", \"counts_A\": {\"11\": 446, \"00\": 516, \"10\": 36, \"01\": 26}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

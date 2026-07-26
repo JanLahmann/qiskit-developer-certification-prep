@@ -23,7 +23,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.25,
+  "wall_seconds": 1.31,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"claim=both include qelib1.inc; s2 has qelib1.inc=True, s3 has qelib1.inc=False -> False\", \"B\": \"claim=s2 stdgates / s3 qelib1; s2 has stdgates.inc=False, s3 has qelib1.inc=False -> False\", \"C\": \"claim=s2 qelib1 / s3 stdgates; s2 has qelib1.inc=True, s3 has stdgates.inc=True -> True\", \"D\": \"claim=both include stdgates.inc; s2 has stdgates.inc=False, s3 has stdgates.inc=True -> False\", \"E\": \"claim=s3 writes the gate definitions out instead of including a library; s3 has stdgates.inc=True, s3 defines gates inline=False -> False\", \"F\": \"claim=s3 includes both libraries; s3 has stdgates.inc=True, s3 has qelib1.inc=False -> False\"}, \"observed\": {\"qasm2_include_line\": \"include \\\"qelib1.inc\\\";\", \"qasm3_include_line\": \"include \\\"stdgates.inc\\\";\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

@@ -25,7 +25,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.82,
+  "wall_seconds": 1.32,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"round-trip returned PrimitiveResult; reloaded counts {'11': 198, '00': 202} == original {'11': 198, '00': 202} -> True\", \"B\": \"raised TypeError: Object of type PrimitiveResult is not JSON serializable\", \"C\": \"raised TypeError: JSONDecoder.__init__() got an unexpected keyword argument 'skipkeys'\", \"D\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'to_json'\", \"E\": \"raised KeyError: 0\", \"F\": \"raised TypeError: dumps() takes 1 positional argument but 2 positional arguments (and 1 keyword-only argument) were given\"}, \"observed\": {\"original_counts\": {\"11\": 198, \"00\": 202}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

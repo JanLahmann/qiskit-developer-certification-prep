@@ -24,7 +24,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.16,
+  "wall_seconds": 1.27,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"claim=returns a QuantumCircuit, version line informational; actually returned a circuit=False (outcome=raised QASM2ParseError)\", \"B\": \"claim=QASM2ParseError on the version header; observed exception=QASM2ParseError message=\\\"'<input>:1,9: can only handle OpenQASM 2.0, but given 3.0'\\\"; message cites both version numbers=True; match=True\", \"C\": \"claim=returns a circuit with qubit/bit rewritten to qreg/creg; actually returned a circuit=False\", \"D\": \"claim=QASM3ImporterError over stdgates.inc; observed exception=QASM2ParseError; message mentions stdgates=False; match=False\", \"E\": \"claim=the header is accepted and the parse fails later, at the qubit declaration; observed exception=QASM2ParseError message=\\\"'<input>:1,9: can only handle OpenQASM 2.0, but given 3.0'\\\"; error reported on line one=True; message names a qubit declaration=False; match=False\", \"F\": \"claim=qasm2.loads sniffs the version and hands the text to qiskit.qasm3.loads; qasm2.loads actually returned a circuit=False (outcome=raised QASM2ParseError)\"}, \"observed\": {\"outcome\": \"raised\", \"exception\": \"QASM2ParseError\", \"message\": \"'<input>:1,9: can only handle OpenQASM 2.0, but given 3.0'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

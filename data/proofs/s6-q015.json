@@ -25,7 +25,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.14,
+  "wall_seconds": 1.8,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"executed [<ZI>, <IZ>] = [1.0, -1.0]; option claims [-1.0, 1.0] -> match=False\", \"B\": \"executed [<ZI>, <IZ>] = [1.0, -1.0]; option claims [1.0, -1.0] -> match=True\", \"C\": \"executed [<ZI>, <IZ>] = [1.0, -1.0]; option claims [1.0, 1.0] -> match=False\", \"D\": \"executed [<ZI>, <IZ>] = [1.0, -1.0]; option claims [-1.0, -1.0] -> match=False\", \"E\": \"the estimator returns TWO values [1.0, -1.0] (shape (2,)); the observables are broadcast, not summed into one number\", \"F\": \"evs has shape (2,) \\u2014 a flat pair of values, not one single-entry row per observable\"}, \"observed\": {\"evs\": [1.0, -1.0]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

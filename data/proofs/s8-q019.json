@@ -32,7 +32,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.25,
+  "wall_seconds": 1.29,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"claim=inlined with no declaration; a 'gate mygate ...' declaration is present=True, so inlined=False\", \"B\": \"claim=declaration emitted then invoked; export raised=False; 'gate mygate ...' declaration emitted=True; invoked as 'mygate ...'=True\", \"C\": \"claim=export raises QASM3ExporterError; export actually raised=False \", \"D\": \"claim=treated as a stdgates.inc gate so no declaration is written; declaration actually present=True\", \"E\": \"claim=the declaration is emitted under a mangled name; gate declaration names actually emitted=['mygate']; match=False\", \"F\": \"claim=exported as an OpenQASM 2 style opaque declaration with the body omitted; the word opaque appears in the output=False; a full gate declaration with a body is present=True\"}, \"observed\": {\"dumps\": \"OPENQASM 3.0;\\ninclude \\\"stdgates.inc\\\";\\ngate mygate _gate_q_0 {\\n  rz(0.5) _gate_q_0;\\n  h _gate_q_0;\\n}\\nqubit[1] q;\\nmygate q[0];\\n\", \"lines\": [\"OPENQASM 3.0;\", \"include \\\"stdgates.inc\\\";\", \"gate mygate _gate_q_0 {\", \"rz(0.5) _gate_q_0;\", \"h _gate_q_0;\", \"}\", \"qubit[1] q;\", \"mygate q[0];\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

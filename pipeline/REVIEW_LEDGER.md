@@ -954,3 +954,94 @@ and died with it.
   `build_study.py` only checks that the qid exists, so the cram page would render
   a false ⚙️ "executed" badge. s3-q027/q036/q038/q044/q048 and s2-q018 are the
   conceptual ones in these two sections; cite the guide instead.
+
+## Verified library facts (s4/s5 quick-study wave, 2026-07-26, runtime 0.48.0)
+
+- **`SamplerV2.run`'s signature is `run(self, pubs, *, shots=None) -> RuntimeJobV2`**
+  — `shots` is KEYWORD-ONLY, which is why `run([isa], vals, shots=256)` fails with
+  "takes 2 positional arguments". Confirms the s5 pool-wave entry from the
+  signature side.
+- **`SamplerOptions.__dataclass_fields__` (0.48), verbatim order:** `_VERSION,
+  max_execution_time, environment, simulator, default_shots,
+  dynamical_decoupling, execution, twirling, experimental`. Matches the s5 pool
+  wave; `_VERSION` is the only field not documented in guides/sampler-options.
+- **A no-mode primitive constructed inside `with Session(...)` really does inherit
+  the session** (`SamplerV2().mode is session` -> True, and the run succeeds
+  locally). The `ValueError: A backend or session must be specified.` from the s4
+  wave fires only when there is no enclosing context.
+- **`Session` and `Batch` expose the SAME public surface** in 0.48:
+  `backend, cancel, close, details, from_id, service, session_id, status, usage`.
+  Neither has a public `run`.
+- **Locally: `session.details()` and `session.session_id` are both `None`** while
+  `session.backend()` returns `'fake_manila'` (a str). Re-confirmed.
+- **`StatevectorSampler` runs an ABSTRACT (never transpiled) `measure_all` circuit
+  and defaults to 1024 shots** — same number as the fake-backend local fallback,
+  vs the Runtime service's 4096. Useful as the reference-vs-runtime contrast:
+  guides/simulate-with-qiskit-sdk-primitives states in words that the reference
+  primitives still accept abstract instructions.
+- **Broadcast BitArray accounting, measured:** a (4,) BitArray from
+  `run([(isa, vals)], shots=500)` reports `num_shots == 500` (per parameter set)
+  while `sum(get_counts().values()) == 2000` (pooled). Both numbers are true at
+  once — do not treat `num_shots` as the pooled total.
+- **`QiskitRuntimeService.least_busy` signature (0.48):** `(min_num_qubits,
+  instance, filters, use_fractional_gates, **kwargs)`; `save_account` has
+  `token, url, instance, channel, filename, name, proxies, verify, overwrite,
+  set_as_default, private_endpoint, region, plans_preference, tags` — no
+  `api_key`. Re-confirmed from the s4 pool wave.
+
+## Documentation link facts (s4/s5 quick-study wave, 2026-07-26)
+
+- Live and slug-stable (curl -L, final 200, slug match): `guides/execution-modes`,
+  `guides/choose-execution-mode`, `guides/execution-modes-faq`,
+  `guides/run-jobs-session`, `guides/run-jobs-batch`, `guides/max-execution-time`,
+  `guides/minimize-time`, `guides/cloud-setup`, `guides/save-credentials`,
+  `guides/initialize-account`, `guides/local-testing-mode`, `guides/transpile`,
+  `guides/hello-world`, `guides/instances`, `guides/qpu-information`,
+  `guides/save-jobs`, `guides/sampler-noise-management`,
+  `guides/simulate-with-qiskit-sdk-primitives`, `guides/qiskit-runtime-primitives`,
+  `guides/v2-primitives`, `guides/estimate-job-run-time`,
+  `api/qiskit-ibm-runtime/sampler-v2`,
+  `api/qiskit-ibm-runtime/options-sampler-options`,
+  `api/qiskit/qiskit.primitives.StatevectorSampler`,
+  `api/qiskit/qiskit.primitives.BitArray`,
+  `tutorials/multi-product-formula`. `guides/fair-share-queue` is a 404 — there is
+  no fair-share slug; queue/TTL semantics live in execution-modes +
+  max-execution-time.
+- **Doc statements confirmed by fetch, safe to cite:** execution-modes (batch jobs
+  not guaranteed in submission order, no exclusive access, calibration jobs may
+  interleave; queuing time does not decrease for the FIRST job of a batch/session;
+  session = exclusive window, no calibration jobs); choose-execution-mode (batch
+  unless inputs are not ready at the outset, session for iterative/dedicated,
+  ALWAYS job mode for a single primitive request, sessions generally more
+  expensive); max-execution-time (max TTL starts at first job, running jobs
+  continue, queued jobs fail; service job timeout capped at 3 h; Open Plan 10 min
+  QPU per 28-day window); run-jobs-batch (interactive TTL 1 min, not configurable;
+  default max TTL 8 h paid / 10 min Open); run-jobs-session (Open Plan cannot
+  submit session jobs; close -> "In progress, not accepting new jobs");
+  initialize-account (default channel `ibm_quantum_platform`; multiple saved
+  accounts with no default -> LAST alphabetically; `channel="local"` needs no
+  credentials); save-credentials (`token=`, `$HOME/.qiskit/qiskit-ibm.json`);
+  sampler-options (four-step shots precedence: PUB > run(shots=) > twirling
+  num_randomizations x shots_per_randomization > default_shots).
+- **Docs-vs-docs drift, noted not resolved:** guides/sampler-options lists
+  `twirling.enable_measure` **Default: False**, while the same page's shots
+  precedence says "if `twirling` is enabled (True by default)" and the
+  run-jobs-session/batch sample output shows `'enable_measure': True`. Do not key
+  anything on the Sampler twirling default; teach the precedence chain instead.
+- **guides/local-testing-mode claims "all options except shots are ignored when
+  run on a local simulator"** — but `options.simulator.seed_simulator` demonstrably
+  changes results on a fake backend (s5-q031). Treat that sentence as scoped to
+  bare Aer simulators; never cite it for fake-backend behaviour.
+
+## Study-wave craft rules (s4/s5, 2026-07-26)
+
+- **A section with few objectives needs MULTIPLE primers per objective.** s4 has
+  only two objectives but four scope areas, so s4o2 carries two primers (ISA/PUB
+  workflow; credentials + local testing). `build_study.py` renders every primer
+  under its objective heading, so this costs nothing and keeps each primer inside
+  the 300-600 word band.
+- **Cross-section proof citations are forbidden in practice**, even though the
+  build gate would accept them: `render_fact` links `⚙️ proven in [qid]` to
+  `/docs/sections/<the study file's section>`, so citing `s5-q033` from `s4.json`
+  would render a link to a question that is not on that page. Keep proof refs
+  inside the section.

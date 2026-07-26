@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.18,
+  "wall_seconds": 1.27,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"a length-2 list bound successfully (num_params after=0) -> 'a plain list is not a valid argument' is False\", \"B\": \"one value raised [ValueError: Mismatching number of values and parameters. For partial binding please pass a m]; [0.7,1.2] bound all (True); dict {a:0.7} left 1 free (True) -> True\", \"C\": \"binding is done via circuit.assign_parameters, not per-gate -> False\", \"D\": \"assignment worked with no transpilation -> False\", \"E\": \"qc.bind_parameters([0.7]) -> AttributeError: 'QuantumCircuit' object has no attribute 'bind_parameters'; the legacy binder is gone, so it cannot pad anything -> False\", \"F\": \"the same circuit built from ParameterVector('p', 2) with assign_parameters([0.7]) -> ValueError: Mismatching number of values and parameters. For partial binding pleas; one value still does not cover two parameters -> False\"}, \"observed\": {\"bug\": \"ValueError: Mismatching number of values and parameters. For partial binding please pass a m\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

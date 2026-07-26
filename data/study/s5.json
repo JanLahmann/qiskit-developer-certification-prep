@@ -1,0 +1,291 @@
+{
+  "section": "s5",
+  "primers": [
+    {
+      "objective": "s5o1",
+      "title": "The SamplerOptions tree — and the one option that is not in it",
+      "body_md": "Start with the trap the objective's own wording sets. The exam blueprint says \"set sampler primitive options such as resilience levels\", but in `qiskit-ibm-runtime` **SamplerV2 has no `resilience_level`** — that knob belongs to EstimatorV2, where it drives expectation-value mitigation (TREX at level 1, ZNE at level 2). `sampler.options.resilience_level = 1` does not silently do nothing; the options object is a validated pydantic dataclass, so it raises a `ValidationError` (\"Object has no attribute 'resilience_level'\"), and passing it through the constructor's `options={...}` mapping is rejected too.\n\nWhat SamplerOptions actually holds, top level: `max_execution_time`, `environment`, `simulator`, `default_shots`, `dynamical_decoupling`, `execution`, `twirling`, `experimental`. The nested groups are where questions probe. `dynamical_decoupling` = `enable`, `sequence_type` (`XX` default, `XpXm`, `XY4`), `extra_slack_distribution`, `scheduling_method`, `skip_reset_qubits`. `twirling` = `enable_gates`, `enable_measure`, `num_randomizations`, `shots_per_randomization`, `strategy`. `execution` = `init_qubits`, `rep_delay`, `meas_type` — note there is no `shots` and no `seed_simulator` in there; the simulator seed lives in `simulator` (`noise_model`, `seed_simulator`, `coupling_map`, `basis_gates`). Anything misspelled is rejected outright: `experimental` is an opt-in dict you fill yourself, not a catch-all for unknown names.\n\nThree ways to set them, all valid: an options mapping or `SamplerOptions` object in the constructor, per-attribute assignment afterwards (`sampler.options.dynamical_decoupling.enable = True`), or a bulk `sampler.options.update(default_shots=1024, dynamical_decoupling={\"sequence_type\": \"XpXm\"})`. \"The options object is read-only\" is false. What does NOT exist is the V1 habit `sampler.set_options(...)` — that is an `AttributeError`. Options you never touch stay `Unset` and take the server default, so your code's behaviour does not drift with the client version.\n\nFinally, shots. The Sampler has a documented precedence chain, and it is a favourite question: a shot count carried in the PUB's third slot wins; then the `shots=` keyword on `run()`; then, if twirling is on, the product of `num_randomizations` and `shots_per_randomization`; then `options.default_shots`. Two corollaries: setting `default_shots = 1000` and then submitting `(isa, None, 50)` really does run 50 shots, and `shots` must be an integer — a one-element list raises `TypeError`. Beware also that the shot *default* is environment-dependent: a local fake backend falls through to 1024, while the Runtime service's own default is 4096.",
+      "citations": [
+        "https://quantum.cloud.ibm.com/docs/guides/sampler-options",
+        "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview",
+        "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/options-sampler-options"
+      ]
+    },
+    {
+      "objective": "s5o2",
+      "title": "Raw counts are a feature, not an omission",
+      "body_md": "The Sampler is deliberately the low-level primitive: it hands back the sampled bitstrings, shot by shot, with no readout correction applied. That is the whole basis of this objective — you do not \"bypass\" Sampler mitigation by turning something off, because there is nothing on. The only noise-management options Sampler supports are **error suppression and twirling**: dynamical decoupling (pulse sequences that cancel coherent errors on idling qubits) and Pauli twirling of gates and/or measurements (randomizing over an ensemble of equivalent circuits so that arbitrary noise becomes Pauli noise). Neither rewrites your counts into \"mitigated\" values.\n\nEverything with \"mitigation\" in its name — TREX measurement-error mitigation, zero-noise extrapolation, probabilistic error cancellation and amplification — is an Estimator resilience option, reached through `options.resilience.*` or the `resilience_level` shortcut. Those techniques correct *expectation values*, which is exactly why they have no Sampler equivalent: there is no single number to rescale, only a histogram.\n\nSo roll your own, in post-processing, from the data you already have. The two canonical schemes are worth being able to tell apart. **Post-selection** exploits a known symmetry of the ideal output: a Bell circuit can only produce `00` or `11`, so you drop the `01`/`10` shots that readout error sprinkled in and renormalize over what survives — on a real run that is discarding a couple of hundred shots out of four thousand. It is cheap and requires no calibration, but it only works when the ideal support is known and it throws information away. **Assignment-matrix (confusion-matrix) inversion** is the rigorous version: prepare each computational basis state with calibration circuits, record what you actually read back, assemble the matrix that maps true outcomes to observed ones, and invert it (or least-squares invert it) to correct your histogram. That is what packages such as M3/mthree automate, and the Sampler's raw per-shot record is precisely the input they need.\n\nPractically, do the work on the arrays rather than the dictionaries. A `BitArray` supports boolean-mask post-selection on another register, `slice_bits`, `slice_shots`, `expectation_values` for diagonal observables, and `concatenate_bits` to merge registers — all faster than round-tripping through `get_counts()`. And remember what `get_bitstrings()` gives you: one entry per shot, in the order the shots were taken, which is the only view that lets you correlate outcomes across registers before aggregating.",
+      "citations": [
+        "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
+        "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
+        "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      ]
+    },
+    {
+      "objective": "s5o3",
+      "title": "PUBs, broadcasting, and what actually comes back",
+      "body_md": "Conceptually the Sampler does one thing: execute a circuit many times and record the measured register each shot — draws from the distribution the circuit defines over computational-basis states. It never returns amplitudes or expectation values; probabilities are frequencies you compute yourself, and their statistical error shrinks like 1/√N_shots, so halving the error costs four times the shots. The primitives interface supersedes `backend.run`, with Sampler providing the same direct hardware access.\n\nInput is a **PUB** — a Primitive Unified Bloc. A Sampler PUB is a tuple of at most three entries: `(circuit, parameter_values, shots)`, the last two optional, and `run()` takes a *list* of them. The circuit must contain measurements. A bare circuit is an acceptable PUB-like element as long as it is inside the list: `run([isa])`, never `run(isa)`. Get the slots wrong and the failure is specific — `(isa, 256, vals)` gives `TypeError: shots must be an integer`, a four-element tuple gives `ValueError: The length of pub must be 1, 2 or 3`.\n\nParameter binding follows NumPy broadcasting with one rule bolted on: the LAST axis of the parameter array is reserved for the circuit's free parameters and is consumed during binding; whatever shape precedes it becomes the result's shape. Two parameters bound with a (6, 2) array give `data.meas.shape == (6,)`; a (3, 4, 2) array gives `(3, 4)`. If the trailing axis does not match the parameter count you get `ValueError: Length of ('p[0]', 'p[1]') inconsistent with last dimension` — and transposing, flattening or splitting into one PUB per row all raise the same thing; reshaping to (5, 2) is the fix. Shots are per parameter set, not per PUB: six sets at `shots=200` is 1200 circuit executions.\n\nOutput is a `PrimitiveResult` whose length is the number of PUBs you submitted — three circuits in, `len(result) == 3`, in order. Each `SamplerPubResult` has a `DataBin` holding one `BitArray` **per classical register, named after the register**: `measure_all()` creates a register called `meas`, `QuantumCircuit(2, 2)` creates one called `c`, and explicit registers keep their own names (`data.alice`, `data.bob`). Reading `data.meas` on a circuit that never used `measure_all` is the classic `AttributeError`. From a `BitArray`, `get_counts()` is the histogram, `get_int_counts()` the same histogram with integer keys (`'11'` → `3`), and `get_bitstrings()` the raw per-shot list. On a broadcast result, `get_counts()` with no index POOLS every parameter set (4 × 500 = 2000) while `get_counts(0)` gives one set's 500. And every bitstring is little-endian: qubit 0 is the rightmost character, `b[-1]`.",
+      "citations": [
+        "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+        "https://quantum.cloud.ibm.com/docs/guides/primitives",
+        "https://quantum.cloud.ibm.com/docs/tutorials/multi-product-formula"
+      ]
+    }
+  ],
+  "facts": [
+    {
+      "objective": "s5o1",
+      "fact_md": "`sampler.options.resilience_level = 1` raises a pydantic `ValidationError` (\"Object has no attribute 'resilience_level'\") — resilience levels are an EstimatorV2 option, despite the objective's wording.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q014"
+      }
+    },
+    {
+      "objective": "s5o1",
+      "fact_md": "What IS settable on a SamplerV2: `options.default_shots`, `options.dynamical_decoupling.enable`, and `options.twirling.enable_gates` — `resilience_level` and `optimization_level` both fail validation.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q020"
+      }
+    },
+    {
+      "objective": "s5o1",
+      "fact_md": "The real fields of the `twirling` group are `enable_gates`, `enable_measure`, `num_randomizations` (plus `shots_per_randomization` and `strategy`); `twirling_level` and `readout` are not among them.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q027"
+      }
+    },
+    {
+      "objective": "s5o1",
+      "fact_md": "Dynamical decoupling is switched on with `sampler.options.dynamical_decoupling.enable = True`; setting `sequence_type` alone is accepted but leaves `enable` Unset — configuring is not enabling.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q019"
+      }
+    },
+    {
+      "objective": "s5o1",
+      "fact_md": "The simulator seed lives at `options.simulator.seed_simulator`; `options.execution.seed_simulator`, a top-level `seed_simulator`, `run(seed=42)` and `run(options={...})` are all rejected.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q031"
+      }
+    },
+    {
+      "objective": "s5o1",
+      "fact_md": "`SamplerV2(mode=backend, options={\"default_shots\": 4096})` is the constructor form; a `\"shots\"` key is rejected, `SamplerV2(shots=...)`/`(default_shots=...)` are `TypeError`, and `sampler.set_options(...)` does not exist.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q033"
+      }
+    },
+    {
+      "objective": "s5o1",
+      "fact_md": "A shot count inside the PUB beats the option: with `options.default_shots = 1000`, the PUB `(isa, None, 50)` runs exactly 50 shots.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q026"
+      }
+    },
+    {
+      "objective": "s5o1",
+      "fact_md": "Documented shots precedence, most specific first: PUB shots, then `run(shots=)`, then twirling's `num_randomizations` × `shots_per_randomization`, then `options.default_shots`.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/sampler-options"
+      }
+    },
+    {
+      "objective": "s5o1",
+      "fact_md": "Options you never set stay `Unset` and take the server default; set them per-attribute (`options.option.sub_option = choice`) or in bulk with `options.update(...)` — the options object is not read-only.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview"
+      }
+    },
+    {
+      "objective": "s5o2",
+      "fact_md": "Sampler's entire noise-management surface is two techniques: dynamical decoupling and Pauli twirling. There is no readout-mitigation option to switch on or off.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management"
+      }
+    },
+    {
+      "objective": "s5o2",
+      "fact_md": "TREX (measurement-error mitigation), ZNE and PEC are Estimator resilience options reached via `options.resilience.*` or `resilience_level` — they correct expectation values, so they have no Sampler counterpart.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
+      }
+    },
+    {
+      "objective": "s5o2",
+      "fact_md": "Attempting to buy mitigation through an option fails loudly rather than silently: `sampler.options.resilience_level = 1` is a `ValidationError`, whether assigned or passed in the constructor's options dict.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q014"
+      }
+    },
+    {
+      "objective": "s5o2",
+      "fact_md": "Post-selection is something you code: a Bell run's raw counts `{'00': 1941, '11': 1822, '01': 90, '10': 147}` become `{'00': 1941, '11': 1822}` by dropping the odd-parity shots and renormalizing.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q028"
+      }
+    },
+    {
+      "objective": "s5o2",
+      "fact_md": "`get_bitstrings()` returns one entry per shot in the order taken (777 shots → a list of length 777) — the un-aggregated record an assignment-matrix or M3-style correction needs as input.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q029"
+      }
+    },
+    {
+      "objective": "s5o2",
+      "fact_md": "Do custom post-processing on the `BitArray`, not on counts dicts: it supports boolean-mask post-selection, `slice_bits`, `slice_shots`, `expectation_values` and `concatenate_bits`.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "The two primitives split the job: Sampler samples the output register of a circuit, Estimator computes expectation values of observables — and the primitives interface supersedes `backend.run`.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/primitives"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "A Sampler PUB is a tuple of at most three entries — circuit, parameter values, shots — and the circuit must include measurements; `run()` takes a LIST of such PUBs.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "`result[0].data.meas` is a `BitArray` of per-shot outcomes, not a counts dict; `get_counts()` is the summarized view and returns a plain `dict`.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q011"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "`get_counts()` tallies every shot, so its values sum to the shot count used (`shots=1000` → 1000) no matter how many distinct bitstrings appear.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q010"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "The parameter array's LAST axis binds the parameters and is consumed; the leading shape becomes the result shape — (6, 2) over 2 parameters gives `data.meas.shape == (6,)`.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q016"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "The same rule at higher rank: a (3, 4, 2) array over a 2-parameter circuit gives a (3, 4) result, indexable as `data.meas[i, j]`.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q017"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "A trailing axis that does not match the parameter count raises `ValueError: Length of ('p[0]', 'p[1]') inconsistent with last dimension` — reshaping (5, 3) to (5, 2) is the fix.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q018"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "Shots are per parameter set, not per PUB: broadcasting over 6 values with `shots=200` performs 6 × 200 = 1200 circuit executions.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q035"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "On a broadcast `BitArray`, `get_counts()` with no index POOLS every parameter set (4 sets × 500 shots = 2000); `get_counts(0)` returns that one set's 500.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q023"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "`len(result)` is the number of PUBs submitted — three circuits in one `run()` give three PUB results, in order.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q039"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "Each classical register becomes its own `DataBin` field named after it: registers `alice` and `bob` give `result[0].data.alice` and `.bob`.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q024"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "`QuantumCircuit(2, 2)` names its register `c`, so the outcomes are in `data.c`; the name `meas` exists only when the circuit used `measure_all()`.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q025"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "Bitstrings are little-endian: qubit 0 is the LAST character, so read `b[-1]`, not `b[0]` — after `x(0)` on two qubits the dominant outcome is `'01'`.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q032"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "`get_int_counts()` returns the same histogram with the bitstrings decoded as integers — `'11'` becomes the key `3` (an int, not the string).",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q036"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "Runtime `SamplerV2` rejects a non-ISA circuit with `IBMInputValueError`; the fix is a preset pass manager transpiled for the backend, not a change to the run call.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q013"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "The reference `StatevectorSampler` in `qiskit.primitives` still accepts abstract (non-ISA) instructions because it runs a local statevector simulation — the ISA requirement is a Runtime-primitive rule.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/simulate-with-qiskit-sdk-primitives"
+      }
+    }
+  ],
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (s4/s5 quick-study generation agent)",
+    "fact_checked": true,
+    "notes": "Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json and only EXECUTED questions with an artifact are cited (the conceptual s5 qids q021, q030, q034, q037 and q038 are covered through their guides instead). Every citation-sourced fact was confirmed by fetching the page text (sampler-options: the four-step shots precedence chain and the full options table; runtime-options-overview: Unset defaults, attribute vs update() setting; sampler-noise-management: DD + Pauli twirling are the only supported techniques; error-mitigation-and-suppression-techniques: TREX/ZNE/PEC as Estimator resilience options; primitive-input-output: Sampler PUB is at most three entries and must include measurements, DataBin holds one BitArray per ClassicalRegister, BitArray post-processing API; primitives: Sampler samples / Estimator estimates and supersedes backend.run; simulate-with-qiskit-sdk-primitives: the reference primitives still accept abstract instructions; tutorials/multi-product-formula: 'sampling error shrinks with 1/sqrt(N_shots)'). Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0): SamplerOptions dataclass fields are max_execution_time/environment/simulator/default_shots/dynamical_decoupling/execution/twirling/experimental; SamplerV2.run signature is run(pubs, *, shots=None); options.update(default_shots=512) works; set_options is an AttributeError; a broadcast (4,) BitArray reports num_shots=500 per set with pooled get_counts totalling 2000; a DataBin with two registers has keys ['alice','bob'] and shape (); StatevectorSampler runs an abstract measure_all circuit and defaults to 1024 shots, matching the fake-backend local default (vs the Runtime service's 4096). Consistent with the REVIEW_LEDGER s5 pool wave and the SamplerV2-has-no-resilience_level entry; no contradictions."
+  }
+}

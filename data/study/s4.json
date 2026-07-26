@@ -1,0 +1,228 @@
+{
+  "section": "s4",
+  "primers": [
+    {
+      "objective": "s4o1",
+      "title": "Three modes, and the single `mode=` that selects them",
+      "body_md": "Qiskit Runtime schedules work in exactly three ways, and the exam tests the decision rule far more than the syntax. **Job mode** is a single primitive request made without a context manager: you hand the primitive a backend, `SamplerV2(mode=backend)`, and one job goes through the normal queue. **Batch mode** is a multi-job manager for independent jobs that are all known at the outset: the whole batch is scheduled together so you wait through the queue once, the classical pre-processing of the jobs is threaded in parallel, and the quantum executions are packed tightly — which also limits device drift across the set. **Session mode** buys a dedicated window in which you have exclusive access to the QPU: no other users' jobs and no calibration jobs interleave. That is what an iterative workload needs when the next circuit depends on the previous result, and what PEC/PEA need if a noise model learned once is to still be valid for the jobs that follow.\n\nThe documented default is blunt. Use batch unless your inputs are not all ready at the outset; use session for iterative workloads or when you genuinely need dedicated access; always use job mode to submit a single primitive request. Sessions are the expensive option, so \"wrap it in a session to be safe\" is the wrong instinct. Two consequences are examinable: batched jobs are NOT guaranteed to run in submission order and do NOT get exclusive access, and the queuing time does not decrease for the FIRST job in a batch or session — so neither mode helps a workload that is a single job.\n\nSelection is by argument, never by lexical position. `Session` and `Batch` take the backend (`Session(backend=backend)`); the primitive takes `mode=`, which accepts a Backend, a Session, or a Batch object — or nothing at all, in which case a primitive constructed inside a `with Session(...)`/`with Batch(...)` block inherits that context. Writing `mode=backend` INSIDE a batch context silently puts you back in job mode; a backend *name string* is rejected outright; and the V1 `backend=` keyword no longer exists on the constructors.\n\nLifetimes are governed by two timers. The maximum TTL starts when the first job begins RUNNING — not when you open the context — and you set it with `max_time`; when it expires the workload is terminated, jobs already running continue, and any jobs still queued are failed. The interactive TTL is the idle gap allowed between consecutive jobs and cannot be configured (one minute for batches); exceed it and the workload is temporarily deactivated until a new job works its way back through the normal queue. Default maximum TTLs are 8 hours on paid plans and 10 minutes on the Open Plan — where sessions are not available at all. Closing, including exiting the context manager, kills nothing: the workload moves to \"In progress, not accepting new jobs\", already-submitted jobs run to completion, and their results are still retrievable.",
+      "citations": [
+        "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+        "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
+        "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
+        "https://quantum.cloud.ibm.com/docs/guides/max-execution-time"
+      ]
+    },
+    {
+      "objective": "s4o2",
+      "title": "ISA in, PUB results out — the V2 hardware workflow",
+      "body_md": "Running on IBM hardware is a four-step pattern — map the problem to circuits, optimize for the target, execute with a primitive, post-process — and the exam lives almost entirely in step two. V2 primitives accept **ISA circuits only**: a circuit whose instructions are already in the backend's target. Hand `SamplerV2(mode=backend)` an untranspiled circuit and it does not helpfully transpile for you; it raises `IBMInputValueError` naming the offending instruction (\"The instruction h on qubits (0,) is not supported by the target system\"). Local testing mode changes nothing here — a fake backend carries a real `Target` and enforces it exactly like hardware.\n\n\"ISA\" means two conditions, and questions love to satisfy only one. The basis gates must be native, AND the two-qubit gates must respect the coupling map. A circuit written entirely in `sx`/`rz`/`cx` still fails if it puts a `cx` between qubits 0 and 4 of a line-topology device: the same `IBMInputValueError` comes back, now naming `cx on qubits (0, 4)`. The fix for both is the preset pass manager: `pm = generate_preset_pass_manager(backend=backend, optimization_level=1)` then `isa = pm.run(qc)`. Transpiling does not strip measurements — they survive into the ISA circuit.\n\nTranspiling also widens the circuit to the device's qubit count, which is what breaks the Estimator half of the workflow. A 2-qubit `SparsePauliOp` against a 5-qubit ISA circuit raises `ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2)`. The observable must be mapped through the same layout with `obs.apply_layout(isa.layout)`. There is no device-aware constructor shortcut — `SparsePauliOp(\"ZZ\", target=...)` is a `TypeError` — and nothing pads a narrow observable for you.\n\nExecution itself is deliberately small. `run()` takes ONE iterable of PUBs plus a keyword-only `shots`; its signature is `run(pubs, *, shots=None)`. Two circuits are two PUBs in one list, `run([isa1, isa2])`, and you get back a `PrimitiveResult` with one PUB result per PUB, in order. For the Sampler the circuit must contain measurements: with none, the result's `DataBin` has no fields at all and `result[0].data.meas` raises `AttributeError`. For the Estimator you read `result[0].data.evs`, and on a noisy device you should expect a value near but not at the ideal — a Bell state's ⟨ZZ⟩ comes back around +0.87 instead of +1, degraded toward zero and never overshooting.",
+      "citations": [
+        "https://quantum.cloud.ibm.com/docs/guides/transpile",
+        "https://quantum.cloud.ibm.com/docs/guides/get-started-with-sampler",
+        "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      ]
+    },
+    {
+      "objective": "s4o2",
+      "title": "Credentials, backend choice, and rehearsing without a QPU",
+      "body_md": "Before any of that runs you need an authenticated service. `QiskitRuntimeService(token=..., instance=...)` takes an IBM Cloud API key and a Cloud Resource Name identifying the instance; the `channel` argument defaults to `ibm_quantum_platform`, which is why the docs' examples omit it. In a trusted environment you do this once with `QiskitRuntimeService.save_account(token=\"<api-key>\", instance=\"<CRN>\", name=..., set_as_default=True)`, which writes `$HOME/.qiskit/qiskit-ibm.json`; afterwards a bare `QiskitRuntimeService()` loads the saved default. Note the parameter is `token`, not `api_key`, and there is no instance `.save()` method. The tie-break rule is worth memorizing: with several saved accounts, none marked default and none named at initialization, the account whose name comes LAST alphabetically is used.\n\nBackend selection is the next line. `service.least_busy(operational=True, simulator=False)` returns the operational real QPU with the shortest queue, and it also accepts `min_num_qubits` and a `filters` callable — so more than one spelling can be right on a \"pick the least busy QPU\" question. `service.backends()` returns a list that is not queue-sorted, and `service.backend()` needs a positional name.\n\nYou can rehearse the entire program without credentials. Local testing mode (qiskit-ibm-runtime 0.22+) means passing a backend from `qiskit_ibm_runtime.fake_provider` — snapshots of real QPUs, complete with coupling map, basis gates and a noise model — or an Aer simulator as the primitive's `mode=`. `QiskitRuntimeService(channel=\"local\")` does the same at the service level. The promise is that only the backend changes when you move to hardware, so the ISA requirement, the PUB structure and the result layout all behave identically.\n\nA few local-mode behaviours are still worth knowing because they show up as tempting distractors. `Session` and `Batch` context managers work locally, and `session.backend()` returns the backend NAME as a string, not the object — but `session.details()` and `session.session_id` come back `None`, because there is no server-side workload to describe. And the shot default differs: a fake backend falls through to the local `BackendSamplerV2` default of 1024 shots, whereas the real Runtime service defaults to 4096. Any reasoning that depends on an unspecified shot count is therefore unsafe — state the shots explicitly.",
+      "citations": [
+        "https://quantum.cloud.ibm.com/docs/guides/initialize-account",
+        "https://quantum.cloud.ibm.com/docs/guides/save-credentials",
+        "https://quantum.cloud.ibm.com/docs/guides/local-testing-mode"
+      ]
+    }
+  ],
+  "facts": [
+    {
+      "objective": "s4o1",
+      "fact_md": "V2 primitives take exactly one execution-target argument: `mode=`, which accepts a Backend, a Session, or a Batch object — `SamplerV2(mode=batch)` is how a primitive joins an open batch.",
+      "source": {
+        "type": "proof",
+        "ref": "s4-q013"
+      }
+    },
+    {
+      "objective": "s4o1",
+      "fact_md": "The V1 spelling is gone: `SamplerV2(backend=backend)` raises `TypeError: SamplerV2.__init__() got an unexpected keyword argument 'backend'`, and `run(..., mode=...)` fails the same way — `mode` is a constructor argument only.",
+      "source": {
+        "type": "proof",
+        "ref": "s4-q016"
+      }
+    },
+    {
+      "objective": "s4o1",
+      "fact_md": "A primitive with no mode and no enclosing context raises `ValueError: A backend or session must be specified.` in the CONSTRUCTOR — `run()` is never reached.",
+      "source": {
+        "type": "proof",
+        "ref": "s4-q021"
+      }
+    },
+    {
+      "objective": "s4o1",
+      "fact_md": "`mode` does not resolve names: `SamplerV2(mode=\"ibm_manila\")` raises `ValueError: mode must be of type Backend, Session, Batch or None`.",
+      "source": {
+        "type": "proof",
+        "ref": "s4-q032"
+      }
+    },
+    {
+      "objective": "s4o1",
+      "fact_md": "`Session.backend()` returns the QPU's NAME as a string (`'fake_manila'`), not a Backend object — so it cannot be fed straight back into `mode=`.",
+      "source": {
+        "type": "proof",
+        "ref": "s4-q042"
+      }
+    },
+    {
+      "objective": "s4o1",
+      "fact_md": "Batched jobs are not guaranteed to run in submission order and do not get exclusive access (other users' jobs and QPU calibration jobs can interleave); a session's active window is exclusive, calibration included.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+      }
+    },
+    {
+      "objective": "s4o1",
+      "fact_md": "Queuing time does not decrease for the first job submitted within a batch or a session, so neither mode benefits a single-job workload.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+      }
+    },
+    {
+      "objective": "s4o1",
+      "fact_md": "Best-practice ordering: batch for multiple independent jobs, session for iterative workloads or when you need dedicated access, job mode always for a single primitive request — and prefer batch because sessions are generally more expensive.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode"
+      }
+    },
+    {
+      "objective": "s4o1",
+      "fact_md": "The maximum TTL timer starts when the first job begins running and does not pause; when it is reached the workload ends, running jobs continue, and jobs still queued are put into a failed state.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/max-execution-time"
+      }
+    },
+    {
+      "objective": "s4o1",
+      "fact_md": "The interactive TTL — the idle gap allowed between jobs — cannot be configured (1 minute for batches); default maximum TTL is 8 hours on paid plans and 10 minutes on the Open Plan, and `max_time` sets it.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch"
+      }
+    },
+    {
+      "objective": "s4o1",
+      "fact_md": "Open Plan users cannot submit session jobs at all — their workloads must run in job mode or batch mode.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session"
+      }
+    },
+    {
+      "objective": "s4o1",
+      "fact_md": "Closing a session (or exiting `with Session(...)`) moves it to \"In progress, not accepting new jobs\": submitted jobs run to completion and their results can still be retrieved.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session"
+      }
+    },
+    {
+      "objective": "s4o2",
+      "fact_md": "Runtime primitives reject non-ISA circuits: an untranspiled `h` raises `IBMInputValueError: The instruction h on qubits (0,) is not supported by the target system` — and a fake backend enforces this exactly like hardware, so local testing mode is no escape.",
+      "source": {
+        "type": "proof",
+        "ref": "s4-q012"
+      }
+    },
+    {
+      "objective": "s4o2",
+      "fact_md": "Native basis gates alone are not enough: `cx` between the non-adjacent qubits 0 and 4 of a line-topology device raises the same `IBMInputValueError` — an ISA circuit must satisfy the coupling map too.",
+      "source": {
+        "type": "proof",
+        "ref": "s4-q026"
+      }
+    },
+    {
+      "objective": "s4o2",
+      "fact_md": "Transpiling widens the circuit to the device, so an unmapped observable breaks: `ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2)`.",
+      "source": {
+        "type": "proof",
+        "ref": "s4-q018"
+      }
+    },
+    {
+      "objective": "s4o2",
+      "fact_md": "The alignment step is `mapped = obs.apply_layout(isa.layout)` — with it the same Estimator run returns `evs ≈ 0.878`; `SparsePauliOp(\"ZZ\", target=...)` is a `TypeError`, not a shortcut.",
+      "source": {
+        "type": "proof",
+        "ref": "s4-q036"
+      }
+    },
+    {
+      "objective": "s4o2",
+      "fact_md": "`run` takes one iterable of PUBs: two circuits are two PUBs in one list, `sampler.run([isa1, isa2])`, and the result carries one PUB result per circuit.",
+      "source": {
+        "type": "proof",
+        "ref": "s4-q043"
+      }
+    },
+    {
+      "objective": "s4o2",
+      "fact_md": "A circuit with no measurement yields a `DataBin` with NO fields, so `result[0].data.meas` raises `AttributeError`; `qc.measure_all()` before transpiling is the fix, and transpilation preserves the measurements.",
+      "source": {
+        "type": "proof",
+        "ref": "s4-q023"
+      }
+    },
+    {
+      "objective": "s4o2",
+      "fact_md": "Device noise trims the signal rather than destroying it: a Bell state's ⟨ZZ⟩ measured through the Estimator on a noisy fake backend comes back at 0.874 — close to `+1`, never above it.",
+      "source": {
+        "type": "proof",
+        "ref": "s4-q044"
+      }
+    },
+    {
+      "objective": "s4o2",
+      "fact_md": "`QiskitRuntimeService()` defaults to `channel=\"ibm_quantum_platform\"`; with several saved accounts, none marked default and none named, the account whose name comes LAST alphabetically is used.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/initialize-account"
+      }
+    },
+    {
+      "objective": "s4o2",
+      "fact_md": "`QiskitRuntimeService.save_account(token=..., instance=..., name=..., set_as_default=True)` saves credentials to `$HOME/.qiskit/qiskit-ibm.json` — the parameter is `token` (the API key), and saving is recommended only in a trusted environment.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/save-credentials"
+      }
+    },
+    {
+      "objective": "s4o2",
+      "fact_md": "Local testing mode = pass a `qiskit_ibm_runtime.fake_provider` backend or an Aer simulator as the primitive's (or session's) `mode=`; after verifying, only the backend has to change to run on a QPU.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/local-testing-mode"
+      }
+    },
+    {
+      "objective": "s4o2",
+      "fact_md": "`service.least_busy(operational=True, simulator=False)` is the documented call for picking an operational real QPU with the shortest queue (it also accepts `min_num_qubits`).",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/get-started-with-sampler"
+      }
+    }
+  ],
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus-5 (s4/s5 quick-study generation agent)",
+    "fact_checked": true,
+    "notes": "Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json and only EXECUTED questions with an artifact are cited (s4 conceptual qids q001/q010/q011/q014/q015/q017/q019/q020/q022/q024/q025/q027/q029/q030/q031/q033/q035/q037/q039/q040/q041 are cited through their guide instead). Every citation-sourced fact was confirmed by fetching the page text (execution-modes: batch ordering/exclusivity and the first-job queuing note; choose-execution-mode: batch-unless/always-job-mode/sessions-more-expensive; max-execution-time: TTL starts at first job, queued jobs fail; run-jobs-batch: interactive TTL 1 min, 8 h paid / 10 min Open; run-jobs-session: Open Plan cannot submit session jobs, close semantics; initialize-account: default channel ibm_quantum_platform and the last-alphabetically rule; save-credentials: token=, $HOME/.qiskit/qiskit-ibm.json; local-testing-mode: fake provider / Aer as mode=; get-started-with-sampler: least_busy(operational=True, simulator=False)). Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0): least_busy accepts filters=, save_account has token= and no api_key, a no-mode primitive inside `with Session(...)` inherits the session and runs, Session/Batch public API is backend/cancel/close/details/from_id/service/session_id/status/usage, session.details() and session.session_id are None locally while session.backend() returns 'fake_manila', and a fake-backend run with no shots falls back to 1024 (vs the Runtime service's 4096). Consistent with the REVIEW_LEDGER s4 pool wave; no contradictions."
+  }
+}

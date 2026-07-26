@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.57,
+  "wall_seconds": 1.23,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 0.5 -> match=False\", \"B\": \"exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 0.0 -> match=False\", \"C\": \"exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 1.0 -> match=True\", \"D\": \"exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims 2.0 -> match=False\", \"E\": \"exact <0.5*ZZ + 0.5*XX> on the Bell state = 1.000000; option claims -1.0 -> match=False\", \"F\": \"the PUB returns a single scalar (shape ()) equal to 1.000000 \\u2014 the weighted sum of the two Pauli terms, not one value per term\"}, \"observed\": {\"expectation\": 0.9999999999999998}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

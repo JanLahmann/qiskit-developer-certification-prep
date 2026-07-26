@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.12,
+  "wall_seconds": 1.22,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"removing measure_all still fails on 3q backend (fixed=False) -> False\", \"B\": \"bug=TranspilerError: 'Number of qubits greater than device.'; a 4-qubit backend transpiles fine (ops={'rz': 8, 'sx': 4, 'measure': 4, 'barrier': 1}) -> True\", \"C\": \"optimization_level=3 on 3q backend still fails (fixed=False) -> False\", \"D\": \"GenericBackendV2 had a default coupling map; the real cause is qubit count -> False\", \"E\": \"pinning the layout by hand on the 3-qubit backend -> TranspilerError: 'HighLevelSynthesis is unable to synthesize \\\"measure\\\"' -> fixed=False\", \"F\": \"the same 4-qubit circuit without any classical bits still fails (fixed=False), and the measured circuit transpiles fine on a 4-qubit backend (ops={'rz': 8, 'sx': 4, 'measure': 4, 'barrier': 1}) -> False\"}, \"observed\": {\"bug\": \"TranspilerError: 'Number of qubits greater than device.'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

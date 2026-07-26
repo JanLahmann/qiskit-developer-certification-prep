@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.12,
+  "wall_seconds": 1.44,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> 'IIZ'; option claims 'ZII' -> match=False\", \"B\": \"from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> 'IIZ'; option claims 'IZI' -> match=False\", \"C\": \"from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> 'IIZ'; option claims 'ZZZ' -> match=False\", \"D\": \"from_sparse_list([('Z',[0],1.0)], num_qubits=3) -> 'IIZ'; option claims 'IIZ' -> match=True\", \"E\": \"no exception is raised: from_sparse_list([('Z',[0],1.0)], num_qubits=3) returns 'IIZ', so the sparse form does not need one label character per qubit\", \"F\": \"the stored label is 'IIZ', 3 characters wide \\u2014 the term IS padded with identities, so a bare 'Z' is not what comes back\"}, \"observed\": {\"label\": \"IIZ\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

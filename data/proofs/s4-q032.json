@@ -26,7 +26,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.16,
+  "wall_seconds": 1.22,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"C\": \"observed=('exception', 'ValueError', 'mode must be of type Backend, Session, Batch or None'); option C predicts 'ValueError: mode must be Backend/Session/Batch or None' -> match=True\", \"B\": \"observed=('exception', 'ValueError', 'mode must be of type Backend, Session, Batch or None'); option B predicts 'works, looks up by name' -> match=False\", \"A\": \"observed=('exception', 'ValueError', 'mode must be of type Backend, Session, Batch or None'); option A predicts 'works only if a service exists' -> match=False\", \"D\": \"observed=('exception', 'ValueError', 'mode must be of type Backend, Session, Batch or None'); option D predicts 'KeyError: no such backend' -> match=False\", \"E\": \"observed=('exception', 'ValueError', 'mode must be of type Backend, Session, Batch or None'); option E predicts 'works, falling back to a local simulator' -> match=False; construction produced no primitive at all (nothing was constructed), so there was nothing to fall back to\", \"F\": \"observed=('exception', 'ValueError', 'mode must be of type Backend, Session, Batch or None'); option F predicts 'TypeError from an annotation-driven type check' -> match=False; the raised type is ValueError \\u2014 the check is an explicit isinstance guard that raises ValueError\"}, \"observed\": {\"outcome\": [\"exception\", \"ValueError\", \"mode must be of type Backend, Session, Batch or None\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

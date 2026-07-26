@@ -1045,3 +1045,134 @@ and died with it.
   `/docs/sections/<the study file's section>`, so citing `s5-q033` from `s4.json`
   would render a link to a question that is not on that page. Keep proof refs
   inside the section.
+
+## Verified library facts (s6/s7 quick-study wave, 2026-07-26, qiskit 2.5.0 / runtime 0.48.0)
+
+- **`pec_mitigation` and `zne_mitigation` cannot be enabled together**: setting
+  both raises `ValidationError: 'pec_mitigation' and 'zne_mitigation' options
+  cannot be simultaneously enabled. Set one of them to False.` This matches the
+  docs' feature-compatibility table (PEC incompatible with gate-folding ZNE and
+  with PEA). NEW finding — a clean "both flags on" refutation.
+- **`EstimatorOptions.__dataclass_fields__` (0.48), verbatim order:** `_VERSION,
+  max_execution_time, environment, simulator, default_precision, default_shots,
+  resilience_level, seed_estimator, dynamical_decoupling, resilience, execution,
+  twirling, experimental`. `resilience` fields: `measure_mitigation,
+  measure_noise_learning, zne_mitigation, zne, pec_mitigation, pec,
+  layer_noise_learning, layer_noise_model`. `pec` fields: `max_overhead,
+  noise_gain`. `twirling` fields: `enable_gates, enable_measure,
+  num_randomizations, shots_per_randomization, strategy`.
+- **`EstimatorV2.run` signature is `run(self, pubs, *, precision=None)`** —
+  `precision` is KEYWORD-ONLY (confirms the s6 pool-wave finding from the
+  signature side). `EstimatorOptions().default_precision` and
+  `.resilience_level` are both `Unset` in the library; the documented values
+  (0.015625 and 1) are SERVER defaults, not dataclass defaults — never key a
+  question on `EstimatorOptions().resilience_level == 1`.
+- **`zne.amplifier` is enum-validated:** `"pea"` is accepted, `"richardson"` is a
+  `ValidationError`. Documented choices are `gate_folding`,
+  `gate_folding_front`, `gate_folding_back`, `pea` (default `gate_folding`).
+- **`SparsePauliOp.apply_layout(None)` is a no-op** (returns the operator
+  unchanged, `'ZZ'` stays `'ZZ'`) — it does NOT raise, so "pass None" is a
+  silent-failure distractor, never an exception one.
+- **Estimator broadcasting re-measured (StatevectorEstimator):** flat list of 3
+  observables → `(3,)`; `[[o1],[o2],[o3]]` → `(3, 1)`; `[[o1,o2,o3]]` → `(1, 3)`;
+  a single op → `()`. A 2-term `SparsePauliOp` returns a 0-d `float64` holding
+  the weighted sum. `PubResult.metadata` keys are `target_precision` +
+  `circuit_metadata` (Estimator) and `shots` + `circuit_metadata` (Sampler);
+  `PrimitiveResult.metadata` is `{'version': 2}`.
+- **`BitArray` public surface (2.5), full list:** `array, bitcount, concatenate,
+  concatenate_bits, concatenate_shots, expectation_values, from_bool_array,
+  from_counts, from_samples, get_bitstrings, get_counts, get_int_counts, ndim,
+  num_bits, num_shots, postselect, reshape, shape, size, slice_bits,
+  slice_shots, to_bool_array, transpose`. Measured: `concatenate_shots` doubles
+  `num_shots` at constant `num_bits`; `concatenate_bits` doubles `num_bits` at
+  constant `num_shots`; `slice_shots(range(5)).num_shots == 5`.
+- **`RuntimeJobV2` public surface (0.48):** `ERROR, JOB_FINAL_STATES, backend,
+  cancel, cancelled, creation_date, done, error_message, errored, image,
+  in_final_state, inputs, instance, job_id, logs, metrics, primitive_id,
+  private, properties, result, running, session_id, status, tags, update_tags,
+  usage, usage_estimation, wait_for_final_state`. `JOB_FINAL_STATES ==
+  ('DONE','CANCELLED','ERROR')`; `done()` is literally `status() == "DONE"` and
+  `cancel()` sets `_status = "CANCELLED"` — the string-status entry is confirmed
+  from the source side.
+- **`QiskitRuntimeService.jobs` signature (0.48):** `(limit=10, skip=0,
+  backend_name, pending, program_id, instance, job_tags, session_id,
+  created_after, created_before, descending=True)`; `job` is `(job_id) ->
+  RuntimeJobV2`.
+- **RuntimeEncoder/Decoder round trip re-confirmed end to end:**
+  `json.loads(json.dumps(res, cls=RuntimeEncoder), cls=RuntimeDecoder)` returns a
+  real `PrimitiveResult` with identical counts; loading the same string with a
+  PLAIN `json.loads` returns a `dict` whose `[0]` is `KeyError: 0`; no encoder at
+  all is `TypeError: Object of type PrimitiveResult is not JSON serializable`.
+
+## Documentation link facts (s6/s7 quick-study wave, 2026-07-26)
+
+- Live and slug-stable (curl -L, final 200, slug match):
+  `guides/estimator-options`, `guides/estimator-noise-management`,
+  `guides/error-mitigation-and-suppression-techniques`,
+  `guides/runtime-options-overview`, `guides/get-started-with-estimator`,
+  `guides/specify-observables-pauli`, `guides/primitive-input-output`,
+  `guides/save-jobs`, `guides/monitor-job`,
+  `api/qiskit-ibm-runtime/runtime-job-v2`, `api/qiskit-ibm-runtime/session`,
+  `api/qiskit-ibm-runtime/options-estimator-options`,
+  `api/qiskit-ibm-runtime/options-zne-options`,
+  `api/qiskit-ibm-runtime/estimator-v2`,
+  `api/qiskit/qiskit.quantum_info.SparsePauliOp`,
+  `api/qiskit/qiskit.primitives.BitArray`,
+  `api/qiskit/qiskit.primitives.DataBin`,
+  `api/qiskit/qiskit.primitives.PrimitiveResult`, `api/qiskit/primitives`.
+- **Doc statements confirmed by fetch, safe to cite:** estimator-noise-management
+  (resilience table 0 = none / 1 = [Default] TREX + measurement twirling / 2 =
+  "Level 1 + Zero Noise Extrapolation (ZNE) and gate twirling"; the Important
+  callout that manual options apply *in addition to* the level's base set, with
+  level 0 turning `zne_mitigation` off but an explicit `True` overriding it);
+  error-mitigation-and-suppression-techniques (ZNE = digital gate folding +
+  extrapolation, "not guaranteed to produce an unbiased result", default 3 noise
+  factors ≈ 3x overhead; PEC unbiased, overhead quadratic in γ = Σ|η_i| which is
+  exponential in depth, `pec.max_overhead` default 100; TREX = twirled
+  measurement + inverted diagonal readout matrix, enabled by `measure_mitigation`;
+  DD pulses idle qubits, default sequence "XX"; PEA needs `zne_mitigation = True`
+  plus `zne.amplifier = "pea"`); estimator-options (five-step precision
+  precedence PUB > run(precision=) > num_randomizations × shots_per_randomization
+  > default_shots > default_precision; `default_precision` default 0.015625 =
+  1/sqrt(4096); `resilience_level` choices 0/1/2 default 1;
+  `resilience.measure_mitigation` default True, `zne_mitigation`/`pec_mitigation`
+  default False; `zne.noise_factors` default (1,3,5) — (1,1.5,2) for PEA;
+  `twirling.enable_gates` False / `enable_measure` True;
+  `max_execution_time` default 10800; run() takes only `precision`; feature
+  compatibility table); primitive-input-output (Estimator PUB is at most FOUR
+  values, one ev per broadcast element, `SparsePauliOp` counts as ONE element
+  regardless of term count, commuting observables must share a PUB to share a
+  measurement, Sampler DataBin holds one BitArray per ClassicalRegister with
+  `meas` the default name, BitArray stores shots as bytes with shots on the left
+  axis); specify-observables-pauli (only I/Z Paulis are diagonal; X → HXH and
+  Y → HS†YSH basis changes are performed automatically by the Estimator);
+  save-jobs ("IBM Quantum automatically stores results from every job"; the
+  literal `j.status() == "DONE"` comparison; `service.jobs(created_after=...)`
+  with a datetime; RuntimeEncoder/RuntimeDecoder round trip); monitor-job
+  (`job.result()` is "a blocking call until the job completes", `job.job_id()`,
+  `job.status()`, `service.job(<job_id>)`, "use `job.cancel()` to cancel a job",
+  `service.jobs()` default `limit` 10 and its deprecated-provider note, plus the
+  Workloads / Instances / Analytics pages); api/qiskit-ibm-runtime/runtime-job-v2
+  (`status()` return type `Literal['INITIALIZING','QUEUED','RUNNING','CANCELLED',
+  'DONE','ERROR']`); api/qiskit-ibm-runtime/session (`details()` key list:
+  `max_time, state, accepting_jobs, last_job_started, last_job_completed,
+  closed_at, activated_at, usage_time`; `close()` stops accepting new jobs while
+  existing ones finish, `cancel()` cancels all pending jobs).
+
+## Study-wave craft rules (s6/s7, 2026-07-26 — final two sections)
+
+- **An objective with ZERO executed questions must be citation-only.** s7o2
+  ("Monitor jobs") is backed exclusively by conceptual questions (q026, q027,
+  q028, q030, q033), so all 8 of its facts are `{"type":"citation"}`. Resist the
+  temptation to borrow an s7o1 proof qid: `build_study.py` only checks that the
+  qid exists in the executed set, so a borrowed ref would render a ⚙️
+  "proven by execution" badge over a claim that proof never touched.
+- **API reference pages are the right citation for method surfaces.**
+  `guides/monitor-job` is thin (no status strings, no predicate list); the
+  `api/qiskit-ibm-runtime/runtime-job-v2` page states the `Literal[...]` return
+  type and `JOB_FINAL_STATES` verbatim, which is exactly what the job-lifecycle
+  facts need. Same shape for `api/qiskit-ibm-runtime/session` vs
+  `guides/monitor-job` on `details()` keys.
+- **Two objectives, five primers.** s6 and s7 each have only two syllabus
+  objectives but four-plus scope areas, so s6 carries 2+2 primers and s7 carries
+  3+2 — extending the s4/s5 rule. Every primer stayed in the 340-435 word band.

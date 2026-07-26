@@ -1,0 +1,101 @@
+{
+  "id": "s3-q057",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which figure is the `mpl` rendering of the circuit this pass manager returns?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.cx(0, 1)\nqc.t(1)\nqc.h(2)\nqc.z(2)\nqc.z(2)\nqc.cx(1, 2)\nqc.cx(0, 2)\n\npm = generate_preset_pass_manager(optimization_level=0, seed_transpiler=42)\npm.run(qc).draw(output=\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "C"
+  ],
+  "figures": {
+    "generator": "figures/s3-q057/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s3-q057/s3-q057-A.svg",
+        "alt": "Circuit diagram with three wires q_0, q_1, q_2 from top to bottom: an H box on q_0, a T box on q_1 and an H box on q_2 in the first column, then a CX controlled by q_1 with its target on q_2, then a CX controlled by q_0 with its target on q_2. Five gates in total; no repeated gates anywhere."
+      },
+      "B": {
+        "file": "figures/s3-q057/s3-q057-B.svg",
+        "alt": "Circuit diagram with three wires q_0, q_1, q_2 from top to bottom: an H box on q_0 and an H box on q_2, then two CX gates in a row controlled by q_0 with their targets on q_1, a T box on q_1, then a CX controlled by q_1 with its target on q_2 and a CX controlled by q_0 with its target on q_2. Seven gates in total; the q_2 wire carries no Z boxes."
+      },
+      "C": {
+        "file": "figures/s3-q057/s3-q057-C.svg",
+        "alt": "Circuit diagram with three wires q_0, q_1, q_2 from top to bottom: an H box on q_0 and an H box on q_2, then two CX gates in a row controlled by q_0 with their targets on q_1 while two Z boxes in a row sit on q_2, a T box on q_1, then a CX controlled by q_1 with its target on q_2 and a CX controlled by q_0 with its target on q_2. Nine gates in total."
+      },
+      "D": {
+        "file": "figures/s3-q057/s3-q057-D.svg",
+        "alt": "Circuit diagram with three wires q_0, q_1, q_2 from top to bottom: an H box on q_0, a T box on q_1 and an H box on q_2 in the first column, then two Z boxes in a row on q_2, then a CX controlled by q_1 with its target on q_2 and a CX controlled by q_0 with its target on q_2. Seven gates in total; the q_0-to-q_1 CX gates are absent."
+      },
+      "E": {
+        "file": "figures/s3-q057/s3-q057-E.svg",
+        "alt": "Circuit diagram with three wires q_0, q_1, q_2 from top to bottom: an H box on q_0 and an H box on q_2, then one CX controlled by q_0 with its target on q_1 while a single Z box sits on q_2, a T box on q_1, then a CX controlled by q_1 with its target on q_2 and a CX controlled by q_0 with its target on q_2. Eight gates in total."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`optimization_level=0` builds a pass manager that runs no optimization stage at all: it lays out, routes and translates for whatever target it is given, and here it is given none, so the circuit comes back exactly as it was written. Both redundant pairs — the two CX(0, 1) gates and the two Z gates — are still drawn, because removing them is the job of the optimization passes that only levels 1 and above schedule.",
+    "distractors": {
+      "A": "Level confusion: this is the level-2 output. Inverse-pair cancellation is an optimization pass, and level 0 schedules none, so both repeated pairs survive the run shown in the stem.",
+      "B": "Selective cancellation: nothing suggests single-qubit repeats are treated differently from two-qubit ones. Either the optimization stage runs and removes both pairs, or it does not run and removes neither.",
+      "D": "The mirror-image of the same error: the CX pair is no more removable at level 0 than the Z pair. This drawing is what a run that cancelled only the two-qubit repeat would produce.",
+      "E": "Deduplication instead of cancellation: repeated gates are not collapsed into a single copy. Two identical self-inverse gates multiply to the identity, so a pass that acts on them deletes both — it never leaves one behind."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q057.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\n\n# The five pass-manager runs MUST mirror data/figures/s3-q057/generate.py —\n# the rendered figures are mpl drawings of exactly these outputs.\n\n\ndef build(z_pair=True, cx_pair=True, once=False):\n    qc = QuantumCircuit(3)\n    qc.h(0)\n    if cx_pair or once:\n        qc.cx(0, 1)\n    if cx_pair and not once:\n        qc.cx(0, 1)\n    qc.t(1)\n    qc.h(2)\n    if z_pair or once:\n        qc.z(2)\n    if z_pair and not once:\n        qc.z(2)\n    qc.cx(1, 2)\n    qc.cx(0, 2)\n    return qc\n\n\ndef run(circ, level):\n    pm = generate_preset_pass_manager(optimization_level=level,\n                                      seed_transpiler=42)\n    return pm.run(circ)\n\n\nVARIANTS = {\n    \"A\": run(build(), 2),\n    \"B\": run(build(z_pair=False), 0),\n    \"C\": run(build(), 0),\n    \"D\": run(build(cx_pair=False), 0),\n    \"E\": run(build(once=True), 0),\n}\n\n\ndef sig(circ):\n    \"\"\"What the drawer receives: the wire count and the gate sequence\n    addressed by qubit index (no layout is set, so the wires are q_0..q_2).\"\"\"\n    return circ.num_qubits, tuple(\n        (inst.operation.name, tuple(circ.find_bit(b).index for b in inst.qubits))\n        for inst in circ.data\n    )\n\n\ntarget = sig(run(build(), 0))\nproven, evidence, observed = [], {}, {}\nfor key, circ in sorted(VARIANTS.items()):\n    s = sig(circ)\n    match = s == target\n    observed[key] = {\"num_qubits\": s[0],\n                     \"ops\": [[n, list(q)] for n, q in s[1]]}\n    evidence[key] = (\n        f\"pass-manager output draws {s[0]} wires carrying \"\n        + \", \".join(f\"{n}{list(q)}\" for n, q in s[1])\n        + f\" ({len(s[1])} gates) -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = {\"num_qubits\": target[0],\n                    \"ops\": [[n, list(q)] for n, q in target[1]]}\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-27",
+    "model": "claude-opus (figure wave 2, task #28)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure question on optimization levels. All five option images are genuine generate_preset_pass_manager outputs (own circuit, seed_transpiler pinned, no coupling map so no layout labels appear anywhere), so no drawer convention distinguishes the keyed figure. The proof re-runs the same five pass managers and compares the gate sequence each drawer receives."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

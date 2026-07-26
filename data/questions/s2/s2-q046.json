@@ -1,0 +1,101 @@
+{
+  "id": "s2-q046",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which q-sphere does this code draw?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_state_qsphere\n\nqc = QuantumCircuit(2)\nqc.ry(2 * np.pi / 3, 0)\nqc.cx(0, 1)\n\nplot_state_qsphere(Statevector(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "figures": {
+    "generator": "figures/s2-q046/generate.py",
+    "color_essential": true,
+    "options": {
+      "A": {
+        "file": "figures/s2-q046/s2-q046-A.svg",
+        "alt": "Q-sphere with exactly two markers of equal size, one at the north pole labelled |00> and one at the south pole labelled |11>; both carry the same phase-0 colour of the phase wheel drawn beside the sphere."
+      },
+      "B": {
+        "file": "figures/s2-q046/s2-q046-B.svg",
+        "alt": "Q-sphere with exactly two markers, a large one at the north pole labelled |00> (magnitude 0.87) and a small one at the south pole labelled |11> (magnitude 0.5); both carry the same phase-0 colour of the phase wheel drawn beside the sphere."
+      },
+      "C": {
+        "file": "figures/s2-q046/s2-q046-C.svg",
+        "alt": "Q-sphere with exactly two markers, a small one at the north pole labelled |00> (magnitude 0.5) and a large one on the equator labelled |01> (magnitude 0.87); both carry the same phase-0 colour of the phase wheel drawn beside the sphere."
+      },
+      "D": {
+        "file": "figures/s2-q046/s2-q046-D.svg",
+        "alt": "Q-sphere with four markers of three different sizes: a small one at the north pole labelled |00> (magnitude 0.25), two mid-sized ones on the equator labelled |01> and |10> (magnitude 0.43 each) and a large one at the south pole labelled |11> (magnitude 0.75); all carry the same phase-0 colour of the phase wheel drawn beside the sphere."
+      },
+      "E": {
+        "file": "figures/s2-q046/s2-q046-E.svg",
+        "alt": "Q-sphere with exactly two markers, a small one at the north pole labelled |00> (magnitude 0.5) and a large one at the south pole labelled |11> (magnitude 0.87); both carry the same phase-0 colour of the phase wheel drawn beside the sphere."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`ry(theta)` sends |0> to cos(theta/2)|0> + sin(theta/2)|1>, so theta = 2pi/3 leaves amplitude cos(pi/3) = 0.5 on |0> and sin(pi/3) = 0.87 on |1> for qubit 0. The CX copies that branch onto qubit 1, giving 0.5|00> + 0.87|11>. The q-sphere places basis states by Hamming weight — all-zeros at the north pole, all-ones at the south pole — and sizes each marker by its amplitude's magnitude, so the drawing shows a small north marker and a large south marker, both with the phase-0 colour because no phase gate was applied.",
+    "distractors": {
+      "A": "Rotation angle ignored: two equal markers on the poles is the even superposition an `h` would prepare. A 2pi/3 rotation is not a half-half split, so the two markers cannot be the same size.",
+      "B": "Cosine and sine swapped: the surviving |0> amplitude is cos(theta/2), which shrinks as theta grows. This picture is the state prepared by `ry(pi/3, 0)`, where the larger amplitude stays on |00>.",
+      "C": "Entanglement dropped: without the CX, qubit 1 stays in |0> and the populated basis state is |01>, a Hamming-weight-1 state that the q-sphere draws on the equator rather than at the south pole.",
+      "D": "Rotation applied to both qubits: that is a product state with all four basis states populated, so the q-sphere shows four markers. A CX does not rotate qubit 1 independently, it correlates it with qubit 0."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q046.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import cmath\n\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\n# The five states MUST mirror data/figures/s2-q046/generate.py — the rendered\n# q-spheres are drawings of exactly these states.\n\nANGLE = 2 * np.pi / 3\n\n\ndef v_even():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    qc.cx(0, 1)\n    return qc\n\n\ndef v_swapped_weights():\n    qc = QuantumCircuit(2)\n    qc.ry(np.pi / 3, 0)\n    qc.cx(0, 1)\n    return qc\n\n\ndef v_no_cx():\n    qc = QuantumCircuit(2)\n    qc.ry(ANGLE, 0)\n    return qc\n\n\ndef v_both_rotated():\n    qc = QuantumCircuit(2)\n    qc.ry(ANGLE, 0)\n    qc.ry(ANGLE, 1)\n    return qc\n\n\ndef v_correct():\n    qc = QuantumCircuit(2)\n    qc.ry(ANGLE, 0)\n    qc.cx(0, 1)\n    return qc\n\n\ndef markers(qc):\n    \"\"\"What the q-sphere draws: one marker per non-zero amplitude, placed by\n    bitstring (Hamming weight sets the latitude), sized by magnitude and\n    coloured by phase, measured against the first non-zero amplitude.\"\"\"\n    data = Statevector(qc).data\n    ref = next(a for a in data if abs(a) > 1e-9)\n    ref /= abs(ref)\n    out = []\n    for i, amp in enumerate(data):\n        if abs(amp) < 1e-9:\n            continue\n        rel = amp / ref\n        out.append((format(i, \"02b\"), round(float(abs(amp)), 3),\n                    f\"{round(cmath.phase(rel) / cmath.pi, 3)}pi\"))\n    return tuple(out)\n\n\nVARIANTS = {\"A\": v_even(), \"B\": v_swapped_weights(), \"C\": v_no_cx(),\n            \"D\": v_both_rotated(), \"E\": v_correct()}\n\ntarget = markers(v_correct())\nproven, evidence, observed = [], {}, {}\nfor key, qc in sorted(VARIANTS.items()):\n    m = markers(qc)\n    match = m == target\n    observed[key] = [list(x) for x in m]\n    evidence[key] = (\n        \"figure shows markers (bitstring, magnitude, relative phase) \"\n        + str([list(x) for x in m])\n        + \" vs the stem state's \"\n        + str([list(x) for x in target])\n        + f\" -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = [list(x) for x in target]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-27",
+    "model": "claude-opus (figure wave 2, task #28)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Second q-sphere item, code-to-image direction (s2-q043 runs image-to-code). The five options differ in marker position, size and count so the item survives greyscale, but the phase wheel is drawn and phase is colour-coded, hence color_essential: true. The proof reduces each state to the markers the drawer places."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "id": "s5-q043",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A 400-shot sampler run produced the counts below. Which histogram does the last line draw?",
+  "code": "from qiskit.visualization import plot_histogram\n\n# counts returned by a seeded 400-shot SamplerV2 run of a 3-qubit GHZ circuit\n# on FakeManilaV2:\ncounts = {\"000\": 188, \"111\": 150, \"011\": 20, \"100\": 14,\n          \"110\": 12, \"101\": 6, \"001\": 6, \"010\": 4}\n\nplot_histogram(counts, number_to_keep=3)",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s5-q043/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s5-q043/s5-q043-A.svg",
+        "alt": "Bar chart with a Count axis and three bars, labelled left to right 000 at height 188, 011 at height 20 and 111 at height 150, each with its value printed above it."
+      },
+      "B": {
+        "file": "figures/s5-q043/s5-q043-B.svg",
+        "alt": "Bar chart with a Count axis and four bars, labelled left to right 000 at height 188, 011 at height 20, 111 at height 150 and rest at height 42, each with its value printed above it."
+      },
+      "C": {
+        "file": "figures/s5-q043/s5-q043-C.svg",
+        "alt": "Bar chart with a Count axis and four bars, labelled left to right 000 at height 188, 011 at height 20, 111 at height 150 and rest at height 5, each with its value printed above it."
+      },
+      "D": {
+        "file": "figures/s5-q043/s5-q043-D.svg",
+        "alt": "Bar chart with a Count axis and three bars, labelled left to right 000 at height 188, 111 at height 150 and rest at height 62, each with its value printed above it."
+      },
+      "E": {
+        "file": "figures/s5-q043/s5-q043-E.svg",
+        "alt": "Bar chart with a Count axis and eight bars, labelled left to right 000 at height 188, 001 at height 6, 010 at height 4, 011 at height 20, 100 at height 14, 101 at height 6, 110 at height 12 and 111 at height 150, each with its value printed above it."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`number_to_keep=k` keeps the k largest outcomes and folds everything else into one extra bar labelled `rest`, whose height is the SUM of the counts that were folded away. Here the three largest are 000 (188), 111 (150) and 011 (20); the remaining five outcomes total 14 + 12 + 6 + 6 + 4 = 42, so the chart has four bars and the bar order is alphabetical by label with `rest` last.",
+    "distractors": {
+      "A": "Truncation misconception: the folded outcomes are not discarded. Dropping them would lose 42 of the 400 shots, and the bar heights would no longer add up to the shot count.",
+      "C": "Rest bar misread as a cardinality: it reports how many shots landed outside the kept outcomes (42), not how many distinct outcomes were folded away (5).",
+      "D": "Off-by-one: `number_to_keep=3` keeps three outcomes plus the `rest` bar, not two plus `rest`. The parameter counts the outcomes you keep, and the extra bar is added on top of them.",
+      "E": "Parameter treated as cosmetic: `number_to_keep` changes which bars exist, it does not merely sort or relabel them. Drawing all eight outcomes is what a plain `plot_histogram(counts)` call gives."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q043.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\nfrom qiskit.visualization import plot_histogram\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\n# The five drawings MUST mirror data/figures/s5-q043/generate.py — the rendered\n# figures are exactly these plot_histogram calls.\n\nKEEP = 3\nCOUNTS = {\"000\": 188, \"111\": 150, \"011\": 20, \"100\": 14, \"110\": 12,\n          \"101\": 6, \"001\": 6, \"010\": 4}\n\n\ndef sampled_counts():\n    qc = QuantumCircuit(3)\n    qc.h(0)\n    qc.cx(0, 1)\n    qc.cx(1, 2)\n    qc.measure_all()\n    backend = FakeManilaV2()\n    pm = generate_preset_pass_manager(optimization_level=1, backend=backend,\n                                      seed_transpiler=42)\n    sampler = SamplerV2(mode=backend)\n    sampler.options.simulator.seed_simulator = 11\n    return sampler.run([pm.run(qc)], shots=400).result()[0].data.meas.get_counts()\n\n\ncounts = sampled_counts()\nassert counts == COUNTS, f\"sampler drift: {counts}\"\n\nranked = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))\nkept = dict(ranked[:KEEP])\ndropped = dict(ranked[KEEP:])\n\nfigures = {\n    # A — number_to_keep read as a plain truncation.\n    \"A\": plot_histogram(dict(kept)),\n    # B — the stem call, verbatim.\n    \"B\": plot_histogram(counts, number_to_keep=KEEP),\n    # C — rest bar read as the NUMBER of folded outcomes, not their total.\n    \"C\": plot_histogram({**kept, \"rest\": len(dropped)}),\n    # D — off-by-one: only k - 1 outcomes kept.\n    \"D\": plot_histogram({**dict(ranked[:KEEP - 1]),\n                         \"rest\": sum(v for _, v in ranked[KEEP - 1:])}),\n    # E — number_to_keep believed to affect sorting only.\n    \"E\": plot_histogram(dict(counts)),\n}\n\n\ndef bars(fig):\n    \"\"\"Read the drawing back off the axes: plot_histogram puts one Rectangle\n    per non-zero bar, positioned on the tick slot it belongs to (pair by slot,\n    never by patch order — ledger, 2026-07-26).\"\"\"\n    ax = fig.axes[0]\n    labels = [t.get_text() for t in ax.get_xticklabels()]\n    out = {}\n    for p in ax.patches:\n        slot = int(round(p.get_x() + p.get_width() / 2))\n        out[labels[slot]] = int(round(p.get_height()))\n    return tuple(sorted(out.items()))\n\n\ntarget = bars(figures[\"B\"])\nproven, evidence, observed = [], {}, {}\nfor key, fig in sorted(figures.items()):\n    b = bars(fig)\n    match = b == target\n    observed[key] = [list(x) for x in b]\n    evidence[key] = (\n        f\"figure draws {len(b)} bars \"\n        + str([list(x) for x in b])\n        + \" vs the stem call's \"\n        + str([list(x) for x in target])\n        + f\" -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem_call\"] = [list(x) for x in target]\nobserved[\"counts\"] = counts\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-27",
+    "model": "claude-opus (figure wave 2, task #28)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure question on number_to_keep. The counts in the stem are the artifact of a seeded SamplerV2 run on FakeManilaV2 (reproduced and asserted inside both the generator and the proof); the five figures are the real number_to_keep call plus four misconception count dictionaries, and the proof reads every drawing back off the axes."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

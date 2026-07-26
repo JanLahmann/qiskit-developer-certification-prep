@@ -1,0 +1,341 @@
+{
+  "question": "s3-q057",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "A": "pass-manager output draws 3 wires carrying h[0], t[1], h[2], cx[1, 2], cx[0, 2] (5 gates) -> match=False",
+      "B": "pass-manager output draws 3 wires carrying h[0], cx[0, 1], cx[0, 1], t[1], h[2], cx[1, 2], cx[0, 2] (7 gates) -> match=False",
+      "C": "pass-manager output draws 3 wires carrying h[0], cx[0, 1], cx[0, 1], t[1], h[2], z[2], z[2], cx[1, 2], cx[0, 2] (9 gates) -> match=True",
+      "D": "pass-manager output draws 3 wires carrying h[0], t[1], h[2], z[2], z[2], cx[1, 2], cx[0, 2] (7 gates) -> match=False",
+      "E": "pass-manager output draws 3 wires carrying h[0], cx[0, 1], t[1], h[2], z[2], cx[1, 2], cx[0, 2] (7 gates) -> match=False"
+    },
+    "observed": {
+      "A": {
+        "num_qubits": 3,
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ]
+          ],
+          [
+            "t",
+            [
+              1
+            ]
+          ],
+          [
+            "h",
+            [
+              2
+            ]
+          ],
+          [
+            "cx",
+            [
+              1,
+              2
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              2
+            ]
+          ]
+        ]
+      },
+      "B": {
+        "num_qubits": 3,
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ]
+          ],
+          [
+            "t",
+            [
+              1
+            ]
+          ],
+          [
+            "h",
+            [
+              2
+            ]
+          ],
+          [
+            "cx",
+            [
+              1,
+              2
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              2
+            ]
+          ]
+        ]
+      },
+      "C": {
+        "num_qubits": 3,
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ]
+          ],
+          [
+            "t",
+            [
+              1
+            ]
+          ],
+          [
+            "h",
+            [
+              2
+            ]
+          ],
+          [
+            "z",
+            [
+              2
+            ]
+          ],
+          [
+            "z",
+            [
+              2
+            ]
+          ],
+          [
+            "cx",
+            [
+              1,
+              2
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              2
+            ]
+          ]
+        ]
+      },
+      "D": {
+        "num_qubits": 3,
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ]
+          ],
+          [
+            "t",
+            [
+              1
+            ]
+          ],
+          [
+            "h",
+            [
+              2
+            ]
+          ],
+          [
+            "z",
+            [
+              2
+            ]
+          ],
+          [
+            "z",
+            [
+              2
+            ]
+          ],
+          [
+            "cx",
+            [
+              1,
+              2
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              2
+            ]
+          ]
+        ]
+      },
+      "E": {
+        "num_qubits": 3,
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ]
+          ],
+          [
+            "t",
+            [
+              1
+            ]
+          ],
+          [
+            "h",
+            [
+              2
+            ]
+          ],
+          [
+            "z",
+            [
+              2
+            ]
+          ],
+          [
+            "cx",
+            [
+              1,
+              2
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              2
+            ]
+          ]
+        ]
+      },
+      "stem": {
+        "num_qubits": 3,
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ]
+          ],
+          [
+            "t",
+            [
+              1
+            ]
+          ],
+          [
+            "h",
+            [
+              2
+            ]
+          ],
+          [
+            "z",
+            [
+              2
+            ]
+          ],
+          [
+            "z",
+            [
+              2
+            ]
+          ],
+          [
+            "cx",
+            [
+              1,
+              2
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              2
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.07,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"pass-manager output draws 3 wires carrying h[0], t[1], h[2], cx[1, 2], cx[0, 2] (5 gates) -> match=False\", \"B\": \"pass-manager output draws 3 wires carrying h[0], cx[0, 1], cx[0, 1], t[1], h[2], cx[1, 2], cx[0, 2] (7 gates) -> match=False\", \"C\": \"pass-manager output draws 3 wires carrying h[0], cx[0, 1], cx[0, 1], t[1], h[2], z[2], z[2], cx[1, 2], cx[0, 2] (9 gates) -> match=True\", \"D\": \"pass-manager output draws 3 wires carrying h[0], t[1], h[2], z[2], z[2], cx[1, 2], cx[0, 2] (7 gates) -> match=False\", \"E\": \"pass-manager output draws 3 wires carrying h[0], cx[0, 1], t[1], h[2], z[2], cx[1, 2], cx[0, 2] (7 gates) -> match=False\"}, \"observed\": {\"A\": {\"num_qubits\": 3, \"ops\": [[\"h\", [0]], [\"t\", [1]], [\"h\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]]}, \"B\": {\"num_qubits\": 3, \"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"cx\", [0, 1]], [\"t\", [1]], [\"h\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]]}, \"C\": {\"num_qubits\": 3, \"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"cx\", [0, 1]], [\"t\", [1]], [\"h\", [2]], [\"z\", [2]], [\"z\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]]}, \"D\": {\"num_qubits\": 3, \"ops\": [[\"h\", [0]], [\"t\", [1]], [\"h\", [2]], [\"z\", [2]], [\"z\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]]}, \"E\": {\"num_qubits\": 3, \"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"t\", [1]], [\"h\", [2]], [\"z\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]]}, \"stem\": {\"num_qubits\": 3, \"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"cx\", [0, 1]], [\"t\", [1]], [\"h\", [2]], [\"z\", [2]], [\"z\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]]}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

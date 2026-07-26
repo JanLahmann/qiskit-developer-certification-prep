@@ -1,0 +1,289 @@
+{
+  "question": "s8-q029",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "loaded circuit draws quantum wires ['a[2]'] and classical wires ['m[2]'] carrying h q[0] c[], cx q[0, 1] c[], measure q[0] c[0], measure q[1] c[1] -> match=True",
+      "B": "loaded circuit draws quantum wires ['q[2]'] and classical wires ['c[2]'] carrying h q[0] c[], cx q[0, 1] c[], measure q[0] c[0], measure q[1] c[1] -> match=False",
+      "C": "loaded circuit draws quantum wires ['a[2]'] and classical wires ['m[2]'] carrying h q[0] c[], cx q[0, 1] c[], measure q[0] c[1], measure q[1] c[0] -> match=False",
+      "D": "loaded circuit draws quantum wires ['a[2]'] and classical wires ['m[2]'] carrying h q[0] c[], cx q[1, 0] c[], measure q[0] c[0], measure q[1] c[1] -> match=False",
+      "E": "loaded circuit draws quantum wires ['a[2]'] and classical wires ['m[2]'] carrying h q[0] c[], cx q[0, 1] c[], measure q[0] c[0] -> match=False"
+    },
+    "observed": {
+      "A": {
+        "registers": [
+          [
+            "a[2]"
+          ],
+          [
+            "m[2]"
+          ]
+        ],
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ],
+            []
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ],
+            []
+          ],
+          [
+            "measure",
+            [
+              0
+            ],
+            [
+              0
+            ]
+          ],
+          [
+            "measure",
+            [
+              1
+            ],
+            [
+              1
+            ]
+          ]
+        ]
+      },
+      "B": {
+        "registers": [
+          [
+            "q[2]"
+          ],
+          [
+            "c[2]"
+          ]
+        ],
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ],
+            []
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ],
+            []
+          ],
+          [
+            "measure",
+            [
+              0
+            ],
+            [
+              0
+            ]
+          ],
+          [
+            "measure",
+            [
+              1
+            ],
+            [
+              1
+            ]
+          ]
+        ]
+      },
+      "C": {
+        "registers": [
+          [
+            "a[2]"
+          ],
+          [
+            "m[2]"
+          ]
+        ],
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ],
+            []
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ],
+            []
+          ],
+          [
+            "measure",
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          [
+            "measure",
+            [
+              1
+            ],
+            [
+              0
+            ]
+          ]
+        ]
+      },
+      "D": {
+        "registers": [
+          [
+            "a[2]"
+          ],
+          [
+            "m[2]"
+          ]
+        ],
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ],
+            []
+          ],
+          [
+            "cx",
+            [
+              1,
+              0
+            ],
+            []
+          ],
+          [
+            "measure",
+            [
+              0
+            ],
+            [
+              0
+            ]
+          ],
+          [
+            "measure",
+            [
+              1
+            ],
+            [
+              1
+            ]
+          ]
+        ]
+      },
+      "E": {
+        "registers": [
+          [
+            "a[2]"
+          ],
+          [
+            "m[2]"
+          ]
+        ],
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ],
+            []
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ],
+            []
+          ],
+          [
+            "measure",
+            [
+              0
+            ],
+            [
+              0
+            ]
+          ]
+        ]
+      },
+      "stem": {
+        "registers": [
+          [
+            "a[2]"
+          ],
+          [
+            "m[2]"
+          ]
+        ],
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ],
+            []
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ],
+            []
+          ],
+          [
+            "measure",
+            [
+              0
+            ],
+            [
+              0
+            ]
+          ],
+          [
+            "measure",
+            [
+              1
+            ],
+            [
+              1
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.03,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"loaded circuit draws quantum wires ['a[2]'] and classical wires ['m[2]'] carrying h q[0] c[], cx q[0, 1] c[], measure q[0] c[0], measure q[1] c[1] -> match=True\", \"B\": \"loaded circuit draws quantum wires ['q[2]'] and classical wires ['c[2]'] carrying h q[0] c[], cx q[0, 1] c[], measure q[0] c[0], measure q[1] c[1] -> match=False\", \"C\": \"loaded circuit draws quantum wires ['a[2]'] and classical wires ['m[2]'] carrying h q[0] c[], cx q[0, 1] c[], measure q[0] c[1], measure q[1] c[0] -> match=False\", \"D\": \"loaded circuit draws quantum wires ['a[2]'] and classical wires ['m[2]'] carrying h q[0] c[], cx q[1, 0] c[], measure q[0] c[0], measure q[1] c[1] -> match=False\", \"E\": \"loaded circuit draws quantum wires ['a[2]'] and classical wires ['m[2]'] carrying h q[0] c[], cx q[0, 1] c[], measure q[0] c[0] -> match=False\"}, \"observed\": {\"A\": {\"registers\": [[\"a[2]\"], [\"m[2]\"]], \"ops\": [[\"h\", [0], []], [\"cx\", [0, 1], []], [\"measure\", [0], [0]], [\"measure\", [1], [1]]]}, \"B\": {\"registers\": [[\"q[2]\"], [\"c[2]\"]], \"ops\": [[\"h\", [0], []], [\"cx\", [0, 1], []], [\"measure\", [0], [0]], [\"measure\", [1], [1]]]}, \"C\": {\"registers\": [[\"a[2]\"], [\"m[2]\"]], \"ops\": [[\"h\", [0], []], [\"cx\", [0, 1], []], [\"measure\", [0], [1]], [\"measure\", [1], [0]]]}, \"D\": {\"registers\": [[\"a[2]\"], [\"m[2]\"]], \"ops\": [[\"h\", [0], []], [\"cx\", [1, 0], []], [\"measure\", [0], [0]], [\"measure\", [1], [1]]]}, \"E\": {\"registers\": [[\"a[2]\"], [\"m[2]\"]], \"ops\": [[\"h\", [0], []], [\"cx\", [0, 1], []], [\"measure\", [0], [0]]]}, \"stem\": {\"registers\": [[\"a[2]\"], [\"m[2]\"]], \"ops\": [[\"h\", [0], []], [\"cx\", [0, 1], []], [\"measure\", [0], [0]], [\"measure\", [1], [1]]]}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

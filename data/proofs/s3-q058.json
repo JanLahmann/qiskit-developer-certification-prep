@@ -1,0 +1,33 @@
+{
+  "question": "s3-q058",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "variant draws (('h', (0,)), ('rx', (1,)), ('cx', (0, 1)), ('rx', (1,)), ('cx', (0, 1)), ('rx', (1,)), ('cx', (0, 1))) vs stem (('h', (0,)), ('for_loop', (1, 0), 'range(0, 3)', (('rx', (1,)), ('cx', (0, 1))))) -> match=False",
+      "B": "variant draws (('h', (0,)), ('for_loop', (1,), 'range(0, 3)', (('rx', (1,)),)), ('cx', (0, 1))) vs stem (('h', (0,)), ('for_loop', (1, 0), 'range(0, 3)', (('rx', (1,)), ('cx', (0, 1))))) -> match=False",
+      "C": "variant draws (('h', (0,)), ('for_loop', (0, 1), 'range(0, 3)', (('cx', (0, 1)), ('rx', (1,))))) vs stem (('h', (0,)), ('for_loop', (1, 0), 'range(0, 3)', (('rx', (1,)), ('cx', (0, 1))))) -> match=False",
+      "D": "variant is structurally identical to the stem code -> match=True",
+      "E": "variant draws (('h', (0,)), ('for_loop', (1, 0), 'range(0, 2)', (('rx', (1,)), ('cx', (0, 1))))) vs stem (('h', (0,)), ('for_loop', (1, 0), 'range(0, 3)', (('rx', (1,)), ('cx', (0, 1))))) -> match=False"
+    },
+    "observed": {
+      "A": "(('h', (0,)), ('rx', (1,)), ('cx', (0, 1)), ('rx', (1,)), ('cx', (0, 1)), ('rx', (1,)), ('cx', (0, 1)))",
+      "B": "(('h', (0,)), ('for_loop', (1,), 'range(0, 3)', (('rx', (1,)),)), ('cx', (0, 1)))",
+      "C": "(('h', (0,)), ('for_loop', (0, 1), 'range(0, 3)', (('cx', (0, 1)), ('rx', (1,)))))",
+      "D": "(('h', (0,)), ('for_loop', (1, 0), 'range(0, 3)', (('rx', (1,)), ('cx', (0, 1)))))",
+      "E": "(('h', (0,)), ('for_loop', (1, 0), 'range(0, 2)', (('rx', (1,)), ('cx', (0, 1)))))"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.06,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"variant draws (('h', (0,)), ('rx', (1,)), ('cx', (0, 1)), ('rx', (1,)), ('cx', (0, 1)), ('rx', (1,)), ('cx', (0, 1))) vs stem (('h', (0,)), ('for_loop', (1, 0), 'range(0, 3)', (('rx', (1,)), ('cx', (0, 1))))) -> match=False\", \"B\": \"variant draws (('h', (0,)), ('for_loop', (1,), 'range(0, 3)', (('rx', (1,)),)), ('cx', (0, 1))) vs stem (('h', (0,)), ('for_loop', (1, 0), 'range(0, 3)', (('rx', (1,)), ('cx', (0, 1))))) -> match=False\", \"C\": \"variant draws (('h', (0,)), ('for_loop', (0, 1), 'range(0, 3)', (('cx', (0, 1)), ('rx', (1,))))) vs stem (('h', (0,)), ('for_loop', (1, 0), 'range(0, 3)', (('rx', (1,)), ('cx', (0, 1))))) -> match=False\", \"D\": \"variant is structurally identical to the stem code -> match=True\", \"E\": \"variant draws (('h', (0,)), ('for_loop', (1, 0), 'range(0, 2)', (('rx', (1,)), ('cx', (0, 1))))) vs stem (('h', (0,)), ('for_loop', (1, 0), 'range(0, 3)', (('rx', (1,)), ('cx', (0, 1))))) -> match=False\"}, \"observed\": {\"A\": \"(('h', (0,)), ('rx', (1,)), ('cx', (0, 1)), ('rx', (1,)), ('cx', (0, 1)), ('rx', (1,)), ('cx', (0, 1)))\", \"B\": \"(('h', (0,)), ('for_loop', (1,), 'range(0, 3)', (('rx', (1,)),)), ('cx', (0, 1)))\", \"C\": \"(('h', (0,)), ('for_loop', (0, 1), 'range(0, 3)', (('cx', (0, 1)), ('rx', (1,)))))\", \"D\": \"(('h', (0,)), ('for_loop', (1, 0), 'range(0, 3)', (('rx', (1,)), ('cx', (0, 1)))))\", \"E\": \"(('h', (0,)), ('for_loop', (1, 0), 'range(0, 2)', (('rx', (1,)), ('cx', (0, 1)))))\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

@@ -1651,3 +1651,120 @@ Image-size calibration (the bank-level fix this wave was asked for):
   in the middle (also the better teaching picture — one full period).
 - Answer keys for the wave: A x2, B x2, C x3, D x2, E x2; difficulty 1/8/2 across
   levels 1/2/3.
+
+## Figure-question wave 3 (task #28 wave 2, 2026-07-27, qiskit 2.5.0 / runtime 0.48.0)
+
+Eight new figure questions, sized to saturate the mock sampler's 20% figure cap
+in the three thin sections and to add variety elsewhere: s3-q057, s3-q058
+(s3 1 -> 3), s4-q048, s4-q049 (s4 1 -> 3), s8-q029 (s8 0 -> 1), plus s2-q046,
+s5-q043, s1-q054. Six carry option images, two are stem-figure items. All
+measured in the pinned venv.
+
+Library / drawer facts measured this wave:
+
+- **`qiskit_qasm3_import` is NOT installed in the pinned venv**, so
+  `qiskit.qasm3.loads(...)` raises
+  `MissingOptionalLibraryError: The 'qiskit_qasm3_import' library is required to
+  use 'loading from OpenQASM 3'`. QASM3 *export* (`qasm3.dumps`) is native and
+  works. Any s8 item that must LOAD a program has to use
+  `QuantumCircuit.from_qasm_str` (qasm2) until that package is added — s8-q029
+  was written that way and says so in its provenance.
+- **`from_qasm_str` keeps the program's own register names**: `qreg a[2]; creg
+  m[2];` draws wires `a_0`, `a_1` and one bundled classical wire `m` (never the
+  default `q`/`c`), and `measure a -> m;` expands index by index into two
+  `measure` instructions (`a[0]`->`m[0]`, `a[1]`->`m[1]`). A five-way family of
+  loader outputs (own names / default names / reversed bit targets / reversed cx
+  operands / single measure) renders at 10.5-12.2 KB, with the own-names and
+  reversed-target variants **byte-identical in size** (12183 B both) — a free tie.
+- **`generate_preset_pass_manager` with NO backend/coupling map leaves
+  `circuit.layout` as None**, so the drawing keeps plain `q_0..q_n` wire labels.
+  That removes the "`q_0 -> 0` labels give the transpiled option away" tell of
+  s3-q056 without having to make every option a routed circuit: an
+  optimization-level family needs no `initial_layout` at all.
+- **Levels 1, 2 and 3 produce IDENTICAL output** for a plain inverse-pair
+  circuit (`h;cx;cx;h;z;z;cx`). Never offer two different levels as two option
+  images without diffing them first — build the misconception variants by
+  EDITING THE INPUT CIRCUIT and running level 0 on it instead (s3-q057 does:
+  "only the Z pair cancelled", "only the CX pair cancelled", "each pair kept
+  once" are all real level-0 outputs of edited circuits).
+- **Level >= 1 fuses adjacent single-qubit gates even with no `basis_gates`**:
+  `h(0)` followed by `sdg(0)` came back as a single `U2(-pi/2,-pi)` box. If you
+  want the optimized option to read as "the pairs simply vanished", keep every
+  surviving 1q gate separated by a 2q gate (s3-q057 ends with `cx(0, 2)` for
+  exactly this reason).
+- **`for_loop` drawing**: `op.params` is `(index_set, loop_parameter, body)`, the
+  box label prints the index set verbatim (`For-0 range(0, 3)`; `range(2)` ->
+  `For-0 range(0, 2)`), and the instruction's qubit tuple is ordered by first use
+  in the body ((1, 0) when the body starts with an Rx on q1). Signature for a
+  loop drawing: `(name, qubits, repr(index_set), body ops re-addressed through
+  the outer qubit tuple)`. `switch` draws `Switch-0` plus one `Case-0 (v)` region
+  per case with `Case-0 default` last, and the tested value prints as `0x3` on
+  the classical wire.
+- **Q-sphere marker sizes are readable**: magnitudes 0.5 vs 0.87 on the two poles
+  give visibly different markers, and a 4-marker product state renders only 1.6%
+  larger (149805 vs 147429-147962 B). The mirrored pair `ry(2pi/3)+cx` vs
+  `ry(pi/3)+cx` renders 147962 vs 147961 B — one byte apart, i.e. the mirrored
+  curve trap in its q-sphere form.
+- **`plot_bloch_multivector` on a partially entangled pair** (`ry(pi/3,0); cx`)
+  draws two HALF-LENGTH arrows at the |0> pole (reduced vector length 0.5) —
+  the readable middle ground between two full arrows (product) and no arrow at
+  all (Bell). The whole five-state family renders 216092-216510 B (0.2% spread),
+  so the arrowless Bell figure is a free strict-smallest keyed option at 0.2%
+  deviation.
+- **`number_to_keep` re-confirmed** on real sampler counts: k largest kept, plus
+  a `rest` bar equal to the SUM of everything folded away (42 of 400 shots
+  here), bars alphabetical with `rest` last, values printed above each bar.
+- **Seeded SamplerV2 counts, reusable**: GHZ-3 (`h;cx;cx;measure_all`) transpiled
+  at level 1 for `FakeManilaV2` with `seed_transpiler=42`, `SamplerV2` with
+  `options.simulator.seed_simulator = 11`, 400 shots ->
+  `{'000':188,'111':150,'011':20,'100':14,'110':12,'101':6,'001':6,'010':4}`,
+  reproducible across processes. Both the generator and the proof assert this
+  dict so a stack bump fails loudly instead of silently redrawing the figure.
+- **`EstimatorPub.coerce((qc, obs, values))` is the authoritative shape probe**
+  for broadcasting items: `.observables.shape`, `.parameter_values.shape`,
+  `.shape`. Measured: a flat list of 5 observables against a `(5, 1)` value array
+  on a ONE-parameter circuit coerces to `(5,)` x `(5,)` -> `evs.shape (5,)` —
+  with a single free parameter the trailing axis is the parameter axis, not a
+  broadcast axis. (Cheaper and more honest than `ObservablesArray.coerce` alone,
+  which says nothing about the parameter side.)
+
+Process facts:
+
+- **A conceptual stem-figure question still needs `code`** — the schema requires
+  the key, so use `"code": null` (verify_bank fails with `'code' is a required
+  property` otherwise). s4-q049 is the first figure item with no code at all.
+- **Rasterize hand-drawn diagrams before committing them.** Running the
+  generator with `savefig` patched to write `.png` (dpi 110) into the scratch dir
+  and reading the image caught two collided column captions in s4-q048 and a
+  "gap" label overlapping a job box in s4-q049 — neither is visible in the SVG
+  bytes or in any gate.
+- Queueing-semantics items stay conceptual (guide section 5 allows it): s4-q049
+  draws only features stated in prose on guides/execution-modes (one queue entry
+  per workload, dedicated/exclusive active window, no calibration job inside it,
+  interactive-TTL gaps) and guides/choose-execution-mode (batch is scheduled
+  together but never exclusive, and is cheaper). Both fetched 2026-07-27.
+
+Image-size calibration:
+
+- Per-item expected value of the two image heuristics (dc=4, all four displayed
+  variants enumerated): s3-q057 largest **1.000** (strict max in every variant,
+  worst deviation 33.5%); s8-q029 largest 0.625 (tied max with one distractor,
+  strict max in the variant that drops it, deviation 2.0%); s5-q043 largest 0.250
+  (deviation 3.6%); s2-q046 and s3-q058 largest 0.125 each (tie effects only);
+  s1-q054 smallest **1.000** (strict min everywhere, deviation 0.2%). New-item
+  totals: largest 2.125, smallest 1.000 over 6 image-option questions.
+- **Bank aggregates: `largest_image_option` 24.3% -> 28.0%,
+  `smallest_image_option` 28.1% -> 24.3%** across 18 image-option questions;
+  0 blockers / 0 warnings, no `image_size_tell` anywhere, and no flag of any kind
+  on the eight new questions. The two heuristics essentially swapped places —
+  both stay within 3 points of chance.
+- **The 40% deviation bar is a per-VARIANT constraint on the distractor median,
+  not on the full option set.** For a keyed-largest item you need at least THREE
+  distractors above `correct / 1.4`, because any dc=4 variant drops one and the
+  median of the remaining three is what the flag measures. The first s3-q057 draft
+  had two small distractors and flagged at 63.9% in two of four variants; the fix
+  was to widen the STEM circuit (a trailing `cx(0, 2)` that survives every level)
+  so the fully-optimized distractor grew from 8109 to 10806 B, lifting the worst
+  variant deviation to 33.5% with the misconceptions untouched.
+- Answer keys for the wave: A x1, B x2, C x3, D x1, E x1; difficulty 2 across all
+  eight (figure items are read-the-picture items, so level 2 is the honest tag).

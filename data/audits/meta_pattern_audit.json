@@ -1,114 +1,114 @@
 {
   "generated_note": "repo-only audit artifact; do not link from the website",
   "scope": "all sections",
-  "n_questions": 279,
-  "n_single_answer": 250,
-  "random_baseline": 0.2384,
+  "n_questions": 287,
+  "n_single_answer": 258,
+  "random_baseline": 0.2388,
   "pass_line": 0.69,
   "heuristics": {
     "longest_option": {
-      "expected_accuracy": 0.2293,
-      "questions_answered": 250.0,
+      "expected_accuracy": 0.228,
+      "questions_answered": 258.0,
       "coverage": 1.0,
-      "exam_score_estimate": 0.2293
+      "exam_score_estimate": 0.228
     },
     "shortest_option": {
-      "expected_accuracy": 0.2248,
-      "questions_answered": 250.0,
+      "expected_accuracy": 0.228,
+      "questions_answered": 258.0,
       "coverage": 1.0,
-      "exam_score_estimate": 0.2248
+      "exam_score_estimate": 0.228
     },
     "avoid_longest": {
-      "expected_accuracy": 0.2432,
-      "questions_answered": 232.9,
-      "coverage": 0.932,
-      "exam_score_estimate": 0.2429
+      "expected_accuracy": 0.244,
+      "questions_answered": 234.9,
+      "coverage": 0.91,
+      "exam_score_estimate": 0.2435
     },
     "position_A": {
-      "expected_accuracy": 0.3185,
-      "questions_answered": 191.55,
-      "coverage": 0.766,
-      "exam_score_estimate": 0.2998
+      "expected_accuracy": 0.3134,
+      "questions_answered": 197.8,
+      "coverage": 0.767,
+      "exam_score_estimate": 0.296
     },
     "position_B": {
-      "expected_accuracy": 0.3229,
-      "questions_answered": 192.0,
-      "coverage": 0.768,
-      "exam_score_estimate": 0.3033
+      "expected_accuracy": 0.3224,
+      "questions_answered": 198.5,
+      "coverage": 0.769,
+      "exam_score_estimate": 0.3031
     },
     "position_C": {
-      "expected_accuracy": 0.3205,
-      "questions_answered": 190.3,
-      "coverage": 0.761,
-      "exam_score_estimate": 0.3009
+      "expected_accuracy": 0.3248,
+      "questions_answered": 197.05,
+      "coverage": 0.764,
+      "exam_score_estimate": 0.3045
     },
     "position_D": {
-      "expected_accuracy": 0.3112,
-      "questions_answered": 189.6,
-      "coverage": 0.758,
-      "exam_score_estimate": 0.2936
+      "expected_accuracy": 0.3064,
+      "questions_answered": 195.85,
+      "coverage": 0.759,
+      "exam_score_estimate": 0.2901
     },
     "stem_keyword_overlap": {
-      "expected_accuracy": 0.2343,
-      "questions_answered": 205.95,
-      "coverage": 0.824,
-      "exam_score_estimate": 0.235
+      "expected_accuracy": 0.235,
+      "questions_answered": 207.95,
+      "coverage": 0.806,
+      "exam_score_estimate": 0.2357
     },
     "most_hedged": {
       "expected_accuracy": 0.1783,
       "questions_answered": 68.05,
-      "coverage": 0.272,
-      "exam_score_estimate": 0.2221
+      "coverage": 0.264,
+      "exam_score_estimate": 0.2228
     },
     "avoid_hedged": {
       "expected_accuracy": 0.276,
       "questions_answered": 68.05,
-      "coverage": 0.272,
+      "coverage": 0.264,
       "exam_score_estimate": 0.2486
     },
     "least_absolute": {
-      "expected_accuracy": 0.1575,
-      "questions_answered": 74.3,
-      "coverage": 0.297,
-      "exam_score_estimate": 0.2144
+      "expected_accuracy": 0.1533,
+      "questions_answered": 76.3,
+      "coverage": 0.296,
+      "exam_score_estimate": 0.2135
     },
     "most_absolute": {
-      "expected_accuracy": 0.2985,
-      "questions_answered": 74.3,
-      "coverage": 0.297,
-      "exam_score_estimate": 0.2562
+      "expected_accuracy": 0.3043,
+      "questions_answered": 76.3,
+      "coverage": 0.296,
+      "exam_score_estimate": 0.2582
     },
     "code_formatted_only": {
       "expected_accuracy": 0.1932,
       "questions_answered": 43.3,
-      "coverage": 0.173
+      "coverage": 0.168
     },
     "numeric_middle": {
       "expected_accuracy": 0.3547,
       "questions_answered": 42.6,
-      "coverage": 0.17
+      "coverage": 0.165
     },
     "odd_one_out": {
-      "expected_accuracy": 0.1146,
-      "questions_answered": 250.0,
+      "expected_accuracy": 0.1169,
+      "questions_answered": 258.0,
       "coverage": 1.0,
-      "exam_score_estimate": 0.1146
+      "exam_score_estimate": 0.1169
     },
     "similar_twin_member": {
-      "expected_accuracy": 0.3916,
-      "questions_answered": 109.75,
-      "coverage": 0.439,
-      "exam_score_estimate": 0.3057
+      "expected_accuracy": 0.3842,
+      "questions_answered": 115.75,
+      "coverage": 0.449,
+      "exam_score_estimate": 0.3041
     },
     "largest_image_option": {
-      "expected_accuracy": 0.2431,
-      "questions_answered": 12.0,
-      "coverage": 0.048
+      "expected_accuracy": 0.2801,
+      "questions_answered": 18.0,
+      "coverage": 0.07
     },
     "smallest_image_option": {
-      "expected_accuracy": 0.2812,
-      "questions_answered": 12.0,
-      "coverage": 0.048
+      "expected_accuracy": 0.2431,
+      "questions_answered": 18.0,
+      "coverage": 0.07
     }
   },
   "position_stats": {
@@ -116,12 +116,12 @@
       "counts": {
         "A": 8,
         "B": 11,
-        "C": 7,
+        "C": 8,
         "D": 10,
         "E": 2
       },
-      "n": 38,
-      "max_share": 0.289,
+      "n": 39,
+      "max_share": 0.282,
       "skewed": false,
       "top_key": "B"
     },
@@ -131,10 +131,11 @@
         "B": 7,
         "C": 9,
         "D": 8,
+        "E": 1,
         "F": 1
       },
-      "n": 33,
-      "max_share": 0.273,
+      "n": 34,
+      "max_share": 0.265,
       "skewed": false,
       "top_key": "C"
     },
@@ -142,36 +143,36 @@
       "counts": {
         "A": 11,
         "B": 11,
-        "C": 9,
-        "D": 10
+        "C": 10,
+        "D": 11
       },
-      "n": 41,
-      "max_share": 0.268,
+      "n": 43,
+      "max_share": 0.256,
       "skewed": false,
       "top_key": "B"
     },
     "s4": {
       "counts": {
         "A": 9,
-        "B": 8,
-        "C": 8,
+        "B": 9,
+        "C": 9,
         "D": 9,
         "E": 1
       },
-      "n": 35,
-      "max_share": 0.257,
+      "n": 37,
+      "max_share": 0.243,
       "skewed": false,
       "top_key": "A"
     },
     "s5": {
       "counts": {
         "A": 8,
-        "B": 7,
+        "B": 8,
         "C": 8,
         "D": 7
       },
-      "n": 30,
-      "max_share": 0.267,
+      "n": 31,
+      "max_share": 0.258,
       "skewed": false,
       "top_key": "A"
     },
@@ -203,16 +204,16 @@
     },
     "s8": {
       "counts": {
-        "A": 4,
+        "A": 5,
         "B": 4,
         "C": 4,
         "D": 4,
         "E": 1
       },
-      "n": 17,
-      "max_share": 0.235,
+      "n": 18,
+      "max_share": 0.278,
       "skewed": false,
-      "top_key": "C"
+      "top_key": "A"
     }
   },
   "multi_select": {

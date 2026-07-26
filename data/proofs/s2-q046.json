@@ -1,0 +1,110 @@
+{
+  "question": "s2-q046",
+  "verdict": {
+    "answer": [
+      "E"
+    ],
+    "evidence": {
+      "A": "figure shows markers (bitstring, magnitude, relative phase) [['00', 0.707, '0.0pi'], ['11', 0.707, '0.0pi']] vs the stem state's [['00', 0.5, '0.0pi'], ['11', 0.866, '0.0pi']] -> match=False",
+      "B": "figure shows markers (bitstring, magnitude, relative phase) [['00', 0.866, '0.0pi'], ['11', 0.5, '0.0pi']] vs the stem state's [['00', 0.5, '0.0pi'], ['11', 0.866, '0.0pi']] -> match=False",
+      "C": "figure shows markers (bitstring, magnitude, relative phase) [['00', 0.5, '0.0pi'], ['01', 0.866, '0.0pi']] vs the stem state's [['00', 0.5, '0.0pi'], ['11', 0.866, '0.0pi']] -> match=False",
+      "D": "figure shows markers (bitstring, magnitude, relative phase) [['00', 0.25, '0.0pi'], ['01', 0.433, '0.0pi'], ['10', 0.433, '0.0pi'], ['11', 0.75, '0.0pi']] vs the stem state's [['00', 0.5, '0.0pi'], ['11', 0.866, '0.0pi']] -> match=False",
+      "E": "figure shows markers (bitstring, magnitude, relative phase) [['00', 0.5, '0.0pi'], ['11', 0.866, '0.0pi']] vs the stem state's [['00', 0.5, '0.0pi'], ['11', 0.866, '0.0pi']] -> match=True"
+    },
+    "observed": {
+      "A": [
+        [
+          "00",
+          0.707,
+          "0.0pi"
+        ],
+        [
+          "11",
+          0.707,
+          "0.0pi"
+        ]
+      ],
+      "B": [
+        [
+          "00",
+          0.866,
+          "0.0pi"
+        ],
+        [
+          "11",
+          0.5,
+          "0.0pi"
+        ]
+      ],
+      "C": [
+        [
+          "00",
+          0.5,
+          "0.0pi"
+        ],
+        [
+          "01",
+          0.866,
+          "0.0pi"
+        ]
+      ],
+      "D": [
+        [
+          "00",
+          0.25,
+          "0.0pi"
+        ],
+        [
+          "01",
+          0.433,
+          "0.0pi"
+        ],
+        [
+          "10",
+          0.433,
+          "0.0pi"
+        ],
+        [
+          "11",
+          0.75,
+          "0.0pi"
+        ]
+      ],
+      "E": [
+        [
+          "00",
+          0.5,
+          "0.0pi"
+        ],
+        [
+          "11",
+          0.866,
+          "0.0pi"
+        ]
+      ],
+      "stem": [
+        [
+          "00",
+          0.5,
+          "0.0pi"
+        ],
+        [
+          "11",
+          0.866,
+          "0.0pi"
+        ]
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.05,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"figure shows markers (bitstring, magnitude, relative phase) [['00', 0.707, '0.0pi'], ['11', 0.707, '0.0pi']] vs the stem state's [['00', 0.5, '0.0pi'], ['11', 0.866, '0.0pi']] -> match=False\", \"B\": \"figure shows markers (bitstring, magnitude, relative phase) [['00', 0.866, '0.0pi'], ['11', 0.5, '0.0pi']] vs the stem state's [['00', 0.5, '0.0pi'], ['11', 0.866, '0.0pi']] -> match=False\", \"C\": \"figure shows markers (bitstring, magnitude, relative phase) [['00', 0.5, '0.0pi'], ['01', 0.866, '0.0pi']] vs the stem state's [['00', 0.5, '0.0pi'], ['11', 0.866, '0.0pi']] -> match=False\", \"D\": \"figure shows markers (bitstring, magnitude, relative phase) [['00', 0.25, '0.0pi'], ['01', 0.433, '0.0pi'], ['10', 0.433, '0.0pi'], ['11', 0.75, '0.0pi']] vs the stem state's [['00', 0.5, '0.0pi'], ['11', 0.866, '0.0pi']] -> match=False\", \"E\": \"figure shows markers (bitstring, magnitude, relative phase) [['00', 0.5, '0.0pi'], ['11', 0.866, '0.0pi']] vs the stem state's [['00', 0.5, '0.0pi'], ['11', 0.866, '0.0pi']] -> match=True\"}, \"observed\": {\"A\": [[\"00\", 0.707, \"0.0pi\"], [\"11\", 0.707, \"0.0pi\"]], \"B\": [[\"00\", 0.866, \"0.0pi\"], [\"11\", 0.5, \"0.0pi\"]], \"C\": [[\"00\", 0.5, \"0.0pi\"], [\"01\", 0.866, \"0.0pi\"]], \"D\": [[\"00\", 0.25, \"0.0pi\"], [\"01\", 0.433, \"0.0pi\"], [\"10\", 0.433, \"0.0pi\"], [\"11\", 0.75, \"0.0pi\"]], \"E\": [[\"00\", 0.5, \"0.0pi\"], [\"11\", 0.866, \"0.0pi\"]], \"stem\": [[\"00\", 0.5, \"0.0pi\"], [\"11\", 0.866, \"0.0pi\"]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

@@ -1,0 +1,102 @@
+{
+  "id": "s8-q029",
+  "section": "s8",
+  "objectives": [
+    "s8o2",
+    "s8o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which figure is the `mpl` rendering of the circuit this OpenQASM 2 program loads into?",
+  "code": "from qiskit import QuantumCircuit\n\nprogram = \"\"\"\nOPENQASM 2.0;\ninclude \"qelib1.inc\";\nqreg a[2];\ncreg m[2];\nh a[0];\ncx a[0], a[1];\nmeasure a -> m;\n\"\"\"\n\nQuantumCircuit.from_qasm_str(program).draw(output=\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "A"
+  ],
+  "figures": {
+    "generator": "figures/s8-q029/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s8-q029/s8-q029-A.svg",
+        "alt": "Circuit diagram with quantum wires labelled a_0 and a_1 and one bundled classical wire labelled m of width 2: an H box on a_0, a CX controlled by a_0 with its target on a_1, then a measurement on a_0 landing on classical bit 0 and a measurement on a_1 landing on classical bit 1."
+      },
+      "B": {
+        "file": "figures/s8-q029/s8-q029-B.svg",
+        "alt": "Circuit diagram with quantum wires labelled q_0 and q_1 and one bundled classical wire labelled c of width 2: an H box on q_0, a CX controlled by q_0 with its target on q_1, then a measurement on q_0 landing on classical bit 0 and a measurement on q_1 landing on classical bit 1."
+      },
+      "C": {
+        "file": "figures/s8-q029/s8-q029-C.svg",
+        "alt": "Circuit diagram with quantum wires labelled a_0 and a_1 and one bundled classical wire labelled m of width 2: an H box on a_0, a CX controlled by a_0 with its target on a_1, then a measurement on a_0 landing on classical bit 1 and a measurement on a_1 landing on classical bit 0."
+      },
+      "D": {
+        "file": "figures/s8-q029/s8-q029-D.svg",
+        "alt": "Circuit diagram with quantum wires labelled a_0 and a_1 and one bundled classical wire labelled m of width 2: an H box on a_0, a CX controlled by a_1 with its target on a_0, then a measurement on a_0 landing on classical bit 0 and a measurement on a_1 landing on classical bit 1."
+      },
+      "E": {
+        "file": "figures/s8-q029/s8-q029-E.svg",
+        "alt": "Circuit diagram with quantum wires labelled a_0 and a_1 and one bundled classical wire labelled m of width 2: an H box on a_0, a CX controlled by a_0 with its target on a_1, then a single measurement on a_0 landing on classical bit 0."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "The loader keeps the program's own declarations: `qreg a[2]` and `creg m[2]` become a quantum register named `a` and a classical register named `m`, which is what the drawer prints on the wires. `measure a -> m;` is the register-wide form and expands element by element in order, so `a[0]` is measured into `m[0]` and `a[1]` into `m[1]` — two measurement arrows, in index order, onto the bundled classical wire.",
+    "distractors": {
+      "B": "Register names assumed to be normalised: the loader creates registers with the names the file declares, so the wires read `a_0`, `a_1` and `m`. Default `q`/`c` names appear only when the circuit was built in Python without named registers.",
+      "C": "Bit order inverted: the register-wide measure pairs equal indices, `a[i]` into `m[i]`. The little-endian convention affects how a bitstring is printed, not which classical bit a measurement writes to.",
+      "D": "`cx` operands read backwards: OpenQASM writes control first and target second, so `cx a[0], a[1]` puts the control dot on `a_0`. This drawing is what `cx a[1], a[0];` would give.",
+      "E": "Register-wide measure read as a single-qubit statement: `measure a -> m;` broadcasts over the whole register, so both qubits are measured. One arrow only would require naming a single element, as in `measure a[0] -> m[0];`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm2",
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm2"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s8-q029.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\n\n# The five programs MUST mirror data/figures/s8-q029/generate.py — the rendered\n# figures are mpl drawings of exactly these loader outputs.\n\nHEADER = 'OPENQASM 2.0;\\ninclude \"qelib1.inc\";\\n'\n\nPROGRAMS = {\n    \"A\": HEADER + \"qreg a[2];\\ncreg m[2];\\nh a[0];\\ncx a[0], a[1];\\n\"\n                  \"measure a -> m;\\n\",\n    \"B\": HEADER + \"qreg q[2];\\ncreg c[2];\\nh q[0];\\ncx q[0], q[1];\\n\"\n                  \"measure q -> c;\\n\",\n    \"C\": HEADER + \"qreg a[2];\\ncreg m[2];\\nh a[0];\\ncx a[0], a[1];\\n\"\n                  \"measure a[0] -> m[1];\\nmeasure a[1] -> m[0];\\n\",\n    \"D\": HEADER + \"qreg a[2];\\ncreg m[2];\\nh a[0];\\ncx a[1], a[0];\\n\"\n                  \"measure a -> m;\\n\",\n    \"E\": HEADER + \"qreg a[2];\\ncreg m[2];\\nh a[0];\\ncx a[0], a[1];\\n\"\n                  \"measure a[0] -> m[0];\\n\",\n}\n\nSTEM = PROGRAMS[\"A\"]\n\n\ndef sig(qc):\n    \"\"\"What the drawer shows: the wire labels taken from the registers, and the\n    operations addressed by qubit index and classical bit index.\"\"\"\n    wires = (tuple(f\"{r.name}[{r.size}]\" for r in qc.qregs),\n             tuple(f\"{r.name}[{r.size}]\" for r in qc.cregs))\n    ops = tuple(\n        (inst.operation.name,\n         tuple(qc.find_bit(b).index for b in inst.qubits),\n         tuple(qc.find_bit(b).index for b in inst.clbits))\n        for inst in qc.data\n    )\n    return wires, ops\n\n\ntarget = sig(QuantumCircuit.from_qasm_str(STEM))\nproven, evidence, observed = [], {}, {}\nfor key, program in sorted(PROGRAMS.items()):\n    s = sig(QuantumCircuit.from_qasm_str(program))\n    match = s == target\n    observed[key] = {\"registers\": [list(s[0][0]), list(s[0][1])],\n                     \"ops\": [[n, list(q), list(c)] for n, q, c in s[1]]}\n    evidence[key] = (\n        f\"loaded circuit draws quantum wires {list(s[0][0])} and classical\"\n        f\" wires {list(s[0][1])} carrying \"\n        + \", \".join(f\"{n} q{list(q)} c{list(c)}\" for n, q, c in s[1])\n        + f\" -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = {\"registers\": [list(target[0][0]), list(target[0][1])],\n                    \"ops\": [[n, list(q), list(c)] for n, q, c in target[1]]}\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-27",
+    "model": "claude-opus (figure wave 2, task #28)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "OpenQASM-to-drawing figure question. Every option image is a genuine QuantumCircuit.from_qasm_str output (own program), so no drawer convention distinguishes the keyed figure; the proof loads the same five programs and compares register names/sizes and the measured qubit-to-bit wiring. Written for qasm2 rather than qasm3 because qiskit_qasm3_import is not installed in the pinned venv, so qiskit.qasm3.loads raises MissingOptionalLibraryError and no qasm3 loading proof can run offline."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

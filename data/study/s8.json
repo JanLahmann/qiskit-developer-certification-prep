@@ -4,7 +4,7 @@
     {
       "objective": "s8o1",
       "title": "OpenQASM 3 is a typed language",
-      "body_md": "OpenQASM 2 knew only two aggregate declarations: `qreg` and `creg`. OpenQASM 3 replaces them with a real type system: quantum registers become `qubit[n] name;`, classical registers become `bit[n] name;`, and a family of classical types joins them — sized integers (`int[32]`), floats (`float[64]`), `bool`, `complex`, `duration`, and more. Two things matter for the exam: first, what Qiskit *emits* (circuits export their registers as `bit[n]`/`qubit[n]`, loose clbits as bare `bit`); second, what Qiskit can *parse back* — the importer supports a subset of the type system, and the official feature table is the authority on which types survive the round trip (e.g. `duration` and `stretch` declarations are documented as unparseable).",
+      "body_md": "OpenQASM 2 knew only two aggregate declarations: `qreg` and `creg`. OpenQASM 3 replaces them with a real type system: quantum registers become `qubit[n] name;`, classical registers become `bit[n] name;`, and a family of classical types joins them \u2014 sized integers (`int[32]`), floats (`float[64]`), `bool`, `complex`, `duration`, and more. Two things matter for the exam: first, what Qiskit *emits* (circuits export their registers as `bit[n]`/`qubit[n]`, loose clbits as bare `bit`); second, what Qiskit can *parse back* \u2014 the importer supports a subset of the type system, and the official feature table is the authority on which types survive the round trip (e.g. `duration` and `stretch` declarations are documented as unparseable).",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
         "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm3"
@@ -13,7 +13,7 @@
     {
       "objective": "s8o2",
       "title": "Reading v2 and v3 programs side by side",
-      "body_md": "The same circuit reads differently in the two versions: v2 opens with `OPENQASM 2.0;` and `include \"qelib1.inc\";`, declares `qreg q[2]; creg c[2];`, and measures with an arrow (`measure q[0] -> c[0];`). v3 opens with `OPENQASM 3.0;` and `include \"stdgates.inc\";`, declares `qubit[2] q; bit[2] c;`, and measures with an assignment (`c[0] = measure q[0];`). Control flow is the deepest semantic difference: v2 conditionals are limited to whole-register equality (`if (c == 1) ...`), while v3 has real `if`/`else`, loops, and per-bit conditions. Custom gates keep their `gate name ... { ... }` declaration in both versions — exports do not inline them.",
+      "body_md": "The same circuit reads differently in the two versions: v2 opens with `OPENQASM 2.0;` and `include \"qelib1.inc\";`, declares `qreg q[2]; creg c[2];`, and measures with an arrow (`measure q[0] -> c[0];`). v3 opens with `OPENQASM 3.0;` and `include \"stdgates.inc\";`, declares `qubit[2] q; bit[2] c;`, and measures with an assignment (`c[0] = measure q[0];`). Control flow is the deepest semantic difference: v2 conditionals are limited to whole-register equality (`if (c == 1) ...`), while v3 has real `if`/`else`, loops, and per-bit conditions. Custom gates keep their `gate name ... { ... }` declaration in both versions \u2014 exports do not inline them.",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm2",
         "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3"
@@ -22,7 +22,7 @@
     {
       "objective": "s8o3",
       "title": "The four functions, and the one asymmetry that matters",
-      "body_md": "Both `qiskit.qasm2` and `qiskit.qasm3` expose the same quartet: `dumps` (circuit → string), `dump` (circuit → file), `loads` (string → circuit), `load` (file path → circuit). The trap: `qasm3.loads`/`load` need the separate `qiskit-qasm3-import` package, while export and everything in `qasm2` are native to Qiskit. The old `QuantumCircuit.qasm()` method is gone in Qiskit 2.x, but the classmethods `from_qasm_str`/`from_qasm_file` still exist for OpenQASM 2. Exporters enforce language limits at export time: OpenQASM 2 cannot express a per-bit `if_test` condition or a global phase — the former raises `QASM2ExportError`, the latter is silently dropped.",
+      "body_md": "Both `qiskit.qasm2` and `qiskit.qasm3` expose the same quartet: `dumps` (circuit \u2192 string), `dump` (circuit \u2192 file), `loads` (string \u2192 circuit), `load` (file path \u2192 circuit). The trap: `qasm3.loads`/`load` need the separate `qiskit-qasm3-import` package, while export and everything in `qasm2` are native to Qiskit. The old `QuantumCircuit.qasm()` method is gone in Qiskit 2.x, but the classmethods `from_qasm_str`/`from_qasm_file` still exist for OpenQASM 2. Exporters enforce language limits at export time: OpenQASM 2 cannot express a per-bit `if_test` condition or a global phase \u2014 the former raises `QASM2ExportError`, the latter is silently dropped.",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm3",
         "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm2"
@@ -39,28 +39,155 @@
     }
   ],
   "facts": [
-    {"objective": "s8o1", "fact_md": "Qiskit exports classical registers as `bit[n] c;` even at width 1; loose `Clbit`s become bare `bit _bit0;`.", "source": {"type": "proof", "ref": "s8-q010"}},
-    {"objective": "s8o1", "fact_md": "The feature table's Qiskit column documents `bit` as supported (mapped to `Clbit`/`ClassicalRegister`) while `duration` and `stretch` declarations are unparseable.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table"}},
-    {"objective": "s8o1", "fact_md": "An unbound `Parameter` exports to OpenQASM 3 as an `input float[64]` declaration — the circuit becomes a parameterized program.", "source": {"type": "proof", "ref": "s8-q020"}},
-    {"objective": "s8o2", "fact_md": "OpenQASM 2 conditionals accept only whole-register equality; exporting a per-clbit `if_test` raises `QASM2ExportError` ('OpenQASM 2 only supports register-equality conditions').", "source": {"type": "proof", "ref": "s8-q013"}},
-    {"objective": "s8o2", "fact_md": "v2 measures with `measure q[0] -> c[0];`, v3 with `c[0] = measure q[0];` — arrow vs assignment is a version tell in any printed program.", "source": {"type": "proof", "ref": "s8-q014"}},
-    {"objective": "s8o2", "fact_md": "Custom gates round-trip as `gate mygate ... { ... }` declarations in both versions — neither exporter inlines them.", "source": {"type": "proof", "ref": "s8-q019"}},
-    {"objective": "s8o2", "fact_md": "`qasm2.dumps` silently drops a circuit's global phase (v2 cannot express it); `qasm3.dumps` emits `gphase`.", "source": {"type": "proof", "ref": "s8-q017"}},
-    {"objective": "s8o3", "fact_md": "`qasm3.loads`/`load` raise `MissingOptionalLibraryError` unless `qiskit-qasm3-import` is installed; `qasm3.dumps`/`dump` and all of `qasm2` are native.", "source": {"type": "proof", "ref": "s8-q021"}},
-    {"objective": "s8o3", "fact_md": "`qasm2.loads` accepts only the `OPENQASM 2.0;` header — feeding it a v3 program raises `QASM2ParseError` immediately.", "source": {"type": "proof", "ref": "s8-q015"}},
-    {"objective": "s8o3", "fact_md": "`QuantumCircuit.from_qasm_str`/`from_qasm_file` still exist in Qiskit 2.x for OpenQASM 2 input; the instance method `.qasm()` was removed.", "source": {"type": "proof", "ref": "s8-q012"}},
-    {"objective": "s8o3", "fact_md": "`dump` variants write to what you give them — `qasm2.dump(qc, stream)` takes an open text stream, `qasm2.load(path)` takes a filesystem path; mixing them up raises immediately.", "source": {"type": "proof", "ref": "s8-q011"}},
-    {"objective": "s8o4", "fact_md": "IAM token exchange: `POST` the IBM Cloud API key with the apikey grant type; the bearer token expires after 3600 seconds (`expires_in: 3600`).", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api"}},
-    {"objective": "s8o4", "fact_md": "Submitting a Sampler job over REST is `POST /v1/jobs` with `'program_id': 'sampler'` and your circuits inside `params.pubs`.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/sampler-rest-api"}},
-    {"objective": "s8o4", "fact_md": "Every Runtime REST call after authentication carries two headers: the IAM bearer token and `Service-CRN` (the instance identifier — it is not itself a credential).", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api"}},
-    {"objective": "s8o1", "fact_md": "The OpenQASM 3 classical types are `bool`, `int[n]`, `uint[n]`, `float[n]`, `complex[float[n]]`, `bit[n]`, `angle[n]`, `duration` and `stretch` — the last four being the 'special' types with no C equivalent. There is no `string`, `char`, `real` or `unsigned`, and a complex declaration takes a FLOAT type in its designator (`complex[float[64]] c;`), never a bare bit width.", "source": {"type": "citation", "ref": "https://openqasm.com/versions/3.0/language/types.html"}},
-    {"objective": "s8o1", "fact_md": "Casting rules: in a binary operation the LESSER type is promoted (`complex` > `float` > `int`/`uint`, wider beats narrower); `bool` and scalar `bit` are interchangeable as values; `bit[n]` converts to `int[m]`/`uint[m]`/`angle[m]` only when `m == n`; nothing casts to or from `duration` (divide by a duration instead); and a width designator must be a `const` expression.", "source": {"type": "citation", "ref": "https://openqasm.com/versions/3.0/language/types.html"}},
-    {"objective": "s8o4", "fact_md": "Results are a sub-resource of the job: `GET /api/v1/jobs/{id}/results` returns the final result, while `GET /api/v1/jobs/{id}` returns details, `/logs` and `/metrics` return diagnostics, `POST /api/v1/jobs/{id}/cancel` cancels and `DELETE /api/v1/jobs/{id}` removes a job already in a terminal state.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit-runtime-rest/tags/jobs"}}
+    {
+      "objective": "s8o1",
+      "fact_md": "Qiskit exports classical registers as `bit[n] c;` even at width 1; loose `Clbit`s become bare `bit _bit0;`.",
+      "source": {
+        "type": "proof",
+        "ref": "s8-q010"
+      }
+    },
+    {
+      "objective": "s8o1",
+      "fact_md": "The feature table's Qiskit column documents `bit` as supported (mapped to `Clbit`/`ClassicalRegister`) while `duration` and `stretch` declarations are unparseable.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table"
+      }
+    },
+    {
+      "objective": "s8o1",
+      "fact_md": "An unbound `Parameter` exports to OpenQASM 3 as an `input float[64]` declaration \u2014 the circuit becomes a parameterized program.",
+      "source": {
+        "type": "proof",
+        "ref": "s8-q020"
+      }
+    },
+    {
+      "objective": "s8o2",
+      "fact_md": "OpenQASM 2 conditionals accept only whole-register equality; exporting a per-clbit `if_test` raises `QASM2ExportError` ('OpenQASM 2 only supports register-equality conditions').",
+      "source": {
+        "type": "proof",
+        "ref": "s8-q013"
+      }
+    },
+    {
+      "objective": "s8o2",
+      "fact_md": "v2 measures with `measure q[0] -> c[0];`, v3 with `c[0] = measure q[0];` \u2014 arrow vs assignment is a version tell in any printed program.",
+      "source": {
+        "type": "proof",
+        "ref": "s8-q014"
+      }
+    },
+    {
+      "objective": "s8o2",
+      "fact_md": "Custom gates round-trip as `gate mygate ... { ... }` declarations in both versions \u2014 neither exporter inlines them.",
+      "source": {
+        "type": "proof",
+        "ref": "s8-q019"
+      }
+    },
+    {
+      "objective": "s8o2",
+      "fact_md": "`qasm2.dumps` silently drops a circuit's global phase (v2 cannot express it); `qasm3.dumps` emits `gphase`.",
+      "source": {
+        "type": "proof",
+        "ref": "s8-q017"
+      }
+    },
+    {
+      "objective": "s8o3",
+      "fact_md": "`qasm3.loads`/`load` raise `MissingOptionalLibraryError` unless `qiskit-qasm3-import` is installed; `qasm3.dumps`/`dump` and all of `qasm2` are native.",
+      "source": {
+        "type": "proof",
+        "ref": "s8-q021"
+      }
+    },
+    {
+      "objective": "s8o3",
+      "fact_md": "`qasm2.loads` accepts only the `OPENQASM 2.0;` header \u2014 feeding it a v3 program raises `QASM2ParseError` immediately.",
+      "source": {
+        "type": "proof",
+        "ref": "s8-q015"
+      }
+    },
+    {
+      "objective": "s8o3",
+      "fact_md": "`QuantumCircuit.from_qasm_str`/`from_qasm_file` still exist in Qiskit 2.x for OpenQASM 2 input; the instance method `.qasm()` was removed.",
+      "source": {
+        "type": "proof",
+        "ref": "s8-q012"
+      }
+    },
+    {
+      "objective": "s8o3",
+      "fact_md": "`dump` variants write to what you give them \u2014 `qasm2.dump(qc, stream)` takes an open text stream, `qasm2.load(path)` takes a filesystem path; mixing them up raises immediately.",
+      "source": {
+        "type": "proof",
+        "ref": "s8-q011"
+      }
+    },
+    {
+      "objective": "s8o4",
+      "fact_md": "IAM token exchange: `POST` the IBM Cloud API key with the apikey grant type; the bearer token expires after 3600 seconds (`expires_in: 3600`).",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api"
+      }
+    },
+    {
+      "objective": "s8o4",
+      "fact_md": "Submitting a Sampler job over REST is `POST /v1/jobs` with `'program_id': 'sampler'` and your circuits inside `params.pubs`.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/sampler-rest-api"
+      }
+    },
+    {
+      "objective": "s8o4",
+      "fact_md": "Every Runtime REST call after authentication carries two headers: the IAM bearer token and `Service-CRN` (the instance identifier \u2014 it is not itself a credential).",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api"
+      }
+    },
+    {
+      "objective": "s8o1",
+      "fact_md": "The OpenQASM 3 classical types are `bool`, `int[n]`, `uint[n]`, `float[n]`, `complex[float[n]]`, `bit[n]`, `angle[n]`, `duration` and `stretch` \u2014 the last four being the 'special' types with no C equivalent. There is no `string`, `char`, `real` or `unsigned`, and a complex declaration takes a FLOAT type in its designator (`complex[float[64]] c;`), never a bare bit width.",
+      "source": {
+        "type": "citation",
+        "ref": "https://openqasm.com/versions/3.0/language/types.html"
+      }
+    },
+    {
+      "objective": "s8o1",
+      "fact_md": "Casting rules: in a binary operation the LESSER type is promoted (`complex` > `float` > `int`/`uint`, wider beats narrower); `bool` and scalar `bit` are interchangeable as values; `bit[n]` converts to `int[m]`/`uint[m]`/`angle[m]` only when `m == n`; nothing casts to or from `duration` (divide by a duration instead); and a width designator must be a `const` expression.",
+      "source": {
+        "type": "citation",
+        "ref": "https://openqasm.com/versions/3.0/language/types.html"
+      }
+    },
+    {
+      "objective": "s8o4",
+      "fact_md": "Results are a sub-resource of the job: `GET /api/v1/jobs/{id}/results` returns the final result, while `GET /api/v1/jobs/{id}` returns details, `/logs` and `/metrics` return diagnostics, `POST /api/v1/jobs/{id}/cancel` cancels and `DELETE /api/v1/jobs/{id}` removes a job already in a terminal state.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit-runtime-rest/tags/jobs"
+      }
+    },
+    {
+      "objective": "s8o3",
+      "fact_md": "`QuantumCircuit.from_qasm_str` keeps the program's own declarations: `qreg a[2]; creg m[2];` produces registers named `a` and `m` (which is what the drawer prints on the wires), never the default `q`/`c`. The register-wide `measure a -> m;` expands index by index \u2014 `a[0]` into `m[0]`, `a[1]` into `m[1]` \u2014 giving one measurement per qubit; little-endian printing affects how a bitstring is displayed, not which classical bit a measurement writes to.",
+      "source": {
+        "type": "proof",
+        "ref": "s8-q029"
+      }
+    }
   ],
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-fable (orchestrator gold example)",
     "fact_checked": true,
-    "notes": "Authored entirely from REVIEW_LEDGER-verified facts and citations already curl-verified during the s8 adversarial review; serves as the gold pattern for the s1-s7 study generation agents. | official-alignment fix wave (2026-07-26): three facts added for the two thin tasks. The two s8o1 facts (type inventory and casting rules) come from the OpenQASM 3.0 language specification's types page; its content was read from the spec source because openqasm.com answers this environment's fetch tool with HTTP 403 (a user-agent block, not a dead page) — the URL itself was NOT machine-verified here, and note that syllabus.json cites the unversioned form https://openqasm.com/language/types.html, which is the safer spelling if the link checker objects. The s8o4 endpoint fact comes from the live Runtime REST reference (api/qiskit-runtime-rest and its jobs tag page, both fetched 200 on 2026-07-26): jobs POST/GET, jobs/{id} GET+DELETE, jobs/{id}/cancel POST, jobs/{id}/logs GET, jobs/{id}/metrics GET, jobs/{id}/results GET, jobs/{id}/tags PUT."
+    "notes": "Authored entirely from REVIEW_LEDGER-verified facts and citations already curl-verified during the s8 adversarial review; serves as the gold pattern for the s1-s7 study generation agents. | official-alignment fix wave (2026-07-26): three facts added for the two thin tasks. The two s8o1 facts (type inventory and casting rules) come from the OpenQASM 3.0 language specification's types page; its content was read from the spec source because openqasm.com answers this environment's fetch tool with HTTP 403 (a user-agent block, not a dead page) \u2014 the URL itself was NOT machine-verified here, and note that syllabus.json cites the unversioned form https://openqasm.com/language/types.html, which is the safer spelling if the link checker objects. The s8o4 endpoint fact comes from the live Runtime REST reference (api/qiskit-runtime-rest and its jobs tag page, both fetched 200 on 2026-07-26): jobs POST/GET, jobs/{id} GET+DELETE, jobs/{id}/cancel POST, jobs/{id}/logs GET, jobs/{id}/metrics GET, jobs/{id}/results GET, jobs/{id}/tags PUT. | figure wave 2 (task #28, 2026-07-27): 1 fact(s) added, each sourced by a NEW executed figure question (s8-q029); every claim was read back against the stored evidence in data/proofs/<qid>.json before being written and nothing is asserted beyond it."
   }
 }

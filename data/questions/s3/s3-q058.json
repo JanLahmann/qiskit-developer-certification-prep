@@ -1,0 +1,101 @@
+{
+  "id": "s3-q058",
+  "section": "s3",
+  "objectives": [
+    "s3o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which figure is the `mpl` rendering produced by this code?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0)\nwith qc.for_loop(range(3)):\n    qc.rx(np.pi / 4, 1)\n    qc.cx(0, 1)\n\nqc.draw(output=\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "D"
+  ],
+  "figures": {
+    "generator": "figures/s3-q058/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s3-q058/s3-q058-A.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: an H box on q_0, then three repetitions of an Rx(pi/4) box on q_1 followed by a CX controlled by q_0 with its target on q_1. No boxed region is drawn around anything."
+      },
+      "B": {
+        "file": "figures/s3-q058/s3-q058-B.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: an H box on q_0, then a boxed region labelled 'For-0 range(0, 3)' spanning both wires and enclosing one Rx(pi/4) box on q_1, and after the region a CX controlled by q_0 with its target on q_1."
+      },
+      "C": {
+        "file": "figures/s3-q058/s3-q058-C.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: an H box on q_0, then a boxed region labelled 'For-0 range(0, 3)' spanning both wires and enclosing a CX controlled by q_0 with its target on q_1 followed by an Rx(pi/4) box on q_1."
+      },
+      "D": {
+        "file": "figures/s3-q058/s3-q058-D.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: an H box on q_0, then a boxed region labelled 'For-0 range(0, 3)' spanning both wires and enclosing an Rx(pi/4) box on q_1 followed by a CX controlled by q_0 with its target on q_1."
+      },
+      "E": {
+        "file": "figures/s3-q058/s3-q058-E.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: an H box on q_0, then a boxed region labelled 'For-0 range(0, 2)' spanning both wires and enclosing an Rx(pi/4) box on q_1 followed by a CX controlled by q_0 with its target on q_1."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`for_loop` is a control-flow context, so the body is stored once as a nested block and the circuit keeps a single `for_loop` instruction. The drawer renders that instruction as one labelled region carrying the loop's index set verbatim — `For-0 range(0, 3)` for `range(3)` — with the body drawn inside it in the order it was written: the Rx on q_1 first, then the CX from q_0 to q_1. The region spans both wires because the body touches both.",
+    "distractors": {
+      "A": "Python-loop habit: `with qc.for_loop(...)` does not repeat the body at build time. It builds one instruction whose body is executed by the control system, so the drawing shows a single boxed region, not three copies of the body.",
+      "B": "Body scope misread: everything indented under the context manager belongs to the block, so the CX is part of the loop body and must be drawn inside the region, not after it.",
+      "C": "Statement order flipped: the block records its instructions in source order, so the Rx must be drawn to the left of the CX inside the region.",
+      "E": "Off-by-one on the label: the box prints the index set that was passed, and `range(3)` is `range(0, 3)`. A region reading `range(0, 2)` comes from a loop built over `range(2)`, i.e. two iterations rather than three."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q058.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\n\n# The five variant circuits MUST mirror data/figures/s3-q058/generate.py —\n# the rendered figures are drawings of exactly these circuits.\n\nANGLE = np.pi / 4\n\n\ndef v_unrolled():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    for _ in range(3):\n        qc.rx(ANGLE, 1)\n        qc.cx(0, 1)\n    return qc\n\n\ndef v_short_body():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    with qc.for_loop(range(3)):\n        qc.rx(ANGLE, 1)\n    qc.cx(0, 1)\n    return qc\n\n\ndef v_swapped_body():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    with qc.for_loop(range(3)):\n        qc.cx(0, 1)\n        qc.rx(ANGLE, 1)\n    return qc\n\n\ndef v_correct():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    with qc.for_loop(range(3)):\n        qc.rx(ANGLE, 1)\n        qc.cx(0, 1)\n    return qc\n\n\ndef v_two_iterations():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    with qc.for_loop(range(2)):\n        qc.rx(ANGLE, 1)\n        qc.cx(0, 1)\n    return qc\n\n\ndef sig(qc):\n    \"\"\"Structural signature: what the drawer draws — the top-level ops, and for\n    a for_loop the label printed on the box (its range) plus its body.\"\"\"\n    out = []\n    for inst in qc.data:\n        op = inst.operation\n        qubits = tuple(qc.find_bit(b).index for b in inst.qubits)\n        if op.name == \"for_loop\":\n            index_set, _, body = op.params\n            body_ops = tuple(\n                (bi.operation.name,\n                 tuple(qubits[body.find_bit(b).index] for b in bi.qubits))\n                for bi in body.data\n            )\n            out.append((op.name, qubits, repr(index_set), body_ops))\n        else:\n            out.append((op.name, qubits))\n    return tuple(out)\n\n\nVARIANTS = {\"A\": v_unrolled(), \"B\": v_short_body(), \"C\": v_swapped_body(),\n            \"D\": v_correct(), \"E\": v_two_iterations()}\n\ntarget = sig(v_correct())\nproven, evidence, observed = [], {}, {}\nfor key, qc in sorted(VARIANTS.items()):\n    s = sig(qc)\n    match = s == target\n    observed[key] = repr(s)\n    evidence[key] = (\n        f\"variant draws {s} vs stem {target} -> match={match}\"\n        if not match else\n        f\"variant is structurally identical to the stem code -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-27",
+    "model": "claude-opus (figure wave 2, task #28)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Dynamic-circuit figure question (for_loop). Figures are mpl renders of the five variant circuits in figures/s3-q058/generate.py; the proof builds the same five circuits and compares the top-level instruction list, the loop box label (the stored index set) and the nested body."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

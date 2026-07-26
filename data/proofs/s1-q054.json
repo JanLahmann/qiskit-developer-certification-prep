@@ -1,0 +1,148 @@
+{
+  "question": "s1-q054",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "A": "spheres carry Bloch vectors qubit 0: (x,y,z)=[1.0, 0.0, 0.0] length 1.0, qubit 1: (x,y,z)=[0.0, 0.0, 1.0] length 1.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False",
+      "B": "spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 0.5] length 0.5, qubit 1: (x,y,z)=[0.0, 0.0, 0.5] length 0.5 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False",
+      "C": "spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 0.0] length 0.0, qubit 1: (x,y,z)=[0.0, 0.0, 0.0] length 0.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=True",
+      "D": "spheres carry Bloch vectors qubit 0: (x,y,z)=[1.0, 0.0, 0.0] length 1.0, qubit 1: (x,y,z)=[1.0, 0.0, 0.0] length 1.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False",
+      "E": "spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 1.0] length 1.0, qubit 1: (x,y,z)=[0.0, 0.0, -1.0] length 1.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False"
+    },
+    "observed": {
+      "A": [
+        [
+          "qubit 0",
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          1.0
+        ],
+        [
+          "qubit 1",
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          1.0
+        ]
+      ],
+      "B": [
+        [
+          "qubit 0",
+          [
+            0.0,
+            0.0,
+            0.5
+          ],
+          0.5
+        ],
+        [
+          "qubit 1",
+          [
+            0.0,
+            0.0,
+            0.5
+          ],
+          0.5
+        ]
+      ],
+      "C": [
+        [
+          "qubit 0",
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          0.0
+        ],
+        [
+          "qubit 1",
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          0.0
+        ]
+      ],
+      "D": [
+        [
+          "qubit 0",
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          1.0
+        ],
+        [
+          "qubit 1",
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          1.0
+        ]
+      ],
+      "E": [
+        [
+          "qubit 0",
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          1.0
+        ],
+        [
+          "qubit 1",
+          [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          1.0
+        ]
+      ],
+      "stem": [
+        [
+          "qubit 0",
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          0.0
+        ],
+        [
+          "qubit 1",
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          0.0
+        ]
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.06,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[1.0, 0.0, 0.0] length 1.0, qubit 1: (x,y,z)=[0.0, 0.0, 1.0] length 1.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False\", \"B\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 0.5] length 0.5, qubit 1: (x,y,z)=[0.0, 0.0, 0.5] length 0.5 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False\", \"C\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 0.0] length 0.0, qubit 1: (x,y,z)=[0.0, 0.0, 0.0] length 0.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=True\", \"D\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[1.0, 0.0, 0.0] length 1.0, qubit 1: (x,y,z)=[1.0, 0.0, 0.0] length 1.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False\", \"E\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 1.0] length 1.0, qubit 1: (x,y,z)=[0.0, 0.0, -1.0] length 1.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False\"}, \"observed\": {\"A\": [[\"qubit 0\", [1.0, 0.0, 0.0], 1.0], [\"qubit 1\", [0.0, 0.0, 1.0], 1.0]], \"B\": [[\"qubit 0\", [0.0, 0.0, 0.5], 0.5], [\"qubit 1\", [0.0, 0.0, 0.5], 0.5]], \"C\": [[\"qubit 0\", [0.0, 0.0, 0.0], 0.0], [\"qubit 1\", [0.0, 0.0, 0.0], 0.0]], \"D\": [[\"qubit 0\", [1.0, 0.0, 0.0], 1.0], [\"qubit 1\", [1.0, 0.0, 0.0], 1.0]], \"E\": [[\"qubit 0\", [0.0, 0.0, 1.0], 1.0], [\"qubit 1\", [0.0, 0.0, -1.0], 1.0]], \"stem\": [[\"qubit 0\", [0.0, 0.0, 0.0], 0.0], [\"qubit 1\", [0.0, 0.0, 0.0], 0.0]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

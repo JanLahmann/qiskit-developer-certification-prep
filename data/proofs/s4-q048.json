@@ -1,0 +1,46 @@
+{
+  "question": "s4-q048",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "observables array shape (5,) (5 observables), parameter values shape (5,) (5 sets), estimator returned evs shape (5,) holding 5 values, exception None -> claim holds=False",
+      "B": "observables array shape (5,) (5 observables), parameter values shape (5,) (5 sets), estimator returned evs shape (5,) holding 5 values, exception None -> claim holds=True",
+      "C": "observables array shape (5,) (5 observables), parameter values shape (5,) (5 sets), estimator returned evs shape (5,) holding 5 values, exception None -> claim holds=False",
+      "D": "observables array shape (5,) (5 observables), parameter values shape (5,) (5 sets), estimator returned evs shape (5,) holding 5 values, exception None -> claim holds=False",
+      "E": "observables array shape (5,) (5 observables), parameter values shape (5,) (5 sets), estimator returned evs shape (5,) holding 5 values, exception None -> claim holds=False"
+    },
+    "observed": {
+      "observables_shape": [
+        5
+      ],
+      "parameter_values_shape": [
+        5
+      ],
+      "evs_shape": [
+        5
+      ],
+      "n_values": 5,
+      "exception": null,
+      "evs": [
+        1.0,
+        0.2474,
+        0.0,
+        1.0,
+        0.5403
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.05,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"observables array shape (5,) (5 observables), parameter values shape (5,) (5 sets), estimator returned evs shape (5,) holding 5 values, exception None -> claim holds=False\", \"B\": \"observables array shape (5,) (5 observables), parameter values shape (5,) (5 sets), estimator returned evs shape (5,) holding 5 values, exception None -> claim holds=True\", \"C\": \"observables array shape (5,) (5 observables), parameter values shape (5,) (5 sets), estimator returned evs shape (5,) holding 5 values, exception None -> claim holds=False\", \"D\": \"observables array shape (5,) (5 observables), parameter values shape (5,) (5 sets), estimator returned evs shape (5,) holding 5 values, exception None -> claim holds=False\", \"E\": \"observables array shape (5,) (5 observables), parameter values shape (5,) (5 sets), estimator returned evs shape (5,) holding 5 values, exception None -> claim holds=False\"}, \"observed\": {\"observables_shape\": [5], \"parameter_values_shape\": [5], \"evs_shape\": [5], \"n_values\": 5, \"exception\": null, \"evs\": [1.0, 0.2474, 0.0, 1.0, 0.5403]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

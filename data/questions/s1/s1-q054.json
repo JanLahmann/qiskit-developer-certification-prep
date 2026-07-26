@@ -1,0 +1,102 @@
+{
+  "id": "s1-q054",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which figure is the `plot_bloch_multivector` rendering produced by this code?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_multivector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\n\nplot_bloch_multivector(Statevector(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "C"
+  ],
+  "figures": {
+    "generator": "figures/s1-q054/generate.py",
+    "color_essential": false,
+    "platform_sensitive": true,
+    "options": {
+      "A": {
+        "file": "figures/s1-q054/s1-q054-A.svg",
+        "alt": "Two Bloch spheres titled 'qubit 0' and 'qubit 1'. The qubit 0 sphere carries a full-length arrow pointing along +x, towards the front of the sphere; the qubit 1 sphere carries a full-length arrow pointing up at the |0> pole."
+      },
+      "B": {
+        "file": "figures/s1-q054/s1-q054-B.svg",
+        "alt": "Two Bloch spheres titled 'qubit 0' and 'qubit 1'. Each sphere carries a short arrow, well inside the surface, pointing up towards the |0> pole."
+      },
+      "C": {
+        "file": "figures/s1-q054/s1-q054-C.svg",
+        "alt": "Two Bloch spheres titled 'qubit 0' and 'qubit 1'. Neither sphere carries an arrow of any length; both are drawn empty, with only the axes and the |0>/|1> pole labels."
+      },
+      "D": {
+        "file": "figures/s1-q054/s1-q054-D.svg",
+        "alt": "Two Bloch spheres titled 'qubit 0' and 'qubit 1'. Each sphere carries a full-length arrow pointing along +x, towards the front of the sphere."
+      },
+      "E": {
+        "file": "figures/s1-q054/s1-q054-E.svg",
+        "alt": "Two Bloch spheres titled 'qubit 0' and 'qubit 1'. The qubit 0 sphere carries a full-length arrow pointing up at the |0> pole; the qubit 1 sphere carries a full-length arrow pointing down at the |1> pole."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`plot_bloch_multivector` draws one sphere per qubit from that qubit's reduced density matrix, and the arrow it draws is the reduced Bloch vector. For a maximally entangled pair each reduced state is the maximally mixed I/2, whose Bloch vector is exactly zero — so the drawer has no direction to draw and both spheres come out empty. A missing arrow is therefore the visual signature of entanglement: the pair has a definite joint state while neither qubit has a state of its own.",
+    "distractors": {
+      "A": "Only the H applied: `h(0)` alone leaves a product state, qubit 0 pointing along +x and qubit 1 still at the |0> pole. The CX is what destroys both single-qubit directions.",
+      "B": "Partial entanglement: shortened arrows are what a partially entangled pair gives, for example `ry(pi/3, 0)` before the CX. An even superposition entangles maximally, and the arrows collapse to nothing rather than to a stub.",
+      "D": "Superposition read as a per-qubit property: two +x arrows is `h` on each qubit separately, a product state. In the stem the second qubit never receives an H, it receives a CX.",
+      "E": "Correlation confused with anti-alignment: the Bell pair does not put one qubit at |0> and the other at |1>. That drawing is a plain computational-basis product state, which carries no entanglement at all."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q054.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Pauli, Statevector, partial_trace\n\n# The five circuits MUST mirror data/figures/s1-q054/generate.py — the rendered\n# figures are plot_bloch_multivector drawings of exactly these states.\n\n\ndef v_product_plus_zero():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    return qc\n\n\ndef v_partially_entangled():\n    qc = QuantumCircuit(2)\n    qc.ry(np.pi / 3, 0)\n    qc.cx(0, 1)\n    return qc\n\n\ndef v_correct():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    qc.cx(0, 1)\n    return qc\n\n\ndef v_both_plus():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    qc.h(1)\n    return qc\n\n\ndef v_computational():\n    qc = QuantumCircuit(2)\n    qc.x(1)\n    return qc\n\n\ndef arrows(qc):\n    \"\"\"What the drawer puts on each sphere: the reduced Bloch vector of every\n    qubit. A zero vector is drawn as no arrow at all.\"\"\"\n    state = Statevector(qc)\n    out = []\n    for q in range(qc.num_qubits):\n        rho = partial_trace(state, [i for i in range(qc.num_qubits) if i != q])\n        vec = tuple(round(float(np.real(rho.expectation_value(Pauli(p)))), 3)\n                    for p in (\"X\", \"Y\", \"Z\"))\n        out.append((f\"qubit {q}\", vec, round(float(np.linalg.norm(vec)), 3)))\n    return tuple(out)\n\n\nVARIANTS = {\"A\": v_product_plus_zero(), \"B\": v_partially_entangled(),\n            \"C\": v_correct(), \"D\": v_both_plus(), \"E\": v_computational()}\n\ntarget = arrows(v_correct())\nproven, evidence, observed = [], {}, {}\nfor key, qc in sorted(VARIANTS.items()):\n    a = arrows(qc)\n    match = a == target\n    observed[key] = [[n, list(v), ln] for n, v, ln in a]\n    evidence[key] = (\n        \"spheres carry Bloch vectors \"\n        + \", \".join(f\"{n}: (x,y,z)={list(v)} length {ln}\" for n, v, ln in a)\n        + \" vs the stem state's \"\n        + \", \".join(f\"{n}: {list(v)}\" for n, v, _ in target)\n        + f\" -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = [[n, list(v), ln] for n, v, ln in target]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-27",
+    "model": "claude-opus (figure wave 2, task #28)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure question on the entanglement signature of plot_bloch_multivector (no arrow at all, ledger 2026-07-26). Figures are renders of the five variant states in figures/s1-q054/generate.py; the proof reduces each state to its per-qubit Bloch vectors, which is exactly what the drawer receives. platform_sensitive: true because the spheres are mplot3d renders."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

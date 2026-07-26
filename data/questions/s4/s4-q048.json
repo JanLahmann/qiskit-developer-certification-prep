@@ -1,0 +1,83 @@
+{
+  "id": "s4-q048",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The diagram below shows how the Estimator pairs the observables and the parameter values of this single PUB. Which broadcasting pattern from the primitive input/output guide is it?",
+  "code": "import numpy as np\nfrom qiskit.quantum_info import SparsePauliOp\n\nobservables = [SparsePauliOp(\"Z\"), SparsePauliOp(\"X\"), SparsePauliOp(\"Y\"),\n               SparsePauliOp(\"I\"), SparsePauliOp(\"Z\")]\nvalues = np.linspace(0.0, 1.0, 5).reshape(5, 1)\n\nestimator.run([(circuit, observables, values)])",
+  "options": [
+    {
+      "key": "A",
+      "text": "Outer/product pairing: every observable meets every parameter set, so this PUB returns a 5 x 5 grid holding 25 expectation values."
+    },
+    {
+      "key": "B",
+      "text": "Zip pairing: observable i is evaluated at parameter set i only, so this PUB returns one expectation value per row, five in total."
+    },
+    {
+      "key": "C",
+      "text": "Broadcast single observable: one observable is stretched across the parameter sets, which is why five results come back from the PUB."
+    },
+    {
+      "key": "D",
+      "text": "Standard nd generalization: the two arrays have different ranks here, so the shorter shape is padded with leading axes before pairing."
+    },
+    {
+      "key": "E",
+      "text": "No pattern applies: a length-5 observables array cannot meet a length-5 parameter array, so this PUB is rejected with a broadcasting error."
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s4-q048/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s4-q048/s4-q048-stem.svg",
+      "alt": "Diagram in three columns under the captions 'observables (5,)', 'parameter values (5,)' and 'expectation values (5,)'. Five rows run across: in each row a shaded box labelled O with a row index, a multiplication sign, a shaded box labelled theta with the same row index, an arrow pointing right, and a plain cell labelled 'ev'. No box is connected to any row but its own."
+    }
+  },
+  "explanation": {
+    "correct": "Both arrays are one-dimensional with the same length: five observables, and a (5, 1) value array that carries five sets of the circuit's one parameter, i.e. parameter shape (5,). Broadcasting equal shapes pairs them element by element, so observable i is evaluated only at parameter set i and the PUB returns evs of shape (5,) — five values, one per row of the picture. The guide calls this the zip pattern; you recognise it from the two equal shapes and the absence of any singleton axis to stretch.",
+    "distractors": {
+      "A": "Outer/product needs complementary singleton axes, a column against a row, such as (5, 1) observables against (1, 5) parameter sets. Two plain (5,) arrays have nothing to stretch, and a 25-value grid would need every row of the picture to fan out to every parameter box.",
+      "C": "Broadcasting a single observable means the observables array is 0-d — one operator stretched over the sweep. The picture shows five distinct observables, so the result count coincides with the parameter count by accident, not because one observable was reused.",
+      "D": "The standard nd generalization is the case where the ranks DIFFER and the shorter shape gets padded with leading axes. Here both arrays are rank 1, so no padding step is involved.",
+      "E": "Equal shapes are the easiest broadcast of all: (5,) against (5,) is legal and returns (5,). Shapes are rejected only when two axes disagree and neither of them is 1, such as (5,) against (3,)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-estimator"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q048.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.primitives.containers.estimator_pub import EstimatorPub\nfrom qiskit.quantum_info import SparsePauliOp\n\n# The pub below is the one the stem figure draws: five observables meeting five\n# parameter sets row by row. Keep it in sync with\n# data/figures/s4-q048/generate.py, which draws exactly these shapes.\n\ntheta = Parameter(\"t\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\n\nobservables = [SparsePauliOp(\"Z\"), SparsePauliOp(\"X\"), SparsePauliOp(\"Y\"),\n               SparsePauliOp(\"I\"), SparsePauliOp(\"Z\")]\nvalues = np.linspace(0.0, 1.0, 5).reshape(5, 1)\n\nraised = None\ntry:\n    result = StatevectorEstimator().run([(qc, observables, values)]).result()\n    evs = result[0].data.evs\n    out_shape = tuple(evs.shape)\n    n_values = int(evs.size)\nexcept Exception as exc:  # the E option claims this happens\n    raised = type(exc).__name__\n    out_shape, n_values = None, None\n\npub = EstimatorPub.coerce((qc, observables, values))\nobs_shape = tuple(pub.observables.shape)\npar_shape = tuple(pub.parameter_values.shape)\nn_obs = int(np.prod(obs_shape)) if obs_shape else 1\nn_par = int(np.prod(par_shape)) if par_shape else 1\n\nclaims = {\n    # Outer/product: every observable meets every parameter set.\n    \"A\": out_shape == (n_obs, n_par) and n_values == n_obs * n_par,\n    # Zip: equal shapes, paired index by index, one value per pair.\n    \"B\": (obs_shape == par_shape and out_shape == obs_shape\n          and n_values == n_obs and raised is None),\n    # Broadcast single observable: the observables array is 0-d.\n    \"C\": obs_shape == (),\n    # Standard nd generalization: ranks differ and the shorter one is padded.\n    \"D\": len(obs_shape) != len(par_shape),\n    # Not broadcastable at all.\n    \"E\": raised is not None,\n}\n\ndetail = (\n    f\"observables array shape {obs_shape} ({n_obs} observables), parameter\"\n    f\" values shape {par_shape} ({n_par} sets), estimator returned evs shape\"\n    f\" {out_shape} holding {n_values} values, exception {raised}\"\n)\nevidence = {k: f\"{detail} -> claim holds={v}\" for k, v in claims.items()}\nobserved = {\"observables_shape\": list(obs_shape),\n            \"parameter_values_shape\": list(par_shape),\n            \"evs_shape\": list(out_shape) if out_shape is not None else None,\n            \"n_values\": n_values, \"exception\": raised,\n            \"evs\": [round(float(x), 4) for x in np.ravel(evs)]}\nemit_verdict({\"answer\": sorted(k for k, v in claims.items() if v),\n              \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-27",
+    "model": "claude-opus (figure wave 2, task #28)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Second broadcasting-diagram item (s4-q047 keys the outer/product pattern; this one keys zip and draws a different picture — paired rows instead of a row-by-column grid). The diagram is drawn from scratch with matplotlib primitives; the proof coerces the same pub, reports the shapes the primitive actually derives, runs a StatevectorEstimator on it and scores each named pattern's defining condition against the measurement."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

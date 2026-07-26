@@ -1,0 +1,72 @@
+{
+  "id": "s4-q049",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The timeline below sketches how a three-job workload is scheduled on a QPU. Which execution mode does it show?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Job mode: the three jobs are submitted one at a time, so each of them waits in the normal queue before the QPU picks it up."
+    },
+    {
+      "key": "B",
+      "text": "Batch mode: the jobs are scheduled together and their quantum parts run in quick succession, but the QPU stays shared, so other users' jobs can be interleaved."
+    },
+    {
+      "key": "C",
+      "text": "Session mode: only the first job goes through the queue, and the active window that follows gives this workload dedicated use of the QPU across the gaps."
+    },
+    {
+      "key": "D",
+      "text": "Session mode in which the window is dropped the moment the QPU falls idle, so every job after the first re-enters the normal queue and waits there again."
+    },
+    {
+      "key": "E",
+      "text": "Batch mode in which the batch reserves the QPU for its whole duration, idle gaps included, so nothing else reaches the QPU until the last job has finished."
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "C"
+  ],
+  "figures": {
+    "generator": "figures/s4-q049/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s4-q049/s4-q049-stem.svg",
+      "alt": "Schematic timeline with two lanes and a time arrow. The upper lane, 'this workload', shows one 'queue wait' block followed by three job blocks separated by two short gaps marked 'gap', captioned 'gaps: QPU idle but still held for this workload'. A bracket spans the three jobs and reads 'active window: QPU dedicated to this workload'. The lower lane, 'everyone else', is an empty dashed block spanning the same span, labelled 'no other job, no calibration job', with a single job block of its own after the bracket ends."
+    }
+  },
+  "explanation": {
+    "correct": "Two features of the picture pin the mode down. First, only the very first job queues: the whole workload enters the queue once, which is what a session and a batch have in common. Second, the QPU is dedicated for the whole active window \u2014 the gaps between jobs are held for this workload and nothing else, not even a calibration job, may run in them. Exclusive access during the active window is the defining property of session mode, and it is what makes sessions suit iterative workloads whose next input depends on the previous result.",
+    "distractors": {
+      "A": "Job mode would draw a queue wait in front of every job. The picture has a single queue block for the whole workload, so the jobs were submitted under one context, not one at a time.",
+      "B": "This describes batch mode correctly, and it is exactly what the picture rules out: a batch does not hold the QPU, so other users' jobs and calibration jobs can slot in between the batched jobs. The drawn window is closed to everyone else.",
+      "D": "The window does not end at the first idle moment. The interactive timer allows a gap between consecutive jobs while the workload keeps its window; the workload is only deactivated once that timer expires with nothing ready to run.",
+      "E": "Batch mode gets its jobs scheduled together and packed closely, but it never reserves the QPU exclusively \u2014 that benefit is what distinguishes a session from a batch, and it is also why sessions cost more."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+      "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-07-27",
+    "model": "claude-opus (figure wave 2, task #28)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Conceptual figure item on queueing semantics (guide section 5 allows mode none for plan/queueing questions: nothing local can execute a scheduler). Every feature of the hand-drawn timeline is stated in prose on guides/execution-modes (one queue entry per workload; dedicated, exclusive active window in which no other job and no calibration job runs; interactive TTL gaps between jobs) and guides/choose-execution-mode (batch is scheduled together but not exclusive, and is cheaper). Both pages were fetched on 2026-07-27 and the diagram was drawn to match their descriptions; no wording is reproduced from them."
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "id": "s6-q042",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "One PUB was submitted to `StatevectorEstimator` for the circuit `qc` below, and the expectation values it returned are drawn as the grouped bars in the figure — one group per bound angle, one bar per observable. Which pairing of observables and parameter values was in that PUB?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\n\nZ = SparsePauliOp(\"Z\")\nX = SparsePauliOp(\"X\")\nangles = [np.pi / 6, np.pi / 2, 5 * np.pi / 6]\n\nresult = StatevectorEstimator().run([(qc, observables, values)]).result()",
+  "options": [
+    {
+      "key": "A",
+      "text": "A single `SparsePauliOp(\"Z\")` observable paired with a parameter array of shape (2, 3), one row of angles per group."
+    },
+    {
+      "key": "B",
+      "text": "A flat list `[Z, X]` of two observables paired with a flat array of the three angles."
+    },
+    {
+      "key": "C",
+      "text": "The nested list `[[Z], [X]]` of shape (2, 1) paired with a parameter array of shape (1, 3)."
+    },
+    {
+      "key": "D",
+      "text": "The nested list `[[Z, X]]` of shape (1, 2) paired with a parameter array of shape (3, 1)."
+    },
+    {
+      "key": "E",
+      "text": "One `SparsePauliOp([\"Z\", \"X\"])` holding both terms, paired with a flat array of the three angles."
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "C"
+  ],
+  "figures": {
+    "generator": "figures/s6-q042/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s6-q042/s6-q042-stem.svg",
+      "alt": "Grouped bar chart with three groups along the x axis, labelled pi/6, pi/2 and 5pi/6, and two hatched bars per group with a legend reading Z and X. The Z bars run about +0.87, 0 and -0.87 across the groups; the X bars run about +0.5, +1.0 and +0.5. A horizontal line marks zero."
+    }
+  },
+  "explanation": {
+    "correct": "The drawing holds six values arranged as two observables by three angles, so the pub has to broadcast an observables array of shape (2, 1) against a parameter-value shape of (1, 3) — the outer/product pattern, which pairs every observable with every angle. `[[Z], [X]]` supplies the leading observables axis, and a (1, 3) parameter array supplies the trailing angle axis, giving `evs.shape == (2, 3)`.",
+    "distractors": {
+      "A": "The shape would be right but the content would not: with one observable both rows of bars would be <Z> values at six different angles, so the second group of bars would not follow sin(theta).",
+      "B": "That is the zip reading. Two observables against three parameter sets is not broadcastable at all — the estimator rejects the pub with a shape error rather than pairing them up.",
+      "D": "The observables axis has to lead. With a single free parameter a (3, 1) array is read as three parameter sets, not as a (3, 1) grid, so the shapes (1, 2) and (3,) do not broadcast and the pub is rejected.",
+      "E": "A `SparsePauliOp` counts as one observable however many Pauli terms it carries: this returns one value per angle, the weighted sum of <Z> and <X>, not a separate row for each term."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q042.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\n# TARGET is what the stem figure draws: one row of bars per observable, one bar\n# per angle. It MUST stay in sync with data/figures/s6-q042/generate.py, which\n# asserts that the array it plots is exactly this.\nTARGET = ((0.866, 0.0, -0.866), (0.5, 1.0, 0.5))\n\nTHETA = Parameter(\"theta\")\nQC = QuantumCircuit(1)\nQC.ry(THETA, 0)\nZ, X = SparsePauliOp(\"Z\"), SparsePauliOp(\"X\")\nROW = np.array([[np.pi / 6, np.pi / 2, 5 * np.pi / 6]])   # shape (1, 3)\nCOLUMN = ROW.reshape(3, 1)                                # shape (3, 1)\nFLAT = ROW.ravel()                                        # shape (3,)\n\n# One entry per option key: the (observables, parameter values) pairing.\nPUBS = {\n    \"A\": (Z, np.array([[np.pi / 6, np.pi / 2, 5 * np.pi / 6],\n                       [0.0, np.pi / 4, np.pi / 2]])),\n    \"B\": ([Z, X], FLAT),\n    \"C\": ([[Z], [X]], ROW),\n    \"D\": ([[Z, X]], COLUMN),\n    \"E\": (SparsePauliOp([\"Z\", \"X\"]), FLAT),\n}\n\nestimator = StatevectorEstimator()\nproven, evidence, observed = [], {}, {}\nfor key, (obs, values) in sorted(PUBS.items()):\n    try:\n        evs = np.asarray(estimator.run([(QC, obs, values)]).result()[0].data.evs)\n    except Exception as exc:  # noqa: BLE001 - the refutation is the exception\n        observed[key] = f\"{type(exc).__name__}: {exc}\"\n        evidence[key] = (\n            f\"the pub is rejected with {type(exc).__name__} ({exc}), so it\"\n            \" cannot have produced the plotted bars -> match=False\"\n        )\n        continue\n    rounded = tuple(map(tuple, np.round(evs, 3).tolist())) if evs.ndim == 2 \\\n        else tuple(np.round(evs, 3).tolist())\n    match = rounded == TARGET\n    observed[key] = {\"shape\": list(evs.shape), \"values\": np.round(evs, 3).tolist()}\n    evidence[key] = (\n        f\"the pub yields an expectation-value array of shape {evs.shape} holding\"\n        f\" {rounded}; the figure shows a 2 by 3 grid holding {TARGET}\"\n        f\" -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"figure\"] = [list(row) for row in TARGET]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure agent, task #28 wave 1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Stem-figure item: the grouped bar chart is the question, the options are candidate pub shapes. The proof submits every pairing and compares the returned array with the values the generator asserts it plotted. Bars carry hatches as well as shades so the drawing survives greyscale."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

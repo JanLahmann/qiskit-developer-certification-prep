@@ -1,0 +1,101 @@
+{
+  "id": "s5-q041",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "A two-qubit circuit is sampled for 40 shots on a noisy fake backend, and one of the four possible outcomes never occurs. Which figure does the last line draw?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.visualization import plot_histogram\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(optimization_level=1, backend=backend,\n                                  seed_transpiler=42)\nsampler = SamplerV2(mode=backend)\nsampler.options.simulator.seed_simulator = 9\nbits = sampler.run([pm.run(qc)], shots=40).result()[0].data.meas\n\nplot_histogram(bits.get_counts())",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "A"
+  ],
+  "figures": {
+    "generator": "figures/s5-q041/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s5-q041/s5-q041-A.svg",
+        "alt": "Bar chart with a Count axis and three bars labelled 00, 01 and 11; the two-digit tallies printed above them are whole numbers that add up to 40."
+      },
+      "B": {
+        "file": "figures/s5-q041/s5-q041-B.svg",
+        "alt": "Step plot with shot number 1 to 40 along the x axis and the outcome 00, 01, 10 or 11 on the y axis; the trace jumps between the 00 and 11 levels shot after shot."
+      },
+      "C": {
+        "file": "figures/s5-q041/s5-q041-C.svg",
+        "alt": "Bar chart with a Count axis and three bars labelled 0, 1 and 3; the two-digit tallies printed above them are whole numbers that add up to 40."
+      },
+      "D": {
+        "file": "figures/s5-q041/s5-q041-D.svg",
+        "alt": "Bar chart with a Count axis and three bars labelled 00, 01 and 11; the values printed above them are decimal fractions that add up to 1."
+      },
+      "E": {
+        "file": "figures/s5-q041/s5-q041-E.svg",
+        "alt": "Bar chart with a Count axis whose x axis lists all four outcomes 00, 01, 10 and 11; bars are drawn at 00, 01 and 11 with whole-number tallies adding up to 40, and the 10 position is left empty."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`BitArray.get_counts()` aggregates the per-shot record into a dictionary of bitstring keys and integer tallies, and it only contains the outcomes that were actually observed. With one outcome never sampled, `plot_histogram` therefore draws three bars keyed by bitstring, with whole-number heights summing to the shot count.",
+    "distractors": {
+      "B": "The BitArray does hold the per-shot record, but `get_counts()` is the aggregated view; a shot-by-shot trace is what `get_bitstrings()` would give you, and `plot_histogram` cannot draw it.",
+      "C": "Integer keys come from `get_int_counts()`, which reports each outcome as the integer value of its bitstring. `get_counts()` keeps the bitstring keys.",
+      "D": "Sampler counts are raw tallies, not a normalized distribution. Dividing by the shot count is something you do yourself; nothing in the V2 sampler path returns quasi-probabilities.",
+      "E": "The counts mapping is not padded with the outcomes that never occurred, so the x axis does not list the missing bitstring at all — here it would show a fourth category with an empty slot where its bar would be."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q041.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import matplotlib.pyplot as plt\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.visualization import plot_histogram\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\n# The five drawings MUST mirror data/figures/s5-q041/generate.py — the rendered\n# figures show exactly these readings of the same seeded 40-shot BitArray.\n\nSHOTS = 40\nBACKEND = FakeManilaV2()\nPM = generate_preset_pass_manager(optimization_level=1, backend=BACKEND,\n                                  seed_transpiler=42)\n\n\ndef sampled_bits():\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    qc.cx(0, 1)\n    qc.measure_all()\n    sampler = SamplerV2(mode=BACKEND)\n    sampler.options.simulator.seed_simulator = 9\n    return sampler.run([PM.run(qc)], shots=SHOTS).result()[0].data.meas\n\n\nBITS = sampled_bits()\nCOUNTS = BITS.get_counts()\n\n\ndef bars(counts):\n    \"\"\"What plot_histogram puts on the axes: the categories the x axis lists,\n    and the bars actually drawn (a zero-valued entry keeps its tick but gets\n    no bar, so the two lists can differ in length).\"\"\"\n    fig = plot_histogram(counts)\n    ax = fig.axes[0]\n    labels = tuple(t.get_text() for t in ax.get_xticklabels())\n    slots = tuple(int(round(p.get_x() + 0.25)) for p in ax.patches)\n    heights = tuple(round(float(p.get_height()), 3) for p in ax.patches)\n    drawn = tuple((labels[i], h) for i, h in zip(slots, heights))\n    plt.close(fig)\n    return (\"bar chart\", labels, drawn)\n\n\nDRAWINGS = {\n    \"A\": bars(COUNTS),\n    \"B\": (\"shot-by-shot trace\",\n          tuple(sorted(set(BITS.get_bitstrings()))),\n          tuple(int(b, 2) for b in BITS.get_bitstrings())),\n    \"C\": bars({str(k): v for k, v in BITS.get_int_counts().items()}),\n    \"D\": bars({k: round(v / SHOTS, 3) for k, v in COUNTS.items()}),\n    \"E\": bars({k: COUNTS.get(k, 0) for k in (\"00\", \"01\", \"10\", \"11\")}),\n}\n\ntarget = bars(COUNTS)\n\n\ndef describe(d):\n    kind, labels, body = d\n    if kind == \"bar chart\":\n        return (kind + \" whose x axis lists \" + \"/\".join(labels) + \", bars \"\n                + \" \".join(f\"{n}:{h:g}\" for n, h in body))\n    return f\"{kind} of {len(body)} single-shot outcomes\"\n\n\nproven, evidence, observed = [], {}, {}\nfor key, drawing in sorted(DRAWINGS.items()):\n    match = drawing == target\n    observed[key] = describe(drawing)\n    evidence[key] = (\n        f\"figure is a {describe(drawing)}; the stem code draws a\"\n        f\" {describe(target)} -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = describe(target)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure agent, task #28 wave 1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Image-option item covering per-shot record versus aggregated counts. Figures are the five readings of one seeded 40-shot BitArray that the proof rebuilds. Deliberate size-min keeper: the keyed figure is the smallest SVG of the five (deviation from the distractor median 20%, under the image_size_tell bar) to hold the bank's smallest_image_option heuristic at chance."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

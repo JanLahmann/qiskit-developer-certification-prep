@@ -1,0 +1,84 @@
+{
+  "id": "s1-q051",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "Starting from |00>, a three-gate sequence prepares a two-qubit product state whose `plot_bloch_multivector` rendering is shown below. Which sequence prepared it?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "`qc.h(0)`, then `qc.s(0)`, then `qc.x(1)`"
+    },
+    {
+      "key": "B",
+      "text": "`qc.sdg(0)`, then `qc.h(0)`, then `qc.x(1)`"
+    },
+    {
+      "key": "C",
+      "text": "`qc.h(1)`, then `qc.sdg(1)`, then `qc.x(0)`"
+    },
+    {
+      "key": "D",
+      "text": "`qc.h(0)`, then `qc.sdg(0)`, then `qc.x(1)`"
+    },
+    {
+      "key": "E",
+      "text": "`qc.h(0)`, then `qc.sdg(0)`, then `qc.z(1)`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "D"
+  ],
+  "figures": {
+    "generator": "figures/s1-q051/generate.py",
+    "color_essential": false,
+    "platform_sensitive": true,
+    "stem": {
+      "file": "figures/s1-q051/s1-q051-stem.svg",
+      "alt": "Two Bloch spheres side by side, titled 'qubit 0' and 'qubit 1'. The qubit 0 sphere has its arrow lying in the equatorial plane pointing along the negative y axis; the qubit 1 sphere has its arrow pointing straight down at the |1> pole."
+    }
+  },
+  "explanation": {
+    "correct": "`h(0)` takes qubit 0 to |+>, whose Bloch arrow points along +x. `sdg` is a -90 degree rotation about z, so it swings that equatorial arrow from +x to -y — the direction drawn on the first sphere. `x(1)` flips qubit 1 from |0> to |1>, which is the arrow pointing at the south pole of the second sphere. The state stays a product state, so each sphere carries a full-length arrow.",
+    "distractors": {
+      "A": "S versus S-dagger: `s` rotates by +90 degrees about z, sending the +x arrow to +y — the opposite equatorial direction from the one drawn.",
+      "B": "Order matters: applying `sdg` to |0> only adds a phase, so the arrow is still at the north pole when `h` runs, and the sequence leaves qubit 0 pointing along +x rather than -y.",
+      "C": "Qubit-index swap: this prepares the equatorial arrow on qubit 1 and the flipped arrow on qubit 0, which is the mirror image of the sphere titles in the figure.",
+      "E": "`z` on |0> is a phase only, so qubit 1 would still point at the north pole; nothing in this sequence flips it to |1>."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SGate"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q051.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Pauli, Statevector, partial_trace\n\n# TARGET is what the stem figure draws, one arrow per sphere: (x, y, z).\n# It MUST stay in sync with data/figures/s1-q051/generate.py, which asserts\n# that the state it renders has exactly these Bloch vectors.\nTARGET = ((0.0, -1.0, 0.0), (0.0, 0.0, -1.0))\n\n# The five candidate sequences, one per option key.\nSEQUENCES = {\n    \"A\": ((\"h\", 0), (\"s\", 0), (\"x\", 1)),\n    \"B\": ((\"sdg\", 0), (\"h\", 0), (\"x\", 1)),\n    \"C\": ((\"h\", 1), (\"sdg\", 1), (\"x\", 0)),\n    \"D\": ((\"h\", 0), (\"sdg\", 0), (\"x\", 1)),\n    \"E\": ((\"h\", 0), (\"sdg\", 0), (\"z\", 1)),\n}\n\n\ndef bloch_vectors(gates):\n    qc = QuantumCircuit(2)\n    for name, target in gates:\n        getattr(qc, name)(target)\n    state = Statevector(qc)\n    out = []\n    for q in range(2):\n        rho = partial_trace(state, [i for i in range(2) if i != q])\n        out.append(tuple(\n            round(float(rho.expectation_value(Pauli(p)).real), 6) for p in \"XYZ\"\n        ))\n    return tuple(out)\n\n\ndef fmt(vecs):\n    return \" | \".join(\n        f\"qubit {i} arrow ({v[0]:+.2f}, {v[1]:+.2f}, {v[2]:+.2f})\"\n        for i, v in enumerate(vecs)\n    )\n\n\nproven, evidence, observed = [], {}, {}\nfor key, gates in sorted(SEQUENCES.items()):\n    vecs = bloch_vectors(gates)\n    match = vecs == TARGET\n    observed[key] = [list(v) for v in vecs]\n    evidence[key] = (\n        f\"sequence prepares {fmt(vecs)}; the figure draws {fmt(TARGET)} -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"figure\"] = [list(v) for v in TARGET]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure agent, task #28 wave 1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Stem-figure item: the Bloch drawing is the question, the options are candidate gate sequences. figures/s1-q051/generate.py asserts that the rendered state has exactly the Bloch vectors the proof uses as TARGET."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

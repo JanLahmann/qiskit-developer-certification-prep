@@ -1,0 +1,83 @@
+{
+  "id": "s6-q041",
+  "section": "s6",
+  "objectives": [
+    "s6o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The plot below was produced by this script with exactly one options line filled in where the comment sits. Which line was it?",
+  "code": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(optimization_level=1, backend=backend,\n                                  seed_transpiler=42)\nisa = pm.run(qc)\nobs = SparsePauliOp(\"Z\").apply_layout(isa.layout)\n\nangles = np.array([[0.0], [np.pi / 3], [2 * np.pi / 3], [np.pi]])\nestimator = EstimatorV2(mode=backend)\nestimator.options.simulator.seed_simulator = 7\n# <- the options line goes here\npub_result = estimator.run([(isa, obs, angles)]).result()[0]\n\nplt.errorbar(angles.ravel(), pub_result.data.evs,\n             yerr=pub_result.data.stds, fmt=\"o-\", capsize=4)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`estimator.options.precision = 0.1`"
+    },
+    {
+      "key": "B",
+      "text": "`estimator.options.execution.shots = 100`"
+    },
+    {
+      "key": "C",
+      "text": "`estimator.options.default_precision = 0.01`"
+    },
+    {
+      "key": "D",
+      "text": "`estimator.options.default_precision = 0.0`"
+    },
+    {
+      "key": "E",
+      "text": "`estimator.options.default_precision = 0.1`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "figures": {
+    "generator": "figures/s6-q041/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s6-q041/s6-q041-stem.svg",
+      "alt": "Line plot with four markers joined by a line, theta from 0 to about 3.1 on the x axis and expectation value on the y axis. The markers fall from about +0.9 through +0.5 and -0.3 to about -0.9, and each carries a vertical error bar with caps; the bars are short at the two ends and roughly twice as long at the two middle points."
+    }
+  },
+  "explanation": {
+    "correct": "`default_precision` is the target standard error the Estimator aims for, and it is what the sampled run converts into a shot budget. Setting it to 0.1 buys a modest number of shots per point, so `data.stds` comes back around 0.04 to 0.10 — the error-bar lengths in the plot. The reported standard errors are also state-dependent, which is why the two middle points (whose expectation values are near zero) carry the longer bars.",
+    "distractors": {
+      "A": "`precision` is not a field of `EstimatorOptions`; the options object is a validated dataclass, so this assignment raises a pydantic validation error before any job is submitted. The field is `default_precision`, and `precision` is only a keyword of `run`.",
+      "B": "`ExecutionOptionsV2` carries `init_qubits` and `rep_delay` only — there is no `shots` field on the Estimator's execution options, so this line is rejected by the same validator. Shot count is derived from the requested precision.",
+      "C": "The right field but a value ten times tighter: 0.01 buys a hundred times as many shots, and the error bars would shrink to well under a hundredth of the axis — far shorter than the bars drawn here.",
+      "D": "Zero precision is refused by the validator (`default_precision` must be greater than zero, whether you write it as an int or a float); an exact answer would need infinitely many shots, so no run happens at all."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-options",
+      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-estimator"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q041.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\n# TARGET_* is what the stem figure draws: marker heights and error-bar\n# half-lengths. It MUST stay in sync with data/figures/s6-q041/generate.py,\n# which asserts that the run it renders produces exactly these arrays.\nTARGET_EVS = (0.92, 0.48, -0.32, -0.92)\nTARGET_STDS = (0.039, 0.088, 0.095, 0.039)\n\nTHETA = Parameter(\"theta\")\nANGLES = np.array([[0.0], [np.pi / 3], [2 * np.pi / 3], [np.pi]])\n\nqc = QuantumCircuit(1)\nqc.ry(THETA, 0)\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(optimization_level=1, backend=backend,\n                                  seed_transpiler=42)\nISA = pm.run(qc)\nOBS = SparsePauliOp(\"Z\").apply_layout(ISA.layout)\n\n\ndef set_precision_attr(est):\n    est.options.precision = 0.1\n\n\ndef set_execution_shots(est):\n    est.options.execution.shots = 100\n\n\ndef set_default_precision(value):\n    def apply(est):\n        est.options.default_precision = value\n    return apply\n\n\n# One callable per option key; each mirrors the option's single line of code.\nOPTIONS = {\n    \"A\": set_precision_attr,\n    \"B\": set_execution_shots,\n    \"C\": set_default_precision(0.01),\n    \"D\": set_default_precision(0.0),\n    \"E\": set_default_precision(0.1),\n}\n\n\ndef nums(values):\n    return tuple(round(float(v), 3) for v in np.asarray(values))\n\n\nproven, evidence, observed = [], {}, {}\nfor key, apply in sorted(OPTIONS.items()):\n    estimator = EstimatorV2(mode=backend)\n    estimator.options.simulator.seed_simulator = 7\n    try:\n        apply(estimator)\n    except Exception as exc:  # noqa: BLE001 - the refutation is the exception\n        msg = \" \".join(str(exc).split()).split(\" [type=\")[0]\n        observed[key] = f\"{type(exc).__name__}: {msg}\"\n        evidence[key] = (\n            f\"the options line raises {type(exc).__name__} ({msg}) before any\"\n            \" job runs, so it cannot have produced the plotted error bars\"\n            \" -> match=False\"\n        )\n        continue\n    data = estimator.run([(ISA, OBS, ANGLES)]).result()[0].data\n    evs, stds = nums(data.evs), nums(data.stds)\n    match = evs == TARGET_EVS and stds == TARGET_STDS\n    observed[key] = {\"evs\": list(evs), \"stds\": list(stds)}\n    evidence[key] = (\n        \"the run succeeds with markers \"\n        + \", \".join(f\"{v:+.2f}\" for v in evs)\n        + \" and error bars \" + \", \".join(f\"{v:.3f}\" for v in stds)\n        + \"; the figure shows markers \"\n        + \", \".join(f\"{v:+.2f}\" for v in TARGET_EVS)\n        + \" with error bars \" + \", \".join(f\"{v:.3f}\" for v in TARGET_STDS)\n        + f\" -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"figure\"] = {\"evs\": list(TARGET_EVS), \"stds\": list(TARGET_STDS)}\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure agent, task #28 wave 1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Stem-figure item: the error-bar plot is the question, the options are candidate options lines. The proof applies each line to the same seeded fake-backend run and compares the resulting evs/stds with the arrays the generator asserts it drew."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

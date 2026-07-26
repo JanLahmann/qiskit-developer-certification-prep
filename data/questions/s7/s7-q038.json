@@ -1,0 +1,83 @@
+{
+  "id": "s7-q038",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "An estimator job that swept one angle over four values has been retrieved, and the figure plots the series it returned against those angles. Which expression was plotted?",
+  "code": "import matplotlib.pyplot as plt\nfrom qiskit_ibm_runtime import QiskitRuntimeService\n\nservice = QiskitRuntimeService()\njob = service.job(job_id)   # the four-angle estimator job, run earlier\nresult = job.result()       # a PrimitiveResult holding one pub result\n\nplt.plot(angles, <expression>, marker=\"o\")",
+  "options": [
+    {
+      "key": "A",
+      "text": "The per-point standard errors from the same data bin: `result[0].data.stds`."
+    },
+    {
+      "key": "B",
+      "text": "The expectation values straight off the pub result: `result[0].evs`."
+    },
+    {
+      "key": "C",
+      "text": "The expectation values from the pub result's data bin: `result[0].data.evs`."
+    },
+    {
+      "key": "D",
+      "text": "The expectation values recorded in the pub's metadata: `result[0].metadata[\"evs\"]`."
+    },
+    {
+      "key": "E",
+      "text": "The expectation values from the primitive result's own data bin: `result.data.evs`."
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "C"
+  ],
+  "figures": {
+    "generator": "figures/s7-q038/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s7-q038/s7-q038-stem.svg",
+      "alt": "Line plot with four markers joined by a line, theta from 0 to about 3.1 on the x axis and expectation value on the y axis. The markers fall from about +0.97 through +0.53 and -0.41 to about -0.89, crossing a horizontal line drawn at zero."
+    }
+  },
+  "explanation": {
+    "correct": "The Estimator's payload lives in the pub result's data bin: `result[0]` selects the pub, `.data` is its `DataBin`, and `evs` is the field holding one expectation value per broadcast element — here one per bound angle. That array is what the plotted curve traces from about +0.97 down to about -0.89.",
+    "distractors": {
+      "A": "`stds` is the companion field of the same data bin, but it holds the standard error of each point. Those values are two orders of magnitude smaller here, so plotting them would give a nearly flat line just above zero, not a curve crossing it.",
+      "B": "The pub result itself carries only `data` and `metadata`; there is no `evs` attribute one level up, so this raises an `AttributeError`.",
+      "D": "A pub's metadata records the target precision and the circuit metadata, not the results. Asking it for `evs` raises a `KeyError`.",
+      "E": "`PrimitiveResult` is a sequence of pub results and has no data bin of its own — the pub has to be selected by index first, otherwise the attribute lookup fails."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.DataBin"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q038.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\n# TARGET is what the stem figure draws: the four marker heights in angle order.\n# It MUST stay in sync with data/figures/s7-q038/generate.py, which asserts\n# that the run it renders produces exactly this series. The retrieval call in\n# the stem is reproduced here by re-running the same seeded job: what the\n# question tests is the container path into the PrimitiveResult.\nTARGET = (0.97, 0.532, -0.409, -0.885)\n\nTHETA = Parameter(\"theta\")\nANGLES = np.array([[0.0], [np.pi / 3], [2 * np.pi / 3], [np.pi]])\n\nqc = QuantumCircuit(1)\nqc.ry(THETA, 0)\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(optimization_level=1, backend=backend,\n                                  seed_transpiler=42)\nisa = pm.run(qc)\nobs = SparsePauliOp(\"Z\").apply_layout(isa.layout)\n\nestimator = EstimatorV2(mode=backend)\nestimator.options.simulator.seed_simulator = 3\nestimator.options.default_precision = 0.02\nresult = estimator.run([(isa, obs, ANGLES)]).result()\n\n# One callable per option key, mirroring that option's expression.\nEXPRESSIONS = {\n    \"A\": lambda: result[0].data.stds,\n    \"B\": lambda: result[0].evs,\n    \"C\": lambda: result[0].data.evs,\n    \"D\": lambda: result[0].metadata[\"evs\"],\n    \"E\": lambda: result.data.evs,\n}\n\nproven, evidence, observed = [], {}, {}\nfor key, expr in sorted(EXPRESSIONS.items()):\n    try:\n        series = tuple(round(float(v), 3) for v in np.asarray(expr()))\n    except Exception as exc:  # noqa: BLE001 - the refutation is the exception\n        msg = \" \".join(str(exc).split())\n        observed[key] = f\"{type(exc).__name__}: {msg}\"\n        evidence[key] = (\n            f\"the expression fails with {type(exc).__name__} ({msg}), so it\"\n            \" cannot be the plotted series -> match=False\"\n        )\n        continue\n    match = series == TARGET\n    observed[key] = list(series)\n    evidence[key] = (\n        \"the expression yields \" + \", \".join(f\"{v:+.3f}\" for v in series)\n        + \"; the figure plots markers at \"\n        + \", \".join(f\"{v:+.3f}\" for v in TARGET)\n        + f\" -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"figure\"] = list(TARGET)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure agent, task #28 wave 1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Stem-figure item: the expectation-value curve is the question, the options are candidate container paths into the retrieved PrimitiveResult. The proof re-runs the same seeded job and evaluates every candidate expression against the series the generator asserts it drew."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

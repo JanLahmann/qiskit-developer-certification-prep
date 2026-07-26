@@ -1,0 +1,34 @@
+{
+  "question": "s5-q042",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "figure draws 0:0.93 1:0.07 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False",
+      "B": "figure draws 0:0.52 1:0.48 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False",
+      "C": "figure draws 0:0.52 1:0.48 over 3 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False",
+      "D": "figure draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=True",
+      "E": "figure draws 0:0.88 1:0.12 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False"
+    },
+    "observed": {
+      "A": "0:0.93 1:0.07 over 1 parameter set(s) worth of shots",
+      "B": "0:0.52 1:0.48 over 1 parameter set(s) worth of shots",
+      "C": "0:0.52 1:0.48 over 3 parameter set(s) worth of shots",
+      "D": "0:0.12 1:0.88 over 1 parameter set(s) worth of shots",
+      "E": "0:0.88 1:0.12 over 1 parameter set(s) worth of shots",
+      "stem": "0:0.12 1:0.88 over 1 parameter set(s) worth of shots"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.51,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"figure draws 0:0.93 1:0.07 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False\", \"B\": \"figure draws 0:0.52 1:0.48 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False\", \"C\": \"figure draws 0:0.52 1:0.48 over 3 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False\", \"D\": \"figure draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=True\", \"E\": \"figure draws 0:0.88 1:0.12 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False\"}, \"observed\": {\"A\": \"0:0.93 1:0.07 over 1 parameter set(s) worth of shots\", \"B\": \"0:0.52 1:0.48 over 1 parameter set(s) worth of shots\", \"C\": \"0:0.52 1:0.48 over 3 parameter set(s) worth of shots\", \"D\": \"0:0.12 1:0.88 over 1 parameter set(s) worth of shots\", \"E\": \"0:0.88 1:0.12 over 1 parameter set(s) worth of shots\", \"stem\": \"0:0.12 1:0.88 over 1 parameter set(s) worth of shots\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

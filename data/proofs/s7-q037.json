@@ -1,0 +1,34 @@
+{
+  "question": "s7-q037",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "the call draws 2 overlaid series, share of the shots (bell 00:0.47 01:0.02 10:0.03 11:0.48; single 00:0.49 01:0.50 10:0.01 11:0.00); the figure shows 2 overlaid series, share of the shots (bell 00:0.47 01:0.02 10:0.03 11:0.48; single 00:0.49 01:0.50 10:0.01 11:0.00) -> match=True",
+      "B": "the expression fails with VisualizationError (\"Length of legend (2) doesn't match number of input executions (1).\"), so it cannot have drawn the figure -> match=False",
+      "C": "the expression fails with AttributeError ('SamplerPubResult' object has no attribute 'get_counts'), so it cannot have drawn the figure -> match=False",
+      "D": "the expression fails with AttributeError ('DataBin' object has no attribute 'get_counts'), so it cannot have drawn the figure -> match=False",
+      "E": "the expression fails with AttributeError ('PrimitiveResult' object has no attribute 'results'), so it cannot have drawn the figure -> match=False"
+    },
+    "observed": {
+      "A": "2 overlaid series, share of the shots (bell 00:0.47 01:0.02 10:0.03 11:0.48; single 00:0.49 01:0.50 10:0.01 11:0.00)",
+      "B": "VisualizationError: \"Length of legend (2) doesn't match number of input executions (1).\"",
+      "C": "AttributeError: 'SamplerPubResult' object has no attribute 'get_counts'",
+      "D": "AttributeError: 'DataBin' object has no attribute 'get_counts'",
+      "E": "AttributeError: 'PrimitiveResult' object has no attribute 'results'",
+      "figure": "2 overlaid series, share of the shots (bell 00:0.47 01:0.02 10:0.03 11:0.48; single 00:0.49 01:0.50 10:0.01 11:0.00)"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.45,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"the call draws 2 overlaid series, share of the shots (bell 00:0.47 01:0.02 10:0.03 11:0.48; single 00:0.49 01:0.50 10:0.01 11:0.00); the figure shows 2 overlaid series, share of the shots (bell 00:0.47 01:0.02 10:0.03 11:0.48; single 00:0.49 01:0.50 10:0.01 11:0.00) -> match=True\", \"B\": \"the expression fails with VisualizationError (\\\"Length of legend (2) doesn't match number of input executions (1).\\\"), so it cannot have drawn the figure -> match=False\", \"C\": \"the expression fails with AttributeError ('SamplerPubResult' object has no attribute 'get_counts'), so it cannot have drawn the figure -> match=False\", \"D\": \"the expression fails with AttributeError ('DataBin' object has no attribute 'get_counts'), so it cannot have drawn the figure -> match=False\", \"E\": \"the expression fails with AttributeError ('PrimitiveResult' object has no attribute 'results'), so it cannot have drawn the figure -> match=False\"}, \"observed\": {\"A\": \"2 overlaid series, share of the shots (bell 00:0.47 01:0.02 10:0.03 11:0.48; single 00:0.49 01:0.50 10:0.01 11:0.00)\", \"B\": \"VisualizationError: \\\"Length of legend (2) doesn't match number of input executions (1).\\\"\", \"C\": \"AttributeError: 'SamplerPubResult' object has no attribute 'get_counts'\", \"D\": \"AttributeError: 'DataBin' object has no attribute 'get_counts'\", \"E\": \"AttributeError: 'PrimitiveResult' object has no attribute 'results'\", \"figure\": \"2 overlaid series, share of the shots (bell 00:0.47 01:0.02 10:0.03 11:0.48; single 00:0.49 01:0.50 10:0.01 11:0.00)\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

@@ -1,0 +1,101 @@
+{
+  "id": "s5-q040",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which histogram does this seeded `SamplerV2` run draw?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.visualization import plot_histogram\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.x(2)\nqc.measure_all()\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(optimization_level=1, backend=backend,\n                                  seed_transpiler=42)\nsampler = SamplerV2(mode=backend)\nsampler.options.simulator.seed_simulator = 123\nbits = sampler.run([pm.run(qc)], shots=2000).result()[0].data.meas\n\nplot_histogram(bits.get_counts())",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "C"
+  ],
+  "figures": {
+    "generator": "figures/s5-q040/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s5-q040/s5-q040-A.svg",
+        "alt": "Bar chart with a Count axis and two bars of equal height, labelled 100 and 111; no other outcome is drawn."
+      },
+      "B": {
+        "file": "figures/s5-q040/s5-q040-B.svg",
+        "alt": "Bar chart with a Count axis and eight bars, one per three-bit outcome; the two tall bars are labelled 001 and 111, a small pair sits at 000 and 110, and the remaining four bars are very short."
+      },
+      "C": {
+        "file": "figures/s5-q040/s5-q040-C.svg",
+        "alt": "Bar chart with a Count axis and eight bars, one per three-bit outcome; the two tall bars are labelled 100 and 111, a small pair sits at 000 and 011, and the remaining four bars are very short."
+      },
+      "D": {
+        "file": "figures/s5-q040/s5-q040-D.svg",
+        "alt": "Bar chart with a Count axis and seven bars; the two tall bars are labelled 100 and 101, a small pair sits at 000 and 001, and the remaining bars are very short."
+      },
+      "E": {
+        "file": "figures/s5-q040/s5-q040-E.svg",
+        "alt": "Bar chart with a Count axis and eight bars, one per three-bit outcome; the two tall bars are labelled 000 and 011, a small pair sits at 100 and 111, and the remaining four bars are very short."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "The circuit entangles qubits 0 and 1 and flips qubit 2, so the ideal outcomes are the two bitstrings whose qubit-2 bit is set and whose qubit-0 and qubit-1 bits agree. Counts keys print qubit 2 leftmost (little-endian), which makes them `100` and `111`. FakeManilaV2 carries a noise model, so the seeded run also puts small bars on every other outcome instead of leaving them empty.",
+    "distractors": {
+      "A": "Treats a fake backend as an exact simulator. Fake backends replay a recorded noise model, so readout and gate errors put weight on all eight outcomes, not just the two ideal ones.",
+      "B": "Bit-order slip: the counts key is read left-to-right as qubit 0, qubit 1, qubit 2, which turns the `100` peak into `001`. Qiskit prints the highest-index qubit on the left.",
+      "D": "`cx(1, 0)` would control on qubit 1, which is still in |0>, so nothing is entangled and the qubit-1 bit never turns on — the peaks would sit at `100` and `101`.",
+      "E": "The `x(2)` is dropped, which moves both peaks down to the outcomes whose leftmost bit is 0."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/local-testing-mode"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q040.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import matplotlib.pyplot as plt\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.visualization import plot_histogram\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\n# The five counts dicts MUST mirror data/figures/s5-q040/generate.py — the\n# rendered figures are plot_histogram drawings of exactly these dicts.\n\nBACKEND = FakeManilaV2()\nPM = generate_preset_pass_manager(optimization_level=1, backend=BACKEND,\n                                  seed_transpiler=42)\nSHOTS = 2000\n\n\ndef sampled(*gates):\n    qc = QuantumCircuit(3)\n    for name, *args in gates:\n        getattr(qc, name)(*args)\n    qc.measure_all()\n    sampler = SamplerV2(mode=BACKEND)\n    sampler.options.simulator.seed_simulator = 123\n    result = sampler.run([PM.run(qc)], shots=SHOTS).result()\n    return result[0].data.meas.get_counts()\n\n\ndef stem_counts():\n    return sampled((\"h\", 0), (\"cx\", 0, 1), (\"x\", 2))\n\n\nSTEM = stem_counts()\nVARIANTS = {\n    \"A\": {\"100\": 1000, \"111\": 1000},\n    \"B\": {k[::-1]: v for k, v in STEM.items()},\n    \"C\": STEM,\n    \"D\": sampled((\"h\", 0), (\"cx\", 1, 0), (\"x\", 2)),\n    \"E\": sampled((\"h\", 0), (\"cx\", 0, 1)),\n}\n\n\ndef drawn(counts):\n    \"\"\"What plot_histogram puts on the axes: bar labels + heights, as shares\n    of the shot count so the evidence stays free of raw four-digit tallies.\"\"\"\n    fig = plot_histogram(counts)\n    ax = fig.axes[0]\n    bars = tuple(\n        (t.get_text(), round(p.get_height() / SHOTS, 2))\n        for t, p in zip(ax.get_xticklabels(), ax.patches)\n    )\n    plt.close(fig)\n    return bars\n\n\ndef fmt(bars):\n    return \" \".join(f\"{n}:{h:.2f}\" for n, h in bars)\n\n\ntarget = drawn(STEM)\nproven, evidence, observed = [], {}, {}\nfor key, counts in sorted(VARIANTS.items()):\n    bars = drawn(counts)\n    match = bars == target\n    observed[key] = [list(b) for b in bars]\n    evidence[key] = (\n        f\"figure draws {len(bars)} bars, {fmt(bars)} (share of the shots); the\"\n        f\" stem run draws {len(target)} bars, {fmt(target)} -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = [list(b) for b in target]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure agent, task #28 wave 1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Image-option item. Figures are plot_histogram renders of the five counts dicts the proof rebuilds from the same seeded fake-backend runs; the proof compares bar labels and heights (as shares of the shot count). Deliberate size-max keeper: the keyed figure is the largest SVG of the five (deviation from the distractor median 3%, far under the image_size_tell bar) to pull the bank's largest_image_option heuristic back toward chance."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

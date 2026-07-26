@@ -1,0 +1,101 @@
+{
+  "id": "s6-q040",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which curve does this exact (statevector) estimator sweep draw?",
+  "code": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\n\nangles = np.linspace(0.0, 2 * np.pi, 9)\npub = (qc, SparsePauliOp(\"Z\"), angles.reshape(-1, 1))\nresult = StatevectorEstimator().run([pub]).result()\n\nfig, ax = plt.subplots(figsize=(6, 4))\nax.plot(angles, result[0].data.evs, marker=\"o\")\nax.set_xlabel(\"theta\")\nax.set_ylabel(\"expectation value\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s6-q040/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s6-q040/s6-q040-A.svg",
+        "alt": "Line plot with nine markers, theta from 0 to about 6.3 on the x axis and expectation value on the y axis: the curve starts at 0, rises to 1 a quarter of the way across, falls to -1 three quarters of the way across and returns to 0."
+      },
+      "B": {
+        "file": "figures/s6-q040/s6-q040-B.svg",
+        "alt": "Line plot with nine markers, theta from 0 to about 6.3 on the x axis and expectation value on the y axis: the curve starts at 1, falls to -1 at the middle of the range and climbs back to 1 at the right-hand end."
+      },
+      "C": {
+        "file": "figures/s6-q040/s6-q040-C.svg",
+        "alt": "Line plot with nine markers, theta from 0 to about 6.3 on the x axis and expectation value on the y axis: the curve falls steadily from 1 at the left-hand end through 0 at the middle to -1 at the right-hand end."
+      },
+      "D": {
+        "file": "figures/s6-q040/s6-q040-D.svg",
+        "alt": "Line plot with nine markers, theta from 0 to about 6.3 on the x axis and expectation value on the y axis: the curve starts at -1, rises to 1 at the middle of the range and falls back to -1 at the right-hand end."
+      },
+      "E": {
+        "file": "figures/s6-q040/s6-q040-E.svg",
+        "alt": "Line plot with nine markers, theta from 0 to about 6.3 on the x axis and expectation value on the y axis: the curve dips from 1 to -1 and back twice, so it reaches the value 1 three times across the range."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`ry(theta)` rotates the Bloch vector of |0> away from the z axis by exactly theta, so <Z> = cos(theta). Swept from 0 to 2*pi the exact estimator therefore returns one full period of a cosine: +1 at both ends and -1 in the middle, one point per bound angle. `StatevectorEstimator` is noiseless, so the points sit on the analytic curve.",
+    "distractors": {
+      "A": "That is <X>, which follows sin(theta). Swapping the observable changes which axis of the Bloch sphere the state is projected onto, which shifts the curve by a quarter period.",
+      "C": "cos(theta/2) is the amplitude of |0> in the rotated state, not the expectation value. The expectation value is the difference of the two probabilities, which squares the amplitudes and doubles the angle — hence one full period instead of half of one.",
+      "D": "A sign flip: this is what -Z (or an |1> starting state) would give. `ry` on |0> begins at <Z> = +1, not -1.",
+      "E": "cos(2*theta) treats the parameter as the half-angle of the rotation, which fits two periods into the sweep. `ry(theta)` already rotates the Bloch vector by theta, so no extra factor of two appears."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-estimator",
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q040.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp, Statevector\n\n# The five series MUST mirror data/figures/s6-q040/generate.py — the rendered\n# figures are line plots of exactly these arrays against the same angles.\n\nTHETA = Parameter(\"theta\")\nANGLES = np.linspace(0.0, 2 * np.pi, 9)\nQC = QuantumCircuit(1)\nQC.ry(THETA, 0)\nESTIMATOR = StatevectorEstimator()\n\n\ndef evs(label, values):\n    pub = (QC, SparsePauliOp(label), np.asarray(values).reshape(-1, 1))\n    return np.round(np.asarray(ESTIMATOR.run([pub]).result()[0].data.evs), 6)\n\n\ndef amplitudes():\n    return np.round(np.array([\n        float(np.real(Statevector(QC.assign_parameters([a])).data[0]))\n        for a in ANGLES\n    ]), 6)\n\n\nVARIANTS = {\n    \"A\": evs(\"X\", ANGLES),\n    \"B\": evs(\"Z\", ANGLES),\n    \"C\": amplitudes(),\n    \"D\": -evs(\"Z\", ANGLES),\n    \"E\": evs(\"Z\", 2 * ANGLES),\n}\ntarget = evs(\"Z\", ANGLES)\n\n\ndef fmt(y):\n    return (f\"starts at {y[0]:+.2f}, passes {y[2]:+.2f} and {y[4]:+.2f},\"\n            f\" ends at {y[-1]:+.2f} (min {y.min():+.2f}, max {y.max():+.2f})\")\n\n\nproven, evidence, observed = [], {}, {}\nfor key, series in sorted(VARIANTS.items()):\n    match = bool(np.array_equal(series, target))\n    observed[key] = [float(v) for v in series]\n    evidence[key] = (\n        f\"curve {fmt(series)}; the stem code plots a curve that {fmt(target)}\"\n        f\" -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = [float(v) for v in target]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure agent, task #28 wave 1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Image-option item. Every option curve is a real computation (a different observable, a different sign, the |0> amplitude, or a doubled angle) that the proof recomputes and compares point by point against the stem sweep. The five renders sit within 0.2% of each other in byte size, and the keyed curve is neither the largest nor the smallest of them."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

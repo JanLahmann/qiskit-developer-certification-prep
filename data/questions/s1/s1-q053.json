@@ -1,0 +1,102 @@
+{
+  "id": "s1-q053",
+  "section": "s1",
+  "objectives": [
+    "s1o1",
+    "s1o2"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "Each figure below draws a single-qubit circuit built from three library gates. Which drawn circuit implements the same operation as a single `x` gate, up to global phase?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "figures": {
+    "generator": "figures/s1-q053/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s1-q053/s1-q053-A.svg",
+        "alt": "Circuit diagram on one wire labelled q: three boxed gates in a row, H then X then H."
+      },
+      "B": {
+        "file": "figures/s1-q053/s1-q053-B.svg",
+        "alt": "Circuit diagram on one wire labelled q: three boxed gates in a row, S then X then S-dagger."
+      },
+      "C": {
+        "file": "figures/s1-q053/s1-q053-C.svg",
+        "alt": "Circuit diagram on one wire labelled q: three boxed gates in a row, Z then H then Z."
+      },
+      "D": {
+        "file": "figures/s1-q053/s1-q053-D.svg",
+        "alt": "Circuit diagram on one wire labelled q: three boxed gates in a row, H then S then H."
+      },
+      "E": {
+        "file": "figures/s1-q053/s1-q053-E.svg",
+        "alt": "Circuit diagram on one wire labelled q: three boxed gates in a row, H then Z then H."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "Conjugating by Hadamard swaps the X and Z axes: H Z H = X exactly. The drawn H-Z-H circuit therefore has the same unitary as a bare `x` gate, which `Operator.equiv` confirms (here even without a phase difference).",
+    "distractors": {
+      "A": "The conjugation runs the other way: H X H = Z, so this drawing is a Z gate, not an X gate.",
+      "B": "Conjugating X by the phase gate rotates it inside the equatorial plane: S X S-dagger = Y.",
+      "C": "Z H Z is not a Pauli at all — it is the Hadamard reflected about the z axis, a mix of X and Z.",
+      "D": "H S H is a quarter turn about x, the square root of X. Squaring it would give X, but the drawn circuit itself is not equivalent to X."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operator-class",
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q053.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit.library import XGate\nfrom qiskit.quantum_info import Operator\n\n# The five circuits MUST mirror data/figures/s1-q053/generate.py — the rendered\n# figures are mpl drawings of exactly these circuits.\n\nVARIANTS = {\n    \"A\": (\"h\", \"x\", \"h\"),\n    \"B\": (\"s\", \"x\", \"sdg\"),\n    \"C\": (\"z\", \"h\", \"z\"),\n    \"D\": (\"h\", \"s\", \"h\"),\n    \"E\": (\"h\", \"z\", \"h\"),\n}\n\nTARGET = Operator(XGate())\n\n\ndef circuit(names):\n    qc = QuantumCircuit(1)\n    for n in names:\n        getattr(qc, n)(0)\n    return qc\n\n\ndef label(op):\n    \"\"\"Name the single-qubit unitary the drawn circuit implements.\"\"\"\n    from qiskit.circuit.library import HGate, IGate, SGate, XGate, YGate, ZGate\n    for name, gate in ((\"I\", IGate()), (\"X\", XGate()), (\"Y\", YGate()),\n                       (\"Z\", ZGate()), (\"H\", HGate()), (\"S\", SGate())):\n        if op.equiv(Operator(gate)):\n            return name\n    return \"none of I/X/Y/Z/H/S\"\n\n\nproven, evidence, observed = [], {}, {}\nfor key, names in sorted(VARIANTS.items()):\n    op = Operator(circuit(names))\n    match = op.equiv(TARGET)\n    observed[key] = label(op)\n    evidence[key] = (\n        \"drawn circuit \" + \"-\".join(n.upper() for n in names)\n        + f\" implements {label(op)}; equivalent to a single X gate up to global\"\n        f\" phase -> {match}\"\n    )\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure agent, task #28 wave 1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Image-option item: every option is an mpl render of one of the five circuits the proof builds, and the proof scores each with Operator.equiv against XGate."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

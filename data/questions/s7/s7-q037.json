@@ -1,0 +1,83 @@
+{
+  "id": "s7-q037",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "A sampler job that ran two circuits has been retrieved, and the figure overlays the counts of both of them under the legend that `labels` holds. Which expression was passed to `plot_histogram`?",
+  "code": "from qiskit.visualization import plot_histogram\nfrom qiskit_ibm_runtime import QiskitRuntimeService\n\nservice = QiskitRuntimeService()\njob = service.job(job_id)   # the two-circuit sampler job, run earlier\nresult = job.result()       # a PrimitiveResult holding two pub results\nlabels = [\"bell\", \"single\"]\n\nplot_histogram(<expression>, legend=labels)",
+  "options": [
+    {
+      "key": "A",
+      "text": "Index the result twice: `[result[0].data.meas.get_counts(), result[1].data.meas.get_counts()]`."
+    },
+    {
+      "key": "B",
+      "text": "Pass the counts of the first pub and let the two legend entries label it: `result[0].data.meas.get_counts()`."
+    },
+    {
+      "key": "C",
+      "text": "Ask each pub result for its counts: `[result[0].get_counts(), result[1].get_counts()]`."
+    },
+    {
+      "key": "D",
+      "text": "Ask each data bin for the counts of its named register: `[result[0].data.get_counts(\"meas\"), result[1].data.get_counts(\"meas\")]`."
+    },
+    {
+      "key": "E",
+      "text": "Iterate the result's list of per-circuit results: `[r.data.meas.get_counts() for r in result.results]`."
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "A"
+  ],
+  "figures": {
+    "generator": "figures/s7-q037/generate.py",
+    "color_essential": true,
+    "stem": {
+      "file": "figures/s7-q037/s7-q037-stem.svg",
+      "alt": "Bar chart with a Count axis, four outcome groups labelled 00, 01, 10 and 11, and two coloured bars in each group with a legend reading bell and single. The bell series is tall at 00 and 11 and tiny at 01 and 10; the single series is tall at 00 and 01 and tiny at 10 and 11."
+    }
+  },
+  "explanation": {
+    "correct": "A `PrimitiveResult` is a sequence of pub results, one per circuit submitted, so the two series come from indexing it twice. Each pub result exposes its measurement data through `.data`, whose fields are named after the circuit's classical registers — `measure_all` creates one called `meas` — and `BitArray.get_counts()` turns that per-shot record into the tallies `plot_histogram` wants. Passing a list of two counts dictionaries is what makes the drawing an overlay of two executions.",
+    "distractors": {
+      "B": "Only one execution is passed while the legend still names two, and `plot_histogram` matches legend entries element-wise against the executions: it raises a `VisualizationError` about the legend length rather than drawing a second series.",
+      "C": "`get_counts` does not live on the pub result. `SamplerPubResult` carries `data` and `metadata`; going straight to counts from it raises an `AttributeError`.",
+      "D": "The data bin has no `get_counts` either — it is a container of named fields, so you reach the register first (`data.meas`) and call `get_counts()` on the BitArray it holds.",
+      "E": "`results` is the Qiskit V1 result container. A `PrimitiveResult` is itself the sequence of pub results, so this attribute does not exist in the V2 primitives."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/save-jobs"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q037.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import matplotlib.pyplot as plt\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.visualization import plot_histogram\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\n# TARGET is what the stem figure draws. It MUST stay in sync with\n# data/figures/s7-q037/generate.py, which asserts that the two-pub run it\n# renders produces exactly these series (as shares of the shot count). The retrieval call in the stem is\n# reproduced here by running the same two-circuit job locally: what the\n# question tests is the container path into the PrimitiveResult, not the\n# network round trip.\nTARGET = {\n    \"labels\": (\"00\", \"01\", \"10\", \"11\"),\n    \"bell\": (0.47, 0.02, 0.03, 0.48),\n    \"single\": (0.49, 0.5, 0.01, 0.0),\n}\nLABELS = [\"bell\", \"single\"]\nSHOTS = 1000\n\nBACKEND = FakeManilaV2()\nPM = generate_preset_pass_manager(optimization_level=1, backend=BACKEND,\n                                  seed_transpiler=42)\n\nbell = QuantumCircuit(2)\nbell.h(0)\nbell.cx(0, 1)\nbell.measure_all()\nsingle = QuantumCircuit(2)\nsingle.h(0)\nsingle.measure_all()\n\nsampler = SamplerV2(mode=BACKEND)\nsampler.options.simulator.seed_simulator = 21\nresult = sampler.run([PM.run(bell), PM.run(single)], shots=SHOTS).result()\n\n# One callable per option key, mirroring that option's expression.\nEXPRESSIONS = {\n    \"A\": lambda: [result[0].data.meas.get_counts(),\n                  result[1].data.meas.get_counts()],\n    \"B\": lambda: result[0].data.meas.get_counts(),\n    \"C\": lambda: [result[0].get_counts(), result[1].get_counts()],\n    \"D\": lambda: [result[0].data.get_counts(\"meas\"),\n                  result[1].data.get_counts(\"meas\")],\n    \"E\": lambda: [r.data.meas.get_counts() for r in result.results],\n}\n\n\ndef drawn(arg):\n    \"\"\"The two overlaid series plot_histogram puts on the axes.\"\"\"\n    fig = plot_histogram(arg, legend=LABELS)\n    ax = fig.axes[0]\n    labels = tuple(t.get_text() for t in ax.get_xticklabels())\n    heights = [round(float(c[0].get_height()) / SHOTS, 2) for c in ax.containers]\n    n = len(labels)\n    series = tuple(tuple(heights[i:i + n]) for i in range(0, len(heights), n))\n    legend = tuple(t.get_text() for t in ax.get_legend().get_texts())\n    plt.close(fig)\n    return labels, series, legend\n\n\ntarget = (TARGET[\"labels\"], (TARGET[\"bell\"], TARGET[\"single\"]), tuple(LABELS))\n\n\ndef fmt(d):\n    labels, series, legend = d\n    body = \"; \".join(\n        name + \" \" + \" \".join(f\"{n}:{h:.2f}\" for n, h in zip(labels, s))\n        for name, s in zip(legend, series)\n    )\n    return f\"{len(series)} overlaid series, share of the shots ({body})\"\n\n\nproven, evidence, observed = [], {}, {}\nfor key, expr in sorted(EXPRESSIONS.items()):\n    try:\n        d = drawn(expr())\n    except Exception as exc:  # noqa: BLE001 - the refutation is the exception\n        msg = \" \".join(str(exc).split())\n        observed[key] = f\"{type(exc).__name__}: {msg}\"\n        evidence[key] = (\n            f\"the expression fails with {type(exc).__name__} ({msg}), so it\"\n            \" cannot have drawn the figure -> match=False\"\n        )\n        continue\n    match = d == target\n    observed[key] = fmt(d)\n    evidence[key] = (\n        f\"the call draws {fmt(d)}; the figure shows {fmt(target)}\"\n        f\" -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"figure\"] = fmt(target)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure agent, task #28 wave 1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Stem-figure item: the two-series overlay is the question, the options are candidate container paths into the retrieved PrimitiveResult. The proof reproduces the retrieved result with a local seeded two-pub run (the container structure is what is under test, not the network round trip) and draws every candidate expression. color_essential is true: the two series are told apart by colour plus the legend."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

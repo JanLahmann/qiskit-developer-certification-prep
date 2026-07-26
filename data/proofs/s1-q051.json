@@ -1,0 +1,100 @@
+{
+  "question": "s1-q051",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "sequence prepares qubit 0 arrow (+0.00, +1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00); the figure draws qubit 0 arrow (+0.00, -1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00) -> match=False",
+      "B": "sequence prepares qubit 0 arrow (+1.00, +0.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00); the figure draws qubit 0 arrow (+0.00, -1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00) -> match=False",
+      "C": "sequence prepares qubit 0 arrow (+0.00, +0.00, -1.00) | qubit 1 arrow (+0.00, -1.00, +0.00); the figure draws qubit 0 arrow (+0.00, -1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00) -> match=False",
+      "D": "sequence prepares qubit 0 arrow (+0.00, -1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00); the figure draws qubit 0 arrow (+0.00, -1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00) -> match=True",
+      "E": "sequence prepares qubit 0 arrow (+0.00, -1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, +1.00); the figure draws qubit 0 arrow (+0.00, -1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00) -> match=False"
+    },
+    "observed": {
+      "A": [
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0
+        ]
+      ],
+      "C": [
+        [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0
+        ]
+      ],
+      "D": [
+        [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0
+        ]
+      ],
+      "E": [
+        [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "figure": [
+        [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0
+        ]
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.04,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"sequence prepares qubit 0 arrow (+0.00, +1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00); the figure draws qubit 0 arrow (+0.00, -1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00) -> match=False\", \"B\": \"sequence prepares qubit 0 arrow (+1.00, +0.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00); the figure draws qubit 0 arrow (+0.00, -1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00) -> match=False\", \"C\": \"sequence prepares qubit 0 arrow (+0.00, +0.00, -1.00) | qubit 1 arrow (+0.00, -1.00, +0.00); the figure draws qubit 0 arrow (+0.00, -1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00) -> match=False\", \"D\": \"sequence prepares qubit 0 arrow (+0.00, -1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00); the figure draws qubit 0 arrow (+0.00, -1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00) -> match=True\", \"E\": \"sequence prepares qubit 0 arrow (+0.00, -1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, +1.00); the figure draws qubit 0 arrow (+0.00, -1.00, +0.00) | qubit 1 arrow (+0.00, +0.00, -1.00) -> match=False\"}, \"observed\": {\"A\": [[0.0, 1.0, 0.0], [0.0, 0.0, -1.0]], \"B\": [[1.0, 0.0, 0.0], [0.0, 0.0, -1.0]], \"C\": [[0.0, 0.0, -1.0], [0.0, -1.0, 0.0]], \"D\": [[0.0, -1.0, 0.0], [0.0, 0.0, -1.0]], \"E\": [[0.0, -1.0, 0.0], [0.0, 0.0, 1.0]], \"figure\": [[0.0, -1.0, 0.0], [0.0, 0.0, -1.0]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

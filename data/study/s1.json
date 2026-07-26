@@ -23,36 +23,227 @@
     }
   ],
   "facts": [
-    {"objective": "s1o1", "fact_md": "Pauli labels are little-endian: `Pauli('IX')` is I ⊗ X — X on qubit 0, identity on qubit 1 — and indexing the object returns the qubit-0 factor first.", "source": {"type": "proof", "ref": "s1-q012"}},
-    {"objective": "s1o1", "fact_md": "`Pauli('XZ').to_matrix()` is a 4×4 matrix equal to `np.kron(X, Z)`: X on qubit 1, Z on qubit 0, with no phase prefix in the label.", "source": {"type": "proof", "ref": "s1-q010"}},
-    {"objective": "s1o1", "fact_md": "To place Z on qubit 0 you must write `Pauli('IZ')` — `Pauli('ZI')` is the opposite operator, and `.adjoint()` does not reverse qubit order (Hermitian labels come back unchanged).", "source": {"type": "proof", "ref": "s1-q020"}},
-    {"objective": "s1o1", "fact_md": "`a.tensor(b)` is a ⊗ b with the CALLER on the higher-index qubit: `Pauli('X').tensor(Pauli('Y'))` has label `'XY'`. `expand` is the mirror image (b ⊗ a).", "source": {"type": "proof", "ref": "s1-q016"}},
-    {"objective": "s1o1", "fact_md": "Pauli products keep their phase: X·Y = iZ, Y·Z = iX, Z·X = iY via `.dot`; reversing the operands conjugates it (Y·X = `-iZ`, Z·Y = `-iX`).", "source": {"type": "proof", "ref": "s1-q014"}},
-    {"objective": "s1o1", "fact_md": "`A.compose(B)` returns the operator with matrix B·A (circuit order — A acts first); `A.compose(B, front=True)` and `A.dot(B)` give A·B.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/operator-class"}},
-    {"objective": "s1o1", "fact_md": "Two multi-qubit Paulis commute iff they anticommute on an EVEN number of positions: `Pauli('XX').commutes(Pauli('ZZ'))` is True, `Pauli('XI').commutes(Pauli('ZZ'))` is False.", "source": {"type": "proof", "ref": "s1-q017"}},
-    {"objective": "s1o1", "fact_md": "`SparsePauliOp.simplify()` SUMS the coefficients of duplicate terms (Z with 1 and Z with 2 becomes Z with 3) — it never averages them and never keeps only the largest.", "source": {"type": "proof", "ref": "s1-q018"}},
-    {"objective": "s1o2", "fact_md": "`Statevector.from_label('10')` reads the label as |q1 q0⟩, so the amplitude 1 lands at index 2 of a 4-amplitude state.", "source": {"type": "proof", "ref": "s1-q030"}},
-    {"objective": "s1o2", "fact_md": "`Statevector.from_int(2, dims=4)` accepts an integer `dims` (the total dimension) and returns the single basis state at index 2.", "source": {"type": "proof", "ref": "s1-q038"}},
-    {"objective": "s1o2", "fact_md": "`probabilities_dict()` keys are q_(n−1)…q_0 bitstrings: applying X to qubit 0 of a two-qubit circuit gives the key `'01'` with probability 1.0, never `'10'` and never an integer index.", "source": {"type": "proof", "ref": "s1-q031"}},
-    {"objective": "s1o2", "fact_md": "`sv.probabilities([0])` marginalizes over the other qubits and returns an ndarray of length 2 (a Bell state gives 0.5/0.5) — not a dict.", "source": {"type": "proof", "ref": "s1-q042"}},
-    {"objective": "s1o2", "fact_md": "`Operator(qc)` for an H on qubit 0 of a two-qubit circuit is the 4×4 matrix I ⊗ H — qubit 0 sits on the RIGHT of the tensor product, not the left.", "source": {"type": "proof", "ref": "s1-q037"}},
-    {"objective": "s1o2", "fact_md": "`Statevector.from_instruction` and `Statevector(qc)` both raise `QiskitError: Cannot apply instruction with classical bits: measure` on a measured circuit; there is no `shots`/`backend` parameter and appending a save instruction does not help.", "source": {"type": "proof", "ref": "s1-q036"}},
-    {"objective": "s1o2", "fact_md": "S is the square root of Z with matrix diag(1, i) — a π/2 phase, the same operation as the phase gate `p(π/2)`.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SGate"}},
-    {"objective": "s1o2", "fact_md": "`sdg` is what applies the −i phase: after H, `s` gives (|0⟩ + i|1⟩)/√2 and `sdg` gives (|0⟩ − i|1⟩)/√2; `z` would give −1 and `tdg` would give e^(−iπ/4).", "source": {"type": "proof", "ref": "s1-q024"}},
-    {"objective": "s1o2", "fact_md": "T = diag(1, e^(iπ/4)): on |1⟩ the statevector records [0, 0.7071+0.7071j] — Qiskit keeps the factor explicitly even though it is only a global phase there.", "source": {"type": "proof", "ref": "s1-q022"}},
-    {"objective": "s1o2", "fact_md": "RZ(θ) = diag(e^(−iθ/2), e^(+iθ/2)) splits the phase: RZ(π/2)|0⟩ is [0.7071−0.7071j, 0] while the probabilities stay [1.0, 0.0].", "source": {"type": "proof", "ref": "s1-q026"}},
-    {"objective": "s1o2", "fact_md": "`Operator.equiv` ignores a global phase and `==` does not: Z versus RZ(π) is equiv-True but ==-False; T versus RZ(π/2) is False both ways (that pairing is S).", "source": {"type": "proof", "ref": "s1-q033"}},
-    {"objective": "s1o2", "fact_md": "For RY(θ)|0⟩ the probability of outcome 1 is sin²(θ/2) — θ = π/3 gives exactly 0.25.", "source": {"type": "proof", "ref": "s1-q039"}},
-    {"objective": "s1o2", "fact_md": "For the same state ⟨Z⟩ = cos θ — at θ = π/3 the expectation value is 0.5, not sin/cos of the half angle.", "source": {"type": "proof", "ref": "s1-q040"}},
-    {"objective": "s1o2", "fact_md": "Setting `qc.global_phase` changes nothing observable: exact probabilities are identical and a seeded sampling run returns the same counts as the phase-free circuit.", "source": {"type": "proof", "ref": "s1-q027"}},
-    {"objective": "s1o2", "fact_md": "`efficient_su2(n, reps=r)` has `2·n·(r+1)` free parameters — an `ry` and an `rz` on every qubit, and one rotation layer MORE than `reps` because a final rotation layer follows the last entangler: `efficient_su2(4, reps=2)` gives 24, and `skip_final_rotation_layer=True` drops it to 16.", "source": {"type": "proof", "ref": "s1-q048"}},
-    {"objective": "s1o2", "fact_md": "`real_amplitudes` is the RY-only sibling of `efficient_su2`: its gate set is exactly `ry` + `cx` (so `n·(reps+1)` parameters, 12 at the default reps=3 on 3 qubits), while `efficient_su2` adds the `rz` layer. `quantum_volume` carries no free parameters at all.", "source": {"type": "proof", "ref": "s1-q050"}},
-    {"objective": "s1o2", "fact_md": "`QFTGate(n)` takes only a qubit count (no `do_swaps`, no `approximation_degree` — those belonged to the deprecated `QFT` class). One `decompose()` opens it into n `h`, n(n−1)/2 `cp` and ⌊n/2⌋ `swap`: for n = 4 that is `{'h': 4, 'cp': 6, 'swap': 2}`, never `cx` (translating `cp` to a hardware basis is the transpiler's job).", "source": {"type": "proof", "ref": "s1-q049"}}
+    {
+      "objective": "s1o1",
+      "fact_md": "Pauli labels are little-endian: `Pauli('IX')` is I ⊗ X — X on qubit 0, identity on qubit 1 — and indexing the object returns the qubit-0 factor first.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q012"
+      }
+    },
+    {
+      "objective": "s1o1",
+      "fact_md": "`Pauli('XZ').to_matrix()` is a 4×4 matrix equal to `np.kron(X, Z)`: X on qubit 1, Z on qubit 0, with no phase prefix in the label.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q010"
+      }
+    },
+    {
+      "objective": "s1o1",
+      "fact_md": "To place Z on qubit 0 you must write `Pauli('IZ')` — `Pauli('ZI')` is the opposite operator, and `.adjoint()` does not reverse qubit order (Hermitian labels come back unchanged).",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q020"
+      }
+    },
+    {
+      "objective": "s1o1",
+      "fact_md": "`a.tensor(b)` is a ⊗ b with the CALLER on the higher-index qubit: `Pauli('X').tensor(Pauli('Y'))` has label `'XY'`. `expand` is the mirror image (b ⊗ a).",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q016"
+      }
+    },
+    {
+      "objective": "s1o1",
+      "fact_md": "Pauli products keep their phase: X·Y = iZ, Y·Z = iX, Z·X = iY via `.dot`; reversing the operands conjugates it (Y·X = `-iZ`, Z·Y = `-iX`).",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q014"
+      }
+    },
+    {
+      "objective": "s1o1",
+      "fact_md": "`A.compose(B)` returns the operator with matrix B·A (circuit order — A acts first); `A.compose(B, front=True)` and `A.dot(B)` give A·B.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/operator-class"
+      }
+    },
+    {
+      "objective": "s1o1",
+      "fact_md": "Two multi-qubit Paulis commute iff they anticommute on an EVEN number of positions: `Pauli('XX').commutes(Pauli('ZZ'))` is True, `Pauli('XI').commutes(Pauli('ZZ'))` is False.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q017"
+      }
+    },
+    {
+      "objective": "s1o1",
+      "fact_md": "`SparsePauliOp.simplify()` SUMS the coefficients of duplicate terms (Z with 1 and Z with 2 becomes Z with 3) — it never averages them and never keeps only the largest.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q018"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "`Statevector.from_label('10')` reads the label as |q1 q0⟩, so the amplitude 1 lands at index 2 of a 4-amplitude state.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q030"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "`Statevector.from_int(2, dims=4)` accepts an integer `dims` (the total dimension) and returns the single basis state at index 2.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q038"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "`probabilities_dict()` keys are q_(n−1)…q_0 bitstrings: applying X to qubit 0 of a two-qubit circuit gives the key `'01'` with probability 1.0, never `'10'` and never an integer index.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q031"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "`sv.probabilities([0])` marginalizes over the other qubits and returns an ndarray of length 2 (a Bell state gives 0.5/0.5) — not a dict.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q042"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "`Operator(qc)` for an H on qubit 0 of a two-qubit circuit is the 4×4 matrix I ⊗ H — qubit 0 sits on the RIGHT of the tensor product, not the left.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q037"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "`Statevector.from_instruction` and `Statevector(qc)` both raise `QiskitError: Cannot apply instruction with classical bits: measure` on a measured circuit; there is no `shots`/`backend` parameter and appending a save instruction does not help.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q036"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "S is the square root of Z with matrix diag(1, i) — a π/2 phase, the same operation as the phase gate `p(π/2)`.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SGate"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "`sdg` is what applies the −i phase: after H, `s` gives (|0⟩ + i|1⟩)/√2 and `sdg` gives (|0⟩ − i|1⟩)/√2; `z` would give −1 and `tdg` would give e^(−iπ/4).",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q024"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "T = diag(1, e^(iπ/4)): on |1⟩ the statevector records [0, 0.7071+0.7071j] — Qiskit keeps the factor explicitly even though it is only a global phase there.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q022"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "RZ(θ) = diag(e^(−iθ/2), e^(+iθ/2)) splits the phase: RZ(π/2)|0⟩ is [0.7071−0.7071j, 0] while the probabilities stay [1.0, 0.0].",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q026"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "`Operator.equiv` ignores a global phase and `==` does not: Z versus RZ(π) is equiv-True but ==-False; T versus RZ(π/2) is False both ways (that pairing is S).",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q033"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "For RY(θ)|0⟩ the probability of outcome 1 is sin²(θ/2) — θ = π/3 gives exactly 0.25.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q039"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "For the same state ⟨Z⟩ = cos θ — at θ = π/3 the expectation value is 0.5, not sin/cos of the half angle.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q040"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "Setting `qc.global_phase` changes nothing observable: exact probabilities are identical and a seeded sampling run returns the same counts as the phase-free circuit.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q027"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "`efficient_su2(n, reps=r)` has `2·n·(r+1)` free parameters — an `ry` and an `rz` on every qubit, and one rotation layer MORE than `reps` because a final rotation layer follows the last entangler: `efficient_su2(4, reps=2)` gives 24, and `skip_final_rotation_layer=True` drops it to 16.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q048"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "`real_amplitudes` is the RY-only sibling of `efficient_su2`: its gate set is exactly `ry` + `cx` (so `n·(reps+1)` parameters, 12 at the default reps=3 on 3 qubits), while `efficient_su2` adds the `rz` layer. `quantum_volume` carries no free parameters at all.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q050"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "`QFTGate(n)` takes only a qubit count (no `do_swaps`, no `approximation_degree` — those belonged to the deprecated `QFT` class). One `decompose()` opens it into n `h`, n(n−1)/2 `cp` and ⌊n/2⌋ `swap`: for n = 4 that is `{'h': 4, 'cp': 6, 'swap': 2}`, never `cx` (translating `cp` to a hardware basis is the transpiler's job).",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q049"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "Reading a Bloch drawing: `h` puts the arrow on +x, and the phase gate then swings it inside the equator — `sdg` to −y, `s` to +y. A sphere drawn with its arrow at a pole means that qubit was never rotated off the z axis (`z` on |0> is a phase only, so it leaves the arrow at |0>).",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q051"
+      }
+    },
+    {
+      "objective": "s1o2",
+      "fact_md": "A `plot_state_city` figure IS the density matrix: left panel Re(ρ), right panel Im(ρ). A *relative* phase moves the coherence between the panels — after `h(0); cx(0,1); s(1)` the two 0.5 populations stay real while the |00><11| cell becomes −0.5i, so the imaginary panel is where `s` becomes visible.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q052"
+      }
+    }
   ],
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (s1 quick-study generation agent)",
     "fact_checked": true,
-    "notes": "Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json; the two citation-sourced facts were checked by curl -L fetching the page text (operator-class states A.compose(B) = B.A and front=True = A.B; the SGate API page states S = sqrt(Z), diag(1, i), pi/2 phase). Primer claims not covered by a proof (compose/dot on Pauli labels, expand as the tensor mirror, S = p(pi/2), T*T = S, S*S = Z, sdg = S.adjoint(), Statevector.evolve returning a new object, from_sparse_list index pairing) were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0, PYTHONPATH=pipeline/harness) or read off the fetched documentation page. Consistent with the REVIEW_LEDGER s1 pool wave; no contradictions. 2026-07-26 official-alignment fix wave: three circuit-library facts added (s1o2), each sourced by a NEW executed question written in the same wave — s1-q048 (efficient_su2 parameter count, verified by execution: 24 with reps=2, 16 with skip_final_rotation_layer), s1-q050 (gate sets of real_amplitudes / efficient_su2 / quantum_volume, verified by count_ops on the built circuits) and s1-q049 (QFTGate constructor surface and one-level decomposition {'h': 4, 'cp': 6, 'swap': 2}, verified by execution incl. the TypeError for do_swaps). fact_checked stays true because every one of those numbers was read off the executed proof artifact, not from documentation."
+    "notes": "Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json; the two citation-sourced facts were checked by curl -L fetching the page text (operator-class states A.compose(B) = B.A and front=True = A.B; the SGate API page states S = sqrt(Z), diag(1, i), pi/2 phase). Primer claims not covered by a proof (compose/dot on Pauli labels, expand as the tensor mirror, S = p(pi/2), T*T = S, S*S = Z, sdg = S.adjoint(), Statevector.evolve returning a new object, from_sparse_list index pairing) were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0, PYTHONPATH=pipeline/harness) or read off the fetched documentation page. Consistent with the REVIEW_LEDGER s1 pool wave; no contradictions. 2026-07-26 official-alignment fix wave: three circuit-library facts added (s1o2), each sourced by a NEW executed question written in the same wave — s1-q048 (efficient_su2 parameter count, verified by execution: 24 with reps=2, 16 with skip_final_rotation_layer), s1-q050 (gate sets of real_amplitudes / efficient_su2 / quantum_volume, verified by count_ops on the built circuits) and s1-q049 (QFTGate constructor surface and one-level decomposition {'h': 4, 'cp': 6, 'swap': 2}, verified by execution incl. the TypeError for do_swaps). fact_checked stays true because every one of those numbers was read off the executed proof artifact, not from documentation. Task #28 figure wave (2026-07-26) appended two facts sourced from the new figure questions of this section; both were checked against the stored proof evidence."
   }
 }

@@ -1,0 +1,102 @@
+{
+  "id": "s1-q052",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which `plot_state_city` figure does this code produce?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_state_city\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.s(1)\n\nplot_state_city(Statevector(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s1-q052/generate.py",
+    "color_essential": false,
+    "platform_sensitive": true,
+    "options": {
+      "A": {
+        "file": "figures/s1-q052/s1-q052-A.svg",
+        "alt": "City plot of a two-qubit density matrix: the real-part panel carries two bars of height 0.5 on the |00><00| and |11><11| diagonal cells; the imaginary-part panel carries two off-diagonal bars, positive on the |00><11| cell and negative on the |11><00| cell."
+      },
+      "B": {
+        "file": "figures/s1-q052/s1-q052-B.svg",
+        "alt": "City plot of a two-qubit density matrix: the real-part panel carries two bars of height 0.5 on the |00><00| and |11><11| diagonal cells; the imaginary-part panel carries two off-diagonal bars, negative on the |00><11| cell and positive on the |11><00| cell."
+      },
+      "C": {
+        "file": "figures/s1-q052/s1-q052-C.svg",
+        "alt": "City plot of a two-qubit density matrix: the real-part panel carries two diagonal bars of height 0.5 plus two negative off-diagonal bars on the |00><11| and |11><00| cells; the imaginary-part panel is flat."
+      },
+      "D": {
+        "file": "figures/s1-q052/s1-q052-D.svg",
+        "alt": "City plot of a two-qubit density matrix: half of the sixteen cells of the real-part panel carry a bar of magnitude 0.25 and the rest are flat, and the imaginary-part panel is filled in the complementary pattern with bars of the same magnitude."
+      },
+      "E": {
+        "file": "figures/s1-q052/s1-q052-E.svg",
+        "alt": "City plot of a two-qubit density matrix: the real-part panel carries two diagonal bars of height 0.5 plus two positive off-diagonal bars on the |00><11| and |11><00| cells; the imaginary-part panel is flat."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "A city plot draws the density matrix: the left panel is its real part, the right panel its imaginary part. `h(0)` and `cx(0, 1)` build (|00> + |11>)/sqrt(2), and `s(1)` multiplies the |11> amplitude by i, giving (|00> + i|11>)/sqrt(2). The populations stay at 0.5 on the |00> and |11> diagonal cells, but the coherence moves out of the real panel: rho[|00><11|] = -0.5i and rho[|11><00|] = +0.5i, so the imaginary panel gains the two off-diagonal bars with those signs.",
+    "distractors": {
+      "A": "S versus S-dagger: `sdg` would multiply the |11> amplitude by -i, which flips the sign of both imaginary off-diagonal bars relative to the drawing this code produces.",
+      "C": "`s` is a quarter turn, not a half turn: `z` would multiply |11> by -1, keeping the coherence real and negative and leaving the imaginary panel flat.",
+      "D": "Entanglement dropped: replacing `cx` with a second `h` gives a product state, whose density matrix has a bar in every one of the sixteen cells instead of only on the |00>/|11> block.",
+      "E": "Treats the phase gate as unobservable: without `s` the coherence stays real and positive, so the imaginary panel would be flat. The phase here is relative, not global, so it does show up."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q052.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import DensityMatrix, Statevector\n\n# The five states MUST mirror data/figures/s1-q052/generate.py — the rendered\n# figures are plot_state_city drawings of exactly these states, and a city plot\n# IS the density matrix (real part in the left panel, imaginary in the right).\n\n\ndef state(*gates):\n    qc = QuantumCircuit(2)\n    for name, *args in gates:\n        getattr(qc, name)(*args)\n    return Statevector(qc)\n\n\ndef stem_state():\n    return state((\"h\", 0), (\"cx\", 0, 1), (\"s\", 1))\n\n\nVARIANTS = {\n    \"A\": state((\"h\", 0), (\"cx\", 0, 1), (\"sdg\", 1)),\n    \"B\": stem_state(),\n    \"C\": state((\"h\", 0), (\"cx\", 0, 1), (\"z\", 1)),\n    \"D\": state((\"h\", 0), (\"h\", 1), (\"s\", 1)),\n    \"E\": state((\"h\", 0), (\"cx\", 0, 1)),\n}\n\n\ndef drawn(st):\n    \"\"\"What plot_state_city puts on its two panels: Re(rho) and Im(rho).\"\"\"\n    rho = np.round(DensityMatrix(st).data, 6)\n    return (tuple(map(tuple, rho.real.tolist())), tuple(map(tuple, rho.imag.tolist())))\n\n\ndef describe(bars):\n    re, im = bars\n    n_re = sum(1 for row in re for v in row if abs(v) > 1e-9)\n    n_im = sum(1 for row in im for v in row if abs(v) > 1e-9)\n    corner = re[0][3]\n    corner_i = im[0][3]\n    return (f\"real panel has {n_re} non-zero bars, imaginary panel has {n_im}; \"\n            f\"the |00><11| cell is {corner:+.2f} real / {corner_i:+.2f} imaginary\")\n\n\ntarget = drawn(stem_state())\nproven, evidence, observed = [], {}, {}\nfor key, st in sorted(VARIANTS.items()):\n    bars = drawn(st)\n    match = bars == target\n    observed[key] = describe(bars)\n    evidence[key] = (\n        f\"figure: {describe(bars)}; the stem code draws {describe(target)} -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = describe(target)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure agent, task #28 wave 1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Image-option item. The five option figures are plot_state_city renders of exactly the five states the proof builds; the proof compares the drawn density matrices cell by cell. plot_state_city uses mplot3d, hence platform_sensitive."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

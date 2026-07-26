@@ -43,43 +43,283 @@
     }
   ],
   "facts": [
-    {"objective": "s6o1", "fact_md": "`resilience_level` accepts only the integers 0, 1 and 2 — `3`, `4`, `5`, `-1` and `1.5` all raise a pydantic `ValidationError` about the 0..2 range.", "source": {"type": "proof", "ref": "s6-q014"}},
-    {"objective": "s6o1", "fact_md": "The level table: 0 = no mitigation, 1 = the DEFAULT and applies readout mitigation via TREX (measurement twirling), 2 = level 1 plus zero-noise extrapolation and gate twirling.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"}},
-    {"objective": "s6o1", "fact_md": "Options you set yourself are applied IN ADDITION to the level's base set: level 0 turns `zne_mitigation` off, but an explicit `resilience.zne_mitigation = True` overrides that and switches ZNE back on.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"}},
-    {"objective": "s6o1", "fact_md": "Higher levels build more resilience by post-processing a larger ensemble of circuits: more accurate, less biased expectation values at the cost of LONGER processing time — never a faster or cheaper job.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"}},
-    {"objective": "s6o1", "fact_md": "The ZNE scale factors live at `options.resilience.zne.noise_factors`; `zne.factors` (wrong name) and `resilience.noise_factors` (right name, wrong nesting level) are both `no_such_attribute` validation errors.", "source": {"type": "proof", "ref": "s6-q020"}},
-    {"objective": "s6o1", "fact_md": "`default_precision` must be strictly positive: assigning `0` raises `ValidationError`, and `EstimatorOptions(default_precision=0)` hits the identical validator — the constructor is not an escape hatch.", "source": {"type": "proof", "ref": "s6-q031"}},
-    {"objective": "s6o1", "fact_md": "`EstimatorV2.run()`'s only execution keyword is `precision=`; `shots=`, `default_precision=` and `resilience_level=` are all `TypeError: unexpected keyword argument`, and `options.precision` is a `ValidationError` (the field is `default_precision`).", "source": {"type": "proof", "ref": "s6-q016"}},
-    {"objective": "s6o1", "fact_md": "ZNE runs the circuit at several amplified noise rates (digital gate folding) and extrapolates back to the zero-noise limit; it often improves results but 'is not guaranteed to produce an unbiased result'.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"}},
-    {"objective": "s6o1", "fact_md": "PEC writes the ideal circuit as a quasi-probability combination of noisy ones: unbiased, but with a sampling overhead scaling quadratically in gamma = sum of |quasi-probabilities|, which itself grows exponentially with circuit depth.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"}},
-    {"objective": "s6o1", "fact_md": "Individual switches: TREX is `resilience.measure_mitigation = True`, ZNE is `resilience.zne_mitigation = True`, PEC is `resilience.pec_mitigation = True`, and dynamical decoupling — error SUPPRESSION, pulsing idle qubits — is `dynamical_decoupling.enable = True`.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"}},
-    {"objective": "s6o1", "fact_md": "Documented defaults worth memorizing: `resilience_level` 1, `measure_mitigation` True, `zne_mitigation` and `pec_mitigation` False, `zne.noise_factors` (1, 3, 5), `zne.amplifier` gate_folding, `dynamical_decoupling.enable` False (sequence XX), `twirling.enable_measure` True but `enable_gates` False.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-options"}},
-    {"objective": "s6o1", "fact_md": "PEC is documented as incompatible with gate-folding ZNE and with PEA (and with fractional gates) — the two mitigation flags are mutually exclusive, not additive.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-options"}},
-    {"objective": "s6o1", "fact_md": "An option you never set holds the special value `Unset` and the server default applies; set values by attribute path (`options.resilience.zne.noise_factors = [1, 3, 5]`) or in bulk with `options.update(...)`.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-options"}},
-    {"objective": "s6o2", "fact_md": "`result[0].data.evs` holds the estimate(s) and `result[0].data.stds` their standard errors; `data.expectation_values` is an `AttributeError` and `metadata['evs']` a `KeyError`.", "source": {"type": "proof", "ref": "s6-q010"}},
-    {"objective": "s6o2", "fact_md": "PUB slots are positional — (circuit, observables, parameter_values, precision). A float in the third slot raises `ValueError: Length of () inconsistent with last dimension of [0.01]`; moving it to the fourth slot runs cleanly.", "source": {"type": "proof", "ref": "s6-q025"}},
-    {"objective": "s6o2", "fact_md": "Even a single task must be wrapped in a list: `est.run([(isa, iobs)])`. A bare circuit raises `ValueError: An invalid Estimator pub-like was given`, and `run(circuits=..., observables=...)` is a V1 habit that raises `TypeError`.", "source": {"type": "proof", "ref": "s6-q012"}},
-    {"objective": "s6o2", "fact_md": "Width mismatch is the signature Estimator bug: a 2-qubit observable against a 5-qubit ISA circuit raises `ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2)`; only `obs.apply_layout(isa.layout)` fixes it (pinning `initial_layout` does not).", "source": {"type": "proof", "ref": "s6-q013"}},
-    {"objective": "s6o2", "fact_md": "`SparsePauliOp('ZZ').apply_layout([2, 0], num_qubits=4)` returns `'IZIZ'` — label characters pair with the index list left-to-right while the printed label stays little-endian.", "source": {"type": "proof", "ref": "s6-q033"}},
-    {"objective": "s6o2", "fact_md": "`SparsePauliOp.from_sparse_list([('Z', [0], 1.0)], num_qubits=3)` pads with identities to `'IIZ'` — it never raises and never leaves a bare `'Z'`.", "source": {"type": "proof", "ref": "s6-q035"}},
-    {"objective": "s6o2", "fact_md": "`SparsePauliOp.from_list([('ZZ', 1.0), ('XX', 0.5)])` is the valid two-qubit build; mixing label widths raises `ValueError: The 1th Pauli is defined over 1 qubits`, and `from_sparse_list` without `num_qubits` is a `TypeError` (it is required there).", "source": {"type": "proof", "ref": "s6-q024"}},
-    {"objective": "s6o2", "fact_md": "One PUB with a flat Python list of three observables returns `evs` of shape `(3,)` — not `(3, 1)`, not `(1, 3)`, and not `(3, 2)`.", "source": {"type": "proof", "ref": "s6-q030"}},
-    {"objective": "s6o2", "fact_md": "Two observables `['ZI', 'IZ']` on a circuit with X on qubit 0 broadcast to `[1.0, -1.0]` of shape `(2,)`: the little-endian label rule decides which value is which, and the observables are broadcast, never summed.", "source": {"type": "proof", "ref": "s6-q015"}},
-    {"objective": "s6o2", "fact_md": "A multi-term `SparsePauliOp` is ONE observable: `from_list([('X', 3.0)])` on |+⟩ returns a 0-d `float64` array holding 3.0 — never a length-1 array, never one value per Pauli term, never a complex number.", "source": {"type": "proof", "ref": "s6-q022"}},
-    {"objective": "s6o2", "fact_md": "Coefficients are contracted before you see them: 0.5·ZZ + 0.5·XX on a Bell state comes back as the single scalar 1.0.", "source": {"type": "proof", "ref": "s6-q011"}},
-    {"objective": "s6o2", "fact_md": "Binding one parameter to `[0, π/2, π]` against a single observable gives `evs` of shape `(3,)` equal to `[1.0, 0.0, -1.0]` — the ⟨Z⟩ = cos θ curve, one flat value per parameter set.", "source": {"type": "proof", "ref": "s6-q023"}},
-    {"objective": "s6o2", "fact_md": "Halving the target precision quadruples the shot budget: the measured standard error falls from 0.0195 at the baseline 2500 shots to 0.0104 at 4x the shots, while 2x only reaches 0.0137 (a sqrt law would have predicted ~1.4x).", "source": {"type": "proof", "ref": "s6-q017"}},
-    {"objective": "s6o2", "fact_md": "The reference `StatevectorEstimator` reports `stds` of exactly `0.0` — an exact calculation has no sampling uncertainty — and it stays 0.0 even when `run()` is asked for a tighter precision.", "source": {"type": "proof", "ref": "s6-q037"}},
-    {"objective": "s6o2", "fact_md": "An Estimator PUB holds at most four values (circuit, observables array, parameter values, optional target precision), and the Estimator returns one expectation value per element of the broadcast shape.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"}},
-    {"objective": "s6o2", "fact_md": "Each `SparsePauliOp` counts as a single element for broadcasting: `SparsePauliOp.from_list(['XX', 'XY', 'IZ'])` has shape `()`, while the same three ops in a Python list have shape `(3,)`.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"}},
-    {"objective": "s6o2", "fact_md": "Commuting observables are only estimated from the SAME measurement when they are grouped in one PUB; the same circuit in two PUBs means two measurement bases and two sets of circuits.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"}},
-    {"objective": "s6o2", "fact_md": "Precision precedence, highest first: a precision inside the PUB, then `run(precision=...)`, then twirling's `num_randomizations` × `shots_per_randomization`, then `default_shots`, then `default_precision` (documented default 0.015625 = 1/sqrt(4096)).", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-options"}},
-    {"objective": "s6o2", "fact_md": "Only Paulis built from I and Z are diagonal in the measurement basis; X and Y terms need a basis change (H for X, S-dagger then H for Y), which the Estimator performs automatically.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"}}
+    {
+      "objective": "s6o1",
+      "fact_md": "`resilience_level` accepts only the integers 0, 1 and 2 — `3`, `4`, `5`, `-1` and `1.5` all raise a pydantic `ValidationError` about the 0..2 range.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q014"
+      }
+    },
+    {
+      "objective": "s6o1",
+      "fact_md": "The level table: 0 = no mitigation, 1 = the DEFAULT and applies readout mitigation via TREX (measurement twirling), 2 = level 1 plus zero-noise extrapolation and gate twirling.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
+      }
+    },
+    {
+      "objective": "s6o1",
+      "fact_md": "Options you set yourself are applied IN ADDITION to the level's base set: level 0 turns `zne_mitigation` off, but an explicit `resilience.zne_mitigation = True` overrides that and switches ZNE back on.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
+      }
+    },
+    {
+      "objective": "s6o1",
+      "fact_md": "Higher levels build more resilience by post-processing a larger ensemble of circuits: more accurate, less biased expectation values at the cost of LONGER processing time — never a faster or cheaper job.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
+      }
+    },
+    {
+      "objective": "s6o1",
+      "fact_md": "The ZNE scale factors live at `options.resilience.zne.noise_factors`; `zne.factors` (wrong name) and `resilience.noise_factors` (right name, wrong nesting level) are both `no_such_attribute` validation errors.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q020"
+      }
+    },
+    {
+      "objective": "s6o1",
+      "fact_md": "`default_precision` must be strictly positive: assigning `0` raises `ValidationError`, and `EstimatorOptions(default_precision=0)` hits the identical validator — the constructor is not an escape hatch.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q031"
+      }
+    },
+    {
+      "objective": "s6o1",
+      "fact_md": "`EstimatorV2.run()`'s only execution keyword is `precision=`; `shots=`, `default_precision=` and `resilience_level=` are all `TypeError: unexpected keyword argument`, and `options.precision` is a `ValidationError` (the field is `default_precision`).",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q016"
+      }
+    },
+    {
+      "objective": "s6o1",
+      "fact_md": "ZNE runs the circuit at several amplified noise rates (digital gate folding) and extrapolates back to the zero-noise limit; it often improves results but 'is not guaranteed to produce an unbiased result'.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
+      }
+    },
+    {
+      "objective": "s6o1",
+      "fact_md": "PEC writes the ideal circuit as a quasi-probability combination of noisy ones: unbiased, but with a sampling overhead scaling quadratically in gamma = sum of |quasi-probabilities|, which itself grows exponentially with circuit depth.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
+      }
+    },
+    {
+      "objective": "s6o1",
+      "fact_md": "Individual switches: TREX is `resilience.measure_mitigation = True`, ZNE is `resilience.zne_mitigation = True`, PEC is `resilience.pec_mitigation = True`, and dynamical decoupling — error SUPPRESSION, pulsing idle qubits — is `dynamical_decoupling.enable = True`.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
+      }
+    },
+    {
+      "objective": "s6o1",
+      "fact_md": "Documented defaults worth memorizing: `resilience_level` 1, `measure_mitigation` True, `zne_mitigation` and `pec_mitigation` False, `zne.noise_factors` (1, 3, 5), `zne.amplifier` gate_folding, `dynamical_decoupling.enable` False (sequence XX), `twirling.enable_measure` True but `enable_gates` False.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+      }
+    },
+    {
+      "objective": "s6o1",
+      "fact_md": "PEC is documented as incompatible with gate-folding ZNE and with PEA (and with fractional gates) — the two mitigation flags are mutually exclusive, not additive.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+      }
+    },
+    {
+      "objective": "s6o1",
+      "fact_md": "An option you never set holds the special value `Unset` and the server default applies; set values by attribute path (`options.resilience.zne.noise_factors = [1, 3, 5]`) or in bulk with `options.update(...)`.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "`result[0].data.evs` holds the estimate(s) and `result[0].data.stds` their standard errors; `data.expectation_values` is an `AttributeError` and `metadata['evs']` a `KeyError`.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q010"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "PUB slots are positional — (circuit, observables, parameter_values, precision). A float in the third slot raises `ValueError: Length of () inconsistent with last dimension of [0.01]`; moving it to the fourth slot runs cleanly.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q025"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "Even a single task must be wrapped in a list: `est.run([(isa, iobs)])`. A bare circuit raises `ValueError: An invalid Estimator pub-like was given`, and `run(circuits=..., observables=...)` is a V1 habit that raises `TypeError`.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q012"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "Width mismatch is the signature Estimator bug: a 2-qubit observable against a 5-qubit ISA circuit raises `ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2)`; only `obs.apply_layout(isa.layout)` fixes it (pinning `initial_layout` does not).",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q013"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "`SparsePauliOp('ZZ').apply_layout([2, 0], num_qubits=4)` returns `'IZIZ'` — label characters pair with the index list left-to-right while the printed label stays little-endian.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q033"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "`SparsePauliOp.from_sparse_list([('Z', [0], 1.0)], num_qubits=3)` pads with identities to `'IIZ'` — it never raises and never leaves a bare `'Z'`.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q035"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "`SparsePauliOp.from_list([('ZZ', 1.0), ('XX', 0.5)])` is the valid two-qubit build; mixing label widths raises `ValueError: The 1th Pauli is defined over 1 qubits`, and `from_sparse_list` without `num_qubits` is a `TypeError` (it is required there).",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q024"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "One PUB with a flat Python list of three observables returns `evs` of shape `(3,)` — not `(3, 1)`, not `(1, 3)`, and not `(3, 2)`.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q030"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "Two observables `['ZI', 'IZ']` on a circuit with X on qubit 0 broadcast to `[1.0, -1.0]` of shape `(2,)`: the little-endian label rule decides which value is which, and the observables are broadcast, never summed.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q015"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "A multi-term `SparsePauliOp` is ONE observable: `from_list([('X', 3.0)])` on |+⟩ returns a 0-d `float64` array holding 3.0 — never a length-1 array, never one value per Pauli term, never a complex number.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q022"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "Coefficients are contracted before you see them: 0.5·ZZ + 0.5·XX on a Bell state comes back as the single scalar 1.0.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q011"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "Binding one parameter to `[0, π/2, π]` against a single observable gives `evs` of shape `(3,)` equal to `[1.0, 0.0, -1.0]` — the ⟨Z⟩ = cos θ curve, one flat value per parameter set.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q023"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "Halving the target precision quadruples the shot budget: the measured standard error falls from 0.0195 at the baseline 2500 shots to 0.0104 at 4x the shots, while 2x only reaches 0.0137 (a sqrt law would have predicted ~1.4x).",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q017"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "The reference `StatevectorEstimator` reports `stds` of exactly `0.0` — an exact calculation has no sampling uncertainty — and it stays 0.0 even when `run()` is asked for a tighter precision.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q037"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "An Estimator PUB holds at most four values (circuit, observables array, parameter values, optional target precision), and the Estimator returns one expectation value per element of the broadcast shape.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "Each `SparsePauliOp` counts as a single element for broadcasting: `SparsePauliOp.from_list(['XX', 'XY', 'IZ'])` has shape `()`, while the same three ops in a Python list have shape `(3,)`.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "Commuting observables are only estimated from the SAME measurement when they are grouped in one PUB; the same circuit in two PUBs means two measurement bases and two sets of circuits.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "Precision precedence, highest first: a precision inside the PUB, then `run(precision=...)`, then twirling's `num_randomizations` × `shots_per_randomization`, then `default_shots`, then `default_precision` (documented default 0.015625 = 1/sqrt(4096)).",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "Only Paulis built from I and Z are diagonal in the measurement basis; X and Y terms need a basis change (H for X, S-dagger then H for Y), which the Estimator performs automatically.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "fact_md": "Sweeping `ry(theta)` over 0 to 2π against `SparsePauliOp('Z')` traces ONE full cosine period. cos(theta/2) is the |0> amplitude (half a period over the same sweep) and cos(2*theta) would be the half-angle misreading (two periods) — the curve's period is the quickest way to tell the three apart.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q040"
+      }
+    },
+    {
+      "objective": "s6o1",
+      "fact_md": "Error-bar length is bought with `default_precision`: 0.1 yields `stds` around 0.04–0.10 on a fake backend, 0.01 yields around 0.002–0.009. The near-miss spellings both fail validation — `options.precision` (no such field; `precision=` is a `run()` keyword) and `options.execution.shots` (execution holds only `init_qubits` and `rep_delay`).",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q041"
+      }
+    }
   ],
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (s6/s7 quick-study generation agent)",
     "fact_checked": true,
-    "notes": "Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json and cites only EXECUTED questions with an artifact (the conceptual s6 qids q018, q019, q021, q026, q028, q029, q032, q034, q036, q038 and q039 are covered through their guides instead). Every citation-sourced fact was confirmed by fetching the page text: estimator-noise-management (the 0/1/2 resilience table with TREX at level 1 and 'Level 1 + ZNE and gate twirling' at level 2; the 'Important' override callout; higher levels = more accurate, longer processing); error-mitigation-and-suppression-techniques (ZNE = noise amplification by digital gate folding + extrapolation, 'not guaranteed to produce an unbiased result'; PEC unbiased with overhead quadratic in gamma, exponential in depth; measure_mitigation/zne_mitigation/pec_mitigation/dynamical_decoupling.enable as the individual switches; DD pulses idle qubits); estimator-options (full defaults table, run() takes only precision, five-step precision precedence, default_precision 0.015625 = 1/sqrt(4096), PEC incompatible with gate-folding ZNE and PEA, Unset semantics and update()); primitive-input-output (Estimator PUB is at most four values, one ev per broadcast element, SparsePauliOp counts as one element, commuting observables must share a PUB); specify-observables-pauli (only I/Z Paulis are diagonal, H and S-dagger/H basis changes performed automatically by the Estimator). Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0, PYTHONPATH=pipeline/harness): EstimatorOptions.__dataclass_fields__ = _VERSION, max_execution_time, environment, simulator, default_precision, default_shots, resilience_level, seed_estimator, dynamical_decoupling, resilience, execution, twirling, experimental; resilience fields = measure_mitigation, measure_noise_learning, zne_mitigation, zne, pec_mitigation, pec, layer_noise_learning, layer_noise_model; zne fields = amplifier, noise_factors, extrapolator, extrapolated_noise_factors; EstimatorV2.run signature is run(pubs, *, precision=None); broadcasting measured as flat list -> (3,), column -> (3, 1), row -> (1, 3), single op -> (); a two-term SparsePauliOp returns a 0-d float64; PubResult.metadata keys are target_precision and circuit_metadata; DataBin keys are evs and stds; and enabling pec_mitigation together with zne_mitigation raises ValidationError ('cannot be simultaneously enabled'), matching the docs' incompatibility table. Consistent with the REVIEW_LEDGER s6 pool wave; no contradictions."
+    "notes": "Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json and cites only EXECUTED questions with an artifact (the conceptual s6 qids q018, q019, q021, q026, q028, q029, q032, q034, q036, q038 and q039 are covered through their guides instead). Every citation-sourced fact was confirmed by fetching the page text: estimator-noise-management (the 0/1/2 resilience table with TREX at level 1 and 'Level 1 + ZNE and gate twirling' at level 2; the 'Important' override callout; higher levels = more accurate, longer processing); error-mitigation-and-suppression-techniques (ZNE = noise amplification by digital gate folding + extrapolation, 'not guaranteed to produce an unbiased result'; PEC unbiased with overhead quadratic in gamma, exponential in depth; measure_mitigation/zne_mitigation/pec_mitigation/dynamical_decoupling.enable as the individual switches; DD pulses idle qubits); estimator-options (full defaults table, run() takes only precision, five-step precision precedence, default_precision 0.015625 = 1/sqrt(4096), PEC incompatible with gate-folding ZNE and PEA, Unset semantics and update()); primitive-input-output (Estimator PUB is at most four values, one ev per broadcast element, SparsePauliOp counts as one element, commuting observables must share a PUB); specify-observables-pauli (only I/Z Paulis are diagonal, H and S-dagger/H basis changes performed automatically by the Estimator). Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0, PYTHONPATH=pipeline/harness): EstimatorOptions.__dataclass_fields__ = _VERSION, max_execution_time, environment, simulator, default_precision, default_shots, resilience_level, seed_estimator, dynamical_decoupling, resilience, execution, twirling, experimental; resilience fields = measure_mitigation, measure_noise_learning, zne_mitigation, zne, pec_mitigation, pec, layer_noise_learning, layer_noise_model; zne fields = amplifier, noise_factors, extrapolator, extrapolated_noise_factors; EstimatorV2.run signature is run(pubs, *, precision=None); broadcasting measured as flat list -> (3,), column -> (3, 1), row -> (1, 3), single op -> (); a two-term SparsePauliOp returns a 0-d float64; PubResult.metadata keys are target_precision and circuit_metadata; DataBin keys are evs and stds; and enabling pec_mitigation together with zne_mitigation raises ValidationError ('cannot be simultaneously enabled'), matching the docs' incompatibility table. Consistent with the REVIEW_LEDGER s6 pool wave; no contradictions. Task #28 figure wave (2026-07-26) appended two facts sourced from the new figure questions of this section; both were checked against the stored proof evidence."
   }
 }

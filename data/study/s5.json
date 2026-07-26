@@ -280,12 +280,28 @@
         "type": "citation",
         "ref": "https://quantum.cloud.ibm.com/docs/guides/simulate-with-qiskit-sdk-primitives"
       }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "`get_counts()` lists only the outcomes that actually occurred: a 40-shot two-qubit run in which `10` never appeared returns a three-key dict, and `plot_histogram` therefore draws three bars — nothing pads the missing outcome to a zero-height bar.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q041"
+      }
+    },
+    {
+      "objective": "s5o3",
+      "fact_md": "A fake backend is not an exact simulator. A seeded 2000-shot run of `h(0); cx(0,1); x(2)` on FakeManilaV2 puts weight on all eight outcomes — the two ideal peaks `100` and `111` hold about 43% and 40% of the shots, the rest is readout and gate noise.",
+      "source": {
+        "type": "proof",
+        "ref": "s5-q040"
+      }
     }
   ],
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (s4/s5 quick-study generation agent)",
     "fact_checked": true,
-    "notes": "Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json and only EXECUTED questions with an artifact are cited (the conceptual s5 qids q021, q030, q034, q037 and q038 are covered through their guides instead). Every citation-sourced fact was confirmed by fetching the page text (sampler-options: the four-step shots precedence chain and the full options table; runtime-options-overview: Unset defaults, attribute vs update() setting; sampler-noise-management: DD + Pauli twirling are the only supported techniques; error-mitigation-and-suppression-techniques: TREX/ZNE/PEC as Estimator resilience options; primitive-input-output: Sampler PUB is at most three entries and must include measurements, DataBin holds one BitArray per ClassicalRegister, BitArray post-processing API; primitives: Sampler samples / Estimator estimates and supersedes backend.run; simulate-with-qiskit-sdk-primitives: the reference primitives still accept abstract instructions; tutorials/multi-product-formula: 'sampling error shrinks with 1/sqrt(N_shots)'). Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0): SamplerOptions dataclass fields are max_execution_time/environment/simulator/default_shots/dynamical_decoupling/execution/twirling/experimental; SamplerV2.run signature is run(pubs, *, shots=None); options.update(default_shots=512) works; set_options is an AttributeError; a broadcast (4,) BitArray reports num_shots=500 per set with pooled get_counts totalling 2000; a DataBin with two registers has keys ['alice','bob'] and shape (); StatevectorSampler runs an abstract measure_all circuit and defaults to 1024 shots, matching the fake-backend local default (vs the Runtime service's 4096). Consistent with the REVIEW_LEDGER s5 pool wave and the SamplerV2-has-no-resilience_level entry; no contradictions."
+    "notes": "Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json and only EXECUTED questions with an artifact are cited (the conceptual s5 qids q021, q030, q034, q037 and q038 are covered through their guides instead). Every citation-sourced fact was confirmed by fetching the page text (sampler-options: the four-step shots precedence chain and the full options table; runtime-options-overview: Unset defaults, attribute vs update() setting; sampler-noise-management: DD + Pauli twirling are the only supported techniques; error-mitigation-and-suppression-techniques: TREX/ZNE/PEC as Estimator resilience options; primitive-input-output: Sampler PUB is at most three entries and must include measurements, DataBin holds one BitArray per ClassicalRegister, BitArray post-processing API; primitives: Sampler samples / Estimator estimates and supersedes backend.run; simulate-with-qiskit-sdk-primitives: the reference primitives still accept abstract instructions; tutorials/multi-product-formula: 'sampling error shrinks with 1/sqrt(N_shots)'). Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0): SamplerOptions dataclass fields are max_execution_time/environment/simulator/default_shots/dynamical_decoupling/execution/twirling/experimental; SamplerV2.run signature is run(pubs, *, shots=None); options.update(default_shots=512) works; set_options is an AttributeError; a broadcast (4,) BitArray reports num_shots=500 per set with pooled get_counts totalling 2000; a DataBin with two registers has keys ['alice','bob'] and shape (); StatevectorSampler runs an abstract measure_all circuit and defaults to 1024 shots, matching the fake-backend local default (vs the Runtime service's 4096). Consistent with the REVIEW_LEDGER s5 pool wave and the SamplerV2-has-no-resilience_level entry; no contradictions. Task #28 figure wave (2026-07-26) appended two facts sourced from the new figure questions of this section; both were checked against the stored proof evidence."
   }
 }

@@ -51,43 +51,283 @@
     }
   ],
   "facts": [
-    {"objective": "s7o1", "fact_md": "`PrimitiveResult` is indexed by PUB: `len(result)` is the number of PUBs and the second circuit's counts are `result[1].data.meas.get_counts()`. `result.data`, `result.get_counts()` and `result[1].get_counts()` are all `AttributeError`s.", "source": {"type": "proof", "ref": "s7-q023"}},
-    {"objective": "s7o1", "fact_md": "The missing PUB index is the classic retrieval bug: `result.data...` raises `AttributeError: 'PrimitiveResult' object has no attribute 'data'` — you must index the PUB first, as `result[0].data.meas.get_counts()`.", "source": {"type": "proof", "ref": "s7-q024"}},
-    {"objective": "s7o1", "fact_md": "`meas` is only the DEFAULT register name: a circuit measuring into a register called `readout` needs `result[0].data.readout.get_counts()`, and `data.meas` raises `AttributeError`.", "source": {"type": "proof", "ref": "s7-q032"}},
-    {"objective": "s7o1", "fact_md": "`list(db.keys())` lists the DataBin's register names. `DataBin` has no `registers`, no `get_counts()` and no `num_bits`; `list(db.values())` returns the stored `BitArray`s, and a `BitArray` has no `.name`.", "source": {"type": "proof", "ref": "s7-q031"}},
-    {"objective": "s7o1", "fact_md": "`bits.num_shots` counts executions and `bits.num_bits` the classical register width: a 3-bit register sampled 2000 times reports `(2000, 3)`, never `(6000, 3)` or `(2000, 8)`.", "source": {"type": "proof", "ref": "s7-q011"}},
-    {"objective": "s7o1", "fact_md": "`bits.array` is bit-PACKED `uint8` with shape `(num_shots, ceil(num_bits/8))`: a 10-qubit circuit sampled 1024 times gives `(1024, 2)` — not `(1024, 10)`, `(1024, 8)` or the transpose.", "source": {"type": "proof", "ref": "s7-q012"}},
-    {"objective": "s7o1", "fact_md": "`num_bits` follows the classical register, not the circuit: a 5-qubit circuit measuring three qubits reports `num_bits == 3`, while `len(get_bitstrings())` and `sum(get_counts().values())` both equal `num_shots`.", "source": {"type": "proof", "ref": "s7-q019"}},
-    {"objective": "s7o1", "fact_md": "Counts keys are little-endian bitstrings: X on qubit 0 of a 3-qubit circuit sampled 500 times gives `{'001': 500}` — integer tallies, not `{'100': 500}` and not fractions.", "source": {"type": "proof", "ref": "s7-q014"}},
-    {"objective": "s7o1", "fact_md": "`get_int_counts()` re-keys the same tallies by the bitstring read as a binary INTEGER: `'000'`/`'111'` become `0` and `7`, never `0`/`3`, never `'0'`/`'7'`, never the decimal 111.", "source": {"type": "proof", "ref": "s7-q029"}},
-    {"objective": "s7o1", "fact_md": "`bits.postselect([1], [0])` returns a new BitArray of only the shots where qubit 1 read 0, at FULL width; `postselect` has no `num_bits=` parameter (`TypeError`), and chaining `.slice_bits(...)` afterwards silently narrows the result.", "source": {"type": "proof", "ref": "s7-q016"}},
-    {"objective": "s7o1", "fact_md": "Postselecting a GHZ sample on all-ones keeps only the `'111'` key and leaves `num_bits` at 3 — the surviving values stay raw integer shot tallies, not renormalized fractions.", "source": {"type": "proof", "ref": "s7-q015"}},
-    {"objective": "s7o1", "fact_md": "`bits.slice_bits([2])` on a 3-bit register returns a 1-bit array (`{'0': 300}`) and does NOT raise — valid bit indices run 0..num_bits-1.", "source": {"type": "proof", "ref": "s7-q017"}},
-    {"objective": "s7o1", "fact_md": "`BitArray.concatenate_shots([a, b])` pools two equal-width shot sets (200 + 200 → 400 shots, 3 bits). `a + b` is a `TypeError`, `np.concatenate([a.array, b.array])` returns a bare ndarray, and `from_counts(a.get_counts() | b.get_counts())` LOSES shots because dict union overwrites duplicate keys.", "source": {"type": "proof", "ref": "s7-q018"}},
-    {"objective": "s7o1", "fact_md": "`bits.expectation_values('ZZ')` computes a diagonal expectation value straight from the shots — an ideal Bell sample returns the 0-d scalar 1.0, one value per Pauli string, with no Estimator involved.", "source": {"type": "proof", "ref": "s7-q025"}},
-    {"objective": "s7o1", "fact_md": "`result[0].data.evs` is the Estimator path; `PubResult.evs`, `DataBin.meas`, `DataBin.expvals`, `DataBin.get_counts()` and `metadata['evs']` are all errors.", "source": {"type": "proof", "ref": "s7-q022"}},
-    {"objective": "s7o1", "fact_md": "An ideal Bell state against `ZZ` gives `evs` as a 0-d array holding 1.0 — a scalar, not a length-one 1-D array and not a per-outcome dict.", "source": {"type": "proof", "ref": "s7-q020"}},
-    {"objective": "s7o1", "fact_md": "A `(4, 1)` parameter array against a single observable gives `evs.shape == (4,)` — the trailing parameter axis is consumed, so it is not `(4, 1)` and not `(1, 4)`.", "source": {"type": "proof", "ref": "s7-q021"}},
-    {"objective": "s7o1", "fact_md": "`pub.data.stds` is the standard error the primitive ACHIEVED, not the precision you asked for and not `1/sqrt(shots)`: on a noisy Bell/ZZ pub it read 0.0096 while the requested precision was 0.02 and `shots**-0.5` was 0.02.", "source": {"type": "proof", "ref": "s7-q013"}},
-    {"objective": "s7o1", "fact_md": "The disk round trip is `json.dump(result, f, cls=RuntimeEncoder)` then `json.load(f, cls=RuntimeDecoder)`; without an encoder you get `TypeError: Object of type PrimitiveResult is not JSON serializable`, there is no `result.to_json()`, and `json.dumps(result, f, cls=...)` fails because everything after the first argument is keyword-only.", "source": {"type": "proof", "ref": "s7-q010"}},
-    {"objective": "s7o1", "fact_md": "IBM Quantum automatically stores the results of every job: keep `job.job_id()`, then `service.job(job_id).result()` on a fresh service re-hydrates them after a kernel restart — `service.jobs()` (plural) is the filtered LIST call (`backend_name`, `created_after`, ...).", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/save-jobs"}},
-    {"objective": "s7o1", "fact_md": "A Sampler DataBin holds one `BitArray` per `ClassicalRegister`; splitting one register into `alpha` and `beta` gives `data.alpha` and `data.beta` rather than a single flat array.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"}},
-    {"objective": "s7o2", "fact_md": "`RuntimeJobV2.status()` is typed `Literal['INITIALIZING', 'QUEUED', 'RUNNING', 'CANCELLED', 'DONE', 'ERROR']` — a plain STRING, not a `JobStatus` enum member, which is why official examples write `j.status() == \"DONE\"`.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/runtime-job-v2"}},
-    {"objective": "s7o2", "fact_md": "`JOB_FINAL_STATES` is `('DONE', 'CANCELLED', 'ERROR')`, and `done()`, `errored()`, `cancelled()`, `running()` and `in_final_state()` are the boolean predicates built on the state; `wait_for_final_state(timeout, poll_interval)` polls until a terminal state.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/runtime-job-v2"}},
-    {"objective": "s7o2", "fact_md": "`job.result()` is the BLOCKING call — results are available only after the job completes — while `job.status()` is the cheap state check and `job.job_id()` returns the ID you need to retrieve the job later.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/monitor-job"}},
-    {"objective": "s7o2", "fact_md": "Cancellation is a job-handle operation: `job.cancel()` in Qiskit, or the Cancel action on the Workloads page; `cancel()` raises `RuntimeInvalidStateError` if the job is in a state that cannot be cancelled.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/runtime-job-v2"}},
-    {"objective": "s7o2", "fact_md": "`service.jobs()` is the listing call: `limit` defaults to 10 and it filters on `backend_name`, `pending`, `session_id`, `created_after`/`created_before` (datetime objects) and more; use it when you did not record a job ID.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/monitor-job"}},
-    {"objective": "s7o2", "fact_md": "`session.details()` describes the SESSION: `state` (open/active/inactive/closed), `accepting_jobs`, `max_time`, `started_at`/`activated_at`/`last_job_started`/`last_job_completed`/`closed_at`, and `usage_time`. Queue position and results are per-job, never session keys.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/session"}},
-    {"objective": "s7o2", "fact_md": "`session.close()` stops the session accepting NEW jobs while queued and running jobs finish; `session.cancel()` cancels all pending jobs in the session — two different verbs.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/session"}},
-    {"objective": "s7o2", "fact_md": "The Workloads page lists every submitted workload with its Status column and job ID (the documented route when no ID was saved); the Instances table shows plan time used/remaining and the Analytics page counts jobs, batches and sessions.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/monitor-job"}},
-    {"objective": "s7o2", "fact_md": "Executed against the class: `RuntimeJobV2.status()` returns a plain `str`, so `status() == JobStatus.DONE` is False and `status().name` raises `AttributeError`. `done()` is True only for `DONE`, while `in_final_state()` also covers `CANCELLED` and `ERROR` — and there is no `FAILED` state at all.", "source": {"type": "proof", "ref": "s7-q034"}},
-    {"objective": "s7o2", "fact_md": "`details()[\"state\"]` and `session.status()` use different vocabularies: `open`/`active`/`inactive`/`closed` for the field versus `Pending`, `In progress, accepting new jobs`, `In progress, not accepting new jobs`, `Closed` for the call. `interactive_timeout` is the idle gap allowed between jobs, `active_timeout` how long it may stay active, `max_time` the total session length, `usage_time` the QPU-committed time.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/session"}},
-    {"objective": "s7o1", "fact_md": "Names of the containers, measured: `job.result()` is a `PrimitiveResult`, each element of a Sampler result is a `SamplerPubResult` (the Sampler subclass of `PubResult`), and every V2 job — the local `PrimitiveJob` as much as `RuntimeJobV2` — is an instance of `BasePrimitiveJob`, whose interface is `result`, `status`, `done`, `running`, `cancelled`, `in_final_state` and `cancel`.", "source": {"type": "proof", "ref": "s7-q036"}}
+    {
+      "objective": "s7o1",
+      "fact_md": "`PrimitiveResult` is indexed by PUB: `len(result)` is the number of PUBs and the second circuit's counts are `result[1].data.meas.get_counts()`. `result.data`, `result.get_counts()` and `result[1].get_counts()` are all `AttributeError`s.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q023"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "The missing PUB index is the classic retrieval bug: `result.data...` raises `AttributeError: 'PrimitiveResult' object has no attribute 'data'` — you must index the PUB first, as `result[0].data.meas.get_counts()`.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q024"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "`meas` is only the DEFAULT register name: a circuit measuring into a register called `readout` needs `result[0].data.readout.get_counts()`, and `data.meas` raises `AttributeError`.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q032"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "`list(db.keys())` lists the DataBin's register names. `DataBin` has no `registers`, no `get_counts()` and no `num_bits`; `list(db.values())` returns the stored `BitArray`s, and a `BitArray` has no `.name`.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q031"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "`bits.num_shots` counts executions and `bits.num_bits` the classical register width: a 3-bit register sampled 2000 times reports `(2000, 3)`, never `(6000, 3)` or `(2000, 8)`.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q011"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "`bits.array` is bit-PACKED `uint8` with shape `(num_shots, ceil(num_bits/8))`: a 10-qubit circuit sampled 1024 times gives `(1024, 2)` — not `(1024, 10)`, `(1024, 8)` or the transpose.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q012"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "`num_bits` follows the classical register, not the circuit: a 5-qubit circuit measuring three qubits reports `num_bits == 3`, while `len(get_bitstrings())` and `sum(get_counts().values())` both equal `num_shots`.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q019"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "Counts keys are little-endian bitstrings: X on qubit 0 of a 3-qubit circuit sampled 500 times gives `{'001': 500}` — integer tallies, not `{'100': 500}` and not fractions.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q014"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "`get_int_counts()` re-keys the same tallies by the bitstring read as a binary INTEGER: `'000'`/`'111'` become `0` and `7`, never `0`/`3`, never `'0'`/`'7'`, never the decimal 111.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q029"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "`bits.postselect([1], [0])` returns a new BitArray of only the shots where qubit 1 read 0, at FULL width; `postselect` has no `num_bits=` parameter (`TypeError`), and chaining `.slice_bits(...)` afterwards silently narrows the result.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q016"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "Postselecting a GHZ sample on all-ones keeps only the `'111'` key and leaves `num_bits` at 3 — the surviving values stay raw integer shot tallies, not renormalized fractions.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q015"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "`bits.slice_bits([2])` on a 3-bit register returns a 1-bit array (`{'0': 300}`) and does NOT raise — valid bit indices run 0..num_bits-1.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q017"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "`BitArray.concatenate_shots([a, b])` pools two equal-width shot sets (200 + 200 → 400 shots, 3 bits). `a + b` is a `TypeError`, `np.concatenate([a.array, b.array])` returns a bare ndarray, and `from_counts(a.get_counts() | b.get_counts())` LOSES shots because dict union overwrites duplicate keys.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q018"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "`bits.expectation_values('ZZ')` computes a diagonal expectation value straight from the shots — an ideal Bell sample returns the 0-d scalar 1.0, one value per Pauli string, with no Estimator involved.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q025"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "`result[0].data.evs` is the Estimator path; `PubResult.evs`, `DataBin.meas`, `DataBin.expvals`, `DataBin.get_counts()` and `metadata['evs']` are all errors.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q022"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "An ideal Bell state against `ZZ` gives `evs` as a 0-d array holding 1.0 — a scalar, not a length-one 1-D array and not a per-outcome dict.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q020"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "A `(4, 1)` parameter array against a single observable gives `evs.shape == (4,)` — the trailing parameter axis is consumed, so it is not `(4, 1)` and not `(1, 4)`.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q021"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "`pub.data.stds` is the standard error the primitive ACHIEVED, not the precision you asked for and not `1/sqrt(shots)`: on a noisy Bell/ZZ pub it read 0.0096 while the requested precision was 0.02 and `shots**-0.5` was 0.02.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q013"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "The disk round trip is `json.dump(result, f, cls=RuntimeEncoder)` then `json.load(f, cls=RuntimeDecoder)`; without an encoder you get `TypeError: Object of type PrimitiveResult is not JSON serializable`, there is no `result.to_json()`, and `json.dumps(result, f, cls=...)` fails because everything after the first argument is keyword-only.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q010"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "IBM Quantum automatically stores the results of every job: keep `job.job_id()`, then `service.job(job_id).result()` on a fresh service re-hydrates them after a kernel restart — `service.jobs()` (plural) is the filtered LIST call (`backend_name`, `created_after`, ...).",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/save-jobs"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "A Sampler DataBin holds one `BitArray` per `ClassicalRegister`; splitting one register into `alpha` and `beta` gives `data.alpha` and `data.beta` rather than a single flat array.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      }
+    },
+    {
+      "objective": "s7o2",
+      "fact_md": "`RuntimeJobV2.status()` is typed `Literal['INITIALIZING', 'QUEUED', 'RUNNING', 'CANCELLED', 'DONE', 'ERROR']` — a plain STRING, not a `JobStatus` enum member, which is why official examples write `j.status() == \"DONE\"`.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/runtime-job-v2"
+      }
+    },
+    {
+      "objective": "s7o2",
+      "fact_md": "`JOB_FINAL_STATES` is `('DONE', 'CANCELLED', 'ERROR')`, and `done()`, `errored()`, `cancelled()`, `running()` and `in_final_state()` are the boolean predicates built on the state; `wait_for_final_state(timeout, poll_interval)` polls until a terminal state.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/runtime-job-v2"
+      }
+    },
+    {
+      "objective": "s7o2",
+      "fact_md": "`job.result()` is the BLOCKING call — results are available only after the job completes — while `job.status()` is the cheap state check and `job.job_id()` returns the ID you need to retrieve the job later.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/monitor-job"
+      }
+    },
+    {
+      "objective": "s7o2",
+      "fact_md": "Cancellation is a job-handle operation: `job.cancel()` in Qiskit, or the Cancel action on the Workloads page; `cancel()` raises `RuntimeInvalidStateError` if the job is in a state that cannot be cancelled.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/runtime-job-v2"
+      }
+    },
+    {
+      "objective": "s7o2",
+      "fact_md": "`service.jobs()` is the listing call: `limit` defaults to 10 and it filters on `backend_name`, `pending`, `session_id`, `created_after`/`created_before` (datetime objects) and more; use it when you did not record a job ID.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/monitor-job"
+      }
+    },
+    {
+      "objective": "s7o2",
+      "fact_md": "`session.details()` describes the SESSION: `state` (open/active/inactive/closed), `accepting_jobs`, `max_time`, `started_at`/`activated_at`/`last_job_started`/`last_job_completed`/`closed_at`, and `usage_time`. Queue position and results are per-job, never session keys.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/session"
+      }
+    },
+    {
+      "objective": "s7o2",
+      "fact_md": "`session.close()` stops the session accepting NEW jobs while queued and running jobs finish; `session.cancel()` cancels all pending jobs in the session — two different verbs.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/session"
+      }
+    },
+    {
+      "objective": "s7o2",
+      "fact_md": "The Workloads page lists every submitted workload with its Status column and job ID (the documented route when no ID was saved); the Instances table shows plan time used/remaining and the Analytics page counts jobs, batches and sessions.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/guides/monitor-job"
+      }
+    },
+    {
+      "objective": "s7o2",
+      "fact_md": "Executed against the class: `RuntimeJobV2.status()` returns a plain `str`, so `status() == JobStatus.DONE` is False and `status().name` raises `AttributeError`. `done()` is True only for `DONE`, while `in_final_state()` also covers `CANCELLED` and `ERROR` — and there is no `FAILED` state at all.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q034"
+      }
+    },
+    {
+      "objective": "s7o2",
+      "fact_md": "`details()[\"state\"]` and `session.status()` use different vocabularies: `open`/`active`/`inactive`/`closed` for the field versus `Pending`, `In progress, accepting new jobs`, `In progress, not accepting new jobs`, `Closed` for the call. `interactive_timeout` is the idle gap allowed between jobs, `active_timeout` how long it may stay active, `max_time` the total session length, `usage_time` the QPU-committed time.",
+      "source": {
+        "type": "citation",
+        "ref": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/session"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "Names of the containers, measured: `job.result()` is a `PrimitiveResult`, each element of a Sampler result is a `SamplerPubResult` (the Sampler subclass of `PubResult`), and every V2 job — the local `PrimitiveJob` as much as `RuntimeJobV2` — is an instance of `BasePrimitiveJob`, whose interface is `result`, `status`, `done`, `running`, `cancelled`, `in_final_state` and `cancel`.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q036"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "To overlay two executions of one retrieved job: `plot_histogram([result[0].data.meas.get_counts(), result[1].data.meas.get_counts()], legend=[...])`. Handing it a single counts dict with a two-entry legend raises `VisualizationError` (\"Length of legend (2) doesn't match number of input executions (1)\").",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q037"
+      }
+    },
+    {
+      "objective": "s7o1",
+      "fact_md": "`result[0].data.stds` is a silent trap when you meant `evs`: it exists, it has the same shape, and it plots — but on a `default_precision = 0.02` fake-backend sweep the standard errors are about 0.005–0.018 while the expectation values span ±0.9, so the curve collapses onto the axis.",
+      "source": {
+        "type": "proof",
+        "ref": "s7-q038"
+      }
+    }
   ],
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (s6/s7 quick-study generation agent)",
     "fact_checked": true,
-    "notes": "Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json and cites only EXECUTED questions with an artifact. Objective s7o2 has NO executed questions in the bank (q026, q027, q028, q030 and q033 are all proof.status conceptual), so every s7o2 fact is citation-sourced by design — no conceptual qid is dressed up with a proof badge. Every citation-sourced fact was confirmed by fetching the page text: save-jobs ('IBM Quantum automatically stores results from every job', job_id() + Workloads page, QiskitRuntimeService.jobs with created_after, service.job(job_id).result(), and the json.dump/RuntimeEncoder + json.load/RuntimeDecoder round trip, including the literal `j.status() == \"DONE\"` comparison); monitor-job (job.result() is 'a blocking call until the job completes', job.job_id(), job.status(), job = service.job(<job_id>), 'use job.cancel() to cancel a job', service.jobs() default limit 10 and its deprecated-provider note, plus the Workloads/Instances/Analytics pages); api/qiskit-ibm-runtime/runtime-job-v2 (status() return type Literal['INITIALIZING','QUEUED','RUNNING','CANCELLED','DONE','ERROR'], JOB_FINAL_STATES = ('DONE','CANCELLED','ERROR'), done/errored/cancelled/running/in_final_state/wait_for_final_state, cancel() raising RuntimeInvalidStateError); api/qiskit-ibm-runtime/session (details() key list including state/accepting_jobs/max_time/last_job_completed/usage_time, close() vs cancel() semantics); primitive-input-output (PrimitiveResult contains one PubResult per PUB, the Estimator DataBin holds evs/stds, the Sampler DataBin holds one BitArray per ClassicalRegister with 'meas' as the default name, BitArray stores shots as bytes with shots on the left axis, and the postselect/slice_bits/slice_shots/expectation_values/concatenate_bits post-processing list); api/qiskit/qiskit.primitives.BitArray (full method surface). Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0, PYTHONPATH=pipeline/harness): BitArray's public surface is array/bitcount/concatenate/concatenate_bits/concatenate_shots/expectation_values/from_bool_array/from_counts/from_samples/get_bitstrings/get_counts/get_int_counts/ndim/num_bits/num_shots/postselect/reshape/shape/size/slice_bits/slice_shots/to_bool_array/transpose; slice_shots(range(5)).num_shots == 5; concatenate_shots doubles shots while concatenate_bits doubles bits; DataBin exposes keys/values/items/shape/ndim/size and db['meas'] works; a named register gives keys ['readout'] and data.meas raises AttributeError; PubResult.metadata is {'shots', 'circuit_metadata'} for the Sampler; the RuntimeEncoder/RuntimeDecoder round trip reproduces identical counts while a plain json.load yields a dict whose [0] is a KeyError; RuntimeJobV2.done() is literally status() == 'DONE' and cancel() sets the status string to 'CANCELLED'; QiskitRuntimeService.jobs signature is (limit=10, skip=0, backend_name, pending, program_id, instance, job_tags, session_id, created_after, created_before, descending=True). Consistent with the REVIEW_LEDGER s7 pool wave and the session.details()-is-None-locally entry; no contradictions. | official-alignment fix wave (2026-07-26): three facts added. The note above that s7o2 has NO executed questions is now OUT OF DATE — s7-q034 is executed (a RuntimeJobV2 subclass pins the state string, which is legitimate because _set_status_and_error_message short-circuits on terminal states, so status()/done()/errored()/cancelled()/in_final_state() run unmodified with no service), and it sources the new s7o2 job-state fact. The details()-vs-status() fact stays citation-sourced (api/qiskit-ibm-runtime/session, re-fetched 2026-07-26: the details() key list plus status()'s Pending / In progress, accepting new jobs / In progress, not accepting new jobs / Closed / None). The container-naming fact is sourced by the new executed s7-q036 (PrimitiveResult, SamplerPubResult with MRO SamplerPubResult->PubResult, PrimitiveJob is an instance of BasePrimitiveJob whose abstract methods are cancel/cancelled/done/in_final_state/result/running/status)."
+    "notes": "Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json and cites only EXECUTED questions with an artifact. Objective s7o2 has NO executed questions in the bank (q026, q027, q028, q030 and q033 are all proof.status conceptual), so every s7o2 fact is citation-sourced by design — no conceptual qid is dressed up with a proof badge. Every citation-sourced fact was confirmed by fetching the page text: save-jobs ('IBM Quantum automatically stores results from every job', job_id() + Workloads page, QiskitRuntimeService.jobs with created_after, service.job(job_id).result(), and the json.dump/RuntimeEncoder + json.load/RuntimeDecoder round trip, including the literal `j.status() == \"DONE\"` comparison); monitor-job (job.result() is 'a blocking call until the job completes', job.job_id(), job.status(), job = service.job(<job_id>), 'use job.cancel() to cancel a job', service.jobs() default limit 10 and its deprecated-provider note, plus the Workloads/Instances/Analytics pages); api/qiskit-ibm-runtime/runtime-job-v2 (status() return type Literal['INITIALIZING','QUEUED','RUNNING','CANCELLED','DONE','ERROR'], JOB_FINAL_STATES = ('DONE','CANCELLED','ERROR'), done/errored/cancelled/running/in_final_state/wait_for_final_state, cancel() raising RuntimeInvalidStateError); api/qiskit-ibm-runtime/session (details() key list including state/accepting_jobs/max_time/last_job_completed/usage_time, close() vs cancel() semantics); primitive-input-output (PrimitiveResult contains one PubResult per PUB, the Estimator DataBin holds evs/stds, the Sampler DataBin holds one BitArray per ClassicalRegister with 'meas' as the default name, BitArray stores shots as bytes with shots on the left axis, and the postselect/slice_bits/slice_shots/expectation_values/concatenate_bits post-processing list); api/qiskit/qiskit.primitives.BitArray (full method surface). Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0, PYTHONPATH=pipeline/harness): BitArray's public surface is array/bitcount/concatenate/concatenate_bits/concatenate_shots/expectation_values/from_bool_array/from_counts/from_samples/get_bitstrings/get_counts/get_int_counts/ndim/num_bits/num_shots/postselect/reshape/shape/size/slice_bits/slice_shots/to_bool_array/transpose; slice_shots(range(5)).num_shots == 5; concatenate_shots doubles shots while concatenate_bits doubles bits; DataBin exposes keys/values/items/shape/ndim/size and db['meas'] works; a named register gives keys ['readout'] and data.meas raises AttributeError; PubResult.metadata is {'shots', 'circuit_metadata'} for the Sampler; the RuntimeEncoder/RuntimeDecoder round trip reproduces identical counts while a plain json.load yields a dict whose [0] is a KeyError; RuntimeJobV2.done() is literally status() == 'DONE' and cancel() sets the status string to 'CANCELLED'; QiskitRuntimeService.jobs signature is (limit=10, skip=0, backend_name, pending, program_id, instance, job_tags, session_id, created_after, created_before, descending=True). Consistent with the REVIEW_LEDGER s7 pool wave and the session.details()-is-None-locally entry; no contradictions. | official-alignment fix wave (2026-07-26): three facts added. The note above that s7o2 has NO executed questions is now OUT OF DATE — s7-q034 is executed (a RuntimeJobV2 subclass pins the state string, which is legitimate because _set_status_and_error_message short-circuits on terminal states, so status()/done()/errored()/cancelled()/in_final_state() run unmodified with no service), and it sources the new s7o2 job-state fact. The details()-vs-status() fact stays citation-sourced (api/qiskit-ibm-runtime/session, re-fetched 2026-07-26: the details() key list plus status()'s Pending / In progress, accepting new jobs / In progress, not accepting new jobs / Closed / None). The container-naming fact is sourced by the new executed s7-q036 (PrimitiveResult, SamplerPubResult with MRO SamplerPubResult->PubResult, PrimitiveJob is an instance of BasePrimitiveJob whose abstract methods are cancel/cancelled/done/in_final_state/result/running/status). Task #28 figure wave (2026-07-26) appended two facts sourced from the new figure questions of this section; both were checked against the stored proof evidence."
   }
 }

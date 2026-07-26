@@ -1,0 +1,101 @@
+{
+  "id": "s5-q042",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "The sweep binds three angles to one parameterized circuit in a single PUB. Which histogram does the last line draw?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.visualization import plot_histogram\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\nqc.measure_all()\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(optimization_level=1, backend=backend,\n                                  seed_transpiler=42)\nangles = np.array([[np.pi / 6], [np.pi / 2], [5 * np.pi / 6]])\nsampler = SamplerV2(mode=backend)\nsampler.options.simulator.seed_simulator = 55\nbits = sampler.run([(pm.run(qc), angles)], shots=2000).result()[0].data.meas\n\nplot_histogram(bits.get_counts(2))",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "D"
+  ],
+  "figures": {
+    "generator": "figures/s5-q042/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s5-q042/s5-q042-A.svg",
+        "alt": "Bar chart with a Count axis and two bars labelled 0 and 1; the bar at 0 is roughly nine tenths of the total and the bar at 1 is the small remainder, and the two tallies add up to 2000."
+      },
+      "B": {
+        "file": "figures/s5-q042/s5-q042-B.svg",
+        "alt": "Bar chart with a Count axis and two bars labelled 0 and 1 of nearly equal height, each roughly half of the total; the two tallies add up to 2000."
+      },
+      "C": {
+        "file": "figures/s5-q042/s5-q042-C.svg",
+        "alt": "Bar chart with a Count axis and two bars labelled 0 and 1 of nearly equal height, each roughly half of the total; the two tallies add up to 6000."
+      },
+      "D": {
+        "file": "figures/s5-q042/s5-q042-D.svg",
+        "alt": "Bar chart with a Count axis and two bars labelled 0 and 1; the bar at 1 is roughly nine tenths of the total and the bar at 0 is the small remainder, and the two tallies add up to 2000."
+      },
+      "E": {
+        "file": "figures/s5-q042/s5-q042-E.svg",
+        "alt": "Bar chart with a Count axis and two bars labelled 0 and 1; the bar at 0 is roughly nine tenths of the total and the bar at 1 is the small remainder, and the two tallies add up to 2000, one tally being a three-digit number."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "A parameter array of shape (3, 1) broadcasts to a BitArray of shape (3,), one entry per bound angle, and `get_counts(2)` selects the third of them — the run at 5*pi/6. `ry(theta)` leaves the qubit in state |1> with probability sin^2(theta/2), which is about 0.93 there, so the tall bar sits at outcome 1 and the drawing totals the 2000 shots of that single parameter set.",
+    "distractors": {
+      "A": "Reads the index as a position counted from one, which lands on the first bound angle, pi/6 — an almost-|0> distribution.",
+      "B": "Picks the middle angle, pi/2, whose two outcomes are equally likely; that is `get_counts(1)`.",
+      "C": "Calling `get_counts()` with no index at all pools every parameter set, so the tallies add up to three times the shot count and the shape of the individual sweep point is lost.",
+      "E": "Inverts the outcome labels: sin^2(theta/2) is the probability of measuring 1, not 0, so the tall bar belongs to the 1 outcome at this angle."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q042.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.visualization import plot_histogram\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\n# The five counts dicts MUST mirror data/figures/s5-q042/generate.py — the\n# rendered figures are plot_histogram drawings of exactly these dicts.\n\nBACKEND = FakeManilaV2()\nPM = generate_preset_pass_manager(optimization_level=1, backend=BACKEND,\n                                  seed_transpiler=42)\nANGLES = np.array([[np.pi / 6], [np.pi / 2], [5 * np.pi / 6]])\nSHOTS = 2000\n\n\ndef swept_bits():\n    theta = Parameter(\"theta\")\n    qc = QuantumCircuit(1)\n    qc.ry(theta, 0)\n    qc.measure_all()\n    sampler = SamplerV2(mode=BACKEND)\n    sampler.options.simulator.seed_simulator = 55\n    return sampler.run([(PM.run(qc), ANGLES)], shots=SHOTS).result()[0].data.meas\n\n\nBITS = swept_bits()\nVARIANTS = {\n    \"A\": BITS.get_counts(0),\n    \"B\": BITS.get_counts(1),\n    \"C\": BITS.get_counts(),\n    \"D\": BITS.get_counts(2),\n    \"E\": {(\"1\" if k == \"0\" else \"0\"): v for k, v in BITS.get_counts(2).items()},\n}\n\n\ndef drawn(counts):\n    \"\"\"Bar labels plus heights as a share of that drawing's own total.\"\"\"\n    fig = plot_histogram(counts)\n    ax = fig.axes[0]\n    total = sum(p.get_height() for p in ax.patches)\n    bars = tuple(\n        (t.get_text(), round(p.get_height() / total, 2))\n        for t, p in zip(ax.get_xticklabels(), ax.patches)\n    )\n    plt.close(fig)\n    return bars, round(total / SHOTS, 2)\n\n\ndef fmt(d):\n    bars, sets = d\n    return (\" \".join(f\"{n}:{h:.2f}\" for n, h in bars)\n            + f\" over {sets:g} parameter set(s) worth of shots\")\n\n\ntarget = drawn(BITS.get_counts(2))\nproven, evidence, observed = [], {}, {}\nfor key, counts in sorted(VARIANTS.items()):\n    d = drawn(counts)\n    match = d == target\n    observed[key] = fmt(d)\n    evidence[key] = f\"figure draws {fmt(d)}; the stem code draws {fmt(target)} -> match={match}\"\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = fmt(target)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure agent, task #28 wave 1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Image-option item on broadcast indexing of a swept BitArray. Figures are plot_histogram renders of the five candidate readings the proof rebuilds from the same seeded sweep. Deliberate size-max keeper: the keyed figure is the largest SVG of the five (deviation from the distractor median under 1%)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-27",
+    "stale": false
+  }
+}

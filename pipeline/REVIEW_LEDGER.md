@@ -1545,3 +1545,109 @@ Anti-tell calibration for image options:
   all option texts `""`, `longest_option`/`shortest_option` return every key
   (exactly chance) and `avoid_longest` abstains — figure questions are neutral
   ballast for the length aggregates.
+
+## Figure-question wave 2 (task #28 wave 1, 2026-07-26, qiskit 2.5.0 / runtime 0.48.0)
+
+Eleven new figure questions in the four sections that had none: s1-q051/q052/q053,
+s5-q040/q041/q042, s6-q040/q041/q042, s7-q037/q038. Six carry option images, five
+are stem-figure items (figure = the question, text options). All measured in the
+pinned venv.
+
+Drawer / rendering facts measured this wave:
+
+- **`plot_state_city` draws on TWO `Axes3D` panels** (Re(rho) left, Im(rho)
+  right) -> `platform_sensitive: true`, same as Bloch. It draws all 16 bars of a
+  2-qubit density matrix whatever the state, so **the whole family renders at
+  68.2-68.8 KB — a 0.9% spread across five very different states**. That makes a
+  city-plot option set automatically immune to `image_size_tell` while still
+  letting you place the keyed figure at either extreme.
+- **`plot_histogram` SKIPS zero-valued entries but keeps their tick**: the dict
+  `{"00":24,"01":2,"10":0,"11":14}` yields 4 x-tick labels and only 3 patches,
+  with the bars at x = -0.25, 0.75, **2.75**. So a proof that zips
+  `ax.get_xticklabels()` with `ax.patches` silently mispairs (caught live on
+  s5-q041). Pair by slot instead: `int(round(p.get_x() + 0.25))`. The two
+  drawings ("three categories" vs "four categories, one empty") differ by ~450
+  bytes and are a fair, genuinely visible option pair.
+- **`plot_histogram([c1, c2], legend=[...])` creates ONE `BarContainer` PER BAR**
+  (2 series x 4 outcomes = 8 containers), series-major and label-sorted, so the
+  series split is `heights[i:i+len(labels)]`. Legend text reads off
+  `ax.get_legend().get_texts()`. Re-confirmed: a single counts dict with a
+  two-entry legend raises `VisualizationError: Length of legend (2) doesn't match
+  number of input executions (1).`
+- **Runtime primitives on a fake backend are reproducible ACROSS PROCESSES with
+  `options.simulator.seed_simulator`** — safe inside a figure generator (the
+  double render is byte-identical for both SamplerV2 and EstimatorV2 runs).
+  `options.seed_estimator` warns `Options {'seed_estimator': ...} have no effect
+  in local testing mode` — never set it.
+- **`default_precision` -> shot budget, measured** (1-qubit RY, FakeManilaV2):
+  0.2 -> 25 shots, 0.1 -> 100, 0.05 -> 400, 0.02 -> 2500, 0.01 -> 10000. The
+  reported `stds` are state-dependent, largest where the expectation value is
+  near zero (0.1 gave 0.039/0.088/0.095/0.039 across a 0..pi sweep) — which is
+  what makes an error-bar drawing readable as evidence.
+- **`estimator.options.precision = x` and `estimator.options.execution.shots = n`
+  are both `ValidationError` (`Object has no attribute ...`)**, and
+  `default_precision = 0` **and** `= 0.0` hit the same `must be >0` validator
+  (useful: the `0.0` spelling is two characters longer, which is how s6-q041's
+  length tell was cleared without touching content).
+- **`<ZZ>` on `ry(theta,0); cx(0,1)` is CONSTANT** (both |00> and |11> give +1) —
+  a dead sweep observable. Use a single-qubit Z on a 1-qubit circuit for any
+  angle-sweep figure.
+- Estimator broadcasting re-measured for the grouped-bar item: `[[Z],[X]]` (2,1)
+  x parameters (1,3) -> `(2, 3)`; a single observable x a (2,3) parameter array
+  -> also `(2, 3)` (right shape, wrong content — refute on values, not shape);
+  `[Z, X]` (2,) x (3,) -> `ValueError ... not broadcastable`; **`[[Z, X]]` (1,2)
+  x a (3,1) array -> ValueError too, because with ONE free parameter a (3,1)
+  array is read as parameter shape (3,)**; `SparsePauliOp(["Z","X"])` x (3,) ->
+  `(3,)` (one observable, whatever its term count).
+- s7 container refutations re-confirmed from the plotting side:
+  `SamplerPubResult.get_counts`, `DataBin.get_counts`, `PrimitiveResult.results`,
+  `PrimitiveResult.data`, `PubResult.evs` are all `AttributeError`;
+  `pub.metadata["evs"]` is `KeyError`. `result[0].data.stds` is the dangerous one
+  — it exists, has the right shape and plots, but collapses onto the axis
+  (0.005-0.018 vs evs spanning +-0.9), so it needs a value post-condition.
+- Bloch reading: `h` then `sdg` lands the arrow on **-y** (`s` gives +y); `z` on
+  |0> leaves it at the pole. `plot_bloch_multivector` of a 2-qubit product state
+  is ~211 KB.
+- **SVG weight table for budgeting:** bloch 2 spheres ~211 KB; city plot (2
+  qubits) ~68 KB; **grouped bar chart with hatched bars ~93 KB** (hatching is by
+  far the most expensive 2D primitive — a plain 9-point line plot is ~23 KB);
+  histogram 2 bars ~12.6 KB, 8 bars ~21 KB; 40-point step trace ~17 KB;
+  1-qubit 3-gate circuit render ~4.4-5.3 KB.
+
+Stem-figure craft (the shape the gold example does not cover):
+
+- When the FIGURE is the stem and the options are text, "figure variants ==
+  proof variants" cannot apply. The replacement rule: **the proof hardcodes a
+  literal TARGET describing what the drawing shows (Bloch vectors, marker
+  heights, bar values), and the generator carries an `assert` that the artifact
+  it renders matches that same literal.** Drift then fails at render time
+  instead of silently invalidating the proof. Used by s1-q051, s6-q041, s6-q042,
+  s7-q037, s7-q038.
+- A retrieval-flavoured stem (`service.job(job_id)`) is provable offline by
+  rebuilding the same result with a local seeded run: the container path is what
+  the question tests, not the network round trip. Say so in the provenance note.
+
+Image-size calibration (the bank-level fix this wave was asked for):
+
+- **`largest_image_option` 11.1% -> 24.3%, `smallest_image_option` 25.0% ->
+  28.1%**, 12 image-option questions bank-wide, 0 blockers/warnings, no
+  `image_size_tell` anywhere and no other flag on any of the 11 new questions.
+- The lever that works is choosing the DISTRACTOR SET after measuring, inside a
+  family whose renders differ by <1%: two keepers were made strictly largest
+  (s5-q040 at 21456 B vs a 20777 B distractor median = 3% deviation; s5-q042 at
+  14841 B vs 14799 B = 0.3%) and one strictly smallest (s5-q041, 13710 B vs a
+  17125 B median = 20%). All are far under the 0.4 deviation bar, so the
+  heuristic moves while the flag stays silent. **Never trim a misconception to
+  chase the number — pick which equally-valid misconception renders where.**
+- **Enumerate the `display_count` variants, not just the full option set.** A
+  question whose keyed figure is *second* smallest contributes 0.25 through the
+  single variant that drops the one smaller distractor (s6-q040 after its fix,
+  s1-q052 symmetric on the largest side). This is where the aggregate leaks.
+- **A mirrored curve renders BYTE-IDENTICAL** (`cos` vs `-cos` over 0..pi: 23125 B
+  each), which is a free tie — ties defeat the strictness clause, worth 0.625 EV
+  at dc=4 rather than 1.0. To take a keyed curve OFF the extreme, change the
+  sweep range rather than the distractor set: 0..pi put `cos`/`-cos` jointly at
+  the max, 0..2*pi moved the max to the amplitude curve and left the keyed cosine
+  in the middle (also the better teaching picture — one full period).
+- Answer keys for the wave: A x2, B x2, C x3, D x2, E x2; difficulty 1/8/2 across
+  levels 1/2/3.

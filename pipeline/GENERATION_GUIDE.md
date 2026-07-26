@@ -95,6 +95,9 @@ wave that follows generation (agent gate). Questions that violate it get killed.
      comparable visual complexity.
    - `color_essential: true` for figures whose MEANING needs color (q-sphere phase);
      those are excluded from the e-ink EPUB (alt text stands in).
+   - `platform_sensitive: true` for 3D renders (Bloch spheres): their SVG path
+     decimals differ across OSes, so CI skips the byte-compare for them (double-render
+     determinism is still enforced). 2D renders must NOT set this.
    - Figure questions may use 4-5 authored options (rendering cost); `display_count`
      rotation still applies when >4.
 

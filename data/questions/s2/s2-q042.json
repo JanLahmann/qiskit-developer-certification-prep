@@ -58,7 +58,8 @@
         "file": "figures/s2-q042/s2-q042-E.svg",
         "alt": "A single Bloch sphere, titled qubit 0, whose arrow points along the +y axis."
       }
-    }
+    },
+    "platform_sensitive": true
   },
   "explanation": {
     "correct": "`plot_bloch_multivector` draws one sphere per qubit, titled by qubit index, each showing that qubit's reduced (single-qubit) state. `h(0)` takes qubit 0 from the north pole to +x; `s(0)` is a quarter turn about z, which carries +x to +y. `x(1)` flips qubit 1 to the |1> state, whose Bloch vector points straight down along -z. So the drawing is a +y arrow on the qubit 0 sphere and a -z arrow on the qubit 1 sphere.",

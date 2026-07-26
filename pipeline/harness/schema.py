@@ -88,6 +88,10 @@ QUESTION_SCHEMA: dict = {
             "properties": {
                 "generator": {"type": "string", "pattern": r"^figures/s[1-8]-q\d{3}/generate\.py$"},
                 "color_essential": {"type": "boolean"},
+                # 3D renders (Bloch spheres) differ in low-order path decimals
+                # across platforms; CI's --check skips byte-compare for these
+                # (double-render determinism still enforced everywhere).
+                "platform_sensitive": {"type": "boolean"},
                 "stem": {
                     "type": "object",
                     "additionalProperties": False,

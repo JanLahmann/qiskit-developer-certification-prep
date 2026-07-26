@@ -122,11 +122,20 @@ def main() -> int:
                 failures += 1
                 continue
             if args.check:
+                # 3D matplotlib renders (Bloch spheres) are deterministic on
+                # any one platform but differ in low-order path decimals
+                # across OSes — byte-compare would fail on CI for figures
+                # committed from a Mac. platform_sensitive figures get
+                # existence + determinism checks only.
+                sensitive = bool(q["figures"].get("platform_sensitive"))
                 for rel, blob in r1.items():
                     committed = DATA / rel
                     if not committed.exists():
                         print(f"[FAIL] {q['id']}: committed figure missing: {rel}")
                         failures += 1
+                    elif sensitive:
+                        print(f"[ok] {q['id']}: {rel} exists "
+                              "(platform-sensitive: byte-compare skipped)")
                     elif committed.read_bytes() != blob:
                         print(f"[FAIL] {q['id']}: committed figure stale: {rel} "
                               f"(committed {hashlib.sha256(committed.read_bytes()).hexdigest()[:12]} "

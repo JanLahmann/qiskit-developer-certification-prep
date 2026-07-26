@@ -171,7 +171,7 @@ import DoqExtras from '@site/src/components/DoqExtras';
 
 </details>
 
-## Learn — official resources
+{cram_line}## Learn — official resources
 
 The exam is based on these official IBM materials. Study them first; the drills below tell you when you're done.
 
@@ -231,7 +231,14 @@ def write_section_pages(syllabus: dict, stats: dict) -> None:
                 if r.get("url") and r.get("type") == "guide"
             ]
         )
+        cram_line = (
+            f"**Quick study:** the [cram sheet for this section](/docs/cram/{sid}) "
+            "condenses the key facts once you've drilled.\n\n"
+            if (DATA / "study" / f"{sid}.json").exists()
+            else ""
+        )
         page = SECTION_TEMPLATE.format(
+            cram_line=cram_line,
             pos=sec["num"],
             num=sec["num"],
             title=esc_mdx(sec["title"]),

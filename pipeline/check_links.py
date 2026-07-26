@@ -47,6 +47,21 @@ def collect_urls() -> dict[str, list[str]]:
             continue
         for c in q.get("explanation", {}).get("citations", []):
             add(c, f"question:{qpath.stem}")
+
+    study_dir = REPO / "data" / "study"
+    if study_dir.exists():
+        for spath in sorted(study_dir.glob("s*.json")):
+            try:
+                s = json.loads(spath.read_text())
+            except json.JSONDecodeError:
+                continue
+            for p in s.get("primers", []):
+                for c in p.get("citations", []):
+                    add(c, f"study:{spath.stem}")
+            for f in s.get("facts", []):
+                src = f.get("source") or {}
+                if src.get("type") == "citation":
+                    add(src.get("ref"), f"study:{spath.stem}")
     return urls
 
 

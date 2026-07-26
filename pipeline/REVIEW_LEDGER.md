@@ -915,3 +915,42 @@ and died with it.
 - API page `api/qiskit/qiskit.circuit.library.SGate` is live (200, slug match)
   and states S = sqrt(Z) = diag(1, i), a pi/2 Z-rotation — safe citation for
   the S/T/P/RZ relationship family.
+
+## Verified library facts (s2/s3 quick-study wave, 2026-07-26, qiskit 2.5.0)
+
+- **Multi-register counts keys are space-separated with the LAST-declared
+  register leftmost:** registers `a` then `b`, with q0 -> a[0] = 1, gives
+  `{'0 1': …}`. `QuantumCircuit(2, 2).measure_all()` gives `cregs=['c','meas']`
+  and keys like `'01 00'` — the appended `meas` group prints leftmost. Anything
+  keyed on a single flat bitstring after `measure_all` on a circuit that already
+  has clbits is wrong.
+- **`style={...}` really is inert in the text renderer** (re-confirmed):
+  `draw("text", style={"initial_state": True})` produces no `|0>` labels while
+  `draw("text", initial_state=True)` does.
+- **`Statevector.draw`'s valid option list, verbatim from its `ValueError`:**
+  `'text', 'latex', 'latex_source', 'qsphere', 'hinton', 'bloch', 'city'` or
+  `'paulivec'` — the authoritative set for state-drawer questions.
+- **`ParameterVector` elements sort NUMERICALLY by index inside `qc.parameters`**
+  (`x[9]`, `x[10]`, `x[11]`), whereas two plain `Parameter('x10')`/`Parameter('x2')`
+  sort as strings (`x10` first). "Alphabetical by name" is true for plain
+  Parameters only; do not key a vector question on string ordering.
+- **`transpile()`'s signature default is `optimization_level=None`** and resolves
+  to level 2 (functional check: no-argument transpile output == explicit level 2
+  on GenericBackendV2(5)); `generate_preset_pass_manager`'s signature default is
+  the literal `2`. Confirms the earlier s3 ledger entry from the other direction.
+- **`QuantumCircuit.compose(other, front=True)` prepends** (`['h','x']` vs the
+  default `['x','h']`); `append` mutates in place and returns an `InstructionSet`.
+  compose/append is the functional-vs-mutating pair worth teaching together.
+- **`measure_active()` names its register `meas` and sizes it to the ACTIVE
+  qubits only** (3-qubit circuit with one gate -> 1 clbit) — differs from
+  `measure_all()`, which is always full width.
+- **Docs-vs-library drift, noted not resolved:** `guides/transpiler-stages` and
+  `guides/set-optimization` both describe `optimization_level` as a *required
+  positional* argument of `generate_preset_pass_manager`, while the 2.5 signature
+  carries the default 2. Questions must key the library; explanations may flag
+  the docs wording.
+- **Proof-status hygiene for study files:** facts must never cite a
+  `proof.status == "conceptual"` question with a `{"type":"proof"}` source —
+  `build_study.py` only checks that the qid exists, so the cram page would render
+  a false ⚙️ "executed" badge. s3-q027/q036/q038/q044/q048 and s2-q018 are the
+  conceptual ones in these two sections; cite the guide instead.

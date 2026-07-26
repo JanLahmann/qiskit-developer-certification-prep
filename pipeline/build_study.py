@@ -71,7 +71,16 @@ def fail(msg: str) -> None:
 
 
 def question_ids() -> set[str]:
-    return {p.stem for p in QUESTIONS_DIR.glob("s*/*.json")}
+    """Only EXECUTED questions may back a ⚙️ proof-sourced fact — a
+    conceptual qid would ship a false 'proven by execution' badge."""
+    ids = set()
+    for p in QUESTIONS_DIR.glob("s*/*.json"):
+        q = json.loads(p.read_text())
+        if q.get("proof", {}).get("status") == "executed" and (
+            ROOT / "data" / "proofs" / f"{p.stem}.json"
+        ).exists():
+            ids.add(p.stem)
+    return ids
 
 
 def render_fact(fact: dict, sid: str) -> str:

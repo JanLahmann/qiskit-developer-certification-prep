@@ -354,6 +354,16 @@ Or grab a single section:
 {section_items}
 </ul>
 
+## Kindle & e-readers
+
+No Anki on your device? The same content ships as an EPUB study book: Part I is the study layer (objectives, primers, key facts per section), Part II is the full question bank with each answer on the page *after* its question — so nothing is spoiled while you think.
+
+<ul className="download-list">
+    <li><Download file="certiq-study-book.epub"><b>CertiQ Study Book (EPUB)</b></Download> <span className="dl-meta">— study chapters + full question bank</span></li>
+</ul>
+
+**Send it to a Kindle:** e-mail the file to your device's Send-to-Kindle address (find it under Amazon → Manage Your Content and Devices → Preferences), or use Amazon's [Send to Kindle](https://www.amazon.com/sendtokindle) page/app. Any other e-reader (Kobo, Boox, Apple Books) opens the EPUB directly.
+
 ## Import into Anki
 
 1. Install the free [Anki desktop app](https://apps.ankiweb.net/) (or AnkiMobile / AnkiDroid).

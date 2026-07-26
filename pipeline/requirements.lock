@@ -50,3 +50,5 @@ sympy==1.14.0
 typing-inspection==0.4.2
 typing_extensions==4.16.0
 urllib3==2.7.0
+EbookLib==0.20
+six==1.17.0

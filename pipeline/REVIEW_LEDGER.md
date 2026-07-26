@@ -887,3 +887,31 @@ and died with it.
   s8-q010's one-variant mixed pair), lint findings unchanged from the pre-wave
   baseline (0). `similar_twin_member` 42.0% at 49% coverage -> 32.9% exam
   estimate, accepted residual as in s4/s5/s6/s7.
+
+## Verified library facts (s1 quick-study wave, 2026-07-26, qiskit 2.5.0)
+
+- **`Pauli.compose` vs `Pauli.dot` is visible in the phase prefix:**
+  `Pauli('X').dot(Pauli('Y')).to_label()` is `'iZ'`, but
+  `Pauli('X').compose(Pauli('Y')).to_label()` is `'-iZ'` (compose = B·A). The
+  compose/dot distinction is not Operator-only — it changes the *label* on
+  Paulis, which makes it a sharp predict-output item.
+- **`Pauli('X').expand(Pauli('Y')).to_label()` = `'YX'`** — expand is b ⊗ a,
+  the exact mirror of tensor (docs: `A.expand(B)` = B ⊗ A, A on subsystem 0).
+- **Exact-equality gate identities (`Operator.__eq__`, not just `equiv`):**
+  `SGate == PhaseGate(pi/2)` True; `TGate.dot(TGate) == SGate` True;
+  `SGate.dot(SGate) == ZGate` True; `PhaseGate(pi) == ZGate` True.
+  `SGate == RZGate(pi/2)` is **False** but `.equiv` is True (RZ splits the
+  phase symmetrically); same shape for `TGate` vs `RZGate(pi/4)`.
+  `SdgGate == SGate.adjoint()` True.
+- **Docs wording confirmed by fetch (guides/operator-class):** `A.compose(B)`
+  returns the operator with matrix B·A, `A.compose(B, front=True)` gives A·B,
+  `A.tensor(B)` indexes B on subsystem 0, `Operator.__eq__` is elementwise
+  *approximate* equality and is False for a global-phase difference.
+- **Docs wording confirmed by fetch (guides/operators-overview):** `Pauli`
+  labels take an optional phase prefix from `''`/`'i'`/`'-'`/`'-i'`
+  (`Pauli('iXX').phase == 3`); `SparsePauliOp.from_sparse_list([("ZX", [1, 4],
+  1.0)], num_qubits=5)` prints as `XIIZI` — the label chars pair with the index
+  list left-to-right and the *display* stays little-endian.
+- API page `api/qiskit/qiskit.circuit.library.SGate` is live (200, slug match)
+  and states S = sqrt(Z) = diag(1, i), a pi/2 Z-rotation — safe citation for
+  the S/T/P/RZ relationship family.

@@ -135,6 +135,9 @@ code {
 .correct { font-size: 1.05em; margin-bottom: 8px; }
 .correct .k { color: #0a7d33; font-weight: 700; }
 .explanation { margin-bottom: 10px; }
+.whywrong { margin: 8px 0 10px; font-size: 0.92em; }
+.whywrong summary { cursor: pointer; color: #555; font-weight: 600; }
+.whywrong .opt { margin-top: 6px; }
 .citations { font-size: 0.9em; }
 .citations ul { margin: 4px 0 0; padding-left: 20px; }
 .meta {
@@ -202,6 +205,22 @@ def build_answer_field(q: dict) -> str:
     correct = explanation.get("correct")
     if correct:
         parts.append(f'<div class="explanation">{md_inline(correct)}</div>')
+
+    # Why the wrong options are wrong — collapsed by default so long pooled
+    # cards stay compact (renders open on clients without <details> support).
+    distractors = explanation.get("distractors") or {}
+    answer_set = set(answer_keys)
+    wrong = [(k, v) for k, v in sorted(distractors.items()) if k not in answer_set and v]
+    if wrong:
+        rows = "".join(
+            f'<div class="opt"><span class="k">{html.escape(str(k))}.</span>'
+            f"{md_inline(v)}</div>"
+            for k, v in wrong
+        )
+        parts.append(
+            '<details class="whywrong"><summary>Why the others are wrong</summary>'
+            f"{rows}</details>"
+        )
 
     citations = explanation.get("citations") or []
     if citations:

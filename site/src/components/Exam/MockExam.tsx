@@ -14,6 +14,7 @@ import Link from '@docusaurus/Link';
 import CodeBlock from '@theme/CodeBlock';
 import type {BankQuestion, SectionBank} from '@site/src/lib/bank';
 import {
+  hasFigures,
   loadAllSections,
   mulberry32,
   seededShuffle,
@@ -65,13 +66,24 @@ function buildPaper(sections: SectionBank[], seed: number): ExamPaper {
   const quota = allocate(sections, total);
 
   // Draw per section; collect shortfalls and refill from leftovers.
+  // Figure realism: the official sample test presents ~1 in 5 questions with
+  // rendered figures, so within each section's quota we reserve ~20% of the
+  // slots for figure-bearing items where the bank has them (seeded, so the
+  // same seed still reproduces the same paper).
   const picked: BankQuestion[] = [];
   const leftovers: BankQuestion[] = [];
   for (const s of sections) {
     const want = quota.get(s.section.id) ?? 0;
     const shuffled = seededShuffle(s.questions, rand);
-    picked.push(...shuffled.slice(0, want));
-    leftovers.push(...shuffled.slice(want));
+    const figs = shuffled.filter(hasFigures);
+    const figWant = Math.min(figs.length, Math.round(want * 0.2));
+    const figPicked = figs.slice(0, figWant);
+    const figSet = new Set(figPicked.map((q) => q.id));
+    const rest = shuffled.filter((q) => !figSet.has(q.id));
+    const take = [...figPicked, ...rest.slice(0, Math.max(0, want - figPicked.length))];
+    picked.push(...take);
+    const taken = new Set(take.map((q) => q.id));
+    leftovers.push(...shuffled.filter((q) => !taken.has(q.id)));
   }
   if (picked.length < total) {
     picked.push(...seededShuffle(leftovers, rand).slice(0, total - picked.length));

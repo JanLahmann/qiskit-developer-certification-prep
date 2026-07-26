@@ -9,7 +9,9 @@
 
 export type QuestionType = 'mcq' | 'multi' | 'predict-output' | 'spot-bug';
 
-export type BankOption = {key: string; text: string};
+export type BankImage = {src: string; alt: string};
+
+export type BankOption = {key: string; text: string; image?: BankImage | null};
 
 export type BankProof = {
   status: 'executed' | 'conceptual';
@@ -29,6 +31,8 @@ export type BankQuestion = {
   difficulty: 1 | 2 | 3;
   stem: string;
   code: string | null;
+  /** execution-generated figure shown under the stem (figure questions) */
+  stemImage?: BankImage | null;
   options: BankOption[];
   /**
    * When set and < options.length, only this many options are shown per
@@ -142,3 +146,8 @@ export function shuffledOptions(q: BankQuestion, seed: number): BankOption[] {
 
 /** Letters used for on-screen option labels, by display position. */
 export const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+/** Figure-bearing question (exam-realistic image item)? */
+export function hasFigures(q: BankQuestion): boolean {
+  return Boolean(q.stemImage || q.options.some((o) => o.image));
+}

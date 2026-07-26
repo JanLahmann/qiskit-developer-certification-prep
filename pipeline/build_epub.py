@@ -121,19 +121,51 @@ def study_chapter_body(sec: dict, study: dict | None, qcount: int) -> str:
     return "\n".join(parts)
 
 
+def add_figure(book: epub.EpubBook, q: dict, spec: dict | None) -> str:
+    """Embed a figure SVG (grayscale-safe only) and return its <img> HTML.
+
+    Figures whose meaning needs color (figures.color_essential — e.g. the
+    q-sphere's phase wheel) are NOT embedded on e-ink; the alt text stands in
+    and points the reader at the website.
+    """
+    if not spec:
+        return ""
+    if (q.get("figures") or {}).get("color_essential"):
+        return (f'<p class="meta"><i>[Color figure — see this question on '
+                f"certiq.dev. Description: {esc(spec['alt'])}]</i></p>")
+    src = DATA / spec["file"]
+    if not src.exists():
+        return ""
+    name = spec["file"].rsplit("/", 1)[-1]
+    uid = f"img-{name}"
+    if uid not in _added_images:
+        book.add_item(epub.EpubItem(uid=uid, file_name=f"img/{name}",
+                                    media_type="image/svg+xml",
+                                    content=src.read_bytes()))
+        _added_images.add(uid)
+    return f'<div><img src="img/{name}" alt="{esc(spec["alt"])}" style="max-width:100%"/></div>'
+
+
+_added_images: set[str] = set()
+
+
 def question_pages(book: epub.EpubBook, q: dict, next_uid: str | None) -> list[epub.EpubHtml]:
     qid = q["id"]
     quid, auid = f"q-{qid}", f"a-{qid}"
     multi = q["type"] == "multi"
+    figs = q.get("figures") or {}
+    opt_figs = figs.get("options") or {}
 
     qparts = [f'<p class="meta">{esc(qid)} · {esc(q["type"])} · difficulty {q["difficulty"]}/3</p>']
     qparts.append(f"<p>{md_inline(q['stem'])}"
                   + (" <i>(Select all that apply.)</i>" if multi else "") + "</p>")
     if q.get("code"):
         qparts.append(code_block(q["code"]))
+    qparts.append(add_figure(book, q, figs.get("stem")))
     for o in q["options"]:
         qparts.append(f'<div class="opt"><span class="k">{esc(o["key"])}.</span>'
-                      f"{md_inline(o['text'])}</div>")
+                      f"{md_inline(o['text'])}"
+                      f"{add_figure(book, q, opt_figs.get(o['key']))}</div>")
     qparts.append(f'<p><a href="{auid}.xhtml">Show answer →</a></p>')
     qch = chapter(book, quid, f"{qid}", "\n".join(qparts))
 

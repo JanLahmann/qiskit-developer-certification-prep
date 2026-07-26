@@ -35,6 +35,8 @@ jobs:
         run: .venv/bin/python pipeline/verify_bank.py --check --jobs 4
       - name: Meta-pattern audit gate
         run: .venv/bin/python pipeline/audit_meta_patterns.py --gate
+      - name: Figure freshness gate
+        run: .venv/bin/python pipeline/render_figures.py --check
       - name: Proof/option drift lint (advisory)
         continue-on-error: true
         run: .venv/bin/python pipeline/lint_proof_drift.py

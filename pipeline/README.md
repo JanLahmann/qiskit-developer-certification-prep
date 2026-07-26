@@ -29,7 +29,8 @@ data/syllabus.json  ──►  generation agents (per section, GENERATION_GUIDE.
 | Command | Purpose |
 |---|---|
 | `.venv/bin/python pipeline/verify_bank.py` | Verify + freshness-stamp the whole bank (CI gate; `--check` for read-only, `--section sX` to scope, `--only <qid>` for one) |
-| `.venv/bin/python pipeline/build_site_data.py` | Compile bank + syllabus into site data and section pages |
+| `.venv/bin/python pipeline/render_figures.py` | Render figure-question SVGs (deterministic; `--check` verifies committed figures, `--only <qid>` to scope) |
+| `.venv/bin/python pipeline/build_site_data.py` | Compile bank + syllabus into site data and section pages (copies `data/figures/` → `site/static/img/bank/`) |
 | `.venv/bin/python pipeline/build_study.py` | Render cram sheets from `data/study/` |
 | `.venv/bin/python pipeline/build_anki.py` | Build Anki `.apkg` decks (+ `site/docs/flashcards.mdx`) |
 | `.venv/bin/python pipeline/build_epub.py` | Build the study-book EPUB |

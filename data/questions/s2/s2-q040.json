@@ -1,0 +1,102 @@
+{
+  "id": "s2-q040",
+  "section": "s2",
+  "objectives": [
+    "s2o1",
+    "s2o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "Which figure is the `mpl` rendering produced by this code?",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(2, \"q\")\ncr = ClassicalRegister(1, \"c\")\nqc = QuantumCircuit(qr, cr)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.if_test((cr, 1)):\n    qc.x(1)\n\nqc.draw(output=\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "C"
+  ],
+  "figures": {
+    "generator": "figures/s2-q040/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s2-q040/s2-q040-A.svg",
+        "alt": "Circuit diagram: H on q0, measurement from q0 to classical bit c, then an If/Else region tied to the classical wire with an X gate on q1 in the If part and a Z gate on q1 in the Else part."
+      },
+      "B": {
+        "file": "figures/s2-q040/s2-q040-B.svg",
+        "alt": "Circuit diagram: H on q0, measurement from q0 to classical bit c, then a plain X gate on q1 with no conditional region."
+      },
+      "C": {
+        "file": "figures/s2-q040/s2-q040-C.svg",
+        "alt": "Circuit diagram: H on q0, measurement from q0 to classical bit c, then an 'If-1' region tied to the classical wire enclosing a single X gate on q1."
+      },
+      "D": {
+        "file": "figures/s2-q040/s2-q040-D.svg",
+        "alt": "Circuit diagram: H on q0, measurement from q0 to classical bit c, then an 'If-1' region enclosing an X gate on q0, the qubit that was measured."
+      },
+      "E": {
+        "file": "figures/s2-q040/s2-q040-E.svg",
+        "alt": "Circuit diagram: no H gate, a measurement from q0 to classical bit c, then an 'If-1' region enclosing an X gate on q1."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`if_test((cr, 1))` opens a control-flow block that the `mpl` drawer renders as a boxed region attached to the classical wire, labeled with the tested value. The block here contains only `x(1)`, so the correct drawing shows H on q0, the measurement into c, and an If region enclosing a single X on q1 — no Else part, because none was created.",
+    "distractors": {
+      "A": "Phantom-else misconception: an Else region only appears when you capture the context (`as else_:`) and add one. This code never opens an Else branch, so no Else part is drawn.",
+      "B": "Ignores the conditional: `x(1)` sits inside the `if_test` context, so the drawer must show it inside a boxed If region tied to the classical wire — not as a bare gate.",
+      "D": "Target misread: the X inside the block acts on qubit 1, not on the measured qubit 0. The drawing must show the boxed X on the q1 wire.",
+      "E": "Missing preparation: the code applies H to q0 before the measurement, so the drawing must include the H box on q0."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q040.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister\n\n# The five variant circuits MUST mirror data/figures/s2-q040/generate.py —\n# the rendered figures are drawings of exactly these circuits.\n\ndef base():\n    qr = QuantumRegister(2, \"q\")\n    cr = ClassicalRegister(1, \"c\")\n    return QuantumCircuit(qr, cr), cr\n\n\ndef stem_circuit():\n    qc, cr = base()\n    qc.h(0)\n    qc.measure(0, 0)\n    with qc.if_test((cr, 1)):\n        qc.x(1)\n    return qc\n\n\ndef v_a():\n    qc, cr = base()\n    qc.h(0)\n    qc.measure(0, 0)\n    with qc.if_test((cr, 1)) as else_:\n        qc.x(1)\n    with else_:\n        qc.z(1)\n    return qc\n\n\ndef v_b():\n    qc, _ = base()\n    qc.h(0)\n    qc.measure(0, 0)\n    qc.x(1)\n    return qc\n\n\ndef v_d():\n    qc, cr = base()\n    qc.h(0)\n    qc.measure(0, 0)\n    with qc.if_test((cr, 1)):\n        qc.x(0)\n    return qc\n\n\ndef v_e():\n    qc, cr = base()\n    qc.measure(0, 0)\n    with qc.if_test((cr, 1)):\n        qc.x(1)\n    return qc\n\n\ndef sig(qc):\n    \"\"\"Structural signature: what the drawer draws (ops, wires, block bodies).\"\"\"\n    out = []\n    for inst in qc.data:\n        op = inst.operation\n        qubits = tuple(qc.find_bit(b).index for b in inst.qubits)\n        if op.name == \"if_else\":\n            blocks = []\n            for blk in op.blocks:\n                blocks.append(tuple(\n                    (bi.operation.name,\n                     tuple(qubits[blk.find_bit(b).index] for b in bi.qubits))\n                    for bi in blk.data\n                ))\n            out.append((op.name, qubits, tuple(blocks)))\n        else:\n            out.append((op.name, qubits))\n    return tuple(out)\n\n\ntarget = sig(stem_circuit())\nvariants = {\"A\": v_a(), \"B\": v_b(), \"C\": stem_circuit(), \"D\": v_d(), \"E\": v_e()}\n\nproven, evidence, observed = [], {}, {}\nfor key, qc in sorted(variants.items()):\n    s = sig(qc)\n    match = s == target\n    observed[key] = repr(s)\n    evidence[key] = (\n        f\"variant draws {s} vs stem {target} -> match={match}\"\n        if not match else f\"variant is structurally identical to the stem code -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-fable-5 (orchestrator, gold example for figure waves)",
+    "adversarial_rounds": 1,
+    "reviewed": true,
+    "notes": "First figure question (task #27). Figures are mpl renders of the five variant circuits in figures/s2-q040/generate.py; the proof proves structural identity/difference of exactly those circuits against the stem code. Topic mirrors an official-sample THEME (conditional-circuit rendering) with a different circuit, per NDA rules."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

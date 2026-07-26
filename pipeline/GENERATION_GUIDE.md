@@ -77,6 +77,27 @@ wave that follows generation (agent gate). Questions that violate it get killed.
    trivia that changed within the 2.x line unless the question is explicitly about it
    AND the proof pins it.
 
+9. **Figure questions** (exam-realistic image items; gold example: `s2-q040`):
+   - The `figures` block names a generator at `data/figures/<qid>/generate.py` that
+     renders every declared SVG (basenames `<qid>-*.svg`, bare filenames into cwd).
+     Run `.venv/bin/python pipeline/render_figures.py --only <qid>` — it renders twice
+     and fails on nondeterminism (no unseeded randomness, no timestamps).
+   - **Figures are execution artifacts**: option images are renders of the
+     misconception's circuit/plot. The proof script MUST construct the *same* variants
+     as the generator (copy-paste the variant definitions; note the sync duty in both
+     files) and prove structural identity/difference vs the stem code.
+   - Image options: all-or-none per question; option `text` may be `""` (uniformly);
+     `alt` text is mandatory and must describe each figure faithfully AND with equal
+     specificity across options (accessibility without extra answer leakage).
+   - Anti-tell: the correct option's SVG must not be the visual-complexity outlier —
+     the audit measures SVG byte size both directions (`largest_image_option` /
+     `smallest_image_option` + `image_size_tell` flag). Craft distractor variants of
+     comparable visual complexity.
+   - `color_essential: true` for figures whose MEANING needs color (q-sphere phase);
+     those are excluded from the e-ink EPUB (alt text stands in).
+   - Figure questions may use 4-5 authored options (rendering cost); `display_count`
+     rotation still applies when >4.
+
 ## 3. Legal / NDA rules (non-negotiable)
 
 - Generate **original** questions from the public objectives + official docs + your own

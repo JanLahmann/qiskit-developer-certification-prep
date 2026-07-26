@@ -246,6 +246,46 @@ def h_twin_member(q):
     return best_pair
 
 
+_IMG_SIZE_CACHE: dict[str, int] = {}
+
+
+def _image_sizes(q) -> dict[str, int]:
+    """SVG byte size per displayed option key (figure questions only)."""
+    figs = (q.get("figures") or {}).get("options")
+    if not figs:
+        return {}
+    sizes = {}
+    for o in q["options"]:
+        spec = figs.get(o["key"])
+        if not spec:
+            continue
+        f = spec["file"]
+        if f not in _IMG_SIZE_CACHE:
+            p = ROOT / "data" / f
+            _IMG_SIZE_CACHE[f] = p.stat().st_size if p.exists() else 0
+        sizes[o["key"]] = _IMG_SIZE_CACHE[f]
+    return sizes
+
+
+def h_largest_image(q):
+    """A guesser can compare figures visually: 'the busiest/most complex
+    drawing is correct' is the image analogue of the longest-option tell.
+    SVG byte size is our proxy for visual complexity."""
+    sizes = _image_sizes(q)
+    if len(sizes) < 3:
+        return set()
+    m = max(sizes.values())
+    return {k for k, v in sizes.items() if v == m}
+
+
+def h_smallest_image(q):
+    sizes = _image_sizes(q)
+    if len(sizes) < 3:
+        return set()
+    m = min(sizes.values())
+    return {k for k, v in sizes.items() if v == m}
+
+
 HEURISTICS = {
     "longest_option": h_longest,
     "shortest_option": h_shortest,
@@ -263,6 +303,8 @@ HEURISTICS = {
     "numeric_middle": h_numeric_middle,
     "odd_one_out": h_odd_one_out,
     "similar_twin_member": h_twin_member,
+    "largest_image_option": h_largest_image,
+    "smallest_image_option": h_smallest_image,
 }
 
 
@@ -317,6 +359,29 @@ def question_flags(q) -> list[dict]:
                 "detail": f"correct option echoes stem vocabulary (overlap {ans_ov}"
                           f" vs best distractor {dis_ov})",
             })
+
+    # Image-size tell (figure questions): the correct option's SVG is the
+    # strict complexity outlier — visually spottable without any Qiskit
+    # knowledge ("the busiest drawing wins" / "the simplest drawing wins").
+    img_sizes = _image_sizes(q)
+    if img_sizes and len(img_sizes) >= 3:
+        ans_sizes = [v for k, v in img_sizes.items() if k in answer]
+        dis_sizes = [v for k, v in img_sizes.items() if k not in answer]
+        if ans_sizes and dis_sizes:
+            med = sorted(dis_sizes)[len(dis_sizes) // 2] or 1
+            for label, extreme in (("largest", max), ("smallest", min)):
+                ext = extreme(img_sizes.values())
+                strictly = all(
+                    (s == ext) for s in ans_sizes
+                ) and not any(s == ext for s in dis_sizes)
+                deviation = abs(ans_sizes[0] - med) / med
+                if strictly and deviation > 0.4:
+                    flags.append({
+                        "flag": "image_size_tell", "severity": "medium",
+                        "detail": f"correct option's figure is strictly the {label} SVG "
+                                  f"({ans_sizes[0]}B vs distractor median {med}B, "
+                                  f"deviation {deviation:.0%})",
+                    })
 
     # Formatting tell: code formatting present only in correct or only in wrong.
     ans_code = all("`" in opts[k] for k in answer)

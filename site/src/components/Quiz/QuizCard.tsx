@@ -222,6 +222,12 @@ export default function QuizCard({
         <CodeBlock language="python">{q.code}</CodeBlock>
       ) : null}
 
+      {q.stemImage ? (
+        <figure className={styles.stemFigure}>
+          <img src={q.stemImage.src} alt={q.stemImage.alt} loading="lazy" />
+        </figure>
+      ) : null}
+
       <div className={styles.options} role={isMulti ? 'group' : 'radiogroup'}>
         {displayOpts.map((opt) => {
           const isSelected = selected.has(opt.key);
@@ -252,7 +258,17 @@ export default function QuizCard({
                 role={isMulti ? 'checkbox' : 'radio'}
                 aria-checked={isSelected}>
                 <span className={styles.optionKey}>{letterOf.get(opt.key)}</span>
-                <span>{renderInline(opt.text)}</span>
+                <span>
+                  {opt.text ? renderInline(opt.text) : null}
+                  {opt.image ? (
+                    <img
+                      className={styles.optionImage}
+                      src={opt.image.src}
+                      alt={opt.image.alt}
+                      loading="lazy"
+                    />
+                  ) : null}
+                </span>
               </button>
               {showExplain ? (
                 <div className={styles.optionExplain}>

@@ -2,17 +2,17 @@
 
 *Repo-only quality artifact — not linked from the website.*
 
-Scope: **all sections** — 260 questions (231 single-answer, 29 multi-select). Random-guess baseline: **23.7%**. Exam pass line: **69%**.
+Scope: **all sections** — 261 questions (232 single-answer, 29 multi-select). Random-guess baseline: **23.8%**. Exam pass line: **69%**.
 
 ## Blind-guesser scores
 
 | Heuristic | EV accuracy (answered) | Coverage | Est. exam score |
 |---|---|---|---|
-| position_B | 32.8% | 76% | 30.7% |
-| similar_twin_member | 40.7% | 40% | 30.6% |
-| position_A | 32.3% | 76% | 30.3% |
-| position_C | 32.0% | 76% | 30.0% |
-| position_D | 31.6% | 76% | 29.6% |
+| position_B | 32.7% | 76% | 30.6% |
+| similar_twin_member | 40.5% | 40% | 30.6% |
+| position_C | 32.4% | 76% | 30.3% |
+| position_A | 32.2% | 76% | 30.2% |
+| position_D | 31.4% | 76% | 29.5% |
 | most_absolute | 29.8% | 32% | 25.7% |
 | avoid_hedged | 28.0% | 29% | 25.0% |
 | avoid_longest | 24.3% | 98% | 24.3% |
@@ -24,6 +24,8 @@ Scope: **all sections** — 260 questions (231 single-answer, 29 multi-select). 
 | odd_one_out | 10.9% | 100% | 10.9% |
 | code_formatted_only | 19.3% | 19% | – |
 | numeric_middle | 34.8% | 18% | – |
+| largest_image_option | 25.0% | 0% | – |
+| smallest_image_option | 0.0% | 0% | – |
 
 ## Verdicts
 

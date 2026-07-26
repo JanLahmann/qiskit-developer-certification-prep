@@ -251,3 +251,27 @@
   color: var(--ifm-color-emphasis-600);
   margin: 1rem 0;
 }
+
+/* Figure questions (execution-generated SVGs) */
+.stemFigure {
+  margin: 0.75rem 0;
+  text-align: center;
+}
+.stemFigure img {
+  max-width: 100%;
+  max-height: 340px;
+  background: #fff;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+.optionImage {
+  display: block;
+  max-width: 100%;
+  max-height: 240px;
+  margin-top: 0.4rem;
+  background: #fff;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  padding: 0.4rem;
+}

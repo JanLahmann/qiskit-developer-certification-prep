@@ -135,6 +135,9 @@ code {
 .correct { font-size: 1.05em; margin-bottom: 8px; }
 .correct .k { color: #0a7d33; font-weight: 700; }
 .explanation { margin-bottom: 10px; }
+.figure { margin: 8px 0; }
+.figure img { max-width: 100%; max-height: 300px; background: #fff;
+              border: 1px solid #ccc; border-radius: 6px; padding: 4px; }
 .whywrong { margin: 8px 0 10px; font-size: 0.92em; }
 .whywrong summary { cursor: pointer; color: #555; font-weight: 600; }
 .whywrong .opt { margin-top: 6px; }
@@ -180,16 +183,41 @@ DISCLAIMER = (
 # --------------------------------------------------------------------------
 # Field builders
 # --------------------------------------------------------------------------
+def _img_tag(image: dict | None) -> str:
+    """Anki media is flat: reference figures by (globally unique) basename."""
+    if not image:
+        return ""
+    name = html.escape(str(image["src"]).rsplit("/", 1)[-1], quote=True)
+    alt = html.escape(str(image.get("alt", "")), quote=True)
+    return f'<div class="figure"><img src="{name}" alt="{alt}"></div>'
+
+
+def question_media(q: dict) -> list:
+    """Absolute paths of this question's figure SVGs (from the compiled
+    bank's /img/bank/... srcs; build_site_data copies them there first)."""
+    static_img = REPO_ROOT / "site" / "static"
+    paths = []
+    specs = [q.get("stemImage")] + [o.get("image") for o in q.get("options") or []]
+    for spec in specs:
+        if spec:
+            p = static_img / str(spec["src"]).lstrip("/")
+            if p.exists():
+                paths.append(p)
+    return paths
+
+
 def build_question_field(q: dict) -> str:
     parts = [f'<div class="stem">{md_inline(q.get("stem", ""))}</div>']
     code = q.get("code")
     if code:
         parts.append(code_block(code))
+    if q.get("stemImage"):
+        parts.append(_img_tag(q["stemImage"]))
     opts = q.get("options") or []
     if opts:
         rows = [
             f'<div class="opt"><span class="k">{html.escape(str(o.get("key", "")))}.</span>'
-            f'{md_inline(o.get("text", ""))}</div>'
+            f'{md_inline(o.get("text", ""))}{_img_tag(o.get("image"))}</div>'
             for o in opts
         ]
         parts.append('<div class="options">' + "".join(rows) + "</div>")
@@ -283,12 +311,14 @@ def deck_name_for(sec: dict) -> str:
     return f"{DECK_ROOT}::{num} · {sec['title']}"
 
 
-def build_section_deck(sec: dict) -> genanki.Deck:
+def build_section_deck(sec: dict) -> tuple[genanki.Deck, list]:
     name = deck_name_for(sec)
     deck = genanki.Deck(stable_id(name), name)
+    media: list = []
     for q in sec["questions"]:
         deck.add_note(make_note(q))
-    return deck
+        media.extend(question_media(q))
+    return deck, media
 
 
 # --------------------------------------------------------------------------
@@ -394,6 +424,7 @@ def main() -> None:
 
     rows: list[dict] = []
     all_decks: list[genanki.Deck] = []
+    all_media: list = []
     total_cards = 0
 
     print("Per-section:")
@@ -406,12 +437,15 @@ def main() -> None:
             print(f"  {sec['sid']}  {count:>3} cards  (empty — no deck)   deck_id={did}")
             continue
 
-        deck = build_section_deck(sec)
+        deck, media = build_section_deck(sec)
         all_decks.append(deck)
+        all_media.extend(media)
 
         filename = f"certiq-{sec['sid']}-{kebab(sec['title'])}.apkg"
         out_path = DOWNLOADS_DIR / filename
-        genanki.Package(deck).write_to_file(out_path)
+        pkg = genanki.Package(deck)
+        pkg.media_files = [str(p) for p in media]
+        pkg.write_to_file(out_path)
         size = out_path.stat().st_size
 
         rows.append(
@@ -434,7 +468,9 @@ def main() -> None:
     all_filename = "certiq-all-sections.apkg"
     all_path = DOWNLOADS_DIR / all_filename
     if all_decks:
-        genanki.Package(all_decks).write_to_file(all_path)
+        all_pkg = genanki.Package(all_decks)
+        all_pkg.media_files = [str(p) for p in all_media]
+        all_pkg.write_to_file(all_path)
     else:
         # No questions anywhere yet: still emit a valid (empty) package so the
         # download page has something to point at and the build never breaks.

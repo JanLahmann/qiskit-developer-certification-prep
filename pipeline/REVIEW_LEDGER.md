@@ -1433,3 +1433,115 @@ Craft notes from this wave:
   ballast, worth 0.25 each), `shortest_option` unchanged at 22.4%,
   `avoid_longest` 24.4% -> 24.3%, positions 29.6-30.7%, 0 blockers/warnings,
   one deliberate low `length_tell` residual (s7-q036).
+
+## Figure-question craft (task #27 figure wave, 2026-07-26, qiskit 2.5.0)
+
+Seven new figure questions (s2-q041..q045, s3-q056, s4-q047) plus the
+visual-literacy page. Facts below were measured in the pinned venv.
+
+Rendering / determinism:
+
+- **`render_figures.py` only walks `data/questions/**`**, so a non-question
+  figure directory (`data/figures/guide/`) is never rendered by it. Generate
+  such figures by hand — `cd data/figures/guide && ../../../.venv/bin/python
+  generate.py` — and reproduce the tool's prelude INSIDE the script
+  (`matplotlib.use("Agg")`, `svg.hashsalt="certiq"`, a `savefig` wrapper that
+  defaults `metadata={"Date": None}` and `bbox_inches="tight"`), otherwise the
+  SVGs carry a timestamp and differ on every run. Determinism was verified by
+  rendering into two scratch dirs and comparing sha256 per file.
+- `build_site_data.copy_figures()` mirrors `data/figures/**` with `rglob`, so
+  any subdirectory (including `guide/`) lands under `site/static/img/bank/`;
+  MDX references `/img/bank/guide/guide-*.svg`.
+- **Deterministic counts without sampling:** `{str(k): round(v * SHOTS) for k, v
+  in Statevector(qc).probabilities_dict().items()}`. Never call
+  `sample_counts` in a generator — the double render would diverge.
+- `generate_preset_pass_manager(..., seed_transpiler=42)` + an explicit
+  `initial_layout` reproduces byte-identical drawings across processes.
+
+Proof technique for figures (all four shapes used this wave):
+
+- **Read the drawing back off the axes.** `plot_histogram` puts one Rectangle
+  per bar in `ax.patches` **in the same order** as `ax.get_xticklabels()`, so
+  `tuple(zip(labels, heights))` IS the picture and can be compared between the
+  stem call and every variant (s2-q041, s2-q045).
+- **`qiskit.visualization.circuit._utils._get_layered_instructions(circuit,
+  reverse_bits=..., idle_wires=...)`** is the layout engine shared by the text,
+  mpl and latex drawers; `(wire order, ops addressed by wire position)` is a
+  faithful signature of a circuit drawing (s2-q044). Measured: `reverse_bits=True`
+  gives wires `('q_2','q_1','q_0')` with the same geometry that
+  `QuantumCircuit.reverse_bits()` produces under wires `('q_0','q_1','q_2')` —
+  the two pictures differ ONLY in the wire labels, which makes them a clean,
+  provable option pair.
+- **Bloch drawings** reduce to one Bloch vector per sphere
+  (`partial_trace` + `expectation_value(Pauli('X'|'Y'|'Z'))`); the sphere COUNT
+  is part of the signature (s2-q042).
+- **Q-sphere drawings** reduce to `(bitstring, magnitude, relative phase)` per
+  non-zero amplitude, phases taken against the first non-zero amplitude
+  (s2-q043).
+
+Drawer facts measured this wave:
+
+- **`plot_histogram` prints the value above every bar** (`bar_labels=True` is
+  the default), and an integer-counts dict gives a `Count` y axis (not
+  probabilities). This is what makes value-reading distractors fair.
+- **`number_to_keep=k` keeps the k LARGEST outcomes and appends a `rest` bar**:
+  `{"000":400,"111":380,"001":120,"010":70,"100":30}` with `k=3` draws FOUR bars
+  `000:400, 001:120, 111:380, rest:100` (sorted by label, `rest` last). Refines
+  the earlier ledger entry: the kept count is k, not k-1, and `rest` is the SUM.
+  A literal `"rest"` key in a plain dict renders identically — that is how the
+  wrong-`rest` distractors were built.
+- **`plot_bloch_multivector` titles the spheres `qubit 0`, `qubit 1`, …** and
+  labels the poles `|0>`/`|1>`. **For a Bell state it draws NO arrow at all**
+  (reduced vector is 0) — not a dot at the origin, not a short arrow.
+- **`plot_state_qsphere` is global-phase blind:** multiplying the state by
+  `exp(0.9j)` produced a **byte-identical** SVG. `show_state_labels` defaults
+  True (kets are drawn), `show_state_phases` defaults **False**, so relative
+  phase is carried by marker colour alone -> `color_essential: true`.
+- **S/T/Z on the same entangled state render at IDENTICAL byte size** (147950 B
+  each; only the marker colour differs) — a q-sphere option family is
+  automatically immune to the image-size tell.
+- **`h(0); cx(0,1); s(0)` and `h(0); cx(0,1); s(1)` produce the SAME state** —
+  never offer both as options on a q-sphere item.
+- **Transpiled circuits are visually self-identifying:** their wire labels read
+  `q_0 -> 0`. If some options in a transpiler figure question are real
+  pass-manager outputs and others are hand-built circuits, the layout labels are
+  a free tell — make EVERY option a real transpiler output (s3-q056 does).
+- **Routing without translation:** `coupling_map` alone (no `basis_gates`) keeps
+  `h` as `h` and draws the inserted SWAP as a real SWAP box. Measured on a
+  3-qubit line at level 0 with layout `[0,1,2]` for `h(0), cx(0,1), cx(0,2)`:
+  `h[0], cx[0,1], swap[1,2], cx[0,1]`. Adding `basis_gates=["rz","sx","x","cx"]`
+  expands the same result to `rz,sx,rz` + five `cx` with a `global phase: pi/4`
+  note (26.8 KB vs 11.5 KB) — the busiest distractor in the wave.
+- **Estimator broadcast, re-measured:** observables `(4, 1)` x parameter values
+  `(1, 6)` -> `evs.shape (4, 6)`, 24 values, no exception.
+  `ObservablesArray.coerce(obs).shape` is the cheap evidence value; the four
+  pattern names remain the ones in guides/primitive-input-output.
+
+Anti-tell calibration for image options:
+
+- The audit's `image_size_tell` needs BOTH "strictly the largest/smallest SVG"
+  AND a deviation `> 0.4` from the distractor median. **Ties defeat the first
+  clause**, and near-identical renders defeat the second — so a family of
+  same-complexity variants is safe even when the correct one is nominally
+  extreme (s2-q041 A/B both 12745 B; s2-q044 A/E both 8303 B).
+- Check the sizes in EVERY `display_count` variant, not just the full set: a
+  variant that drops the tying distractor can expose the correct option as the
+  strict extreme (s2-q041 B, s2-q044 A were both checked this way; deviation
+  stayed under 6%).
+- **Bank aggregates after this wave (6 questions carry option images):**
+  `largest_image_option` 11.1%, `smallest_image_option` 25.0%, coverage 2%,
+  0 blockers / 0 warnings, no `image_size_tell` anywhere. Smallest is at chance;
+  largest sits below it because the busiest drawing was a distractor in five of
+  six items (an extra swap, an extra sphere, an extra bar, an ISA expansion).
+  **Recipe for the next figure wave:** deliberately author ~1 in 4 figure items
+  whose KEYED drawing is the busiest — e.g. key the routed/expanded circuit and
+  make the misconceptions the simpler pictures — instead of trimming distractors.
+  Do not distort a misconception to chase it: the heuristic is ungated at this
+  coverage (same policy as `numeric_middle` in s7).
+- **Weight:** `plot_bloch_multivector` SVGs are ~210 KB for two spheres and
+  ~110 KB for one (5 options ≈ 1 MB); q-spheres ~150 KB; circuit and histogram
+  renders are 8–18 KB. Budget bloch-heavy questions sparingly.
+- Image options make the text-length heuristics abstain in a healthy way: with
+  all option texts `""`, `longest_option`/`shortest_option` return every key
+  (exactly chance) and `avoid_longest` abstains — figure questions are neutral
+  ballast for the length aggregates.

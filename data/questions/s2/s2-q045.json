@@ -1,0 +1,101 @@
+{
+  "id": "s2-q045",
+  "section": "s2",
+  "objectives": [
+    "s2o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which histogram does this call draw?",
+  "code": "from qiskit.visualization import plot_histogram\n\ncounts = {\"000\": 400, \"111\": 380, \"001\": 120, \"010\": 70, \"100\": 30}\n\nplot_histogram(counts, number_to_keep=3)",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "D"
+  ],
+  "figures": {
+    "generator": "figures/s2-q045/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s2-q045/s2-q045-A.svg",
+        "alt": "Bar chart with three bars: 000 at 400, 001 at 120 and 111 at 380."
+      },
+      "B": {
+        "file": "figures/s2-q045/s2-q045-B.svg",
+        "alt": "Bar chart with four bars: 000 at 400, 001 at 120, 111 at 380 and rest at 70."
+      },
+      "C": {
+        "file": "figures/s2-q045/s2-q045-C.svg",
+        "alt": "Bar chart with five bars: 000 at 400, 001 at 120, 010 at 70, 100 at 30 and 111 at 380."
+      },
+      "D": {
+        "file": "figures/s2-q045/s2-q045-D.svg",
+        "alt": "Bar chart with four bars: 000 at 400, 001 at 120, 111 at 380 and rest at 100."
+      },
+      "E": {
+        "file": "figures/s2-q045/s2-q045-E.svg",
+        "alt": "Bar chart with four bars: 000 at 400, 001 at 120, 111 at 380 and rest at 50."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`number_to_keep=k` keeps the k largest outcomes as their own bars and pools everything else into one extra bar labelled `rest`, whose height is the SUM of the folded counts. Here the three largest are 000 (400), 111 (380) and 001 (120); the remaining 70 and 30 are pooled, so the chart has four bars and the `rest` bar stands at 100. The bars stay sorted by outcome label, with `rest` drawn last, and `bar_labels` prints each height above its bar.",
+    "distractors": {
+      "A": "Folding read as discarding: the small outcomes are not thrown away, they are pooled into the extra `rest` bar, so the chart has four bars, not three.",
+      "B": "`rest` read as the largest folded outcome (70). The pooled bar aggregates every folded outcome, so it is their sum.",
+      "C": "`number_to_keep` treated as a sorting or legend option: it genuinely changes which bars are drawn, replacing the two smallest outcomes with a single pooled bar.",
+      "E": "`rest` read as the average of the folded outcomes (50). Pooling adds the counts, it never averages them — the total height of the chart is preserved."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q045.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import matplotlib.pyplot as plt\nfrom qiskit.visualization import plot_histogram\n\n# The five plot_histogram calls MUST mirror data/figures/s2-q045/generate.py —\n# the rendered figures are drawings of exactly these calls.\n\nCOUNTS = {\"000\": 400, \"111\": 380, \"001\": 120, \"010\": 70, \"100\": 30}\n\nVARIANTS = {\n    \"A\": ({\"000\": 400, \"001\": 120, \"111\": 380}, {}),\n    \"B\": ({\"000\": 400, \"001\": 120, \"111\": 380, \"rest\": 70}, {}),\n    \"C\": (COUNTS, {}),\n    \"D\": (COUNTS, {\"number_to_keep\": 3}),\n    \"E\": ({\"000\": 400, \"001\": 120, \"111\": 380, \"rest\": 50}, {}),\n}\n\n\ndef drawn(counts, **kwargs):\n    \"\"\"What plot_histogram actually puts on the axes: bar labels + heights.\"\"\"\n    fig = plot_histogram(counts, **kwargs)\n    ax = fig.axes[0]\n    bars = tuple(\n        (t.get_text(), int(round(p.get_height())))\n        for t, p in zip(ax.get_xticklabels(), ax.patches)\n    )\n    plt.close(fig)\n    return bars\n\n\ntarget = drawn(COUNTS, number_to_keep=3)\nproven, evidence, observed = [], {}, {}\nfor key, (counts, kwargs) in sorted(VARIANTS.items()):\n    bars = drawn(counts, **kwargs)\n    match = bars == target\n    observed[key] = [list(b) for b in bars]\n    evidence[key] = (\n        \"figure draws bars \" + \", \".join(f\"{n}:{h}\" for n, h in bars)\n        + \" vs the stem call's \" + \", \".join(f\"{n}:{h}\" for n, h in target)\n        + f\" -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = [list(b) for b in target]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure wave, task #27)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Second histogram-conventions figure item (companion to s2-q041): the five option images are plot_histogram renderings of the five calls in figures/s2-q045/generate.py, and the proof re-renders each one and reads the bar labels and heights off the axes. The keyed image is the stem call itself, so the correct figure is an execution artifact rather than a hand-built dict."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "question": "s2-q041",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "figure draws bars 001:400, 111:400 vs the stem's 100:400, 111:400 -> match=False",
+      "B": "figure draws bars 100:400, 111:400 vs the stem's 100:400, 111:400 -> match=True",
+      "C": "figure draws bars 000:400, 011:400 vs the stem's 100:400, 111:400 -> match=False",
+      "D": "figure draws bars 100:200, 101:200, 110:200, 111:200 vs the stem's 100:400, 111:400 -> match=False",
+      "E": "figure draws bars 100:566, 111:566 vs the stem's 100:400, 111:400 -> match=False"
+    },
+    "observed": {
+      "A": [
+        [
+          "001",
+          400
+        ],
+        [
+          "111",
+          400
+        ]
+      ],
+      "B": [
+        [
+          "100",
+          400
+        ],
+        [
+          "111",
+          400
+        ]
+      ],
+      "C": [
+        [
+          "000",
+          400
+        ],
+        [
+          "011",
+          400
+        ]
+      ],
+      "D": [
+        [
+          "100",
+          200
+        ],
+        [
+          "101",
+          200
+        ],
+        [
+          "110",
+          200
+        ],
+        [
+          "111",
+          200
+        ]
+      ],
+      "E": [
+        [
+          "100",
+          566
+        ],
+        [
+          "111",
+          566
+        ]
+      ],
+      "stem": [
+        [
+          "100",
+          400
+        ],
+        [
+          "111",
+          400
+        ]
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.47,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"figure draws bars 001:400, 111:400 vs the stem's 100:400, 111:400 -> match=False\", \"B\": \"figure draws bars 100:400, 111:400 vs the stem's 100:400, 111:400 -> match=True\", \"C\": \"figure draws bars 000:400, 011:400 vs the stem's 100:400, 111:400 -> match=False\", \"D\": \"figure draws bars 100:200, 101:200, 110:200, 111:200 vs the stem's 100:400, 111:400 -> match=False\", \"E\": \"figure draws bars 100:566, 111:566 vs the stem's 100:400, 111:400 -> match=False\"}, \"observed\": {\"A\": [[\"001\", 400], [\"111\", 400]], \"B\": [[\"100\", 400], [\"111\", 400]], \"C\": [[\"000\", 400], [\"011\", 400]], \"D\": [[\"100\", 200], [\"101\", 200], [\"110\", 200], [\"111\", 200]], \"E\": [[\"100\", 566], [\"111\", 566]], \"stem\": [[\"100\", 400], [\"111\", 400]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

@@ -1,0 +1,101 @@
+{
+  "id": "s2-q044",
+  "section": "s2",
+  "objectives": [
+    "s2o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which figure is the `mpl` rendering produced by this code?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 2)\nqc.t(2)\n\nqc.draw(output=\"mpl\", reverse_bits=True)",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "A"
+  ],
+  "figures": {
+    "generator": "figures/s2-q044/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s2-q044/s2-q044-A.svg",
+        "alt": "Circuit diagram whose wires read q_2, q_1, q_0 from top to bottom: an H box on the bottom wire, then a CX whose control dot is on the bottom wire and whose target is on the top wire, then a T box on the top wire; the middle wire is empty."
+      },
+      "B": {
+        "file": "figures/s2-q044/s2-q044-B.svg",
+        "alt": "Circuit diagram whose wires read q_0, q_1, q_2 from top to bottom: an H box on the top wire, then a CX whose control dot is on the top wire and whose target is on the bottom wire, then a T box on the bottom wire; the middle wire is empty."
+      },
+      "C": {
+        "file": "figures/s2-q044/s2-q044-C.svg",
+        "alt": "Circuit diagram whose wires read q_0, q_1, q_2 from top to bottom: a T box on the bottom wire first, then a CX whose control dot is on the top wire and whose target is on the bottom wire, then an H box on the top wire; the middle wire is empty."
+      },
+      "D": {
+        "file": "figures/s2-q044/s2-q044-D.svg",
+        "alt": "Circuit diagram whose wires read q_0, q_1, q_2 from top to bottom: a T-dagger box on the bottom wire first, then a CX whose control dot is on the top wire and whose target is on the bottom wire, then an H box on the top wire; the middle wire is empty."
+      },
+      "E": {
+        "file": "figures/s2-q044/s2-q044-E.svg",
+        "alt": "Circuit diagram whose wires read q_0, q_1, q_2 from top to bottom: an H box on the bottom wire, then a CX whose control dot is on the bottom wire and whose target is on the top wire, then a T box on the top wire; the middle wire is empty."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`reverse_bits=True` is a *drawing* option: it lays the wires out in descending index order, so the top wire is q_2 and the bottom wire is q_0. The circuit itself is untouched — the same H, CX and T are drawn, they simply appear on flipped wires, which is why the H (on qubit 0) is now at the bottom and the CX control sits below its target. The gates keep their original left-to-right order and their original names.",
+    "distractors": {
+      "B": "`reverse_bits` treated as a no-op (or as a text-drawer-only option). It is honoured by every renderer, including `mpl`, so the wire order must change.",
+      "C": "Bits confused with instructions: `reverse_bits` flips the WIRE order, never the gate order. Reversing the instruction sequence is what `QuantumCircuit.reverse_ops()` does, and it leaves the wire labels ascending.",
+      "D": "`reverse_bits` read as 'invert the circuit': inverting would dagger each gate (the T becomes a T-dagger) as well as reversing their order. The drawing option changes neither the gates nor their order.",
+      "E": "Method-versus-argument confusion: `QuantumCircuit.reverse_bits()` returns a NEW circuit whose qubit indices are permuted, so its drawing still lists q_0, q_1, q_2 downwards with the gates moved onto other wires. The draw argument keeps the circuit and flips the layout, so the top wire is labelled q_2."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q044.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.visualization.circuit._utils import _get_layered_instructions\n\n# The five (circuit, draw-kwargs) variants MUST mirror\n# data/figures/s2-q044/generate.py — the rendered figures are mpl drawings of\n# exactly these calls. _get_layered_instructions is the layout engine every\n# Qiskit drawer (text, mpl, latex) calls, so its output IS the picture.\n\n\ndef stem_circuit():\n    qc = QuantumCircuit(3)\n    qc.h(0)\n    qc.cx(0, 2)\n    qc.t(2)\n    return qc\n\n\nVARIANTS = {\n    \"A\": (stem_circuit(), {\"reverse_bits\": True}),\n    \"B\": (stem_circuit(), {}),\n    \"C\": (stem_circuit().reverse_ops(), {}),\n    \"D\": (stem_circuit().inverse(), {}),\n    \"E\": (stem_circuit().reverse_bits(), {}),\n}\n\n\ndef drawn(circ, **kwargs):\n    \"\"\"What the drawer lays out: the wire order (by qubit label) and the gates,\n    addressed by the wire position they are drawn on.\"\"\"\n    qubits, _clbits, layers = _get_layered_instructions(circ, **kwargs)\n    wires = tuple(f\"q_{circ.find_bit(b).index}\" for b in qubits)\n    ops = tuple(\n        (node.op.name, tuple(qubits.index(b) for b in node.qargs))\n        for layer in layers for node in layer\n    )\n    return wires, ops\n\n\ntarget = drawn(VARIANTS[\"A\"][0], **VARIANTS[\"A\"][1])\nproven, evidence, observed = [], {}, {}\nfor key, (circ, kwargs) in sorted(VARIANTS.items()):\n    wires, ops = drawn(circ, **kwargs)\n    match = (wires, ops) == target\n    observed[key] = {\"wires_top_to_bottom\": list(wires),\n                     \"ops_by_wire_position\": [[n, list(q)] for n, q in ops]}\n    evidence[key] = (\n        f\"drawer lays out wires {list(wires)} top to bottom carrying \"\n        + \", \".join(f\"{n} on wire position {list(q)}\" for n, q in ops)\n        + f\" -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = {\"wires_top_to_bottom\": list(target[0]),\n                    \"ops_by_wire_position\": [[n, list(q)] for n, q in target[1]]}\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure wave, task #27)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure question on drawing CONVENTIONS rather than circuit semantics: options A and E show the same gate geometry and differ only in the wire labels, which is precisely the reverse_bits=True (a layout option) versus QuantumCircuit.reverse_bits() (a new circuit) distinction. The proof reads the drawer's own layout engine (_get_layered_instructions, shared by the text/mpl/latex renderers) rather than comparing pixels."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

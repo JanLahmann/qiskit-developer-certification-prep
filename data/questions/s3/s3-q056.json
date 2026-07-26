@@ -1,0 +1,101 @@
+{
+  "id": "s3-q056",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which figure is the `mpl` rendering of the transpiled circuit produced by this code?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap, generate_preset_pass_manager\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.cx(0, 2)\n\npm = generate_preset_pass_manager(\n    optimization_level=0,\n    coupling_map=CouplingMap.from_line(3),\n    initial_layout=[0, 1, 2],\n    seed_transpiler=42,\n)\npm.run(qc).draw(output=\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s3-q056/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s3-q056/s3-q056-A.svg",
+        "alt": "Circuit diagram with three wires labelled q_0 -> 0, q_1 -> 1, q_2 -> 2 from top to bottom: an H box on the top wire, a CX from the top wire down to the middle wire, then a CX from the top wire down to the bottom wire."
+      },
+      "B": {
+        "file": "figures/s3-q056/s3-q056-B.svg",
+        "alt": "Circuit diagram with three wires labelled q_0 -> 0, q_1 -> 1, q_2 -> 2 from top to bottom: an H box on the top wire, a CX from the top wire down to the middle wire, a SWAP between the middle and bottom wires, then a CX from the top wire down to the middle wire."
+      },
+      "C": {
+        "file": "figures/s3-q056/s3-q056-C.svg",
+        "alt": "Circuit diagram with three wires labelled q_2 -> 0, q_1 -> 1, q_0 -> 2 from top to bottom: an H box on the bottom wire, a CX from the bottom wire up to the middle wire, a SWAP between the middle and top wires, then a CX from the bottom wire up to the middle wire."
+      },
+      "D": {
+        "file": "figures/s3-q056/s3-q056-D.svg",
+        "alt": "Circuit diagram with three wires labelled q_0 -> 0, q_1 -> 1, q_2 -> 2 from top to bottom and a global-phase note: an Rz, square-root-X, Rz chain on the top wire, a CX from the top wire down to the middle wire, three alternating CX gates between the middle and bottom wires, then a CX from the top wire down to the middle wire."
+      },
+      "E": {
+        "file": "figures/s3-q056/s3-q056-E.svg",
+        "alt": "Circuit diagram with three wires labelled q_0 -> 0, q_1 -> 1, q_2 -> 2 from top to bottom: an H box on the top wire, a CX from the top wire down to the middle wire, a SWAP between the top and middle wires, then a CX from the bottom wire up to the middle wire."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "A line coupling map has the edges 0-1 and 1-2 only, so `cx(0, 2)` cannot be executed as written. With the layout pinned to `[0, 1, 2]`, the routing stage inserts one SWAP that brings the state of q_2 next to q_0, and the second CX is then drawn between physical 0 and 1. Because only a `coupling_map` was given and no `basis_gates`, nothing is translated: the H stays an H and the inserted SWAP is drawn as a SWAP. The drawer labels each wire with the virtual-to-physical mapping the layout stage chose.",
+    "distractors": {
+      "A": "Connectivity ignored: a CX between physical qubits 0 and 2 is not executable on a line, so the router cannot leave the circuit unchanged. This drawing is what a fully connected coupling map would produce.",
+      "C": "`initial_layout` read backwards: it is an ordered virtual-to-physical map, so entry 0 says where q_0 goes. This drawing is the layout `[2, 1, 0]`, which puts q_0 on physical qubit 2.",
+      "D": "Routing confused with translation: `coupling_map` alone routes the circuit, it does not pick a gate set, so no gate is rewritten. This picture — the H expanded into Rz-SX-Rz and the SWAP into three CX gates — appears only when `basis_gates` is passed as well.",
+      "E": "CX control and target treated as interchangeable: the stem's second CX is controlled by q_0, and swapping the roles changes both which wire carries the control dot and which pair of qubits the router has to swap."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q056.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap, generate_preset_pass_manager\n\n# The five transpiled circuits MUST mirror data/figures/s3-q056/generate.py —\n# the rendered figures are mpl drawings of exactly these circuits.\n\nLINE = CouplingMap.from_line(3)\nFULL = CouplingMap.from_full(3)\n\n\ndef stem_circuit():\n    qc = QuantumCircuit(3)\n    qc.h(0)\n    qc.cx(0, 1)\n    qc.cx(0, 2)\n    return qc\n\n\ndef flipped_circuit():\n    qc = QuantumCircuit(3)\n    qc.h(0)\n    qc.cx(0, 1)\n    qc.cx(2, 0)\n    return qc\n\n\ndef routed(circ, coupling_map, initial_layout, **kwargs):\n    pm = generate_preset_pass_manager(\n        optimization_level=0, coupling_map=coupling_map,\n        initial_layout=initial_layout, seed_transpiler=42, **kwargs,\n    )\n    return pm.run(circ)\n\n\nVARIANTS = {\n    \"A\": routed(stem_circuit(), FULL, [0, 1, 2]),\n    \"B\": routed(stem_circuit(), LINE, [0, 1, 2]),\n    \"C\": routed(stem_circuit(), LINE, [2, 1, 0]),\n    \"D\": routed(stem_circuit(), LINE, [0, 1, 2],\n                basis_gates=[\"rz\", \"sx\", \"x\", \"cx\"]),\n    \"E\": routed(flipped_circuit(), LINE, [0, 1, 2]),\n}\n\n\ndef sig(circ):\n    \"\"\"What the drawer shows: the wire labels (virtual -> physical, top to\n    bottom) and the gate sequence addressed by physical qubit.\"\"\"\n    layout = list(circ.layout.initial_index_layout())\n    wires = tuple(f\"q_{layout.index(p)} -> {p}\" for p in range(len(layout)))\n    ops = tuple(\n        (inst.operation.name, tuple(circ.find_bit(b).index for b in inst.qubits))\n        for inst in circ.data\n    )\n    return wires, ops\n\n\ntarget = sig(routed(stem_circuit(), LINE, [0, 1, 2]))\nproven, evidence, observed = [], {}, {}\nfor key, circ in sorted(VARIANTS.items()):\n    s = sig(circ)\n    match = s == target\n    observed[key] = {\"wire_labels\": list(s[0]),\n                     \"ops\": [[n, list(q)] for n, q in s[1]]}\n    evidence[key] = (\n        f\"transpiled circuit draws wires {list(s[0])} carrying \"\n        + \", \".join(f\"{n}{list(q)}\" for n, q in s[1])\n        + f\" -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = {\"wire_labels\": list(target[0]),\n                    \"ops\": [[n, list(q)] for n, q in target[1]]}\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure wave, task #27)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure question on transpiler output. All five option images are genuine pass-manager outputs (own circuit, own coupling map, seed_transpiler pinned), so the layout labels appear on every option and cannot be used as a shortcut. The proof re-runs the same five pass managers and compares the wire labels and gate sequences the drawer receives."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

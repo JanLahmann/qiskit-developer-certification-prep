@@ -1,0 +1,101 @@
+{
+  "id": "s2-q041",
+  "section": "s2",
+  "objectives": [
+    "s2o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "Which histogram does `plot_histogram` draw for the counts built by this code?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_histogram\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.x(2)\n\nsv = Statevector(qc)\ncounts = {str(k): round(v * 800) for k, v in sv.probabilities_dict().items()}\nplot_histogram(counts)",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s2-q041/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s2-q041/s2-q041-A.svg",
+        "alt": "Bar chart with two bars of equal height 400, labelled 001 and 111."
+      },
+      "B": {
+        "file": "figures/s2-q041/s2-q041-B.svg",
+        "alt": "Bar chart with two bars of equal height 400, labelled 100 and 111."
+      },
+      "C": {
+        "file": "figures/s2-q041/s2-q041-C.svg",
+        "alt": "Bar chart with two bars of equal height 400, labelled 000 and 011."
+      },
+      "D": {
+        "file": "figures/s2-q041/s2-q041-D.svg",
+        "alt": "Bar chart with four bars of equal height 200, labelled 100, 101, 110 and 111."
+      },
+      "E": {
+        "file": "figures/s2-q041/s2-q041-E.svg",
+        "alt": "Bar chart with two bars of equal height 566, labelled 100 and 111."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`h(0)` then `cx(0, 1)` entangles qubits 0 and 1 into an even mixture of `00` and `11` on those two wires, and `x(2)` sets qubit 2 to 1 in every branch. `probabilities_dict()` keys are little-endian bitstrings written qubit 2, qubit 1, qubit 0, so the two surviving outcomes are `100` and `111`, each with probability 0.5 — scaled by 800 that is two bars of height 400. `plot_histogram` prints the bar value above each bar and sorts the outcomes by bitstring.",
+    "distractors": {
+      "A": "Endianness misread: the bitstring is written with qubit 0 on the RIGHT, so the branch where qubits 0 and 1 are 0 and qubit 2 is 1 prints as `100`, not `001`.",
+      "C": "The `x(2)` is dropped: without it the outcomes would be `000` and `011`, but the X gate sets the leftmost character of every key to 1.",
+      "D": "Entanglement dropped: the CX correlates qubits 0 and 1, so `101` and `110` have amplitude zero and never appear. Treating the two qubits as independent would give four equal bars of height 200.",
+      "E": "Amplitude/probability confusion: the amplitudes are both 1/sqrt(2) = 0.707, but `probabilities_dict()` returns their squares (0.5 each), so the bars are 400 tall, not 566."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q041.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import matplotlib.pyplot as plt\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_histogram\n\n# The five counts dicts MUST mirror data/figures/s2-q041/generate.py — the\n# rendered figures are plot_histogram drawings of exactly these dicts.\n\n\ndef stem_counts():\n    qc = QuantumCircuit(3)\n    qc.h(0)\n    qc.cx(0, 1)\n    qc.x(2)\n    sv = Statevector(qc)\n    return {str(k): round(v * 800) for k, v in sv.probabilities_dict().items()}\n\n\nVARIANTS = {\n    \"A\": {\"001\": 400, \"111\": 400},\n    \"B\": stem_counts(),\n    \"C\": {\"000\": 400, \"011\": 400},\n    \"D\": {\"100\": 200, \"101\": 200, \"110\": 200, \"111\": 200},\n    \"E\": {\"100\": 566, \"111\": 566},\n}\n\n\ndef drawn(counts):\n    \"\"\"What plot_histogram actually puts on the axes: bar labels + heights.\"\"\"\n    fig = plot_histogram(counts)\n    ax = fig.axes[0]\n    bars = tuple(\n        (t.get_text(), int(round(p.get_height())))\n        for t, p in zip(ax.get_xticklabels(), ax.patches)\n    )\n    plt.close(fig)\n    return bars\n\n\ntarget = drawn(stem_counts())\nproven, evidence, observed = [], {}, {}\nfor key, counts in sorted(VARIANTS.items()):\n    bars = drawn(counts)\n    match = bars == target\n    observed[key] = [list(b) for b in bars]\n    evidence[key] = (\n        \"figure draws bars \" + \", \".join(f\"{n}:{h}\" for n, h in bars)\n        + \" vs the stem's \" + \", \".join(f\"{n}:{h}\" for n, h in target)\n        + f\" -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = [list(b) for b in target]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure wave, task #27)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure question: the five option images are plot_histogram renderings of the five counts dicts in figures/s2-q041/generate.py; the proof rebuilds the same dicts, renders each one and reads the bar labels and heights back off the axes, comparing them with the stem code's own render. Counts are Statevector probabilities scaled to a fixed budget — nothing is sampled, so the render is deterministic."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

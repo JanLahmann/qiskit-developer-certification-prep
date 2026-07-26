@@ -1,0 +1,101 @@
+{
+  "id": "s2-q042",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which figure is the `plot_bloch_multivector` rendering produced by this code?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_multivector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.s(0)\nqc.x(1)\n\nplot_bloch_multivector(Statevector(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "D"
+  ],
+  "figures": {
+    "generator": "figures/s2-q042/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s2-q042/s2-q042-A.svg",
+        "alt": "Two Bloch spheres side by side, titled qubit 0 and qubit 1; the qubit 0 arrow points along the +x axis and the qubit 1 arrow points down along the -z axis."
+      },
+      "B": {
+        "file": "figures/s2-q042/s2-q042-B.svg",
+        "alt": "Two Bloch spheres side by side, titled qubit 0 and qubit 1; the qubit 0 arrow points along the +y axis and the qubit 1 arrow points up along the +z axis."
+      },
+      "C": {
+        "file": "figures/s2-q042/s2-q042-C.svg",
+        "alt": "Two Bloch spheres side by side, titled qubit 0 and qubit 1; the qubit 0 arrow points down along the -z axis and the qubit 1 arrow points along the +y axis."
+      },
+      "D": {
+        "file": "figures/s2-q042/s2-q042-D.svg",
+        "alt": "Two Bloch spheres side by side, titled qubit 0 and qubit 1; the qubit 0 arrow points along the +y axis and the qubit 1 arrow points down along the -z axis."
+      },
+      "E": {
+        "file": "figures/s2-q042/s2-q042-E.svg",
+        "alt": "A single Bloch sphere, titled qubit 0, whose arrow points along the +y axis."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`plot_bloch_multivector` draws one sphere per qubit, titled by qubit index, each showing that qubit's reduced (single-qubit) state. `h(0)` takes qubit 0 from the north pole to +x; `s(0)` is a quarter turn about z, which carries +x to +y. `x(1)` flips qubit 1 to the |1> state, whose Bloch vector points straight down along -z. So the drawing is a +y arrow on the qubit 0 sphere and a -z arrow on the qubit 1 sphere.",
+    "distractors": {
+      "A": "S treated as a no-op: `s` is a quarter turn about the z axis and it does move an equatorial vector, taking the post-Hadamard +x arrow to +y. Only a z-rotation of an arrow that already lies on the z axis leaves the picture unchanged.",
+      "B": "The `x(1)` is dropped: qubit 1 would sit at the north pole (+z) only if it were still in the ground state, but the X gate takes it to |1>, i.e. -z.",
+      "C": "Sphere order misread: the spheres are titled by qubit index, so the leftmost sphere is qubit 0. Reading them in printed-ket order (leftmost character first) swaps the two arrows.",
+      "E": "One sphere per qubit: a two-qubit state produces two spheres. A single sphere is what `plot_bloch_multivector` draws after the other qubit has been traced out, which this code never does."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q042.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import DensityMatrix, Pauli, Statevector, partial_trace\n\n# The five states MUST mirror data/figures/s2-q042/generate.py — the rendered\n# figures are plot_bloch_multivector drawings of exactly these states.\n\n\ndef state(*gates):\n    qc = QuantumCircuit(2)\n    for name, *args in gates:\n        getattr(qc, name)(*args)\n    return Statevector(qc)\n\n\ndef stem_state():\n    return state((\"h\", 0), (\"s\", 0), (\"x\", 1))\n\n\nVARIANTS = {\n    \"A\": state((\"h\", 0), (\"x\", 1)),\n    \"B\": state((\"h\", 0), (\"s\", 0)),\n    \"C\": state((\"h\", 1), (\"s\", 1), (\"x\", 0)),\n    \"D\": stem_state(),\n    \"E\": partial_trace(stem_state(), [1]),\n}\n\n\ndef spheres(st):\n    \"\"\"One Bloch vector per sphere the drawer puts on the figure.\"\"\"\n    rho = DensityMatrix(st)\n    n = len(rho.dims())\n    out = []\n    for i in range(n):\n        red = partial_trace(rho, [j for j in range(n) if j != i])\n        out.append(tuple(\n            round(float(red.expectation_value(Pauli(p)).real), 3) for p in \"XYZ\"\n        ))\n    return tuple(out)\n\n\ntarget = spheres(stem_state())\nproven, evidence, observed = [], {}, {}\nfor key, st in sorted(VARIANTS.items()):\n    s = spheres(st)\n    match = s == target\n    observed[key] = [list(v) for v in s]\n    evidence[key] = (\n        f\"figure draws {len(s)} sphere(s) with Bloch vectors (x, y, z) {list(s)}\"\n        f\" vs the stem's {list(target)} -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = [list(v) for v in target]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure wave, task #27)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure question: the five option images are plot_bloch_multivector renderings of the five states in figures/s2-q042/generate.py; the proof rebuilds the same states and compares what the drawer encodes — the number of spheres and each sphere's Bloch vector. Direction, not colour, carries the meaning, so the figures survive greyscale."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

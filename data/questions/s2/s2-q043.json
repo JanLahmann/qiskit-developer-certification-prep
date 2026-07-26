@@ -1,0 +1,83 @@
+{
+  "id": "s2-q043",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The q-sphere below was produced by the code shown, for a two-qubit circuit that starts in the all-zero state. Which gate sequence was used in place of the comment?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_state_qsphere\n\nqc = QuantumCircuit(2)\n# <- one of the gate sequences below\nplot_state_qsphere(Statevector(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`qc.h(0)`, `qc.cx(0, 1)`, `qc.t(0)`"
+    },
+    {
+      "key": "B",
+      "text": "`qc.h(0)`, `qc.cx(0, 1)`"
+    },
+    {
+      "key": "C",
+      "text": "`qc.h(0)`, `qc.cx(0, 1)`, `qc.s(0)`"
+    },
+    {
+      "key": "D",
+      "text": "`qc.h(0)`, `qc.s(0)`"
+    },
+    {
+      "key": "E",
+      "text": "`qc.h(0)`, `qc.cx(0, 1)`, `qc.z(0)`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "C"
+  ],
+  "figures": {
+    "generator": "figures/s2-q043/generate.py",
+    "color_essential": true,
+    "stem": {
+      "file": "figures/s2-q043/s2-q043-stem.svg",
+      "alt": "Q-sphere for a two-qubit state with exactly two markers of equal size: one at the north pole labelled |00> and one at the south pole labelled |11>. The north marker carries the phase-0 colour of the phase wheel drawn beside the sphere; the south marker is a quarter turn round that wheel, i.e. a relative phase of pi/2."
+    }
+  },
+  "explanation": {
+    "correct": "The q-sphere places each basis state by Hamming weight — all-zeros at the north pole, all-ones at the south pole — sizes each marker by the amplitude's magnitude and colours it by the amplitude's phase (relative phase; a global phase moves nothing). Two equal markers on the two poles means an even |00> + |11> superposition, so the sequence has to entangle the qubits with `h` then `cx`. The south marker sits a quarter turn round the phase wheel, i.e. phase pi/2 = a factor of i on the |11> branch, which is exactly what `s` adds on the qubit it acts on.",
+    "distractors": {
+      "A": "T-for-S: `t` adds a phase of pi/4, an eighth of a turn round the phase wheel, so the |11> marker would carry a visibly different colour from the quarter-turn one shown.",
+      "B": "Phase gate dropped: with `h` and `cx` alone both markers share the phase-0 colour, so the |11> marker would look exactly like the |00> one.",
+      "D": "No entanglement: `h` and `s` on qubit 0 leave qubit 1 in its ground state, so the second marker lands on the equator at |01>, not at the south pole.",
+      "E": "Z-for-S: `z` adds a phase of pi, a half turn round the phase wheel and the opposite side of the colour wheel from the quarter turn shown."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q043.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import cmath\n\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\n# The five gate sequences MUST mirror data/figures/s2-q043/generate.py, whose\n# stem figure is the q-sphere of the sequence keyed C.\n\nSEQUENCES = {\n    \"A\": ((\"h\", 0), (\"cx\", 0, 1), (\"t\", 0)),\n    \"B\": ((\"h\", 0), (\"cx\", 0, 1)),\n    \"C\": ((\"h\", 0), (\"cx\", 0, 1), (\"s\", 0)),\n    \"D\": ((\"h\", 0), (\"s\", 0)),\n    \"E\": ((\"h\", 0), (\"cx\", 0, 1), (\"z\", 0)),\n}\n\n\ndef state(seq):\n    qc = QuantumCircuit(2)\n    for name, *args in seq:\n        getattr(qc, name)(*args)\n    return Statevector(qc)\n\n\ndef markers(st):\n    \"\"\"What the q-sphere draws: one marker per non-zero amplitude, placed by\n    bitstring, sized by magnitude and coloured by phase. Phases are measured\n    against the first non-zero amplitude (the drawer ignores global phase).\"\"\"\n    data = st.data\n    ref = next(a for a in data if abs(a) > 1e-9)\n    ref /= abs(ref)\n    out = []\n    for i, amp in enumerate(data):\n        if abs(amp) < 1e-9:\n            continue\n        rel = amp / ref\n        phase = cmath.phase(rel) % (2 * cmath.pi)\n        out.append((format(i, \"02b\"), round(float(abs(amp)), 3),\n                    f\"{round(phase / cmath.pi, 3)}pi\"))\n    return tuple(out)\n\n\ntarget = markers(state(SEQUENCES[\"C\"]))\nproven, evidence, observed = [], {}, {}\nfor key, seq in sorted(SEQUENCES.items()):\n    m = markers(state(seq))\n    match = m == target\n    observed[key] = [list(x) for x in m]\n    evidence[key] = (\n        \"sequence puts markers (bitstring, magnitude, phase) \"\n        + str([list(x) for x in m])\n        + \" on the q-sphere vs the figure's \"\n        + str([list(x) for x in target])\n        + f\" -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"figure\"] = [list(x) for x in target]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+  },
+  "provenance": {
+    "generated": "2026-07-26",
+    "model": "claude-opus (figure wave, task #27)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Inverse-direction figure question (figure in the stem, code in the options), the shape the official sample test uses. The stem SVG is the q-sphere of the sequence keyed C, rendered by figures/s2-q043/generate.py; the proof builds all five sequences and compares the markers each would place on the sphere. Phase is carried by colour only (show_state_phases defaults to False), hence color_essential: true; the alt text states the phases so the item survives without colour."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-07-26",
+    "stale": false
+  }
+}

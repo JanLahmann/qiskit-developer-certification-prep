@@ -1,0 +1,95 @@
+{
+  "question": "s2-q042",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "figure draws 2 sphere(s) with Bloch vectors (x, y, z) [(1.0, 0.0, 0.0), (0.0, 0.0, -1.0)] vs the stem's [(0.0, 1.0, 0.0), (0.0, 0.0, -1.0)] -> match=False",
+      "B": "figure draws 2 sphere(s) with Bloch vectors (x, y, z) [(0.0, 1.0, 0.0), (0.0, 0.0, 1.0)] vs the stem's [(0.0, 1.0, 0.0), (0.0, 0.0, -1.0)] -> match=False",
+      "C": "figure draws 2 sphere(s) with Bloch vectors (x, y, z) [(0.0, 0.0, -1.0), (0.0, 1.0, 0.0)] vs the stem's [(0.0, 1.0, 0.0), (0.0, 0.0, -1.0)] -> match=False",
+      "D": "figure draws 2 sphere(s) with Bloch vectors (x, y, z) [(0.0, 1.0, 0.0), (0.0, 0.0, -1.0)] vs the stem's [(0.0, 1.0, 0.0), (0.0, 0.0, -1.0)] -> match=True",
+      "E": "figure draws 1 sphere(s) with Bloch vectors (x, y, z) [(0.0, 1.0, 0.0)] vs the stem's [(0.0, 1.0, 0.0), (0.0, 0.0, -1.0)] -> match=False"
+    },
+    "observed": {
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0
+        ]
+      ],
+      "B": [
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "C": [
+        [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "D": [
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0
+        ]
+      ],
+      "E": [
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "stem": [
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0
+        ]
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.07,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"figure draws 2 sphere(s) with Bloch vectors (x, y, z) [(1.0, 0.0, 0.0), (0.0, 0.0, -1.0)] vs the stem's [(0.0, 1.0, 0.0), (0.0, 0.0, -1.0)] -> match=False\", \"B\": \"figure draws 2 sphere(s) with Bloch vectors (x, y, z) [(0.0, 1.0, 0.0), (0.0, 0.0, 1.0)] vs the stem's [(0.0, 1.0, 0.0), (0.0, 0.0, -1.0)] -> match=False\", \"C\": \"figure draws 2 sphere(s) with Bloch vectors (x, y, z) [(0.0, 0.0, -1.0), (0.0, 1.0, 0.0)] vs the stem's [(0.0, 1.0, 0.0), (0.0, 0.0, -1.0)] -> match=False\", \"D\": \"figure draws 2 sphere(s) with Bloch vectors (x, y, z) [(0.0, 1.0, 0.0), (0.0, 0.0, -1.0)] vs the stem's [(0.0, 1.0, 0.0), (0.0, 0.0, -1.0)] -> match=True\", \"E\": \"figure draws 1 sphere(s) with Bloch vectors (x, y, z) [(0.0, 1.0, 0.0)] vs the stem's [(0.0, 1.0, 0.0), (0.0, 0.0, -1.0)] -> match=False\"}, \"observed\": {\"A\": [[1.0, 0.0, 0.0], [0.0, 0.0, -1.0]], \"B\": [[0.0, 1.0, 0.0], [0.0, 0.0, 1.0]], \"C\": [[0.0, 0.0, -1.0], [0.0, 1.0, 0.0]], \"D\": [[0.0, 1.0, 0.0], [0.0, 0.0, -1.0]], \"E\": [[0.0, 1.0, 0.0]], \"stem\": [[0.0, 1.0, 0.0], [0.0, 0.0, -1.0]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

@@ -1,0 +1,100 @@
+{
+  "question": "s2-q043",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "A": "sequence puts markers (bitstring, magnitude, phase) [['00', 0.707, '0.0pi'], ['11', 0.707, '0.25pi']] on the q-sphere vs the figure's [['00', 0.707, '0.0pi'], ['11', 0.707, '0.5pi']] -> match=False",
+      "B": "sequence puts markers (bitstring, magnitude, phase) [['00', 0.707, '0.0pi'], ['11', 0.707, '0.0pi']] on the q-sphere vs the figure's [['00', 0.707, '0.0pi'], ['11', 0.707, '0.5pi']] -> match=False",
+      "C": "sequence puts markers (bitstring, magnitude, phase) [['00', 0.707, '0.0pi'], ['11', 0.707, '0.5pi']] on the q-sphere vs the figure's [['00', 0.707, '0.0pi'], ['11', 0.707, '0.5pi']] -> match=True",
+      "D": "sequence puts markers (bitstring, magnitude, phase) [['00', 0.707, '0.0pi'], ['01', 0.707, '0.5pi']] on the q-sphere vs the figure's [['00', 0.707, '0.0pi'], ['11', 0.707, '0.5pi']] -> match=False",
+      "E": "sequence puts markers (bitstring, magnitude, phase) [['00', 0.707, '0.0pi'], ['11', 0.707, '1.0pi']] on the q-sphere vs the figure's [['00', 0.707, '0.0pi'], ['11', 0.707, '0.5pi']] -> match=False"
+    },
+    "observed": {
+      "A": [
+        [
+          "00",
+          0.707,
+          "0.0pi"
+        ],
+        [
+          "11",
+          0.707,
+          "0.25pi"
+        ]
+      ],
+      "B": [
+        [
+          "00",
+          0.707,
+          "0.0pi"
+        ],
+        [
+          "11",
+          0.707,
+          "0.0pi"
+        ]
+      ],
+      "C": [
+        [
+          "00",
+          0.707,
+          "0.0pi"
+        ],
+        [
+          "11",
+          0.707,
+          "0.5pi"
+        ]
+      ],
+      "D": [
+        [
+          "00",
+          0.707,
+          "0.0pi"
+        ],
+        [
+          "01",
+          0.707,
+          "0.5pi"
+        ]
+      ],
+      "E": [
+        [
+          "00",
+          0.707,
+          "0.0pi"
+        ],
+        [
+          "11",
+          0.707,
+          "1.0pi"
+        ]
+      ],
+      "figure": [
+        [
+          "00",
+          0.707,
+          "0.0pi"
+        ],
+        [
+          "11",
+          0.707,
+          "0.5pi"
+        ]
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.07,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"sequence puts markers (bitstring, magnitude, phase) [['00', 0.707, '0.0pi'], ['11', 0.707, '0.25pi']] on the q-sphere vs the figure's [['00', 0.707, '0.0pi'], ['11', 0.707, '0.5pi']] -> match=False\", \"B\": \"sequence puts markers (bitstring, magnitude, phase) [['00', 0.707, '0.0pi'], ['11', 0.707, '0.0pi']] on the q-sphere vs the figure's [['00', 0.707, '0.0pi'], ['11', 0.707, '0.5pi']] -> match=False\", \"C\": \"sequence puts markers (bitstring, magnitude, phase) [['00', 0.707, '0.0pi'], ['11', 0.707, '0.5pi']] on the q-sphere vs the figure's [['00', 0.707, '0.0pi'], ['11', 0.707, '0.5pi']] -> match=True\", \"D\": \"sequence puts markers (bitstring, magnitude, phase) [['00', 0.707, '0.0pi'], ['01', 0.707, '0.5pi']] on the q-sphere vs the figure's [['00', 0.707, '0.0pi'], ['11', 0.707, '0.5pi']] -> match=False\", \"E\": \"sequence puts markers (bitstring, magnitude, phase) [['00', 0.707, '0.0pi'], ['11', 0.707, '1.0pi']] on the q-sphere vs the figure's [['00', 0.707, '0.0pi'], ['11', 0.707, '0.5pi']] -> match=False\"}, \"observed\": {\"A\": [[\"00\", 0.707, \"0.0pi\"], [\"11\", 0.707, \"0.25pi\"]], \"B\": [[\"00\", 0.707, \"0.0pi\"], [\"11\", 0.707, \"0.0pi\"]], \"C\": [[\"00\", 0.707, \"0.0pi\"], [\"11\", 0.707, \"0.5pi\"]], \"D\": [[\"00\", 0.707, \"0.0pi\"], [\"01\", 0.707, \"0.5pi\"]], \"E\": [[\"00\", 0.707, \"0.0pi\"], [\"11\", 0.707, \"1.0pi\"]], \"figure\": [[\"00\", 0.707, \"0.0pi\"], [\"11\", 0.707, \"0.5pi\"]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

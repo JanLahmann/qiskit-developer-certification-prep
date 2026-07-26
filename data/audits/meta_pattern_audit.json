@@ -1,114 +1,114 @@
 {
   "generated_note": "repo-only audit artifact; do not link from the website",
   "scope": "all sections",
-  "n_questions": 261,
-  "n_single_answer": 232,
-  "random_baseline": 0.2375,
+  "n_questions": 268,
+  "n_single_answer": 239,
+  "random_baseline": 0.2379,
   "pass_line": 0.69,
   "heuristics": {
     "longest_option": {
-      "expected_accuracy": 0.2316,
-      "questions_answered": 232.0,
+      "expected_accuracy": 0.2318,
+      "questions_answered": 239.0,
       "coverage": 1.0,
-      "exam_score_estimate": 0.2316
+      "exam_score_estimate": 0.2318
     },
     "shortest_option": {
-      "expected_accuracy": 0.2242,
-      "questions_answered": 232.0,
+      "expected_accuracy": 0.227,
+      "questions_answered": 239.0,
       "coverage": 1.0,
-      "exam_score_estimate": 0.2242
+      "exam_score_estimate": 0.227
     },
     "avoid_longest": {
-      "expected_accuracy": 0.2431,
-      "questions_answered": 226.15,
-      "coverage": 0.975,
-      "exam_score_estimate": 0.243
+      "expected_accuracy": 0.2425,
+      "questions_answered": 228.15,
+      "coverage": 0.955,
+      "exam_score_estimate": 0.2423
     },
     "position_A": {
-      "expected_accuracy": 0.3219,
-      "questions_answered": 177.05,
-      "coverage": 0.763,
-      "exam_score_estimate": 0.3019
+      "expected_accuracy": 0.3228,
+      "questions_answered": 182.8,
+      "coverage": 0.765,
+      "exam_score_estimate": 0.3028
     },
     "position_B": {
-      "expected_accuracy": 0.3268,
-      "questions_answered": 177.5,
-      "coverage": 0.765,
-      "exam_score_estimate": 0.3058
+      "expected_accuracy": 0.3274,
+      "questions_answered": 183.25,
+      "coverage": 0.767,
+      "exam_score_estimate": 0.3065
     },
     "position_C": {
-      "expected_accuracy": 0.3242,
-      "questions_answered": 175.8,
-      "coverage": 0.758,
-      "exam_score_estimate": 0.3032
+      "expected_accuracy": 0.3199,
+      "questions_answered": 181.3,
+      "coverage": 0.759,
+      "exam_score_estimate": 0.3001
     },
     "position_D": {
-      "expected_accuracy": 0.3141,
-      "questions_answered": 175.1,
-      "coverage": 0.755,
-      "exam_score_estimate": 0.2953
+      "expected_accuracy": 0.3152,
+      "questions_answered": 180.85,
+      "coverage": 0.757,
+      "exam_score_estimate": 0.2964
     },
     "stem_keyword_overlap": {
-      "expected_accuracy": 0.2355,
-      "questions_answered": 200.95,
-      "coverage": 0.866,
-      "exam_score_estimate": 0.2358
+      "expected_accuracy": 0.2356,
+      "questions_answered": 201.95,
+      "coverage": 0.845,
+      "exam_score_estimate": 0.236
     },
     "most_hedged": {
       "expected_accuracy": 0.1747,
       "questions_answered": 67.05,
-      "coverage": 0.289,
-      "exam_score_estimate": 0.2194
+      "coverage": 0.281,
+      "exam_score_estimate": 0.2201
     },
     "avoid_hedged": {
       "expected_accuracy": 0.2801,
       "questions_answered": 67.05,
-      "coverage": 0.289,
+      "coverage": 0.281,
       "exam_score_estimate": 0.2498
     },
     "least_absolute": {
       "expected_accuracy": 0.1575,
       "questions_answered": 74.3,
-      "coverage": 0.32,
-      "exam_score_estimate": 0.2119
+      "coverage": 0.311,
+      "exam_score_estimate": 0.2129
     },
     "most_absolute": {
       "expected_accuracy": 0.2985,
       "questions_answered": 74.3,
-      "coverage": 0.32,
-      "exam_score_estimate": 0.257
+      "coverage": 0.311,
+      "exam_score_estimate": 0.2567
     },
     "code_formatted_only": {
       "expected_accuracy": 0.1932,
       "questions_answered": 43.3,
-      "coverage": 0.187
+      "coverage": 0.181
     },
     "numeric_middle": {
       "expected_accuracy": 0.3475,
       "questions_answered": 40.6,
-      "coverage": 0.175
+      "coverage": 0.17
     },
     "odd_one_out": {
-      "expected_accuracy": 0.1092,
-      "questions_answered": 232.0,
+      "expected_accuracy": 0.1123,
+      "questions_answered": 239.0,
       "coverage": 1.0,
-      "exam_score_estimate": 0.1092
+      "exam_score_estimate": 0.1123
     },
     "similar_twin_member": {
-      "expected_accuracy": 0.4053,
-      "questions_answered": 94.0,
-      "coverage": 0.405,
-      "exam_score_estimate": 0.3055
+      "expected_accuracy": 0.3985,
+      "questions_answered": 100.0,
+      "coverage": 0.418,
+      "exam_score_estimate": 0.305
     },
     "largest_image_option": {
-      "expected_accuracy": 0.25,
-      "questions_answered": 1.0,
-      "coverage": 0.004
+      "expected_accuracy": 0.1111,
+      "questions_answered": 6.0,
+      "coverage": 0.025
     },
     "smallest_image_option": {
-      "expected_accuracy": 0.0,
-      "questions_answered": 1.0,
-      "coverage": 0.004
+      "expected_accuracy": 0.25,
+      "questions_answered": 6.0,
+      "coverage": 0.025
     }
   },
   "position_stats": {
@@ -127,41 +127,41 @@
     },
     "s2": {
       "counts": {
-        "A": 7,
-        "B": 6,
-        "C": 8,
-        "D": 6,
+        "A": 8,
+        "B": 7,
+        "C": 9,
+        "D": 8,
         "F": 1
       },
-      "n": 28,
-      "max_share": 0.286,
+      "n": 33,
+      "max_share": 0.273,
       "skewed": false,
       "top_key": "C"
     },
     "s3": {
       "counts": {
         "A": 11,
-        "B": 10,
+        "B": 11,
         "C": 9,
         "D": 10
       },
-      "n": 40,
-      "max_share": 0.275,
+      "n": 41,
+      "max_share": 0.268,
       "skewed": false,
-      "top_key": "A"
+      "top_key": "B"
     },
     "s4": {
       "counts": {
-        "A": 8,
+        "A": 9,
         "B": 8,
         "C": 8,
         "D": 9,
         "E": 1
       },
-      "n": 34,
-      "max_share": 0.265,
+      "n": 35,
+      "max_share": 0.257,
       "skewed": false,
-      "top_key": "D"
+      "top_key": "A"
     },
     "s5": {
       "counts": {

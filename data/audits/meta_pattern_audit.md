@@ -2,30 +2,30 @@
 
 *Repo-only quality artifact — not linked from the website.*
 
-Scope: **all sections** — 261 questions (232 single-answer, 29 multi-select). Random-guess baseline: **23.8%**. Exam pass line: **69%**.
+Scope: **all sections** — 268 questions (239 single-answer, 29 multi-select). Random-guess baseline: **23.8%**. Exam pass line: **69%**.
 
 ## Blind-guesser scores
 
 | Heuristic | EV accuracy (answered) | Coverage | Est. exam score |
 |---|---|---|---|
-| position_B | 32.7% | 76% | 30.6% |
-| similar_twin_member | 40.5% | 40% | 30.6% |
-| position_C | 32.4% | 76% | 30.3% |
-| position_A | 32.2% | 76% | 30.2% |
-| position_D | 31.4% | 76% | 29.5% |
-| most_absolute | 29.8% | 32% | 25.7% |
-| avoid_hedged | 28.0% | 29% | 25.0% |
-| avoid_longest | 24.3% | 98% | 24.3% |
-| stem_keyword_overlap | 23.5% | 87% | 23.6% |
+| position_B | 32.7% | 77% | 30.6% |
+| similar_twin_member | 39.9% | 42% | 30.5% |
+| position_A | 32.3% | 76% | 30.3% |
+| position_C | 32.0% | 76% | 30.0% |
+| position_D | 31.5% | 76% | 29.6% |
+| most_absolute | 29.8% | 31% | 25.7% |
+| avoid_hedged | 28.0% | 28% | 25.0% |
+| avoid_longest | 24.2% | 96% | 24.2% |
+| stem_keyword_overlap | 23.6% | 84% | 23.6% |
 | longest_option | 23.2% | 100% | 23.2% |
-| shortest_option | 22.4% | 100% | 22.4% |
-| most_hedged | 17.5% | 29% | 21.9% |
-| least_absolute | 15.8% | 32% | 21.2% |
-| odd_one_out | 10.9% | 100% | 10.9% |
-| code_formatted_only | 19.3% | 19% | – |
-| numeric_middle | 34.8% | 18% | – |
-| largest_image_option | 25.0% | 0% | – |
-| smallest_image_option | 0.0% | 0% | – |
+| shortest_option | 22.7% | 100% | 22.7% |
+| most_hedged | 17.5% | 28% | 22.0% |
+| least_absolute | 15.8% | 31% | 21.3% |
+| odd_one_out | 11.2% | 100% | 11.2% |
+| code_formatted_only | 19.3% | 18% | – |
+| numeric_middle | 34.8% | 17% | – |
+| largest_image_option | 11.1% | 2% | – |
+| smallest_image_option | 25.0% | 2% | – |
 
 ## Verdicts
 

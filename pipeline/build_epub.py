@@ -44,6 +44,8 @@ pre { font-family: monospace; font-size: 0.82em; white-space: pre-wrap;
 code { font-family: monospace; }
 .opt { margin: 0.4em 0; }
 .opt .k { font-weight: bold; padding-right: 0.4em; }
+a { color: inherit; }
+.toc li { margin: 0.3em 0; }
 .correct { font-weight: bold; }
 .meta { font-size: 0.85em; color: #444; }
 .fact { margin: 0.35em 0; }
@@ -116,7 +118,11 @@ def study_chapter_body(sec: dict, study: dict | None, qcount: int) -> str:
     if resources:
         parts.append("<h3>Official resources</h3><ul>")
         for r in resources:
-            parts.append(f"<li>{esc(r['title'])}<br/><code>{esc(r['url'])}</code></li>")
+            url = esc(r["url"])
+            parts.append(
+                f'<li><a href="{url}">{esc(r["title"])}</a><br/>'
+                f'<a href="{url}"><code>{url}</code></a></li>'
+            )
         parts.append("</ul>")
     return "\n".join(parts)
 
@@ -182,7 +188,8 @@ def question_pages(book: epub.EpubBook, q: dict, next_uid: str | None) -> list[e
     cits = q["explanation"].get("citations", [])
     if cits:
         aparts.append("<p class='src'><b>Read more:</b><br/>"
-                      + "<br/>".join(f"<code>{esc(u)}</code>" for u in cits[:3]) + "</p>")
+                      + "<br/>".join(f'<a href="{esc(u)}"><code>{esc(u)}</code></a>'
+                                     for u in cits[:3]) + "</p>")
     if next_uid:
         aparts.append(f'<p><a href="{next_uid}.xhtml">Next question →</a></p>')
     ach = chapter(book, auid, f"{qid} — answer", "\n".join(aparts))
@@ -228,7 +235,6 @@ def main() -> int:
     intro = chapter(book, "intro", "Start here", intro_body)
 
     spine: list = ["nav", intro]
-    toc: list = [intro]
 
     # Part I — study chapters
     study_chs = []
@@ -240,9 +246,9 @@ def main() -> int:
                      study_chapter_body(sec, study, len(bank.get(sid, []))))
         study_chs.append(ch)
         spine.append(ch)
-    toc.append((epub.Section("Part I — Study"), study_chs))
 
     # Part II — quiz book
+    quiz_heads = []
     for sec in sections:
         sid = sec["id"]
         qs = bank.get(sid, [])
@@ -253,16 +259,44 @@ def main() -> int:
                        f"<p>{len(qs)} questions. Answers follow each question "
                        f'on the next page. <a href="q-{qs[0]["id"]}.xhtml">Start →</a></p>')
         spine.append(head)
-        sec_chs = [head]
+        quiz_heads.append((sec, head))
         for i, q in enumerate(qs):
             nxt = f"q-{qs[i + 1]['id']}" if i + 1 < len(qs) else None
             qch, ach = question_pages(book, q, nxt)
             spine += [qch, ach]
-            sec_chs.append(qch)
-        toc.append((epub.Section(f"Part II — Drill {sid}"), sec_chs))
 
-    book.toc = toc
+    # Visible Contents page (inserted right after the intro). Kindle's
+    # "Go to -> Table of Contents" follows the OPF <guide> reference, which
+    # ebooklib only writes when book.guide is set — without it the menu shows
+    # up empty even though nav.xhtml exists. This page is that target, and
+    # it works on every reader regardless of nav support.
+    contents_body = "<ol class='toc'>"
+    contents_body += '<li><a href="intro.xhtml">Start here</a></li>'
+    contents_body += "<li>Part I — Study<ol>"
+    for ch in study_chs:
+        contents_body += f'<li><a href="{ch.file_name}">{esc(ch.title)}</a></li>'
+    contents_body += "</ol></li><li>Part II — Question drill<ol>"
+    for sec, head in quiz_heads:
+        n = len(bank.get(sec["id"], []))
+        contents_body += (f'<li><a href="{head.file_name}">Section {sec["id"][1:]}: '
+                          f"{esc(sec['title'])}</a> ({n} questions)</li>")
+    contents_body += "</ol></li></ol>"
+    contents = chapter(book, "contents", "Table of Contents", contents_body)
+    spine.insert(2, contents)
+
+    # Navigation: keep the nav/NCX compact — intro, contents, study chapters
+    # and per-section drill heads. Listing every question/answer page (600+
+    # navPoints) makes Send-to-Kindle conversions truncate or flatten the
+    # TOC; within a drill, question pages chain via their own next-links.
+    book.toc = [
+        intro,
+        contents,
+        (epub.Section("Part I — Study"), study_chs),
+        (epub.Section("Part II — Question drill"), [h for _, h in quiz_heads]),
+    ]
     book.spine = spine
+    book.guide = [{"type": "toc", "title": "Table of Contents",
+                   "href": contents.file_name}]
     book.add_item(epub.EpubNcx())
     book.add_item(epub.EpubNav())
 

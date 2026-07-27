@@ -394,6 +394,20 @@ No Anki on your device? The same content ships as an EPUB study book: Part I is 
 
 **Send it to a Kindle:** e-mail the file to your device's Send-to-Kindle address (find it under Amazon → Manage Your Content and Devices → Preferences), or use Amazon's [Send to Kindle](https://www.amazon.com/sendtokindle) page/app. Any other e-reader (Kobo, Boox, Apple Books) opens the EPUB directly.
 
+## Which app on which device?
+
+| Device | Use this | Cost | Notes |
+|---|---|---|---|
+| Windows / Mac / Linux | [Anki Desktop](https://apps.ankiweb.net/) | free | The reference app — import the `.apkg` here first |
+| Android (incl. Fire tablets) | [AnkiDroid](https://play.google.com/store/apps/details?id=com.ichi2.anki) | free | Official-ecosystem app; Fire tablets can sideload it |
+| iPhone / iPad — free route | [AnkiWeb](https://ankiweb.net/) in Safari | free | Import on desktop, sync, then review in the browser (add it to your home screen); needs a connection |
+| iPhone / iPad — best experience | [AnkiMobile](https://apps.apple.com/app/ankimobile-flashcards/id373493387) | one-time purchase | The *official* iOS app; the price funds free Anki development |
+| Kindle & e-ink readers | the **EPUB study book** above | free | No Anki apps run on e-ink; the EPUB rebuilds the question→answer flow |
+
+:::caution Watch out for lookalikes
+App Store searches for "Anki" surface **AnkiApp** and **Anki Pro** — neither is the real Anki. They are unrelated freemium apps with unreliable `.apkg` import and subscription upsells. The genuine ones are exactly those linked above.
+:::
+
 ## Import into Anki
 
 1. Install the free [Anki desktop app](https://apps.ankiweb.net/) (or AnkiMobile / AnkiDroid).

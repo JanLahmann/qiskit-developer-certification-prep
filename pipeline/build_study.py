@@ -2,13 +2,17 @@
 """Compile the quick-study layer: per-section cram sheets + primers.
 
 Input:  data/study/s<X>.json — authored by generation agents, fact-checked
-        before shipping (provenance.fact_checked). Structure:
+        before shipping (provenance.fact_checked). Structure (v2):
         {
           "section": "s8",
+          "version": 2,
           "primers": [{"objective": "s8o1", "title": str,
-                        "body_md": str, "citations": [url, ...]}],
-          "facts":   [{"objective": "s8o1", "fact_md": str,
+                        "body_md": str (may contain ``` fences + | tables |),
+                        "citations": [url, ...]}],
+          "facts":   [{"objective": "s8o1", "group": "core"|"trap",
+                        "fact_md": str,
                         "source": {"type": "citation"|"proof", "ref": url|qid}}],
+          "checklist": [str, ...],
           "provenance": {"generated": date, "model": str,
                           "fact_checked": bool, "notes": str}
         }
@@ -21,11 +25,16 @@ Rules enforced here (build fails otherwise):
  - proof-type sources reference an existing question id
  - only fact_checked files ship (unchecked files fail the build — the
    fact-check pass is part of the generation contract, like verify_bank)
+ - v2 files (the concise human-learner rewrite, pipeline/STUDY_CONTRACT.md):
+   every fact carries group core|trap; <= 6 core + <= 5 trap per objective;
+   <= 2 primers per objective; primer PROSE (excluding code fences and table
+   rows) <= 180 words; section checklist of 4-10 items, each <= 25 words
 """
 
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -83,6 +92,26 @@ def question_ids() -> set[str]:
     return ids
 
 
+def esc_mdx_block(text: str) -> str:
+    """esc_mdx for multi-paragraph bodies: fenced code passes through raw."""
+    parts = re.split(r"(```[\s\S]*?```)", text)
+    return "".join(p if p.startswith("```") else esc_mdx(p) for p in parts)
+
+
+def prose_words(body_md: str) -> int:
+    """Word count of the prose only — code fences and table rows are free."""
+    n, in_fence = 0, False
+    for line in body_md.split("\n"):
+        s = line.strip()
+        if s.startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence or s.startswith("|"):
+            continue
+        n += len(s.split())
+    return n
+
+
 def render_fact(fact: dict, sid: str) -> str:
     src = fact["source"]
     if src["type"] == "citation":
@@ -109,6 +138,8 @@ def build_section(study: dict, syllabus_section: dict, qids: set[str]) -> str:
             fail(f"{sid}: primer '{p.get('title')}' has no citations")
         primers_by_obj.setdefault(p["objective"], []).append(p)
 
+    v2 = study.get("version") == 2
+
     facts_by_obj: dict[str, list[dict]] = {}
     for f in study.get("facts", []):
         if f["objective"] not in objectives:
@@ -118,6 +149,8 @@ def build_section(study: dict, syllabus_section: dict, qids: set[str]) -> str:
             fail(f"{sid}: fact missing a valid source: {f['fact_md'][:60]}")
         if src["type"] == "proof" and src["ref"] not in qids:
             fail(f"{sid}: fact cites unknown question {src['ref']}")
+        if v2 and f.get("group") not in ("core", "trap"):
+            fail(f"{sid}: v2 fact missing group core|trap: {f['fact_md'][:60]}")
         facts_by_obj.setdefault(f["objective"], []).append(f)
 
     for oid in objectives:
@@ -126,20 +159,54 @@ def build_section(study: dict, syllabus_section: dict, qids: set[str]) -> str:
         if len(facts_by_obj.get(oid, [])) < 2:
             fail(f"{sid}: objective {oid} has fewer than 2 facts")
 
+    checklist = study.get("checklist") or []
+    if v2:
+        for oid, plist in primers_by_obj.items():
+            if len(plist) > 2:
+                fail(f"{sid}: objective {oid} has {len(plist)} primers (v2 max 2)")
+            for p in plist:
+                w = prose_words(p["body_md"])
+                if w > 180:
+                    fail(f"{sid}: primer '{p['title']}' has {w} prose words "
+                         "(v2 max 180 — move detail into a table or cut it)")
+        for oid, flist in facts_by_obj.items():
+            n_core = sum(1 for f in flist if f["group"] == "core")
+            n_trap = sum(1 for f in flist if f["group"] == "trap")
+            if n_core > 6 or n_trap > 5:
+                fail(f"{sid}: objective {oid} has {n_core} core / {n_trap} trap "
+                     "facts (v2 max 6 core + 5 trap)")
+        if not 4 <= len(checklist) <= 10:
+            fail(f"{sid}: v2 checklist has {len(checklist)} items (need 4-10)")
+        for item in checklist:
+            if len(item.split()) > 25:
+                fail(f"{sid}: checklist item over 25 words: {item[:60]}")
+
     blocks = []
     for oid, otext in objectives.items():
         blocks.append(f"## {esc_mdx(otext)}\n")
         for p in primers_by_obj[oid]:
             blocks.append(f"### {esc_mdx(p['title'])}\n")
-            blocks.append(esc_mdx(p["body_md"]) + "\n")
+            blocks.append(esc_mdx_block(p["body_md"]) + "\n")
             refs = " · ".join(
                 f"[{esc_mdx(u.rstrip('/').split('/')[-1])}]({u})" for u in p["citations"]
             )
             blocks.append(f"*Sources: {refs}*\n")
-        blocks.append("**Key facts:**\n")
-        for f in facts_by_obj[oid]:
+        facts = facts_by_obj[oid]
+        core = [f for f in facts if f.get("group", "core") == "core"]
+        traps = [f for f in facts if f.get("group") == "trap"]
+        blocks.append("**Must know:**\n" if traps else "**Key facts:**\n")
+        for f in core:
             blocks.append(render_fact(f, sid))
+        if traps:
+            blocks.append("\n**Traps:**\n")
+            for f in traps:
+                blocks.append(render_fact(f, sid))
         blocks.append("")
+    if checklist:
+        blocks.append(":::tip[Exam checklist]\n")
+        for item in checklist:
+            blocks.append(f"- {esc_mdx(item)}")
+        blocks.append("\n:::\n")
     return "\n".join(blocks)
 
 

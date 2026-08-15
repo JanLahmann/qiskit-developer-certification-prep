@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 import sys
 from datetime import date
 from pathlib import Path
@@ -50,6 +51,13 @@ a { color: inherit; }
 .meta { font-size: 0.85em; color: #444; }
 .fact { margin: 0.35em 0; }
 .src { font-size: 0.85em; }
+table { border-collapse: collapse; margin: 0.6em 0; }
+th, td { border: 1px solid #888; padding: 3px 7px; text-align: left;
+         font-size: 0.92em; }
+th { font-family: sans-serif; }
+.checklist { border: 1px solid #555; padding: 0.6em 0.8em 0.6em 2em;
+             margin: 0.8em 0; }
+.checklist li { margin: 0.3em 0; }
 .pagebreak { page-break-before: always; }
 hr { border: none; border-top: 1px solid #999; margin: 1.2em 0; }
 """
@@ -77,16 +85,99 @@ def chapter(book: epub.EpubBook, uid: str, title: str, body: str) -> epub.EpubHt
     return ch
 
 
+_TABLE_SEP_RE = re.compile(r"^\|[\s:|-]+\|$")
+
+
+def _table_html(rows: list[str]) -> str:
+    """Render a markdown pipe table as an HTML table.
+
+    ``\\|`` inside a cell is a literal pipe (standard markdown escape) —
+    needed for ket notation like ``|0>`` in table cells.
+    """
+    def cells(row: str) -> list[str]:
+        sentinel = "\x00"
+        row = row.replace("\\|", sentinel)
+        return [c.strip().replace(sentinel, "|")
+                for c in row.strip().strip("|").split("|")]
+
+    header, *rest = rows
+    body_rows = [r for r in rest if not _TABLE_SEP_RE.match(r.strip())]
+    out = ["<table><thead><tr>"]
+    out += [f"<th>{md_inline(c)}</th>" for c in cells(header)]
+    out.append("</tr></thead><tbody>")
+    for r in body_rows:
+        out.append("<tr>" + "".join(f"<td>{md_inline(c)}</td>" for c in cells(r))
+                   + "</tr>")
+    out.append("</tbody></table>")
+    return "".join(out)
+
+
+def md_block(text: str) -> str:
+    """Render body markdown — paragraphs, ``` fences, pipe tables — to HTML."""
+    out: list[str] = []
+    para: list[str] = []
+
+    def flush() -> None:
+        if para:
+            out.append(f"<p>{md_inline(' '.join(para))}</p>")
+            para.clear()
+
+    lines = text.split("\n")
+    i = 0
+    while i < len(lines):
+        stripped = lines[i].strip()
+        if stripped.startswith("```"):
+            flush()
+            i += 1
+            code = []
+            while i < len(lines) and not lines[i].strip().startswith("```"):
+                code.append(lines[i])
+                i += 1
+            i += 1  # closing fence
+            out.append(code_block("\n".join(code)))
+            continue
+        if stripped.startswith("|"):
+            flush()
+            rows = []
+            while i < len(lines) and lines[i].strip().startswith("|"):
+                rows.append(lines[i])
+                i += 1
+            out.append(_table_html(rows))
+            continue
+        if not stripped:
+            flush()
+        else:
+            para.append(stripped)
+        i += 1
+    flush()
+    return "\n".join(out)
+
+
+def _fact_list(label: str, facts: list[dict]) -> list[str]:
+    if not facts:
+        return []
+    parts = [f"<p><b>{label}</b></p><ul>"]
+    parts += [f'<li class="fact">{md_inline(f["fact_md"])}</li>' for f in facts]
+    parts.append("</ul>")
+    return parts
+
+
 def study_chapter_body(sec: dict, study: dict | None, qcount: int) -> str:
     parts = [
         f"<p><b>{sec['weight_pct']}% of the exam.</b> "
         f"{qcount} practice questions in Part II.</p>",
-        "<h3>Objectives</h3><ul>",
     ]
-    parts += [f"<li>{md_inline(o['text'])}</li>" for o in sec["objectives"]]
-    parts.append("</ul>")
 
-    if study:
+    if not study:
+        parts.append("<h3>Objectives</h3><ul>")
+        parts += [f"<li>{md_inline(o['text'])}</li>" for o in sec["objectives"]]
+        parts.append("</ul>")
+    else:
+        parts.append(
+            '<p class="meta"><i>Every fact below is verified — proven by '
+            "executed code or backed by an official docs page. The web "
+            "version (certiq.dev) links each fact to its source.</i></p>"
+        )
         obj_titles = {o["id"]: o["text"] for o in sec["objectives"]}
         facts_by_obj: dict[str, list[dict]] = {}
         for f in study.get("facts", []):
@@ -98,31 +189,26 @@ def study_chapter_body(sec: dict, study: dict | None, qcount: int) -> str:
             parts.append(f"<h3>{md_inline(otext)}</h3>")
             for p in primers:
                 parts.append(f"<h4>{md_inline(p['title'])}</h4>")
-                parts.append(f"<p>{md_inline(p['body_md'])}</p>")
+                parts.append(md_block(p["body_md"]))
             facts = facts_by_obj.get(oid, [])
-            if facts:
-                parts.append("<p><b>Key facts:</b></p>")
-                for f in facts:
-                    src = f["source"]
-                    tag = (
-                        f"proven by execution ({esc(src['ref'])})"
-                        if src["type"] == "proof"
-                        else f"source: {esc(src['ref'].split('//')[-1])}"
-                    )
-                    parts.append(
-                        f'<div class="fact">• {md_inline(f["fact_md"])} '
-                        f'<span class="src">[{tag}]</span></div>'
-                    )
+            core = [f for f in facts if f.get("group", "core") == "core"]
+            traps = [f for f in facts if f.get("group") == "trap"]
+            label = "Must know:" if traps else "Key facts:"
+            parts += _fact_list(label, core)
+            parts += _fact_list("Traps:", traps)
+        checklist = study.get("checklist") or []
+        if checklist:
+            parts.append("<h3>Exam checklist</h3>")
+            parts.append('<ul class="checklist">')
+            parts += [f"<li>☐ {md_inline(item)}</li>" for item in checklist]
+            parts.append("</ul>")
 
     resources = [r for r in sec.get("resources", []) if r.get("url")]
     if resources:
         parts.append("<h3>Official resources</h3><ul>")
         for r in resources:
             url = esc(r["url"])
-            parts.append(
-                f'<li><a href="{url}">{esc(r["title"])}</a><br/>'
-                f'<a href="{url}"><code>{url}</code></a></li>'
-            )
+            parts.append(f'<li><a href="{url}">{esc(r["title"])}</a></li>')
         parts.append("</ul>")
     return "\n".join(parts)
 
@@ -225,9 +311,10 @@ def main() -> int:
         f"{exam['minutes']} minutes, pass at {exam['pass_score']}.</li>"
         f"<li>Qiskit SDK v2.x + Runtime primitives (SamplerV2 / EstimatorV2).</li></ul>"
         "<h3>How to use this book</h3>"
-        "<p>Part I is the study layer: objectives, background primers, and "
-        "key facts (each fact names its source — an official docs page or an "
-        "executed proof from the question id shown). Part II is the drill: "
+        "<p>Part I is the study layer: a short primer per exam objective, "
+        "the must-know facts and traps, and an exam checklist per section. "
+        "Every fact is verified (executed code or official docs); the web "
+        "version links each one to its source. Part II is the drill: "
         "read a question, commit to an answer, then turn the page. Options "
         "are printed with their bank keys; on the website the same questions "
         "appear with shuffled positions and rotating wrong answers.</p>"

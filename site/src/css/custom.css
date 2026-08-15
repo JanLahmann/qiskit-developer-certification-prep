@@ -51,7 +51,7 @@
   max-width: 100%;
 }
 
-/* Send-to-Kindle card on the flashcards page */
+/* Send-to-Kindle card on the study-book page */
 .kindle-cta {
   display: flex;
   flex-wrap: wrap;

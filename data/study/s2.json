@@ -1,71 +1,275 @@
 {
   "section": "s2",
+  "version": 2,
   "primers": [
     {
       "objective": "s2o1",
-      "title": "One drawer, four renderers, and a signature that does not forgive typos",
-      "body_md": "`QuantumCircuit.draw()` and the standalone `circuit_drawer()` in `qiskit.visualization` are the same machinery: the function form only differs by taking the circuit as its first positional argument. Both choose a renderer with `output=`, and the registry holds exactly four names — `text` (the default), `mpl`, `latex`, `latex_source`. Anything else raises `VisualizationError`, and the message helpfully lists the four; `output=\"matplotlib\"` and `output=\"figure\"` are the two spellings questions like to plant.\n\nReturn types are examinable per renderer. `text` hands back a `TextDrawing` object — printable, but *not* a `str`, and not `None` (the ASCII art you see in a notebook is its repr). `mpl` returns a `matplotlib.figure.Figure`, the object you style and `savefig`, which is why `mpl` is the answer to every publication-figure question. `latex` returns a PIL `Image` and needs a LaTeX toolchain; `latex_source` returns the raw LaTeX string. The one exception to memorize: hand the mpl renderer your own axes with `draw(\"mpl\", ax=ax)` and it returns `None`, because the caller already owns the figure.\n\nThe signature is closed — there is no `**kwargs` catch-all. A near-miss keyword is a hard `TypeError`, never a silently ignored option: `initial_states=` for `initial_state=`, or `format=` for `output=` on the function form. The kwargs worth knowing cold: `idle_wires=False` deletes any qubit or clbit wire carrying no operations (`idle_wires=\"auto\"` keeps them unless the circuit carries a transpiler layout, so it is only equivalent on transpiled circuits); `reverse_bits=True` flips the top-to-bottom wire order so the highest-index qubit is drawn on top; `initial_state=True` prefixes each wire with its starting `|0⟩` label; `plot_barriers=False` hides barriers. `reverse_bits` and `plot_barriers` work in every renderer, while `fold` (wrap width), `scale`, and `style` are renderer-specific — and `style` is *silently ignored* by the text renderer, which makes `style={\"initial_state\": True}` a perfect trap: no error, no labels.\n\nThe deepest trap in this objective is confusing a rendering option with a semantic one. `reverse_bits` changes only which wire is drawn where; it does not change the circuit, the gate order, or the endianness of the counts you get back. Same for `idle_wires`: the qubit still exists, it is just not drawn.\n\nFinally, conditionals. In Qiskit 2.x the only way to get a classically-controlled operation — and the boxed `If` block in the drawing that goes with it — is the control-flow context manager `with qc.if_test((clbit, value)):`. `InstructionSet.c_if` was removed in 2.0, there is no `condition=` gate keyword and no `.condition` attribute to set, and `if_test(clbit == 1)` fails because `Clbit.__eq__` returns a plain bool.",
+      "title": "Four renderers, and a signature that does not forgive typos",
+      "body_md": "`QuantumCircuit.draw()` and the standalone `circuit_drawer()` are the same machinery, and `output=` accepts exactly four names.\n\n| `output` | Returns | Reach for it when |\n| --- | --- | --- |\n| `text` (default) | a `TextDrawing` — printable, but not a `str` and not `None` | you are in a terminal or notebook |\n| `mpl` | a `matplotlib.figure.Figure` | you need to style or `savefig` a publication figure |\n| `latex` | a PIL `Image`, and it needs a LaTeX toolchain | you want typeset output |\n| `latex_source` | the raw LaTeX string | you are pasting into a document |\n\nAnything else raises `VisualizationError` whose message lists those four. The one exception to memorize: pass your own axes with `draw(\"mpl\", ax=ax)` and the return value is `None`, because the caller already owns the figure.\n\n| Keyword | Effect | Notes |\n| --- | --- | --- |\n| `idle_wires=False` | deletes any wire carrying no operations | `\"auto\"` keeps them unless the circuit carries a transpiler layout |\n| `reverse_bits=True` | draws the highest-index qubit on the top wire | works in every renderer |\n| `initial_state=True` | prefixes each wire with its starting label | |\n| `plot_barriers=False` | hides barriers | works in every renderer |\n| `filename=` | saves the rendering to disk | |\n| `fold`, `scale`, `style` | wrap width, size, styling | renderer-specific |\n\nThe signature is closed — there is no `**kwargs` catch-all, so a near-miss keyword is a hard `TypeError`, never a silently ignored option.",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
-        "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization",
-        "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow"
+        "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
       ]
     },
     {
       "objective": "s2o2",
       "title": "Counts in, Figure out — and the bar labels are little-endian",
-      "body_md": "The measurement plotters take a counts *mapping* — bitstring to integer — and nothing else. A `SamplerV2` result does not hand you one directly: `result[0].data.meas` is a `BitArray`, and you must call `.get_counts()` on it. There is no bare `.counts()` method (that is an `AttributeError`), and passing the `BitArray` itself to `plot_histogram` fails. Both `plot_histogram` and `plot_distribution` return a `matplotlib.figure.Figure`, so `.savefig(...)` and `.show()` are always available on the result.\n\nThe pair differs in normalization, not in input. `plot_histogram` plots RAW counts: its y-axis is labeled *Count* and the bar heights add up to the number of shots. `plot_distribution` plots a normalized quasi-probability distribution: its y-axis is *Quasi-probability* and the heights add up to 1. It derives that normalization from the counts themselves — neither function has a `shots=` parameter, and passing one is a `TypeError`. The V1-era habit `plot_histogram(counts, shots=1024)` is simply gone.\n\nThe display options are a small, memorizable set: `legend` (a LIST of strings, one per execution — a bare string raises, and `labels=` does not exist), `sort` (`\"asc\"` or `\"desc\"`), `number_to_keep`, `color`, `bar_labels`, and `figsize`. Two of them carry traps. `number_to_keep=N` keeps the N largest-count bitstrings and folds every remaining outcome into one bar labeled `rest` whose height is the SUM of the folded counts, never their average and never a dropped remainder — no weight is lost. And overlaying two runs is done by passing a LIST of counts dicts as the single data argument, `plot_histogram([before, after], legend=[\"before\", \"after\"])`; a dict-of-dicts or two positional arguments will not do it.\n\nWith no options at all, `plot_histogram` sorts the x-axis in ascending lexicographic bitstring order — not insertion order, not by bar height. So a dict built as `{\"11\": …, \"00\": …, \"10\": …, \"01\": …}` still draws as `00, 01, 10, 11`.\n\nThe last piece is reading the axis. Qiskit labels outcomes little-endian: the string is q_(n−1) … q_1 q_0, highest-index qubit on the LEFT and qubit 0 on the right. Flip qubits 0 and 2 of a three-qubit register and the single bar sits at `'101'`, not `'011'`. If the circuit has several classical registers (as it does after `measure_all`, which appends a fresh `meas` register), the key is space-separated, one group per register, the LAST-declared register printed leftmost. When a question asks \"which bar is tallest\", it is usually testing the label convention, not the physics — and when it does test physics, the shortcut is RY(θ)|0⟩ giving P(1) = sin²(θ/2).",
+      "body_md": "Both measurement plotters take a counts mapping — bitstring to integer — and return a `matplotlib.figure.Figure`.\n\n```python\ncounts = result[0].data.meas.get_counts()   # SamplerV2 -> BitArray -> counts\nplot_histogram([before, after], legend=[\"before\", \"after\"])\n```\n\n| | `plot_histogram` | `plot_distribution` |\n| --- | --- | --- |\n| plots | raw counts | a normalized quasi-probability distribution |\n| y-axis label | Count | Quasi-probability |\n| heights add up to | the shot count | 1.0 |\n| where normalization comes from | — | the counts themselves |\n\nThe display options are a small, memorizable set: `legend` (a LIST of strings, one per execution), `sort` (`\"asc\"` or `\"desc\"`), `number_to_keep`, `color`, `bar_labels` and `figsize`.\n\nReading the axis is the last piece. Qiskit labels outcomes little-endian, q_(n−1)…q_1 q_0, with the highest-index qubit on the LEFT. When a circuit has several classical registers — `measure_all` appends a fresh `meas` register — the key is space-separated, one group per register, the LAST-declared register printed leftmost.",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
         "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
       ]
     },
     {
+      "objective": "s2o2",
+      "title": "The device plots draw the hardware, not the results",
+      "body_md": "Three device plots draw the same qubit graph and differ only in what they colour.\n\n| Function | Takes | Colours |\n| --- | --- | --- |\n| `plot_gate_map(backend)` | a `BackendV2` | nothing; `plot_directed=True` adds arrows, not error data |\n| `plot_error_map(backend)` | a `BackendV2` | every qubit and every link, from calibration data |\n| `plot_circuit_layout(isa, backend)` | a transpiled circuit plus its backend | a two-tone used/unused highlight, labelled with virtual indices |\n\n`plot_gate_map` is a picture of the HARDWARE: it reads the backend's qubit count and coupling map and draws one node per qubit plus one line per connected pair. Reach for this family when the question is about the DEVICE — which qubits exist, how they connect, how good they are, and where the transpiler put your circuit — never about measurement outcomes.",
+      "citations": [
+        "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization",
+        "https://quantum.cloud.ibm.com/docs/guides/visualize-results"
+      ]
+    },
+    {
       "objective": "s2o3",
       "title": "Each state plot answers a different question",
-      "body_md": "Four drawers, four different questions, and the exam mostly tests which one you would reach for and what it can*not* show. Every one of them is reachable two ways: the free function (`plot_bloch_multivector`, `plot_state_qsphere`, `plot_state_city`, `plot_state_hinton`, `plot_state_paulivec`) or the object method `sv.draw(output)` where `output` is the first positional parameter and takes `'text'`, `'latex'`, `'latex_source'`, `'qsphere'`, `'hinton'`, `'bloch'`, `'city'` or `'paulivec'` — any other token raises `ValueError` listing exactly those. There is no `sv.plot(...)` and no importable `plot_qsphere`.\n\n**Bloch.** Two functions whose names look interchangeable and are not. `plot_bloch_vector` takes an explicit three-number Bloch vector `[x, y, z]`; `plot_bloch_multivector` takes a quantum STATE (`Statevector` or `DensityMatrix`), computes each qubit's reduced state by tracing out the others, and draws one sphere per qubit — three qubits, three spheres, all packed into one `Figure`, idle qubits included. Feeding a state to `plot_bloch_vector` does not produce per-qubit spheres, and feeding a list of Bloch vectors to the multivector version raises (it is parsed as a state). Because it only ever shows single-qubit expectation values, this plot cannot represent correlations: for a Bell pair each reduced state is maximally mixed, so both arrows shrink to zero length at the centre. Arrows at the origin ARE the visual signature of maximal entanglement.\n\nThe Bloch vector is (⟨X⟩, ⟨Y⟩, ⟨Z⟩), so reading an arrow is memorization: +Z = |0⟩, −Z = |1⟩, +X = |+⟩, −X = |−⟩, +Y = (|0⟩ + i|1⟩)/√2 (the label `'r'`), −Y = (|0⟩ − i|1⟩)/√2 (`'l'`). Equator means ⟨Z⟩ = 0. H alone lands on +X; H then S rotates 90° about Z to +Y; and the classic decoy is RZ on |0⟩, which changes only a global phase and leaves the arrow pinned at the north pole.\n\n**Q-sphere.** One node per computational basis state with NONZERO amplitude — zero-amplitude states simply have no marker. Node SIZE encodes the amplitude magnitude and node COLOR encodes its complex phase. Two same-size, different-color nodes therefore mean equal weight but a relative phase (a −1 amplitude shows as phase π against phase 0). Unlike the other state plots it accepts only `figsize`, not `title`.\n\n**City / Hinton / Pauli-vector.** These render the density matrix rather than the qubits: `plot_state_city` as two 3-D bar charts (real and imaginary parts), `plot_state_hinton` as squares whose size is the magnitude, `plot_state_paulivec` as the expansion coefficients over Pauli strings. Reach for them when a question is about matrix elements or Pauli decompositions instead of per-qubit directions.",
+      "body_md": "Pick a state plot by the question it answers; each is a free function, and also a token of `sv.draw(output)`.\n\n| Plot | Draws | Answers |\n| --- | --- | --- |\n| `plot_bloch_multivector(state)` | one sphere per qubit, from that qubit's reduced state | where each qubit points |\n| `plot_state_qsphere(state)` | one node per nonzero amplitude, sized and coloured | which amplitudes exist, and their relative phases |\n| `plot_state_city(state)` | two 3-D bar charts, the real and imaginary parts of ρ | individual density-matrix elements |\n| `plot_state_hinton(state)` | squares whose size is the magnitude | the same matrix, at a glance |\n| `plot_state_paulivec(state)` | the expansion coefficients over Pauli strings | the Pauli decomposition |\n\n`plot_bloch_multivector` takes a quantum STATE and traces out the other qubits; `plot_bloch_vector` is the different function that takes an explicit three-number vector `[x, y, z]`.\n\nOn `sv.draw(output)`, `output` is the first positional parameter and the valid tokens are `text`, `latex`, `latex_source`, `qsphere`, `hinton`, `bloch`, `city` and `paulivec`. Unlike the other state plots, `plot_state_qsphere` accepts only `figsize`, not `title`.",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
         "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
       ]
+    },
+    {
+      "objective": "s2o3",
+      "title": "Reading an arrow, reading a node",
+      "body_md": "The Bloch vector is (⟨X⟩, ⟨Y⟩, ⟨Z⟩), so reading an arrow is memorization.\n\n| Arrow | State | How you land there |\n| --- | --- | --- |\n| +Z (north pole) | the zero state | the starting point |\n| −Z (south pole) | the one state | — |\n| +X | the plus state | `h` alone |\n| −X | the minus state, the −1 eigenstate of X | — |\n| +Y | the `'r'` state, a +i relative phase | `h` then `s`, a 90° rotation about Z |\n| −Y | the `'l'` state, a −i relative phase | — |\n\nAnywhere on the equator means ⟨Z⟩ = 0. Because this plot only ever shows single-qubit expectation values, it cannot represent correlations between qubits.\n\nA q-sphere encodes different information: node SIZE is the amplitude magnitude and node COLOUR is its complex phase, so a q-sphere is the plot that shows relative phase between basis states.",
+      "citations": [
+        "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states"
+      ]
     }
   ],
   "facts": [
-    {"objective": "s2o1", "fact_md": "`qc.draw()` returns a `TextDrawing` (not a `str`, not `None`); `qc.draw(\"mpl\")` returns a `matplotlib.figure.Figure`.", "source": {"type": "proof", "ref": "s2-q010"}},
-    {"objective": "s2o1", "fact_md": "The only valid `output` values are `text`, `latex`, `latex_source`, and `mpl` — `output=\"matplotlib\"` (or `\"figure\"`) raises `VisualizationError` listing those four, from both the method and `circuit_drawer`.", "source": {"type": "proof", "ref": "s2-q015"}},
-    {"objective": "s2o1", "fact_md": "The standalone drawer is `from qiskit.visualization import circuit_drawer` called as `circuit_drawer(qc, output=\"text\")`; `qiskit.tools` no longer exists and the kwarg is `output=`, never `format=`.", "source": {"type": "proof", "ref": "s2-q014"}},
-    {"objective": "s2o1", "fact_md": "`qc.draw(\"mpl\", ax=...)` returns `None`, not a `Figure` — supplying your own axes hands figure ownership back to you.", "source": {"type": "proof", "ref": "s2-q017"}},
-    {"objective": "s2o1", "fact_md": "`idle_wires=False` removes wires that carry no operations, so a 3-qubit circuit acting only on qubits 0 and 2 draws two wires.", "source": {"type": "proof", "ref": "s2-q011"}},
-    {"objective": "s2o1", "fact_md": "`reverse_bits=True` is rendering-only: it puts the highest-index qubit on the top wire and changes nothing about the circuit, the gate order, or the endianness of the results.", "source": {"type": "proof", "ref": "s2-q012"}},
-    {"objective": "s2o1", "fact_md": "`initial_state=True` (default `False`) prefixes each wire with its `|0⟩` label; the plural `initial_states=` is a `TypeError`, and `style={\"initial_state\": True}` is silently ignored by the text renderer.", "source": {"type": "proof", "ref": "s2-q016"}},
-    {"objective": "s2o1", "fact_md": "A classically-controlled gate that draws as an `If` block is built with `with qc.if_test((qc.clbits[0], 1)):` — `.c_if()`, a `condition=` kwarg, a `.condition` attribute, and `if_test(clbit == 1)` all fail in Qiskit 2.x.", "source": {"type": "proof", "ref": "s2-q013"}},
-    {"objective": "s2o1", "fact_md": "`reverse_bits` and `plot_barriers` are shared by all three renderers, while `fold`, `scale`, and `style` are renderer-specific, and `filename=` saves the rendering to disk.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits"}},
-    {"objective": "s2o2", "fact_md": "`plot_histogram` plots RAW counts (bar heights sum to the shot count, y-axis \"Count\"); `plot_distribution` normalizes (heights sum to 1.0, y-axis \"Quasi-probability\"). Both accept the same counts dict.", "source": {"type": "proof", "ref": "s2-q020"}},
-    {"objective": "s2o2", "fact_md": "Neither plotter has a `shots=` parameter — `plot_distribution(counts, shots=1024)` raises `TypeError`; normalization is derived from the counts themselves.", "source": {"type": "proof", "ref": "s2-q020"}},
-    {"objective": "s2o2", "fact_md": "`number_to_keep=2` on four outcomes draws three bars — the two largest plus `rest`, whose height is the SUM of the folded counts (20 + 4 → 24), never their average.", "source": {"type": "proof", "ref": "s2-q021"}},
-    {"objective": "s2o2", "fact_md": "With no options, `plot_histogram` sorts bars in ascending bitstring order regardless of insertion order or height, and returns a `Figure`.", "source": {"type": "proof", "ref": "s2-q025"}},
-    {"objective": "s2o2", "fact_md": "Overlaying runs takes a LIST of counts dicts plus a matching list `legend`: `plot_histogram([before, after], legend=[\"before\", \"after\"])`. `labels=` does not exist and a bare string legend raises.", "source": {"type": "proof", "ref": "s2-q023"}},
-    {"objective": "s2o2", "fact_md": "`SamplerV2` output must be converted first: `result[0].data.meas.get_counts()`. The `BitArray` itself is not a counts mapping and has no bare `.counts()` method.", "source": {"type": "proof", "ref": "s2-q022"}},
-    {"objective": "s2o2", "fact_md": "Histogram labels are little-endian q_(n−1)…q_0: flipping qubits 0 and 2 of a 3-qubit register puts the single bar at `'101'`, not `'011'`.", "source": {"type": "proof", "ref": "s2-q019"}},
-    {"objective": "s2o2", "fact_md": "The documented `plot_histogram` options are `legend`, `sort` (`asc`/`desc`), `number_to_keep`, `color`, `bar_labels`, and `figsize` — and the function returns a `matplotlib.Figure`.", "source": {"type": "citation", "ref": "https://quantum.cloud.ibm.com/docs/guides/visualize-results"}},
-    {"objective": "s2o3", "fact_md": "`plot_bloch_multivector` draws one sphere PER QUBIT (3 qubits → 3 spheres, idle ones included) from each qubit's reduced state, and returns a single `Figure`.", "source": {"type": "proof", "ref": "s2-q026"}},
-    {"objective": "s2o3", "fact_md": "`plot_bloch_vector` takes an explicit `[x, y, z]` Bloch vector; `plot_bloch_multivector` takes a quantum state. Passing a state to the former does not produce per-qubit spheres.", "source": {"type": "proof", "ref": "s2-q034"}},
-    {"objective": "s2o3", "fact_md": "For the Bell state both reduced Bloch vectors are exactly (0, 0, 0) with purity 0.5 — the arrows collapse to the centre, the visual signature of maximal entanglement.", "source": {"type": "proof", "ref": "s2-q030"}},
-    {"objective": "s2o3", "fact_md": "`sv.draw(\"qsphere\")` works (`output` is the first positional parameter); the valid tokens are `text`, `latex`, `latex_source`, `qsphere`, `hinton`, `bloch`, `city`, `paulivec`. `sv.qsphere()`, `sv.plot(...)` and importing `plot_qsphere` all fail.", "source": {"type": "proof", "ref": "s2-q029"}},
-    {"objective": "s2o3", "fact_md": "On a q-sphere, node SIZE encodes amplitude magnitude and node COLOR encodes phase: two equal-magnitude amplitudes of +0.7071 and −0.7071 give same-size nodes at phase 0 and phase π, hence different colors.", "source": {"type": "proof", "ref": "s2-q032"}},
-    {"objective": "s2o3", "fact_md": "A q-sphere shows a node only where the amplitude is nonzero — H on qubit 0 with X on qubit 1 gives nodes at `|10⟩` and `|11⟩` only (little-endian labels).", "source": {"type": "proof", "ref": "s2-q031"}},
-    {"objective": "s2o3", "fact_md": "H then S puts the arrow on +Y, i.e. (|0⟩ + i|1⟩)/√2 with Bloch vector (0, 1, 0); H alone gives +X.", "source": {"type": "proof", "ref": "s2-q027"}},
-    {"objective": "s2o3", "fact_md": "The Bloch vector is (⟨X⟩, ⟨Y⟩, ⟨Z⟩), so an arrow on −X is |−⟩ = (|0⟩ − |1⟩)/√2 — the −1 eigenstate of X.", "source": {"type": "proof", "ref": "s2-q028"}},
-    {"objective": "s2o3", "fact_md": "Equator means ⟨Z⟩ = 0: `h` and `h; s` both land there, while `rz(π/2)` on |0⟩ only adds a global phase and stays at the north pole.", "source": {"type": "proof", "ref": "s2-q035"}},
-    {"objective": "s2o2", "fact_md": "`plot_gate_map(backend)` is a picture of the HARDWARE: it takes a `BackendV2`, reads its qubit count and coupling map, and draws one node per qubit plus one line per connected pair. A counts mapping, a `CouplingMap` or a `Target` all raise `AttributeError` — and `plot_histogram(backend)` raises too.", "source": {"type": "proof", "ref": "s2-q037"}},
-    {"objective": "s2o2", "fact_md": "The three device plots draw the same qubit graph and differ only in what they colour: `plot_error_map(backend)` shades every qubit and every link from the backend's calibration data, `plot_circuit_layout(isa, backend)` uses a two-tone used/unused highlight labelled with virtual indices, and `plot_gate_map` forwards no colours at all (`plot_directed=True` adds arrows, not error data).", "source": {"type": "proof", "ref": "s2-q038"}},
-    {"objective": "s2o2", "fact_md": "`plot_circuit_layout` reads `circuit.layout`, which only the circuit RETURNED by `transpile` carries — `transpile` never mutates its input, so plotting the original circuit raises `QiskitError: 'Circuit has no layout. Perhaps it has not been transpiled.'` at every optimization level.", "source": {"type": "proof", "ref": "s2-q036"}},
-    {"objective": "s2o2", "fact_md": "`Statevector.sample_counts(shots)` returns a `qiskit.result.Counts` mapping — bitstring labels to integers that sum to `shots`, with only the nonzero-amplitude outcomes present — so it feeds `plot_histogram` with no backend or primitive involved. `sample_memory(shots)` is the per-shot list, `probabilities_dict()` the exact probabilities, and `sv.seed(...)` makes the draw reproducible.", "source": {"type": "proof", "ref": "s2-q039"}}
+    {
+      "objective": "s2o1",
+      "group": "core",
+      "fact_md": "A classically-controlled gate that draws as an `If` block is built with `with qc.if_test((qc.clbits[0], 1)):` — `.c_if()`, a `condition=` kwarg, a `.condition` attribute, and `if_test(clbit == 1)` all fail in Qiskit 2.x.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q013"
+      }
+    },
+    {
+      "objective": "s2o1",
+      "group": "core",
+      "fact_md": "`idle_wires=False` removes wires that carry no operations, so a 3-qubit circuit acting only on qubits 0 and 2 draws two wires.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q011"
+      }
+    },
+    {
+      "objective": "s2o1",
+      "group": "trap",
+      "fact_md": "`output=\"matplotlib\"` and `output=\"figure\"` are not valid — both raise `VisualizationError` listing the four real names, from the method and from `circuit_drawer` alike.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q015"
+      }
+    },
+    {
+      "objective": "s2o1",
+      "group": "trap",
+      "fact_md": "The standalone drawer is `from qiskit.visualization import circuit_drawer` called as `circuit_drawer(qc, output=\"text\")`; `qiskit.tools` no longer exists and the kwarg is `output=`, never `format=`.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q014"
+      }
+    },
+    {
+      "objective": "s2o1",
+      "group": "trap",
+      "fact_md": "`qc.draw(\"mpl\", ax=...)` returns `None`, not a `Figure` — supplying your own axes hands figure ownership back to you.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q017"
+      }
+    },
+    {
+      "objective": "s2o1",
+      "group": "trap",
+      "fact_md": "`reverse_bits=True` is rendering-only: it puts the highest-index qubit on the top wire and changes nothing about the circuit, the gate order, or the endianness of the results.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q012"
+      }
+    },
+    {
+      "objective": "s2o1",
+      "group": "trap",
+      "fact_md": "`initial_state=True` (default `False`) draws the `|0⟩` labels; the plural `initial_states=` is a `TypeError`, and `style={\"initial_state\": True}` is silently ignored by the text renderer.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q016"
+      }
+    },
+    {
+      "objective": "s2o2",
+      "group": "core",
+      "fact_md": "`SamplerV2` output must be converted first: `result[0].data.meas.get_counts()`. The `BitArray` itself is not a counts mapping and has no bare `.counts()` method.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q022"
+      }
+    },
+    {
+      "objective": "s2o2",
+      "group": "core",
+      "fact_md": "`number_to_keep=2` on four outcomes draws three bars — the two largest plus `rest`, whose height is the SUM of the folded counts (20 + 4 → 24), never their average.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q021"
+      }
+    },
+    {
+      "objective": "s2o2",
+      "group": "core",
+      "fact_md": "Overlaying runs takes a LIST of counts dicts plus a matching list `legend`: `plot_histogram([before, after], legend=[\"before\", \"after\"])`. `labels=` does not exist and a bare string legend raises.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q023"
+      }
+    },
+    {
+      "objective": "s2o2",
+      "group": "core",
+      "fact_md": "`plot_circuit_layout` reads `circuit.layout`, which only the circuit RETURNED by `transpile` carries — `transpile` never mutates its input, so plotting the original raises `QiskitError: 'Circuit has no layout. Perhaps it has not been transpiled.'` at every optimization level.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q036"
+      }
+    },
+    {
+      "objective": "s2o2",
+      "group": "core",
+      "fact_md": "`Statevector.sample_counts(shots)` returns a `qiskit.result.Counts` mapping summing to `shots` with only nonzero-amplitude outcomes, so it feeds `plot_histogram` with no backend or primitive involved; `sample_memory(shots)` is the per-shot list and `sv.seed(...)` makes the draw reproducible.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q039"
+      }
+    },
+    {
+      "objective": "s2o2",
+      "group": "trap",
+      "fact_md": "Histogram labels are little-endian q_(n−1)…q_0: flipping qubits 0 and 2 of a 3-qubit register puts the single bar at `'101'`, not `'011'`.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q019"
+      }
+    },
+    {
+      "objective": "s2o2",
+      "group": "trap",
+      "fact_md": "Neither plotter has a `shots=` parameter — `plot_distribution(counts, shots=1024)` raises `TypeError`; the V1-era habit `plot_histogram(counts, shots=1024)` is simply gone.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q020"
+      }
+    },
+    {
+      "objective": "s2o2",
+      "group": "trap",
+      "fact_md": "With no options, `plot_histogram` sorts bars in ascending lexicographic bitstring order — not insertion order and not by bar height — and returns a `Figure`.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q025"
+      }
+    },
+    {
+      "objective": "s2o2",
+      "group": "trap",
+      "fact_md": "`plot_gate_map` needs a `BackendV2`: a counts mapping, a `CouplingMap` or a `Target` all raise `AttributeError` — and `plot_histogram(backend)` raises too.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q037"
+      }
+    },
+    {
+      "objective": "s2o3",
+      "group": "core",
+      "fact_md": "`plot_bloch_multivector` draws one sphere PER QUBIT (3 qubits → 3 spheres, idle ones included) and packs them all into a single returned `Figure`.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q026"
+      }
+    },
+    {
+      "objective": "s2o3",
+      "group": "core",
+      "fact_md": "For the Bell state both reduced Bloch vectors are exactly (0, 0, 0) with purity 0.5 — the arrows collapse to the centre, the visual signature of maximal entanglement.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q030"
+      }
+    },
+    {
+      "objective": "s2o3",
+      "group": "core",
+      "fact_md": "Two equal-magnitude q-sphere amplitudes of +0.7071 and −0.7071 give same-size nodes at phase 0 and phase π, hence two different colours.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q032"
+      }
+    },
+    {
+      "objective": "s2o3",
+      "group": "core",
+      "fact_md": "A q-sphere shows a node only where the amplitude is nonzero — H on qubit 0 with X on qubit 1 gives nodes at `|10⟩` and `|11⟩` only (little-endian labels).",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q031"
+      }
+    },
+    {
+      "objective": "s2o3",
+      "group": "trap",
+      "fact_md": "Passing a quantum state to `plot_bloch_vector` does not produce per-qubit spheres — that function wants an explicit `[x, y, z]`, and only `plot_bloch_multivector` takes a state.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q034"
+      }
+    },
+    {
+      "objective": "s2o3",
+      "group": "trap",
+      "fact_md": "`sv.draw(\"qsphere\")` works, but `sv.qsphere()`, `sv.plot(...)` and importing `plot_qsphere` all fail, and any other draw token raises `ValueError` listing the valid ones.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q029"
+      }
+    },
+    {
+      "objective": "s2o3",
+      "group": "trap",
+      "fact_md": "`rz(π/2)` on |0⟩ changes only a global phase, so the arrow stays pinned at the north pole, while `h` and `h; s` both land on the equator.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q035"
+      }
+    }
+  ],
+  "checklist": [
+    "Name the four `draw` outputs and the return type of each before choosing one.",
+    "Reject any drawing keyword you cannot name — the signature has no `**kwargs`, so typos raise.",
+    "Convert a `SamplerV2` result with `result[0].data.meas.get_counts()` before plotting anything.",
+    "Read every bitstring right-to-left: the leftmost character is the highest-index qubit.",
+    "Ask whether a plot wants counts, a quantum state, or a backend before picking it.",
+    "Treat Bloch arrows at the origin as the signature of maximal entanglement, not an error.",
+    "Transpile first, then plot a layout — the original circuit carries none.",
+    "Decide what the question needs: per-qubit direction, amplitudes and phases, or matrix elements."
   ],
   "provenance": {
-    "generated": "2026-07-26",
-    "model": "claude-opus-5 (s2/s3 quick-study generation agent)",
+    "generated": "2026-08-15",
+    "model": "claude-opus (v2 study rewrite agent)",
     "fact_checked": true,
-    "notes": "Every proof-sourced fact was read back against the stored evidence in data/proofs/<qid>.json (verdict.evidence strings and observed values) before being written. The three citation-sourced facts were checked by curl -L fetching the page (final 200, slug match) and reading the relevant passage: visualize-circuits states reverse_bits/plot_barriers are shared by all three renderers while fold/scale/style are renderer-specific and filename saves output; visualize-results lists legend/sort/number_to_keep/color/bar_labels/figsize and that plot_histogram returns a matplotlib.Figure; plot-quantum-states states the q-sphere encodes amplitude in dot thickness and phase in color, that plot_bloch_multivector projects onto single-qubit space and cannot show correlations, and that plot_state_qsphere accepts only figsize. Primer claims with no proof of their own were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0, PYTHONPATH=pipeline/harness): draw('mpl', ax=ax) -> None, style={'initial_state': True} produces no |0> labels in the text renderer while initial_state=True does, the exact Statevector.draw option list from its ValueError message, and the multi-register counts-key convention (registers declared a then b give the key '0 1' with b's group leftmost; QuantumCircuit(2,2).measure_all() gives cregs ['c','meas'] and keys like '01 00' with meas leftmost). Remaining primer statements (idle_wires='auto' behaviour, legend must be a list, BitArray method set, plot_bloch_multivector on a list of Bloch vectors) are pre-verified REVIEW_LEDGER entries from the s2 pool wave; no ledger entry is contradicted. 2026-07-26 official-alignment fix wave: four s2o2 facts added (device plots + Statevector.sample_counts), each sourced by a NEW executed question written in the same wave — s2-q037 (plot_gate_map takes a BackendV2; counts/CouplingMap/Target and plot_histogram(backend) all raise, verified by attempt), s2-q038 (colour arrays the three device plots forward: 5 qubit + 4 link shades for plot_error_map, a 2-tone highlight for plot_circuit_layout, none for plot_gate_map), s2-q036 (transpile is not in-place, so plot_circuit_layout on the original circuit raises QiskitError at every level) and s2-q039 (sample_counts returns a Counts of np.str_ keys and integer values summing to the shot count). NOTE on those three device-plot proofs: the Graphviz BINARY is not installed in the pinned env, so each proof stubs the leaf renderer plot_coupling_map and asserts on the arguments the real Qiskit code forwards to it — every input check, colour computation and label computation above the renderer runs unmodified, but the rendered image itself is not exercised. fact_checked stays true because every claim above was read off the executed proof artifact; the two docs URLs cited by those questions (guides/qpu-information and api/qiskit/visualization) were fetched in this wave and state, verbatim, that plot_gate_map draws \"a diagram that indicates the pairs of qubits that support two-qubit gate operations between them\" and that plot_error_map/plot_circuit_layout take (backend) and (circuit, backend) respectively."
+    "notes": "v2 claim-preserving rewrite of fact-checked v1 (generated 2026-07-26, claude-opus-5 s2/s3 quick-study generation agent). No new factual claims: every sentence, table cell and code line here restates content already present in the v1 primers or facts of this file, condensed. Every kept fact was re-read against its v1 wording before being shortened, and each kept fact retains its original source unchanged; no fact was merged across two different sources. Structural changes only: the three long v1 primers became five teaching units (s2o1 renderers + options; s2o2 measurement plotters and device plots; s2o3 which state plot to use and how to read an arrow or a node), with the renderer return types, the drawing keywords, plot_histogram vs plot_distribution, the three device plots, the five state plots and the Bloch directions moved into pipe tables. Facts 30 -> 23, triaged into core/trap. Deleted as covered in full by a primer table or as edge-case detail: the draw() return-type fact (s2-q010), the shared vs renderer-specific kwargs fact (citation, guides/visualize-circuits, still cited by the s2o1 primer), the raw-counts vs normalized comparison (s2-q020, whose other claim survives as the shots= trap fact), the documented option list (citation, guides/visualize-results, still cited by the s2o2 primer), the device-plot colour comparison (s2-q038, now the device-plot table), and the Bloch-direction readings h -> +X, h;s -> +Y (s2-q027) and -X = minus state (s2-q028). The s2-q034 fact was kept but narrowed to its trap half, because the primer table now carries the two functions' inputs. fact_checked stays true: the v1 file was fact-checked against stored proof artifacts and fetched documentation (see the v1 note preserved below), and this pass introduced no claim that was not already in it. Original v1 provenance note: \"Every proof-sourced fact was read back against the stored evidence in data/proofs/<qid>.json before being written. The three citation-sourced facts were checked by curl -L fetching the page. Primer claims with no proof of their own were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0). The 2026-07-26 official-alignment fix wave added s2-q036/q037/q038/q039; note that the Graphviz binary is not installed in the pinned env, so those device-plot proofs stub the leaf renderer plot_coupling_map and assert on the arguments the real Qiskit code forwards to it — every input check, colour computation and label computation above the renderer runs unmodified.\""
   }
 }

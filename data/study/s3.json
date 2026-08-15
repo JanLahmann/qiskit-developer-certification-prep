@@ -1,10 +1,11 @@
 {
   "section": "s3",
+  "version": 2,
   "primers": [
     {
       "objective": "s3o1",
-      "title": "Bits you declared, and the two ways of gluing circuits together",
-      "body_md": "`QuantumCircuit(2)` gives you two qubits and ZERO classical bits, so `measure` has nowhere to write and raises `CircuitError`. `QuantumCircuit(2, 2)` gives both, auto-naming the registers `q` and `c` (which is why `add_register(QuantumRegister(2, 'q'))` on such a circuit then fails on the duplicate name). Building from explicit `QuantumRegister(3, 'data')` / `ClassicalRegister(2, 'c')` objects and passing them to the constructor is purely organizational \u2014 it lets you say `data[0]` instead of counting indices \u2014 and buys nothing at execution or transpile time.\n\n`measure(qubit, cbit)` takes the qubit first and the clbit second, accepts ints, `Bit`s, registers, or parallel lists, and the mapping is entirely yours: `measure(0, 1)` really does store qubit 0's result in `c[1]`. (The keyword is `cbit`, not `clbit`, and naming the arguments never rescues a circuit with no classical bits.) The convenience methods are not neutral: `measure_all()` ALWAYS appends a fresh `ClassicalRegister` named `meas` sized to the qubit count \u2014 even when the circuit already has classical bits, leaving you with two registers and space-separated counts keys \u2014 and it inserts a `barrier` BEFORE the measurements. `measure_active()` behaves the same way but only measures qubits that carry operations.\n\nComposition splits into two families, and the exam lives on the difference. `compose` is FUNCTIONAL by default: it returns a new circuit and leaves the caller untouched, so `base.compose(add_on)` with the result discarded is a silent no-op \u2014 assign the result back or pass `inplace=True`. It accepts a narrower operand and a `qubits=` list that maps the operand's qubits onto the target's, positionally: `qc.compose(sub, qubits=[0, 2])` sends `sub`'s qubit 0 to 0 and its qubit 1 to 2, so `sub.cx(0, 1)` becomes a CX from qubit 0 to qubit 2. `front=True` prepends instead of appending. `append`, by contrast, mutates in place and hands back an `InstructionSet`. `tensor` widens: in `a.tensor(b)` the CALLER `a` occupies the higher-index qubits and `b` the lower ones, so an X in `a` against an identity in `b` prepares `|10\u27e9`.\n\nThe structural accessors are cheap points. `num_qubits` and `num_clbits` are what they say; `width()` returns their SUM (qubits + clbits), not the qubit count; `size()` counts every operation including measures and each control-flow block as one; `depth()` is the critical path and is generally smaller than `size()`.\n\nAnd the convention that colours everything downstream: results are little-endian. Bitstrings print as c_(n\u22121) \u2026 c_0 with classical bit 0 on the RIGHT, so flipping only qubit 0 of a three-qubit register and measuring all of it yields `'001'`.",
+      "title": "Only the classical bits you asked for",
+      "body_md": "A circuit has exactly the classical bits you declared, and `measure` needs one to write into.\n\n```python\nqc = QuantumCircuit(2, 2)   # 2 qubits AND 2 clbits, registers auto-named q and c\nqc.measure(0, 1)            # qubit first, clbit second: qubit 0's result lands in c[1]\n```\n\nBuilding from named `QuantumRegister(3, 'data')` and `ClassicalRegister(2, 'c')` objects is purely organizational — it lets you write `data[0]` — and buys nothing at execution or transpile time. Auto-naming is why `add_register(QuantumRegister(2, 'q'))` on a `QuantumCircuit(2, 2)` fails on the duplicate name.\n\n| Method | Measures | Writes into |\n| --- | --- | --- |\n| `measure(qubit, cbit)` | the qubits you name (ints, `Bit`s, registers or parallel lists) | the clbits you name — the mapping is yours, and the keyword is `cbit`, not `clbit` |\n| `measure_all()` | every qubit | a FRESH `ClassicalRegister` named `meas`, sized to the qubit count |\n| `measure_active()` | only qubits carrying operations | the same fresh `meas` register |\n\nResults are little-endian: bitstrings print as c_(n−1) … c_0, with classical bit 0 on the RIGHT.",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
         "https://quantum.cloud.ibm.com/docs/guides/measure-qubits",
@@ -12,9 +13,18 @@
       ]
     },
     {
+      "objective": "s3o1",
+      "title": "compose returns, append mutates, tensor widens",
+      "body_md": "`compose` is functional by DEFAULT: it returns a new circuit and leaves the caller untouched, so `base.compose(add_on)` with the result discarded is a silent no-op.\n\n```python\nbig = base.compose(sub, qubits=[0, 2])   # keep the return value...\nbase.compose(sub, inplace=True)          # ...or mutate in place\n```\n\n| Call | Mutates the caller? | Returns | Notes |\n| --- | --- | --- | --- |\n| `a.compose(b)` | only with `inplace=True` | a new circuit | `b` may be narrower; `qubits=` maps its qubits onto `a` positionally; `front=True` prepends instead of appending |\n| `a.append(instr, qargs)` | yes | an `InstructionSet` | — |\n| `a.tensor(b)` | no | a widened circuit | the CALLER `a` takes the HIGHER-index qubits, so an X in `a` against an identity in `b` prepares `\\|10⟩` |",
+      "citations": [
+        "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+        "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+      ]
+    },
+    {
       "objective": "s3o2",
-      "title": "Control flow is context managers now \u2014 `c_if` is gone",
-      "body_md": "A dynamic circuit is one whose later quantum operations depend, in real time, on a mid-circuit measurement result. That is the whole discriminator: measuring an ancilla and applying a correction gate when it returns 1 (teleportation, syndrome handling) needs one; sweeping an angle over many jobs, post-selecting shots after the fact, or letting the transpiler cancel gates does not \u2014 those are classical work done outside the QPU.\n\nIn Qiskit 2.x every conditional is a context manager on the circuit, and its condition is a `(classical_resource, value)` TUPLE: `with qc.if_test((cr[0], 1)): qc.x(1)`. The resource may be a single `Clbit` OR a whole `ClassicalRegister` \u2014 register-valued conditions are legal, so never accept \"conditions must name one bit\". Two spellings that look right and are not: `if_test(cr[0], 1)` (two positional arguments instead of a tuple) and `if_test(cr[0] == 1)`, which raises `TypeError: 'bool' object is not subscriptable` because `Clbit.__eq__` returns an ordinary Python bool. For anything richer than equality with a literal, build a condition from `qiskit.circuit.classical.expr` \u2014 `expr.equal(cr, 3)` compares the whole register as an integer and lifts the bare `3` for you, no `expr.lift` required.\n\nThe rest of the family follows the same shape. An else branch comes from the manager's return value: `with qc.if_test((cr[0], 0)) as else_: \u2026` then `with else_: \u2026`. `with qc.for_loop(range(3)):` repeats its body; the `as i` binding is optional and only needed if the body uses the index, and the body may hold any number of gates. `with qc.switch(cr[0]) as case:` opens `with case(0):`-style branches plus a fallback `with case(case.DEFAULT):`, which may be declared last. Careful with switch semantics: a value with no matching `case` falls through to DEFAULT, so `c0 = 1` against branches `case(0)` and `case(DEFAULT)` runs the DEFAULT body.\n\nEverything the old API offered is removed, not deprecated. `InstructionSet.c_if` raises `AttributeError` in 2.x; there is no `condition=` gate keyword and no `.condition` attribute to assign; and the tempting plain-Python `if cr[0] == 1:` is not an error at all \u2014 it evaluates to False at build time, so no gate is added and nothing warns you.\n\nOne structural fact for output-prediction questions: each control-flow construct is stored as a SINGLE composite instruction, so `count_ops()` on a conditional circuit shows `if_else: 1` (or `for_loop`, `switch_case`), never the gates inside the body.",
+      "title": "Dynamic circuits: four context managers",
+      "body_md": "A dynamic circuit is one whose later quantum operations depend, in real time, on a mid-circuit measurement result — a teleportation correction, syndrome handling. Sweeping an angle over many jobs or post-selecting shots afterwards is classical work outside the QPU, so neither needs one.\n\nQiskit supports exactly four such constructs, each a context manager on the circuit, and every condition is a `(classical_resource, value)` TUPLE.\n\n```python\nwith qc.if_test((cr[0], 1)):   # one tuple, not two arguments\n    qc.x(1)\n```\n\n| Construct | Opened with | Notes |\n| --- | --- | --- |\n| `if_test` | `with qc.if_test((cr[0], 1)):` | the resource may be a single `Clbit` OR a whole `ClassicalRegister` |\n| else branch | `with qc.if_test((cr[0], 0)) as else_:` then `with else_:` | the else branch is the manager's return value |\n| `for_loop` | `with qc.for_loop(range(3)):` | `as i` is optional; the body may hold any number of gates and runs three times |\n| `switch` | `with qc.switch(cr[0]) as case:` then `with case(0):` | add a fallback `with case(case.DEFAULT):`, which may be declared last |\n| `while_loop` | a context manager like the others | the fourth supported construct |\n\nFor anything richer than equality with a literal, build the condition from `qiskit.circuit.classical.expr`.",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
         "https://quantum.cloud.ibm.com/docs/api/qiskit/circuit_classical",
@@ -22,9 +32,18 @@
       ]
     },
     {
+      "objective": "s3o2",
+      "title": "The old conditional API is removed, not deprecated",
+      "body_md": "Everything the pre-2.0 conditional API offered is gone, so there is no older spelling to fall back on.\n\n| What you might write | What Qiskit 2.x does |\n| --- | --- |\n| `instr.c_if(cr[0], 1)` | `AttributeError` — `InstructionSet.c_if` no longer exists |\n| a `condition=` gate keyword | there is no such keyword |\n| assigning to `.condition` | there is no such attribute |\n| `qc.if_test(cr[0] == 1)` | `TypeError: 'bool' object is not subscriptable`, because `Clbit.__eq__` returns an ordinary Python bool |\n| `if cr[0] == 1:` in plain Python | evaluates to False at BUILD time: no gate is added and nothing warns you |\n\nThe last row is the dangerous one, because it is not an error at all: the circuit you get back is simply missing the gate.",
+      "citations": [
+        "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+        "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+      ]
+    },
+    {
       "objective": "s3o3",
-      "title": "Parameters are symbols; binding is functional and alphabetical",
-      "body_md": "A `Parameter('theta')` is a symbolic placeholder you can put anywhere a gate angle goes, including inside arithmetic: `qc.rx(2 * t, 0)` and `qc.rz(t + np.pi / 2, 0)` build `ParameterExpression`s that are evaluated at bind time, so binding `t = \u03c0` yields 2\u03c0 and 3\u03c0/2. A `ParameterVector('x', 3)` is a convenience wrapper creating three distinct parameters named `x[0]`, `x[1]`, `x[2]`; it does not auto-grow (`x[3]` is an `IndexError`) and its elements are ordinary parameters, not aliases of one another.\n\nThe single highest-yield fact in this objective: `qc.parameters` is a `ParameterView` sorted ALPHABETICALLY by name, not by insertion order. Add `gamma`, then `alpha`, then `beta`, and you get `['alpha', 'beta', 'gamma']`. `ParameterVector` elements are the one refinement \u2014 they sort by vector name and then by numeric index, so `x[10]` follows `x[9]` rather than `x[1]`; two separately-created `Parameter('x10')` and `Parameter('x2')` sort as plain strings, `x10` first.\n\nThat ordering is what makes list binding treacherous. `assign_parameters([0.5, 1.5])` binds POSITIONALLY against that sorted view, so on a circuit whose `rx` uses `theta` and whose `rz` uses `phi`, the list gives `phi = 0.5` and `theta = 1.5` \u2014 the reverse of the order the gates were added. A list must also supply one value per parameter: a short list raises `ValueError`, and a `ParameterVector` never broadcasts one value across its elements. A DICT is the safe form: it binds exactly the parameters it names, so `{q: 1.0}` on a three-parameter circuit is a legal *partial* binding leaving two free. Dict keys may be `Parameter` objects or their name strings, but matching is by identity, so a *different* `Parameter('th')` object built elsewhere raises `CircuitError: Cannot bind parameters (th) not present in the circuit`. A whole vector can be bound in one entry: `{x: [0.1, 0.2, 0.3]}`.\n\nBinding is functional, exactly like `compose`: `assign_parameters` RETURNS a new circuit and leaves the original parameterized (`inplace=True` opts out). So the source circuit keeps its free parameters and the returned one has zero. The legacy `bind_parameters` method is gone in Qiskit 2.x \u2014 `AttributeError`, not a deprecation warning.\n\nTwo consequences worth carrying into the exam. First, reusing ONE `Parameter` object on several gates ties them together: `num_parameters` stays 1 and a single binding sets every gate that references it \u2014 the mechanism behind weight-sharing ans\u00e4tze. Second, parameters survive transpilation. You can transpile a parameterized circuit once into an ISA circuit and bind values afterwards, as many times as you like; the bound circuit keeps its layout and needs no second transpile. That transpile-once/bind-many pattern is the standard way to run a variational sweep.",
+      "title": "Parameters sort alphabetically; binding is functional",
+      "body_md": "`qc.parameters` is a `ParameterView` sorted ALPHABETICALLY by name, not by insertion order: add `gamma`, then `alpha`, then `beta`, and you get `['alpha', 'beta', 'gamma']`. `ParameterVector` elements are the one refinement — they sort by vector name and then by numeric index, so `x[10]` follows `x[9]`.\n\n```python\nt = Parameter('theta')\nqc.rx(2 * t, 0)                            # a ParameterExpression, evaluated at bind time\nbound = qc.assign_parameters({t: np.pi})   # qc keeps theta; bound has none\n```\n\n| Binding form | Behaviour |\n| --- | --- |\n| `assign_parameters([0.5, 1.5])` | binds POSITIONALLY against that sorted view; needs one value per parameter, and a short list raises `ValueError` |\n| `assign_parameters({th: 1.0})` | binds only the parameters it names, so partial binding is legal |\n| dict keys | `Parameter` objects or their name strings, but matched by IDENTITY: a different `Parameter('th')` object built elsewhere raises `CircuitError` |\n| `{x: [0.1, 0.2, 0.3]}` | binds a whole `ParameterVector` in one entry |\n| `inplace=True` | mutates the circuit instead of returning a new one |\n| `bind_parameters(...)` | removed in Qiskit 2.x — `AttributeError`, not a deprecation warning |\n\nThat sorted view is what makes a list treacherous and a dict safe.",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
         "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter",
@@ -33,11 +52,19 @@
     },
     {
       "objective": "s3o4",
-      "title": "Six stages, four levels, one ISA target",
-      "body_md": "Hardware runs ISA circuits only. A circuit obeys a backend's Instruction Set Architecture when it uses ONLY instructions in that backend's `Target` (its basis gates, measure, reset, control flow) AND every two-qubit gate sits on a pair connected in the `CouplingMap`. Both conditions, every time: an `h` on a basis of `{cx, rz, sx, x}` fails the first, a `cx(0, 4)` on a line fails the second. `decompose()` is not a substitute \u2014 it rewrites `h` into `u`, which is outside the IBM basis, so a decomposed circuit is still not ISA.\n\nThe recommended path is `pm = generate_preset_pass_manager(optimization_level=\u2026, backend=\u2026)` followed by `pm.run(qc)`. `.run()` is the only call that executes it \u2014 there is no `pm.transpile`, no `pm(qc)`, no `QuantumCircuit.transpile`; and `pm.run([qc])` returns a LIST, not a circuit. Without a backend object you can pass the constraints directly as `basis_gates=` plus `coupling_map=` (or a `Target`); `basis_gates` alone translates but never routes, so the result is not ISA.\n\nThe preset pipeline is always the same six-tuple of stages, in order: **init** (unroll to one- and two-qubit gates), **layout** (map virtual qubits to physical ones), **routing** (insert SWAPs so every two-qubit gate lands on a connected pair), **translation** (rewrite gates into the basis), **optimization** (simplify), **scheduling** (timing; the slot exists even with no scheduling method and simply runs empty). `pm.stages` reports exactly those names. Routing \u2014 not layout \u2014 is what inserts SWAPs; layout only chooses which physical qubits to start on.\n\nFour optimization levels exist, 0 through 3; anything else, including 4, raises `ValueError`. Level 0 does the bare minimum with a trivial layout, level 1 adds light optimization and a layout search, level 2 drops trivial layout entirely and adds commutative cancellation, level 3 resynthesizes two-qubit blocks via KAK and runs unitarity-breaking passes on measurements. All four aim at the SAME target constraints \u2014 they differ in effort, not in the circuit's validity \u2014 and a higher level is not guaranteed to give fewer two-qubit gates on any particular circuit. In Qiskit 2.5 `generate_preset_pass_manager` carries `optimization_level=2` as a signature DEFAULT (and `transpile()` resolves an unspecified level to the same 2), so the old \"the default is 1\" lore is Qiskit 1.x; note that the docs page still describes the argument as a required positional one.\n\nHow much the level matters is mostly a layout story. A single `cx(0, 4)` on a five-qubit line becomes 10 CX at level 0 (trivial layout `[0,1,2,3,4]`, then SWAPs across four hops) but 1 CX at level 1, which simply picks an adjacent pair \u2014 the win is the layout, not gate cancellation. Pin the mapping yourself with `initial_layout=[2, 3, 4]`, an ordered virtual\u2192physical list (virtual 0 \u2192 physical 2, and so on), not a set of allowed qubits. And a circuit wider than the device \u2014 4 virtual qubits on a 3-qubit backend \u2014 has no valid layout at all and fails in the layout stage.",
+      "title": "ISA circuits and the six preset stages",
+      "body_md": "Hardware runs ISA circuits only: every instruction must be in the backend's `Target` AND every two-qubit gate must sit on a pair connected in its `CouplingMap`. Both conditions, every time.\n\n```python\npm = generate_preset_pass_manager(optimization_level=2, backend=backend)\nisa = pm.run(qc)          # a single circuit in, a single circuit out\n```\n\n| Stage | What it does |\n| --- | --- |\n| `init` | unroll to one- and two-qubit gates |\n| `layout` | choose which physical qubits the virtual ones start on |\n| `routing` | insert SWAPs so every two-qubit gate lands on a connected pair |\n| `translation` | rewrite every remaining gate into the basis |\n| `optimization` | simplify |\n| `scheduling` | timing; the slot exists even with no scheduling method and simply runs empty |\n\n`pm.stages` reports exactly those six names in that order, and ROUTING — not layout — is what inserts SWAPs. Hand `pm.run` a LIST and you get a list back, not a circuit. A circuit wider than the device has no valid layout at all and fails in the layout stage.",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/transpile",
         "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
+        "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers"
+      ]
+    },
+    {
+      "objective": "s3o4",
+      "title": "Four optimization levels, one target",
+      "body_md": "Levels run 0 through 3; anything else, including 4, raises `ValueError`. All four aim at the SAME target constraints, so they differ in effort, not in whether the output is a valid ISA circuit.\n\n| Level | Layout | Optimization added |\n| --- | --- | --- |\n| 0 | `TrivialLayout` | none at all |\n| 1 | trivial or VF2 layout search | light: one-qubit optimization plus `InverseCancellation` |\n| 2 | no trivial layout | `CommutativeCancellation` |\n| 3 | as level 2 | KAK resynthesis of two-qubit blocks, plus unitarity-breaking passes on measurements |\n\nHigher is not automatically better: a higher level costs compile time and is not guaranteed to give fewer two-qubit gates. The docs' own example shows identical two-qubit counts at levels 1 and 2, with only level 3 improving on them. The guide pages still call `optimization_level` a required positional argument, while the 2.5 signature carries a default.",
+      "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
         "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers"
       ]
@@ -46,63 +73,8 @@
   "facts": [
     {
       "objective": "s3o1",
-      "fact_md": "`QuantumCircuit(2)` has 2 qubits and ZERO classical bits, so `measure([0,1],[0,1])` raises `CircuitError`; use `QuantumCircuit(2, 2)` or add a `ClassicalRegister`.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q047"
-      }
-    },
-    {
-      "objective": "s3o1",
-      "fact_md": "`measure_all()` always appends a FRESH register named `meas` (even when the circuit already has clbits), and the instruction order is `\u2026 barrier, measure, measure` \u2014 the barrier goes before the measurements.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q011"
-      }
-    },
-    {
-      "objective": "s3o1",
-      "fact_md": "`compose` is functional by default: `base.compose(add_on)` returns a new circuit and leaves `base` unchanged \u2014 assign the result back or pass `inplace=True`.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q013"
-      }
-    },
-    {
-      "objective": "s3o1",
-      "fact_md": "`qc.compose(sub, qubits=[0, 2])` maps `sub`'s qubit 0 \u2192 0 and qubit 1 \u2192 2, so `sub.cx(0, 1)` becomes a CX with control 0 and target 2.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q012"
-      }
-    },
-    {
-      "objective": "s3o1",
-      "fact_md": "In `a.tensor(b)` the CALLER `a` takes the higher-index qubits: an X in `a` and an identity in `b` prepares `|10\u27e9`.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q046"
-      }
-    },
-    {
-      "objective": "s3o1",
-      "fact_md": "`width()` is qubits + clbits (3 + 2 = 5), `size()` counts all operations including measures (5), and `depth()` is the critical path (4) \u2014 the three are different numbers.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q015"
-      }
-    },
-    {
-      "objective": "s3o1",
-      "fact_md": "`measure(qubit, cbit)` honours whatever mapping you give it: `measure(0, 1)` and `measure(1, 0)` on `|q0\u27e9 = |1\u27e9` produce the bitstring `10` (c1 c0).",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q045"
-      }
-    },
-    {
-      "objective": "s3o1",
-      "fact_md": "Counts are little-endian \u2014 flipping only qubit 0 of a 3-qubit register and calling `measure_all()` yields `001` on every shot.",
+      "group": "core",
+      "fact_md": "Counts are little-endian — flipping only qubit 0 of a 3-qubit register and calling `measure_all()` yields `001` on every shot.",
       "source": {
         "type": "proof",
         "ref": "s3-q010"
@@ -110,31 +82,44 @@
     },
     {
       "objective": "s3o1",
-      "fact_md": "Several named `QuantumRegister`/`ClassicalRegister` objects can be combined into one circuit, and `qc.find_bit(qubit)` reports both the bit's circuit index and its register \u2014 registers are an addressing and organization device.",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
-      }
-    },
-    {
-      "objective": "s3o2",
-      "fact_md": "The conditional API is `with qc.if_test((cr[0], 1)):` \u2014 a single TUPLE argument. `if_test(cr[0], 1)` and `if_test(cr[0] == 1)` are both wrong, and gates in the block become an `if_else` operation.",
+      "group": "core",
+      "fact_md": "`qc.compose(sub, qubits=[0, 2])` maps `sub`'s qubit 0 → 0 and qubit 1 → 2, so `sub.cx(0, 1)` becomes a CX with control 0 and target 2.",
       "source": {
         "type": "proof",
-        "ref": "s3-q024"
+        "ref": "s3-q012"
       }
     },
     {
-      "objective": "s3o2",
-      "fact_md": "`InstructionSet.c_if` was REMOVED in Qiskit 2.0 (`AttributeError`); there is no `condition=` keyword and no `.condition` attribute \u2014 the context manager is the only route.",
+      "objective": "s3o1",
+      "group": "core",
+      "fact_md": "`width()` is qubits + clbits (3 + 2 = 5), `size()` counts all operations including measures (5), and `depth()` is the critical path (4) — three different numbers.",
       "source": {
         "type": "proof",
-        "ref": "s3-q025"
+        "ref": "s3-q015"
+      }
+    },
+    {
+      "objective": "s3o1",
+      "group": "trap",
+      "fact_md": "`QuantumCircuit(2)` has 2 qubits and ZERO classical bits, so `measure([0,1],[0,1])` raises `CircuitError`; naming the arguments never rescues it.",
+      "source": {
+        "type": "proof",
+        "ref": "s3-q047"
+      }
+    },
+    {
+      "objective": "s3o1",
+      "group": "trap",
+      "fact_md": "`measure_all()` appends its fresh `meas` register even when clbits already exist — two registers, space-separated counts keys — and the barrier it inserts goes BEFORE the measurements.",
+      "source": {
+        "type": "proof",
+        "ref": "s3-q011"
       }
     },
     {
       "objective": "s3o2",
-      "fact_md": "`if_test` conditions may reference a whole `ClassicalRegister`, not just a single `Clbit`; control-flow blocks appear as ONE operation in `count_ops()` (`if_else`, `for_loop`, `switch_case`); a `for_loop` body may hold any number of gates.",
+      "group": "core",
+      "fact_md": "Each control-flow construct is stored as a SINGLE composite instruction, so `count_ops()` on a conditional circuit shows `if_else: 1` (or `for_loop`, `switch_case`), never the gates inside the body.",
       "source": {
         "type": "proof",
         "ref": "s3-q029"
@@ -142,31 +127,8 @@
     },
     {
       "objective": "s3o2",
-      "fact_md": "The else branch comes from the manager's return value: `with qc.if_test((cr[0], 0)) as else_:` \u2026 `with else_:` \u2026, and both branches run against the same measured bit.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q026"
-      }
-    },
-    {
-      "objective": "s3o2",
-      "fact_md": "`with qc.for_loop(range(3)):` needs no `as i` when the body ignores the index; the body executes 3 times (three X gates leave the qubit at `|1\u27e9`).",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q028"
-      }
-    },
-    {
-      "objective": "s3o2",
-      "fact_md": "`with qc.switch(cr[0]) as case:` supports `with case(0):` branches plus `with case(case.DEFAULT):` \u2014 a value with no matching case falls through to DEFAULT, which may be declared last.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q052"
-      }
-    },
-    {
-      "objective": "s3o2",
-      "fact_md": "`expr.equal(cr, 3)` is a valid `if_test` condition: it compares the register as an integer and lifts the bare Python `3` automatically (no `expr.lift` needed).",
+      "group": "core",
+      "fact_md": "`expr.equal(cr, 3)` is a valid `if_test` condition: it compares the whole register as an integer and lifts the bare Python `3` for you, with no `expr.lift` required.",
       "source": {
         "type": "proof",
         "ref": "s3-q053"
@@ -174,63 +136,35 @@
     },
     {
       "objective": "s3o2",
-      "fact_md": "A dynamic circuit measures qubits MID-execution and then performs classical logic inside the circuit based on those outcomes (classical feedforward); Qiskit supports exactly four such constructs \u2014 `if_test`, `switch`, `for_loop`, `while_loop` \u2014 each returning a context manager for a `with` statement.",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow"
-      }
-    },
-    {
-      "objective": "s3o3",
-      "fact_md": "`qc.parameters` is sorted ALPHABETICALLY by name, not by insertion order: adding `gamma`, `alpha`, `beta` gives `['alpha', 'beta', 'gamma']`.",
+      "group": "core",
+      "fact_md": "The drawer renders a `for_loop` as ONE boxed region labelled with the index set verbatim (`For-0 range(0, 3)`), spanning every wire the body touches; a statement after the block is drawn outside the box.",
       "source": {
         "type": "proof",
-        "ref": "s3-q018"
+        "ref": "s3-q058"
       }
     },
     {
-      "objective": "s3o3",
-      "fact_md": "A list passed to `assign_parameters` binds positionally against that sorted view: `[0.5, 1.5]` on a circuit with `rx(theta)` then `rz(phi)` gives `phi = 0.5` and `theta = 1.5`.",
+      "objective": "s3o2",
+      "group": "trap",
+      "fact_md": "The condition is ONE tuple: `if_test((cr[0], 1))` is right, `if_test(cr[0], 1)` — two positional arguments — is the classic wrong spelling.",
       "source": {
         "type": "proof",
-        "ref": "s3-q017"
+        "ref": "s3-q024"
       }
     },
     {
-      "objective": "s3o3",
-      "fact_md": "A list must supply one value per parameter \u2014 a short list raises `ValueError`; a dict is the way to bind a subset.",
+      "objective": "s3o2",
+      "group": "trap",
+      "fact_md": "A `switch` value with no matching `case` falls through to DEFAULT: `c0 = 1` against branches `case(0)` and `case(case.DEFAULT)` runs the DEFAULT body.",
       "source": {
         "type": "proof",
-        "ref": "s3-q019"
+        "ref": "s3-q052"
       }
     },
     {
       "objective": "s3o3",
-      "fact_md": "`assign_parameters` is functional by default: the original circuit keeps its free parameters and the RETURNED circuit has them bound.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q020"
-      }
-    },
-    {
-      "objective": "s3o3",
-      "fact_md": "Dict binding is partial: `{q: 1.0}` on a three-parameter circuit leaves `p` and `r` free (`num_parameters` = 2).",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q049"
-      }
-    },
-    {
-      "objective": "s3o3",
-      "fact_md": "Reusing one `Parameter` object on two gates keeps `num_parameters` at 1 and binds BOTH gates at once \u2014 the weight-sharing mechanism behind tied ans\u00e4tze.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q051"
-      }
-    },
-    {
-      "objective": "s3o3",
-      "fact_md": "`ParameterVector('x', 3)` creates parameters named `x[0]`, `x[1]`, `x[2]`; `{x: [0.1, 0.2, 0.3]}` binds all three at once, and `x[3]` raises `IndexError` (no auto-growth).",
+      "group": "core",
+      "fact_md": "`ParameterVector('x', 3)` creates the distinct parameters `x[0]`, `x[1]`, `x[2]`; it does not auto-grow, so `x[3]` raises `IndexError`.",
       "source": {
         "type": "proof",
         "ref": "s3-q022"
@@ -238,23 +172,44 @@
     },
     {
       "objective": "s3o3",
-      "fact_md": "Parameter EXPRESSIONS are evaluated at bind time: with `t = \u03c0`, `rx(2*t)` becomes 2\u03c0 \u2248 6.283 and `rz(t + \u03c0/2)` becomes 3\u03c0/2 \u2248 4.712.",
+      "group": "core",
+      "fact_md": "Reusing ONE `Parameter` object on two gates keeps `num_parameters` at 1 and binds BOTH gates at once — the weight-sharing mechanism behind tied ansätze.",
       "source": {
         "type": "proof",
-        "ref": "s3-q021"
+        "ref": "s3-q051"
       }
     },
     {
       "objective": "s3o3",
-      "fact_md": "Parameters survive transpilation \u2014 transpile once, then bind: the ISA circuit still holds its parameter, binding drops it to zero, and the bound circuit keeps its layout (no second transpile).",
+      "group": "core",
+      "fact_md": "Parameters survive transpilation: transpile once into an ISA circuit, then bind as many times as you like — the bound circuit keeps its layout and needs no second transpile.",
       "source": {
         "type": "proof",
         "ref": "s3-q050"
       }
     },
     {
+      "objective": "s3o3",
+      "group": "trap",
+      "fact_md": "A list binds positionally against the sorted view: `[0.5, 1.5]` on a circuit with `rx(theta)` then `rz(phi)` gives `phi = 0.5` and `theta = 1.5` — the reverse of gate order.",
+      "source": {
+        "type": "proof",
+        "ref": "s3-q017"
+      }
+    },
+    {
+      "objective": "s3o3",
+      "group": "trap",
+      "fact_md": "`2 * th` is a `ParameterExpression`, not a `Parameter`: `isinstance(2 * th, Parameter)` is False, while `qc.parameters` still reports one free `Parameter`. Binding keeps the symbolic type — cast with `float(...)`.",
+      "source": {
+        "type": "proof",
+        "ref": "s3-q054"
+      }
+    },
+    {
       "objective": "s3o4",
-      "fact_md": "`generate_preset_pass_manager` defaults to `optimization_level=2` in Qiskit 2.5 (a signature default, backend-independent) \u2014 level 1 was `transpile()`'s default back in 1.x.",
+      "group": "core",
+      "fact_md": "`generate_preset_pass_manager` defaults to `optimization_level=2` in Qiskit 2.5 (a signature default, backend-independent) — level 1 was `transpile()`'s default back in 1.x.",
       "source": {
         "type": "proof",
         "ref": "s3-q031"
@@ -262,30 +217,52 @@
     },
     {
       "objective": "s3o4",
-      "fact_md": "A preset `StagedPassManager` always has the same six stages in order: `init, layout, routing, translation, optimization, scheduling`.",
+      "group": "core",
+      "fact_md": "Measured routing cost: one `cx(0, 4)` on a 5-qubit line gives 10 CX at level 0 (trivial layout `[0,1,2,3,4]`) versus 1 CX at level 1 — the win is LAYOUT, not gate cancellation.",
       "source": {
         "type": "proof",
-        "ref": "s3-q030"
+        "ref": "s3-q032"
       }
     },
     {
       "objective": "s3o4",
-      "fact_md": "`mitigation` and `sampling` are NOT transpiler stages \u2014 `layout`, `routing`, `translation`, and `scheduling` are.",
+      "group": "core",
+      "fact_md": "`initial_layout=[2, 3, 4]` is an ORDERED virtual→physical map (virtual 0 → physical 2, 1 → 3, 2 → 4), not a set of permitted qubits.",
       "source": {
         "type": "proof",
-        "ref": "s3-q042"
+        "ref": "s3-q043"
       }
     },
     {
       "objective": "s3o4",
-      "fact_md": "Valid optimization levels are 0, 1, 2, 3 only \u2014 `optimization_level=4` raises `ValueError`.",
+      "group": "core",
+      "fact_md": "Passes by stage in a level-2 preset: `VF2Layout`/`SabreLayout` in `layout`; `CheckMap`/`SabreSwap`/`VF2PostLayout` in `routing`; `BasisTranslator` in `translation` and `init`; `Optimize1qGatesDecomposition` in `optimization`; `ConsolidateBlocks` in `init`.",
       "source": {
         "type": "proof",
-        "ref": "s3-q039"
+        "ref": "s3-q055"
       }
     },
     {
       "objective": "s3o4",
+      "group": "core",
+      "fact_md": "Level 0 schedules no optimization pass at all: nine gates in, nine out, where level 2 returns five — BOTH repeated pairs (`cx`-`cx` and `z`-`z`) cancel together, never one without the other.",
+      "source": {
+        "type": "proof",
+        "ref": "s3-q057"
+      }
+    },
+    {
+      "objective": "s3o4",
+      "group": "trap",
+      "fact_md": "`decompose()` is not a route to ISA: it rewrites `h` into `u`, which is outside the IBM basis. An `h`, a `ccx`, a non-adjacent `cx` and an over-wide circuit all fail the check.",
+      "source": {
+        "type": "proof",
+        "ref": "s3-q033"
+      }
+    },
+    {
+      "objective": "s3o4",
+      "group": "trap",
       "fact_md": "A pass manager runs with `pm.run(qc)`; `pm.transpile(qc)`, `pm(qc)` and `qc.transpile(pm)` do not exist.",
       "source": {
         "type": "proof",
@@ -294,105 +271,28 @@
     },
     {
       "objective": "s3o4",
-      "fact_md": "ROUTING is the stage that injects SWAPs to satisfy the coupling map; the layout stage only selects which physical qubits to use. The two are computed together by default but are logically distinct.",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages"
-      }
-    },
-    {
-      "objective": "s3o4",
-      "fact_md": "ISA means basis gates AND coupling map: an `h`, a `ccx`, a non-adjacent `cx`, or a circuit wider than the device all fail \u2014 and `decompose()` yields `u`, which is outside the basis, so it never produces an ISA circuit.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q033"
-      }
-    },
-    {
-      "objective": "s3o4",
-      "fact_md": "Measured routing cost: one `cx(0, 4)` on a 5-qubit line gives 10 CX at level 0 (trivial layout `[0,1,2,3,4]`) versus 1 CX at level 1 (layout `[0,4,2,3,1]`) \u2014 the win is LAYOUT, not gate cancellation.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q032"
-      }
-    },
-    {
-      "objective": "s3o4",
-      "fact_md": "`initial_layout=[2, 3, 4]` is an ORDERED virtual\u2192physical map (virtual 0 \u2192 physical 2, 1 \u2192 3, 2 \u2192 4), not a set of permitted qubits.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q043"
-      }
-    },
-    {
-      "objective": "s3o4",
-      "fact_md": "Without a backend object, pass `basis_gates=` AND `coupling_map=` to `generate_preset_pass_manager`; `basis_gates` alone translates but does not route, so the output is not ISA.",
+      "group": "trap",
+      "fact_md": "Without a backend object, pass `basis_gates=` AND `coupling_map=`; `basis_gates` alone translates but does not route, so the output is not ISA.",
       "source": {
         "type": "proof",
         "ref": "s3-q035"
       }
-    },
-    {
-      "objective": "s3o4",
-      "fact_md": "The translation stage rewrites every non-basis gate: after transpiling to a `{cx, rz, sx, x, id}` basis, neither `h` nor `t` survives.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q037"
-      }
-    },
-    {
-      "objective": "s3o4",
-      "fact_md": "Higher levels buy more optimization at the cost of longer compile times, but not always a better circuit \u2014 the docs' own example gives identical two-qubit gate counts at levels 1 and 2, and only level 3 (KAK resynthesis) improves on them.",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/set-optimization"
-      }
-    },
-    {
-      "objective": "s3o4",
-      "fact_md": "Docs level table: 0 = no optimization with `TrivialLayout`, 1 = light (trivial/VF2 layout + 1Q optimization + `InverseCancellation`), 2 = medium (no trivial layout + `CommutativeCancellation`), 3 = level 2 plus KAK resynthesis of two-qubit blocks and unitarity-breaking passes.",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/set-optimization"
-      }
-    },
-    {
-      "objective": "s3o3",
-      "fact_md": "Arithmetic on a `Parameter` builds a `ParameterExpression`, not another `Parameter`: `2 * th` is an expression for which `isinstance(expr, Parameter)` is False (the subclass relation runs the other way), while the circuit still reports the single free `Parameter` in `qc.parameters`. Binding keeps the symbolic type \u2014 cast with `float(...)` if you need a number.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q054"
-      }
-    },
-    {
-      "objective": "s3o4",
-      "fact_md": "Named passes and their stages, read off a level-2 preset: `VF2Layout` and `SabreLayout` in `layout`; `CheckMap`, `SabreSwap` and `VF2PostLayout` in `routing`; `BasisTranslator` in `translation` (it also appears in `init` and in the optimization stage's re-translation loop); `Optimize1qGatesDecomposition` in `optimization`; `ConsolidateBlocks` in `init`.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q055"
-      }
-    },
-    {
-      "objective": "s3o4",
-      "fact_md": "`optimization_level=0` schedules no optimization pass at all. Measured on `h(0); cx(0,1); cx(0,1); t(1); h(2); z(2); z(2); cx(1,2); cx(0,2)` with no coupling map or basis gates: level 0 returns all nine gates unchanged, level 2 returns five \u2014 BOTH repeated pairs (`cx`-`cx` and `z`-`z`) cancel together. Cancellation is all-or-nothing across gate widths: no level removes the single-qubit pair while keeping the two-qubit one, and none deduplicates a pair down to a single surviving copy.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q057"
-      }
-    },
-    {
-      "objective": "s3o2",
-      "fact_md": "`with qc.for_loop(range(3)):` stores the body ONCE \u2014 the circuit keeps a single `for_loop` instruction, and the drawer renders it as one boxed region labelled with the index set verbatim (`For-0 range(0, 3)`), spanning every wire the body touches. Everything indented under the context manager belongs to the body, a statement written after the block is drawn outside the box, and a loop over `range(2)` labels its box `range(0, 2)`.",
-      "source": {
-        "type": "proof",
-        "ref": "s3-q058"
-      }
     }
   ],
+  "checklist": [
+    "Declare the classical bits before you measure — `QuantumCircuit(2)` has none.",
+    "Read every counts bitstring right-to-left: classical bit 0 is the rightmost character.",
+    "Assign the result of `compose` and `assign_parameters`, or pass `inplace=True`.",
+    "Write each condition as one `(resource, value)` tuple inside a `with` block; `c_if` is gone.",
+    "Sort `qc.parameters` alphabetically in your head before binding a positional list — or bind a dict.",
+    "Check BOTH ISA conditions on anything you send to hardware: basis gates and coupling map.",
+    "Name the six preset stages in order, and say which one inserts the SWAPs.",
+    "Run a pass manager with `pm.run(qc)`, at an optimization level between 0 and 3."
+  ],
   "provenance": {
-    "generated": "2026-07-26",
-    "model": "claude-opus-5 (s2/s3 quick-study generation agent)",
+    "generated": "2026-08-15",
+    "model": "claude-opus (v2 study rewrite agent)",
     "fact_checked": true,
-    "notes": "Every proof-sourced fact was read back against the stored evidence in data/proofs/<qid>.json (verdict.evidence strings and observed values) before being written; nothing is asserted beyond what the artifact records. Four candidate facts originally drawn from s3-q027/q036/q038/q048 were RE-SOURCED to citations because those questions are proof.status=conceptual with no artifact \u2014 a proof-typed source would have rendered a false 'executed' badge. The five citation-sourced facts were each checked by curl -L fetching the page (final 200, slug match) and reading the supporting passage: set-optimization's optimization-level table and its 'increasing the level does not always make a difference' example; transpiler-stages on layout selecting qubits while routing injects SWAPs; construct-circuits on combining named registers and find_bit; classical-feedforward-and-control-flow on the definition of dynamic circuits and the four context-manager constructs. Primer claims without a proof of their own were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0, PYTHONPATH=pipeline/harness): generate_preset_pass_manager's signature default is 2 and its no-argument output matches an explicit level 2; transpile()'s optimization_level default is None and resolves to the same level 2; compose(front=True) prepends while the default appends; append mutates in place and returns an InstructionSet; ParameterVector elements sort by numeric index (x[9] then x[10] then x[11]) while plain Parameter('x10')/Parameter('x2') sort as strings; pm.run([qc]) returns a list; measure_active names its register 'meas' and only measures active qubits; h.decompose() gives u. Remaining primer statements (bind_parameters removed, dict keys matched by identity with name strings also accepted, ParameterVector no auto-growth, duplicate register names rejected, plain-Python if silently False, basis_gates without coupling_map does not route, stages tuple constant) are pre-verified REVIEW_LEDGER entries from the s3 pool wave; no ledger entry is contradicted. Noted deliberately: guides/transpiler-stages and guides/set-optimization still describe optimization_level as a required positional argument while the 2.5 signature carries the default 2 \u2014 the primer states the library reality and flags the docs wording. | official-alignment fix wave (2026-07-26): two facts added, both sourced by NEW executed questions \u2014 s3-q054 (2*th is a ParameterExpression, isinstance(expr, Parameter) is False, qc.parameters still holds one free Parameter, and bind() keeps the symbolic type) and s3-q055 (stage membership walked out of a level-2 preset StagedPassManager: VF2Layout/SabreLayout in layout, CheckMap/SabreSwap/VF2PostLayout in routing, BasisTranslator in translation as well as init and the optimization loop, Optimize1qGatesDecomposition in optimization, ConsolidateBlocks in init at levels 2-3). Both artifacts were re-read after verification; nothing is asserted beyond the recorded evidence. | figure wave 2 (task #28, 2026-07-27): 2 fact(s) added, each sourced by a NEW executed figure question (s3-q057, s3-q058); every claim was read back against the stored evidence in data/proofs/<qid>.json before being written and nothing is asserted beyond it."
+    "notes": "v2 claim-preserving rewrite of fact-checked v1 (generated 2026-07-26, claude-opus-5 s2/s3 quick-study generation agent). No new factual claims: every sentence, table cell and code line restates content already present in the v1 primers or facts of this file, condensed. Every kept fact was re-read against its v1 wording before being shortened and keeps its original source unchanged; no fact was merged across two different sources. Structural changes only: the four long v1 primers became seven teaching units (s3o1 bits and measurement + composition; s3o2 the four control-flow context managers + the removed conditional API; s3o3 parameter ordering and binding; s3o4 ISA and the six stages + the four optimization levels), with the measure methods, compose/append/tensor, the control-flow constructs, the removed c_if spellings, the binding forms, the six stages and the four levels moved into pipe tables. Facts 43 -> 23, triaged into core/trap. Deleted because a primer or its table now carries the claim in full: measure(0,1)/measure(1,0) mapping (s3-q045, primer code fence), tensor endianness (s3-q046, table cell), the registers/find_bit citation (guides/construct-circuits, still cited by both s3o1 primers), the else-branch spelling (s3-q026), the for_loop repeat count (s3-q028), c_if removal (s3-q025), the dynamic-circuit definition and the four constructs (guides/classical-feedforward-and-control-flow, still cited by both s3o2 primers), the short-list ValueError (s3-q019), functional assign_parameters (s3-q020), partial dict binding (s3-q049), parameter-expression bind values (s3-q021), the alphabetical-order example (s3-q018, now the s3o3 primer's lead sentence), the six-stage tuple (s3-q030), the translation-stage example (s3-q037), optimization_level=4 (s3-q039, now the s3o4 level primer's lead), the layout-vs-routing citation (guides/transpiler-stages, still cited by the s3o4 stage primer), and both set-optimization citations — the level table and the 'higher is not always better' example — which became the level table and its closing paragraph (guides/set-optimization still cited there). Deleted as edge-case trivia: the mitigation/sampling non-stages fact (s3-q042), covered by the stage table. The s3-q033 fact was narrowed to its decompose()/ISA-check half and s3-q024 to its tuple-spelling half, because the primers now carry the rest. fact_checked stays true: the v1 file was fact-checked against stored proof artifacts and fetched documentation (v1 note preserved below), and this pass introduced no claim that was not already in it. Original v1 provenance note: \"v2 claim-preserving rewrite of fact-checked v1 (generated 2026-07-26, claude-opus-5 s2/s3 quick-study generation agent). No new factual claims: every sentence, table cell and code line restates content already present in the v1 primers or facts of this file, condensed. Every kept fact was re-read against its v1 wording before being shortened and keeps its original source unchanged; no fact was merged across two different sources. Structural changes only: the four long v1 primers became seven teaching units (s3o1 bits and measurement + composition; s3o2 the four control-flow context managers + the removed conditional API; s3o3 parameter ordering and binding; s3o4 ISA and the six stages + the four optimization levels), with the measure methods, compose/append/tensor, the control-flow constructs, the removed c_if spellings, the binding forms, the six stages and the four levels moved into pipe tables. Facts 43 -> 23, triaged into core/trap. Deleted because a primer or its table now carries the claim in full: measure(0,1)/measure(1,0) mapping (s3-q045, primer code fence), tensor endianness (s3-q046, table cell), the registers/find_bit citation (guides/construct-circuits, still cited by both s3o1 primers), the else-branch spelling (s3-q026), the for_loop repeat count (s3-q028), c_if removal (s3-q025), the dynamic-circuit definition and the four constructs (guides/classical-feedforward-and-control-flow, still cited by both s3o2 primers), the short-list ValueError (s3-q019), functional assign_parameters (s3-q020), partial dict binding (s3-q049), parameter-expression bind values (s3-q021), the alphabetical-order example (s3-q018, now the s3o3 primer's lead sentence), the six-stage tuple (s3-q030), the translation-stage example (s3-q037), optimization_level=4 (s3-q039, now the s3o4 level primer's lead), the layout-vs-routing citation (guides/transpiler-stages, still cited by the s3o4 stage primer), and both set-optimization citations — the level table and the 'higher is not always better' example — which became the level table and its closing paragraph (guides/set-optimization still cited there). Deleted as edge-case trivia: the mitigation/sampling non-stages fact (s3-q042), covered by the stage table. The s3-q033 fact was narrowed to its decompose()/ISA-check half and s3-q024 to its tuple-spelling half, because the primers now carry the rest. fact_checked stays true: the v1 file was fact-checked against stored proof artifacts and fetched documentation (v1 note preserved below), and this pass introduced no claim that was not already in it. Original v1 provenance note: \"v2 claim-preserving rewrite of fact-checked v1 (generated 2026-07-26, claude-opus-5 s2/s3 quick-study generation agent). No new factual claims: every sentence, table cell and code line restates content already present in the v1 primers or facts of this file, condensed. Every kept fact was re-read against its v1 wording before being shortened and keeps its original source unchanged; no fact was merged across two different sources. Structural changes only: the four long v1 primers became seven teaching units (s3o1 bits and measurement + composition; s3o2 the four control-flow context managers + the removed conditional API; s3o3 parameter ordering and binding; s3o4 ISA and the six stages + the four optimization levels), with the measure methods, compose/append/tensor, the control-flow constructs, the removed c_if spellings, the binding forms, the six stages and the four levels moved into pipe tables. Facts 43 -> 23, triaged into core/trap. Deleted because a primer or its table now carries the claim in full: measure(0,1)/measure(1,0) mapping (s3-q045, primer code fence), tensor endianness (s3-q046, table cell), the registers/find_bit citation (guides/construct-circuits, still cited by both s3o1 primers), the else-branch spelling (s3-q026), the for_loop repeat count (s3-q028), c_if removal (s3-q025), the dynamic-circuit definition and the four constructs (guides/classical-feedforward-and-control-flow, still cited by both s3o2 primers), the short-list ValueError (s3-q019), functional assign_parameters (s3-q020), partial dict binding (s3-q049), parameter-expression bind values (s3-q021), the alphabetical-order example (s3-q018, now the s3o3 primer's lead sentence), the six-stage tuple (s3-q030), the translation-stage example (s3-q037), optimization_level=4 (s3-q039, now the s3o4 level primer's lead), the layout-vs-routing citation (guides/transpiler-stages, still cited by the s3o4 stage primer), and both set-optimization citations — the level table and the 'higher is not always better' example — which became the level table and its closing paragraph (guides/set-optimization still cited there). Deleted as edge-case trivia: the mitigation/sampling non-stages fact (s3-q042), covered by the stage table. The s3-q033 fact was narrowed to its decompose()/ISA-check half and s3-q024 to its tuple-spelling half, because the primers now carry the rest. fact_checked stays true: the v1 file was fact-checked against stored proof artifacts and fetched documentation (v1 note preserved below), and this pass introduced no claim that was not already in it. Original v1 provenance note: \"v2 claim-preserving rewrite of fact-checked v1 (generated 2026-07-26, claude-opus-5 s2/s3 quick-study generation agent). No new factual claims: every sentence, table cell and code line restates content already present in the v1 primers or facts of this file, condensed. Every kept fact was re-read against its v1 wording before being shortened and keeps its original source unchanged; no fact was merged across two different sources. Structural changes only: the four long v1 primers became seven teaching units (s3o1 bits and measurement + composition; s3o2 the four control-flow context managers + the removed conditional API; s3o3 parameter ordering and binding; s3o4 ISA and the six stages + the four optimization levels), with the measure methods, compose/append/tensor, the control-flow constructs, the removed c_if spellings, the binding forms, the six stages and the four levels moved into pipe tables. Facts 43 -> 23, triaged into core/trap. Deleted because a primer or its table now carries the claim in full: measure(0,1)/measure(1,0) mapping (s3-q045, primer code fence), tensor endianness (s3-q046, table cell), the registers/find_bit citation (guides/construct-circuits, still cited by both s3o1 primers), the else-branch spelling (s3-q026), the for_loop repeat count (s3-q028), c_if removal (s3-q025), the dynamic-circuit definition and the four constructs (guides/classical-feedforward-and-control-flow, still cited by both s3o2 primers), the short-list ValueError (s3-q019), functional assign_parameters (s3-q020), partial dict binding (s3-q049), parameter-expression bind values (s3-q021), the alphabetical-order example (s3-q018, now the s3o3 primer's lead sentence), the six-stage tuple (s3-q030), the translation-stage example (s3-q037), optimization_level=4 (s3-q039, now the s3o4 level primer's lead), the layout-vs-routing citation (guides/transpiler-stages, still cited by the s3o4 stage primer), and both set-optimization citations — the level table and the 'higher is not always better' example — which became the level table and its closing paragraph (guides/set-optimization still cited there). Deleted as edge-case trivia: the mitigation/sampling non-stages fact (s3-q042), covered by the stage table. The s3-q033 fact was narrowed to its decompose()/ISA-check half and s3-q024 to its tuple-spelling half, because the primers now carry the rest. fact_checked stays true: the v1 file was fact-checked against stored proof artifacts and fetched documentation (v1 note preserved below), and this pass introduced no claim that was not already in it. Original v1 provenance note: \"Every proof-sourced fact was read back against the stored evidence in data/proofs/<qid>.json (verdict.evidence strings and observed values) before being written; nothing is asserted beyond what the artifact records. Four candidate facts originally drawn from s3-q027/q036/q038/q048 were RE-SOURCED to citations because those questions are proof.status=conceptual with no artifact — a proof-typed source would have rendered a false 'executed' badge. The five citation-sourced facts were each checked by curl -L fetching the page (final 200, slug match) and reading the supporting passage: set-optimization's optimization-level table and its 'increasing the level does not always make a difference' example; transpiler-stages on layout selecting qubits while routing injects SWAPs; construct-circuits on combining named registers and find_bit; classical-feedforward-and-control-flow on the definition of dynamic circuits and the four context-manager constructs. Primer claims without a proof of their own were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0, PYTHONPATH=pipeline/harness): generate_preset_pass_manager's signature default is 2 and its no-argument output matches an explicit level 2; transpile()'s optimization_level default is None and resolves to the same level 2; compose(front=True) prepends while the default appends; append mutates in place and returns an InstructionSet; ParameterVector elements sort by numeric index (x[9] then x[10] then x[11]) while plain Parameter('x10')/Parameter('x2') sort as strings; pm.run([qc]) returns a list; measure_active names its register 'meas' and only measures active qubits; h.decompose() gives u. Remaining primer statements (bind_parameters removed, dict keys matched by identity with name strings also accepted, ParameterVector no auto-growth, duplicate register names rejected, plain-Python if silently False, basis_gates without coupling_map does not route, stages tuple constant) are pre-verified REVIEW_LEDGER entries from the s3 pool wave; no ledger entry is contradicted. Noted deliberately: guides/transpiler-stages and guides/set-optimization still describe optimization_level as a required positional argument while the 2.5 signature carries the default 2 — the primer states the library reality and flags the docs wording. | official-alignment fix wave (2026-07-26): two facts added, both sourced by NEW executed questions — s3-q054 (2*th is a ParameterExpression, isinstance(expr, Parameter) is False, qc.parameters still holds one free Parameter, and bind() keeps the symbolic type) and s3-q055 (stage membership walked out of a level-2 preset StagedPassManager: VF2Layout/SabreLayout in layout, CheckMap/SabreSwap/VF2PostLayout in routing, BasisTranslator in translation as well as init and the optimization loop, Optimize1qGatesDecomposition in optimization, ConsolidateBlocks in init at levels 2-3). Both artifacts were re-read after verification; nothing is asserted beyond the recorded evidence. | figure wave 2 (task #28, 2026-07-27): 2 fact(s) added, each sourced by a NEW executed figure question (s3-q057, s3-q058); every claim was read back against the stored evidence in data/proofs/<qid>.json before being written and nothing is asserted beyond it.\"\"\"\""
   }
 }

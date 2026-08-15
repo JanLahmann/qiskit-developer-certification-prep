@@ -1,40 +1,38 @@
 {
   "section": "s6",
+  "version": 2,
   "primers": [
     {
       "objective": "s6o1",
-      "title": "The resilience_level dial: what levels 0, 1 and 2 actually buy",
-      "body_md": "`resilience_level` is a single coarse dial that abstracts away the detailed choice of noise-management method so you can reason about the cost/accuracy trade instead. The official table has exactly three rows. Level 0 applies NO mitigation. Level 1 — the default — is the minimal-cost tier: it mitigates readout error via Twirled Readout Error eXtinction (TREX), which is measurement twirling plus an inversion of the diagonalized readout-error transfer matrix. Level 2 is 'medium mitigation costs': everything level 1 does, PLUS zero-noise extrapolation and gate twirling; the docs describe it as typically reducing bias 'but not guaranteed to be zero-bias'. There is no level 3, and no level turns on PEC — probabilistic error cancellation exists only as the individual option `resilience.pec_mitigation`.\n\nThe direction of the trade is fixed and is the single most-tested consequence: higher levels build MORE resilience by running and post-processing a larger ensemble of related circuits, so they give more accurate (less biased) expectation values at the cost of longer processing time and more QPU usage. Nothing about a higher level makes a job cheaper, faster, shallower, or shot-thriftier, and no level changes which physical qubits you land on.\n\nThe second consequence is the override rule, and it is stated as an 'Important' callout in the noise-management guide: any option you specify yourself is applied IN ADDITION TO the base set of options the resilience level defines. So you may set level 1 and then switch measurement mitigation back off (inadvisable, but legal), and — read the other way — setting level 0 turns `zne_mitigation` off, yet an explicit `estimator.options.resilience.zne_mitigation = True` overrides that and re-enables ZNE. A level is a starting point, never a lock.\n\nKeep the mitigation/suppression split straight, because the exam leans on it. Error SUPPRESSION acts before or during execution to stop errors happening: dynamical decoupling inserts pulse sequences on idling qubits so their idle-time errors approximately cancel, and it is enabled through `options.dynamical_decoupling.enable`, not through any resilience level. Error MITIGATION runs an ensemble of related circuits and post-processes the outputs to remove bias from expectation values: TREX, ZNE, PEA and PEC. Raising the transpiler's optimization level or simply buying more shots is neither — more shots shrink the STATISTICAL error, while mitigation attacks the systematic bias.\n\nOne library detail worth carrying: the validator accepts only the integers 0, 1 and 2. `3`, `4`, `5` and `-1` raise a range error and `1.5` and `None` are rejected outright (a string `\"2\"` or `2.0` is silently coerced, so never treat those as errors).",
+      "title": "The resilience_level dial: what 0, 1 and 2 buy",
+      "body_md": "`resilience_level` is a single coarse dial: it abstracts away the detailed choice of method so you can reason about the cost/accuracy trade instead. The validator accepts only 0, 1 and 2, though a string `\"2\"` or `2.0` is silently coerced.\n\n| Level | What it applies | Cost |\n| --- | --- | --- |\n| 0 | no mitigation at all | none |\n| 1 (the default) | readout mitigation via Twirled Readout Error eXtinction (TREX): measurement twirling plus an inversion of the diagonalized readout-error transfer matrix | minimal |\n| 2 | everything level 1 does, PLUS zero-noise extrapolation and gate twirling | medium; typically reduces bias, but \"not guaranteed to be zero-bias\" |\n\nThere is no level 3, and no level turns on PEC — that is only the individual option `resilience.pec_mitigation`. The trade never reverses: a higher level post-processes a larger ensemble of related circuits, buying more accurate, less biased expectation values at the cost of longer processing time and more QPU usage. It never makes a job cheaper, faster or shallower, and no level changes which physical qubits you land on.\n\nOptions you set yourself are applied IN ADDITION to the level's base set. Level 0 turns `zne_mitigation` off, yet an explicit `resilience.zne_mitigation = True` re-enables ZNE. A level is a starting point, never a lock.\n\nKeep the two families straight:\n\n| Family | When it acts | Examples | How you switch it on |\n| --- | --- | --- | --- |\n| error suppression | before or during execution, to stop errors happening | dynamical decoupling pulses idling qubits so their idle-time errors approximately cancel | `options.dynamical_decoupling.enable` |\n| error mitigation | after execution, post-processing an ensemble of circuits to remove bias from expectation values | TREX, ZNE, PEA, PEC | `resilience_level` or `resilience.*_mitigation` |\n| neither | — | a higher transpiler optimization level; more shots, which shrink the STATISTICAL error, not the systematic bias | — |",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management",
-        "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
-        "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+        "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
       ]
     },
     {
       "objective": "s6o1",
-      "title": "The EstimatorOptions tree: which knob lives at which level",
-      "body_md": "`EstimatorOptions` is a nested dataclass, and most option questions are really questions about the nesting depth. The top level holds `max_execution_time`, `environment`, `simulator`, `default_precision`, `default_shots`, `resilience_level`, `seed_estimator`, `dynamical_decoupling`, `resilience`, `execution`, `twirling` and `experimental`. The resilience group holds `measure_mitigation`, `measure_noise_learning`, `zne_mitigation`, `zne`, `pec_mitigation`, `pec`, `layer_noise_learning` and `layer_noise_model`. One level deeper, `resilience.zne` holds exactly four fields: `amplifier`, `noise_factors`, `extrapolator` and `extrapolated_noise_factors`.\n\nThat shape produces three classic traps. First, WRONG NAME: `zne.factors` and the Mitiq-flavoured `zne.scale_factors` do not exist. Second, WRONG LEVEL: `resilience.noise_factors` is the right word at the wrong depth, and a top-level `options.zne_mitigation` is likewise no such attribute — both raise pydantic validation errors. Third, and nastiest, CONFIGURING IS NOT ENABLING: setting `resilience.zne.noise_factors = [1, 3, 5, 7]` is accepted and leaves `zne_mitigation` at `Unset`, so the job still runs without ZNE. Worse, `resilience.zne_mitigation.enable = True` raises nothing at all — `Unset` is a plain singleton, so the attribute write lands harmlessly on it and ZNE stays off. Only `resilience.zne_mitigation = True` (or `resilience_level = 2`) actually turns it on; symmetrically, TREX is `resilience.measure_mitigation = True` and PEC is `resilience.pec_mitigation = True`.\n\nMemorize the documented defaults, since 'what happens if I touch nothing' is a question shape: `resilience_level` 1, `resilience.measure_mitigation` True, `zne_mitigation` False, `pec_mitigation` False, `zne.noise_factors` (1, 3, 5), `zne.amplifier` `gate_folding`, `zne.extrapolator` (exponential, linear), `dynamical_decoupling.enable` False with `sequence_type` XX, `twirling.enable_gates` False but `twirling.enable_measure` True, `default_precision` 0.015625 — which is exactly 1/sqrt(4096) — and `max_execution_time` 10800 seconds. Any option you never touch sits at the special value `Unset`, meaning the server default applies.\n\nSetting works three ways: pass an `EstimatorOptions` instance or a plain nested dict at construction, assign down the attribute path afterwards (`estimator.options.resilience.zne.noise_factors = [1, 3, 5]`), or call `options.update(...)` for a bulk edit. The constructor is not a loophole for invalid values: `default_precision = 0` fails identically whether you assign it, pass it in a dict, or build `EstimatorOptions(default_precision=0)`, because it is the same 'must be > 0' validator. Finally, some techniques exclude each other — the feature-compatibility table lists PEC as incompatible with gate-folding ZNE and with PEA, and the library enforces it: enabling `pec_mitigation` and `zne_mitigation` together raises a validation error.",
+      "title": "The EstimatorOptions tree and its defaults",
+      "body_md": "`EstimatorOptions` is a nested dataclass, and most option questions are really questions about nesting DEPTH.\n\n| Level | Fields |\n| --- | --- |\n| top | `max_execution_time`, `environment`, `simulator`, `default_precision`, `default_shots`, `resilience_level`, `seed_estimator`, `dynamical_decoupling`, `resilience`, `execution`, `twirling`, `experimental` |\n| `resilience` | `measure_mitigation`, `measure_noise_learning`, `zne_mitigation`, `zne`, `pec_mitigation`, `pec`, `layer_noise_learning`, `layer_noise_model` |\n| `resilience.zne` | `amplifier`, `noise_factors`, `extrapolator`, `extrapolated_noise_factors` |\n\nThree shapes of mistake follow: the WRONG NAME (`zne.factors`, the Mitiq-flavoured `zne.scale_factors`), the right name at the WRONG LEVEL, and — nastiest — CONFIGURING WITHOUT ENABLING. Setting `resilience.zne.noise_factors` is accepted but leaves `zne_mitigation` at `Unset`, so the job still runs without ZNE; worse, `resilience.zne_mitigation.enable = True` raises nothing at all — `Unset` is a plain singleton, so the write lands harmlessly on it. Only `resilience.zne_mitigation = True` (or `resilience_level = 2`) turns ZNE on; TREX is `resilience.measure_mitigation = True` and PEC is `resilience.pec_mitigation = True`.\n\nMemorize the documented defaults, since \"what if I touch nothing\" is a question shape.\n\n| Option | Default |\n| --- | --- |\n| `resilience_level` | 1 |\n| `resilience.measure_mitigation` | True |\n| `resilience.zne_mitigation`, `resilience.pec_mitigation` | False |\n| `resilience.zne.noise_factors` | (1, 3, 5) |\n| `resilience.zne.amplifier` | `gate_folding` |\n| `resilience.zne.extrapolator` | (exponential, linear) |\n| `dynamical_decoupling.enable`, `sequence_type` | False, `XX` |\n| `twirling.enable_gates`, `twirling.enable_measure` | False, True |\n| `default_precision` | 0.015625 — exactly 1/sqrt(4096) |\n| `max_execution_time` | 10800 seconds |\n\nAn option you never touch sits at `Unset`, meaning the server default applies. Set values three ways: an `EstimatorOptions` instance or nested dict at construction, assignment down the attribute path, or a bulk `options.update(...)`.",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/estimator-options",
-        "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
         "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview"
       ]
     },
     {
       "objective": "s6o2",
-      "title": "The Estimator PUB: four slots, and the broadcasting that fixes the output shape",
-      "body_md": "An Estimator PUB is a tuple of AT MOST FOUR values, in this order: (1) a single `QuantumCircuit`, which may contain `Parameter` objects; (2) an array of one or more observables — anything `ObservablesArrayLike`: `Pauli`, `SparsePauliOp`, `PauliList` or a bare string; (3) a collection of parameter values to bind, whose LAST index runs over the circuit's parameters, omitted or `None` if the circuit has none; (4) optionally a target precision. The slots are positional, never searched by content, which is why dropping a float into the third slot produces the cryptic `ValueError: Length of () inconsistent with last dimension of [0.01]` — the estimator tried to read your precision as a parameter binding. And a single task still has to be wrapped in a list: `est.run([(isa, iobs)])`, not `est.run((isa, iobs))`.\n\nThe output shape is decided entirely by NumPy broadcasting between the observables array and the parameter-value array, and the Estimator returns one expectation value per element of the broadcast shape. Four patterns cover almost every question. One observable, no parameters: `evs` is a 0-d array (shape `()`). A flat Python list of three observables: shape `(3,)`. The same three written as a column, `[[o1], [o2], [o3]]`: shape `(3, 1)`. Written as a row, `[[o1, o2, o3]]`: shape `(1, 3)`. Parameters broadcast the same way — a `(4, 1)` parameter array against one observable gives `(4,)`, and a `(1, 6)` parameter set against a `(4, 1)` observable column gives the outer product `(4, 6)`.\n\nThe rule that catches people: a `SparsePauliOp` counts as a SINGLE element no matter how many Pauli terms it contains. `SparsePauliOp.from_list(['XX', 'XY', 'IZ'])` has shape `()` and returns ONE number — the coefficient-weighted sum of its terms — whereas `[SparsePauliOp('XX'), SparsePauliOp('XY'), SparsePauliOp('IZ')]` has shape `(3,)` and returns three. There is no per-term breakdown, ever. One related planning note: commuting observables share a single measurement only if they are grouped in the SAME PUB; two PUBs over the same circuit are two different measurement bases and cost two sets of circuits.\n\nWhat comes back is a `PrimitiveResult` holding one `PubResult` per PUB. `result[0].data` is a `DataBin` whose keys are exactly `evs` and `stds` — the estimates and their standard errors, both real `float64` even though `SparsePauliOp.coeffs` are complex. There is no `expectation_values` field, no `variance`, and `PubResult.metadata` carries only run bookkeeping (`target_precision`, `circuit_metadata`), never the numbers themselves.",
+      "title": "The Estimator PUB: four positional slots",
+      "body_md": "An Estimator PUB is a tuple of AT MOST FOUR values. The slots are positional, never searched by content, and even a single task must be wrapped in a list.\n\n| Slot | Contents | Note |\n| --- | --- | --- |\n| 1 | one `QuantumCircuit` | may contain `Parameter` objects |\n| 2 | an array of one or more observables | anything `ObservablesArrayLike`: `Pauli`, `SparsePauliOp`, `PauliList` or a bare string |\n| 3 | parameter values to bind | its LAST index runs over the circuit's parameters; omit it or pass `None` when the circuit has none |\n| 4 | a target precision (optional) | a float dropped into slot 3 gives `ValueError: Length of () inconsistent with last dimension of [0.01]` |\n\n```python\nresult = est.run([(isa, isa_obs, params, 0.01)])   # not est.run((isa, isa_obs))\n```\n\nThe output shape is decided entirely by NumPy broadcasting between the observables array and the parameter-value array, and the Estimator returns one expectation value per element of the broadcast shape.\n\n| Observables | Parameter values | `evs.shape` |\n| --- | --- | --- |\n| one observable | none | `()` |\n| flat list `[o1, o2, o3]` | none | `(3,)` |\n| column `[[o1], [o2], [o3]]` | none | `(3, 1)` |\n| row `[[o1, o2, o3]]` | none | `(1, 3)` |\n| one observable | `(4, 1)` | `(4,)` |\n| a `(4, 1)` column | `(1, 6)` | `(4, 6)` |\n\nA `SparsePauliOp` counts as a SINGLE element however many Pauli terms it holds: it returns one number, the coefficient-weighted sum — never a per-term breakdown. Commuting observables share one measurement only when grouped in the SAME PUB; two PUBs mean two measurement bases.\n\nBack comes a `PrimitiveResult` with one `PubResult` per PUB. `result[0].data` is a `DataBin` whose keys are exactly `evs` and `stds`, both real `float64`; `metadata` carries only run bookkeeping (`target_precision`, `circuit_metadata`).",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
-        "https://quantum.cloud.ibm.com/docs/guides/get-started-with-estimator",
-        "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+        "https://quantum.cloud.ibm.com/docs/guides/get-started-with-estimator"
       ]
     },
     {
       "objective": "s6o2",
-      "title": "Observables, layout alignment, and the precision-to-shots law",
-      "body_md": "To measure an n-qubit observable on hardware you must write it as a weighted sum of tensor products of Paulis — that is what `SparsePauliOp` stores. Three constructors, three different signatures. The plain constructor takes labels plus `coeffs` and infers the width from the labels: `SparsePauliOp(['ZZ', 'XX'], coeffs=[1.0, 0.5])`. `from_list` takes (label, coefficient) pairs on FULL-WIDTH labels. `from_sparse_list` takes (label, qubit_indices, coefficient) triples plus `num_qubits`, which is a REQUIRED argument there and a `TypeError` if omitted — and it pads the result with identities, so `[('Z', [0], 1.0)]` at `num_qubits=3` stores `'IIZ'`, never a bare `'Z'`. Mixing widths inside one call raises `ValueError: The Nth Pauli is defined over k qubits`, and the plain constructor has no `num_qubits=` keyword at all. Note that only I/Z Paulis are diagonal in the measurement basis; X and Y terms require a basis change (H for X, S-dagger then H for Y), which the Estimator performs for you automatically.\n\nThen comes the step that generates more Estimator bugs than anything else. Transpiling maps your logical qubits onto physical ones and pads the circuit out to the backend's full width, possibly permuting them. Your observable does not follow along. Submit a 2-qubit `SparsePauliOp` with a 5-qubit ISA circuit and the run dies with `ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2)`. The fix is `isa_observable = observable.apply_layout(isa_circuit.layout)`, which expands AND permutes the observable onto the same physical qubits. Nothing else rescues it: adding `measure_all()`, passing the observable as a string, or pinning `initial_layout=[0, 1]` all leave the ISA circuit at full backend width. You can also align by hand with an explicit index list plus a width — `SparsePauliOp('ZZ').apply_layout([2, 0], num_qubits=4)` yields `'IZIZ'`, the label characters pairing with the index list left-to-right while the printed label stays little-endian (rightmost character = qubit 0).\n\nFinally, precision. `precision` is a target STANDARD ERROR on the expectation value, not a shot count — which is why it is a float and why `default_precision = 0` is rejected as non-positive. Statistical error falls as 1/sqrt(N), so the shot cost goes as 1/precision^2: halving the target precision quadruples the shots, and a doubling or a 1.4x bump does not get you there. The documented default 0.015625 is literally 1/sqrt(4096). Where the value comes from follows a strict precedence: a precision inside the PUB wins, then `run(precision=...)`, then (twirling being on by default) the product of `num_randomizations` and `shots_per_randomization`, then `default_shots`, then `default_precision`. Two guardrails: the result is not GUARANTEED to reach the requested precision, and lower precision means more QPU time.",
+      "title": "Observables, layout alignment, and precision",
+      "body_md": "An n-qubit observable must be written as a weighted sum of tensor products of Paulis — that is what `SparsePauliOp` stores. Only I and Z Paulis are diagonal in the measurement basis; X and Y terms need a basis change (H for X, S-dagger then H for Y), which the Estimator performs automatically.\n\n| Constructor | Takes | Watch for |\n| --- | --- | --- |\n| `SparsePauliOp(['ZZ', 'XX'], coeffs=[1.0, 0.5])` | labels plus `coeffs`, width inferred from the labels | there is no `num_qubits=` keyword here |\n| `SparsePauliOp.from_list([('ZZ', 1.0), ('XX', 0.5)])` | (label, coefficient) pairs on FULL-WIDTH labels | mixing widths raises `ValueError: The Nth Pauli is defined over k qubits` |\n| `SparsePauliOp.from_sparse_list([('Z', [0], 1.0)], num_qubits=3)` | (label, qubit_indices, coefficient) triples plus `num_qubits` | `num_qubits` is REQUIRED here, and the result is padded with identities to `'IIZ'` |\n\nTranspiling pads the circuit out to the backend's full width and may permute your qubits. The observable does not follow along, so align it: `isa_observable = observable.apply_layout(isa_circuit.layout)`. Nothing else rescues it — `measure_all()`, a string observable, or pinning `initial_layout=[0, 1]` all leave the circuit at full backend width.\n\n`precision` is a target STANDARD ERROR on the expectation value, not a shot count, which is why it is a float. Statistical error falls as 1/sqrt(N), so the shot cost goes as 1/precision^2.\n\n| Rank | Where the precision comes from |\n| --- | --- |\n| 1 | a precision inside the PUB |\n| 2 | `run(precision=...)` |\n| 3 | twirling being on by default, `num_randomizations` × `shots_per_randomization` |\n| 4 | `default_shots` |\n| 5 | `default_precision`, documented as 0.015625 = 1/sqrt(4096) |\n\nTwo guardrails: the result is not GUARANTEED to reach the requested precision, and lower precision means more QPU time.",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
         "https://quantum.cloud.ibm.com/docs/guides/estimator-options",
@@ -45,63 +43,8 @@
   "facts": [
     {
       "objective": "s6o1",
-      "fact_md": "`resilience_level` accepts only the integers 0, 1 and 2 — `3`, `4`, `5`, `-1` and `1.5` all raise a pydantic `ValidationError` about the 0..2 range.",
-      "source": {
-        "type": "proof",
-        "ref": "s6-q014"
-      }
-    },
-    {
-      "objective": "s6o1",
-      "fact_md": "The level table: 0 = no mitigation, 1 = the DEFAULT and applies readout mitigation via TREX (measurement twirling), 2 = level 1 plus zero-noise extrapolation and gate twirling.",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
-      }
-    },
-    {
-      "objective": "s6o1",
-      "fact_md": "Options you set yourself are applied IN ADDITION to the level's base set: level 0 turns `zne_mitigation` off, but an explicit `resilience.zne_mitigation = True` overrides that and switches ZNE back on.",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
-      }
-    },
-    {
-      "objective": "s6o1",
-      "fact_md": "Higher levels build more resilience by post-processing a larger ensemble of circuits: more accurate, less biased expectation values at the cost of LONGER processing time — never a faster or cheaper job.",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
-      }
-    },
-    {
-      "objective": "s6o1",
-      "fact_md": "The ZNE scale factors live at `options.resilience.zne.noise_factors`; `zne.factors` (wrong name) and `resilience.noise_factors` (right name, wrong nesting level) are both `no_such_attribute` validation errors.",
-      "source": {
-        "type": "proof",
-        "ref": "s6-q020"
-      }
-    },
-    {
-      "objective": "s6o1",
-      "fact_md": "`default_precision` must be strictly positive: assigning `0` raises `ValidationError`, and `EstimatorOptions(default_precision=0)` hits the identical validator — the constructor is not an escape hatch.",
-      "source": {
-        "type": "proof",
-        "ref": "s6-q031"
-      }
-    },
-    {
-      "objective": "s6o1",
-      "fact_md": "`EstimatorV2.run()`'s only execution keyword is `precision=`; `shots=`, `default_precision=` and `resilience_level=` are all `TypeError: unexpected keyword argument`, and `options.precision` is a `ValidationError` (the field is `default_precision`).",
-      "source": {
-        "type": "proof",
-        "ref": "s6-q016"
-      }
-    },
-    {
-      "objective": "s6o1",
-      "fact_md": "ZNE runs the circuit at several amplified noise rates (digital gate folding) and extrapolates back to the zero-noise limit; it often improves results but 'is not guaranteed to produce an unbiased result'.",
+      "group": "core",
+      "fact_md": "ZNE runs the circuit at several amplified noise rates (digital gate folding) and extrapolates back to the zero-noise limit — but it \"is not guaranteed to produce an unbiased result\".",
       "source": {
         "type": "citation",
         "ref": "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
@@ -109,6 +52,7 @@
     },
     {
       "objective": "s6o1",
+      "group": "core",
       "fact_md": "PEC writes the ideal circuit as a quasi-probability combination of noisy ones: unbiased, but with a sampling overhead scaling quadratically in gamma = sum of |quasi-probabilities|, which itself grows exponentially with circuit depth.",
       "source": {
         "type": "citation",
@@ -117,15 +61,8 @@
     },
     {
       "objective": "s6o1",
-      "fact_md": "Individual switches: TREX is `resilience.measure_mitigation = True`, ZNE is `resilience.zne_mitigation = True`, PEC is `resilience.pec_mitigation = True`, and dynamical decoupling — error SUPPRESSION, pulsing idle qubits — is `dynamical_decoupling.enable = True`.",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
-      }
-    },
-    {
-      "objective": "s6o1",
-      "fact_md": "Documented defaults worth memorizing: `resilience_level` 1, `measure_mitigation` True, `zne_mitigation` and `pec_mitigation` False, `zne.noise_factors` (1, 3, 5), `zne.amplifier` gate_folding, `dynamical_decoupling.enable` False (sequence XX), `twirling.enable_measure` True but `enable_gates` False.",
+      "group": "core",
+      "fact_md": "PEC is documented as incompatible with gate-folding ZNE, with PEA and with fractional gates — enabling `pec_mitigation` and `zne_mitigation` together raises a validation error.",
       "source": {
         "type": "citation",
         "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
@@ -133,47 +70,53 @@
     },
     {
       "objective": "s6o1",
-      "fact_md": "PEC is documented as incompatible with gate-folding ZNE and with PEA (and with fractional gates) — the two mitigation flags are mutually exclusive, not additive.",
+      "group": "core",
+      "fact_md": "Error-bar length is bought with `default_precision`: 0.1 yields `stds` around 0.04–0.10 on a fake backend, 0.01 around 0.002–0.009. `options.execution.shots` is no route to it — `execution` holds only `init_qubits` and `rep_delay`.",
       "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+        "type": "proof",
+        "ref": "s6-q041"
       }
     },
     {
       "objective": "s6o1",
-      "fact_md": "An option you never set holds the special value `Unset` and the server default applies; set values by attribute path (`options.resilience.zne.noise_factors = [1, 3, 5]`) or in bulk with `options.update(...)`.",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
-      }
-    },
-    {
-      "objective": "s6o2",
-      "fact_md": "`result[0].data.evs` holds the estimate(s) and `result[0].data.stds` their standard errors; `data.expectation_values` is an `AttributeError` and `metadata['evs']` a `KeyError`.",
+      "group": "trap",
+      "fact_md": "`resilience_level` accepts only 0, 1 and 2 — `3`, `4`, `5`, `-1` and `1.5` all raise a pydantic `ValidationError` about the 0..2 range.",
       "source": {
         "type": "proof",
-        "ref": "s6-q010"
+        "ref": "s6-q014"
       }
     },
     {
-      "objective": "s6o2",
-      "fact_md": "PUB slots are positional — (circuit, observables, parameter_values, precision). A float in the third slot raises `ValueError: Length of () inconsistent with last dimension of [0.01]`; moving it to the fourth slot runs cleanly.",
+      "objective": "s6o1",
+      "group": "trap",
+      "fact_md": "The ZNE scale factors live at `options.resilience.zne.noise_factors`; `zne.factors` (wrong name) and `resilience.noise_factors` (right name, wrong level) are both `no_such_attribute` errors.",
       "source": {
         "type": "proof",
-        "ref": "s6-q025"
+        "ref": "s6-q020"
       }
     },
     {
-      "objective": "s6o2",
-      "fact_md": "Even a single task must be wrapped in a list: `est.run([(isa, iobs)])`. A bare circuit raises `ValueError: An invalid Estimator pub-like was given`, and `run(circuits=..., observables=...)` is a V1 habit that raises `TypeError`.",
+      "objective": "s6o1",
+      "group": "trap",
+      "fact_md": "`default_precision` must be strictly positive: `0` raises `ValidationError` whether assigned or passed to `EstimatorOptions(default_precision=0)` — the constructor is not an escape hatch.",
       "source": {
         "type": "proof",
-        "ref": "s6-q012"
+        "ref": "s6-q031"
+      }
+    },
+    {
+      "objective": "s6o1",
+      "group": "trap",
+      "fact_md": "`EstimatorV2.run()`'s only execution keyword is `precision=`; `shots=`, `default_precision=` and `resilience_level=` all raise `TypeError: unexpected keyword argument`, and `options.precision` is a `ValidationError`.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q016"
       }
     },
     {
       "objective": "s6o2",
-      "fact_md": "Width mismatch is the signature Estimator bug: a 2-qubit observable against a 5-qubit ISA circuit raises `ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2)`; only `obs.apply_layout(isa.layout)` fixes it (pinning `initial_layout` does not).",
+      "group": "core",
+      "fact_md": "Width mismatch is the signature Estimator bug: a 2-qubit observable against a 5-qubit ISA circuit raises `ValueError: The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2)` — only `obs.apply_layout(isa.layout)` fixes it.",
       "source": {
         "type": "proof",
         "ref": "s6-q013"
@@ -181,6 +124,7 @@
     },
     {
       "objective": "s6o2",
+      "group": "core",
       "fact_md": "`SparsePauliOp('ZZ').apply_layout([2, 0], num_qubits=4)` returns `'IZIZ'` — label characters pair with the index list left-to-right while the printed label stays little-endian.",
       "source": {
         "type": "proof",
@@ -189,39 +133,8 @@
     },
     {
       "objective": "s6o2",
-      "fact_md": "`SparsePauliOp.from_sparse_list([('Z', [0], 1.0)], num_qubits=3)` pads with identities to `'IIZ'` — it never raises and never leaves a bare `'Z'`.",
-      "source": {
-        "type": "proof",
-        "ref": "s6-q035"
-      }
-    },
-    {
-      "objective": "s6o2",
-      "fact_md": "`SparsePauliOp.from_list([('ZZ', 1.0), ('XX', 0.5)])` is the valid two-qubit build; mixing label widths raises `ValueError: The 1th Pauli is defined over 1 qubits`, and `from_sparse_list` without `num_qubits` is a `TypeError` (it is required there).",
-      "source": {
-        "type": "proof",
-        "ref": "s6-q024"
-      }
-    },
-    {
-      "objective": "s6o2",
-      "fact_md": "One PUB with a flat Python list of three observables returns `evs` of shape `(3,)` — not `(3, 1)`, not `(1, 3)`, and not `(3, 2)`.",
-      "source": {
-        "type": "proof",
-        "ref": "s6-q030"
-      }
-    },
-    {
-      "objective": "s6o2",
-      "fact_md": "Two observables `['ZI', 'IZ']` on a circuit with X on qubit 0 broadcast to `[1.0, -1.0]` of shape `(2,)`: the little-endian label rule decides which value is which, and the observables are broadcast, never summed.",
-      "source": {
-        "type": "proof",
-        "ref": "s6-q015"
-      }
-    },
-    {
-      "objective": "s6o2",
-      "fact_md": "A multi-term `SparsePauliOp` is ONE observable: `from_list([('X', 3.0)])` on |+⟩ returns a 0-d `float64` array holding 3.0 — never a length-1 array, never one value per Pauli term, never a complex number.",
+      "group": "core",
+      "fact_md": "A multi-term `SparsePauliOp` is ONE observable: `from_list([('X', 3.0)])` on |+⟩ returns a 0-d `float64` array holding 3.0 — never a length-1 array, never one value per Pauli term.",
       "source": {
         "type": "proof",
         "ref": "s6-q022"
@@ -229,23 +142,8 @@
     },
     {
       "objective": "s6o2",
-      "fact_md": "Coefficients are contracted before you see them: 0.5·ZZ + 0.5·XX on a Bell state comes back as the single scalar 1.0.",
-      "source": {
-        "type": "proof",
-        "ref": "s6-q011"
-      }
-    },
-    {
-      "objective": "s6o2",
-      "fact_md": "Binding one parameter to `[0, π/2, π]` against a single observable gives `evs` of shape `(3,)` equal to `[1.0, 0.0, -1.0]` — the ⟨Z⟩ = cos θ curve, one flat value per parameter set.",
-      "source": {
-        "type": "proof",
-        "ref": "s6-q023"
-      }
-    },
-    {
-      "objective": "s6o2",
-      "fact_md": "Halving the target precision quadruples the shot budget: the measured standard error falls from 0.0195 at the baseline 2500 shots to 0.0104 at 4x the shots, while 2x only reaches 0.0137 (a sqrt law would have predicted ~1.4x).",
+      "group": "core",
+      "fact_md": "Halving the target precision quadruples the shot budget: the measured standard error falls from 0.0195 at 2500 shots to 0.0104 at 4x the shots, while 2x only reaches 0.0137.",
       "source": {
         "type": "proof",
         "ref": "s6-q017"
@@ -253,7 +151,26 @@
     },
     {
       "objective": "s6o2",
-      "fact_md": "The reference `StatevectorEstimator` reports `stds` of exactly `0.0` — an exact calculation has no sampling uncertainty — and it stays 0.0 even when `run()` is asked for a tighter precision.",
+      "group": "trap",
+      "fact_md": "`result[0].data.evs` holds the estimate(s) and `result[0].data.stds` their standard errors; `data.expectation_values` is an `AttributeError` and `metadata['evs']` a `KeyError`.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q010"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "group": "trap",
+      "fact_md": "Even a single task must be wrapped in a list: `est.run([(isa, iobs)])`. A bare circuit raises `ValueError: An invalid Estimator pub-like was given`, and the V1 habit `run(circuits=..., observables=...)` raises `TypeError`.",
+      "source": {
+        "type": "proof",
+        "ref": "s6-q012"
+      }
+    },
+    {
+      "objective": "s6o2",
+      "group": "trap",
+      "fact_md": "The reference `StatevectorEstimator` reports `stds` of exactly `0.0` — an exact calculation has no sampling uncertainty — even when `run()` asks for a tighter precision.",
       "source": {
         "type": "proof",
         "ref": "s6-q037"
@@ -261,65 +178,28 @@
     },
     {
       "objective": "s6o2",
-      "fact_md": "An Estimator PUB holds at most four values (circuit, observables array, parameter values, optional target precision), and the Estimator returns one expectation value per element of the broadcast shape.",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
-      }
-    },
-    {
-      "objective": "s6o2",
-      "fact_md": "Each `SparsePauliOp` counts as a single element for broadcasting: `SparsePauliOp.from_list(['XX', 'XY', 'IZ'])` has shape `()`, while the same three ops in a Python list have shape `(3,)`.",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
-      }
-    },
-    {
-      "objective": "s6o2",
-      "fact_md": "Commuting observables are only estimated from the SAME measurement when they are grouped in one PUB; the same circuit in two PUBs means two measurement bases and two sets of circuits.",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
-      }
-    },
-    {
-      "objective": "s6o2",
-      "fact_md": "Precision precedence, highest first: a precision inside the PUB, then `run(precision=...)`, then twirling's `num_randomizations` × `shots_per_randomization`, then `default_shots`, then `default_precision` (documented default 0.015625 = 1/sqrt(4096)).",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
-      }
-    },
-    {
-      "objective": "s6o2",
-      "fact_md": "Only Paulis built from I and Z are diagonal in the measurement basis; X and Y terms need a basis change (H for X, S-dagger then H for Y), which the Estimator performs automatically.",
-      "source": {
-        "type": "citation",
-        "ref": "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
-      }
-    },
-    {
-      "objective": "s6o2",
-      "fact_md": "Sweeping `ry(theta)` over 0 to 2π against `SparsePauliOp('Z')` traces ONE full cosine period. cos(theta/2) is the |0> amplitude (half a period over the same sweep) and cos(2*theta) would be the half-angle misreading (two periods) — the curve's period is the quickest way to tell the three apart.",
+      "group": "trap",
+      "fact_md": "Sweeping `ry(theta)` over 0 to 2π against `SparsePauliOp('Z')` traces ONE full cosine period; cos(theta/2) gives half a period and cos(2*theta) two — the period tells the three apart.",
       "source": {
         "type": "proof",
         "ref": "s6-q040"
       }
-    },
-    {
-      "objective": "s6o1",
-      "fact_md": "Error-bar length is bought with `default_precision`: 0.1 yields `stds` around 0.04–0.10 on a fake backend, 0.01 yields around 0.002–0.009. The near-miss spellings both fail validation — `options.precision` (no such field; `precision=` is a `run()` keyword) and `options.execution.shots` (execution holds only `init_qubits` and `rep_delay`).",
-      "source": {
-        "type": "proof",
-        "ref": "s6-q041"
-      }
     }
   ],
+  "checklist": [
+    "Recite the level table: 0 no mitigation, 1 the default with TREX, 2 adds ZNE and gate twirling.",
+    "Expect a higher resilience level to cost more processing time and QPU usage, never less.",
+    "Remember an option you set is applied in addition to the level's base set, overriding it.",
+    "Put each option at its depth — `resilience.zne.noise_factors` configures ZNE, `resilience.zne_mitigation = True` enables it.",
+    "Order an Estimator PUB positionally: circuit, observables, parameter values, precision — wrapped in a list.",
+    "Predict `evs.shape` by broadcasting observables against parameter values; a `SparsePauliOp` counts as one element.",
+    "Map every observable through `obs.apply_layout(isa.layout)` before running on a transpiled circuit.",
+    "Treat `precision` as a target standard error: halving it quadruples the shots."
+  ],
   "provenance": {
-    "generated": "2026-07-26",
-    "model": "claude-opus-5 (s6/s7 quick-study generation agent)",
+    "generated": "2026-08-15",
+    "model": "claude-opus (v2 study rewrite agent)",
     "fact_checked": true,
-    "notes": "Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json and cites only EXECUTED questions with an artifact (the conceptual s6 qids q018, q019, q021, q026, q028, q029, q032, q034, q036, q038 and q039 are covered through their guides instead). Every citation-sourced fact was confirmed by fetching the page text: estimator-noise-management (the 0/1/2 resilience table with TREX at level 1 and 'Level 1 + ZNE and gate twirling' at level 2; the 'Important' override callout; higher levels = more accurate, longer processing); error-mitigation-and-suppression-techniques (ZNE = noise amplification by digital gate folding + extrapolation, 'not guaranteed to produce an unbiased result'; PEC unbiased with overhead quadratic in gamma, exponential in depth; measure_mitigation/zne_mitigation/pec_mitigation/dynamical_decoupling.enable as the individual switches; DD pulses idle qubits); estimator-options (full defaults table, run() takes only precision, five-step precision precedence, default_precision 0.015625 = 1/sqrt(4096), PEC incompatible with gate-folding ZNE and PEA, Unset semantics and update()); primitive-input-output (Estimator PUB is at most four values, one ev per broadcast element, SparsePauliOp counts as one element, commuting observables must share a PUB); specify-observables-pauli (only I/Z Paulis are diagonal, H and S-dagger/H basis changes performed automatically by the Estimator). Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0, PYTHONPATH=pipeline/harness): EstimatorOptions.__dataclass_fields__ = _VERSION, max_execution_time, environment, simulator, default_precision, default_shots, resilience_level, seed_estimator, dynamical_decoupling, resilience, execution, twirling, experimental; resilience fields = measure_mitigation, measure_noise_learning, zne_mitigation, zne, pec_mitigation, pec, layer_noise_learning, layer_noise_model; zne fields = amplifier, noise_factors, extrapolator, extrapolated_noise_factors; EstimatorV2.run signature is run(pubs, *, precision=None); broadcasting measured as flat list -> (3,), column -> (3, 1), row -> (1, 3), single op -> (); a two-term SparsePauliOp returns a 0-d float64; PubResult.metadata keys are target_precision and circuit_metadata; DataBin keys are evs and stds; and enabling pec_mitigation together with zne_mitigation raises ValidationError ('cannot be simultaneously enabled'), matching the docs' incompatibility table. Consistent with the REVIEW_LEDGER s6 pool wave; no contradictions. Task #28 figure wave (2026-07-26) appended two facts sourced from the new figure questions of this section; both were checked against the stored proof evidence."
+    "notes": "v2 claim-preserving rewrite of fact-checked v1 (generated 2026-07-26, claude-opus-5 s6/s7 quick-study generation agent). No new factual claims: every sentence, table cell and code line restates content already present in the v1 primers or facts of this file, condensed. Every kept fact was re-read against its v1 wording before being shortened and keeps its original source unchanged; no fact was merged across two different sources. Structural changes only: the four long v1 primers became four teaching units of the same coverage (s6o1 the resilience dial + the options tree and its defaults; s6o2 the four-slot PUB and broadcasting + observables, layout alignment and precision), with the 0/1/2 resilience table, the suppression/mitigation/neither split, the EstimatorOptions nesting levels, the documented defaults, the PUB slots, the broadcasting shapes, the three SparsePauliOp constructors and the precision precedence chain moved into pipe tables. Facts 34 -> 18, triaged into core/trap. Deleted because a primer or its table now carries the claim in full: the 0/1/2 level table, the in-addition-to override callout and the higher-levels-cost-more rule (guides/estimator-noise-management, cited by the first s6o1 primer), the individual TREX/ZNE/PEC/DD switches (guides/error-mitigation-and-suppression-techniques, cited by both s6o1 primers), the documented defaults list and the Unset/attribute-path/update() rules (guides/estimator-options, cited by the second s6o1 primer and by the s6o2 precision primer), s6-q025 positional PUB slots and the third-slot float error, s6-q035 from_sparse_list identity padding, s6-q024 the from_list build and its width/TypeError traps, s6-q030 the flat-list (3,) shape, s6-q011 coefficient contraction (the one-number rule is stated in the PUB primer and s6-q022 keeps the proof), s6-q015 and s6-q023 (their shapes are rows of the broadcasting table, their little-endian and cosine readings are kept by s6-q033 and s6-q040), the PUB definition, the one-ev-per-broadcast-element rule, the SparsePauliOp-is-one-element rule and the commuting-observables-share-a-PUB rule (guides/primitive-input-output, cited by both s6o2 primers), the precision precedence chain (guides/estimator-options) and the I/Z-diagonal basis-change note (guides/specify-observables-pauli, cited by the s6o2 observables primer). The s6-q041 fact was narrowed to the stds-versus-default_precision measurement plus the options.execution.shots near miss, since s6-q016 already carries the options.precision near miss. fact_checked stays true: the v1 file was fact-checked against stored proof artifacts and fetched documentation (v1 note preserved below), and this pass introduced no claim that was not already in it. Original v1 provenance note: \"Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json and cites only EXECUTED questions with an artifact (the conceptual s6 qids q018, q019, q021, q026, q028, q029, q032, q034, q036, q038 and q039 are covered through their guides instead). Every citation-sourced fact was confirmed by fetching the page text: estimator-noise-management (the 0/1/2 resilience table with TREX at level 1 and 'Level 1 + ZNE and gate twirling' at level 2; the 'Important' override callout; higher levels = more accurate, longer processing); error-mitigation-and-suppression-techniques (ZNE = noise amplification by digital gate folding + extrapolation, 'not guaranteed to produce an unbiased result'; PEC unbiased with overhead quadratic in gamma, exponential in depth; measure_mitigation/zne_mitigation/pec_mitigation/dynamical_decoupling.enable as the individual switches; DD pulses idle qubits); estimator-options (full defaults table, run() takes only precision, five-step precision precedence, default_precision 0.015625 = 1/sqrt(4096), PEC incompatible with gate-folding ZNE and PEA, Unset semantics and update()); primitive-input-output (Estimator PUB is at most four values, one ev per broadcast element, SparsePauliOp counts as one element, commuting observables must share a PUB); specify-observables-pauli (only I/Z Paulis are diagonal, H and S-dagger/H basis changes performed automatically by the Estimator). Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0, PYTHONPATH=pipeline/harness): EstimatorOptions.__dataclass_fields__ = _VERSION, max_execution_time, environment, simulator, default_precision, default_shots, resilience_level, seed_estimator, dynamical_decoupling, resilience, execution, twirling, experimental; resilience fields = measure_mitigation, measure_noise_learning, zne_mitigation, zne, pec_mitigation, pec, layer_noise_learning, layer_noise_model; zne fields = amplifier, noise_factors, extrapolator, extrapolated_noise_factors; EstimatorV2.run signature is run(pubs, *, precision=None); broadcasting measured as flat list -> (3,), column -> (3, 1), row -> (1, 3), single op -> (); a two-term SparsePauliOp returns a 0-d float64; PubResult.metadata keys are target_precision and circuit_metadata; DataBin keys are evs and stds; and enabling pec_mitigation together with zne_mitigation raises ValidationError ('cannot be simultaneously enabled'), matching the docs' incompatibility table. Consistent with the REVIEW_LEDGER s6 pool wave; no contradictions. Task #28 figure wave (2026-07-26) appended two facts sourced from the new figure questions of this section; both were checked against the stored proof evidence.\"\"\""
   }
 }

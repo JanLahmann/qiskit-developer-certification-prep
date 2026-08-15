@@ -57,8 +57,9 @@ jobs:
         run: |
           python pipeline/build_site_data.py
           python pipeline/build_study.py
-          python pipeline/build_anki.py
+          # epub before anki: the flashcards page stamps the EPUB's size
           python pipeline/build_epub.py
+          python pipeline/build_anki.py
       - uses: actions/setup-node@v4
         with:
           node-version: 20

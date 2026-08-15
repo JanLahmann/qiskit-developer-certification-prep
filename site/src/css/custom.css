@@ -51,6 +51,35 @@
   max-width: 100%;
 }
 
+/* Send-to-Kindle card on the flashcards page */
+.kindle-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 0.75rem 0 1rem;
+}
+
+.kindle-qr-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.kindle-qr-row img {
+  width: 118px;
+  height: 118px;
+  border-radius: 6px;
+  flex: none;
+}
+
+.kindle-qr-row p {
+  flex: 1;
+  min-width: 16rem;
+  margin: 0;
+}
+
 /* Footer disclaimer readability */
 .footer__copyright {
   font-size: 0.78rem;

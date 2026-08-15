@@ -348,6 +348,12 @@ def render_flashcards_mdx(rows: list[dict], all_row: dict) -> str:
         link(r, f'Section {r["num"]} — {r["title"]}') for r in rows
     )
 
+    # EPUB size for the Send-to-Kindle card. In CI build_epub.py runs before
+    # this builder (deploy.yml order matters); locally an older build may sit
+    # there — either way the size is cosmetic, so fall back to omitting it.
+    epub_path = DOWNLOADS_DIR / "certiq-study-book.epub"
+    epub_size = f" · {human_size(epub_path.stat().st_size)}" if epub_path.exists() else ""
+
     return f"""---
 sidebar_position: 11
 title: Flashcards (Anki)
@@ -386,13 +392,25 @@ Or grab a single section:
 
 ## Kindle & e-readers
 
-No Anki on your device? The same content ships as an EPUB study book: Part I is the study layer (objectives, primers, key facts per section), Part II is the full question bank with each answer on the page *after* its question — so nothing is spoiled while you think.
+No Anki on your device? The same content ships as an EPUB study book: Part I is the study layer (a short primer, the must-know facts and traps, and an exam checklist per section), Part II is the full question bank with each answer on the page *after* its question — so nothing is spoiled while you think.
 
-<ul className="download-list">
-    <li><Download file="certiq-study-book.epub"><b>CertiQ Study Book (EPUB)</b></Download> <span className="dl-meta">— study chapters + full question bank</span></li>
-</ul>
+### Send to Kindle
 
-**Send it to a Kindle:** e-mail the file to your device's Send-to-Kindle address (find it under Amazon → Manage Your Content and Devices → Preferences), or use Amazon's [Send to Kindle](https://www.amazon.com/sendtokindle) page/app. Any other e-reader (Kobo, Boox, Apple Books) opens the EPUB directly.
+<div className="kindle-cta">
+  <a className="button button--primary" href={{useBaseUrl('/downloads/certiq-study-book.epub')}} download><b>Get the book</b>&nbsp;(EPUB{epub_size})</a>
+  <a className="button button--secondary" href="https://www.amazon.com/sendtokindle" target="_blank" rel="noopener noreferrer">Open Amazon Send-to-Kindle&nbsp;↗</a>
+</div>
+
+1. Click both buttons — the book downloads and Amazon's page opens in a new tab.
+2. Sign in and drop the just-downloaded file onto the page (it's in your browser's downloads shelf).
+3. Pick your device — the book appears in your Kindle library within a minute or two.
+
+<div className="kindle-qr-row">
+  <img src={{useBaseUrl('/img/kindle-epub-qr.svg')}} alt="QR code linking directly to the EPUB study book download" />
+  <p><b>On a phone it's even lighter:</b> scan the code (or tap <b>Get the book</b> on your phone) and the file arrives there directly — then <b>Share&nbsp;→ Kindle</b> sends it to your library with no file juggling. <b>Prefer e-mail?</b> Attach the EPUB to a mail to your <code>…@kindle.com</code> address (see it under Amazon → Manage Your Content and Devices → Preferences).</p>
+</div>
+
+Any other e-reader (Kobo, Boox, Apple Books) opens the EPUB directly — no Amazon step needed.
 
 ## Which app on which device?
 

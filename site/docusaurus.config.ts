@@ -1,6 +1,7 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import {familyFooterColumn} from './family-footer';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -118,6 +119,7 @@ const config: Config = {
             },
           ],
         },
+        // + "Fun with Quantum family" column, appended by createConfig() below.
       ],
       copyright: `Unofficial community project — not affiliated with, endorsed by, or sponsored by IBM. Qiskit is a trademark of IBM. Practice content is generated from public exam objectives and open documentation, never from actual exam content. Code Apache-2.0 · content CC BY-SA 4.0.`,
     },
@@ -129,4 +131,9 @@ const config: Config = {
   } satisfies Preset.ThemeConfig,
 };
 
-export default config;
+// Async config: the family footer column comes from the shared manifest at build time.
+export default async function createConfig(): Promise<Config> {
+  const themeConfig = config.themeConfig as {footer: {links: unknown[]}};
+  themeConfig.footer.links.push(await familyFooterColumn('certiq'));
+  return config;
+}

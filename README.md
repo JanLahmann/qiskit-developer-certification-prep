@@ -29,3 +29,11 @@ Early build (started 2026-07-19). See `PRD.md` §8 for the delivery plan.
 ## License
 
 Code: [Apache-2.0](LICENSE). Original learning content (questions, explanations, guides): CC BY-SA 4.0. Official IBM/Qiskit resources are linked, not copied; community practice exams are linked and credited, never republished.
+
+<!-- FWQ-FAMILY:START format=list — generated from family.json in JanLahmann/Fun-with-Quantum, do not edit by hand -->
+## Part of the Fun with Quantum family
+
+This project is part of [**Fun with Quantum**](https://fun-with-quantum.org), a family of open-source quantum outreach projects: [Fun with Quantum](https://fun-with-quantum.org) · [RasQberry Two](https://rasqberry.org) · [RasQberry One](https://rasqberry.one) · [Quantego](https://quantego.org) · [Qutie](https://qutie.org) · [Qoffee-Maker](https://qoffee-maker.org) · [Entangible](https://entangible.org) · [QuBins](https://qubins.org) · [QAMPoser](https://qamposer.org).
+
+*God does play dice. Come play, build, learn.*
+<!-- FWQ-FAMILY:END -->

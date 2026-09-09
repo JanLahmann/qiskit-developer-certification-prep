@@ -25,6 +25,17 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
 
+  // Umami analytics — shared Fun with Quantum family property (cookie-free, no consent banner).
+  // data-domains keeps local and preview builds out of the numbers.
+  scripts: [
+    {
+      src: 'https://cloud.umami.is/script.js',
+      defer: true,
+      'data-website-id': '97f347ac-e7ba-4be3-b26f-ab4b328bdbf2',
+      'data-domains': 'certiq.dev',
+    },
+  ],
+
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],

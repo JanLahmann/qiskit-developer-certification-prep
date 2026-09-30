@@ -8,7 +8,12 @@
  */
 import vendored from './fwq-family.json';
 
-interface Member { id: string; name: string; url: string; short?: string; footer: boolean }
+interface Member {
+  id: string; name: string;
+  /** Prefix of this site's Umami events ("<label>: <what happened>"); defaults to `name`. */
+  label?: string;
+  url: string; short?: string; footer: boolean;
+}
 interface Manifest { version: number; updated: string; brand: { id: string; name: string; footer_lead: string }; members: Member[] }
 
 const MANIFEST_URL = 'https://raw.githubusercontent.com/JanLahmann/Fun-with-Quantum/master/family/family.json';
@@ -32,15 +37,22 @@ async function loadFamily(): Promise<Manifest> {
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 
+/** Umami event name for a click on a family-footer link on site `selfId`. */
+export function footerEvent(m: Manifest, selfId: string): string {
+  const self = m.members.find((x) => x.id === selfId);
+  return `${self?.label ?? self?.name ?? selfId}: family footer click`;
+}
+
 /** A Docusaurus footer column: every visible member except this site, name + short description. */
 export async function familyFooterColumn(selfId: string) {
   const m = await loadFamily();
+  const clickEvent = esc(footerEvent(m, selfId));
   return {
     title: `${m.brand.name} family`,
     items: m.members
       .filter((x) => x.footer && x.id !== selfId)
       .map((x) => ({
-        html: `<a class="footer__link-item fwq-member" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer" data-umami-event="family-footer" data-umami-event-to="${esc(x.id)}">${esc(x.name)}${x.short ? `<small>${esc(x.short)}</small>` : ''}</a>`,
+        html: `<a class="footer__link-item fwq-member" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer" data-umami-event="${clickEvent}" data-umami-event-to="${esc(x.id)}">${esc(x.name)}${x.short ? `<small>${esc(x.short)}</small>` : ''}</a>`,
       })),
   };
 }

@@ -2,36 +2,36 @@
 
 *Repo-only quality artifact — not linked from the website.*
 
-Scope: **all sections** — 341 questions (311 single-answer, 30 multi-select). Random-guess baseline: **24.1%**. Exam pass line: **69%**.
+Scope: **all sections** — 349 questions (319 single-answer, 30 multi-select). Random-guess baseline: **24.1%**. Exam pass line: **69%**.
 
 ## Blind-guesser scores
 
 | Heuristic | EV accuracy (answered) | Coverage | Est. exam score |
 |---|---|---|---|
-| position_C | 30.9% | 78% | 29.4% |
-| similar_twin_member | 34.8% | 50% | 29.4% |
-| position_A | 30.2% | 79% | 28.9% |
-| position_B | 29.1% | 78% | 28.0% |
-| position_D | 28.9% | 78% | 27.9% |
-| most_absolute | 30.8% | 25% | 25.8% |
-| avoid_longest | 24.7% | 85% | 24.6% |
-| shortest_option | 23.2% | 100% | 23.2% |
-| stem_keyword_overlap | 22.2% | 68% | 22.8% |
-| longest_option | 21.8% | 100% | 21.8% |
-| least_absolute | 14.9% | 25% | 21.8% |
+| similar_twin_member | 34.3% | 50% | 29.2% |
+| position_C | 30.1% | 78% | 28.8% |
+| position_A | 29.9% | 79% | 28.6% |
+| position_B | 29.2% | 78% | 28.1% |
+| position_D | 29.0% | 78% | 27.9% |
+| avoid_longest | 24.8% | 85% | 24.7% |
+| shortest_option | 23.4% | 100% | 23.4% |
+| stem_keyword_overlap | 22.0% | 68% | 22.7% |
+| longest_option | 21.5% | 100% | 21.5% |
 | odd_one_out | 13.4% | 100% | 13.4% |
 | most_hedged | 17.6% | 22% | – |
 | avoid_hedged | 27.8% | 22% | – |
-| code_formatted_only | 19.3% | 15% | – |
-| numeric_middle | 36.5% | 18% | – |
-| largest_image_option | 26.8% | 10% | – |
-| smallest_image_option | 17.4% | 10% | – |
+| least_absolute | 14.8% | 25% | – |
+| most_absolute | 31.6% | 25% | – |
+| code_formatted_only | 20.0% | 15% | – |
+| numeric_middle | 35.5% | 18% | – |
+| largest_image_option | 25.9% | 10% | – |
+| smallest_image_option | 18.8% | 10% | – |
 
 ## Verdicts
 
 - ✅ no aggregate biases above thresholds
 
-## Flagged questions (59)
+## Flagged questions (60)
 
 - `s1-q012` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 82 chars vs longest distractor 70, ratio 1.17) (in >=1 displayed pool variant)
 - `s1-q015` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 70 chars vs longest distractor 69, ratio 1.01) (in >=1 displayed pool variant)
@@ -88,6 +88,7 @@ Scope: **all sections** — 341 questions (311 single-answer, 30 multi-select). 
 - `s7-q024` (spot-bug) — **length_tell** [low]: correct option(s) strictly longest (min correct 79 chars vs longest distractor 68, ratio 1.16) (in >=1 displayed pool variant)
 - `s7-q028` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 107 chars vs longest distractor 97, ratio 1.10) (in >=1 displayed pool variant)
 - `s7-q036` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 39 chars vs longest distractor 37, ratio 1.05) (in >=1 displayed pool variant)
+- `s7-q044` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 26 chars vs longest distractor 23, ratio 1.13) (in >=1 displayed pool variant)
 - `s8-q010` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 96 chars vs longest distractor 94, ratio 1.02) (in >=1 displayed pool variant)
 - `s8-q013` (spot-bug) — **length_tell** [low]: correct option(s) strictly longest (min correct 81 chars vs longest distractor 78, ratio 1.04) (in >=1 displayed pool variant)
 - `s8-q020` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 24 chars vs longest distractor 20, ratio 1.20) (in >=1 displayed pool variant)

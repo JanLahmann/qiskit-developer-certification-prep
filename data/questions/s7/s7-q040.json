@@ -1,0 +1,81 @@
+{
+  "id": "s7-q040",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "A two-PUB Sampler result is saved and reloaded with the Runtime JSON classes. What does this code print?",
+  "code": "import json\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit_ibm_runtime import RuntimeEncoder, RuntimeDecoder\n\ntheta = Parameter(\"theta\")\nbell = QuantumCircuit(2); bell.h(0); bell.cx(0, 1); bell.measure_all()\nrot = QuantumCircuit(1); rot.ry(theta, 0); rot.measure_all()\n\nresult = StatevectorSampler(seed=1).run(\n    [(bell,), (rot, [[0.0], [np.pi], [np.pi / 2]], 50)], shots=200\n).result()\nsaved = json.dumps(result, cls=RuntimeEncoder)\nback = json.loads(saved, cls=RuntimeDecoder)\nbits = back[1].data.meas\nprint(bits.shape, bits.num_shots, back[1].metadata[\"shots\"])",
+  "options": [
+    {
+      "key": "A",
+      "text": "`(3,) 200 200`"
+    },
+    {
+      "key": "B",
+      "text": "`() 150 150`"
+    },
+    {
+      "key": "C",
+      "text": "`(3, 1) 50 50`"
+    },
+    {
+      "key": "D",
+      "text": "`(3,) 50 200`"
+    },
+    {
+      "key": "E",
+      "text": "`(3,) 50 50`"
+    },
+    {
+      "key": "F",
+      "text": "It raises `AttributeError` — the reloaded `meas` is a plain counts dictionary"
+    }
+  ],
+  "answer": [
+    "E"
+  ],
+  "display_count": 4,
+  "explanation": {
+    "correct": "The second PUB binds three parameter-value sets to a one-parameter circuit and carries its own shot count of 50. A PUB-level shot count beats the `shots=200` passed to `run()`, so each of the three sets is sampled 50 times; the `BitArray` therefore has shape `(3,)` (the trailing parameter axis is consumed) and `num_shots` 50, and the PUB's metadata records the 50 it actually used. `RuntimeEncoder`/`RuntimeDecoder` are a lossless pair: the round trip rebuilds the `PrimitiveResult`, its `SamplerPubResult`s, the `DataBin` and a real `BitArray` with the same shape, shots and per-set counts, plus the metadata — so the reloaded object answers exactly like the original.",
+    "distractors": {
+      "A": "Gets the precedence backwards: the `run(..., shots=200)` value is only the fallback for PUBs that do not set their own. This PUB says 50, and both `num_shots` and the metadata report 50.",
+      "B": "Treats the three parameter sets as one pooled sample. Sampler keeps one entry per parameter set, so the `BitArray` keeps shape `(3,)` with 50 shots in each; the 150 total only appears if you merge with a bare `get_counts()`.",
+      "C": "Mistakes the value-array shape `(3, 1)` for the result shape. The last axis holds the circuit's single parameter and is consumed, leaving the shape of the parameter-value sets, `(3,)`.",
+      "D": "Assumes the metadata echoes the request rather than what ran. `metadata[\"shots\"]` reports the shots the PUB actually used — the same 50 the `BitArray` holds.",
+      "F": "That is what happens with a PLAIN `json.loads`, which hands back nested dictionaries. With `cls=RuntimeDecoder` the encoder's type tags are honoured and `meas` comes back as a real `BitArray` with all its methods."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/save-jobs",
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/0.48/runtime-decoder"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q040.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport io, contextlib, traceback\nCODE = 'import json\\nimport numpy as np\\nfrom qiskit import QuantumCircuit\\nfrom qiskit.circuit import Parameter\\nfrom qiskit.primitives import StatevectorSampler\\nfrom qiskit_ibm_runtime import RuntimeEncoder, RuntimeDecoder\\n\\ntheta = Parameter(\"theta\")\\nbell = QuantumCircuit(2); bell.h(0); bell.cx(0, 1); bell.measure_all()\\nrot = QuantumCircuit(1); rot.ry(theta, 0); rot.measure_all()\\n\\nresult = StatevectorSampler(seed=1).run(\\n    [(bell,), (rot, [[0.0], [np.pi], [np.pi / 2]], 50)], shots=200\\n).result()\\nsaved = json.dumps(result, cls=RuntimeEncoder)\\nback = json.loads(saved, cls=RuntimeDecoder)\\nbits = back[1].data.meas\\nprint(bits.shape, bits.num_shots, back[1].metadata[\"shots\"])'\nbuf = io.StringIO()\nerr = None\ntry:\n    with contextlib.redirect_stdout(buf):\n        exec(CODE, {\"__name__\": \"__main__\"})\nexcept Exception as exc:\n    err = f\"{type(exc).__name__}: {exc}\"\nout = buf.getvalue().strip()\n\n# Independent observation: the same result BEFORE the round trip, and the decoded types.\nimport json\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorSampler, BitArray\nfrom qiskit_ibm_runtime import RuntimeEncoder, RuntimeDecoder\ntheta = Parameter(\"theta\")\nbell = QuantumCircuit(2); bell.h(0); bell.cx(0, 1); bell.measure_all()\nrot = QuantumCircuit(1); rot.ry(theta, 0); rot.measure_all()\nres = StatevectorSampler(seed=1).run([(bell,), (rot, [[0.0], [np.pi], [np.pi / 2]], 50)], shots=200).result()\nback = json.loads(json.dumps(res, cls=RuntimeEncoder), cls=RuntimeDecoder)\nbefore = (res[1].data.meas.shape, res[1].data.meas.num_shots, res[1].metadata[\"shots\"])\nafter_type = type(back[1].data.meas).__name__\ncounts_equal = all(back[1].data.meas.get_counts(loc=i) == res[1].data.meas.get_counts(loc=i) for i in range(3))\n\nclaims = {\"A\": \"(3,) 200 200\", \"B\": \"() 150 150\", \"C\": \"(3, 1) 50 50\", \"D\": \"(3,) 50 200\", \"E\": \"(3,) 50 50\"}\nflags = {k: (err is None and out == v) for k, v in claims.items()}\nflags[\"F\"] = err is not None\nevidence = {k: f\"code printed {out!r}; option claims {v!r} -> match={flags[k]}\" for k, v in claims.items()}\nevidence[\"F\"] = (f\"code ran without error ({err}); decoded field is a {after_type}, per-set counts identical \"\n                 f\"to the original: {counts_equal} -> match={flags['F']}\")\nemit_verdict({\"answer\": sorted(k for k, v in flags.items() if v), \"evidence\": evidence,\n              \"observed\": {\"stdout\": out, \"error\": err, \"before_roundtrip\": str(before),\n                           \"decoded_type\": after_type, \"counts_equal\": counts_equal}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 d3: RuntimeEncoder/Decoder round trip x multi-PUB layout x PUB-level shots x metadata. Proof execs the DISPLAYED code and compares literal stdout '(3,) 50 50' to every option; also observes the pre-round-trip values and that per-set counts survive."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

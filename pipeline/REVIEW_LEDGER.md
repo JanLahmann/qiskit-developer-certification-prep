@@ -2346,3 +2346,83 @@ claims compared to captured stdout, raise-claims scored from the observed run). 
   Section audit after: 0 blockers / 0 warnings, the same 7 pre-existing low `length_tell`
   keepers, no flag on any add; `shortest_option` 20.2% -> 21.1%, `position_C`
   36.6% -> 34.7%. Answer keys of the adds: A2 C2 D2 E3 (B avoided — it led s6 with 9).
+
+## R2 expansion — s7 (2026-10-01, qiskit 2.5.0 / runtime 0.48.0)
+
+Six adds s7-q039..q044 (d2 ×2, d3 ×4; no figures; 5 executed, 1 conceptual; 2 session-
+concept items q039/q042). Measured in the pinned venv:
+
+- **The REAL `QiskitRuntimeService.jobs()/job()` can be executed offline:** the harness
+  patch replaces the class, but `importlib.reload(qiskit_ibm_runtime.qiskit_runtime_service)`
+  restores it; `object.__new__(cls)` + `_active_api_client = <in-memory stub with
+  jobs_get/job_get and _instance=None>` + `_api_clients = {}` runs the library's own paging
+  and `_decode_job` (omit `"backend"` from raw job dicts). Server-side filters
+  (`session_id`, `pending`, `descending`) are the stub's — cite the API docstring for those.
+- **Default `limit=10` truncates silently:** 14 session jobs -> `jobs(session_id=sid)` 10
+  (newest), `descending=False` 10 (oldest), `pending=False` 10; `limit=None` pages to all 14.
+  **`limit=0` ALSO returns all 14** (`limit or 20` and `if limit:` treat 0 as no limit) —
+  never offer it as a distractor. `service.job(session_id)` -> `RuntimeJobNotFound`.
+- `RuntimeJobV2.session_id`, `creation_date`, `tags`, `primitive_id`, `inputs` are
+  PROPERTIES; `job_id()`, `status()`, `backend()`, `metrics()`, `logs()`,
+  `error_message()` are methods. Local-mode `LocalRuntimeJob.session_id` returns the JOB id
+  and `Session(backend=fake).session_id`/`details()`/`status()` are None — never prove
+  session-ID facts with local mode.
+- **Errored job (subclass-pin trick, add `_result_decoders = []`, `_reason = None`,
+  `_reason_code = None`):** `result()` returns control at once (no poll) and raises
+  `RuntimeJobFailureError("Unable to retrieve job result. <msg>")`; `error_message()` returns
+  the stored reason; CANCELLED raises `RuntimeInvalidStateError`. (Reason code 1305 maps a
+  CANCELLED server state to ERROR and raises `RuntimeJobMaxTimeoutError` — unused.)
+- **RuntimeEncoder/Decoder round trip is lossless for a multi-PUB Sampler result:**
+  `PrimitiveResult`/`SamplerPubResult`/`DataBin`/`BitArray` types, shape `(3,)`, per-PUB
+  `num_shots`, per-set counts and `metadata` (`{'shots': 50, 'circuit_metadata': {}}`,
+  top-level `{'version': 2}`) all survive; Runtime EstimatorV2 local metadata
+  (`target_precision`, `shots`) survives too (decodes as `PubResult`).
+- **`BitArray.expectation_values` broadcasts against the bit array's shape:** bits `(2,)`
+  with `["ZI", "IZ"]` ZIPS (`[-1. -1.]` for `ry(t,0); x(1)`, t ∈ {0, π}); `[["ZI"], ["IZ"]]`
+  -> `(2, 2)`. Accepts `0`/`1` projector labels (`"1I"` = P(bit 1 = 1)).
+- Estimator `(2, 1)` observables × `(3, 1)` one-parameter values -> `evs (2, 3)`
+  (observables axis first). Proof hazard: angles 0.2/0.9/1.6 made sin 1.6 ≈ cos 0.2 within
+  0.02 — the uniqueness assert caught it; use 0.5/1.0/2.5.
+- Craft: a backticked `None` in an option counts as the absolute word "none" (medium
+  `absolute_distractor_tell` on q043's first draft; a hedged second distractor did NOT fix it
+  because pool variants drop it) — reword. An evidence string with `limit=20` (page size)
+  tripped `lint_proof_drift`; describe internals in prose. Section after: 0 blockers /
+  0 warnings, the 6 pre-existing low `length_tell` keepers + 1 new (q044, tied-longest
+  `evs[1, 2]`/`evs[2, 1]`), no cross-question duplicate options, `position_C` 36.6% -> 33.5%,
+  `longest_option` 19.2%, `shortest_option` 23.5%. Answer keys of the adds: A1 B1 D2 E2.
+
+## R2 expansion — s2 + s8 (2026-10-01, qiskit 2.5.0)
+
+Two d3 adds: s2-q047 (option-image, 5 Bloch-multivector renders, dc=4, key B) and
+s8-q030 (mcq, dc=4, key E). Both executed. Measured in the pinned venv:
+
+- **`plot_bloch_multivector` draws REDUCED-state vectors, shortened for entangled
+  qubits.** `ry(2π/3, 0); cx(0, 1); h(1)` -> qubit 0 (0, 0, −0.5), qubit 1 (−0.5, 0, 0)
+  (`_bloch_multivector_data` and `partial_trace` agree); probabilities 0.125/0.375 each
+  on 00/01/10/11. The half-length arrows are clearly visible in the render. Variants:
+  swapped roles `ry(T,1); cx(1,0); h(0)`; pure-state look-alike `x(0); x(1); h(1)`
+  (full-length −z / −x); CX dropped `ry(T,0); h(1)` (q0 (0.87, 0, −0.5), q1 +x); sign
+  error `... cx; x(1); h(1)` (q1 +0.5 x, q0 unchanged). Renders 216507–216509 B (keyed
+  tied smallest with the swap variant). Avoided the s1-q051 "state from a product-state
+  Bloch figure" shape on purpose.
+- **qasm2 exporter accepts exactly one condition form:** an `if_test((register, int))`
+  with no `else`, emitted `if (c == 1) x q[1];`. `(c[0], 1)`, `expr.equal(c, 1)`,
+  `expr.logic_not(c)`, `expr.lift(c[0])` all raise `QASM2ExportError: 'OpenQASM 2 only
+  supports register-equality conditions'`; an `else` raises `"OpenQASM 2 does not support
+  'else' statements"`. `qasm3.dumps` exports all: `if (c == 1) {` for BOTH the tuple and
+  `expr.equal(c, 1)` (identical line), `if (c[0]) {`, `if (!c) {`, `} else {`.
+- **Tuple conditions skip the width check:** `if_test((c, 5))` on a 2-bit register builds
+  and qasm2 exports `if (c == 5)`; `(c, True)` exports `if (c == 1)`. Never offer
+  "value wider than the register" or a bool value as a refused distractor. By contrast
+  `expr.equal(c, 7)` raises `TypeError: integer literal '7' is wider than the other
+  operand`. `(c, 1.0)` / `(1, c)` / bare `c` raise `CircuitError` at construction.
+- **Spec-vs-exporter hazard (do NOT build an item on it):** `expr.equal(a, b)` with
+  `a` 2-bit and `b` 3-bit promotes `a` (explicit `Cast` to `Uint(3)`) and qasm3 emits
+  `if (uint[3](a) == b)` — but the OpenQASM 3 spec (types.rst) only allows
+  `bit[n] -> uint[m]` when n == m. Relational ops promote unequal widths;
+  `expr.bit_and` of widths 2 and 3 raises `TypeError` ("same width"). `expr.logic_not(c)`
+  carries an IMPLICIT bool cast that the exporter omits (`!c`).
+- Craft: s8-q030 first draft had the keyed option strictly shortest in every pool
+  variant (`shortest_option` 25.8% -> 29.7%); shortening the else-distractor to a tie
+  brought it to 27.8%. Section audits after: s2 0/0, same 8 low length keepers; s8 0/0,
+  same 4 low length keepers; no flag on either add.

@@ -1,0 +1,66 @@
+{
+  "id": "s7-q042",
+  "section": "s7",
+  "objectives": [
+    "s7o1",
+    "s7o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "Mid-session, you call `service.jobs(session_id=sid, pending=True)`. Which jobs does it return?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "Up to 10 of the session's jobs whose state is `QUEUED` or `RUNNING`"
+    },
+    {
+      "key": "B",
+      "text": "Up to 10 of the session's jobs whose state is `DONE`, `CANCELLED` or `ERROR`"
+    },
+    {
+      "key": "C",
+      "text": "Up to 10 of the session's jobs whose state is `QUEUED`; running ones are left out"
+    },
+    {
+      "key": "D",
+      "text": "The session's jobs, returned once its queued and running ones reach a final state"
+    },
+    {
+      "key": "E",
+      "text": "Up to 10 of the session's jobs whose results have not been retrieved yet"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "display_count": 4,
+  "explanation": {
+    "correct": "`QiskitRuntimeService.jobs()` combines filters. `session_id=` restricts the list to jobs that ran in that session, and `pending=True` keeps only jobs that have not reached a final state — the API reference defines it as including `QUEUED` and `RUNNING` jobs, while `pending=False` selects `DONE`, `CANCELLED` and `ERROR`. The call is a non-blocking query, and because `limit` was not set it still caps the list at its default of 10. It is a quick way to see what a session still has in flight before you close it or wait on results.",
+    "distractors": {
+      "B": "That is the `pending=False` filter. The final states `DONE`, `CANCELLED` and `ERROR` are the opposite of pending.",
+      "C": "Splits 'pending' too narrowly. A running job has not finished either, so the `pending=True` filter includes both `QUEUED` and `RUNNING`.",
+      "D": "Treats the filter as a wait. `service.jobs()` is a one-shot query that returns immediately; waiting is what `job.result()` or `job.wait_for_final_state()` does, job by job.",
+      "E": "'Pending' refers to the job's execution state, not to whether you have downloaded its results. The service keeps results for finished jobs whether or not you have read them, and those jobs are not pending."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/0.48/qiskit-runtime-service",
+      "https://quantum.cloud.ibm.com/docs/guides/monitor-job",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/0.48/runtime-job-v2"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 session-concept item: job filtering by session + pending state semantics. Conceptual because the pending/session filters are applied server-side; checked against the 0.48 QiskitRuntimeService API page (fetched 2026-10-01): 'pending - If True, QUEUED and RUNNING jobs are included. If False, DONE, CANCELLED and ERROR jobs are included'; 'limit - Number of jobs to retrieve. None means no limit' with default 10 (signature; installed 0.48 source agrees). Default limit also proven by s7-q039's executed proof."
+  }
+}

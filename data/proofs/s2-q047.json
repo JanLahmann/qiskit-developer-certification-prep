@@ -1,0 +1,106 @@
+{
+  "question": "s2-q047",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "figure draws Bloch vectors (x, y, z) qubit 0 (-0.5, 0.0, 0.0) len 0.5, qubit 1 (0.0, 0.0, -0.5) len 0.5 vs the stem's [(0.0, 0.0, -0.5), (-0.5, 0.0, 0.0)] -> match=False",
+      "B": "figure draws Bloch vectors (x, y, z) qubit 0 (0.0, 0.0, -0.5) len 0.5, qubit 1 (-0.5, 0.0, 0.0) len 0.5 vs the stem's [(0.0, 0.0, -0.5), (-0.5, 0.0, 0.0)] -> match=True",
+      "C": "figure draws Bloch vectors (x, y, z) qubit 0 (0.0, 0.0, -1.0) len 1.0, qubit 1 (-1.0, 0.0, 0.0) len 1.0 vs the stem's [(0.0, 0.0, -0.5), (-0.5, 0.0, 0.0)] -> match=False",
+      "D": "figure draws Bloch vectors (x, y, z) qubit 0 (0.866, 0.0, -0.5) len 1.0, qubit 1 (1.0, 0.0, 0.0) len 1.0 vs the stem's [(0.0, 0.0, -0.5), (-0.5, 0.0, 0.0)] -> match=False",
+      "E": "figure draws Bloch vectors (x, y, z) qubit 0 (0.0, 0.0, -0.5) len 0.5, qubit 1 (0.5, 0.0, 0.0) len 0.5 vs the stem's [(0.0, 0.0, -0.5), (-0.5, 0.0, 0.0)] -> match=False"
+    },
+    "observed": {
+      "A": [
+        [
+          -0.5,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          -0.5
+        ]
+      ],
+      "B": [
+        [
+          0.0,
+          0.0,
+          -0.5
+        ],
+        [
+          -0.5,
+          0.0,
+          0.0
+        ]
+      ],
+      "C": [
+        [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "D": [
+        [
+          0.866,
+          0.0,
+          -0.5
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "E": [
+        [
+          0.0,
+          0.0,
+          -0.5
+        ],
+        [
+          0.5,
+          0.0,
+          0.0
+        ]
+      ],
+      "stem": [
+        [
+          0.0,
+          0.0,
+          -0.5
+        ],
+        [
+          -0.5,
+          0.0,
+          0.0
+        ]
+      ],
+      "stem_probabilities": {
+        "00": 0.125,
+        "01": 0.375,
+        "10": 0.125,
+        "11": 0.375
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 2.5,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"figure draws Bloch vectors (x, y, z) qubit 0 (-0.5, 0.0, 0.0) len 0.5, qubit 1 (0.0, 0.0, -0.5) len 0.5 vs the stem's [(0.0, 0.0, -0.5), (-0.5, 0.0, 0.0)] -> match=False\", \"B\": \"figure draws Bloch vectors (x, y, z) qubit 0 (0.0, 0.0, -0.5) len 0.5, qubit 1 (-0.5, 0.0, 0.0) len 0.5 vs the stem's [(0.0, 0.0, -0.5), (-0.5, 0.0, 0.0)] -> match=True\", \"C\": \"figure draws Bloch vectors (x, y, z) qubit 0 (0.0, 0.0, -1.0) len 1.0, qubit 1 (-1.0, 0.0, 0.0) len 1.0 vs the stem's [(0.0, 0.0, -0.5), (-0.5, 0.0, 0.0)] -> match=False\", \"D\": \"figure draws Bloch vectors (x, y, z) qubit 0 (0.866, 0.0, -0.5) len 1.0, qubit 1 (1.0, 0.0, 0.0) len 1.0 vs the stem's [(0.0, 0.0, -0.5), (-0.5, 0.0, 0.0)] -> match=False\", \"E\": \"figure draws Bloch vectors (x, y, z) qubit 0 (0.0, 0.0, -0.5) len 0.5, qubit 1 (0.5, 0.0, 0.0) len 0.5 vs the stem's [(0.0, 0.0, -0.5), (-0.5, 0.0, 0.0)] -> match=False\"}, \"observed\": {\"A\": [[-0.5, 0.0, 0.0], [0.0, 0.0, -0.5]], \"B\": [[0.0, 0.0, -0.5], [-0.5, 0.0, 0.0]], \"C\": [[0.0, 0.0, -1.0], [-1.0, 0.0, 0.0]], \"D\": [[0.866, 0.0, -0.5], [1.0, 0.0, 0.0]], \"E\": [[0.0, 0.0, -0.5], [0.5, 0.0, 0.0]], \"stem\": [[0.0, 0.0, -0.5], [-0.5, 0.0, 0.0]], \"stem_probabilities\": {\"00\": 0.125, \"01\": 0.375, \"10\": 0.125, \"11\": 0.375}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

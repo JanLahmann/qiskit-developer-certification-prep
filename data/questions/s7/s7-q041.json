@@ -1,0 +1,76 @@
+{
+  "id": "s7-q041",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "`bits` holds both parameter sets of this sweep. What does the last line print?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorSampler\n\nt = Parameter(\"t\")\nqc = QuantumCircuit(2); qc.ry(t, 0); qc.x(1); qc.measure_all()\nresult = StatevectorSampler(seed=1).run([(qc, [[0.0], [np.pi]])], shots=100).result()\nbits = result[0].data.meas   # shape (2,)\nprint(bits.expectation_values([\"ZI\", \"IZ\"]))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`[ 1. -1.]`"
+    },
+    {
+      "key": "B",
+      "text": "`[-1.  0.]`"
+    },
+    {
+      "key": "C",
+      "text": "`[1. 1.]`"
+    },
+    {
+      "key": "D",
+      "text": "`[-1. -1.]`"
+    },
+    {
+      "key": "E",
+      "text": "It raises `ValueError` — a list of labels needs a single-set `BitArray`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "display_count": 4,
+  "explanation": {
+    "correct": "`BitArray.expectation_values` BROADCASTS the observables against the bit array's own shape. `bits` has shape `(2,)` (one entry per parameter set) and the label list also has shape `(2,)`, so they zip: `\"ZI\"` is evaluated on set 0 and `\"IZ\"` on set 1. Labels are little-endian — the rightmost character acts on bit 0 — so `\"ZI\"` reads qubit 1, which `x(1)` pins to 1 in every shot: −1. In set 1, `ry(π)` flips qubit 0 to 1, so `\"IZ\"` is also −1 (outcome 1 has Z eigenvalue −1). Result: `[-1. -1.]`.",
+    "distractors": {
+      "A": "Reads the Pauli label left to right as qubit 0 first. Then set 0 would measure qubit 0 (still 0, giving +1) and set 1 qubit 1 (giving −1) — but Qiskit labels put qubit 0 on the RIGHT.",
+      "B": "Assumes each observable is averaged over the whole sweep, as if the sets were pooled into one sample first (what a bare `get_counts()` does). The bit array keeps its `(2,)` shape and broadcasting pairs one label with one set.",
+      "C": "Flips the eigenvalue convention, scoring outcome 1 as +1. For Z, outcome 0 is +1 and outcome 1 is −1, so qubits pinned to 1 give −1.",
+      "E": "Broadcasting is exactly what makes this legal: the `(2,)` label list matches the `(2,)` bit array. A shape mismatch (for example three labels against two sets) is what raises `ValueError`; a `(2, 1)` list would broadcast to a `(2, 2)` table instead."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q041.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport io, contextlib\nCODE = 'import numpy as np\\nfrom qiskit import QuantumCircuit\\nfrom qiskit.circuit import Parameter\\nfrom qiskit.primitives import StatevectorSampler\\n\\nt = Parameter(\"t\")\\nqc = QuantumCircuit(2); qc.ry(t, 0); qc.x(1); qc.measure_all()\\nresult = StatevectorSampler(seed=1).run([(qc, [[0.0], [np.pi]])], shots=100).result()\\nbits = result[0].data.meas   # shape (2,)\\nprint(bits.expectation_values([\"ZI\", \"IZ\"]))'\nbuf = io.StringIO()\nerr = None\ntry:\n    with contextlib.redirect_stdout(buf):\n        exec(CODE, {\"__name__\": \"__main__\"})\nexcept Exception as exc:\n    err = f\"{type(exc).__name__}: {exc}\"\nout = buf.getvalue().strip()\n\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorSampler, BitArray\nt = Parameter(\"t\")\nqc = QuantumCircuit(2); qc.ry(t, 0); qc.x(1); qc.measure_all()\nbits = StatevectorSampler(seed=1).run([(qc, [[0.0], [np.pi]])], shots=100).result()[0].data.meas\nreal = bits.expectation_values([\"ZI\", \"IZ\"])\n# Misconception models, each EXECUTED (never derived by hand):\nreversed_labels = bits.expectation_values([lab[::-1] for lab in [\"ZI\", \"IZ\"]])   # qubit 0 = leftmost char\nmerged = BitArray.from_counts(bits.get_counts()).expectation_values([\"ZI\", \"IZ\"])  # sets pooled first\nsign_flip = -real                                                                   # outcome 1 -> +1\nouter = bits.expectation_values([[\"ZI\"], [\"IZ\"]])\ns = {\"A\": str(reversed_labels), \"B\": str(merged), \"C\": str(sign_flip), \"D\": str(real)}\nassert len(set(s.values())) == 4, s\n\nclaims = {\"A\": \"[ 1. -1.]\", \"B\": \"[-1.  0.]\", \"C\": \"[1. 1.]\", \"D\": \"[-1. -1.]\"}\nflags = {k: (err is None and out == v) for k, v in claims.items()}\nflags[\"E\"] = err is not None and \"ValueError\" in err\nnotes = {\"A\": f\"reading labels qubit-0-first gives {s['A']}\", \"B\": f\"pooling both sets first gives {s['B']}\",\n         \"C\": f\"scoring outcome 1 as +1 gives {s['C']}\", \"D\": \"this is the per-set zip of the two labels\"}\nevidence = {k: f\"code printed {out!r}; option claims {v!r} ({notes[k]}) -> match={flags[k]}\" for k, v in claims.items()}\nevidence[\"E\"] = (f\"no exception ({err}); bits.shape={bits.shape} broadcasts with the (2,) label list, while a \"\n                 f\"(2, 1) list gives shape {outer.shape} -> match={flags['E']}\")\nemit_verdict({\"answer\": sorted(k for k, v in flags.items() if v), \"evidence\": evidence,\n              \"observed\": {\"stdout\": out, \"error\": err, \"bits_shape\": list(bits.shape),\n                           \"counts\": bits.get_counts(), \"models\": s, \"outer_shape\": list(outer.shape)}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 d3: BitArray.expectation_values broadcasting (bit-array shape (2,) zips with a (2,) label list) x little-endian labels x Z eigenvalue sign. Proof execs the DISPLAYED code, compares literal stdout, and executes each misconception model (reversed labels via label[::-1], pooled counts via from_counts(get_counts()), sign flip) to confirm all four printed forms are distinct."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

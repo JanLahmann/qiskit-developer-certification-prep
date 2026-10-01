@@ -1,0 +1,77 @@
+{
+  "id": "s8-q030",
+  "section": "s8",
+  "objectives": [
+    "s8o2",
+    "s8o3"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "Which replacement for `COND` lets `qasm2.dumps(qc)` export this circuit?",
+  "code": "from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, qasm2\nfrom qiskit.circuit.classical import expr\n\nc = ClassicalRegister(2, \"c\")\nqc = QuantumCircuit(QuantumRegister(2, \"q\"), c)\nqc.h(0)\nqc.measure(0, c[0])\nwith qc.if_test(COND):\n    qc.x(1)\n\ntext = qasm2.dumps(qc)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`expr.equal(c, 1)`, with no `else` block"
+    },
+    {
+      "key": "B",
+      "text": "`(c[0], 1)`, with no `else` block"
+    },
+    {
+      "key": "C",
+      "text": "`(c, 1)`, with an `else` block"
+    },
+    {
+      "key": "D",
+      "text": "`expr.logic_not(c)`, with no `else` block"
+    },
+    {
+      "key": "E",
+      "text": "`(c, 1)`, with no `else` block"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "explanation": {
+    "correct": "OpenQASM 2 has exactly one conditional form: `if (creg == int) <single operation>;`, which tests a whole classical register against an integer and has no `else`. Qiskit's OpenQASM 2 exporter therefore accepts only an `if_test` whose condition is the classic `(register, value)` tuple and whose block has no false branch; it writes `if (c == 1) x q[1];`. Every other form raises `QASM2ExportError`, even when it means the same thing — while `qasm3.dumps` exports all five variants, because OpenQASM 3 has full `if`/`else` blocks over classical expressions.",
+    "distractors": {
+      "A": "Same meaning, different representation: `expr.equal(c, 1)` builds a classical-expression condition. `qasm3.dumps` writes it as the identical `if (c == 1)`, but the OpenQASM 2 exporter only maps the `(register, value)` tuple form and rejects the expression with `QASM2ExportError`.",
+      "B": "Single-bit condition: OpenQASM 2 can only compare a WHOLE register, so `(c[0], 1)` has no OpenQASM 2 spelling; the exporter raises 'only supports register-equality conditions' instead of rewriting it.",
+      "C": "`else` assumed to be emitted as a second, negated `if`: OpenQASM 2 has no `else` and no `!=`, so a false branch (here applying `z(1)`) makes the exporter raise 'does not support else statements'. Only OpenQASM 3 has `if (...) { } else { }`.",
+      "D": "Boolean test of a register read as `if (c == 0)`: `logic_not(c)` is an expression (exported to OpenQASM 3 as `if (!c)`), and the OpenQASM 2 exporter refuses every expression condition rather than translating it into a register comparison."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm2",
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm2",
+      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s8-q030.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, qasm2, qasm3\nfrom qiskit.circuit.classical import expr\n\n# Each option = (condition builder, whether an else block applying z(1) is added).\nOPTIONS = {\n    \"A\": (lambda c: expr.equal(c, 1), False),\n    \"B\": (lambda c: (c[0], 1), False),\n    \"C\": (lambda c: (c, 1), True),\n    \"D\": (lambda c: expr.logic_not(c), False),\n    \"E\": (lambda c: (c, 1), False),\n}\n\n\ndef build(cond, with_else):\n    c = ClassicalRegister(2, \"c\")\n    qc = QuantumCircuit(QuantumRegister(2, \"q\"), c)\n    qc.h(0)\n    qc.measure(0, c[0])\n    if with_else:\n        with qc.if_test(cond(c)) as else_:\n            qc.x(1)\n        with else_:\n            qc.z(1)\n    else:\n        with qc.if_test(cond(c)):\n            qc.x(1)\n    return qc\n\n\ndef if_lines(text):\n    return [ln.strip() for ln in text.splitlines() if ln.strip().startswith((\"if\", \"} else\"))]\n\n\nproven, evidence, observed = [], {}, {}\nqasm3_if = {}\nfor key, (cond, with_else) in sorted(OPTIONS.items()):\n    qc = build(cond, with_else)\n    q3 = qasm3.dumps(qc)  # every variant is representable in OpenQASM 3\n    qasm3_if[key] = if_lines(q3)\n    try:\n        text = qasm2.dumps(qc)\n        outcome = \"qasm2.dumps succeeds, emits \" + repr(if_lines(text))\n        proven.append(key)\n    except Exception as exc:  # noqa: BLE001 - we record the exact refusal\n        outcome = f\"qasm2.dumps raises {type(exc).__name__}: {exc}\"\n    observed[key] = {\"qasm2\": outcome, \"qasm3_if\": qasm3_if[key]}\n    evidence[key] = f\"{outcome}; qasm3.dumps emits {qasm3_if[key]}\"\n\n# The expression form is the same comparison: identical OpenQASM 3 condition line.\nassert qasm3_if[\"A\"] == qasm3_if[\"E\"], (qasm3_if[\"A\"], qasm3_if[\"E\"])\nobserved[\"same_qasm3_condition_A_E\"] = qasm3_if[\"A\"] == qasm3_if[\"E\"]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, s2+s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 d3 add: OpenQASM 2's single conditional form (whole register == int, no else) interacting with Qiskit's two condition representations (legacy tuple vs classical Expr) — the semantically identical expr.equal(c, 1) is refused by the OpenQASM 2 exporter while qasm3.dumps emits the same `if (c == 1)`. The proof builds all five variants, attempts qasm2.dumps on each, and records the qasm3 condition lines."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

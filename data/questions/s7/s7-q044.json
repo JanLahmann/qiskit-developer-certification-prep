@@ -1,0 +1,75 @@
+{
+  "id": "s7-q044",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "Which expression gives ⟨X⟩ at the third angle of this Estimator sweep?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1); qc.ry(theta, 0)\nangles = [[0.5], [1.0], [2.5]]\nobservables = [[SparsePauliOp(\"Z\")], [SparsePauliOp(\"X\")]]\nresult = StatevectorEstimator().run([(qc, observables, angles)]).result()\nvalue = ...  # <X> at the third angle",
+  "options": [
+    {
+      "key": "A",
+      "text": "`result[0].data.evs[2, 1]`"
+    },
+    {
+      "key": "B",
+      "text": "`result[1].data.evs[2]`"
+    },
+    {
+      "key": "C",
+      "text": "`result[0].data.evs[1]`"
+    },
+    {
+      "key": "D",
+      "text": "`result[0].data.evs[1, 2]`"
+    },
+    {
+      "key": "E",
+      "text": "`result[0].data.evs[5]`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "display_count": 4,
+  "explanation": {
+    "correct": "There is ONE PUB, so everything lives in `result[0]`. Its `evs` array has the broadcast shape of the observables and the parameter-value sets. The observables array is `(2, 1)`; the angle array is `(3, 1)`, whose last axis is the circuit's single parameter, so it describes `(3,)` value sets. Broadcasting `(2, 1)` against `(3,)` gives `(2, 3)`: rows follow the observables (`Z`, then `X`), columns follow the angles. ⟨X⟩ at the third angle is therefore row 1, column 2: `evs[1, 2]` (sin 2.5 ≈ 0.598).",
+    "distractors": {
+      "A": "Assumes the parameter axis comes first. Broadcasting puts the observables' extra leading axis first here, so `evs` is `(2, 3)` and row index 2 is out of range — `IndexError`.",
+      "B": "Treats each observable row as its own PUB. A single `(circuit, observables, values)` tuple is one PUB however many observables it carries, so `result` has length 1 and `result[1]` raises `IndexError`.",
+      "C": "Selects the right row but stops there: `evs[1]` is ⟨X⟩ at all three angles, a length-3 array, not the single value asked for.",
+      "E": "Treats `evs` as a flat list of six numbers. It is a 2-D `(2, 3)` array, so a single integer indexes rows, and row 5 does not exist — `IndexError`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q044.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp, Statevector\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1); qc.ry(theta, 0)\nangles = [[0.5], [1.0], [2.5]]\nobservables = [[SparsePauliOp(\"Z\")], [SparsePauliOp(\"X\")]]\nresult = StatevectorEstimator().run([(qc, observables, angles)]).result()\n\n# Independent reference: <X> of the bound circuit at the third angle via Statevector.\nref = float(np.real(Statevector(qc.assign_parameters([2.5])).expectation_value(SparsePauliOp(\"X\"))))\nothers = [float(np.real(Statevector(qc.assign_parameters([a])).expectation_value(SparsePauliOp(p))))\n          for a in (0.5, 1.0, 2.5) for p in (\"Z\", \"X\") if not (a == 2.5 and p == \"X\")]\nassert all(abs(ref - o) > 0.05 for o in others), others\n\nexprs = {\n    \"A\": \"result[0].data.evs[2, 1]\",\n    \"B\": \"result[1].data.evs[2]\",\n    \"C\": \"result[0].data.evs[1]\",\n    \"D\": \"result[0].data.evs[1, 2]\",\n    \"E\": \"result[0].data.evs[5]\",\n}\nflags, evidence, observed = {}, {}, {\"evs_shape\": list(result[0].data.evs.shape), \"reference\": round(ref, 6)}\nfor k, e in exprs.items():\n    try:\n        v = eval(e)\n    except Exception as exc:\n        flags[k] = False\n        evidence[k] = f\"{e} raised {type(exc).__name__}: {exc} (evs shape {result[0].data.evs.shape}) -> match=False\"\n        continue\n    arr = np.asarray(v)\n    ok = arr.ndim == 0 and abs(float(arr) - ref) < 1e-9\n    flags[k] = ok\n    evidence[k] = (f\"{e} gave {np.round(arr, 4).tolist()} (ndim {arr.ndim}); reference <X> at angle 2.5 is \"\n                   f\"{ref:.4f} -> match={ok}\")\nemit_verdict({\"answer\": sorted(k for k, v in flags.items() if v), \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 d3: result layout of a broadcast Estimator PUB (observables (2,1) x one-parameter values (3,1) -> evs (2,3)) x PUB indexing x axis order. Proof evaluates every option expression on the real result and compares with an independent Statevector reference; asserts the reference differs from every other (angle, observable) value so a wrong cell cannot match."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

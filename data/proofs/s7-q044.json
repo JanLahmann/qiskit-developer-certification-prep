@@ -1,0 +1,33 @@
+{
+  "question": "s7-q044",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "result[0].data.evs[2, 1] raised IndexError: index 2 is out of bounds for axis 0 with size 2 (evs shape (2, 3)) -> match=False",
+      "B": "result[1].data.evs[2] raised IndexError: list index out of range (evs shape (2, 3)) -> match=False",
+      "C": "result[0].data.evs[1] gave [0.4794, 0.8415, 0.5985] (ndim 1); reference <X> at angle 2.5 is 0.5985 -> match=False",
+      "D": "result[0].data.evs[1, 2] gave 0.5985 (ndim 0); reference <X> at angle 2.5 is 0.5985 -> match=True",
+      "E": "result[0].data.evs[5] raised IndexError: index 5 is out of bounds for axis 0 with size 2 (evs shape (2, 3)) -> match=False"
+    },
+    "observed": {
+      "evs_shape": [
+        2,
+        3
+      ],
+      "reference": 0.598472
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 2.7,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"result[0].data.evs[2, 1] raised IndexError: index 2 is out of bounds for axis 0 with size 2 (evs shape (2, 3)) -> match=False\", \"B\": \"result[1].data.evs[2] raised IndexError: list index out of range (evs shape (2, 3)) -> match=False\", \"C\": \"result[0].data.evs[1] gave [0.4794, 0.8415, 0.5985] (ndim 1); reference <X> at angle 2.5 is 0.5985 -> match=False\", \"D\": \"result[0].data.evs[1, 2] gave 0.5985 (ndim 0); reference <X> at angle 2.5 is 0.5985 -> match=True\", \"E\": \"result[0].data.evs[5] raised IndexError: index 5 is out of bounds for axis 0 with size 2 (evs shape (2, 3)) -> match=False\"}, \"observed\": {\"evs_shape\": [2, 3], \"reference\": 0.598472}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

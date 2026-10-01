@@ -1,0 +1,76 @@
+{
+  "id": "s7-q039",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "A session ran 14 jobs, and you saved only its ID `sid`. Which call returns all 14 jobs?",
+  "code": "from qiskit_ibm_runtime import QiskitRuntimeService\n\nservice = QiskitRuntimeService()\njobs = ...  # which call?\nresults = [job.result() for job in jobs]",
+  "options": [
+    {
+      "key": "A",
+      "text": "`service.jobs(session_id=sid, descending=False)`"
+    },
+    {
+      "key": "B",
+      "text": "`service.jobs(session_id=sid, limit=None)`"
+    },
+    {
+      "key": "C",
+      "text": "`service.jobs(session_id=sid)`"
+    },
+    {
+      "key": "D",
+      "text": "`service.job(sid)`"
+    },
+    {
+      "key": "E",
+      "text": "`service.jobs(session_id=sid, pending=False)`"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "display_count": 4,
+  "explanation": {
+    "correct": "Two facts interact. `session_id=` is the filter that ties jobs back to their session: the service returns every job that ran in it, newest first. But `QiskitRuntimeService.jobs()` also has `limit=10` as its default, and the client stops paging once it holds `limit` jobs — so any call that leaves `limit` alone silently returns only 10 of the 14. `limit=None` (documented as \"no limit\") makes the client keep paging until the server's count is exhausted, so all 14 jobs come back and each one's `result()` can be read.",
+    "distractors": {
+      "A": "Ordering is not the count. `descending=False` flips the list to oldest-first, but the default `limit=10` still applies, so you get the 10 OLDEST jobs instead of the 10 newest — four are still missing.",
+      "C": "The right filter with the default cap: `limit` defaults to 10, so this returns only the 10 most recent jobs of the session. The truncation raises no warning, which is what makes it easy to miss.",
+      "D": "Confuses a session ID with a job ID. `service.job()` fetches a single job by its own ID; a session ID names no job, so the lookup fails with `RuntimeJobNotFound` — and even on success it would return one job, not a list.",
+      "E": "`pending` filters by state, not by count: `False` keeps jobs in a final state (`DONE`, `CANCELLED`, `ERROR`) and `True` keeps `QUEUED`/`RUNNING` ones. With every job finished, the default `limit=10` still caps the list at 10."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/0.48/qiskit-runtime-service",
+      "https://quantum.cloud.ibm.com/docs/guides/monitor-job",
+      "https://quantum.cloud.ibm.com/docs/guides/save-jobs"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q039.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport importlib\nimport qiskit_ibm_runtime.qiskit_runtime_service as _qrs\n# The harness swaps QiskitRuntimeService for an offline stand-in; reload the\n# module to get the REAL class, then drive its real jobs()/job() code against an\n# in-memory API client (no network). Paging/limit logic is the library's own.\n_qrs = importlib.reload(_qrs)\nRealService = _qrs.QiskitRuntimeService\nfrom qiskit_ibm_runtime.api.exceptions import RequestsApiError\n\nSID = \"sess-alpha\"\nSTORE = [{\"id\": f\"job{i:02d}\", \"session_id\": SID, \"created\": f\"2026-09-30T10:{i:02d}:00Z\",\n          \"state\": {\"status\": \"Completed\"}} for i in range(14)]\nSTORE += [{\"id\": \"solo01\", \"session_id\": None, \"created\": \"2026-09-30T09:00:00Z\",\n           \"state\": {\"status\": \"Completed\"}}]\nFINAL = {\"Completed\", \"Cancelled\", \"Failed\"}\n\n\nclass InMemoryAPI:\n    _instance = None\n\n    def __init__(self):\n        self.calls = []\n\n    def jobs_get(self, limit, skip, backend_name=None, pending=None, program_id=None,\n                 job_tags=None, session_id=None, created_after=None, created_before=None,\n                 descending=True):\n        self.calls.append({\"limit\": limit, \"skip\": skip})\n        sel = [j for j in STORE if session_id is None or j[\"session_id\"] == session_id]\n        if pending is True:\n            sel = [j for j in sel if j[\"state\"][\"status\"] not in FINAL]\n        elif pending is False:\n            sel = [j for j in sel if j[\"state\"][\"status\"] in FINAL]\n        sel = sorted(sel, key=lambda j: j[\"created\"], reverse=descending)\n        return {\"jobs\": sel[skip:skip + limit], \"count\": len(sel)}\n\n    def job_get(self, job_id, exclude_params=False):\n        for j in STORE:\n            if j[\"id\"] == job_id:\n                return j\n        raise RequestsApiError(\"404 Client Error: Not Found\", 404)\n\n\ndef make_service():\n    svc = object.__new__(RealService)\n    svc._active_api_client = InMemoryAPI()\n    svc._api_clients = {}\n    return svc\n\n\nattempts = {\n    \"A\": lambda s: s.jobs(session_id=SID, descending=False),\n    \"B\": lambda s: s.jobs(session_id=SID, limit=None),\n    \"C\": lambda s: s.jobs(session_id=SID),\n    \"D\": lambda s: s.job(SID),\n    \"E\": lambda s: s.jobs(session_id=SID, pending=False),\n}\nflags, evidence, observed = {}, {}, {}\nfor key, call in attempts.items():\n    svc = make_service()\n    try:\n        out = call(svc)\n    except Exception as exc:\n        flags[key] = False\n        evidence[key] = f\"raised {type(exc).__name__}: {exc} -> match=False\"\n        observed[key] = type(exc).__name__\n        continue\n    jobs = out if isinstance(out, list) else [out]\n    ids = [j.job_id() for j in jobs]\n    same_session = all(j.session_id == SID for j in jobs)\n    ok = isinstance(out, list) and len(jobs) == 14 and same_session\n    flags[key] = ok\n    evidence[key] = (f\"returned {len(jobs)} of the session's 14 jobs (first {ids[0]}, last {ids[-1]}); \"\n                     f\"client stopped after {len(svc._active_api_client.calls)} page request(s) -> match={ok}\")\n    observed[key] = {\"count\": len(jobs), \"first\": ids[0], \"last\": ids[-1]}\n\nemit_verdict({\"answer\": sorted(k for k, v in flags.items() if v), \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 session-concept item (official Section 7 places sessions here). Executed offline: the proof reloads the real QiskitRuntimeService module (the harness patch replaces the class) and runs its real jobs()/job() paging code against an in-memory API client holding 14 session jobs; the default limit=10 truncation, the limit=None paging, and RuntimeJobNotFound on a session ID are library behaviour. Server-side filter semantics (session_id/pending) are mocked per the 0.48 API docstring. Avoid limit=0 as a distractor: `limit or 20` makes it behave like None (also returns 14)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

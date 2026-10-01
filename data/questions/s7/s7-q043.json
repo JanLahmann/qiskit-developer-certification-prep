@@ -1,0 +1,75 @@
+{
+  "id": "s7-q043",
+  "section": "s7",
+  "objectives": [
+    "s7o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "A retrieved Runtime job reports `ERROR`. What happens at `job.result()`, and where is the reason?",
+  "code": "job = service.job(job_id)\nprint(job.status())   # ERROR\ndata = job.result()",
+  "options": [
+    {
+      "key": "A",
+      "text": "It returns without raising, since the job is final; the failure reason is in `job.metrics()`"
+    },
+    {
+      "key": "B",
+      "text": "It raises `RuntimeInvalidStateError`, and the failure reason is reported by `job.logs()`"
+    },
+    {
+      "key": "C",
+      "text": "It returns a `PrimitiveResult` of the PUBs that finished, with the failure reason in its `metadata`"
+    },
+    {
+      "key": "D",
+      "text": "It blocks while the service retries the job, then returns the retried job's result"
+    },
+    {
+      "key": "E",
+      "text": "It raises `RuntimeJobFailureError`, and `job.error_message()` returns the failure reason"
+    }
+  ],
+  "answer": [
+    "E"
+  ],
+  "display_count": 4,
+  "explanation": {
+    "correct": "`ERROR` is one of the three terminal states, so `result()` does not wait: its internal `wait_for_final_state()` returns at once, and the method then checks the state. For `ERROR` it raises `RuntimeJobFailureError` (\"Unable to retrieve job result. …\") instead of fetching data; for `CANCELLED` it raises `RuntimeInvalidStateError`. The reason the service recorded for the failure is available from `job.error_message()`, which is the call to log before deciding whether to fix the circuit and resubmit.",
+    "distractors": {
+      "A": "Mistakes 'finished' for 'succeeded'. Reaching a final state only ends the wait; `result()` then checks WHICH final state and raises for `ERROR`. `metrics()` reports timestamps and usage, not the failure reason.",
+      "B": "Swaps the two terminal-state errors: `RuntimeInvalidStateError` is raised for a CANCELLED job. A job in `ERROR` raises `RuntimeJobFailureError`.",
+      "C": "Runtime does not return partial results from a failed job; `result()` raises before any result data is downloaded, and `PubResult.metadata` never carries error reasons.",
+      "D": "Runtime does not retry a failed job for you, and `result()` only blocks while the job is still `QUEUED` or `RUNNING`. A job in a final state returns control immediately — here, by raising."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/0.48/runtime-job-v2",
+      "https://quantum.cloud.ibm.com/docs/guides/monitor-job"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q043.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport time\nfrom qiskit_ibm_runtime import RuntimeJobV2\nfrom qiskit_ibm_runtime.exceptions import RuntimeJobFailureError, RuntimeInvalidStateError\nfrom qiskit.primitives import PrimitiveResult\n\nREASON = \"Error code 1517; Circuit uses more qubits than the backend has\"\n\n\nclass RecordingAPI:\n    def __init__(self):\n        self.calls = []\n\n    def job_get(self, job_id, **kw):\n        self.calls.append(\"job_get\")\n        raise AssertionError(\"a final-state job should not be polled\")\n\n    def job_results(self, job_id):\n        self.calls.append(\"job_results\")\n        return None\n\n\nclass RetrievedJob(RuntimeJobV2):\n    \"\"\"A RuntimeJobV2 pinned to a terminal state; inherited methods run unmodified\n    (_set_status_and_error_message short-circuits on final states).\"\"\"\n\n    def __init__(self, state, message=None):\n        self._status = state\n        self._error_message = message\n        self._reason = None\n        self._reason_code = None\n        self._job_id = \"retrieved-job\"\n        self._session_id = None\n        self._result_decoders = []\n        self._api_client = RecordingAPI()\n\n\njob = RetrievedJob(\"ERROR\", REASON)\nt0 = time.time()\ntry:\n    out = job.result()\n    exc = None\nexcept Exception as e:\n    out, exc = None, e\nelapsed = time.time() - t0\nexc_name = type(exc).__name__ if exc else None\nmsg = job.error_message()\n\ncancelled = RetrievedJob(\"CANCELLED\")\ntry:\n    cancelled.result()\n    c_exc = None\nexcept Exception as e:\n    c_exc = type(e).__name__\n\nflags = {\n    \"A\": exc is None,\n    \"B\": isinstance(exc, RuntimeInvalidStateError),\n    \"C\": isinstance(out, PrimitiveResult),\n    \"D\": exc is None and elapsed > 1.0,\n    \"E\": isinstance(exc, RuntimeJobFailureError) and msg == REASON,\n}\nevidence = {\n    \"A\": f\"result() did not return normally: it raised {exc_name} -> match={flags['A']}\",\n    \"B\": f\"result() raised {exc_name}; RuntimeInvalidStateError is what a CANCELLED job raises ({c_exc}) -> match={flags['B']}\",\n    \"C\": f\"result() raised {exc_name} and returned nothing; job_results was {'called' if 'job_results' in job._api_client.calls else 'never called'} -> match={flags['C']}\",\n    \"D\": f\"result() returned control after {elapsed:.3f}s by raising {exc_name}; status polls made: {job._api_client.calls.count('job_get')} -> match={flags['D']}\",\n    \"E\": f\"result() raised {exc_name}: {exc}; error_message() returned {msg!r} -> match={flags['E']}\",\n}\nemit_verdict({\"answer\": sorted(k for k, v in flags.items() if v), \"evidence\": evidence,\n              \"observed\": {\"status\": job.status(), \"errored\": job.errored(), \"exception\": exc_name,\n                           \"exception_text\": str(exc), \"error_message\": msg, \"cancelled_raises\": c_exc}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s7)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 s7o2 d2: errored-job semantics. Executed with no service: a RuntimeJobV2 subclass pins the terminal state (ledger trick from s7-q034) and the inherited result()/error_message() run unmodified; a recording API client proves no status poll and no results download happen. CANCELLED contrast (RuntimeInvalidStateError) observed in the same run."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

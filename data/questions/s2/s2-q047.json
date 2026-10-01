@@ -1,0 +1,102 @@
+{
+  "id": "s2-q047",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "Which figure does `plot_bloch_multivector` draw for this two-qubit state?",
+  "code": "import math\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_multivector\n\nqc = QuantumCircuit(2)\nqc.ry(2 * math.pi / 3, 0)\nqc.cx(0, 1)\nqc.h(1)\n\nplot_bloch_multivector(Statevector(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s2-q047/generate.py",
+    "color_essential": false,
+    "platform_sensitive": true,
+    "options": {
+      "A": {
+        "file": "figures/s2-q047/s2-q047-A.svg",
+        "alt": "Two Bloch spheres side by side, titled qubit 0 and qubit 1; the qubit 0 arrow points along the -x axis at half the sphere's radius, and the qubit 1 arrow points down along the -z axis at half the sphere's radius."
+      },
+      "B": {
+        "file": "figures/s2-q047/s2-q047-B.svg",
+        "alt": "Two Bloch spheres side by side, titled qubit 0 and qubit 1; the qubit 0 arrow points down along the -z axis at half the sphere's radius, and the qubit 1 arrow points along the -x axis at half the sphere's radius."
+      },
+      "C": {
+        "file": "figures/s2-q047/s2-q047-C.svg",
+        "alt": "Two Bloch spheres side by side, titled qubit 0 and qubit 1; the qubit 0 arrow points down along the -z axis at the sphere's full radius, and the qubit 1 arrow points along the -x axis at the sphere's full radius."
+      },
+      "D": {
+        "file": "figures/s2-q047/s2-q047-D.svg",
+        "alt": "Two Bloch spheres side by side, titled qubit 0 and qubit 1; the qubit 0 arrow tilts between +x and -z at the sphere's full radius (x 0.87, z -0.5), and the qubit 1 arrow points along the +x axis at the sphere's full radius."
+      },
+      "E": {
+        "file": "figures/s2-q047/s2-q047-E.svg",
+        "alt": "Two Bloch spheres side by side, titled qubit 0 and qubit 1; the qubit 0 arrow points down along the -z axis at half the sphere's radius, and the qubit 1 arrow points along the +x axis at half the sphere's radius."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`ry(2π/3)` leaves qubit 0 in cos(π/3)|0> + sin(π/3)|1>, so P(1) = 3/4. `cx` copies that into qubit 1, giving 0.5|00> + 0.866|11>: an entangled state. `plot_bloch_multivector` draws each qubit's REDUCED state, and for an entangled qubit that state is mixed, so its arrow is shorter than the radius. Both qubits have ⟨Z⟩ = 1/4 − 3/4 = −0.5 and no X/Y component, i.e. a half-length arrow pointing down. The final `h(1)` acts on qubit 1 alone: it maps Z to X, carrying qubit 1's arrow from −0.5 on z to −0.5 on x, and cannot move qubit 0's arrow. The spheres are titled by qubit index, so the qubit 0 sphere shows the half-length −z arrow and the qubit 1 sphere the half-length −x arrow.",
+    "distractors": {
+      "A": "Sphere order read like a printed ket: the left character of |q1 q0> is qubit 1, but the spheres are titled by qubit index, so qubit 0 is drawn first. Swapping them puts the Hadamard-rotated arrow on the wrong sphere.",
+      "C": "Entangled qubits drawn as pure states: after `cx` neither qubit has a pure state of its own, so the drawer's arrows (reduced-state Bloch vectors) are shortened to length 0.5, not full length.",
+      "D": "Gates read wire by wire with the CX ignored: that would leave qubit 0 tilted at 120° from +z at full length and qubit 1 at +x. The CX entangles the qubits, which shortens both arrows and puts qubit 0's on the z axis.",
+      "E": "Qubit 1's reduced state taken to lean toward |0>: it is |1> with probability 3/4, so ⟨Z⟩ = −0.5 and H turns that into ⟨X⟩ = −0.5 (H|1> = |−>), not +0.5."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q047.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import math\n\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import DensityMatrix, Pauli, Statevector, partial_trace\n\n# The five circuits MUST mirror data/figures/s2-q047/generate.py — the rendered\n# figures are plot_bloch_multivector drawings of exactly these states.\n\nT = 2 * math.pi / 3\n\n\ndef state(*gates):\n    qc = QuantumCircuit(2)\n    for name, *args in gates:\n        getattr(qc, name)(*args)\n    return Statevector(qc)\n\n\ndef stem_state():\n    return state((\"ry\", T, 0), (\"cx\", 0, 1), (\"h\", 1))\n\n\nVARIANTS = {\n    \"A\": state((\"ry\", T, 1), (\"cx\", 1, 0), (\"h\", 0)),\n    \"B\": stem_state(),\n    \"C\": state((\"x\", 0), (\"x\", 1), (\"h\", 1)),\n    \"D\": state((\"ry\", T, 0), (\"h\", 1)),\n    \"E\": state((\"ry\", T, 0), (\"cx\", 0, 1), (\"x\", 1), (\"h\", 1)),\n}\n\n\ndef spheres(st):\n    \"\"\"One Bloch vector per sphere the drawer puts on the figure (x, y, z).\"\"\"\n    rho = DensityMatrix(st)\n    n = len(rho.dims())\n    out = []\n    for i in range(n):\n        red = partial_trace(rho, [j for j in range(n) if j != i])\n        out.append(tuple(\n            round(float(red.expectation_value(Pauli(p)).real), 3) + 0.0 for p in \"XYZ\"\n        ))\n    return tuple(out)\n\n\ndef length(v):\n    return round(math.sqrt(sum(c * c for c in v)), 3)\n\n\ntarget = spheres(stem_state())\n# Sanity: the stem state is entangled, so both drawn arrows are shorter than 1.\nassert all(length(v) < 0.99 for v in target), target\nproven, evidence, observed = [], {}, {}\nfor key, st in sorted(VARIANTS.items()):\n    s = spheres(st)\n    match = s == target\n    observed[key] = [list(v) for v in s]\n    evidence[key] = (\n        f\"figure draws Bloch vectors (x, y, z) qubit 0 {s[0]} len {length(s[0])}, \"\n        f\"qubit 1 {s[1]} len {length(s[1])} vs the stem's {list(target)} -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = [list(v) for v in target]\nobserved[\"stem_probabilities\"] = {\n    k: round(float(v), 3) for k, v in stem_state().probabilities_dict().items()\n}\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, s2+s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 d3 add (s2's only hard item): amplitude math (ry angle -> P(1) = 3/4) + entanglement shortening the reduced Bloch vectors + a local H rotating only one qubit's arrow + sphere order by qubit index. The five option images are plot_bloch_multivector renderings of the five circuits in figures/s2-q047/generate.py; the proof rebuilds the same states and compares each sphere's Bloch vector (direction and length)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

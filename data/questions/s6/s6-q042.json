@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 3,
-  "stem": "One PUB was submitted to `StatevectorEstimator` for the circuit `qc` below, and the expectation values it returned are drawn as the grouped bars in the figure — one group per bound angle, one bar per observable. Which pairing of observables and parameter values was in that PUB?",
+  "stem": "One PUB on `qc` produced the grouped bars shown. Which observables and parameter values did it pair?",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\n\nZ = SparsePauliOp(\"Z\")\nX = SparsePauliOp(\"X\")\nangles = [np.pi / 6, np.pi / 2, 5 * np.pi / 6]\n\nresult = StatevectorEstimator().run([(qc, observables, values)]).result()",
   "options": [
     {
@@ -66,9 +66,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure agent, task #28 wave 1)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Stem-figure item: the grouped bar chart is the question, the options are candidate pub shapes. The proof submits every pairing and compares the returned array with the values the generator asserts it plotted. Bars carry hatches as well as shades so the drawing survives greyscale."
+    "notes": "Stem-figure item: the grouped bar chart is the question, the options are candidate pub shapes. The proof submits every pairing and compares the returned array with the values the generator asserts it plotted. Bars carry hatches as well as shades so the drawing survives greyscale. | realism audit 2026-10-01: stem trimmed (the figure legend/axis carry the group/bar description; stem-only, no re-render); difficulty 3 kept (broadcasting + one-parameter coercion + SparsePauliOp-is-one-observable)"
   },
   "freshness": {
     "verified_against": {
@@ -77,7 +77,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

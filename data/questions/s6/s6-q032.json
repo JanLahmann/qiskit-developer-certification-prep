@@ -5,8 +5,8 @@
     "s6o1"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "How do probabilistic error cancellation (PEC) and zero-noise extrapolation (ZNE) differ in the guarantee they give for the mitigated expectation value?",
+  "difficulty": 2,
+  "stem": "How do PEC and ZNE differ in what they guarantee about the mitigated expectation value?",
   "code": null,
   "options": [
     {
@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6: options relengthened (was a high-severity length tell, ratio 1.59) | pool wave: +E noise-model-is-the-difference, +F inverted overhead comparison"
+    "notes": "adversarial s6: options relengthened (was a high-severity length tell, ratio 1.59) | pool wave: +E noise-model-is-the-difference, +F inverted overhead comparison | realism audit 2026-10-01: stem trimmed (acronym expansions dropped, options use the acronyms); difficulty 3->2 (two recalled facts: bias guarantee + overhead)"
   },
   "display_count": 4
 }

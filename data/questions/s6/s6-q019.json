@@ -5,8 +5,8 @@
     "s6o1"
   ],
   "type": "multi",
-  "difficulty": 2,
-  "stem": "Select all of the following that are error MITIGATION techniques for the Estimator — methods that post-process results from an ensemble of circuits to reduce bias in expectation values (as opposed to error suppression, which prevents errors before/during execution).",
+  "difficulty": 1,
+  "stem": "Select all error MITIGATION (not suppression) techniques that reduce bias in Estimator expectation values.",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +F shots-as-mitigation (variance vs bias)"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +F shots-as-mitigation (variance vs bias) | realism audit 2026-10-01: stem trimmed; ensemble-post-processing definition removed, 'bias' kept (refutes the shots option); difficulty 2->1"
   },
   "display_count": 5
 }

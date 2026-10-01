@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "Which assignment to `estimator.options.resilience_level` is accepted by `EstimatorV2` without raising a validation error?",
+  "stem": "Which `resilience_level` value does `EstimatorV2` accept?",
   "code": "from qiskit_ibm_runtime import EstimatorV2\n\nestimator = EstimatorV2(mode=backend)\nestimator.options.resilience_level = ...  # which value?",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E five-level 0-4 miscount, +F fractional level"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E five-level 0-4 miscount, +F fractional level | realism audit 2026-10-01: stem trimmed; difficulty 1 kept"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

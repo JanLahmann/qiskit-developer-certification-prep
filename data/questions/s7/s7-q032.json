@@ -5,8 +5,8 @@
     "s7o1"
   ],
   "type": "spot-bug",
-  "difficulty": 2,
-  "stem": "The circuit measures into a register named `readout`, but this analysis code raises an `AttributeError`. Which corrected expression works?",
+  "difficulty": 1,
+  "stem": "This analysis line raises `AttributeError`. Which corrected expression works?",
   "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(2, \"q\")\nreadout = ClassicalRegister(2, \"readout\")\nqc = QuantumCircuit(qr, readout)\nqc.h(0); qc.cx(0, 1); qc.measure(qr, readout)\n\nresult = StatevectorSampler().run([qc], shots=512).result()\ncounts = result[0].data.meas.get_counts()   # AttributeError: no 'meas'",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7: B replaced by the DataBin.get_counts(name) misconception (kills length tell; proof updated) | pool wave: +E DataBin.get_bitstrings(name); +F the register field is callable"
+    "notes": "adversarial s7: B replaced by the DataBin.get_counts(name) misconception (kills length tell; proof updated) | pool wave: +E DataBin.get_bitstrings(name); +F the register field is callable | realism audit 2026-10-01: stem trimmed (register name visible in code); 2->1, field named after the register"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

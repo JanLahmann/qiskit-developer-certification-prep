@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You are driving the Qiskit Runtime REST API from your own HTTP client. How do you submit a Sampler primitive job?",
+  "stem": "How do you submit a Sampler job through the Qiskit Runtime REST API?",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 r1: carried-forward flag CONFIRMED and fixed — the cited guides/primitives-rest-api returns 200 but redirects to guides/primitives ('Introduction to primitives'), which says nothing about REST and does not support the keyed answer. Replaced with guides/sampler-rest-api, which shows the exact POST to https://quantum.cloud.ibm.com/api/v1/jobs with 'program_id': 'sampler' and params.pubs, and with the REST reference's Jobs tag (POST /v1/jobs, program_id body field). Length tell removed. | length rank rebalanced (correct option no longer shortest) | pool wave: +E the body field named primitive_id, +F PUT to a client-chosen job id"
+    "notes": "adversarial s8 r1: carried-forward flag CONFIRMED and fixed — the cited guides/primitives-rest-api returns 200 but redirects to guides/primitives ('Introduction to primitives'), which says nothing about REST and does not support the keyed answer. Replaced with guides/sampler-rest-api, which shows the exact POST to https://quantum.cloud.ibm.com/api/v1/jobs with 'program_id': 'sampler' and params.pubs, and with the REST reference's Jobs tag (POST /v1/jobs, program_id body field). Length tell removed. | length rank rebalanced (correct option no longer shortest) | pool wave: +E the body field named primitive_id, +F PUT to a client-chosen job id | realism audit 2026-10-01: stem trimmed; difficulty kept 1"
   },
   "display_count": 4
 }

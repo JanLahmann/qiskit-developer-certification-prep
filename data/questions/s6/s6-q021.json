@@ -5,7 +5,7 @@
     "s6o1"
   ],
   "type": "mcq",
-  "difficulty": 2,
+  "difficulty": 1,
   "stem": "How does zero-noise extrapolation (ZNE) produce a mitigated expectation value?",
   "code": null,
   "options": [
@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6: correct option tightened to remove the length tell | pool wave: +E extrapolating in shots, +F averaging instead of extrapolating"
+    "notes": "adversarial s6: correct option tightened to remove the length tell | pool wave: +E extrapolating in shots, +F averaging instead of extrapolating | realism audit 2026-10-01: stem unchanged (10 words); difficulty 2->1 (one recalled mechanism)"
   },
   "display_count": 4
 }

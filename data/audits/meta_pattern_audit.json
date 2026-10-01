@@ -49,10 +49,10 @@
       "exam_score_estimate": 0.2901
     },
     "stem_keyword_overlap": {
-      "expected_accuracy": 0.2292,
-      "questions_answered": 201.75,
-      "coverage": 0.782,
-      "exam_score_estimate": 0.2313
+      "expected_accuracy": 0.2275,
+      "questions_answered": 195.95,
+      "coverage": 0.759,
+      "exam_score_estimate": 0.2302
     },
     "most_hedged": {
       "expected_accuracy": 0.1783,

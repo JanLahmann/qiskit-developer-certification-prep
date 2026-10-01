@@ -5,8 +5,8 @@
     "s5o1"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "You want to switch on dynamical decoupling (an error-suppression technique that fills idle qubit time) for a `SamplerV2` called `sampler`. Which line does this correctly?",
+  "difficulty": 1,
+  "stem": "Which line enables dynamical decoupling on `sampler`?",
   "code": "from qiskit_ibm_runtime import SamplerV2\n\nsampler = SamplerV2(mode=backend)\n# enable dynamical decoupling:",
   "options": [
     {
@@ -67,15 +67,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: citations refreshed only (no tells flagged); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | distractor pool pilot: +E (enabled-vs-enable near-miss), display_count=4 | pool wave: +F sequence_type-does-not-enable"
+    "notes": "s5 adversarial review: citations refreshed only (no tells flagged); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | distractor pool pilot: +E (enabled-vs-enable near-miss), display_count=4 | pool wave: +F sequence_type-does-not-enable | realism audit 2026-10-01: stem trimmed (in-stem DD definition removed; it did not decide the options); re-rated 2->1"
   },
   "display_count": 4
 }

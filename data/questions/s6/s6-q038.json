@@ -5,7 +5,7 @@
     "s6o2"
   ],
   "type": "multi",
-  "difficulty": 3,
+  "difficulty": 2,
   "stem": "Select all TRUE statements about the EstimatorV2 `precision` parameter.",
   "code": null,
   "options": [
@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6: hedge added to B and D extended (hedge + length tells) | pool wave: +F default_precision-overrides-the-PUB"
+    "notes": "adversarial s6: hedge added to B and D extended (hedge + length tells) | pool wave: +F default_precision-overrides-the-PUB | realism audit 2026-10-01: stem unchanged (10 words); difficulty 3->2 (three recalled facts, easy refutations)"
   },
   "display_count": 5
 }

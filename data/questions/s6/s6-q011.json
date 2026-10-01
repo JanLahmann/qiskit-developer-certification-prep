@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "The circuit prepares a Bell state. Using an exact estimator, what is the expectation value of the observable `O = 0.5*ZZ + 0.5*XX`?",
+  "stem": "What does this code print?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nobs = SparsePauliOp([\"ZZ\", \"XX\"], coeffs=[0.5, 0.5])\nprint(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs)",
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E singlet-vs-triplet state slip, +F per-Pauli-term breakdown"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E singlet-vs-triplet state slip, +F per-Pauli-term breakdown | realism audit 2026-10-01: stem trimmed; 'prepares a Bell state' gloss removed (code shows h+cx), difficulty 2 kept with the hint gone"
   },
   "freshness": {
     "verified_against": {
@@ -72,7 +72,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

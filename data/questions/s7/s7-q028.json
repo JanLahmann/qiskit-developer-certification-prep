@@ -5,8 +5,8 @@
     "s7o2"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "A Sampler job you submitted an hour ago is still queued and you no longer need it. You still hold the `job` object returned by `sampler.run(...)`. Which statement is correct?",
+  "difficulty": 1,
+  "stem": "A queued Sampler job is no longer needed, and you still hold `job`. Which statement is correct?",
   "code": "job = sampler.run([isa_circuit])   # submitted earlier, status is QUEUED",
   "options": [
     {
@@ -62,8 +62,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7: REWRITTEN — old 'job.result() blocks' version was a near-duplicate of a community item and of q033; now covers cancelling a queued job and server-side job lifetime (docs-backed by monitor-job) | pool wave: +E cancelled job still yields partial results; +F status() keeps reporting QUEUED after cancel"
+    "notes": "adversarial s7: REWRITTEN — old 'job.result() blocks' version was a near-duplicate of a community item and of q033; now covers cancelling a queued job and server-side job lifetime (docs-backed by monitor-job) | pool wave: +E cancelled job still yields partial results; +F status() keeps reporting QUEUED after cancel | realism audit 2026-10-01: stem trimmed; 2->1, job.cancel() is one recalled fact"
   }
 }

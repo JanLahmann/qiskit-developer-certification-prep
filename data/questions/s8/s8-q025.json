@@ -6,7 +6,7 @@
   ],
   "type": "multi",
   "difficulty": 2,
-  "stem": "Your client authenticates to the Qiskit Runtime REST API with an IBM Cloud IAM bearer token in the `Authorization` header. Select the TWO correct statements about that token.",
+  "stem": "A client calls the Qiskit Runtime REST API with an IAM bearer token. Select the TWO correct statements about that token.",
   "code": null,
   "options": [
     {
@@ -39,7 +39,7 @@
     "E"
   ],
   "explanation": {
-    "correct": "The API key and the bearer token are two different credentials. The long-lived key is exchanged at the IBM Cloud IAM token endpoint -- a form-encoded `POST` to `https://iam.cloud.ibm.com/identity/token` carrying `grant_type=urn:ibm:params:oauth:grant-type:apikey` and `apikey=<your key>` (C). What comes back is a short-lived credential: the documented response reports `\"expires_in\": 3600`, and the reference describes a bearer token as a temporary credential that expires after no more than one hour, so a long-running client has to refresh it (E). Read `expires_in` from the response rather than hard-coding an interval.",
+    "correct": "The API key and the bearer token are two different credentials. The long-lived key is exchanged at the IBM Cloud IAM token endpoint -- a form-encoded `POST` to `https://iam.cloud.ibm.com/identity/token` carrying `grant_type=urn:ibm:params:oauth:grant-type:apikey` and `apikey=<your key>`. What comes back is a short-lived credential: the documented response reports `\"expires_in\": 3600`, and the reference describes a bearer token as a temporary credential that expires after no more than one hour, so a long-running client has to refresh it. Read `expires_in` from the response rather than hard-coding an interval.",
     "distractors": {
       "A": "This is the single most common REST mistake: the key authenticates you *to IAM*, and only the token IAM returns goes into the `Authorization` header.",
       "B": "Job submission requires a valid token to succeed at all, so it cannot be the thing that issues one. The token comes from the separate IAM endpoint, before any Runtime call.",
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 r1: carried-forward flag checked — citations were NOT swapped here; both pages re-fetched 200 and re-read, and both show the IAM token POST with the apikey grant type and the expires_in=3600 response, so the keyed claims are directly supported. Answers moved A,C -> C,E so the section's two multi-select items differ in both answer count and answer letters; length tell removed. | pool wave: +F the IAM token is scoped to a single Runtime instance (options cap 6 reached, one distractor added)"
+    "notes": "adversarial s8 r1: carried-forward flag checked — citations were NOT swapped here; both pages re-fetched 200 and re-read, and both show the IAM token POST with the apikey grant type and the expires_in=3600 response, so the keyed claims are directly supported. Answers moved A,C -> C,E so the section's two multi-select items differ in both answer count and answer letters; length tell removed. | pool wave: +F the IAM token is scoped to a single Runtime instance (options cap 6 reached, one distractor added) | realism audit 2026-10-01: stem trimmed; difficulty kept 2; explanation display-letter refs '(C)/(E)' removed"
   },
   "display_count": 5
 }

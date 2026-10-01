@@ -84,9 +84,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure agent, task #28 wave 1)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Image-option item. Figures are plot_histogram renders of the five counts dicts the proof rebuilds from the same seeded fake-backend runs; the proof compares bar labels and heights (as shares of the shot count). Deliberate size-max keeper: the keyed figure is the largest SVG of the five (deviation from the distractor median 3%, far under the image_size_tell bar) to pull the bank's largest_image_option heuristic back toward chance."
+    "notes": "Image-option item. Figures are plot_histogram renders of the five counts dicts the proof rebuilds from the same seeded fake-backend runs; the proof compares bar labels and heights (as shares of the shot count). Deliberate size-max keeper: the keyed figure is the largest SVG of the five (deviation from the distractor median 3%, far under the image_size_tell bar) to pull the bank's largest_image_option heuristic back toward chance. | realism audit 2026-10-01: stem unchanged (already 8 words); difficulty 2 kept"
   },
   "freshness": {
     "verified_against": {
@@ -95,7 +95,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

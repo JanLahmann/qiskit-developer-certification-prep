@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "The plot below was produced by this script with exactly one options line filled in where the comment sits. Which line was it?",
+  "stem": "Which options line, placed at the comment, produced this plot?",
   "code": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(optimization_level=1, backend=backend,\n                                  seed_transpiler=42)\nisa = pm.run(qc)\nobs = SparsePauliOp(\"Z\").apply_layout(isa.layout)\n\nangles = np.array([[0.0], [np.pi / 3], [2 * np.pi / 3], [np.pi]])\nestimator = EstimatorV2(mode=backend)\nestimator.options.simulator.seed_simulator = 7\n# <- the options line goes here\npub_result = estimator.run([(isa, obs, angles)]).result()[0]\n\nplt.errorbar(angles.ravel(), pub_result.data.evs,\n             yerr=pub_result.data.stds, fmt=\"o-\", capsize=4)",
   "options": [
     {
@@ -66,9 +66,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure agent, task #28 wave 1)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Stem-figure item: the error-bar plot is the question, the options are candidate options lines. The proof applies each line to the same seeded fake-backend run and compares the resulting evs/stds with the arrays the generator asserts it drew."
+    "notes": "Stem-figure item: the error-bar plot is the question, the options are candidate options lines. The proof applies each line to the same seeded fake-backend run and compares the resulting evs/stds with the arrays the generator asserts it drew. | realism audit 2026-10-01: stem trimmed (stem-only, no re-render); difficulty 2 kept"
   },
   "freshness": {
     "verified_against": {
@@ -77,7 +77,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

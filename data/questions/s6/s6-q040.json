@@ -5,7 +5,7 @@
     "s6o2"
   ],
   "type": "predict-output",
-  "difficulty": 2,
+  "difficulty": 1,
   "stem": "Which curve does this exact (statevector) estimator sweep draw?",
   "code": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\n\nangles = np.linspace(0.0, 2 * np.pi, 9)\npub = (qc, SparsePauliOp(\"Z\"), angles.reshape(-1, 1))\nresult = StatevectorEstimator().run([pub]).result()\n\nfig, ax = plt.subplots(figsize=(6, 4))\nax.plot(angles, result[0].data.evs, marker=\"o\")\nax.set_xlabel(\"theta\")\nax.set_ylabel(\"expectation value\")",
   "options": [
@@ -84,9 +84,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure agent, task #28 wave 1)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Image-option item. Every option curve is a real computation (a different observable, a different sign, the |0> amplitude, or a doubled angle) that the proof recomputes and compares point by point against the stem sweep. The five renders sit within 0.2% of each other in byte size, and the keyed curve is neither the largest nor the smallest of them."
+    "notes": "Image-option item. Every option curve is a real computation (a different observable, a different sign, the |0> amplitude, or a doubled angle) that the proof recomputes and compares point by point against the stem sweep. The five renders sit within 0.2% of each other in byte size, and the keyed curve is neither the largest nor the smallest of them. | realism audit 2026-10-01: stem unchanged (9 words); difficulty 2->1 (<Z> = cos(theta) read off one curve)"
   },
   "freshness": {
     "verified_against": {
@@ -95,7 +95,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

@@ -5,8 +5,8 @@
     "s7o1"
   ],
   "type": "predict-output",
-  "difficulty": 3,
-  "stem": "A 10-qubit circuit ends with `measure_all()` and is sampled for 1024 shots. What is the shape of the raw packed array `bits.array`?",
+  "difficulty": 2,
+  "stem": "A 10-qubit circuit is sampled for 1024 shots. What does this code print?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(10)\nfor q in range(10):\n    qc.h(q)\nqc.measure_all()\n\nresult = StatevectorSampler().run([qc], shots=1024).result()\nbits = result[0].data.meas\nprint(bits.array.shape)",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E packed width fixed at eight columns; +F packed byte axis leads the shape"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E packed width fixed at eight columns; +F packed byte axis leads the shape | realism audit 2026-10-01: stem trimmed, 'raw packed' gloss removed (rated with hint gone); 3->2, packing + shot axis = two steps"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

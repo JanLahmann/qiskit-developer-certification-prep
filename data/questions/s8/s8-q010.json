@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "The circuit below is exported with `qiskit.qasm3.dumps(qc)` and the result is printed. Which string is printed exactly, character for character?",
+  "stem": "What does this code print?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\n\nprint(qasm3.dumps(qc))",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->C; distractors rebuilt (decl order / version literal / gate-name case) so the item no longer duplicates q014+q016+q018 discriminators | replaced the case-only distractor (H vs h) — it collided with the correct option under the audit's case-insensitive duplicate check and was a fiddly discriminator; now contrasts register bit[1] against loose-Clbit scalar bit, verified empirically both ways. Proof now reports the first differing line. | pool wave: +E qasm3.dumps only swaps the version header (v2 body under a 3.0 header), +F qelib1.inc used as the OpenQASM 3 include"
+    "notes": "adversarial s8 r1: answer A->C; distractors rebuilt (decl order / version literal / gate-name case) so the item no longer duplicates q014+q016+q018 discriminators | replaced the case-only distractor (H vs h) — it collided with the correct option under the audit's case-insensitive duplicate check and was a fiddly discriminator; now contrasts register bit[1] against loose-Clbit scalar bit, verified empirically both ways. Proof now reports the first differing line. | pool wave: +E qasm3.dumps only swaps the version header (v2 body under a 3.0 header), +F qelib1.inc used as the OpenQASM 3 include | realism audit 2026-10-01: stem trimmed to 'What does this code print?' (printed text verified verbatim; trailing newline only); difficulty kept 2"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You are calling the Qiskit Runtime REST API directly, for example with curl. How is your credential presented on each request?",
+  "stem": "How does a request to the Qiskit Runtime REST API present your credential?",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->B (position rebalance); length tell removed (1.31 -> correct no longer longest); both citations re-fetched 200 and re-read — cloud-setup-rest-api shows the 'authorization: Bearer <BEARER_TOKEN>' + 'Service-CRN' curl call and the API reference states the IAM bearer token is required on every call | length rank rebalanced (correct option no longer longest) | pool wave: +E the API key sent verbatim as the bearer token, +F the Service-CRN header treated as the credential"
+    "notes": "adversarial s8 r1: answer A->B (position rebalance); length tell removed (1.31 -> correct no longer longest); both citations re-fetched 200 and re-read — cloud-setup-rest-api shows the 'authorization: Bearer <BEARER_TOKEN>' + 'Service-CRN' curl call and the API reference states the IAM bearer token is required on every call | length rank rebalanced (correct option no longer longest) | pool wave: +E the API key sent verbatim as the bearer token, +F the Service-CRN header treated as the credential | realism audit 2026-10-01: stem trimmed; difficulty kept 1"
   },
   "display_count": 4
 }

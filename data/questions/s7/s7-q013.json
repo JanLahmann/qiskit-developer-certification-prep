@@ -5,8 +5,8 @@
     "s7o1"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "An EstimatorV2 job ran on a noisy 5-qubit backend with `default_precision=0.02`, and you hold the first pub result in `pub`. Which expression gives the standard error the primitive actually achieved for that expectation value?",
+  "difficulty": 2,
+  "stem": "With `default_precision=0.02` on a noisy backend, which expression gives the standard error `pub` actually achieved?",
   "code": "# estimator.options.default_precision = 0.02\n# result = estimator.run([(isa_circuit, observable)]).result()\npub = result[0]",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7: REWRITTEN — old version duplicated q032 (named-register access) and a community item; now tests EstimatorV2 stds vs requested precision, with a non-circular proof (stds reproduced from evs+shots) | pool wave: +E standard error is 1/sqrt(shots) alone; +F DataBin exposes a variance field"
+    "notes": "adversarial s7: REWRITTEN — old version duplicated q032 (named-register access) and a community item; now tests EstimatorV2 stds vs requested precision, with a non-circular proof (stds reproduced from evs+shots) | pool wave: +E standard error is 1/sqrt(shots) alone; +F DataBin exposes a variance field | realism audit 2026-10-01: stem trimmed ('actually achieved' kept: option C refutation); 3->2"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

@@ -5,8 +5,8 @@
     "s7o1"
   ],
   "type": "multi",
-  "difficulty": 3,
-  "stem": "A SamplerV2 result's BitArray `bits` came from a 5-qubit circuit that measured only qubits 0,1,2 into a 3-bit register, run for 256 shots. Which statements are TRUE? (Select all that apply.)",
+  "difficulty": 2,
+  "stem": "`bits` holds 256 shots of a 3-bit register measured from a 5-qubit circuit. Which statements are true? (Select all that apply.)",
   "code": "# bits = result[0].data.<register>   # 3-bit register, 256 shots, 5-qubit circuit",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7: option E de-absolutised ('always' removed, now states the concrete 5) — kills absolute-wording tell | pool wave: +F BitArray.array is a bool matrix with one column per bit"
+    "notes": "adversarial s7: option E de-absolutised ('always' removed, now states the concrete 5) — kills absolute-wording tell | pool wave: +F BitArray.array is a bool matrix with one column per bit | realism audit 2026-10-01: stem trimmed (256/3-bit/5-qubit kept: options A/C/E depend); 3->2"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

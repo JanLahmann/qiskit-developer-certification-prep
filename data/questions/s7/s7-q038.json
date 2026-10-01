@@ -5,8 +5,8 @@
     "s7o1"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "An estimator job that swept one angle over four values has been retrieved, and the figure plots the series it returned against those angles. Which expression was plotted?",
+  "difficulty": 1,
+  "stem": "The figure plots the retrieved estimator sweep against `angles`. Which expression was plotted?",
   "code": "import matplotlib.pyplot as plt\nfrom qiskit_ibm_runtime import QiskitRuntimeService\n\nservice = QiskitRuntimeService()\njob = service.job(job_id)   # the four-angle estimator job, run earlier\nresult = job.result()       # a PrimitiveResult holding one pub result\n\nplt.plot(angles, <expression>, marker=\"o\")",
   "options": [
     {
@@ -66,9 +66,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure agent, task #28 wave 1)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Stem-figure item: the expectation-value curve is the question, the options are candidate container paths into the retrieved PrimitiveResult. The proof re-runs the same seeded job and evaluates every candidate expression against the series the generator asserts it drew."
+    "notes": "Stem-figure item: the expectation-value curve is the question, the options are candidate container paths into the retrieved PrimitiveResult. The proof re-runs the same seeded job and evaluates every candidate expression against the series the generator asserts it drew. | realism audit 2026-10-01: stem trimmed (stem-only, no re-render); 2->1"
   },
   "freshness": {
     "verified_against": {
@@ -77,7 +77,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

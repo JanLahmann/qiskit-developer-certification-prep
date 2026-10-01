@@ -5,8 +5,8 @@
     "s7o1"
   ],
   "type": "spot-bug",
-  "difficulty": 2,
-  "stem": "This snippet should print the measurement counts of a completed SamplerV2 job, but it raises an error. What is the fix?",
+  "difficulty": 1,
+  "stem": "This snippet should print a Sampler job's counts but raises. What is the fix?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nresult = StatevectorSampler().run([qc], shots=1024).result()\n\ncounts = result.data.meas.get_counts()   # AttributeError\nprint(counts)",
   "options": [
     {
@@ -64,9 +64,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E V1 result.results[0] container; +F register field hangs off PrimitiveResult"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E V1 result.results[0] container; +F register field hangs off PrimitiveResult | realism audit 2026-10-01: stem trimmed; 2->1, index the PUB first"
   },
   "freshness": {
     "verified_against": {
@@ -75,7 +75,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "After running a SamplerV2 job on a circuit that used `measure_all()`, you access `bits = result[0].data.meas`. Which statement about `bits` is correct?",
+  "stem": "The circuit used `measure_all()`. Which statement about `bits` is correct?",
   "code": "result = sampler.run([isa], shots=256).result()\nbits = result[0].data.meas",
   "options": [
     {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed (correct option tightened, distractors given equal weight); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E DataBin level confusion, +F SamplerPubResult level confusion"
+    "notes": "s5 adversarial review: high-severity length tell fixed (correct option tightened, distractors given equal weight); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E DataBin level confusion, +F SamplerPubResult level confusion | realism audit 2026-10-01: stem trimmed; difficulty 1 kept"
   },
   "display_count": 4
 }

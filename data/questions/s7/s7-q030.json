@@ -6,7 +6,7 @@
   ],
   "type": "multi",
   "difficulty": 2,
-  "stem": "Calling `session.details()` on a `Session` attached to a live IBM Quantum service returns a dictionary of session metadata. Which of the following are actual keys in that dictionary? (Select all that apply.)",
+  "stem": "On a live service, which keys appear in the dictionary `session.details()` returns? (Select all that apply.)",
   "code": "details = session.details()",
   "options": [
     {
@@ -61,8 +61,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7: stem made honest about where the dict comes from (None in local mode); option D `shots` -> the real key `max_time`, so the answer count varies across the section's multi-selects (3/3/4)"
+    "notes": "adversarial s7: stem made honest about where the dict comes from (None in local mode); option D `shots` -> the real key `max_time`, so the answer count varies across the section's multi-selects (3/3/4) | realism audit 2026-10-01: stem trimmed ('live service' kept: details() is None locally); stays 2, four recalled keys"
   }
 }

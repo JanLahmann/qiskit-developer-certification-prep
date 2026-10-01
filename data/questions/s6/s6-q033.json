@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "You align a 2-qubit observable to physical qubits with an explicit index list. What label does `SparsePauliOp('ZZ').apply_layout([2, 0], num_qubits=4)` produce?",
+  "stem": "What does this code print?",
   "code": "from qiskit.quantum_info import SparsePauliOp\n\nobs = SparsePauliOp(\"ZZ\").apply_layout([2, 0], num_qubits=4)\nprint(obs.paulis[0])",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E 1-based layout indices, +F layout read as a span"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E 1-based layout indices, +F layout read as a span | realism audit 2026-10-01: stem trimmed; difficulty 2 kept (layout mapping + little-endian label)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

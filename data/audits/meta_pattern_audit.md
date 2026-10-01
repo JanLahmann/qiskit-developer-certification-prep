@@ -16,7 +16,7 @@ Scope: **all sections** — 287 questions (258 single-answer, 29 multi-select). 
 | most_absolute | 30.4% | 30% | 25.8% |
 | avoid_hedged | 27.6% | 26% | 24.9% |
 | avoid_longest | 24.5% | 91% | 24.4% |
-| stem_keyword_overlap | 22.9% | 78% | 23.1% |
+| stem_keyword_overlap | 22.8% | 76% | 23.0% |
 | shortest_option | 22.8% | 100% | 22.8% |
 | longest_option | 22.4% | 100% | 22.4% |
 | most_hedged | 17.8% | 26% | 22.3% |

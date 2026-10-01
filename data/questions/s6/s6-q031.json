@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6: A tightened and D extended to remove the length tell | pool wave: +E wrong nesting under execution, +F constructor-rescues-the-value"
+    "notes": "adversarial s6: A tightened and D extended to remove the length tell | pool wave: +E wrong nesting under execution, +F constructor-rescues-the-value | realism audit 2026-10-01: stem unchanged (13 words); difficulty 1 kept"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

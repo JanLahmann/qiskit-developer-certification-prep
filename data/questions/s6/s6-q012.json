@@ -5,8 +5,8 @@
     "s6o2"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "You have an ISA circuit `isa` and a layout-aligned observable `iobs`, and `est = EstimatorV2(mode=backend)`. Which call correctly submits this single estimation task?",
+  "difficulty": 1,
+  "stem": "Which call correctly submits one estimation of `iobs` on `isa`?",
   "code": "from qiskit_ibm_runtime import EstimatorV2\n\nest = EstimatorV2(mode=backend)\n# isa: transpiled circuit, iobs: observable after apply_layout\njob = ...  # which call?",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6: D rewritten to the V1 keyword signature (kills length tell; proof updated) | pool wave: +E swapped PUB order, +F dict-shaped PUB"
+    "notes": "adversarial s6: D rewritten to the V1 keyword signature (kills length tell; proof updated) | pool wave: +E swapped PUB order, +F dict-shaped PUB | realism audit 2026-10-01: stem trimmed (code comments define isa/iobs); difficulty 2->1 (PUB format is one recalled fact)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

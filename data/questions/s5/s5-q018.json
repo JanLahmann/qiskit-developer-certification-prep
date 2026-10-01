@@ -5,8 +5,8 @@
     "s5o3"
   ],
   "type": "spot-bug",
-  "difficulty": 2,
-  "stem": "The circuit `isa` has exactly 2 free parameters. This call raises a `ValueError`. What fixes it?",
+  "difficulty": 1,
+  "stem": "`isa` has 2 free parameters, and this call raises a `ValueError`. What fixes it?",
   "code": "import numpy as np\n\n# isa has 2 free parameters (p[0], p[1])\nvals = np.zeros((5, 3))\njob = sampler.run([(isa, vals)])   # ValueError: inconsistent with last dimension",
   "options": [
     {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | stem-echo rebalance: distractor B given equal stem vocabulary | pool wave: +E bind-before-run, +F one PUB per row"
+    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | stem-echo rebalance: distractor B given equal stem vocabulary | pool wave: +E bind-before-run, +F one PUB per row | realism audit 2026-10-01: stem trimmed (parameter count kept: refutations depend on it); re-rated 2->1"
   },
   "display_count": 5
 }

@@ -5,8 +5,8 @@
     "s7o1"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "From a `BitArray` of shots you want a NEW BitArray containing only the shots in which qubit 1 was measured as 0, keeping all bits. Which call does this?",
+  "difficulty": 1,
+  "stem": "Which call returns a new `BitArray` of only the shots where bit 1 is 0, keeping every bit?",
   "code": "# bits: a BitArray of measured shots (all bits retained)",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7: D replaced by a hand-filtered bitstring list (real misconception; kills length tell) | pool wave: +E postselect needs an explicit num_bits to keep the width; +F slice_bits after postselect"
+    "notes": "adversarial s7: D replaced by a hand-filtered bitstring list (real misconception; kills length tell) | pool wave: +E postselect needs an explicit num_bits to keep the width; +F slice_bits after postselect | realism audit 2026-10-01: stem trimmed ('new BitArray' and 'keeping every bit' kept: D/A/F refutations); 2->1"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

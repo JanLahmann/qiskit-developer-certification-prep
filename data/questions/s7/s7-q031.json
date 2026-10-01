@@ -5,8 +5,8 @@
     "s7o1"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "You retrieved a result but don't remember the circuit's classical-register name, so `result[0].data.meas` fails. Which expression lists the register names available on the data bin so you can pick the right one?",
+  "difficulty": 1,
+  "stem": "`result[0].data.meas` fails because the register has another name. Which expression lists the data bin's register names?",
   "code": "# result = sampler.run([isa]).result()\ndb = result[0].data",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E values() lists register names; +F BitArray carries its register name"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E values() lists register names; +F BitArray carries its register name | realism audit 2026-10-01: stem trimmed; 2->1"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

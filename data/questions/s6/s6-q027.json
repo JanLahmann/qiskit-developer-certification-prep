@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "Qubit 0 is rotated by `RY(pi/3)` (qubit 1 stays |0>). Using an exact estimator with `SparsePauliOp(['IZ', 'ZI'], coeffs=[1.0, 1.0])` (i.e. Z on qubit 0 plus Z on qubit 1), what expectation value is returned?",
+  "stem": "What does this code print?",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.ry(np.pi/3, 0)\nobs = SparsePauliOp([\"IZ\", \"ZI\"], coeffs=[1.0, 1.0])\nprint(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs)",
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E averaging instead of summing terms, +F sin-instead-of-cos"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E averaging instead of summing terms, +F sin-instead-of-cos | realism audit 2026-10-01: stem trimmed; 'Z on qubit 0 plus Z on qubit 1' gloss removed, difficulty 2 kept with the hint gone"
   },
   "freshness": {
     "verified_against": {
@@ -72,7 +72,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

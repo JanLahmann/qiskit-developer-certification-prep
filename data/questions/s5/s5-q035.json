@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You broadcast a 1-parameter circuit over 6 parameter values in one PUB and pass `shots=200`. How many total circuit executions does the sampler perform?",
+  "stem": "How many total circuit executions does this PUB perform?",
   "code": "import numpy as np\nvals = np.linspace(0, np.pi, 6).reshape(6, 1)   # 6 parameter sets\njob = sampler.run([(isa, vals)], shots=200)",
   "options": [
     {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | pool wave: +E shots-conflicts-with-sweep, +F sweep-folded-into-one-execution"
+    "notes": "s5 adversarial review: length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | pool wave: +E shots-conflicts-with-sweep, +F sweep-folded-into-one-execution | realism audit 2026-10-01: stem trimmed (sweep size and shots are in the code)"
   },
   "display_count": 4
 }

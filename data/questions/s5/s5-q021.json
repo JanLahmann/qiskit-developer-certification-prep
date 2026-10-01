@@ -5,8 +5,8 @@
     "s5o2"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "A research team wants complete control over readout-error correction: they need the untouched per-shot measurement outcomes so they can apply their own calibration matrix afterward. Which statement about SamplerV2 is correct?",
+  "difficulty": 1,
+  "stem": "A team needs untouched per-shot outcomes to apply its own readout calibration. Which statement about SamplerV2 is correct?",
   "code": null,
   "options": [
     {
@@ -49,7 +49,8 @@
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
       "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
-      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
+      "https://quantum.cloud.ibm.com/docs/tutorials/readout-error-mitigation-sampler"
     ]
   },
   "proof": {
@@ -62,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell and hedge tell fixed; resilience ruling: distractor C names resilience_level as the misconception; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E meas_type-controls-mitigation, +F raw=True result flag"
+    "notes": "s5 adversarial review: high-severity length tell and hedge tell fixed; resilience ruling: distractor C names resilience_level as the misconception; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E meas_type-controls-mitigation, +F raw=True result flag | realism audit 2026-10-01: stem trimmed; re-rated 2->1; citations re-checked (sampler-noise-management: DD + twirling only) and M3 Sampler tutorial added"
   },
   "display_count": 4
 }

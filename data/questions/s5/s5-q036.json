@@ -5,8 +5,8 @@
     "s5o3"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "A 2-qubit circuit applies X to both qubits and measures all. What is the dominant key of `result[0].data.meas.get_int_counts()`?",
+  "difficulty": 1,
+  "stem": "What is the dominant key of `get_int_counts()` for this circuit?",
   "code": "qc = QuantumCircuit(2)\nqc.x(0); qc.x(1)\nqc.measure_all()\n# ... run ...\nba = result[0].data.meas\nprint(ba.get_int_counts())   # dominant key?",
   "options": [
     {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E binary literal key, +F power-of-two decoding"
+    "notes": "s5 adversarial review: length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E binary literal key, +F power-of-two decoding | realism audit 2026-10-01: stem trimmed (circuit is in the code); re-rated 2->1 (binary 11 = 3)"
   },
   "display_count": 5
 }

@@ -6,8 +6,8 @@
     "s6o2"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "You want a single EstimatorV2 job to target a tighter accuracy on its expectation value. Which call is valid?",
+  "difficulty": 1,
+  "stem": "Which call validly requests a tighter accuracy for this one Estimator job?",
   "code": "from qiskit_ibm_runtime import EstimatorV2\n\nest = EstimatorV2(mode=backend)\n# isa: ISA circuit, iobs: layout-aligned observable\njob = ...  # which call?",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E default_precision as a run kwarg, +F options.precision near-miss"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E default_precision as a run kwarg, +F options.precision near-miss | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (run() keyword surface is one recalled fact)"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

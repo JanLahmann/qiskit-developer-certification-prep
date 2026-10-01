@@ -5,8 +5,8 @@
     "s5o2"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "Having chosen not to rely on any runtime mitigation, a team wants to rigorously correct measurement (readout) error in their SamplerV2 counts — not merely post-select. Which do-it-yourself technique fits the raw per-shot data the Sampler provides?",
+  "difficulty": 2,
+  "stem": "Which do-it-yourself technique rigorously corrects readout error in raw SamplerV2 counts?",
   "code": null,
   "options": [
     {
@@ -49,7 +49,8 @@
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
       "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
-      "https://quantum.cloud.ibm.com/docs/guides/primitives"
+      "https://quantum.cloud.ibm.com/docs/guides/primitives",
+      "https://quantum.cloud.ibm.com/docs/tutorials/readout-error-mitigation-sampler"
     ]
   },
   "proof": {
@@ -62,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; resilience ruling: distractor B names resilience_level as Estimator-only; added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E PEC on bitstrings, +F calibration-free MLE"
+    "notes": "s5 adversarial review: high-severity length tell fixed; resilience ruling: distractor B names resilience_level as Estimator-only; added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E PEC on bitstrings, +F calibration-free MLE | realism audit 2026-10-01: stem trimmed from 37 words; re-rated 3->2; M3 Sampler tutorial added as citation"
   },
   "display_count": 4
 }

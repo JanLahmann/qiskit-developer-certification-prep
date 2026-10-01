@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You have transpiled a circuit for your backend, producing the ISA circuit `isa_qc`, and created `sampler = SamplerV2(mode=backend)`. Which call correctly submits the circuit for execution?",
+  "stem": "Which call correctly submits the ISA circuit `isa_qc` with this sampler?",
   "code": "from qiskit_ibm_runtime import SamplerV2\n\n# isa_qc: circuit already transpiled for `backend`\nsampler = SamplerV2(mode=backend)\njob = ...  # which call?",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude (orchestrator seed)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | s5 adversarial review: distractor texts lengthened/labelled so the correct option is not the odd one out; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | drift-lint fix: evidence no longer quotes the local 1024 default as meaningful | pool wave: +E V1 `circuits=` kwarg, +F shots as a per-PUB list"
+    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | s5 adversarial review: distractor texts lengthened/labelled so the correct option is not the odd one out; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | drift-lint fix: evidence no longer quotes the local 1024 default as meaningful | pool wave: +E V1 `circuits=` kwarg, +F shots as a per-PUB list | realism audit 2026-10-01: stem trimmed (context already in code)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

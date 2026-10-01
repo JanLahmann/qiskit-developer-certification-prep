@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "A 3-qubit GHZ circuit (`measure_all`) is sampled. Its `get_counts()` returns `{'000': a, '111': b}`. What KEYS does `bits.get_int_counts()` use for those same outcomes?",
+  "stem": "`get_counts()` returns `{'000': a, '111': b}`. Which keys does `get_int_counts()` use for those outcomes?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3); qc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\nbits = StatevectorSampler().run([qc], shots=800).result()[0].data.meas\nprint(bits.get_int_counts())",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7: correct option C tightened so a distractor is the longest (kills length tell) | pool wave: +E int keys rendered as strings; +F 111 counted as the eighth (1-based) outcome"
+    "notes": "adversarial s7: correct option C tightened so a distractor is the longest (kills length tell) | pool wave: +E int keys rendered as strings; +F 111 counted as the eighth (1-based) outcome | realism audit 2026-10-01: stem trimmed (a/b definition kept: options use them); difficulty unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

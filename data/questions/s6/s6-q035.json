@@ -5,8 +5,8 @@
     "s6o2"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "What single-term Pauli label does `SparsePauliOp.from_sparse_list([('Z', [0], 1.0)], num_qubits=3)` produce?",
+  "difficulty": 1,
+  "stem": "What does this code print?",
   "code": "from qiskit.quantum_info import SparsePauliOp\n\nop = SparsePauliOp.from_sparse_list([(\"Z\", [0], 1.0)], num_qubits=3)\nprint(op.paulis[0])",
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E sparse-list-needs-full-width, +F num_qubits-does-not-pad"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E sparse-list-needs-full-width, +F num_qubits-does-not-pad | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one endianness fact)"
   },
   "freshness": {
     "verified_against": {
@@ -72,7 +72,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

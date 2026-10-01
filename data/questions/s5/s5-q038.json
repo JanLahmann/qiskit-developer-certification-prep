@@ -5,8 +5,8 @@
     "s5o3"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "You estimate an outcome probability from a SamplerV2 histogram and then increase the shot count from 1000 to 4000. Roughly how does the statistical (sampling) error on that estimated probability change?",
+  "difficulty": 2,
+  "stem": "Shots rise from 1000 to 4000. How does the sampling error of an estimated outcome probability change?",
   "code": null,
   "options": [
     {
@@ -48,7 +48,8 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/primitives",
-      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
     ]
   },
   "proof": {
@@ -61,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E 1/N^2 variance scaling, +F error set by PUB count"
+    "notes": "s5 adversarial review: length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E 1/N^2 variance scaling, +F error set by PUB count | realism audit 2026-10-01: stem trimmed; re-rated 3->2; guides/estimator-options added (default precision 1/sqrt(4096)), the old citations did not state the 1/sqrt(N) scaling"
   },
   "display_count": 4
 }

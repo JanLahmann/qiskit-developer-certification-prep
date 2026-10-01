@@ -5,8 +5,8 @@
     "s5o3"
   ],
   "type": "spot-bug",
-  "difficulty": 2,
-  "stem": "This code raises `AttributeError: 'DataBin' object has no attribute 'meas'` on the last line. What is the correct fix?",
+  "difficulty": 1,
+  "stem": "This code raises `AttributeError: 'DataBin' object has no attribute 'meas'`. What fixes it?",
   "code": "qc = QuantumCircuit(2, 2)\nqc.h(0); qc.cx(0, 1)\nqc.measure([0, 1], [0, 1])\n# ... transpile to isa, run ...\nresult = sampler.run([isa]).result()\ncounts = result[0].data.meas.get_counts()   # AttributeError",
   "options": [
     {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: distractor B replaced: the old 'switch to measure_all()' option was arguably a second working fix; new B (dict-style item access) is executed and refuted by the proof; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E indexed register field name, +F positional DataBin indexing"
+    "notes": "s5 adversarial review: distractor B replaced: the old 'switch to measure_all()' option was arguably a second working fix; new B (dict-style item access) is executed and refuted by the proof; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E indexed register field name, +F positional DataBin indexing | realism audit 2026-10-01: stem trimmed; re-rated 2->1 (one fact: default register is named c)"
   },
   "display_count": 5
 }

@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "Two circuits are submitted in a single SamplerV2 call as two PUBs. What does `len(result)` return, and how do you access the second circuit's counts?",
+  "stem": "Two circuits run in one Sampler call. What is `len(result)`, and how are the second circuit's counts read?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc_a = QuantumCircuit(1); qc_a.x(0); qc_a.measure_all()\nqc_b = QuantumCircuit(1); qc_b.measure_all()\n\nresult = StatevectorSampler().run([qc_a, qc_b], shots=100).result()",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E PubResult.get_counts(); +F DataBin.get_counts()"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E PubResult.get_counts(); +F DataBin.get_counts() | realism audit 2026-10-01: stem trimmed; difficulty unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

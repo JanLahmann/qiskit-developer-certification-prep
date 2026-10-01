@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "An EstimatorV2 evaluates the observable `ZZ` on an ideal Bell state (H then CX). What does `result[0].data.evs` hold?",
+  "stem": "An ideal Bell pair is evaluated against `ZZ`. What does `result[0].data.evs` hold?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\n\nresult = StatevectorEstimator().run([(qc, obs)]).result()\nprint(result[0].data.evs)",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7: proof strengthened — A and D are now attempted (subscript / list()) instead of narrated | pool wave: +E Bell pair anticorrelates under ZZ (sign flip); +F evs is a length-one 1-D array"
+    "notes": "adversarial s7: proof strengthened — A and D are now attempted (subscript / list()) instead of narrated | pool wave: +E Bell pair anticorrelates under ZZ (sign flip); +F evs is a length-one 1-D array | realism audit 2026-10-01: stem trimmed; kept 'what does evs hold' (the print shows 0.9999999999999998, so 'print' would misstate key 1.0); difficulty unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

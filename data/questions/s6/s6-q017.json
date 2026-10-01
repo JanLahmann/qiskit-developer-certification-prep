@@ -6,8 +6,8 @@
     "s6o2"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "The Estimator `precision` is the target standard error of an expectation value. If you tighten `precision` from 0.02 to 0.01 (halve it), approximately how does the number of shots the estimator must collect change?",
+  "difficulty": 2,
+  "stem": "Halving the Estimator `precision` from 0.02 to 0.01 changes the required number of shots by about how much?",
   "code": null,
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6: proof rewritten to MEASURE the standard error at 1x/2x/4x/16x shots instead of recomputing 1/precision^2 (was circular) | pool wave: +E inverted shots/precision direction, +F sqrt-instead-of-square exponent"
+    "notes": "adversarial s6: proof rewritten to MEASURE the standard error at 1x/2x/4x/16x shots instead of recomputing 1/precision^2 (was circular) | pool wave: +E inverted shots/precision direction, +F sqrt-instead-of-square exponent | realism audit 2026-10-01: stem trimmed; 'precision is the target standard error' gloss removed (it handed over the 1/sqrt(N) step), difficulty 3->2 rated with the hint gone"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

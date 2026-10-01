@@ -6,8 +6,8 @@
     "s8o3"
   ],
   "type": "multi",
-  "difficulty": 3,
-  "stem": "The IBM Quantum documentation publishes an OpenQASM 3 feature table whose *Qiskit SDK* column marks a feature supported only if it can be parsed by `qiskit.qasm3.loads` (through the `qiskit-qasm3-import` extension), represented in a `QuantumCircuit`, and exported by `qiskit.qasm3.dumps`. Reading that column and its notes for classical-type declarations, select the THREE correct statements.",
+  "difficulty": 2,
+  "stem": "The IBM OpenQASM 3 feature table's Qiskit SDK column covers parsing, representing and exporting. Select the THREE correct statements about classical-type declarations.",
   "code": null,
   "options": [
     {
@@ -41,7 +41,7 @@
     "F"
   ],
   "explanation": {
-    "correct": "Three rows of the table's Qiskit SDK column carry these verdicts. `bit` is marked fully supported and note 3 states that `bit`- and `bit[n]`-typed declarations correspond to `Clbit` and `ClassicalRegister` (B). `complex` is marked unsupported in both the Qiskit SDK and the Runtime columns -- there is no Qiskit-side representation for it at all (D). And note 6 says in as many words that the SDK does not support parsing declarations of type `duration` or type `stretch` from OpenQASM 3 files (F). The wider pattern to remember: Qiskit's OpenQASM 3 *importer* is much narrower than its exporter -- note 4 records that it does not parse classical variable declarations in general, even where Qiskit can represent and export the corresponding value.",
+    "correct": "Three rows of the table's Qiskit SDK column carry these verdicts. `bit` is marked fully supported and note 3 states that `bit`- and `bit[n]`-typed declarations correspond to `Clbit` and `ClassicalRegister`. `complex` is marked unsupported in both the Qiskit SDK and the Runtime columns -- there is no Qiskit-side representation for it at all. And note 6 says in as many words that the SDK does not support parsing declarations of type `duration` or type `stretch` from OpenQASM 3 files. The wider pattern to remember: Qiskit's OpenQASM 3 *importer* is much narrower than its exporter -- note 4 records that it does not parse classical variable declarations in general, even where Qiskit can represent and export the corresponding value.",
     "distractors": {
       "A": "`int` carries a cross in the Qiskit SDK column. It is a genuine OpenQASM 3 type that IBM hardware can execute, but the importer will not parse the declaration into anything, Python `int` included.",
       "C": "`angle` is listed with the Qiskit-side feature 'Implicit, as gate parameters' and a cross: angles reach Qiskit only as arguments of gate calls, never as standalone declarations bound to `Parameter`s.",
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 r1: carried-forward flag resolved — re-read the live feature table (fetched 200) and confirmed every keyed row (bit ok/ClassicalRegister note 3, complex unsupported, duration+stretch unparseable note 6); stem now scopes the claim explicitly to that table's Qiskit SDK column and its definition of 'supported' rather than asserting timeless language facts; widened to select-THREE of six with answers B/D/F so the two multi-select items no longer share the 'two correct, one is A' shape; new const-vs-pi distractor | pool wave: display_count 5 (rotation only) -- 3-correct multi already at the 6-option schema cap, so no distractor can be added"
+    "notes": "adversarial s8 r1: carried-forward flag resolved — re-read the live feature table (fetched 200) and confirmed every keyed row (bit ok/ClassicalRegister note 3, complex unsupported, duration+stretch unparseable note 6); stem now scopes the claim explicitly to that table's Qiskit SDK column and its definition of 'supported' rather than asserting timeless language facts; widened to select-THREE of six with answers B/D/F so the two multi-select items no longer share the 'two correct, one is A' shape; new const-vs-pi distractor | pool wave: display_count 5 (rotation only) -- 3-correct multi already at the 6-option schema cap, so no distractor can be added | realism audit 2026-10-01: stem trimmed (kept a compressed definition of the Qiskit SDK column); difficulty 3->2 (three independent table facts, no interaction); explanation display-letter refs '(B)/(D)/(F)' removed"
   },
   "display_count": 5
 }

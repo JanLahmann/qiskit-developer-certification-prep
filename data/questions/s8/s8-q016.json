@@ -6,8 +6,8 @@
     "s8o3"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "A `QuantumCircuit` with 2 qubits and 3 classical bits is exported with `qiskit.qasm3.dumps`. Which pair of declaration lines does the OpenQASM 3 output contain?",
+  "difficulty": 1,
+  "stem": "Which two declaration lines appear in the printed OpenQASM 3 program?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(2, 3)  # 2 qubits, 3 clbits\nqc.h(0)\n\nprint(qasm3.dumps(qc))",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 round 1: survived unchanged (citations re-fetched 200 and re-read, proof evidence discriminates every option, no second defensible answer, no meta-pattern flag); all four options are exactly equal length, so the length heuristics sit at chance here | pool wave: +E the classical register is sized to the qubit count, +F classical bits are declared with int[n]"
+    "notes": "adversarial s8 round 1: survived unchanged (citations re-fetched 200 and re-read, proof evidence discriminates every option, no second defensible answer, no meta-pattern flag); all four options are exactly equal length, so the length heuristics sit at chance here | pool wave: +E the classical register is sized to the qubit count, +F classical bits are declared with int[n] | realism audit 2026-10-01: stem trimmed (qubit/clbit counts stay in the code comment); difficulty 2->1 (one recalled syntax fact)"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

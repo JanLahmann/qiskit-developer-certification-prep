@@ -6,8 +6,8 @@
     "s5o2"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "Hoping to turn on error mitigation for measurement counts, a developer writes `sampler.options.resilience_level = 1` on a `SamplerV2`. What actually happens?",
+  "difficulty": 1,
+  "stem": "What happens when the last line runs?",
   "code": "from qiskit_ibm_runtime import SamplerV2\n\nsampler = SamplerV2(mode=backend)\nsampler.options.resilience_level = 1",
   "options": [
     {
@@ -68,15 +68,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: resilience ruling applied: correct answer states library reality and the explanation reconciles it with the exam objective wording; format tell fixed (all options now code-formatted); length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E options-are-read-only, +F experimental-absorbs-unknown-fields"
+    "notes": "s5 adversarial review: resilience ruling applied: correct answer states library reality and the explanation reconciles it with the exam objective wording; format tell fixed (all options now code-formatted); length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E options-are-read-only, +F experimental-absorbs-unknown-fields | realism audit 2026-10-01: stem trimmed (mitigation-intent framing dropped); re-rated 2->1 (one fact: resilience_level is Estimator-only)"
   },
   "display_count": 5
 }

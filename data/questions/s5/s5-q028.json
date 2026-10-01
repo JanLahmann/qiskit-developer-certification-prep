@@ -5,8 +5,8 @@
     "s5o2"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "A Bell circuit should only ever yield `00` or `11`, but readout error sprinkles in `01`/`10`. A team wants to bypass runtime mitigation and apply their own scheme that keeps only the physically-consistent outcomes. Which approach implements this correctly?",
+  "difficulty": 2,
+  "stem": "Readout error adds `01`/`10` to a Bell circuit's counts. Which do-it-yourself correction handles this?",
   "code": "# result from a Bell circuit; raw counts include 01/10 from readout error\ncounts = result[0].data.meas.get_counts()   # e.g. {'00':.., '11':.., '01':.., '10':..}",
   "options": [
     {
@@ -67,15 +67,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell and stem-echo tell fixed; distractor letter reference removed from explanation and proof; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E measure-twirling-as-post-selection, +F counts-cannot-be-filtered"
+    "notes": "s5 adversarial review: high-severity length tell and stem-echo tell fixed; distractor letter reference removed from explanation and proof; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E measure-twirling-as-post-selection, +F counts-cannot-be-filtered | realism audit 2026-10-01: stem trimmed from 39 words; re-rated 3->2"
   },
   "display_count": 4
 }

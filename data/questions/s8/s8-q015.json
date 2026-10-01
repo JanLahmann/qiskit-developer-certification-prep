@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "A teammate has a program text that starts with the line `OPENQASM 3.0;` and declares its registers as `qubit[2] q;` and `bit[2] c;`. They pass that text to `qiskit.qasm2.loads`. What happens?",
+  "stem": "A program text begins `OPENQASM 3.0;` and declares `qubit[2] q;` and `bit[2] c;`. What does `qasm2.loads(program)` do?",
   "code": "from qiskit import qasm2\n\n# program starts with 'OPENQASM 3.0;' and declares qubit[2] q; bit[2] c; ...\ncircuit = qasm2.loads(program)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->B (position rebalance); killed the stem-echo tell by giving the distractors equally authentic API vocabulary, killed the length tell, replaced the implausible ModuleNotFoundError distractor with QASM3ImporterError; proof now checks the error message text | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E the version header is accepted and the parse fails at the qubit[n] declaration, +F qasm2.loads sniffs the version and delegates to qasm3.loads"
+    "notes": "adversarial s8 r1: answer A->B (position rebalance); killed the stem-echo tell by giving the distractors equally authentic API vocabulary, killed the length tell, replaced the implausible ModuleNotFoundError distractor with QASM3ImporterError; proof now checks the error message text | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E the version header is accepted and the parse fails at the qubit[n] declaration, +F qasm2.loads sniffs the version and delegates to qasm3.loads | realism audit 2026-10-01: stem trimmed (kept 'begins' header detail that refutes the parse-later distractor); difficulty kept 2"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

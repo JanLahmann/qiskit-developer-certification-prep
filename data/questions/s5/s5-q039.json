@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You submit three circuits in one call: `result = sampler.run([isaA, isaB, isaC], shots=256).result()`. What is `len(result)`?",
+  "stem": "What does this code print?",
   "code": "result = sampler.run([isaA, isaB, isaC], shots=256).result()\nprint(len(result))",
   "options": [
     {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length, absolute-wording and formatting tells fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | pool wave: +E PrimitiveResult has no len, +F len returns a shape tuple"
+    "notes": "s5 adversarial review: high-severity length, absolute-wording and formatting tells fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | pool wave: +E PrimitiveResult has no len, +F len returns a shape tuple | realism audit 2026-10-01: stem trimmed to a generic predict-output prompt"
   },
   "display_count": 4
 }

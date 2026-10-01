@@ -6,8 +6,8 @@
     "s8o3"
   ],
   "type": "spot-bug",
-  "difficulty": 2,
-  "stem": "This code builds a circuit with an `if_test` block and tries to export it to OpenQASM 2, but the export raises an error. Which single change makes the export succeed while representing the same conditional circuit?",
+  "difficulty": 1,
+  "stem": "The last line raises `QASM2ExportError`. Which single change yields valid program text for the same conditional circuit?",
   "code": "from qiskit import QuantumCircuit, qasm2\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.if_test((qc.clbits[0], 1)):\n    qc.x(0)\n\ntext = qasm2.dumps(qc)  # raises QASM2ExportError",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->D (position rebalance); proof now also observes that the qasm3 output actually contains an 'if (' block, not merely that it starts with OPENQASM | pool wave: +E the legacy QuantumCircuit.qasm() method still exists, +F dump is less restricted than dumps"
+    "notes": "adversarial s8 r1: answer A->D (position rebalance); proof now also observes that the qasm3 output actually contains an 'if (' block, not merely that it starts with OPENQASM | pool wave: +E the legacy QuantumCircuit.qasm() method still exists, +F dump is less restricted than dumps | realism audit 2026-10-01: stem trimmed (kept 'single change' and 'same conditional circuit'); difficulty 2->1 (one concept: OpenQASM 2 lacks structured control flow, OpenQASM 3 has it)"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

@@ -6,8 +6,8 @@
     "s8o3"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "A circuit uses an unbound `Parameter` named `theta` and is exported with `qiskit.qasm3.dumps`. Which declaration line does the OpenQASM 3 output contain for `theta`?",
+  "difficulty": 1,
+  "stem": "Which declaration does the OpenQASM 3 output contain for the unbound parameter `theta`?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit import qasm3\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\n\nprint(qasm3.dumps(qc))",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 round 1: survived unchanged (citations re-fetched 200 and re-read, proof evidence discriminates every option, no second defensible answer, no meta-pattern flag); correct option is deliberately left as the longest here (ratio 1.20) -- the section needs a few such items so that 'longest option wins' scores at chance rather than below it | pool wave: +E unsized bare float, +F the C spelling double for the double-precision type"
+    "notes": "adversarial s8 round 1: survived unchanged (citations re-fetched 200 and re-read, proof evidence discriminates every option, no second defensible answer, no meta-pattern flag); correct option is deliberately left as the longest here (ratio 1.20) -- the section needs a few such items so that 'longest option wins' scores at chance rather than below it | pool wave: +E unsized bare float, +F the C spelling double for the double-precision type | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one recalled fact: unbound Parameter -> input float[64])"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

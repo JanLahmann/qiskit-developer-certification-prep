@@ -5,8 +5,8 @@
     "s5o3"
   ],
   "type": "spot-bug",
-  "difficulty": 3,
-  "stem": "This code excites qubit 0 and tries to read qubit 0's value out of each shot's bitstring, but every `q0` comes out `'0'`. What is the fix?",
+  "difficulty": 2,
+  "stem": "Only qubit 0 is excited, yet every `q0` reads `'0'`. What is the fix?",
   "code": "qc = QuantumCircuit(2)\nqc.x(0)              # qubit 0 -> |1>\nqc.measure_all()\n# ... transpile, run ...\nbitstrings = result[0].data.meas.get_bitstrings()\nq0 = [b[0] for b in bitstrings]   # expected '1', gets '0'",
   "options": [
     {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E wrong bit-shift on integer keys, +F barrier-fixes-ordering"
+    "notes": "s5 adversarial review: length rebalanced; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E wrong bit-shift on integer keys, +F barrier-fixes-ordering | realism audit 2026-10-01: stem trimmed; re-rated 3->2 (one concept, endianness, applied to indexing)"
   },
   "display_count": 4
 }

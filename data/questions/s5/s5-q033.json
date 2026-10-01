@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You want every job from a sampler to use 4096 shots by default, without passing `shots` on each `run()`. Which construction sets this up correctly?",
+  "stem": "Which construction makes every run of this sampler default to 4096 shots?",
   "code": "from qiskit_ibm_runtime import SamplerV2\n# want default_shots = 4096 for all runs",
   "options": [
     {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; explanation no longer asserts a 1024 fallback (that number is a local BackendSamplerV2 artifact, not the Runtime default); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | drift-lint fix: evidence names the local default explicitly instead of implying a runtime default | pool wave: +E shots key in the options dict, +F V1 set_options"
+    "notes": "s5 adversarial review: length rebalanced; explanation no longer asserts a 1024 fallback (that number is a local BackendSamplerV2 artifact, not the Runtime default); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | drift-lint fix: evidence names the local default explicitly instead of implying a runtime default | pool wave: +E shots key in the options dict, +F V1 set_options | realism audit 2026-10-01: stem trimmed"
   },
   "display_count": 4
 }

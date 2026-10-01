@@ -5,8 +5,8 @@
     "s5o3"
   ],
   "type": "predict-output",
-  "difficulty": 3,
-  "stem": "The sweep binds three angles to one parameterized circuit in a single PUB. Which histogram does the last line draw?",
+  "difficulty": 2,
+  "stem": "Which histogram does the last line draw?",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.visualization import plot_histogram\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\nqc.measure_all()\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(optimization_level=1, backend=backend,\n                                  seed_transpiler=42)\nangles = np.array([[np.pi / 6], [np.pi / 2], [5 * np.pi / 6]])\nsampler = SamplerV2(mode=backend)\nsampler.options.simulator.seed_simulator = 55\nbits = sampler.run([(pm.run(qc), angles)], shots=2000).result()[0].data.meas\n\nplot_histogram(bits.get_counts(2))",
   "options": [
     {
@@ -84,9 +84,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure agent, task #28 wave 1)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Image-option item on broadcast indexing of a swept BitArray. Figures are plot_histogram renders of the five candidate readings the proof rebuilds from the same seeded sweep. Deliberate size-max keeper: the keyed figure is the largest SVG of the five (deviation from the distractor median under 1%)."
+    "notes": "Image-option item on broadcast indexing of a swept BitArray. Figures are plot_histogram renders of the five candidate readings the proof rebuilds from the same seeded sweep. Deliberate size-max keeper: the keyed figure is the largest SVG of the five (deviation from the distractor median under 1%). | realism audit 2026-10-01: stem trimmed (the sweep description is in the code); re-rated 3->2 with the gloss gone; stem-only, no re-render"
   },
   "freshness": {
     "verified_against": {
@@ -95,7 +95,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

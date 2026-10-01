@@ -5,8 +5,8 @@
     "s8o3"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "The variable `program` holds a complete OpenQASM 2 program as a Python string. Which call parses it into a `QuantumCircuit`?",
+  "difficulty": 1,
+  "stem": "Which call parses the OpenQASM 2 string `program` into a `QuantumCircuit`?",
   "code": "from qiskit import qasm2\n\nprogram = '''OPENQASM 2.0;\ninclude \"qelib1.inc\";\nqreg q[2];\ncreg c[2];\nh q[0];\ncx q[0], q[1];\nmeasure q -> c;\n'''\n\ncircuit = ...  # which call?",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 r1: replaced weak reverse-direction distractor (qasm2.dumps) with the legacy from_qasm_file/from_qasm_str confusion; verified from_qasm_str still exists in 2.5 so it is deliberately NOT offered (it would be a second correct answer) | pool wave: +E one loader parses both OpenQASM versions (qasm3.loads on v2 text), +F qasm2.load accepts an open file object like json.load"
+    "notes": "adversarial s8 r1: replaced weak reverse-direction distractor (qasm2.dumps) with the legacy from_qasm_file/from_qasm_str confusion; verified from_qasm_str still exists in 2.5 so it is deliberately NOT offered (it would be a second correct answer) | pool wave: +E one loader parses both OpenQASM versions (qasm3.loads on v2 text), +F qasm2.load accepts an open file object like json.load | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (load vs loads is one recalled fact)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -5,8 +5,8 @@
     "s8o3"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "A circuit contains a user-defined gate `mygate` (built from a named sub-circuit and appended with `to_gate()`). When you call `qiskit.qasm3.dumps(qc)`, how is `mygate` represented in the output?",
+  "difficulty": 2,
+  "stem": "How does `qasm3.dumps(qc)` represent the custom gate `mygate` in its output?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nsub = QuantumCircuit(1, name=\"mygate\")\nsub.rz(0.5, 0)\nsub.h(0)\n\nqc = QuantumCircuit(1)\nqc.append(sub.to_gate(), [0])\n\nprint(qasm3.dumps(qc))",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->B (position rebalance); absolute-word tell and length tell removed; proof now ignores gate-block interiors when testing the 'inlined' claim | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E the custom gate is renamed/mangled in the declaration, +F custom gates become OpenQASM 2 style opaque declarations"
+    "notes": "adversarial s8 r1: answer A->B (position rebalance); absolute-word tell and length tell removed; proof now ignores gate-block interiors when testing the 'inlined' claim | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E the custom gate is renamed/mangled in the declaration, +F custom gates become OpenQASM 2 style opaque declarations | realism audit 2026-10-01: stem trimmed (sub-circuit/to_gate gloss is visible in the code); difficulty 3->2"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

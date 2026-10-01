@@ -5,8 +5,8 @@
     "s8o3"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "A deployment installs the `qiskit` package but not the optional `qiskit-qasm3-import` package. On that machine a script imports `qiskit.qasm3`, exports a circuit with `dumps`, and later reads a program back with `loads`. What is the outcome of the two calls?",
+  "difficulty": 1,
+  "stem": "With `qiskit` installed but not the optional `qiskit-qasm3-import` package, what happens when this code runs?",
   "code": "from qiskit import QuantumCircuit, qasm3\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\n\ntext = qasm3.dumps(qc)      # export direction\nback = qasm3.loads(text)    # import direction",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 r1: REWRITTEN — the old item (bit[4] vs int[4] importability) was a near-duplicate of q022, which tests the same feature-table rows; replaced with the qasm3 export/import asymmetry (dumps is native, loads needs qiskit-qasm3-import), a genuine section gap, and upgraded from conceptual to an executed proof that blocks the module so the observation does not depend on whether the verifying machine has it installed. Answer keyed D. | pool wave: +E loads succeeds with a UserWarning instead of raising, +F loads raises QASM3ImporterError rather than MissingOptionalLibraryError"
+    "notes": "adversarial s8 r1: REWRITTEN — the old item (bit[4] vs int[4] importability) was a near-duplicate of q022, which tests the same feature-table rows; replaced with the qasm3 export/import asymmetry (dumps is native, loads needs qiskit-qasm3-import), a genuine section gap, and upgraded from conceptual to an executed proof that blocks the module so the observation does not depend on whether the verifying machine has it installed. Answer keyed D. | pool wave: +E loads succeeds with a UserWarning instead of raising, +F loads raises QASM3ImporterError rather than MissingOptionalLibraryError | realism audit 2026-10-01: stem trimmed (kept the installed/not-installed premise); difficulty 2->1 (one recalled fact: only the qasm3 import direction needs the extra package)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

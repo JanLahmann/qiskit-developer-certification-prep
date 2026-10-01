@@ -6,8 +6,8 @@
     "s7o2"
   ],
   "type": "multi",
-  "difficulty": 2,
-  "stem": "You want to review results from jobs you ran last week but did not record their IDs. Which approaches let you locate and retrieve those past jobs? (Select all that apply.)",
+  "difficulty": 1,
+  "stem": "You never saved last week's job IDs. Which approaches let you locate and retrieve those jobs? (Select all that apply.)",
   "code": null,
   "options": [
     {
@@ -63,8 +63,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7: D/E rephrased without absolute wording (kills absolute-distractor tell); Workloads-page option C confirmed against the live save-jobs guide | pool wave: +F Runtime returns a cached result for an identical resubmission"
+    "notes": "adversarial s7: D/E rephrased without absolute wording (kills absolute-distractor tell); Workloads-page option C confirmed against the live save-jobs guide | pool wave: +F Runtime returns a cached result for an identical resubmission | realism audit 2026-10-01: stem trimmed; 2->1, documented service.jobs filters + Workloads page"
   }
 }

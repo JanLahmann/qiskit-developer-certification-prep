@@ -40,7 +40,7 @@
     "E"
   ],
   "explanation": {
-    "correct": "SamplerV2 returns raw samples with no automatic readout mitigation (A), and its error-handling knobs are error *suppression* (dynamical decoupling) and twirling — DD is enabled through `options.dynamical_decoupling.enable` (B). Everything downstream (readout calibration, post-selection) is left to you.",
+    "correct": "SamplerV2 returns raw samples with no automatic readout mitigation, and its error-handling knobs are error *suppression* (dynamical decoupling) and twirling — DD is enabled through `options.dynamical_decoupling.enable`. Everything downstream (readout calibration, post-selection) is left to you.",
     "distractors": {
       "A": "`resilience_level` is an EstimatorV2 option for expectation-value mitigation; SamplerOptions has no such attribute, so the assignment raises and no built-in strategy is selected.",
       "B": "Twirling inserts randomized Pauli/measurement operations to tailor noise into a stochastic form; it changes neither how many qubits are measured nor the register width.",
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: length, hedge and absolute-wording tells fixed; resilience ruling: option C stays a distractor and names the Estimator-only option; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B/C/D/E -> answer now C+E (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +F num_randomizations vs shots_per_randomization"
+    "notes": "s5 adversarial review: length, hedge and absolute-wording tells fixed; resilience ruling: option C stays a distractor and names the Estimator-only option; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B/C/D/E -> answer now C+E (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +F num_randomizations vs shots_per_randomization | realism audit 2026-10-01: stem unchanged; explanation no longer cites display letters (A)/(B); citations re-checked"
   },
   "display_count": 5
 }

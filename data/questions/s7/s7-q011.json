@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "The circuit below is executed with a SamplerV2 primitive for 2000 shots. What do `bits.num_shots` and `bits.num_bits` print?",
+  "stem": "A 3-qubit GHZ circuit is sampled for 2000 shots. What are `bits.num_shots` and `bits.num_bits`?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3)\nqc.h(0); qc.cx(0, 1); qc.cx(1, 2)\nqc.measure_all()\n\nresult = StatevectorSampler().run([qc], shots=2000).result()\nbits = result[0].data.meas\nprint(bits.num_shots, bits.num_bits)",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E num_shots counts measured bits (shots x width); +F run(shots=) ignored for a built-in default"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E num_shots counts measured bits (shots x width); +F run(shots=) ignored for a built-in default | realism audit 2026-10-01: stem trimmed to exam register; difficulty unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

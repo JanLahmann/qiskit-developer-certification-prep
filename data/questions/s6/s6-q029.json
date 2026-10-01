@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You construct `EstimatorV2(mode=backend)` and never touch `resilience_level`. On real hardware, which error mitigation is applied by default?",
+  "stem": "With `resilience_level` left unset, which error mitigation does `EstimatorV2` apply on real hardware?",
   "code": null,
   "options": [
     {
@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6: distractors A/C reworded to carry the same 'error mitigation'/'default' vocabulary as the key (stem-echo tell) | pool wave: +E DD-on-by-default, +F mitigation-requires-a-session"
+    "notes": "adversarial s6: distractors A/C reworded to carry the same 'error mitigation'/'default' vocabulary as the key (stem-echo tell) | pool wave: +E DD-on-by-default, +F mitigation-requires-a-session | realism audit 2026-10-01: stem trimmed; difficulty 1 kept"
   },
   "display_count": 4
 }

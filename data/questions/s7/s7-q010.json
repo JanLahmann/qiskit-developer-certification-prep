@@ -5,8 +5,8 @@
     "s7o1"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "Your kernel is about to shut down and you want to keep a completed SamplerV2 `result` on disk so a later session can reload it as a real result object. Which save/load pair round-trips it?",
+  "difficulty": 1,
+  "stem": "Which save/load pair lets a new kernel reload `result` from disk as a working result object?",
   "code": "import json\nfrom qiskit_ibm_runtime import RuntimeEncoder, RuntimeDecoder\n\n# result = sampler.run([isa_circuit]).result()\n# ... write result to result.json, read it back in a new kernel ...",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7: REWRITTEN — old version duplicated q024 (pub indexing) and echoed a community item; now tests RuntimeEncoder/RuntimeDecoder round-trip (executed proof, kills the 1.42x length tell) | pool wave: +E encoder-only round-trip (plain json.load returns dicts); +F dumps/loads take a file handle"
+    "notes": "adversarial s7: REWRITTEN — old version duplicated q024 (pub indexing) and echoed a community item; now tests RuntimeEncoder/RuntimeDecoder round-trip (executed proof, kills the 1.42x length tell) | pool wave: +E encoder-only round-trip (plain json.load returns dicts); +F dumps/loads take a file handle | realism audit 2026-10-01: stem trimmed (kernel-shutdown scenario dropped); 2->1, recalled save-jobs pattern"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

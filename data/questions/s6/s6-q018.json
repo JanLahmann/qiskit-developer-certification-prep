@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "In a variational algorithm you need the expectation value <O> of a `SparsePauliOp` observable for the state your circuit prepares, to use as a cost function. Which Runtime primitive is designed for this, and what does it return?",
+  "stem": "A variational cost function needs <O> for a `SparsePauliOp`. Which primitive computes it, and how?",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6: dead citation guides/get-started-with-primitives (404) -> guides/get-started-with-estimator; B hedged to kill absolute-wording tell | adversarial s6: B/D tightened so the key is (deliberately) the longest option here — the section's correct-is-longest rate is held near chance, not driven to zero | pool wave: +E right primitive/wrong output, +F observable-on-the-Sampler"
+    "notes": "adversarial s6: dead citation guides/get-started-with-primitives (404) -> guides/get-started-with-estimator; B hedged to kill absolute-wording tell | adversarial s6: B/D tightened so the key is (deliberately) the longest option here — the section's correct-is-longest rate is held near chance, not driven to zero | pool wave: +E right primitive/wrong output, +F observable-on-the-Sampler | realism audit 2026-10-01: stem trimmed; difficulty 1 kept"
   },
   "display_count": 4
 }

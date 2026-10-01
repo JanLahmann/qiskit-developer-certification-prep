@@ -5,8 +5,8 @@
     "s7o1"
   ],
   "type": "predict-output",
-  "difficulty": 3,
-  "stem": "A 3-qubit circuit applies `X` to qubit 0 (qubits 1 and 2 stay |0>), then `measure_all()`. From the resulting `bits` you call `bits.slice_bits([2])`. What does the sliced array's `get_counts()` return?",
+  "difficulty": 2,
+  "stem": "A 3-qubit sample is narrowed with `slice_bits`. What does this code print?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.measure_all()\n\nbits = StatevectorSampler().run([qc], shots=300).result()[0].data.meas\nprint(bits.slice_bits([2]).get_counts())",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E slice_bits([2]) reads as an upper bound; +F bit index 2 is out of range"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E slice_bits([2]) reads as an upper bound; +F bit index 2 is out of range | realism audit 2026-10-01: stem trimmed, gloss 'qubits 1 and 2 stay |0>' removed (rated with hint gone); 3->2"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

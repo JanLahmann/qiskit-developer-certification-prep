@@ -5,8 +5,8 @@
     "s5o1"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "You set `sampler.options.default_shots = 1000`, then submit a single PUB that carries its own shot count: `sampler.run([(isa, None, 50)])`. How many shots does that PUB run?",
+  "difficulty": 1,
+  "stem": "With `default_shots = 1000`, how many shots does this PUB run?",
   "code": "sampler = SamplerV2(mode=backend)\nsampler.options.default_shots = 1000\njob = sampler.run([(isa, None, 50)])   # PUB = (circuit, params, shots)\nnum = job.result()[0].data.meas.num_shots",
   "options": [
     {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; explanation now states the full documented precedence chain; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E PUB-shots-conflict, +F service-default fallback"
+    "notes": "s5 adversarial review: length rebalanced; explanation now states the full documented precedence chain; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E PUB-shots-conflict, +F service-default fallback | realism audit 2026-10-01: stem trimmed; re-rated 3->1 (one recalled precedence fact)"
   },
   "display_count": 5
 }

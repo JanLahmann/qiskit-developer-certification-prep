@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "The circuit below is exported with `qiskit.qasm3.dumps(qc)`. Which line appears in the emitted program to record the measurement of qubit 0 into classical bit 0?",
+  "stem": "In the OpenQASM 3 this code prints, which line records the measurement of qubit 0 into bit 0?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit import qasm3\n\nqc = QuantumCircuit(2, 2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure(0, 0)\nqc.measure(1, 1)\n\nprint(qasm3.dumps(qc))",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->C (position rebalance) | pool wave: +E the -> arrow survives into OpenQASM 3 with the operands swapped, +F the measurement statement restates the bit type"
+    "notes": "adversarial s8 r1: answer A->C (position rebalance) | pool wave: +E the -> arrow survives into OpenQASM 3 with the operands swapped, +F the measurement statement restates the bit type | realism audit 2026-10-01: stem trimmed; difficulty kept 1"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

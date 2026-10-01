@@ -5,8 +5,8 @@
     "s5o3"
   ],
   "type": "predict-output",
-  "difficulty": 3,
-  "stem": "A 2-parameter circuit is bound with a parameter array of shape (3, 4, 2) in a single PUB. What is the shape of `result[0].data.meas`?",
+  "difficulty": 2,
+  "stem": "What does this code print?",
   "code": "import numpy as np\n\n# isa has 2 free parameters\nvals = np.zeros((3, 4, 2))   # a 3x4 grid of 2-parameter sets\nresult = sampler.run([(isa, vals)]).result()\nprint(result[0].data.meas.shape)",
   "options": [
     {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped) | pool wave: +E transposed broadcast axes, +F scalar-result-per-PUB"
+    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped) | pool wave: +E transposed broadcast axes, +F scalar-result-per-PUB | realism audit 2026-10-01: stem trimmed (parameter count stays in the code comment); re-rated 3->2 (same trailing-axis rule on a 2-D grid)"
   },
   "display_count": 4
 }

@@ -5,8 +5,8 @@
     "s5o3"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "A 3-qubit circuit applies X to qubit 0 only, then measures qubit i into classical bit i. In the Sampler's counts, which bitstring dominates?",
+  "difficulty": 1,
+  "stem": "Which bitstring dominates the Sampler's counts for this circuit?",
   "code": "qc = QuantumCircuit(3, 3)\nqc.x(0)                       # only qubit 0 is flipped\nqc.measure(0, 0)\nqc.measure(1, 1)\nqc.measure(2, 2)\n# ... transpile, then sampler.run([isa]) ...\ncounts = result[0].data.c.get_counts()",
   "options": [
     {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; distractor D rewritten to a real misconception (transpilation removes gates) instead of a bare negation; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | pool wave: +E integer counts keys, +F space-separated register key"
+    "notes": "s5 adversarial review: high-severity length tell fixed; distractor D rewritten to a real misconception (transpilation removes gates) instead of a bare negation; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | pool wave: +E integer counts keys, +F space-separated register key | realism audit 2026-10-01: stem trimmed (measurement mapping is in the code); re-rated 2->1 (one-step endianness read)"
   },
   "display_count": 4
 }

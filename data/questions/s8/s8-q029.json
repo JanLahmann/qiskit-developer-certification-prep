@@ -85,9 +85,9 @@
   "provenance": {
     "generated": "2026-07-27",
     "model": "claude-opus (figure wave 2, task #28)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "OpenQASM-to-drawing figure question. Every option image is a genuine QuantumCircuit.from_qasm_str output (own program), so no drawer convention distinguishes the keyed figure; the proof loads the same five programs and compares register names/sizes and the measured qubit-to-bit wiring. Written for qasm2 rather than qasm3 because qiskit_qasm3_import is not installed in the pinned venv, so qiskit.qasm3.loads raises MissingOptionalLibraryError and no qasm3 loading proof can run offline."
+    "notes": "OpenQASM-to-drawing figure question. Every option image is a genuine QuantumCircuit.from_qasm_str output (own program), so no drawer convention distinguishes the keyed figure; the proof loads the same five programs and compares register names/sizes and the measured qubit-to-bit wiring. Written for qasm2 rather than qasm3 because qiskit_qasm3_import is not installed in the pinned venv, so qiskit.qasm3.loads raises MissingOptionalLibraryError and no qasm3 loading proof can run offline. | realism audit 2026-10-01: stem unchanged (15 words, alt texts untouched, no re-render); difficulty kept 2 (register names kept + register-broadcast measure)"
   },
   "freshness": {
     "verified_against": {
@@ -96,7 +96,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

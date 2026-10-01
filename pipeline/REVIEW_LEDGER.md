@@ -1897,3 +1897,209 @@ Image-size calibration:
   experiment". stem_keyword_overlap 24.7 % -> 21.6 %; 7 low length flags (was 8:
   s4-q020's keeper flag vanished with the re-key), 0 blockers/warnings.
 - Honest re-rating 13/22/6 -> 29/11/1. Stem median 26 -> 14 words, max 59 -> 26.
+
+## Realism audit R1 — s5 (2026-10-01, qiskit 2.5.0 / runtime 0.48.0)
+
+- 29/34 s5 questions are executed; all re-ran PROVEN with the stored keys (before and
+  after edits). The five conceptual items were re-checked against freshly fetched
+  pages: guides/sampler-noise-management (Sampler supports exactly dynamical
+  decoupling + Pauli twirling — supports s5-q021/q034/q037), guides/primitives
+  ("Sampler samples the output register" — s5-q030),
+  guides/error-mitigation-and-suppression-techniques (TREX/ZNE/PEC/PEA are
+  expectation-value techniques reached through Estimator resilience options — q037
+  distractors C/E). No key changes.
+- **Citation gaps fixed:** s5-q038 (1/sqrt(N) shot error) cited guides/primitives and
+  sampler-input-output, neither of which states the scaling; added guides/estimator-options
+  (default precision 0.015625 = 1/sqrt(4096)). s5-q021/q037 (do-it-yourself readout
+  correction) gained tutorials/readout-error-mitigation-sampler (M3 on Sampler counts),
+  which the old citations never mentioned.
+- **Display-letter references removed (process-rule violations):** s5-q022's CODE comment
+  said `obs` was "only used by option C" — the obs-using option is stored key A, and the
+  site shuffles letters anyway; now "(used only by the Estimator-style tuple)". s5-q034's
+  explanation said "(A)"/"(B)" for keys C/E. s5-q027's explanation named `readout` as a
+  non-field; it now names the actual pool distractors (`readout_symmetrization`,
+  `shots_per_twirl`).
+- **Preflight hazard:** `question_flags(q)` on the raw question returned no flags for the
+  trimmed s5-q023, yet the section audit raised a NEW MEDIUM `stem_echo_tell` — the audit
+  evaluates every `display_variants(q)` subset (dc=5 here, the variant without the
+  high-overlap distractor D tripped it: key C overlap 4 vs 2, all from the CODE tokens).
+  Preflight over display variants, not the stored question. Fixed by a stem using the
+  term "broadcast" (shared with distractors A/E), not by touching code.
+- **Glosses removed, rated with the hint gone:** s5-q019 (in-stem DD definition), s5-q014
+  ("hoping to turn on error mitigation" framing), s5-q023 ("when `get_counts()` is called
+  with no index"), s5-q042 ("binds three angles … in a single PUB"). Kept deliberately:
+  s5-q018 "2 free parameters" and s5-q029 "2-qubit" (distractor refutations depend on
+  them), s5-q041 "one of the four outcomes never occurs" (figure alt texts and option E
+  depend on it), s5-q011 `measure_all()` (the `meas` field name depends on it).
+- Honest re-rating 9/18/7 -> 22/12/0 (19 changes; 3->1 on s5-q026: PUB shots beating
+  `default_shots` is one recalled fact). No genuinely 3-level item remains; as in s1-s4,
+  hard items must come from R2 adds. Stem median 23 -> 11 words, max 39 -> 18.
+  Meta-audit unchanged: the same 6 low `length_tell` keepers, 0 blockers/warnings,
+  stem_keyword_overlap 26.0 % -> 26.8 %.
+- **Future drift (runtime 0.50, NOT re-keyed):** live docs now import
+  `qiskit_ibm_runtime.executor_sampler.Sampler` ("client-side primitive introduced in
+  0.50.0"), label `SamplerV2` "legacy server-side", and state "The Executor primitive does
+  not support local testing mode" (every s5 proof runs on fake backends). guides/primitives
+  already links SamplerV2 to `executor-sampler-sampler`. When the bank re-pins, re-verify
+  the options tree (s5-q019/q020/q027/q031/q033), `run()` signature (q001/q022) and the
+  fake-backend figure items (q040-q042).
+
+## Realism audit R1 — s6 (2026-10-01, qiskit 2.5.0 / runtime 0.48.0)
+
+- 22/33 s6 questions are executed; all re-ran PROVEN with the stored keys before and
+  after edits. The 11 conceptual items were re-checked against freshly fetched
+  guides/estimator-noise-management (level table 0/1 [default] TREX/2 = level 1 + ZNE +
+  gate twirling, "higher levels … more accurate … longer processing times", manual
+  options "applied in addition to" the level base set — supports s6-q028/q029/q034),
+  guides/error-mitigation-and-suppression-techniques (DD suppresses on idle qubits;
+  ZNE amplify-then-extrapolate, "not guaranteed to produce an unbiased result"; PEC
+  "returns an unbiased estimate … generally incurs a greater overhead";
+  `zne_mitigation = True`, `dynamical_decoupling.enable = True` — supports
+  q019/q021/q026/q032/q039), guides/estimator-options (precision resolution order PUB >
+  `run()` > options, `default_precision` 0.015625 = 1/sqrt(4096) — supports q038) and
+  guides/primitive-input-output (Estimator PUB "at most four values", precision fourth;
+  `apply_layout` usage — q018/q036). No key changes, no correctness fixes.
+- **Citation gap fixed, s6-q036:** neither cited guide says WHAT `apply_layout` does
+  (specify-observables-pauli never mentions it; primitive-input-output only calls it).
+  Added api/qiskit/qiskit.quantum_info.SparsePauliOp ("Apply a transpiler layout to
+  this SparsePauliOp").
+- **Proof-scoring note (no fix needed, verified by hand):** several predict-output
+  proofs write evidence for their SHAPE/TYPE pool distractors without scoring them
+  (q011 F, q015 E/F, q022 E/F, q023 F, q035 E/F — the `proven` list can never contain
+  them). Re-executed independently: evs shapes `()`, `(2,)`, `()` float64, `(3,)`
+  (a `(3, 1)` value list on the one-parameter q023 circuit coerces to 3 sets, so F
+  `[[1.0], [0.0], [-1.0]]` is correctly wrong). A future proof-hardening wave should
+  score these from the observed shape, as the s4-q046 fix did.
+- **Glosses removed, rated with the hint gone:** s6-q017 ("precision is the target
+  standard error" handed over the 1/sqrt(N) step), s6-q037 ("computes exact
+  expectation values" also echoed key A), s6-q011 (Bell state), s6-q015 (X on qubit 0
+  only), s6-q027 (Z on qubit 0 plus Z on qubit 1), s6-q019 (ensemble post-processing
+  definition; "bias" kept, it refutes the shots option). Kept deliberately: s6-q013
+  "5-qubit backend" (options D/F refute against the width), s6-q023 "one-parameter
+  circuit" (option F's coercion depends on the parameter count), s6-q042 figure
+  legend/axes carry the group/bar description the trimmed stem dropped (alt text
+  unchanged).
+- **Stem-echo trap hit once:** s6-q025 trimmed to "Meant as a precision of 0.01, this
+  PUB raises …" raised a NEW MEDIUM `stem_echo_tell` (key C overlap 4 vs 2:
+  precision/PUB/0.01) in one dc=4 variant. Fixed by describing the intent in words no
+  option uses ("Intended as a target standard error, the `0.01` here …").
+- Honest re-rating 8/18/7 -> 20/12/1 (17 changes; 3->1 on s6-q034: the documented
+  cost/accuracy trade-off is one recalled fact). Only s6-q042 (broadcasting +
+  one-parameter coercion + SparsePauliOp-is-one-observable, read from a figure) stays
+  at 3. Stem median 21 -> 10 words, max 47 -> 26. Meta-audit unchanged: the same 7
+  low `length_tell` keepers, 0 blockers/warnings, stem_keyword_overlap 24.5 % -> 21.7 %.
+- **Future drift (runtime 0.50, NOT re-keyed):** every fetched s6 guide now imports
+  `qiskit_ibm_runtime.executor_estimator.Estimator` (client-side, 0.50.0) and labels
+  `from qiskit_ibm_runtime import Estimator` "legacy server-side"; options come from
+  `qiskit_ibm_runtime.options_models`; PEA/PEC on the client-side Estimator need a
+  separate noise-learning job (`resilience.layer_noise_model`). When the bank re-pins,
+  re-verify the options-path items (q014/q016/q020/q026/q031/q039/q041), the
+  `run()` keyword surface (q012/q016), the level/default claims (q028/q029/q034) and
+  the fake-backend figure item q041 (Executor primitives do not support local mode).
+
+## Realism audit R1 — s7 (2026-10-01, qiskit 2.5.0 / runtime 0.48.0)
+
+- 23/29 s7 questions are executed; all re-ran PROVEN with the stored keys before and
+  after edits. The six conceptual items were re-checked against freshly fetched
+  guides/save-jobs (`service.jobs(created_after=…)` filters, Workloads page lists IDs,
+  `service.job(job_id).result()`, RuntimeEncoder/`json.dump` + RuntimeDecoder/`json.load`;
+  example `j.status() == "DONE"` — supports s7-q026/q027/q033), guides/monitor-job
+  (`job.result()` "blocking call until complete", `job.cancel()` for queued or running
+  jobs, "cannot be resumed" — q028/q033) and api/qiskit-ibm-runtime/session (details()
+  key list, `state` open/active/inactive/closed, status() wording — q030/q035). The
+  session page now renders the stable/0.50 source; the installed 0.48 `Session.details`
+  returns the same 14 keys and `status()` derives its wording from `state` +
+  `accepting_jobs` (it also maps server states `pending_inactive`/`pending_closed`,
+  undocumented). 0.48 `RuntimeJobV2.result()` on a CANCELLED job raises
+  `RuntimeInvalidStateError` and there is no `stop()` / `QiskitRuntimeService.cancel` —
+  q028 distractors confirmed from source. No key changes.
+- **Correctness fix (displayed code), s7-q036:** the stem code used `QuantumCircuit`
+  without importing it, so the snippet "whose output you predict" raised `NameError`
+  (the proof had its own import and passed). Added `from qiskit import QuantumCircuit`;
+  re-executed the shown code: `True PrimitiveResult SamplerPubResult` (key F). Rule:
+  for predict-output items, exec the DISPLAYED code, not only the proof — a proof can
+  be complete while the stem code is not.
+- **"What does this code print?" can misstate a float key:** s7-q020's code prints
+  `0.9999999999999998`, so a print stem would make key `1.0` wrong; kept "What does
+  `result[0].data.evs` hold?". s7-q011 prints `2000 3` while options read
+  `num_shots=2000, num_bits=3`, so its stem names the attributes instead. Check the
+  literal stdout before converting any stem to a "print" question.
+- **Proof scoring check:** q022's non-numeric branch can never prove an option, but all
+  five refuted paths raise (AttributeError/KeyError) — no hidden second answer. Every
+  other s7 proof scores all keys, pool distractors included.
+- **Glosses removed, rated with the hint gone:** s7-q012 ("raw packed"), s7-q014 ("X to
+  qubit 0 only"), s7-q015 ("outcomes are only 000 and 111"), s7-q017 ("qubits 1 and 2
+  stay |0>"), s7-q025 (H/CX/measure_all recipe). Kept deliberately: s7-q013 "actually
+  achieved" (refutes `target_precision`), s7-q016 "new BitArray … keeping every bit"
+  (refutes the list comprehension and `slice_bits`), s7-q019 256/3-bit/5-qubit (options
+  A/C/E), s7-q021 "one-parameter" (the `(4, 1)` coercion), s7-q029 the `a`/`b` counts
+  definition (options use them), s7-q030 "live service" (`details()` is None locally),
+  s7-q033 "0.4x" (string status is version-specific). Figure items q037/q038: stem-only
+  edits, alt texts never depended on the dropped wording, no re-render.
+- Honest re-rating 5/18/6 -> 18/10/1 (18 changes, no 3->1). Only s7-q021 (one-parameter
+  `(4, 1)` coercion) stays at 3. Stem median 28 -> 15 words, max 35 -> 21. Meta-audit
+  unchanged: the same 6 low `length_tell` keepers (q015/q020/q023/q024/q028/q036),
+  0 blockers/warnings, stem_keyword_overlap 26.4 % -> 26.2 %. Pre-existing, unchanged:
+  `position_C` 40.9 % EV (36.6 % est.) is below the verdict threshold but the highest
+  position bias in the section — an R2 add should not key C.
+- **Overlap (kill/merge candidates, not removed):** q033 & q034 both hinge on
+  "RuntimeJobV2.status() is a string, not a JobStatus enum"; q022 & q038 test the same
+  `result[0].data.evs` path (q038 is the figure wrapper); q023, q024 & q037 all test
+  "index the PUB before `.data`".
+- **Future drift (runtime 0.50, NOT re-keyed):** monitor-job now compares
+  `str(job.status()) == "DONE"` (the str() hints the 0.50 executor jobs may not return a
+  bare string) — re-verify q033/q034 on re-pin. Executor primitives do not support local
+  testing mode, so every fake-backend/StatevectorSampler proof stays a 0.48/SDK fact;
+  q013 (EstimatorV2 on FakeManilaV2, `default_precision`) is the most exposed.
+
+## Realism audit R1 — s8 (2026-10-01, qiskit 2.5.0 / runtime 0.48.0)
+
+- 13/20 s8 questions are executed; all re-ran PROVEN with the stored keys before and
+  after edits. Displayed code was exec'd too: every non-fragment snippet runs as shown
+  (q013/q021 raise exactly the error their stems/comments name; q011/q012/q015 are
+  deliberate `...`/comment fragments). Every proof scores all six keys.
+- The seven conceptual items were re-checked against freshly fetched pages:
+  guides/qasm-feature-table (Qiskit SDK column = parse via `qasm3.loads` +
+  represent + export; `bit` ✅ note 3 -> `ClassicalRegister`; `int`/`angle`/`complex`/
+  `const`/`duration` ❌; note 6 duration/stretch unparseable; note 9 unbound
+  `Parameter` -> `input float[64]` — supports q022, q020's explanation),
+  guides/cloud-setup-rest-api (IAM `POST https://iam.cloud.ibm.com/identity/token`,
+  apikey grant, `expires_in: 3600`, `authorization: Bearer` + `Service-CRN` — q023/q025),
+  guides/sampler-rest-api (`POST /api/v1/jobs`, `'program_id': 'sampler'`,
+  `GET …/jobs/{id}/results` — q024/q028), api/qiskit-runtime-rest/tags/jobs, and the
+  OpenQASM spec types.rst via raw.githubusercontent (angle[size], `complex[float[n]]`,
+  const widths, bit[n]->uint[m] only n==m, bool/bit interchangeable, no casts to/from
+  duration, float->angle = nearest mod 2pi ties-to-even, lesser operand promoted; no
+  char/string/real/unsigned — q026/q027). All supported; no key changes.
+- **Display-letter references removed (process-rule violations):** both multis'
+  `explanation.correct` cited stored keys in parentheses — s8-q022 "(B)/(D)/(F)",
+  s8-q025 "(C)/(E)". Removed; the prose already names each fact.
+- **Glosses removed, rated with the hint gone:** s8-q019 ("built from a named
+  sub-circuit and appended with `to_gate()`" — visible in code), s8-q016 ("2 qubits and
+  3 classical bits" — kept in the code comment), s8-q028 ("no Qiskit installed",
+  "kept the `id`"). Kept deliberately: s8-q015 "begins `OPENQASM 3.0;`" (refutes the
+  header-accepted/parse-later distractor), s8-q013 "same conditional circuit" (refutes
+  `str(qc)`/`decompose`), s8-q021 qiskit-installed/extension-missing premise, s8-q022 a
+  compressed definition of the table's Qiskit SDK column (option D's "neither parse
+  nor represent" leans on it), s8-q028 "has finished" (option A's "once the job is
+  done"). s8-q010 became "What does this code print?" — literal stdout matches key C
+  except the trailing newline (invisible in a code block; proof compares rstrip).
+- Honest re-rating 6/11/3 -> 12/7/1 (9 changes: 2->1 q012/q013/q016/q020/q021/q026,
+  3->2 q019/q022). Only s8-q017 (silent global-phase drop + `__eq__` includes phase)
+  stays at 3. Stem median 27 -> 14 words, max 52 -> 22. Meta-audit unchanged: the same
+  4 low `length_tell` keepers (q010/q013/q020/q021), 0 blockers/warnings,
+  stem_keyword_overlap 15.2 % -> 16.2 %. Keys A5/B4/C4/D4/E1 single-answer — an R2
+  add should not key A.
+- **Future drift (NOT re-keyed):** the jobs REST reference now lists Executor and
+  NoiseLearnerV3 `params` schemas next to SamplerV2/EstimatorV2 — re-verify q024
+  (`program_id` values) on re-pin. Feature-table notes are dated "as of July 2025,
+  qiskit-qasm3-import v0.6.0"; if the venv ever gains that package (or Qiskit's native
+  `qasm3.loads_experimental` becomes the default loader), q021 (and q012's option E,
+  q015's D-wording) must be re-proven. **Verified 2026-10-01 in the pinned venv:
+  `qiskit.qasm3.load_experimental`/`loads_experimental` EXIST in 2.5.0, are native
+  (no extension needed), emit `ExperimentalWarning`, and parse a simple
+  `qubit`/`bit`/`h`/`measure` program.** So "qiskit ships no OpenQASM 3 importer" is
+  false as a blanket claim — only `load`/`loads` need the extension. q021 stays correct
+  (its code calls `loads`); never key or write a distractor saying Qiskit cannot read
+  OpenQASM 3 at all without the extension. sampler-rest-api's own sample uses OpenQASM 3
+  with `qreg`/`creg`, which is not q010/q016 territory (those are exporter output).

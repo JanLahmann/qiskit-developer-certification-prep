@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "Which call successfully constructs a two-qubit `SparsePauliOp` observable without raising an error?",
+  "stem": "Which call builds a valid two-qubit `SparsePauliOp` without raising?",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6: A extended with a third term (length tell); proof updated | pool wave: +E from_sparse_list without num_qubits, +F coeffs length mismatch"
+    "notes": "adversarial s6: A extended with a third term (length tell); proof updated | pool wave: +E from_sparse_list without num_qubits, +F coeffs length mismatch | realism audit 2026-10-01: stem trimmed; difficulty 1 kept"
   },
   "freshness": {
     "verified_against": {
@@ -72,7 +72,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "A 1-parameter circuit is broadcast over 4 parameter values at 500 shots each. What does `sum(result[0].data.meas.get_counts().values())` return when `get_counts()` is called with no index?",
+  "stem": "A 1-parameter circuit is broadcast over 4 parameter sets. What does this code print?",
   "code": "import numpy as np\n\nvals = np.array([[0.0], [np.pi/3], [np.pi/2], [np.pi]])   # 4 parameter sets\nba = sampler.run([(isa, vals)], shots=500).result()[0].data.meas\nprint(sum(ba.get_counts().values()))",
   "options": [
     {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | pool wave: +E index-required-when-broadcast, +F sum-counts-distinct-keys"
+    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | pool wave: +E index-required-when-broadcast, +F sum-counts-distinct-keys | realism audit 2026-10-01: stem trimmed (kept 'broadcast' so the generic stem does not create a stem-echo tell); the 'no index' gloss removed (the code shows it), so difficulty 2 kept with the hint gone"
   },
   "display_count": 5
 }

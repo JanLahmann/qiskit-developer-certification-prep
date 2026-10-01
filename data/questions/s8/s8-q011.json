@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You have an open, writable text file object `f` and want to write the OpenQASM 3 representation of `qc` into that file. Which call does this correctly?",
+  "stem": "Which call writes the OpenQASM 3 form of `qc` into the open text file `f`?",
   "code": "from qiskit import qasm3\n\n# f is an open text file object, e.g. f = open(\"circuit.qasm\", \"w\")\n# qc is a QuantumCircuit\n...  # which call?",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->B (position rebalance); option texts swapped, proof remapped | pool wave: +E dumps takes a file= keyword, +F dump's second argument is a path rather than the open stream"
+    "notes": "adversarial s8 r1: answer A->B (position rebalance); option texts swapped, proof remapped | pool wave: +E dumps takes a file= keyword, +F dump's second argument is a path rather than the open stream | realism audit 2026-10-01: stem trimmed; difficulty kept 1"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

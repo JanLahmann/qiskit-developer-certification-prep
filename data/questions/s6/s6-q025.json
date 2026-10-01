@@ -5,8 +5,8 @@
     "s6o2"
   ],
   "type": "spot-bug",
-  "difficulty": 3,
-  "stem": "This snippet asks for a target standard error of 0.01 on a circuit that has no parameters, but the run raises `ValueError: Length of () inconsistent with last dimension of [0.01]`. What is wrong?",
+  "difficulty": 2,
+  "stem": "Intended as a target standard error, the `0.01` here makes the run raise `ValueError: Length of () inconsistent with last dimension of [0.01]`. What is wrong?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nbell = QuantumCircuit(2)\nbell.h(0)\nbell.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\n\nest = StatevectorEstimator()\njob = est.run([(bell, obs, 0.01)])   # <-- raises\n",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6: REWORKED — old 'observable width' spot-bug duplicated q013 (same ValueError, same measure_all distractor); replaced with PUB entry ordering (circuit, observables, parameter_values, precision), a scope_note not otherwise covered | pool wave: +E precision-before-observable slot order, +F list-vs-tuple PUB bracketing"
+    "notes": "adversarial s6: REWORKED — old 'observable width' spot-bug duplicated q013 (same ValueError, same measure_all distractor); replaced with PUB entry ordering (circuit, observables, parameter_values, precision), a scope_note not otherwise covered | pool wave: +E precision-before-observable slot order, +F list-vs-tuple PUB bracketing | realism audit 2026-10-01: stem trimmed ('no parameters' gloss removed, code shows it; 'precision'/'PUB' kept out of the stem: they raised a MEDIUM stem_echo_tell against key C); difficulty 3->2 (PUB slot order recall + reading the error)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

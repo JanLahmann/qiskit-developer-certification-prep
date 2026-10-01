@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "The same circuit is exported both ways: `s2 = qasm2.dumps(qc)` and `s3 = qasm3.dumps(qc)`. Which statement about the `include` directive in each output is correct?",
+  "stem": "Which statement about the `include` directive in `s2` and `s3` is correct?",
   "code": "from qiskit import QuantumCircuit, qasm2, qasm3\n\nqc = QuantumCircuit(2, 2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure([0, 1], [0, 1])\n\ns2 = qasm2.dumps(qc)\ns3 = qasm3.dumps(qc)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->C (position rebalance); code block now defines qc so the item is self-contained | length rank rebalanced (correct option no longer tied-longest) | pool wave: +E the v3 exporter inlines the standard gate definitions instead of including them, +F v3 output includes both libraries for compatibility"
+    "notes": "adversarial s8 r1: answer A->C (position rebalance); code block now defines qc so the item is self-contained | length rank rebalanced (correct option no longer tied-longest) | pool wave: +E the v3 exporter inlines the standard gate definitions instead of including them, +F v3 output includes both libraries for compatibility | realism audit 2026-10-01: stem trimmed; difficulty kept 1"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

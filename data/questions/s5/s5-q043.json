@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "A 400-shot sampler run produced the counts below. Which histogram does the last line draw?",
+  "stem": "Which histogram does the last line draw?",
   "code": "from qiskit.visualization import plot_histogram\n\n# counts returned by a seeded 400-shot SamplerV2 run of a 3-qubit GHZ circuit\n# on FakeManilaV2:\ncounts = {\"000\": 188, \"111\": 150, \"011\": 20, \"100\": 14,\n          \"110\": 12, \"101\": 6, \"001\": 6, \"010\": 4}\n\nplot_histogram(counts, number_to_keep=3)",
   "options": [
     {
@@ -84,9 +84,9 @@
   "provenance": {
     "generated": "2026-07-27",
     "model": "claude-opus (figure wave 2, task #28)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Figure question on number_to_keep. The counts in the stem are the artifact of a seeded SamplerV2 run on FakeManilaV2 (reproduced and asserted inside both the generator and the proof); the five figures are the real number_to_keep call plus four misconception count dictionaries, and the proof reads every drawing back off the axes."
+    "notes": "Figure question on number_to_keep. The counts in the stem are the artifact of a seeded SamplerV2 run on FakeManilaV2 (reproduced and asserted inside both the generator and the proof); the five figures are the real number_to_keep call plus four misconception count dictionaries, and the proof reads every drawing back off the axes. | realism audit 2026-10-01: stem trimmed (400-shot detail is in the code comment); difficulty 2 kept; stem-only, no re-render"
   },
   "freshness": {
     "verified_against": {
@@ -95,7 +95,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

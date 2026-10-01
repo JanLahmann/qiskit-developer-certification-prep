@@ -5,8 +5,8 @@
     "s7o1"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "You sample a 3-qubit GHZ circuit (outcomes are only `000` and `111`), then postselect on all three qubits reading 1. What does `kept.get_counts()` contain?",
+  "difficulty": 1,
+  "stem": "A GHZ sample is postselected on all three bits reading 1. What does `kept.get_counts()` contain?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3)\nqc.h(0); qc.cx(0, 1); qc.cx(1, 2)\nqc.measure_all()\n\nbits = StatevectorSampler().run([qc], shots=1000).result()[0].data.meas\nkept = bits.postselect([0, 1, 2], [1, 1, 1])\nprint(kept.get_counts())",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E postselect narrows the register like slice_bits; +F survivors are renormalised to fractions"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E postselect narrows the register like slice_bits; +F survivors are renormalised to fractions | realism audit 2026-10-01: stem trimmed ('outcomes only 000/111' gloss removed); 2->1, postselect keeps width and raw counts"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

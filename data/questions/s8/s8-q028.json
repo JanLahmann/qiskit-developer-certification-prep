@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "A pipeline with no Qiskit installed drives Runtime over plain HTTPS. It has already submitted an Estimator job with `POST https://quantum.cloud.ibm.com/api/v1/jobs`, kept the `id` from the response, and polled until the job reached a terminal state. Which request now returns the primitive result itself?",
+  "stem": "The Estimator job submitted as shown has finished. Which REST request returns its primitive result?",
   "code": "curl -X POST 'https://quantum.cloud.ibm.com/api/v1/jobs' \\\n  -H 'Authorization: Bearer <TOKEN>' \\\n  -H 'Service-CRN: <CRN>' \\\n  -H 'IBM-API-Version: <YYYY-MM-DD>' \\\n  -H 'Content-Type: application/json' \\\n  --data-raw '{ \"program_id\": \"estimator\", ... }'\n# response: { \"id\": \"<JOB_ID>\" }   -> now fetch the result",
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "official-alignment gap task 8.4: the bank's three REST questions covered authentication and the job POST only. Endpoint list read off the live REST reference (fetched 2026-07-26): jobs POST/GET, jobs/{id} GET+DELETE, jobs/{id}/cancel POST, jobs/{id}/logs GET, jobs/{id}/metrics GET, jobs/{id}/results GET, jobs/{id}/tags PUT; headers Authorization / Service-CRN / IBM-API-Version / Accept. Conceptual by nature — calling the endpoint needs live credentials."
+    "notes": "official-alignment gap task 8.4: the bank's three REST questions covered authentication and the job POST only. Endpoint list read off the live REST reference (fetched 2026-07-26): jobs POST/GET, jobs/{id} GET+DELETE, jobs/{id}/cancel POST, jobs/{id}/logs GET, jobs/{id}/metrics GET, jobs/{id}/results GET, jobs/{id}/tags PUT; headers Authorization / Service-CRN / IBM-API-Version / Accept. Conceptual by nature — calling the endpoint needs live credentials. | realism audit 2026-10-01: stem trimmed (kept 'has finished', which A's 'once the job is done' wording relies on); difficulty kept 1"
   },
   "display_count": 5
 }

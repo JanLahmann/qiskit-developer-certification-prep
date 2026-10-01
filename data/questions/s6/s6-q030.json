@@ -5,8 +5,8 @@
     "s6o2"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "A single PUB pairs one Bell-state circuit with a Python list of three separate observables. What is the shape of `result[0].data.evs`?",
+  "difficulty": 1,
+  "stem": "What does this code print?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nbell = QuantumCircuit(2)\nbell.h(0)\nbell.cx(0, 1)\nobs = [SparsePauliOp(\"ZZ\"), SparsePauliOp(\"XX\"), SparsePauliOp(\"YY\")]\nprint(StatevectorEstimator().run([(bell, obs)]).result()[0].data.evs.shape)",
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E [[o]] per-observable nesting, +F single-row [[o1,o2,o3]] nesting"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E [[o]] per-observable nesting, +F single-row [[o1,o2,o3]] nesting | realism audit 2026-10-01: stem trimmed ('list of three observables' gloss removed, code shows it); difficulty 2->1"
   },
   "freshness": {
     "verified_against": {
@@ -72,7 +72,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 3,
-  "stem": "A one-parameter circuit is bound to four parameter values (array shape `(4, 1)`) and evaluated against a single observable by EstimatorV2. What is the shape of `result[0].data.evs`?",
+  "stem": "A `(4, 1)` value array binds this one-parameter circuit. What does this code print?",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nt = Parameter(\"t\")\nqc = QuantumCircuit(1); qc.ry(t, 0)\nobs = SparsePauliOp(\"Z\")\nvals = np.array([[0.0], [np.pi/2], [np.pi], [3*np.pi/2]])  # shape (4, 1)\n\nresult = StatevectorEstimator().run([(qc, obs, vals)]).result()\nprint(result[0].data.evs.shape)",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E observable axis leads the broadcast shape; +F evs is a list so .shape raises"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E observable axis leads the broadcast shape; +F evs is a list so .shape raises | realism audit 2026-10-01: stem trimmed ('one-parameter' kept: the (4,1) coercion depends on it); stays 3, broadcasting edge case"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

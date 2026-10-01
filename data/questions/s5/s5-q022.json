@@ -6,8 +6,8 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You have a parameterized ISA circuit `isa`, a NumPy array `vals` of parameter values, and want 256 shots. Which call passes a correctly-structured SamplerV2 PUB?",
-  "code": "# isa: parameterized ISA circuit ; vals: array of parameter values\n# obs:  a SparsePauliOp observable (only used by option C)\nsampler = SamplerV2(mode=backend)\njob = sampler.run( ??? )",
+  "stem": "Which call passes a correctly structured SamplerV2 PUB with parameter values `vals` and 256 shots?",
+  "code": "# isa: parameterized ISA circuit ; vals: array of parameter values\n# obs:  a SparsePauliOp observable (used only by the Estimator-style tuple)\nsampler = SamplerV2(mode=backend)\njob = sampler.run( ??? )",
   "options": [
     {
       "key": "A",
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: code block now defines `obs` so option C is self-contained; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | pool wave: +E per-PUB shots list, +F parameters passed positionally to run"
+    "notes": "s5 adversarial review: code block now defines `obs` so option C is self-contained; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | pool wave: +E per-PUB shots list, +F parameters passed positionally to run | realism audit 2026-10-01: stem trimmed; code comment no longer names a display letter for the obs-using option"
   },
   "display_count": 4
 }

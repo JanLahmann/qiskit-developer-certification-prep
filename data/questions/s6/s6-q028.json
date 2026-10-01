@@ -43,8 +43,8 @@
   "explanation": {
     "correct": "The resilience level is a coarse cost/accuracy dial: level 0 = no mitigation, level 1 (the default) = readout-error mitigation via TREX, and level 2 = level 1 plus zero-noise extrapolation and gate twirling. Higher levels give more accurate (less biased) results at greater cost. A resilience level is only a base set of options: anything you set yourself (for example turning measurement mitigation back off at level 1) is applied in addition to it.",
     "distractors": {
-      "C": "Higher levels run MORE circuits (an ensemble for mitigation) and take longer, not less \u2014 they trade runtime for accuracy.",
-      "E": "Level 3 does not exist for EstimatorV2 \u2014 the supported choices are 0, 1 and 2, and setting 3 raises a validation error. PEC is reached through the individual option `resilience.pec_mitigation`, not through a resilience level."
+      "C": "Higher levels run MORE circuits (an ensemble for mitigation) and take longer, not less — they trade runtime for accuracy.",
+      "E": "Level 3 does not exist for EstimatorV2 — the supported choices are 0, 1 and 2, and setting 3 raises a validation error. PEC is reached through the individual option `resilience.pec_mitigation`, not through a resilience level."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management",
@@ -61,8 +61,8 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6: hedge added to distractor C (hedge tell); E replaced with the plausible 'level 3 = PEC' misconception | added true option F (explicit options layer on top of the resilience level) so the section's multi-selects no longer all have exactly 3 correct answers"
+    "notes": "adversarial s6: hedge added to distractor C (hedge tell); E replaced with the plausible 'level 3 = PEC' misconception | added true option F (explicit options layer on top of the resilience level) so the section's multi-selects no longer all have exactly 3 correct answers | realism audit 2026-10-01: stem unchanged (10 words); difficulty 2 kept (4-of-6 multi over the level table + override rule)"
   }
 }

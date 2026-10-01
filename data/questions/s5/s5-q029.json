@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "A 2-qubit circuit is run with `shots=777`. What is `len(result[0].data.meas.get_bitstrings())`?",
+  "stem": "For a 2-qubit circuit, what does this code print?",
   "code": "ba = sampler.run([isa], shots=777).result()[0].data.meas\nprint(len(ba.get_bitstrings()))",
   "options": [
     {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | pool wave: +E per-qubit multiplier, +F shot index required"
+    "notes": "s5 adversarial review: length rebalanced; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | pool wave: +E per-qubit multiplier, +F shot index required | realism audit 2026-10-01: stem trimmed (qubit count kept: refutations depend on it)"
   },
   "display_count": 4
 }

@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 3,
-  "stem": "The single-qubit circuit below is given a non-zero global phase and one `h` gate, then round-tripped through OpenQASM 2: it is exported with `qasm2.dumps` and the resulting text is immediately re-imported with `qasm2.loads` to produce `qc2`. Which statement about that round trip is correct?",
+  "stem": "This circuit, which has a non-zero global phase, is round-tripped through OpenQASM 2. Which statement about the round trip is correct?",
   "code": "import math\nfrom qiskit import QuantumCircuit, qasm2\n\nqc = QuantumCircuit(1)\nqc.global_phase = math.pi / 2\nqc.h(0)\n\nqc2 = qasm2.loads(qasm2.dumps(qc))",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->D (position rebalance); stem rewritten to be self-contained (spells out the dumps-then-loads round trip and names qc2) and no longer writes 'pi/2' where the code uses math.pi/2; absolute-word tell removed; proof now also observes whether the emitted OpenQASM 2 text contains 'gphase' | absolute-word tell cleared (correct option now also carries an absolute) | pool wave: +E the global phase is folded into the gate and emitted as u(...), +F the export writes gphase and the re-import rejects it"
+    "notes": "adversarial s8 r1: answer A->D (position rebalance); stem rewritten to be self-contained (spells out the dumps-then-loads round trip and names qc2) and no longer writes 'pi/2' where the code uses math.pi/2; absolute-word tell removed; proof now also observes whether the emitted OpenQASM 2 text contains 'gphase' | absolute-word tell cleared (correct option now also carries an absolute) | pool wave: +E the global phase is folded into the gate and emitted as u(...), +F the export writes gphase and the re-import rejects it | realism audit 2026-10-01: stem trimmed; difficulty kept 3 (silent phase drop vs raise + QuantumCircuit equality includes phase)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

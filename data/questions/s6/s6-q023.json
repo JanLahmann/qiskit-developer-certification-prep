@@ -5,8 +5,8 @@
     "s6o2"
   ],
   "type": "predict-output",
-  "difficulty": 3,
-  "stem": "A parameterized circuit applies `RY(theta)` to |0>, and the PUB binds `theta` to the three values `[0, pi/2, pi]` against the observable `Z`. What array of expectation values is returned?",
+  "difficulty": 2,
+  "stem": "A one-parameter circuit is swept over three angles. What does this code print?",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\nobs = SparsePauliOp(\"Z\")\nvalues = [[0.0], [np.pi/2], [np.pi]]\nprint(StatevectorEstimator().run([(qc, obs, values)]).result()[0].data.evs)",
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E cos(theta/2) amplitude confusion, +F nested per-binding shape"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E cos(theta/2) amplitude confusion, +F nested per-binding shape | realism audit 2026-10-01: stem trimmed; parameter count kept (option F's (3, 1) coercion depends on it); difficulty 3->2 (cos + one shape rule)"
   },
   "freshness": {
     "verified_against": {
@@ -72,7 +72,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

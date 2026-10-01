@@ -67,15 +67,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: hedge tell fixed (glosses give correct and wrong options the same register); resilience ruling: resilience_level kept as a proven-invalid Sampler option; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved B/C/D -> answer now A+C+D (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +F shots-in-the-execution-group"
+    "notes": "s5 adversarial review: hedge tell fixed (glosses give correct and wrong options the same register); resilience ruling: resilience_level kept as a proven-invalid Sampler option; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved B/C/D -> answer now A+C+D (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +F shots-in-the-execution-group | realism audit 2026-10-01: stem unchanged (already short); difficulty 2 kept (multi-select over several option fields)"
   },
   "display_count": 5
 }

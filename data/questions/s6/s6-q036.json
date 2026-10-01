@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "After transpiling a circuit to a backend, why must you call `observable.apply_layout(isa_circuit.layout)` before building the Estimator PUB?",
+  "stem": "Why call `observable.apply_layout(isa_circuit.layout)` before building an Estimator PUB?",
   "code": null,
   "options": [
     {
@@ -48,7 +48,8 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp"
     ]
   },
   "proof": {
@@ -61,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6: options relengthened (was a high-severity length tell, ratio 1.75) | pool wave: +E apply_layout-rescales-coefficients, +F apply_layout-groups-commuting-terms"
+    "notes": "adversarial s6: options relengthened (was a high-severity length tell, ratio 1.75) | pool wave: +E apply_layout-rescales-coefficients, +F apply_layout-groups-commuting-terms | realism audit 2026-10-01: stem trimmed; added SparsePauliOp API citation (the guides only show the call, never what it does); difficulty 1 kept"
   },
   "display_count": 4
 }

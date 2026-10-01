@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "A Bell circuit is measured and submitted with `sampler.run([isa], shots=1000)`. What is the value of `sum(result[0].data.meas.get_counts().values())`?",
+  "stem": "What does this code print?",
   "code": "from qiskit_ibm_runtime import SamplerV2\n\n# isa: transpiled Bell circuit with measure_all()\nsampler = SamplerV2(mode=backend)\nresult = sampler.run([isa], shots=1000).result()\ncounts = result[0].data.meas.get_counts()\nprint(sum(counts.values()))",
   "options": [
     {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "s5 adversarial review: option D changed 1024->4096 (1024 is a local BackendSamplerV2 artifact, not the Runtime default); options rebalanced for length; proof candidate updated; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E normalized-probabilities habit, +F per-qubit double count"
+    "notes": "s5 adversarial review: option D changed 1024->4096 (1024 is a local BackendSamplerV2 artifact, not the Runtime default); options rebalanced for length; proof candidate updated; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E normalized-probabilities habit, +F per-qubit double count | realism audit 2026-10-01: stem trimmed to a generic predict-output prompt (Bell/shots context is in the code)"
   },
   "display_count": 5
 }

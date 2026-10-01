@@ -5,8 +5,8 @@
     "s6o1"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "On a deep circuit run on real hardware, you raise the Estimator `resilience_level` from 0 to 2. What is the expected effect?",
+  "difficulty": 1,
+  "stem": "Raising the Estimator `resilience_level` from 0 to 2 on real hardware has what expected effect?",
   "code": null,
   "options": [
     {
@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "adversarial s6: hedge added to distractor A (absolute-wording tell) | pool wave: +E mitigation-adds-noise (bias vs variance), +F level-2-requires-manual-shots"
+    "notes": "adversarial s6: hedge added to distractor A (absolute-wording tell) | pool wave: +E mitigation-adds-noise (bias vs variance), +F level-2-requires-manual-shots | realism audit 2026-10-01: stem trimmed; difficulty 3->1 (the documented cost/accuracy trade-off is one recalled fact)"
   },
   "display_count": 4
 }

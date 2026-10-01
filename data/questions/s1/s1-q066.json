@@ -1,0 +1,69 @@
+{
+  "id": "s1-q066",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "What does this code print (rounded)?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.h(1)\nprint(Statevector(qc).probabilities_dict(qargs=[2, 0]))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`{'10': 1.0}`"
+    },
+    {
+      "key": "B",
+      "text": "`{'01': 1.0}`"
+    },
+    {
+      "key": "C",
+      "text": "`{'0': 0.5, '1': 0.5}`"
+    },
+    {
+      "key": "D",
+      "text": "`{'001': 0.5, '011': 0.5}`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`qargs` selects the qubits to KEEP; qubit 1 (the one in superposition) is summed out, leaving a certain outcome. The kept qubits are ordered like any Qiskit bitstring: `qargs[0]` is the least-significant (RIGHTMOST) bit. Here qargs[0] = qubit 2 = 0 is on the right and qubit 0 = 1 on the left, so the key is `'10'`.",
+    "distractors": {
+      "B": "This writes the kept qubits left-to-right in list order. The first qarg is the least-significant bit, so it lands on the RIGHT of the key — `'01'` is what `qargs=[0, 2]` returns.",
+      "C": "This treats `qargs` as the qubits to trace out. They are the qubits to keep; the result is a 2-bit distribution over qubits 2 and 0.",
+      "D": "This ignores `qargs` and returns the full 3-qubit distribution. Passing `qargs` marginalizes to the listed qubits only."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q066.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\n\ndef rounded(d):\n    return {str(k): round(float(v), 6) for k, v in d.items() if float(v) > 1e-9}\n\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.h(1)\nsv = Statevector(qc)\ngot = rounded(sv.probabilities_dict(qargs=[2, 0]))\nclaims = {\n    \"A\": {\"10\": 1.0},\n    \"B\": {\"01\": 1.0},\n    \"C\": {\"0\": 0.5, \"1\": 0.5},\n    \"D\": {\"001\": 0.5, \"011\": 0.5},\n}\nproven, evidence = [], {}\nfor k, c in claims.items():\n    m = got == c\n    evidence[k] = f\"executed probabilities_dict(qargs=[2, 0]) -> {got}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nevidence[\"B\"] += f\"  (that is the order of qargs=[0, 2]: {rounded(sv.probabilities_dict(qargs=[0, 2]))})\"\nevidence[\"C\"] += f\"  (that is keeping only qubit 1: {rounded(sv.probabilities_dict(qargs=[1]))})\"\nevidence[\"D\"] += f\"  (that is the full distribution with no qargs: {rounded(sv.probabilities_dict())})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"qargs_2_0\": got}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (d3): marginal qargs ordering (qargs[0] = rightmost bit) + little-endian keys + marginalizing out the superposed qubit; measured on qiskit 2.5.0 (raw value 0.9999999999999998, hence 'rounded')."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "id": "s3-q067",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "The figure shows `isa`. Which three gates did `qc` contain?",
+  "code": "from qiskit.transpiler import CouplingMap, generate_preset_pass_manager\n\npm = generate_preset_pass_manager(\n    optimization_level=0,\n    coupling_map=CouplingMap.from_line(3),\n    initial_layout=[2, 1, 0],\n    seed_transpiler=42,\n)\nisa = pm.run(qc)   # qc: a 3-qubit circuit\nisa.draw(output=\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": "`qc.h(0); qc.cx(0, 1); qc.cx(0, 1)`"
+    },
+    {
+      "key": "B",
+      "text": "`qc.h(2); qc.cx(2, 1); qc.cx(2, 0)`"
+    },
+    {
+      "key": "C",
+      "text": "`qc.h(0); qc.cx(0, 2); qc.cx(0, 1)`"
+    },
+    {
+      "key": "D",
+      "text": "`qc.h(0); qc.cx(0, 1); qc.cx(0, 2)`"
+    },
+    {
+      "key": "E",
+      "text": "`qc.h(0); qc.cx(0, 1); qc.cx(1, 2)`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "D"
+  ],
+  "figures": {
+    "generator": "figures/s3-q067/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s3-q067/s3-q067-stem.svg",
+      "alt": "Transpiled circuit diagram with three wires labelled, top to bottom, q_2 ↦ 0, q_1 ↦ 1 and q_0 ↦ 2. An H box on the bottom wire (q_0 ↦ 2); a CX with its control on the bottom wire and its target on the middle wire (q_1 ↦ 1); a SWAP between the top wire (q_2 ↦ 0) and the middle wire; then a second CX with its control on the bottom wire and its target on the middle wire."
+    }
+  },
+  "explanation": {
+    "correct": "The labels give the initial layout: q_0 sits on physical 2, q_1 on 1, q_2 on 0. The H and the first CX act on q_0 and q_1 directly. The SWAP is routing, not a gate of `qc`: it moves q_2's state from physical 0 onto physical 1. The second CX, drawn between physical 2 and physical 1, therefore acts on q_0 and q_2 — so `qc` was `h(0); cx(0, 1); cx(0, 2)`, and q_0 ↦ 2 and q_2 ↦ 0 are not neighbours on the line, which is why a SWAP was needed.",
+    "distractors": {
+      "A": "SWAP ignored: reading the second CX by the wire labels assumes the labels still hold after the SWAP. Routing moved q_2 onto physical 1, and a repeated `cx(0, 1)` would need no SWAP at all.",
+      "B": "Physical indices read as circuit indices: the numbers after ↦ are device qubits. The H sits on physical 2, which is virtual q_0 under `initial_layout=[2, 1, 0]`.",
+      "C": "Gate order reversed: the SWAP comes AFTER the first CX, so that CX already ran on neighbouring qubits; it was `cx(0, 1)`, and the routed gate is the second one.",
+      "E": "Wrong qubit moved: `cx(1, 2)` maps to physical 1 and 0, which are neighbours — it would be drawn with no SWAP and with its control on the middle wire."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q067.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# Block MUST mirror data/figures/s3-q067/generate.py.\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap, generate_preset_pass_manager\n\npm = generate_preset_pass_manager(\n    optimization_level=0,\n    coupling_map=CouplingMap.from_line(3),\n    initial_layout=[2, 1, 0],\n    seed_transpiler=42,\n)\n\n# Candidate input circuits, one per option (gate lists exactly as the options print them).\nCANDIDATES = {\n    \"A\": [(\"h\", 0), (\"cx\", 0, 1), (\"cx\", 0, 1)],\n    \"B\": [(\"h\", 2), (\"cx\", 2, 1), (\"cx\", 2, 0)],\n    \"C\": [(\"h\", 0), (\"cx\", 0, 2), (\"cx\", 0, 1)],\n    \"D\": [(\"h\", 0), (\"cx\", 0, 1), (\"cx\", 0, 2)],\n    \"E\": [(\"h\", 0), (\"cx\", 0, 1), (\"cx\", 1, 2)],\n}\nSTEM_KEY = \"D\"   # the circuit whose transpiled drawing is the stem figure\n\n\ndef build(ops):\n    qc = QuantumCircuit(3)\n    for name, *qargs in ops:\n        getattr(qc, name)(*qargs)\n    return qc\n\n\ndef sig(circ):\n    \"\"\"Physical-wire gate sequence plus the layout the drawer prints.\"\"\"\n    ops = tuple((i.operation.name, tuple(circ.find_bit(b).index for b in i.qubits))\n                for i in circ.data)\n    return ops, tuple(circ.layout.initial_index_layout())\n\n\n# What the stem figure shows (literal target; the generator asserts it).\nTARGET = (((\"h\", (2,)), (\"cx\", (2, 1)), (\"swap\", (1, 0)), (\"cx\", (2, 1))), (2, 1, 0))\n\n\nproven, evidence, observed = [], {}, {}\nfor key, ops in sorted(CANDIDATES.items()):\n    s = pm.run(build(ops))\n    got = sig(s)\n    match = got == TARGET\n    observed[key] = {\"ops\": [[n, list(q)] for n, q in got[0]], \"initial_layout\": list(got[1])}\n    evidence[key] = (\"level-0 output on physical wires: \"\n                     + \", \".join(f\"{n}{list(q)}\" for n, q in got[0])\n                     + f\" (layout {list(got[1])}) -> matches figure: {match}\")\n    if match:\n        proven.append(key)\nobserved[\"figure\"] = {\"ops\": [[n, list(q)] for n, q in TARGET[0]], \"initial_layout\": list(TARGET[1])}\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (stem figure): reverse-engineer the input circuit from a routed drawing — layout labels + routing SWAP moving a virtual qubit. Option E avoids the trap 'qc contained the swap' (that input would reproduce the figure exactly). Every candidate is run through the same pass manager in the proof."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

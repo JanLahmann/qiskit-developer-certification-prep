@@ -1,0 +1,69 @@
+{
+  "id": "s1-q062",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "What does `probabilities_dict()` return here (rounded)?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator, Statevector\n\na = QuantumCircuit(2)\na.h(0)\nb = QuantumCircuit(2)\nb.x(0)\nb.cx(0, 1)\n\nU = Operator(b).compose(Operator(a))\nprint(Statevector.from_label(\"00\").evolve(U).probabilities_dict())",
+  "options": [
+    {
+      "key": "A",
+      "text": "`{'00': 0.5, '11': 0.5}`"
+    },
+    {
+      "key": "B",
+      "text": "`{'01': 0.5, '11': 0.5}`"
+    },
+    {
+      "key": "C",
+      "text": "`{'10': 0.5, '11': 0.5}`"
+    },
+    {
+      "key": "D",
+      "text": "`{'00': 0.5, '01': 0.5}`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "`X.compose(Y)` applies X FIRST, then Y (matrix Y·X), so `b` runs before `a`. From |00⟩: `x(0)` gives |01⟩ (keys read q1 q0), `cx(0, 1)` flips q1 → |11⟩, and `h(0)` splits q0 → (|10⟩ − |11⟩)/√2. Qiskit keys are little-endian (q0 is the RIGHTMOST bit), so the dict is `{'10': 0.5, '11': 0.5}`.",
+    "distractors": {
+      "A": "This applies `a` first (H then X on q0 leaves |+⟩, and the CX makes a Bell pair) — the `dot` order. `compose` runs the calling operator first.",
+      "B": "The physics is right but the keys are read q0-first. Qiskit bitstrings put q0 on the right, so q1 = 1 shows as the LEFT bit.",
+      "D": "This treats `cx(0, 1)` as controlled by q1. The first argument is the control: q0 = 1 flips q1."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operator-class",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q062.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator, Statevector\n\n\ndef rounded(d):\n    return {str(k): round(float(v), 6) for k, v in d.items() if float(v) > 1e-9}\n\n\na = QuantumCircuit(2)\na.h(0)\nb = QuantumCircuit(2)\nb.x(0)\nb.cx(0, 1)\nU = Operator(b).compose(Operator(a))\ngot = rounded(Statevector.from_label(\"00\").evolve(U).probabilities_dict())\n\nclaims = {\n    \"A\": {\"00\": 0.5, \"11\": 0.5},\n    \"B\": {\"01\": 0.5, \"11\": 0.5},\n    \"C\": {\"10\": 0.5, \"11\": 0.5},\n    \"D\": {\"00\": 0.5, \"01\": 0.5},\n}\nproven, evidence = [], {}\nfor k, c in claims.items():\n    m = got == c\n    evidence[k] = f\"executed probabilities_dict() -> {got}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\n\n# Each distractor is what its misconception would compute:\na_first = rounded(Statevector.from_label(\"00\").evolve(Operator(a).compose(Operator(b))).probabilities_dict())\nevidence[\"A\"] += f\"  (running a BEFORE b, i.e. Operator(a).compose(Operator(b)), gives {a_first})\"\nevidence[\"B\"] += f\"  (the correct dict with each key read q0-first: {{{', '.join(repr(k[::-1]) + ': ' + str(v) for k, v in sorted(got.items()))}}})\"\nb_misread = QuantumCircuit(2)\nb_misread.x(0)\nb_misread.cx(1, 0)\ncx_swapped = rounded(Statevector.from_label(\"00\").evolve(Operator(b_misread).compose(Operator(a))).probabilities_dict())\nevidence[\"D\"] += f\"  (reading cx(0, 1) as control q1 gives {cx_swapped})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"probabilities\": got, \"a_first\": a_first, \"cx_swapped\": cx_swapped}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (d3): compose order (self first) interacting with little-endian bitstring keys; each distractor is the executed result of its misconception."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

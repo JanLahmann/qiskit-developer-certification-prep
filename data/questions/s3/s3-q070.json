@@ -1,0 +1,75 @@
+{
+  "id": "s3-q070",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "What does this code print?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\n\nqc = QuantumCircuit(2)\nqc.cx(0, 1)\nqc.barrier()\nqc.cx(0, 1)\nqc.h(1)\nqc.h(1)\n\npm = generate_preset_pass_manager(\n    optimization_level=1, basis_gates=[\"rz\", \"sx\", \"x\", \"cx\"]\n)\nprint(dict(pm.run(qc).count_ops()))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`{'cx': 2, 'barrier': 1}`"
+    },
+    {
+      "key": "B",
+      "text": "`{'barrier': 1}`"
+    },
+    {
+      "key": "C",
+      "text": "`{'cx': 2, 'barrier': 1, 'h': 2}`"
+    },
+    {
+      "key": "D",
+      "text": "`{'rz': 4, 'cx': 2, 'sx': 2, 'barrier': 1}`"
+    },
+    {
+      "key": "E",
+      "text": "`{'cx': 2}`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "A barrier is an optimization boundary: passes never move or cancel gates across it, so the two CX gates — one on each side — both survive. The H pair sits on one side; level 1's single-qubit optimization merges H·H into the identity and drops it, so nothing needs translating. The barrier itself stays in the output.",
+    "distractors": {
+      "B": "Barrier treated as transparent: inverse-pair cancellation stops at a barrier, so the CX pair split by it is kept.",
+      "C": "Barrier read as a freeze line: a barrier only stops gates from being moved or cancelled ACROSS it. Gates after it are still optimized and translated, and an untranslated `h` could not appear with this basis anyway.",
+      "D": "No single-qubit optimization at level 1: this is the level-0 result, where each H is only translated to `rz`/`sx`/`rz`. Level 1 already merges adjacent single-qubit gates.",
+      "E": "Barrier removed after doing its job: the boundary is honoured AND kept — barriers survive transpilation and appear in `count_ops()`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q070.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\n\ndef circuit(with_barrier=True):\n    qc = QuantumCircuit(2)\n    qc.cx(0, 1)\n    if with_barrier:\n        qc.barrier()\n    qc.cx(0, 1)\n    qc.h(1)\n    qc.h(1)\n    return qc\n\ndef run(level, qc):\n    pm = generate_preset_pass_manager(optimization_level=level, basis_gates=[\"rz\", \"sx\", \"x\", \"cx\"])\n    return dict(pm.run(qc).count_ops())\n\nout = run(1, circuit())\nlvl0 = run(0, circuit())\nno_barrier = run(1, circuit(with_barrier=False))\n\nclaims = {\n    \"A\": {\"cx\": 2, \"barrier\": 1},\n    \"B\": {\"barrier\": 1},\n    \"C\": {\"cx\": 2, \"barrier\": 1, \"h\": 2},\n    \"D\": {\"rz\": 4, \"cx\": 2, \"sx\": 2, \"barrier\": 1},\n    \"E\": {\"cx\": 2},\n}\nproven, evidence = [], {}\nfor key, val in claims.items():\n    ok = out == val\n    if ok:\n        proven.append(key)\n    evidence[key] = f\"claim {val}; level-1 output {out} -> {ok}\"\nevidence[\"B\"] += f\" (without the barrier level 1 gives {no_barrier})\"\nevidence[\"D\"] += f\" (that dict is the level-0 output: {lvl0})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"level1\": out, \"level0\": lvl0, \"level1_no_barrier\": no_barrier}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: barrier as an optimization boundary at level 1 + single-qubit fusion on one side + barrier survival; D is the measured level-0 output."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

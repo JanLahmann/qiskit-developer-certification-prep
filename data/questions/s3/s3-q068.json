@@ -1,0 +1,101 @@
+{
+  "id": "s3-q068",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "Which diagram shows `qc.decompose()`?",
+  "code": "from qiskit import QuantumCircuit\n\nsub = QuantumCircuit(2, name=\"ent\")\nsub.h(0)\nsub.cx(0, 1)\n\nqc = QuantumCircuit(3)\nqc.append(sub.to_gate(), [2, 0])\nqc.swap(0, 1)\nqc.decompose().draw(output=\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "figures": {
+    "generator": "figures/s3-q068/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s3-q068/s3-q068-A.svg",
+        "alt": "Circuit diagram with three wires q_0, q_1, q_2: an H box on q_2, a CX with its control on q_2 and its target on q_0, then a SWAP between q_0 and q_1."
+      },
+      "B": {
+        "file": "figures/s3-q068/s3-q068-B.svg",
+        "alt": "Circuit diagram with three wires q_0, q_1, q_2: an H box on q_0, a CX with its control on q_0 and its target on q_2, then three CX gates between q_0 and q_1 with alternating control (q_0, q_1, q_0)."
+      },
+      "C": {
+        "file": "figures/s3-q068/s3-q068-C.svg",
+        "alt": "Circuit diagram with three wires q_0, q_1, q_2: a U box with parameters π/2, 0, π on q_2, a CX with its control on q_2 and its target on q_0, then three CX gates between q_0 and q_1 with alternating control (q_0, q_1, q_0)."
+      },
+      "D": {
+        "file": "figures/s3-q068/s3-q068-D.svg",
+        "alt": "Circuit diagram with three wires q_0, q_1, q_2: one box labelled ent spanning all three wires with its input 0 on q_2 and input 1 on q_0, then three CX gates between q_0 and q_1 with alternating control (q_0, q_1, q_0)."
+      },
+      "E": {
+        "file": "figures/s3-q068/s3-q068-E.svg",
+        "alt": "Circuit diagram with three wires q_0, q_1, q_2: an H box on q_2, a CX with its control on q_2 and its target on q_0, then three CX gates between q_0 and q_1 with alternating control (q_0, q_1, q_0)."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`append(gate, [2, 0])` wires the gate's qubit 0 to q_2 and its qubit 1 to q_0, so opening `ent` gives H on q_2 and a CX from q_2 to q_0. `decompose()` replaces EVERY instruction by its definition exactly one level down: the `swap` becomes its three-CX definition too, while the H and CX that came out of `ent` are not expanded further in the same call.",
+    "distractors": {
+      "A": "Only custom gates opened: `decompose()` with no arguments expands library gates such as `swap` as well; restricting it needs `gates_to_decompose=`.",
+      "B": "Qubit list ignored: the list passed to `append` is an ordered map from the gate's qubits to the circuit's, so the gate's qubit 0 lands on q_2, not q_0.",
+      "C": "Two levels deep: rewriting H as `U(π/2, 0, π)` is what `decompose(reps=2)` does. One call expands one level, so gates produced by the first expansion stay as written.",
+      "D": "Custom gate left boxed: a gate built with `to_gate()` keeps its source circuit as its definition, and that is exactly what `decompose()` opens."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q068.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# Variants MUST mirror data/figures/s3-q068/generate.py.\nfrom qiskit import QuantumCircuit\n\nsub = QuantumCircuit(2, name=\"ent\")\nsub.h(0)\nsub.cx(0, 1)\n\n\ndef build(mapping=(2, 0)):\n    qc = QuantumCircuit(3)\n    qc.append(sub.to_gate(), list(mapping))\n    qc.swap(0, 1)\n    return qc\n\n\nVARIANTS = {\n    \"A\": (lambda: build().decompose(gates_to_decompose=[\"ent\"]), {}),   # only the custom gate opened\n    \"B\": (lambda: build((0, 2)).decompose(), {}),                        # append order ignored\n    \"C\": (lambda: build().decompose(reps=2), {}),                        # two levels deep\n    \"D\": (lambda: build().decompose(gates_to_decompose=[\"swap\"]), {}),  # custom gate left boxed\n    \"E\": (lambda: build().decompose(), {}),                              # the stem code\n}\n\ndef drawn(circ):\n    return tuple((i.operation.name, tuple(circ.find_bit(b).index for b in i.qubits))\n                 for i in circ.data)\n\nfrom qiskit import QuantumCircuit\n\nsub = QuantumCircuit(2, name=\"ent\")\nsub.h(0)\nsub.cx(0, 1)\n\nqc = QuantumCircuit(3)\nqc.append(sub.to_gate(), [2, 0])\nqc.swap(0, 1)\ntarget = drawn(qc.decompose())\n\nproven, evidence, observed = [], {}, {}\nfor key, (make, _kw) in sorted(VARIANTS.items()):\n    s = drawn(make())\n    match = s == target\n    observed[key] = [[n, list(q)] for n, q in s]\n    evidence[key] = \"drawing carries \" + \", \".join(f\"{n}{list(q)}\" for n, q in s) + f\" -> match={match}\"\n    if match:\n        proven.append(key)\nobserved[\"stem\"] = [[n, list(q)] for n, q in target]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (figure): custom gate via to_gate() appended on a permuted qubit list + one-level decompose() of every instruction (swap included). Variant renders 8.6-15.5 KB; keyed E 13656 B sits mid-pack."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

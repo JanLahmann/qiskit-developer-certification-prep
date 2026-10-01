@@ -1,0 +1,101 @@
+{
+  "id": "s3-q063",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "Which diagram does this code draw?",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister\n\ndata = QuantumRegister(2, \"d\")\nanc = QuantumRegister(1, \"anc\")\nqc = QuantumCircuit(data, anc)\nqc.h(data[1])\nqc.cx(data[1], anc[0])\nqc.draw(output=\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "figures": {
+    "generator": "figures/s3-q063/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s3-q063/s3-q063-A.svg",
+        "alt": "Circuit diagram with three wires labelled anc, d_0, d_1 from top to bottom: an H box on d_1, then a CX whose control dot is on d_1 and whose target is on anc."
+      },
+      "B": {
+        "file": "figures/s3-q063/s3-q063-B.svg",
+        "alt": "Circuit diagram with three wires labelled d_0, d_1, anc from top to bottom: an H box on d_0, then a CX whose control dot is on d_0 and whose target is on anc."
+      },
+      "C": {
+        "file": "figures/s3-q063/s3-q063-C.svg",
+        "alt": "Circuit diagram with three wires labelled d_0, d_1, anc from top to bottom: an H box on d_1, then a CX whose control dot is on anc and whose target is on d_1."
+      },
+      "D": {
+        "file": "figures/s3-q063/s3-q063-D.svg",
+        "alt": "Circuit diagram with three wires labelled anc, d_1, d_0 from top to bottom: an H box on d_1, then a CX whose control dot is on d_1 and whose target is on anc."
+      },
+      "E": {
+        "file": "figures/s3-q063/s3-q063-E.svg",
+        "alt": "Circuit diagram with three wires labelled d_0, d_1, anc from top to bottom: an H box on d_1, then a CX whose control dot is on d_1 and whose target is on anc."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "Wires are drawn in the order the registers were passed to `QuantumCircuit` — `d` first, then `anc` — with index 0 on top, so the labels read d_0, d_1, anc. `h(data[1])` sits on the second wire, and `cx(data[1], anc[0])` puts the control dot on d_1 and the target on anc.",
+    "distractors": {
+      "A": "Register order swapped: the drawer does not sort registers by size or name; it follows the constructor's argument order, which puts `d` above `anc`.",
+      "B": "Index confusion: `data[1]` is the register's second qubit, d_1, not its first.",
+      "C": "Control and target swapped: `cx(control, target)` takes the control first, so the dot belongs on d_1 and the target on anc.",
+      "D": "Bit order flipped: drawing the highest index on top needs `reverse_bits=True`; the default draw keeps index 0 at the top."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q063.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# Variants MUST mirror data/figures/s3-q063/generate.py.\nfrom qiskit import QuantumCircuit, QuantumRegister\n\n\ndef build(anc_first=False, h_on=1, reversed_cx=False):\n    data = QuantumRegister(2, \"d\")\n    anc = QuantumRegister(1, \"anc\")\n    qc = QuantumCircuit(anc, data) if anc_first else QuantumCircuit(data, anc)\n    qc.h(data[h_on])\n    if reversed_cx:\n        qc.cx(anc[0], data[h_on])\n    else:\n        qc.cx(data[h_on], anc[0])\n    return qc\n\n\nVARIANTS = {\n    \"A\": (lambda: build(anc_first=True), {}),        # register order swapped\n    \"B\": (lambda: build(h_on=0), {}),                # d[1] read as the first wire\n    \"C\": (lambda: build(reversed_cx=True), {}),      # control/target swapped\n    \"D\": (lambda: build(), {\"reverse_bits\": True}),  # highest index drawn on top\n    \"E\": (lambda: build(), {}),                      # the stem code, verbatim\n}\n\nfrom qiskit.visualization.circuit._utils import _get_layered_instructions\n\n\ndef drawn(circ, **kwargs):\n    \"\"\"What the drawer lays out: wire labels top to bottom and each gate\n    addressed by the wire positions it is drawn on.\"\"\"\n    qubits, _clbits, layers = _get_layered_instructions(circ, **kwargs)\n    labels = []\n    for b in qubits:\n        reg, idx = circ.find_bit(b).registers[0]\n        labels.append(reg.name if reg.size == 1 else f\"{reg.name}_{idx}\")\n    ops = tuple((node.op.name, tuple(qubits.index(b) for b in node.qargs))\n                for layer in layers for node in layer)\n    return tuple(labels), ops\n\nfrom qiskit import QuantumCircuit, QuantumRegister\n\ndata = QuantumRegister(2, \"d\")\nanc = QuantumRegister(1, \"anc\")\nqc = QuantumCircuit(data, anc)\nqc.h(data[1])\nqc.cx(data[1], anc[0])\ntarget = drawn(qc)\n\nproven, evidence, observed = [], {}, {}\nfor key, (make, kwargs) in sorted(VARIANTS.items()):\n    wires, ops = drawn(make(), **kwargs)\n    match = (wires, ops) == target\n    observed[key] = {\"wires_top_to_bottom\": list(wires), \"ops\": [[n, list(q)] for n, q in ops]}\n    evidence[key] = (f\"drawer lays out wires {list(wires)} carrying \"\n                     + \", \".join(f\"{n}@{list(q)}\" for n, q in ops) + f\" -> match={match}\")\n    if match:\n        proven.append(key)\nobserved[\"stem\"] = {\"wires_top_to_bottom\": list(target[0]), \"ops\": [[n, list(q)] for n, q in target[1]]}\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (figure): register order + index + control/target reading of a default mpl drawing. Proof reads the drawer's own layout engine (_get_layered_instructions) for the stem and every variant."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

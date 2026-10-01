@@ -1,0 +1,224 @@
+{
+  "question": "s3-q068",
+  "verdict": {
+    "answer": [
+      "E"
+    ],
+    "evidence": {
+      "A": "drawing carries h[2], cx[2, 0], swap[0, 1] -> match=False",
+      "B": "drawing carries h[0], cx[0, 2], cx[0, 1], cx[1, 0], cx[0, 1] -> match=False",
+      "C": "drawing carries u[2], cx[2, 0], cx[0, 1], cx[1, 0], cx[0, 1] -> match=False",
+      "D": "drawing carries ent[2, 0], cx[0, 1], cx[1, 0], cx[0, 1] -> match=False",
+      "E": "drawing carries h[2], cx[2, 0], cx[0, 1], cx[1, 0], cx[0, 1] -> match=True"
+    },
+    "observed": {
+      "A": [
+        [
+          "h",
+          [
+            2
+          ]
+        ],
+        [
+          "cx",
+          [
+            2,
+            0
+          ]
+        ],
+        [
+          "swap",
+          [
+            0,
+            1
+          ]
+        ]
+      ],
+      "B": [
+        [
+          "h",
+          [
+            0
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            2
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ]
+        ],
+        [
+          "cx",
+          [
+            1,
+            0
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ]
+        ]
+      ],
+      "C": [
+        [
+          "u",
+          [
+            2
+          ]
+        ],
+        [
+          "cx",
+          [
+            2,
+            0
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ]
+        ],
+        [
+          "cx",
+          [
+            1,
+            0
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ]
+        ]
+      ],
+      "D": [
+        [
+          "ent",
+          [
+            2,
+            0
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ]
+        ],
+        [
+          "cx",
+          [
+            1,
+            0
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ]
+        ]
+      ],
+      "E": [
+        [
+          "h",
+          [
+            2
+          ]
+        ],
+        [
+          "cx",
+          [
+            2,
+            0
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ]
+        ],
+        [
+          "cx",
+          [
+            1,
+            0
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ]
+        ]
+      ],
+      "stem": [
+        [
+          "h",
+          [
+            2
+          ]
+        ],
+        [
+          "cx",
+          [
+            2,
+            0
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ]
+        ],
+        [
+          "cx",
+          [
+            1,
+            0
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ]
+        ]
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 3.24,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"drawing carries h[2], cx[2, 0], swap[0, 1] -> match=False\", \"B\": \"drawing carries h[0], cx[0, 2], cx[0, 1], cx[1, 0], cx[0, 1] -> match=False\", \"C\": \"drawing carries u[2], cx[2, 0], cx[0, 1], cx[1, 0], cx[0, 1] -> match=False\", \"D\": \"drawing carries ent[2, 0], cx[0, 1], cx[1, 0], cx[0, 1] -> match=False\", \"E\": \"drawing carries h[2], cx[2, 0], cx[0, 1], cx[1, 0], cx[0, 1] -> match=True\"}, \"observed\": {\"A\": [[\"h\", [2]], [\"cx\", [2, 0]], [\"swap\", [0, 1]]], \"B\": [[\"h\", [0]], [\"cx\", [0, 2]], [\"cx\", [0, 1]], [\"cx\", [1, 0]], [\"cx\", [0, 1]]], \"C\": [[\"u\", [2]], [\"cx\", [2, 0]], [\"cx\", [0, 1]], [\"cx\", [1, 0]], [\"cx\", [0, 1]]], \"D\": [[\"ent\", [2, 0]], [\"cx\", [0, 1]], [\"cx\", [1, 0]], [\"cx\", [0, 1]]], \"E\": [[\"h\", [2]], [\"cx\", [2, 0]], [\"cx\", [0, 1]], [\"cx\", [1, 0]], [\"cx\", [0, 1]]], \"stem\": [[\"h\", [2]], [\"cx\", [2, 0]], [\"cx\", [0, 1]], [\"cx\", [1, 0]], [\"cx\", [0, 1]]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

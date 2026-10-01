@@ -56,10 +56,25 @@ output — topic labels and statistics only.**
 
 ## R2 expansion targets (after R1; to ~350 questions)
 
-Adds per section (weight-proportional): s1 +12 · s2 +2 · s3 +14 · s4 +11 · s5 +8 ·
-s6 +9 · s7 +6 · s8 +1 → 350. Rules: `GENERATION_GUIDE.md` applies in full, plus:
+R1's honest re-rating left the bank at 177/104/6 easy/medium/hard (62/36/2 %)
+— the shortage is HARD and MEDIUM items, so R2 adds are d2/d3, not d1.
+Per-section adds (weight-proportional, with difficulty split d1/d2/d3):
 
-- New questions are predominantly difficulty 1 (bank-wide landing target 40/45/15).
+| section | add | d1 | d2 | d3 |
+|---|---|---|---|---|
+| s1 | 12 | 2 | 5 | 5 |
+| s2 | 1 | 0 | 0 | 1 |
+| s3 | 14 | 1 | 6 | 7 |
+| s4 | 11 | 0 | 5 | 6 |
+| s5 | 8 | 0 | 3 | 5 |
+| s6 | 9 | 0 | 4 | 5 |
+| s7 | 6 | 0 | 2 | 4 |
+| s8 | 1 | 0 | 0 | 1 |
+
+A d3 add must genuinely earn its rating under the rubric (≥2 interacting
+concepts), not through obscurity or trick wording — the real exam's hard items
+are hard because concepts interact, never because the stem is hostile.
+Rules: `GENERATION_GUIDE.md` applies in full, plus:
 - Figure questions prioritized wherever the topic renders naturally (circuits,
   histograms, gate maps, Bloch/q-sphere): aim ≥⅓ of each section's adds, pushing
   bank figure share from 9 % toward the official 19 %.

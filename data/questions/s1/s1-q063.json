@@ -1,0 +1,77 @@
+{
+  "id": "s1-q063",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "What does `Statevector(qc).probabilities_dict()` give for the drawn circuit `qc` (rounded)?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "`{'11': 1.0}`"
+    },
+    {
+      "key": "B",
+      "text": "`{'10': 1.0}`"
+    },
+    {
+      "key": "C",
+      "text": "`{'01': 1.0}`"
+    },
+    {
+      "key": "D",
+      "text": "`{'01': 0.5, '10': 0.5}`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "figures": {
+    "generator": "figures/s1-q063/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s1-q063/s1-q063-stem.svg",
+      "alt": "Circuit diagram on two wires, q0 on top and q1 below. q1 gets an X gate then an H gate; q0 gets an H gate. Then a CNOT with its control dot on q0 and its ⊕ target on q1, followed by a final H gate on each of q0 and q1."
+    }
+  },
+  "explanation": {
+    "correct": "X then H puts q1 in |−⟩, an eigenstate of X with eigenvalue −1. The CNOT therefore leaves q1 unchanged and kicks a −1 phase back onto the |1⟩ branch of the control: q0 goes from |+⟩ to |−⟩. The final H gates map q0's |−⟩ to |1⟩ and q1's |−⟩ to |1⟩, so the result is the basis state with both qubits 1: `{'11': 1.0}`.",
+    "distractors": {
+      "B": "This treats the control as untouched, so H·H returns q0 to |0⟩. With the target in |−⟩ the CNOT kicks a phase back onto the control, flipping q0's outcome to 1.",
+      "C": "This is the no-kickback answer with its key read q0-first. The control does pick up the phase, and Qiskit keys put q0 on the RIGHT.",
+      "D": "The CNOT does not entangle here: its target |−⟩ is an X eigenstate, so the pair stays a product state and ends in a single basis state."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.CXGate"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q063.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\n# MUST mirror data/figures/s1-q063/generate.py (the drawn circuit).\nSTEM = [(\"x\", 1), (\"h\", 1), (\"h\", 0), (\"cx\", 0, 1), (\"h\", 0), (\"h\", 1)]\n\n\ndef build(gates):\n    qc = QuantumCircuit(2)\n    for name, *args in gates:\n        getattr(qc, name)(*args)\n    return qc\n\n\ndef probs(qc):\n    return {str(k): round(float(v), 6)\n            for k, v in Statevector(qc).probabilities_dict().items() if float(v) > 1e-9}\n\n\ngot = probs(build(STEM))\nclaims = {\n    \"A\": {\"11\": 1.0},\n    \"B\": {\"10\": 1.0},\n    \"C\": {\"01\": 1.0},\n    \"D\": {\"01\": 0.5, \"10\": 0.5},\n}\nproven, evidence = [], {}\nfor k, c in claims.items():\n    m = got == c\n    evidence[k] = f\"executed Statevector(drawn circuit).probabilities_dict() -> {got}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\n\n# The misconceptions, executed:\nno_cx = probs(build([g for g in STEM if g[0] != \"cx\"]))\nevidence[\"B\"] += f\"  (that is the circuit WITHOUT the CNOT: {no_cx} — with the target in |->, the CNOT kicks a phase back onto q0)\"\nevidence[\"C\"] += f\"  (the no-kickback result read q0-first: {sorted(k[::-1] for k in no_cx)}; the real q0 outcome is 1, the last character)\"\nevidence[\"D\"] += f\"  (no entanglement survives: the executed state is the product basis state {sorted(got)})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"probabilities\": got, \"without_cx\": no_cx}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (figure, stem figure): phase kickback onto the control combined with little-endian keys; proof hardcodes the drawn gate list and the generator asserts the same probabilities."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

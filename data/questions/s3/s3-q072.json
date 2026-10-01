@@ -1,0 +1,69 @@
+{
+  "id": "s3-q072",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "What does this code print?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\n\nqc = QuantumCircuit(2)\nqc.cx(0, 1)\nqc.z(0)\nqc.cx(0, 1)\n\nfor level in (1, 2):\n    pm = generate_preset_pass_manager(\n        optimization_level=level, basis_gates=[\"rz\", \"sx\", \"x\", \"cx\"]\n    )\n    print(level, pm.run(qc).count_ops().get(\"cx\", 0))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`1 2` then `2 2`"
+    },
+    {
+      "key": "B",
+      "text": "`1 0` then `2 0`"
+    },
+    {
+      "key": "C",
+      "text": "`1 2` then `2 0`"
+    },
+    {
+      "key": "D",
+      "text": "`1 1` then `2 1`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "Z on the control commutes with CX, so the two CX gates are an inverse pair that only LOOKS separated. Level 1's optimization stage cancels inverse pairs that are adjacent, and here the Z sits between them, so both CX gates survive. Level 2 adds commutation-aware cancellation (`CommutativeCancellation`), which moves the CX past the Z and cancels the pair, leaving only the Z (as an `rz`).",
+    "distractors": {
+      "A": "Commutation ignored at every level: a gate in between blocks plain adjacent cancellation, but level 2 checks commutation and sees that Z on the control slides through the CX.",
+      "B": "Level 1 credited with level-2 passes: level 1 runs `InverseCancellation` on adjacent pairs only; commutation analysis is first scheduled at level 2.",
+      "D": "Deduplication instead of cancellation: two CX gates on the same qubits multiply to the identity, so a pass that acts on them removes both, never just one."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q072.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import io, contextlib\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler import PassManager, generate_preset_pass_manager\nfrom qiskit.transpiler.passes import CommutativeCancellation, InverseCancellation\n\nqc = QuantumCircuit(2)\nqc.cx(0, 1)\nqc.z(0)\nqc.cx(0, 1)\n\nbuf = io.StringIO()\nwith contextlib.redirect_stdout(buf):\n    for level in (1, 2):\n        pm = generate_preset_pass_manager(\n            optimization_level=level, basis_gates=[\"rz\", \"sx\", \"x\", \"cx\"]\n        )\n        print(level, pm.run(qc).count_ops().get(\"cx\", 0))\nlines = buf.getvalue().strip().splitlines()\n\n# Which pass does the work, observed in isolation:\nadj_only = dict(PassManager([InverseCancellation()]).run(qc).count_ops())\ncommut = dict(PassManager([CommutativeCancellation()]).run(qc).count_ops())\n\nclaims = {\"A\": [\"1 2\", \"2 2\"], \"B\": [\"1 0\", \"2 0\"], \"C\": [\"1 2\", \"2 0\"], \"D\": [\"1 1\", \"2 1\"]}\nproven, evidence = [], {}\nfor key, val in claims.items():\n    ok = lines == val\n    if ok:\n        proven.append(key)\n    evidence[key] = f\"claim {val}; printed {lines} -> {ok}\"\nevidence[\"A\"] += f\" (CommutativeCancellation alone leaves {commut})\"\nevidence[\"B\"] += f\" (adjacent-only InverseCancellation leaves {adj_only})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"printed\": lines, \"inverse_cancellation_only\": adj_only,\n                           \"commutative_cancellation_only\": commut}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: optimization level x commutation — level 1 cancels only adjacent inverse pairs, level 2 adds CommutativeCancellation (stage membership walked in the pinned venv)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

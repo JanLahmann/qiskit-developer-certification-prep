@@ -1,0 +1,74 @@
+{
+  "id": "s3-q061",
+  "section": "s3",
+  "objectives": [
+    "s3o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Over many shots, what value does `c[0]` hold when the circuit ends?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.while_loop((qc.clbits[0], 1)):\n    qc.h(0)\n    qc.measure(0, 0)",
+  "options": [
+    {
+      "key": "A",
+      "text": "Always `0`."
+    },
+    {
+      "key": "B",
+      "text": "`0` in about 75% of shots, `1` in about 25%."
+    },
+    {
+      "key": "C",
+      "text": "`0` and `1`, roughly 50/50."
+    },
+    {
+      "key": "D",
+      "text": "Always `1`."
+    },
+    {
+      "key": "E",
+      "text": "It raises a `CircuitError`: the loop body may not overwrite the bit its condition reads."
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "`while_loop((clbit, 1))` re-runs its body for as long as the bit reads 1. Each pass re-randomises the qubit with H and re-measures, so a shot can only leave the loop at a moment when the measurement gave 0 — a repeat-until-success pattern. Every shot therefore ends with `c[0]` = 0 (the number of passes varies, the final value does not).",
+    "distractors": {
+      "B": "`while_loop` treated as `if_test`: if the body ran at most once, a first-measurement 1 would get one retry and stay 1 half the time (25% overall). The loop repeats until the condition fails, so no shot can end on 1.",
+      "C": "Loop ignored: 50/50 is the distribution of the first measurement alone. The loop body only runs on 1-outcomes and keeps re-measuring them until they become 0.",
+      "D": "Condition inverted: this reads the loop as running UNTIL the bit is 1. `while_loop((clbit, 1))` runs WHILE the bit equals 1 and exits on 0.",
+      "E": "Re-measuring the condition bit inside the body is exactly how a repeat-until-success loop is written; Qiskit builds and simulates it without error."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q061.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit_aer import AerSimulator\n\nbuilt_error = None\ntry:\n    qc = QuantumCircuit(1, 1)\n    qc.h(0)\n    qc.measure(0, 0)\n    with qc.while_loop((qc.clbits[0], 1)):\n        qc.h(0)\n        qc.measure(0, 0)\nexcept Exception as exc:\n    built_error = f\"{type(exc).__name__}: {exc}\"\n\nshots = 4000\ncounts = AerSimulator(seed_simulator=42).run(qc, shots=shots).result().get_counts()\np0 = counts.get(\"0\", 0) / shots\np1 = counts.get(\"1\", 0) / shots\n\n# Contrast: the if_test reading of the same body (misconception B), simulated.\nalt = QuantumCircuit(1, 1)\nalt.h(0)\nalt.measure(0, 0)\nwith alt.if_test((alt.clbits[0], 1)):\n    alt.h(0)\n    alt.measure(0, 0)\nalt_counts = AerSimulator(seed_simulator=42).run(alt, shots=shots).result().get_counts()\n\nclaims = {\n    \"A\": p0 == 1.0,\n    \"B\": 0.70 <= p0 <= 0.80,\n    \"C\": 0.45 <= p0 <= 0.55,\n    \"D\": p1 == 1.0,\n    \"E\": built_error is not None,\n}\nevidence = {\n    \"A\": f\"while_loop counts {dict(counts)} (p0={p0:.3f}); claim always 0 -> {claims['A']}\",\n    \"B\": f\"p0={p0:.3f}; claim ~75/25 -> {claims['B']} (that split is what an if_test body gives: {dict(alt_counts)})\",\n    \"C\": f\"p0={p0:.3f}; claim ~50/50 -> {claims['C']}\",\n    \"D\": f\"p1={p1:.3f}; claim always 1 -> {claims['D']}\",\n    \"E\": f\"circuit built and simulated (error={built_error}); claim raises -> {claims['E']}\",\n}\nemit_verdict({\"answer\": [k for k, v in claims.items() if v], \"evidence\": evidence,\n              \"observed\": {\"counts\": dict(counts), \"if_test_counts\": dict(alt_counts)}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: while_loop repeat-until-success semantics vs if_test; the B misconception is simulated in the proof."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

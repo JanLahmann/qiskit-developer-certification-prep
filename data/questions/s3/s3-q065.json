@@ -1,0 +1,91 @@
+{
+  "id": "s3-q065",
+  "section": "s3",
+  "objectives": [
+    "s3o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which diagram shows `bound`?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter(\"theta\")\nphi = Parameter(\"phi\")\nqc = QuantumCircuit(2)\nqc.rx(theta, 0)\nqc.ry(2 * phi, 1)\nqc.cx(0, 1)\n\nbound = qc.assign_parameters({phi: np.pi / 4})\nbound.draw(output=\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s3-q065/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s3-q065/s3-q065-A.svg",
+        "alt": "Circuit diagram with two wires q_0, q_1: an RX box labelled theta on q_0 and an RY box labelled π/4 on q_1, then a CX with its control on q_0 and its target on q_1."
+      },
+      "B": {
+        "file": "figures/s3-q065/s3-q065-B.svg",
+        "alt": "Circuit diagram with two wires q_0, q_1: an RX box labelled theta on q_0 and an RY box labelled π/2 on q_1, then a CX with its control on q_0 and its target on q_1."
+      },
+      "C": {
+        "file": "figures/s3-q065/s3-q065-C.svg",
+        "alt": "Circuit diagram with two wires q_0, q_1: an RX box labelled π/4 on q_0 and an RY box labelled π/2 on q_1, then a CX with its control on q_0 and its target on q_1."
+      },
+      "D": {
+        "file": "figures/s3-q065/s3-q065-D.svg",
+        "alt": "Circuit diagram with two wires q_0, q_1: an RX box labelled theta on q_0 and an RY box labelled 2*phi on q_1, then a CX with its control on q_0 and its target on q_1."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`assign_parameters` substitutes only the parameters named in the mapping and evaluates every expression that uses them: `2 * phi` with `phi = π/4` becomes the number π/2. `theta` is not in the mapping, so the RX keeps its symbolic label. `bound` is a new, partially bound circuit.",
+    "distractors": {
+      "A": "Coefficient lost: the value goes into the whole expression `2 * phi`, not just into `phi`'s slot, so the RY angle is 2 × π/4 = π/2.",
+      "C": "Value spread to every parameter: a dict binds exactly the keys it contains; `theta` stays free.",
+      "D": "Binding deferred: `assign_parameters` returns a circuit that already carries the numbers; nothing waits for transpilation or execution. This is the drawing of the untouched `qc`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q065.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# Variants MUST mirror data/figures/s3-q065/generate.py.\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter(\"theta\")\nphi = Parameter(\"phi\")\n\n\ndef build(coef=2):\n    qc = QuantumCircuit(2)\n    qc.rx(theta, 0)\n    qc.ry(coef * phi, 1)\n    qc.cx(0, 1)\n    return qc\n\n\nVARIANTS = {\n    \"A\": (lambda: build(coef=1).assign_parameters({phi: np.pi / 4}), {}),   # coefficient lost\n    \"B\": (lambda: build().assign_parameters({phi: np.pi / 4}), {}),         # the stem code\n    \"C\": (lambda: build().assign_parameters({phi: np.pi / 4, theta: np.pi / 4}), {}),  # value spread to all\n    \"D\": (lambda: build(), {}),                                             # nothing substituted\n}\n\nfrom qiskit.circuit import ParameterExpression\n\n\ndef angle(p):\n    if isinstance(p, ParameterExpression):\n        if p.parameters:\n            return str(p)\n        p = float(p)\n    return round(float(p), 6)\n\n\ndef drawn(circ):\n    \"\"\"Gate sequence with the angle each box prints (free expressions as text,\n    bound values as rounded floats).\"\"\"\n    return tuple((i.operation.name, tuple(circ.find_bit(b).index for b in i.qubits),\n                  tuple(angle(p) for p in i.operation.params)) for i in circ.data)\n\nqc = QuantumCircuit(2)\nqc.rx(theta, 0)\nqc.ry(2 * phi, 1)\nqc.cx(0, 1)\n\nbound = qc.assign_parameters({phi: np.pi / 4})\ntarget = drawn(bound)\n\nproven, evidence, observed = [], {}, {}\nfor key, (make, _kw) in sorted(VARIANTS.items()):\n    s = drawn(make())\n    match = s == target\n    observed[key] = [[n, list(q), list(a)] for n, q, a in s]\n    evidence[key] = (\"drawing carries \" + \", \".join(f\"{n}{list(q)}{list(a)}\" for n, q, a in s)\n                     + f\" -> match={match}\")\n    if match:\n        proven.append(key)\nobserved[\"stem\"] = [[n, list(q), list(a)] for n, q, a in target]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (figure): partial binding of an expression-valued angle; the drawing shows symbolic and numeric labels side by side."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

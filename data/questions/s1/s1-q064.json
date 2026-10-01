@@ -1,0 +1,70 @@
+{
+  "id": "s1-q064",
+  "section": "s1",
+  "objectives": [
+    "s1o1",
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "What does `probabilities_dict()` return here (rounded)?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.circuit.library import PauliEvolutionGate\nfrom qiskit.quantum_info import SparsePauliOp, Statevector\n\nt = Parameter(\"t\")\nqc = QuantumCircuit(2)\nqc.append(PauliEvolutionGate(SparsePauliOp(\"XX\"), time=t), [0, 1])\n\nbound = qc.assign_parameters({t: np.pi / 6})\nprint(Statevector(bound).probabilities_dict())",
+  "options": [
+    {
+      "key": "A",
+      "text": "`{'00': 0.933, '11': 0.067}`"
+    },
+    {
+      "key": "B",
+      "text": "`{'00': 0.25, '11': 0.75}`"
+    },
+    {
+      "key": "C",
+      "text": "`{'00': 0.5625, '01': 0.1875, '10': 0.1875, '11': 0.0625}`"
+    },
+    {
+      "key": "D",
+      "text": "`{'00': 0.75, '11': 0.25}`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "`PauliEvolutionGate(H, time=t)` implements exp(−i·t·H) — no factor ½. Because (X⊗X)² = I, exp(−i t XX) = cos t·I − i sin t·XX, which maps |00⟩ to cos t|00⟩ − i sin t|11⟩. With t bound to π/6: P(00) = cos²(π/6) = 0.75 and P(11) = sin²(π/6) = 0.25. XX flips both qubits together, so |01⟩ and |10⟩ never appear.",
+    "distractors": {
+      "A": "This uses the rotation-gate convention exp(−i t/2 XX) (that is `RXXGate(t)`). `PauliEvolutionGate` has no ½: its time multiplies the operator directly.",
+      "B": "This doubles the exponent to exp(−i 2t XX), as if the bound value were a rotation angle to be doubled; it swaps the two probabilities.",
+      "C": "This treats XX as two independent X rotations, one per qubit. exp(−i t X⊗X) is a joint rotation that only couples |00⟩ with |11⟩."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.PauliEvolutionGate",
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q064.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.circuit.library import PauliEvolutionGate, RXXGate\nfrom qiskit.quantum_info import SparsePauliOp, Statevector\n\n\ndef probs(qc):\n    return {str(k): round(float(v), 4)\n            for k, v in Statevector(qc).probabilities_dict().items() if float(v) > 1e-9}\n\n\nt = Parameter(\"t\")\nqc = QuantumCircuit(2)\nqc.append(PauliEvolutionGate(SparsePauliOp(\"XX\"), time=t), [0, 1])\nbound = qc.assign_parameters({t: np.pi / 6})\ngot = probs(bound)\n\nclaims = {\n    \"A\": {\"00\": 0.933, \"11\": 0.067},\n    \"B\": {\"00\": 0.25, \"11\": 0.75},\n    \"C\": {\"00\": 0.5625, \"01\": 0.1875, \"10\": 0.1875, \"11\": 0.0625},\n    \"D\": {\"00\": 0.75, \"11\": 0.25},\n}\nproven, evidence = [], {}\nfor k, c in claims.items():\n    m = got == c\n    evidence[k] = f\"executed bound PauliEvolutionGate(XX, t=pi/6) on |00> -> {got}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\n\n# The misconceptions, executed:\nhalf = QuantumCircuit(2); half.append(RXXGate(np.pi / 6), [0, 1])\nevidence[\"A\"] += f\"  (exp(-i t/2 XX), i.e. RXXGate(pi/6), gives {probs(half)})\"\ndouble = QuantumCircuit(2); double.append(PauliEvolutionGate(SparsePauliOp(\"XX\"), time=np.pi / 3), [0, 1])\nevidence[\"B\"] += f\"  (exp(-i 2t XX), i.e. time=pi/3, gives {probs(double)})\"\nprod = QuantumCircuit(2); prod.rx(np.pi / 3, 0); prod.rx(np.pi / 3, 1)\nevidence[\"C\"] += f\"  (exp(-i t X) on each qubit separately gives {probs(prod)})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"probabilities\": got, \"num_parameters_before_bind\": qc.num_parameters}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (d3): PauliEvolutionGate convention exp(-i t H) + two-qubit Pauli exponent + parameter binding; every distractor is the executed result of its misconception (RXXGate, time 2t, product of RX)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

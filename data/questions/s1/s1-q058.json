@@ -1,0 +1,69 @@
+{
+  "id": "s1-q058",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "What is the probability of measuring `1` after this circuit?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.p(np.pi / 3, 0)\nqc.h(0)",
+  "options": [
+    {
+      "key": "A",
+      "text": "0.25"
+    },
+    {
+      "key": "B",
+      "text": "0"
+    },
+    {
+      "key": "C",
+      "text": "0.5"
+    },
+    {
+      "key": "D",
+      "text": "0.75"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "H makes (|0⟩ + |1⟩)/√2, P(π/3) turns it into (|0⟩ + e^{iπ/3}|1⟩)/√2 — a RELATIVE phase — and the second H converts that phase into amplitude: the |1⟩ amplitude is (1 − e^{iπ/3})/2, so P(1) = sin²(φ/2) = sin²(π/6) = 0.25.",
+    "distractors": {
+      "B": "H·H = I only when nothing sits between them. The phase gate adds a relative (not global) phase, which the second H turns into a nonzero |1⟩ amplitude.",
+      "C": "0.5 is the probability right after the phase gate. The second H interferes the two amplitudes, so the outcome is no longer 50/50.",
+      "D": "This swaps cos² and sin²: P(0) = cos²(π/6) = 0.75 and P(1) = sin²(π/6) = 0.25."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.PhaseGate"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q058.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.p(np.pi / 3, 0)\nqc.h(0)\np1 = float(Statevector(qc).probabilities_dict().get(\"1\", 0.0))\nclaims = {\"A\": 0.25, \"B\": 0.0, \"C\": 0.5, \"D\": 0.75}\nproven, evidence = [], {}\nfor k, c in claims.items():\n    m = abs(p1 - c) < 1e-9\n    evidence[k] = f\"executed Statevector(h; p(pi/3); h) -> P(1) = {p1:.6f}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\n# show the misconceptions' circuits really give the distractor values\nno_phase = QuantumCircuit(1); no_phase.h(0); no_phase.h(0)\nevidence[\"B\"] += f\"  (only without the phase gate: P(1) = {float(Statevector(no_phase).probabilities_dict().get('1', 0.0)):.3f})\"\none_h = QuantumCircuit(1); one_h.h(0); one_h.p(np.pi / 3, 0)\nevidence[\"C\"] += f\"  (only before the second H: P(1) = {float(Statevector(one_h).probabilities_dict().get('1', 0.0)):.3f})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"p1\": p1}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: relative phase turned into amplitude by interference (H P H), P(1) = sin^2(phi/2)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

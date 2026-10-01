@@ -1,0 +1,69 @@
+{
+  "id": "s1-q059",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "What does this code print?",
+  "code": "from qiskit.circuit.library import real_amplitudes\n\nansatz = real_amplitudes(3, reps=2)\nqc = ansatz.compose(ansatz.inverse())\nprint(qc.num_parameters)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`18`"
+    },
+    {
+      "key": "B",
+      "text": "`0`"
+    },
+    {
+      "key": "C",
+      "text": "`9`"
+    },
+    {
+      "key": "D",
+      "text": "`6`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "`real_amplitudes(3, reps=2)` has reps + 1 = 3 layers of one `ry` per qubit, so 3 × 3 = 9 parameters. `inverse()` reverses the gates and negates the angles but keeps the SAME `Parameter` objects (θ[0] … θ[8]), so composing the two halves still leaves 9 distinct free parameters.",
+    "distractors": {
+      "A": "This counts each half separately. The inverse refers to the same θ[0] … θ[8]; a parameter shared by several gates is counted once.",
+      "B": "The circuit is U·U†, but `num_parameters` counts unbound symbols, not whether the unitary simplifies. Nothing has been bound, so the 9 symbols remain.",
+      "D": "3 × reps = 6 forgets the final rotation layer: `real_amplitudes` has one more `ry` layer than `reps` unless `skip_final_rotation_layer=True`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.real_amplitudes",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/circuit_library"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q059.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.circuit.library import real_amplitudes\n\nansatz = real_amplitudes(3, reps=2)\nqc = ansatz.compose(ansatz.inverse())\nn = int(qc.num_parameters)\nshared = set(ansatz.parameters) == set(ansatz.inverse().parameters)\n# what the misconceptions would need: an independent second copy / no final layer\nother = real_amplitudes(3, reps=2, parameter_prefix=\"phi\")\nindep = int(ansatz.compose(other.inverse()).num_parameters)\ntrimmed = int(real_amplitudes(3, reps=2, skip_final_rotation_layer=True).num_parameters)\nclaims = {\"A\": 18, \"B\": 0, \"C\": 9, \"D\": 6}\nproven, evidence = [], {}\nfor k, c in claims.items():\n    m = n == c\n    evidence[k] = f\"executed ansatz.compose(ansatz.inverse()).num_parameters = {n}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nevidence[\"A\"] += f\"  (inverse() reuses the same Parameter objects: {shared}; only a copy with a different prefix gives {indep})\"\nevidence[\"B\"] += f\"  (the composed circuit is still unbound: {n} free parameters, {len(qc.data)} instructions)\"\nevidence[\"D\"] += f\"  (3 * reps = 6 needs skip_final_rotation_layer=True: {trimmed})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"num_parameters\": n, \"ansatz_parameters\": int(ansatz.num_parameters),\n                           \"inverse_shares_parameters\": shared, \"independent_copy\": indep}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: ansatz parameter count (n*(reps+1)) combined with inverse() keeping the same Parameter objects; measured on qiskit 2.5.0."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

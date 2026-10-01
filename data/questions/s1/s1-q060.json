@@ -1,0 +1,91 @@
+{
+  "id": "s1-q060",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which diagram does this code draw?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit.library import XGate\n\nqc = QuantumCircuit(2)\nqc.append(XGate().control(1, ctrl_state=0), [1, 0])\nqc.draw(\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "figures": {
+    "generator": "figures/s1-q060/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s1-q060/s1-q060-A.svg",
+        "alt": "Circuit diagram on two wires, q0 on top and q1 below: a single controlled-X with a filled control dot on q1 joined by a vertical line to a ⊕ target on q0."
+      },
+      "B": {
+        "file": "figures/s1-q060/s1-q060-B.svg",
+        "alt": "Circuit diagram on two wires, q0 on top and q1 below: a single controlled-X with an open (hollow) control circle on q0 joined by a vertical line to a ⊕ target on q1."
+      },
+      "C": {
+        "file": "figures/s1-q060/s1-q060-C.svg",
+        "alt": "Circuit diagram on two wires, q0 on top and q1 below: a single controlled-X with a filled control dot on q0 joined by a vertical line to a ⊕ target on q1."
+      },
+      "D": {
+        "file": "figures/s1-q060/s1-q060-D.svg",
+        "alt": "Circuit diagram on two wires, q0 on top and q1 below: a single controlled-X with an open (hollow) control circle on q1 joined by a vertical line to a ⊕ target on q0."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`control(1, ctrl_state=0)` builds an X that fires when the control is |0⟩; the drawer marks such a control with an OPEN circle. When a controlled gate is appended, the control qubits come first in the qubit list, so `[1, 0]` puts the control on q1 and the ⊕ target on q0.",
+    "distractors": {
+      "A": "The wiring is right, but `ctrl_state=0` is drawn as an open circle, not a filled dot — a filled dot means the gate fires on |1⟩.",
+      "B": "The open circle is right, but the qubit list puts controls first: `[1, 0]` means control q1, target q0, not the other way round.",
+      "C": "This reads both details wrongly: it shows the default (closed) control and takes the list order as target-first."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.ControlledGate",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q060.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit.library import XGate\nfrom qiskit.quantum_info import Operator\n\n# MUST mirror data/figures/s1-q060/generate.py.\nVARIANTS = {\n    \"A\": (1, [1, 0]),\n    \"B\": (0, [0, 1]),\n    \"C\": (1, [0, 1]),\n    \"D\": (0, [1, 0]),\n}\n\n\ndef circuit(ctrl_state, qubits):\n    qc = QuantumCircuit(2)\n    qc.append(XGate().control(1, ctrl_state=ctrl_state), qubits)\n    return qc\n\n\ndef signature(qc):\n    inst = qc.data[0]\n    ctrl_wire, tgt_wire = (qc.find_bit(q).index for q in inst.qubits)\n    return (inst.operation.name, int(inst.operation.ctrl_state), ctrl_wire, tgt_wire)\n\n\n# the stem code, verbatim\nstem = QuantumCircuit(2)\nstem.append(XGate().control(1, ctrl_state=0), [1, 0])\nstem_sig = signature(stem)\nstem_op = Operator(stem)\n\nproven, evidence, observed = [], {}, {\"stem\": list(stem_sig)}\nfor key, (cs, qubits) in sorted(VARIANTS.items()):\n    v = circuit(cs, qubits)\n    sig = signature(v)\n    same_unitary = Operator(v) == stem_op\n    match = sig == stem_sig and same_unitary\n    observed[key] = list(sig)\n    evidence[key] = (\n        f\"drawn gate {sig[0]} with ctrl_state={sig[1]} \"\n        f\"({'open circle' if sig[1] == 0 else 'filled dot'}) on q{sig[2]}, target on q{sig[3]}; \"\n        f\"stem executes ctrl_state={stem_sig[1]}, control q{stem_sig[2]}, target q{stem_sig[3]}; \"\n        f\"same unitary -> {same_unitary}; match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (figure, image options): open-control drawing + controls-first qubit order of an appended controlled gate; proof compares ctrl_state, wires and unitary of the four drawn circuits with the stem circuit."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "id": "s1-q056",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "What does this code print?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 2)\nprint(Operator(qc).dim)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`(8, 8)`"
+    },
+    {
+      "key": "B",
+      "text": "`(3, 3)`"
+    },
+    {
+      "key": "C",
+      "text": "`(2, 2, 2)`"
+    },
+    {
+      "key": "D",
+      "text": "`8`"
+    },
+    {
+      "key": "E",
+      "text": "`(4, 4)`"
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "display_count": 4,
+  "explanation": {
+    "correct": "`Operator.dim` is the pair (input dimension, output dimension) of the matrix. A 3-qubit circuit becomes a 2^3 × 2^3 = 8 × 8 unitary, so it prints `(8, 8)` — every qubit of the circuit counts, including qubit 1, which no gate touches.",
+    "distractors": {
+      "B": "3 is the number of qubits (`num_qubits`). `dim` reports matrix dimensions, which grow as 2^n.",
+      "C": "`(2, 2, 2)` is the per-subsystem tuple returned by `input_dims()` / `output_dims()`, not the total `dim`.",
+      "D": "`dim` is a tuple of input and output dimension, not a single integer — an operator need not be square in general.",
+      "E": "The idle qubit is not dropped: `Operator(qc)` acts on all of the circuit's qubits, with identity on qubit 1."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operator-class",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Operator"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q056.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 2)\nop = Operator(qc)\nprinted = str(op.dim)\nclaims = {\"A\": \"(8, 8)\", \"B\": \"(3, 3)\", \"C\": \"(2, 2, 2)\", \"D\": \"8\", \"E\": \"(4, 4)\"}\nproven, evidence = [], {}\nfor k, c in claims.items():\n    m = printed == c\n    evidence[k] = f\"executed print(Operator(qc).dim) -> {printed}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nevidence[\"C\"] += f\"  ((2, 2, 2) is what input_dims() returns: {op.input_dims()})\"\nevidence[\"E\"] += f\"  (the idle qubit 1 is kept: num_qubits = {op.num_qubits})\"\nevidence[\"B\"] += f\"  (3 is num_qubits, not the matrix size: data.shape = {op.data.shape})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"dim\": list(op.dim), \"input_dims\": list(op.input_dims()),\n                           \"num_qubits\": op.num_qubits}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: Operator.dim vs input_dims()/num_qubits, measured on qiskit 2.5.0."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

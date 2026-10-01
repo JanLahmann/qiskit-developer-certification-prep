@@ -1,0 +1,75 @@
+{
+  "id": "s3-q060",
+  "section": "s3",
+  "objectives": [
+    "s3o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "What does register `o` read on every shot (order `o1 o0`)?",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nq = QuantumRegister(4, 'q')\nc = ClassicalRegister(2, 'c')\no = ClassicalRegister(2, 'o')\nqc = QuantumCircuit(q, c, o)\nqc.x(0)\nqc.measure(0, c[1])\nqc.measure(1, c[0])\nwith qc.switch(c) as case:\n    with case(1):\n        qc.x(2)\n    with case(2):\n        qc.x(3)\n    with case(case.DEFAULT):\n        qc.x(2)\n        qc.x(3)\nqc.measure(2, o[0])\nqc.measure(3, o[1])",
+  "options": [
+    {
+      "key": "A",
+      "text": "`01`"
+    },
+    {
+      "key": "B",
+      "text": "`11`"
+    },
+    {
+      "key": "C",
+      "text": "`00`"
+    },
+    {
+      "key": "D",
+      "text": "`10`"
+    },
+    {
+      "key": "E",
+      "text": "It raises a `CircuitError`: a `switch` target has to be a single `Clbit`."
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "Qubit 0 is |1⟩ and is measured into `c[1]`; qubit 1 is |0⟩ and lands in `c[0]`. A register's value is read with `c[0]` as the least significant bit, so `c` = 0b10 = 2 and `case(2)` runs: X on qubit 3. Qubit 3 is measured into `o[1]`, so `o` reads `10` (o1 = 1, o0 = 0) on every shot.",
+    "distractors": {
+      "A": "Bit significance reversed: reading `c[0]` as the most significant bit (or following qubit order instead of the crossed `measure` targets) turns the value into 1 and selects `case(1)`. In Qiskit `c[0]` is always the least significant bit of the register value.",
+      "B": "DEFAULT branch: this assumes the switch tests only `c[0]` (which is 0, matching no case). A `switch` on a `ClassicalRegister` compares the whole register value, 2, which `case(2)` matches.",
+      "C": "No branch runs: this treats the mid-circuit measurements as unavailable to the switch. The measurements precede the `switch` in program order, so its target already holds 2 when it is evaluated.",
+      "E": "Scope error: `switch` accepts a `Clbit`, a `ClassicalRegister`, or a classical expression as its target; switching on the whole register is supported and builds without error."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q060.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\nbuilt_error = None\ntry:\n    q = QuantumRegister(4, 'q')\n    c = ClassicalRegister(2, 'c')\n    o = ClassicalRegister(2, 'o')\n    qc = QuantumCircuit(q, c, o)\n    qc.x(0)\n    qc.measure(0, c[1])\n    qc.measure(1, c[0])\n    with qc.switch(c) as case:\n        with case(1):\n            qc.x(2)\n        with case(2):\n            qc.x(3)\n        with case(case.DEFAULT):\n            qc.x(2)\n            qc.x(3)\n    qc.measure(2, o[0])\n    qc.measure(3, o[1])\nexcept Exception as exc:  # pragma: no cover - would refute the key\n    built_error = f\"{type(exc).__name__}: {exc}\"\n\ncounts = AerSimulator(seed_simulator=42).run(qc, shots=500).result().get_counts()\n# Multi-register keys are space-separated, last-declared register (o) leftmost.\no_vals = sorted({k.split()[0] for k in counts})\nc_vals = sorted({k.split()[1] for k in counts})\nclaims = {\"A\": \"01\", \"B\": \"11\", \"C\": \"00\", \"D\": \"10\"}\nproven, evidence = [], {}\nfor key, val in claims.items():\n    ok = built_error is None and o_vals == [val]\n    if ok:\n        proven.append(key)\n    evidence[key] = f\"claim o={val}; observed o values {o_vals} (c values {c_vals}, counts {dict(counts)}) -> {ok}\"\ne_ok = built_error is not None\nevidence[\"E\"] = f\"switch on the ClassicalRegister built and ran (error={built_error}); claim 'raises CircuitError' -> {e_ok}\"\nif e_ok:\n    proven.append(\"E\")\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {\"counts\": dict(counts), \"o\": o_vals, \"c\": c_vals}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: switch on a whole ClassicalRegister + crossed measure targets (register value significance) + reading a second register's bit order."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

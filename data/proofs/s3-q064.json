@@ -1,0 +1,192 @@
+{
+  "question": "s3-q064",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "drawer lays out wires ['q_0', 'q_1'] carrying x@[1], s@[0], h@[0], cx@[0, 1] -> match=True",
+      "B": "drawer lays out wires ['q_0', 'q_1'] carrying h@[0], cx@[0, 1], x@[1], s@[0] -> match=False",
+      "C": "drawer lays out wires ['q_0', 'q_1'] carrying x@[0], s@[1], h@[0], cx@[0, 1] -> match=False",
+      "D": "drawer lays out wires ['q_0', 'q_1'] carrying h@[0], cx@[0, 1], x@[0], s@[1] -> match=False"
+    },
+    "observed": {
+      "A": {
+        "wires_top_to_bottom": [
+          "q_0",
+          "q_1"
+        ],
+        "ops": [
+          [
+            "x",
+            [
+              1
+            ]
+          ],
+          [
+            "s",
+            [
+              0
+            ]
+          ],
+          [
+            "h",
+            [
+              0
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ]
+          ]
+        ]
+      },
+      "B": {
+        "wires_top_to_bottom": [
+          "q_0",
+          "q_1"
+        ],
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ]
+          ],
+          [
+            "x",
+            [
+              1
+            ]
+          ],
+          [
+            "s",
+            [
+              0
+            ]
+          ]
+        ]
+      },
+      "C": {
+        "wires_top_to_bottom": [
+          "q_0",
+          "q_1"
+        ],
+        "ops": [
+          [
+            "x",
+            [
+              0
+            ]
+          ],
+          [
+            "s",
+            [
+              1
+            ]
+          ],
+          [
+            "h",
+            [
+              0
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ]
+          ]
+        ]
+      },
+      "D": {
+        "wires_top_to_bottom": [
+          "q_0",
+          "q_1"
+        ],
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ]
+          ],
+          [
+            "x",
+            [
+              0
+            ]
+          ],
+          [
+            "s",
+            [
+              1
+            ]
+          ]
+        ]
+      },
+      "stem": {
+        "wires_top_to_bottom": [
+          "q_0",
+          "q_1"
+        ],
+        "ops": [
+          [
+            "x",
+            [
+              1
+            ]
+          ],
+          [
+            "s",
+            [
+              0
+            ]
+          ],
+          [
+            "h",
+            [
+              0
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              1
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 2.73,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"drawer lays out wires ['q_0', 'q_1'] carrying x@[1], s@[0], h@[0], cx@[0, 1] -> match=True\", \"B\": \"drawer lays out wires ['q_0', 'q_1'] carrying h@[0], cx@[0, 1], x@[1], s@[0] -> match=False\", \"C\": \"drawer lays out wires ['q_0', 'q_1'] carrying x@[0], s@[1], h@[0], cx@[0, 1] -> match=False\", \"D\": \"drawer lays out wires ['q_0', 'q_1'] carrying h@[0], cx@[0, 1], x@[0], s@[1] -> match=False\"}, \"observed\": {\"A\": {\"wires_top_to_bottom\": [\"q_0\", \"q_1\"], \"ops\": [[\"x\", [1]], [\"s\", [0]], [\"h\", [0]], [\"cx\", [0, 1]]]}, \"B\": {\"wires_top_to_bottom\": [\"q_0\", \"q_1\"], \"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"x\", [1]], [\"s\", [0]]]}, \"C\": {\"wires_top_to_bottom\": [\"q_0\", \"q_1\"], \"ops\": [[\"x\", [0]], [\"s\", [1]], [\"h\", [0]], [\"cx\", [0, 1]]]}, \"D\": {\"wires_top_to_bottom\": [\"q_0\", \"q_1\"], \"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"x\", [0]], [\"s\", [1]]]}, \"stem\": {\"wires_top_to_bottom\": [\"q_0\", \"q_1\"], \"ops\": [[\"x\", [1]], [\"s\", [0]], [\"h\", [0]], [\"cx\", [0, 1]]]}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

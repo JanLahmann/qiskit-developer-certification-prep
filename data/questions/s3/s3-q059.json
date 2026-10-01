@@ -1,0 +1,75 @@
+{
+  "id": "s3-q059",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "What does `qc.depth()` return?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.barrier()\nqc.x(2)\nqc.cx(1, 2)\nqc.measure_all()",
+  "options": [
+    {
+      "key": "A",
+      "text": "`4`"
+    },
+    {
+      "key": "B",
+      "text": "`5`"
+    },
+    {
+      "key": "C",
+      "text": "`7`"
+    },
+    {
+      "key": "D",
+      "text": "`3`"
+    },
+    {
+      "key": "E",
+      "text": "`9`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "`depth()` counts the layers on the longest path, and its default filter skips directives such as barriers — but a skipped barrier still acts as a synchronisation point. Trace it: `h` (1) and `cx(0, 1)` (2) bring q0/q1 to 2; the barrier lifts every wire, including the idle q2, to 2 without adding a layer; `x(2)` is layer 3 and `cx(1, 2)` layer 4; `measure_all()` adds its own barrier (again 0 layers) and the three measurements, which DO count, as layer 5.",
+    "distractors": {
+      "A": "Barrier treated as invisible: if the barrier did not synchronise the wires, `x(2)` could slide back to layer 1 and the path would be 4 long. Directives add no layer, but they still hold every wire they touch at a common time.",
+      "C": "Barrier counted as a layer: adding one layer for each of the two barriers gives 7. `depth()` filters directives out of the count (they only synchronise); 7 also happens to be `qc.size()`, which counts operations, not layers.",
+      "D": "Measurements and barriers both dropped: 3 is the depth of the gate-only circuit with no synchronisation. `measure` is a real instruction and adds a layer; only directives like `barrier` are filtered.",
+      "E": "Instruction count instead of depth: 9 is `len(qc.data)` — every instruction including both barriers. Depth is the length of the critical path, not the number of entries in the circuit."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q059.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.barrier()\nqc.x(2)\nqc.cx(1, 2)\nqc.measure_all()\n\ndepth = qc.depth()\n\n# Each misconception, observed independently on the real circuit:\nno_barrier = qc.copy_empty_like()\ngates_only = QuantumCircuit(3)\nfor inst in qc.data:\n    if inst.operation.name != \"barrier\":\n        no_barrier.append(inst)\n        if inst.operation.name != \"measure\":\n            gates_only.append(inst.operation, [qc.find_bit(b).index for b in inst.qubits])\nmis = {\n    \"A\": (\"barrier removed entirely (no synchronisation)\", no_barrier.depth()),\n    \"C\": (\"barriers counted as layers\", qc.depth(lambda inst: True)),\n    \"D\": (\"barriers and measurements removed\", gates_only.depth()),\n    \"E\": (\"len(qc.data)\", len(qc.data)),\n}\nclaims = {\"A\": 4, \"B\": 5, \"C\": 7, \"D\": 3, \"E\": 9}\nproven, evidence = [], {}\nfor key, val in sorted(claims.items()):\n    ok = val == depth\n    if ok:\n        proven.append(key)\n    extra = f\"; that value is what '{mis[key][0]}' gives ({mis[key][1]})\" if key in mis else \"\"\n    evidence[key] = f\"claim {val}; qc.depth() observed {depth} -> {ok}{extra}\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"depth\": depth, \"size\": qc.size(), \"len_data\": len(qc.data),\n                           \"misconceptions\": {k: v[1] for k, v in mis.items()}}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: depth() semantics — directives filtered from the count but still synchronise wires; measurements count. Interacting: barrier sync + idle-wire parallelism + measure_all's own barrier."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

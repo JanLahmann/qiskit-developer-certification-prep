@@ -1,0 +1,91 @@
+{
+  "id": "s3-q064",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which diagram shows `out`?",
+  "code": "from qiskit import QuantumCircuit\n\nbase = QuantumCircuit(2)\nbase.h(0)\nbase.cx(0, 1)\n\nprep = QuantumCircuit(2)\nprep.x(0)\nprep.s(1)\n\nout = base.compose(prep, qubits=[1, 0], front=True)\nout.draw(output=\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "figures": {
+    "generator": "figures/s3-q064/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s3-q064/s3-q064-A.svg",
+        "alt": "Circuit diagram with two wires q_0, q_1: an S box on q_0 and an X box on q_1 in the first column, then an H box on q_0, then a CX with its control on q_0 and its target on q_1."
+      },
+      "B": {
+        "file": "figures/s3-q064/s3-q064-B.svg",
+        "alt": "Circuit diagram with two wires q_0, q_1: an H box on q_0, then a CX with its control on q_0 and its target on q_1, then an S box on q_0 and an X box on q_1 in the last column."
+      },
+      "C": {
+        "file": "figures/s3-q064/s3-q064-C.svg",
+        "alt": "Circuit diagram with two wires q_0, q_1: an X box on q_0 and an S box on q_1 in the first column, then an H box on q_0, then a CX with its control on q_0 and its target on q_1."
+      },
+      "D": {
+        "file": "figures/s3-q064/s3-q064-D.svg",
+        "alt": "Circuit diagram with two wires q_0, q_1: an H box on q_0, then a CX with its control on q_0 and its target on q_1, then an X box on q_0 and an S box on q_1 in the last column."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`qubits=[1, 0]` maps `prep`'s qubit 0 onto `base`'s qubit 1 and `prep`'s qubit 1 onto `base`'s qubit 0, so the X lands on q_1 and the S on q_0. `front=True` places `prep` BEFORE the existing gates instead of after them, so the S and X come first, followed by H and the CX.",
+    "distractors": {
+      "B": "`front=True` ignored: by default `compose` appends `other` after the existing gates, but `front=True` prepends it.",
+      "C": "`qubits=` ignored: the list is a positional map from `prep`'s qubits to `base`'s qubits, so `[1, 0]` swaps where X and S land.",
+      "D": "Both arguments ignored: this is the plain `base.compose(prep)` result — appended, with qubit i of `prep` on qubit i of `base`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q064.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# Variants MUST mirror data/figures/s3-q064/generate.py.\nfrom qiskit import QuantumCircuit\n\n\ndef build(front=True, mapping=(1, 0)):\n    base = QuantumCircuit(2)\n    base.h(0)\n    base.cx(0, 1)\n    prep = QuantumCircuit(2)\n    prep.x(0)\n    prep.s(1)\n    return base.compose(prep, qubits=list(mapping), front=front)\n\n\nVARIANTS = {\n    \"A\": (lambda: build(), {}),                                # the stem code\n    \"B\": (lambda: build(front=False), {}),                     # front= ignored\n    \"C\": (lambda: build(mapping=(0, 1)), {}),                  # qubits= ignored\n    \"D\": (lambda: build(front=False, mapping=(0, 1)), {}),     # both ignored\n}\n\nfrom qiskit.visualization.circuit._utils import _get_layered_instructions\n\n\ndef drawn(circ, **kwargs):\n    \"\"\"What the drawer lays out: wire labels top to bottom and each gate\n    addressed by the wire positions it is drawn on.\"\"\"\n    qubits, _clbits, layers = _get_layered_instructions(circ, **kwargs)\n    labels = []\n    for b in qubits:\n        reg, idx = circ.find_bit(b).registers[0]\n        labels.append(reg.name if reg.size == 1 else f\"{reg.name}_{idx}\")\n    ops = tuple((node.op.name, tuple(qubits.index(b) for b in node.qargs))\n                for layer in layers for node in layer)\n    return tuple(labels), ops\n\nfrom qiskit import QuantumCircuit\n\nbase = QuantumCircuit(2)\nbase.h(0)\nbase.cx(0, 1)\n\nprep = QuantumCircuit(2)\nprep.x(0)\nprep.s(1)\n\nout = base.compose(prep, qubits=[1, 0], front=True)\ntarget = drawn(out)\n\nproven, evidence, observed = [], {}, {}\nfor key, (make, kwargs) in sorted(VARIANTS.items()):\n    wires, ops = drawn(make(), **kwargs)\n    match = (wires, ops) == target\n    observed[key] = {\"wires_top_to_bottom\": list(wires), \"ops\": [[n, list(q)] for n, q in ops]}\n    evidence[key] = (f\"drawer lays out wires {list(wires)} carrying \"\n                     + \", \".join(f\"{n}@{list(q)}\" for n, q in ops) + f\" -> match={match}\")\n    if match:\n        proven.append(key)\nobserved[\"stem\"] = {\"wires_top_to_bottom\": list(target[0]), \"ops\": [[n, list(q)] for n, q in target[1]]}\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (figure): compose with front=True and a qubits= remap together. All four renders are 8415 B (free tie, no image-size signal)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

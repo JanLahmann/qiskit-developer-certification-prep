@@ -1,0 +1,84 @@
+{
+  "id": "s1-q065",
+  "section": "s1",
+  "objectives": [
+    "s1o1",
+    "s1o2"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "Which gate implements the same unitary as the drawn circuit?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "`PauliEvolutionGate(SparsePauliOp(\"ZZ\"), time=np.pi / 3)`"
+    },
+    {
+      "key": "B",
+      "text": "`PauliEvolutionGate(SparsePauliOp(\"ZI\"), time=np.pi / 6)`"
+    },
+    {
+      "key": "C",
+      "text": "`PauliEvolutionGate(SparsePauliOp(\"XX\"), time=np.pi / 6)`"
+    },
+    {
+      "key": "D",
+      "text": "`PauliEvolutionGate(SparsePauliOp(\"IZ\"), time=np.pi / 6)`"
+    },
+    {
+      "key": "E",
+      "text": "`PauliEvolutionGate(SparsePauliOp(\"ZZ\"), time=np.pi / 6)`"
+    }
+  ],
+  "answer": [
+    "E"
+  ],
+  "display_count": 4,
+  "figures": {
+    "generator": "figures/s1-q065/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s1-q065/s1-q065-stem.svg",
+      "alt": "Circuit diagram on two wires, q0 on top and q1 below: a CNOT with its control dot on q0 and its ⊕ target on q1, then an RZ gate with angle π/3 on q1, then a second CNOT with control on q0 and target on q1."
+    }
+  },
+  "explanation": {
+    "correct": "The CNOT pair conjugates the rotation: CX·(I⊗Z on the target)·CX = Z⊗Z, so the circuit applies a Z⊗Z rotation by the RZ angle. RZ(θ) is exp(−i θ/2 Z), and `PauliEvolutionGate(H, time=t)` is exp(−i t H) with no ½, so θ = π/3 corresponds to time = π/6 on `\"ZZ\"`. The two operators are exactly equal.",
+    "distractors": {
+      "A": "This copies the RZ angle into `time`. RZ(θ) = exp(−i θ/2 Z) while the evolution gate is exp(−i t H), so t = θ/2 = π/6.",
+      "B": "This keeps only the rotation on the target (Z on qubit 1). The surrounding CNOTs spread the parity of q0 into the phase, making it Z⊗Z.",
+      "C": "CNOT conjugation maps Z on the target to Z⊗Z, not to X⊗X; X-type terms would need Hadamards around the CNOT ladder.",
+      "D": "This puts the whole rotation on the control (Z on qubit 0). The phase depends on the parity of BOTH qubits, which is Z⊗Z."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.PauliEvolutionGate",
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q065.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit.library import PauliEvolutionGate\nfrom qiskit.quantum_info import Operator, SparsePauliOp\n\n# MUST mirror data/figures/s1-q065/generate.py (the drawn circuit).\nSTEM = [(\"cx\", 0, 1), (\"rz\", np.pi / 3, 1), (\"cx\", 0, 1)]\ndrawn = QuantumCircuit(2)\nfor name, *args in STEM:\n    getattr(drawn, name)(*args)\nU = Operator(drawn)\n\nCANDIDATES = {\n    \"A\": (\"ZZ\", np.pi / 3, \"pi/3\"),\n    \"B\": (\"ZI\", np.pi / 6, \"pi/6\"),\n    \"C\": (\"XX\", np.pi / 6, \"pi/6\"),\n    \"D\": (\"IZ\", np.pi / 6, \"pi/6\"),\n    \"E\": (\"ZZ\", np.pi / 6, \"pi/6\"),\n}\nproven, evidence, observed = [], {}, {}\nfor key, (label, time, shown) in sorted(CANDIDATES.items()):\n    g = QuantumCircuit(2)\n    g.append(PauliEvolutionGate(SparsePauliOp(label), time=time), [0, 1])\n    V = Operator(g)\n    exact = V == U\n    up_to_phase = V.equiv(U)\n    observed[key] = {\"exact\": exact, \"equiv\": up_to_phase}\n    evidence[key] = (\n        f\"PauliEvolutionGate(SparsePauliOp('{label}'), time={shown}) vs drawn cx-rz(pi/3)-cx: \"\n        f\"Operator equal -> {exact}; equal up to global phase -> {up_to_phase}\"\n    )\n    if exact and up_to_phase:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (figure, stem figure, d3): CNOT conjugation Z -> ZZ combined with the exp(-i t H) vs RZ(theta)=exp(-i theta/2 Z) convention; exact Operator equality measured on qiskit 2.5.0."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

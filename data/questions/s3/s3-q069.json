@@ -1,0 +1,69 @@
+{
+  "id": "s3-q069",
+  "section": "s3",
+  "objectives": [
+    "s3o3"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "What happens when this code runs?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\na = QuantumCircuit(1)\na.rx(Parameter(\"theta\"), 0)\n\nb = QuantumCircuit(1)\nb.ry(Parameter(\"theta\"), 0)\n\nc = a.compose(b)\nprint(c.num_parameters)",
+  "options": [
+    {
+      "key": "A",
+      "text": "It prints `1`: parameters that share a name are merged into one."
+    },
+    {
+      "key": "B",
+      "text": "It raises a `CircuitError`: two different parameters are both named `theta`."
+    },
+    {
+      "key": "C",
+      "text": "It prints `2`: distinct `Parameter` objects stay separate even with one name."
+    },
+    {
+      "key": "D",
+      "text": "It raises a `TypeError`: `compose` refuses circuits with unbound parameters."
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "Each `Parameter(\"theta\")` call creates a NEW parameter object (with its own identity), but a circuit's parameter table also requires names to be unique. When `compose` copies `b`'s RY into the result it would hold two different parameters called `theta`, so it raises `CircuitError: name conflict adding parameter 'theta'`. Reuse one `Parameter` object (or use distinct names) when combining circuits.",
+    "distractors": {
+      "A": "Name-based merging: parameters are matched by object identity, never merged by name; two objects with one name are a conflict, not a single parameter.",
+      "C": "Identity without the name rule: separate objects are separate parameters, but a single circuit refuses two of them with the same name, so the composition never completes.",
+      "D": "Wrong restriction: composing parameterized circuits is normal (ansatz building does it constantly); the failure here is only the duplicate name."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q069.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\na = QuantumCircuit(1)\na.rx(Parameter(\"theta\"), 0)\nb = QuantumCircuit(1)\nb.ry(Parameter(\"theta\"), 0)\n\nerr, printed = None, None\ntry:\n    c = a.compose(b)\n    printed = c.num_parameters\nexcept Exception as exc:\n    err = (type(exc).__name__, str(exc))\n\n# Control: the same composition with ONE shared Parameter object succeeds.\nt = Parameter(\"theta\")\na2 = QuantumCircuit(1); a2.rx(t, 0)\nb2 = QuantumCircuit(1); b2.ry(t, 0)\nshared = a2.compose(b2).num_parameters\n\nclaims = {\n    \"A\": printed == 1,\n    \"B\": err is not None and err[0] == \"CircuitError\" and \"theta\" in err[1],\n    \"C\": printed == 2,\n    \"D\": err is not None and err[0] == \"TypeError\",\n}\nevidence = {\n    \"A\": f\"compose outcome: printed={printed}, error={err}; claim prints 1 -> {claims['A']}\",\n    \"B\": f\"compose raised {err}; claim CircuitError naming theta -> {claims['B']}\",\n    \"C\": f\"compose outcome: printed={printed}, error={err}; claim prints 2 -> {claims['C']} (shared-object control prints {shared})\",\n    \"D\": f\"exception type observed: {err[0] if err else None}; claim TypeError -> {claims['D']} (shared-object compose of parameterized circuits works: {shared} parameter)\",\n}\nemit_verdict({\"answer\": [k for k, v in claims.items() if v], \"evidence\": evidence,\n              \"observed\": {\"error\": list(err) if err else None, \"shared_object_num_parameters\": shared}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: Parameter identity vs. unique-name rule when composing circuits (CircuitError name conflict); proof includes a shared-object control."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

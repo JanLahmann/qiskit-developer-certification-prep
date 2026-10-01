@@ -1,0 +1,91 @@
+{
+  "id": "s3-q066",
+  "section": "s3",
+  "objectives": [
+    "s3o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which diagram does this code draw?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\n\nqc = QuantumCircuit(3, 1)\nqc.ry(np.pi / 3, 1)\nqc.measure(1, 0)\nwith qc.if_test((qc.clbits[0], 0)) as else_:\n    qc.cx(0, 2)\nwith else_:\n    qc.swap(0, 2)\nqc.draw(output=\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "figures": {
+    "generator": "figures/s3-q066/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s3-q066/s3-q066-A.svg",
+        "alt": "Circuit diagram with wires q_0, q_1, q_2 and a one-bit classical wire c: an RY(π/3) box on q_1 and a measurement of q_1 into c_0, then one control-flow box spanning q_0 to q_2 with an If section holding a SWAP between q_0 and q_2 and an Else section holding a CX from q_0 to q_2, conditioned on c_0=0x0."
+      },
+      "B": {
+        "file": "figures/s3-q066/s3-q066-B.svg",
+        "alt": "Circuit diagram with wires q_0, q_1, q_2 and a one-bit classical wire c: an RY(π/3) box on q_1 and a measurement of q_1 into c_0, then a control-flow box spanning q_0 to q_2 with only an If section holding a CX from q_0 to q_2, conditioned on c_0=0x0, followed by a plain SWAP between q_0 and q_2."
+      },
+      "C": {
+        "file": "figures/s3-q066/s3-q066-C.svg",
+        "alt": "Circuit diagram with wires q_0, q_1, q_2 and a one-bit classical wire c: an RY(π/3) box on q_1 and a measurement of q_1 into c_0, then one control-flow box spanning q_0 to q_2 with an If section holding a CX from q_0 to q_2 and an Else section holding a SWAP between q_0 and q_2, conditioned on c_0=0x0."
+      },
+      "D": {
+        "file": "figures/s3-q066/s3-q066-D.svg",
+        "alt": "Circuit diagram with wires q_0, q_1, q_2 and a one-bit classical wire c: an RY(π/3) box on q_1 and a measurement of q_1 into c_0, then two separate control-flow boxes spanning q_0 to q_2: an If box holding a CX from q_0 to q_2 conditioned on c_0=0x0, and an If box holding a SWAP between q_0 and q_2 conditioned on c_0=0x1."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`if_test(...) as else_` builds ONE `if_else` instruction. The body of the `with qc.if_test` block (the CX) is its true branch, taken when c_0 reads 0, and the body of `with else_:` (the SWAP) is its false branch. The drawer shows that single instruction as one box split into If and Else sections, conditioned on c_0 = 0 (printed as 0x0).",
+    "distractors": {
+      "A": "Branches swapped: the `if_test` block runs when the condition holds — here when c_0 equals 0 — so the CX is the If body and the SWAP the Else body, whatever value is being tested.",
+      "B": "Else body read as unconditional: gates inside `with else_:` are the false branch of the same instruction, not ordinary gates appended after it.",
+      "D": "Else compiled as a second, inverted `if_test`: that circuit behaves the same but is a different circuit — two `if_else` instructions with no else branches. The builder records one instruction with two blocks."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q066.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# Variants MUST mirror data/figures/s3-q066/generate.py.\nimport numpy as np\nfrom qiskit import QuantumCircuit\n\n\ndef build(kind=\"if_else\"):\n    qc = QuantumCircuit(3, 1)\n    qc.ry(np.pi / 3, 1)\n    qc.measure(1, 0)\n    c0 = qc.clbits[0]\n    if kind == \"if_else\":            # the stem code\n        with qc.if_test((c0, 0)) as else_:\n            qc.cx(0, 2)\n        with else_:\n            qc.swap(0, 2)\n    elif kind == \"swapped\":          # branch bodies exchanged\n        with qc.if_test((c0, 0)) as else_:\n            qc.swap(0, 2)\n        with else_:\n            qc.cx(0, 2)\n    elif kind == \"no_else\":          # else body read as unconditional\n        with qc.if_test((c0, 0)):\n            qc.cx(0, 2)\n        qc.swap(0, 2)\n    elif kind == \"two_ifs\":          # else read as a second, inverted if_test\n        with qc.if_test((c0, 0)):\n            qc.cx(0, 2)\n        with qc.if_test((c0, 1)):\n            qc.swap(0, 2)\n    return qc\n\n\nVARIANTS = {\n    \"A\": (lambda: build(\"swapped\"), {}),\n    \"B\": (lambda: build(\"no_else\"), {}),\n    \"C\": (lambda: build(\"if_else\"), {}),\n    \"D\": (lambda: build(\"two_ifs\"), {}),\n}\n\ndef drawn(circ):\n    \"\"\"Instruction tree: name, qubit/clbit indices, condition (clbit index,\n    value) and, for control flow, every block's own tree.\"\"\"\n    def node(inst, outer):\n        op = inst.operation\n        q = tuple(outer.find_bit(b).index for b in inst.qubits)\n        c = tuple(outer.find_bit(b).index for b in inst.clbits)\n        cond = None\n        if getattr(op, \"condition\", None) is not None:\n            bit, val = op.condition\n            cond = (outer.find_bit(bit).index, int(val))\n        blocks = tuple(tuple(node(i, outer) for i in b.data) for b in getattr(op, \"blocks\", ()))\n        return (op.name, q, c, cond, blocks)\n    return tuple(node(i, circ) for i in circ.data)\n\nimport numpy as np\nfrom qiskit import QuantumCircuit\n\nqc = QuantumCircuit(3, 1)\nqc.ry(np.pi / 3, 1)\nqc.measure(1, 0)\nwith qc.if_test((qc.clbits[0], 0)) as else_:\n    qc.cx(0, 2)\nwith else_:\n    qc.swap(0, 2)\ntarget = drawn(qc)\n\nproven, evidence, observed = [], {}, {}\nfor key, (make, _kw) in sorted(VARIANTS.items()):\n    s = drawn(make())\n    match = s == target\n    observed[key] = repr(s)\n    evidence[key] = f\"instruction tree {s!r} -> match={match}\"\n    if match:\n        proven.append(key)\nobserved[\"stem\"] = repr(target)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (figure): if_test/else_ builder vs. its look-alike constructions (swapped bodies, unconditional else, two inverted ifs). Reworked 2026-10-01 after the orchestrator's anti-duplication scan (0.487 token-Jaccard vs an official sample item): now 3 qubits, RY preparation on a non-control qubit, condition value 0, CX-vs-SWAP branches."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

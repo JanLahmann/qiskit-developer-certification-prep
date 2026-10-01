@@ -2103,3 +2103,88 @@ Image-size calibration:
   (its code calls `loads`); never key or write a distractor saying Qiskit cannot read
   OpenQASM 3 at all without the extension. sampler-rest-api's own sample uses OpenQASM 3
   with `qreg`/`creg`, which is not q010/q016 territory (those are exporter output).
+
+## R2 expansion — s1 (2026-10-01, qiskit 2.5.0)
+
+Twelve adds s1-q055..q066 (d1 ×2, d2 ×5, d3 ×5; 5 figure items). Measured in the pinned venv:
+
+- **`Operator(qc).dim` is the tuple `(2^n, 2^n)`** — `(8, 8)` for a 3-qubit circuit even
+  when one qubit is idle; `input_dims()` is the per-qubit `(2, 2, 2)`. Safe d1 distractor pair.
+- **`SparsePauliOp(["X","Z"]) @ itself`** is the operator product (not tensor): raw terms
+  `['I','Y','Y','I']` coeffs `[1, -1j, +1j, 1]`; `.simplify()` -> `['I']` coeff `2`. The
+  anticommuting cross terms cancel; `a.tensor(a)` is the 2-qubit `XX+XZ+ZX+ZZ` distractor.
+- **`qc.inverse()` of `h; s` is `sdg; h`** (gate list), drawn S† then H.
+- **`circuit.compose(circuit.inverse())` keeps the parameter count**: `inverse()` reuses the
+  same `Parameter` objects (`real_amplitudes(3, reps=2)` -> 9 before and after).
+- **`XGate().control(1, ctrl_state=0)` appended on `[1, 0]`** = control q1 (drawn as an
+  OPEN circle), target q0; renders 5779 B vs 5786 B for the control-on-q0 variants.
+- **`real_amplitudes(3, reps=1, entanglement=...)` CX lists**: full `[(0,1),(0,2),(1,2)]`,
+  circular `[(2,0),(0,1),(1,2)]` (same as `sca` at reps=1), linear `[(0,1),(1,2)]`
+  (= `pairwise` for 3 qubits — never offer both), reverse_linear `[(1,2),(0,1)]`.
+  mpl sizes 20699 / 20694 / 18655 / 18655 B: keyed `full` is the strict-largest at 0.02 %.
+- **`probabilities_dict(qargs=[2, 0])`: `qargs[0]` is the RIGHTMOST key bit.** For x(0) on
+  3 qubits: `[2, 0]` -> `'10'`, `[0, 2]` -> `'01'`. Raw value 0.9999999999999998 — say
+  "rounded" in stems.
+- **`PauliEvolutionGate(op, time=t)` = exp(−i t op), no ½.** XX at t = π/6 on |00⟩ ->
+  `{00: 0.75, 11: 0.25}`; `RXXGate(π/6)` (the ½ convention) -> 0.933/0.067; RX(π/3) on
+  each qubit -> 0.5625/0.1875/0.1875/0.0625. `cx(0,1); rz(π/3, 1); cx(0,1)` is EXACTLY
+  (`Operator.__eq__`) `PauliEvolutionGate(SparsePauliOp("ZZ"), time=π/6)`; ZZ π/3, ZI, IZ,
+  XX at π/6 are all not equivalent.
+- **`Operator(b).compose(Operator(a))` runs b first**; with b = `x(0); cx(0,1)`, a = `h(0)`
+  from |00⟩ -> `{'10': .5, '11': .5}`; reversed order gives a Bell pair.
+- **Phase kickback** `x(1); h(1); h(0); cx(0,1); h(0); h(1)` -> `{'11': 1.0}` exactly.
+- **Audit lists cross-question duplicate option texts with their roles** — a value keyed
+  correct in one item and wrong in another (two dict-output items sharing
+  `{'01': .5, '11': .5}`) is reported even with 0 flags. Re-pick the answer space instead
+  (s1-q063 moved to a deterministic `{'11': 1.0}` circuit).
+
+## R2 expansion — s3 (2026-10-01, qiskit 2.5.0)
+
+Fourteen adds s3-q059..q072 (d1 ×1, d2 ×6, d3 ×7; 6 figure items — 5 option-image,
+1 stem-figure). Measured in the pinned venv:
+
+- **`QuantumCircuit.depth()` filters directives but they still SYNCHRONISE** (source
+  comment: "it still functions as a data synchronisation point"): `h(0); barrier; h(1)`
+  -> 2, not 1. `h;cx(0,1);barrier;x(2);cx(1,2);measure_all()` -> 5; barriers removed -> 4;
+  `depth(lambda i: True)` -> 7 (== `size()` here, a coincidence); `len(data)` -> 9.
+- **`switch(creg)` compares the whole register value, `c[0]` = LSB**: q0=1 measured into
+  `c[1]`, q1=0 into `c[0]` -> value 2 -> `case(2)` (Aer). `switch` on a register builds fine.
+- **`while_loop((clbit, 1))` repeat-until-success** (`h; measure` body) ends every shot on
+  0; the same body under `if_test` gives ~75/25 — a measured misconception pair.
+- **`assign_parameters({theta: 2*phi})` substitutes**: rx/ry(theta+phi) become `2*phi` /
+  `3*phi` (symengine simplifies), `num_parameters` 2 -> 1. No error.
+- **`a.compose(b)` with two distinct `Parameter("theta")` objects -> `CircuitError: name
+  conflict adding parameter 'theta'`**; one shared object composes fine (1 parameter).
+- **`decompose()` expands EVERY instruction one level** (swap -> 3 cx, x -> u, custom
+  `to_gate()` -> its body), not just custom gates; `reps=2` turns the inner `h` into
+  `U(π/2, 0, π)`. `append(gate, [2, 0])` maps gate qubit 0 -> q2.
+- **Barrier at level 1** (`cx; barrier; cx; h(1); h(1)`, basis rz/sx/x/cx) ->
+  `{'cx': 2, 'barrier': 1}`; level 0 -> `{'rz': 4, 'cx': 2, 'sx': 2, 'barrier': 1}`;
+  without the barrier level 1 -> `{}`.
+- **`cx; z(control); cx`: level 1 keeps 2 CX, level 2 -> 0 CX** (`{'rz': 1}`), stable over
+  seeds 0-4. Level-1 optimization stage has `InverseCancellation` (adjacent only); level 2
+  has `CommutativeCancellation` + `TwoQubitPeepholeOptimization` instead. Standalone
+  `CommutativeCancellation` -> `{'z': 1}`. CAUTION: X on the CONTROL (`cx; x(0); cx`) at
+  level 2 becomes `{'x': 2}` (X⊗X) — never key "X on the control blocks/cancels" naively.
+- **`InverseCancellation([CXGate()])` cancels only CX**; with NO argument it uses a
+  built-in self-inverse set (CX, ECR, CY, CZ, X, Y, Z, H, SWAP, CH, CCX, ...) and removes
+  H/X pairs too (API page fetched 2026-10-01).
+- **Routed-drawing trap (s3-q067):** with layout `[2,1,0]` on a 3-line, an input that
+  already CONTAINS the routing swap (`h(0); cx(0,1); swap(1,2); cx(0,1)`) reproduces the
+  routed drawing exactly — never offer "qc contained the SWAP" as a distractor on a
+  reverse-engineer-the-input item.
+- mpl if/else drawing: one box with If / Else sections, condition printed `c_0=0x1`;
+  two separate `if_test`s with inverted conditions draw two If boxes (`0x1`, `0x0`).
+- Craft: `must` is an absolute word (q060/q062 hit medium `absolute_distractor_tell`;
+  "has to be" fixed it). q070 dc=4 needed two long distractors (high length_tell at 1.56
+  until `{}` was replaced by a 34-char misconception dict). Image sizes: keyed figures
+  are mid-pack or tied (q064 four-way 8415 B tie); s3 `smallest_image_option` stays
+  low (6.2%) — a future figure wave should key a strict-smallest drawing.
+- Answer keys of the adds: A3 B3 C3 D3 E2. Section meta-audit after: 0 blockers /
+  0 warnings, same 9 pre-existing low length flags, no flag on any add.
+- **s3-q066 reworked (orchestrator anti-duplication scan, 0.487 token-Jaccard vs an
+  official sample item):** the `h(0); measure; if_test((clbit, 1)) as else_: X / H`
+  shape is the canonical docs example and converges on the official item — avoid it in
+  any wave. New shape: `QuantumCircuit(3, 1)`, `ry(π/3, 1)`, `measure(1, 0)`,
+  `if_test((c0, 0)) as else_: cx(0, 2)` / `else_: swap(0, 2)`; key C. Renders: correct
+  21605 B tied with the swapped-bodies variant, D 22388 B, B 18848 B (no image tell).

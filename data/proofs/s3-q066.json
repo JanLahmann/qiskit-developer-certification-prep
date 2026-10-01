@@ -1,0 +1,32 @@
+{
+  "question": "s3-q066",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "A": "instruction tree (('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('swap', (0, 2), (), None, ()),), (('cx', (0, 2), (), None, ()),)))) -> match=False",
+      "B": "instruction tree (('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('cx', (0, 2), (), None, ()),),)), ('swap', (0, 2), (), None, ())) -> match=False",
+      "C": "instruction tree (('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('cx', (0, 2), (), None, ()),), (('swap', (0, 2), (), None, ()),)))) -> match=True",
+      "D": "instruction tree (('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('cx', (0, 2), (), None, ()),),)), ('if_else', (0, 2), (0,), (0, 1), ((('swap', (0, 2), (), None, ()),),))) -> match=False"
+    },
+    "observed": {
+      "A": "(('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('swap', (0, 2), (), None, ()),), (('cx', (0, 2), (), None, ()),))))",
+      "B": "(('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('cx', (0, 2), (), None, ()),),)), ('swap', (0, 2), (), None, ()))",
+      "C": "(('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('cx', (0, 2), (), None, ()),), (('swap', (0, 2), (), None, ()),))))",
+      "D": "(('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('cx', (0, 2), (), None, ()),),)), ('if_else', (0, 2), (0,), (0, 1), ((('swap', (0, 2), (), None, ()),),)))",
+      "stem": "(('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('cx', (0, 2), (), None, ()),), (('swap', (0, 2), (), None, ()),))))"
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 2.76,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"instruction tree (('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('swap', (0, 2), (), None, ()),), (('cx', (0, 2), (), None, ()),)))) -> match=False\", \"B\": \"instruction tree (('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('cx', (0, 2), (), None, ()),),)), ('swap', (0, 2), (), None, ())) -> match=False\", \"C\": \"instruction tree (('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('cx', (0, 2), (), None, ()),), (('swap', (0, 2), (), None, ()),)))) -> match=True\", \"D\": \"instruction tree (('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('cx', (0, 2), (), None, ()),),)), ('if_else', (0, 2), (0,), (0, 1), ((('swap', (0, 2), (), None, ()),),))) -> match=False\"}, \"observed\": {\"A\": \"(('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('swap', (0, 2), (), None, ()),), (('cx', (0, 2), (), None, ()),))))\", \"B\": \"(('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('cx', (0, 2), (), None, ()),),)), ('swap', (0, 2), (), None, ()))\", \"C\": \"(('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('cx', (0, 2), (), None, ()),), (('swap', (0, 2), (), None, ()),))))\", \"D\": \"(('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('cx', (0, 2), (), None, ()),),)), ('if_else', (0, 2), (0,), (0, 1), ((('swap', (0, 2), (), None, ()),),)))\", \"stem\": \"(('ry', (1,), (), None, ()), ('measure', (1,), (0,), None, ()), ('if_else', (0, 2), (0,), (0, 0), ((('cx', (0, 2), (), None, ()),), (('swap', (0, 2), (), None, ()),))))\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

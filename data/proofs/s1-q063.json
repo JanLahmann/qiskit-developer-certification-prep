@@ -1,0 +1,33 @@
+{
+  "question": "s1-q063",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "executed Statevector(drawn circuit).probabilities_dict() -> {'11': 1.0}; option A claims {'11': 1.0} -> match=True",
+      "B": "executed Statevector(drawn circuit).probabilities_dict() -> {'11': 1.0}; option B claims {'10': 1.0} -> match=False  (that is the circuit WITHOUT the CNOT: {'10': 1.0} \u2014 with the target in |->, the CNOT kicks a phase back onto q0)",
+      "C": "executed Statevector(drawn circuit).probabilities_dict() -> {'11': 1.0}; option C claims {'01': 1.0} -> match=False  (the no-kickback result read q0-first: ['01']; the real q0 outcome is 1, the last character)",
+      "D": "executed Statevector(drawn circuit).probabilities_dict() -> {'11': 1.0}; option D claims {'01': 0.5, '10': 0.5} -> match=False  (no entanglement survives: the executed state is the product basis state ['11'])"
+    },
+    "observed": {
+      "probabilities": {
+        "11": 1.0
+      },
+      "without_cx": {
+        "10": 1.0
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 10.16,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"executed Statevector(drawn circuit).probabilities_dict() -> {'11': 1.0}; option A claims {'11': 1.0} -> match=True\", \"B\": \"executed Statevector(drawn circuit).probabilities_dict() -> {'11': 1.0}; option B claims {'10': 1.0} -> match=False  (that is the circuit WITHOUT the CNOT: {'10': 1.0} \\u2014 with the target in |->, the CNOT kicks a phase back onto q0)\", \"C\": \"executed Statevector(drawn circuit).probabilities_dict() -> {'11': 1.0}; option C claims {'01': 1.0} -> match=False  (the no-kickback result read q0-first: ['01']; the real q0 outcome is 1, the last character)\", \"D\": \"executed Statevector(drawn circuit).probabilities_dict() -> {'11': 1.0}; option D claims {'01': 0.5, '10': 0.5} -> match=False  (no entanglement survives: the executed state is the product basis state ['11'])\"}, \"observed\": {\"probabilities\": {\"11\": 1.0}, \"without_cx\": {\"10\": 1.0}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

@@ -1,0 +1,91 @@
+{
+  "id": "s1-q055",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "Which diagram does `qc.inverse()` draw?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)\nqc.inverse().draw(\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "figures": {
+    "generator": "figures/s1-q055/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s1-q055/s1-q055-A.svg",
+        "alt": "Circuit diagram on one wire labelled q: two boxed gates in a row, H then S-dagger."
+      },
+      "B": {
+        "file": "figures/s1-q055/s1-q055-B.svg",
+        "alt": "Circuit diagram on one wire labelled q: two boxed gates in a row, S then H."
+      },
+      "C": {
+        "file": "figures/s1-q055/s1-q055-C.svg",
+        "alt": "Circuit diagram on one wire labelled q: two boxed gates in a row, S-dagger then H."
+      },
+      "D": {
+        "file": "figures/s1-q055/s1-q055-D.svg",
+        "alt": "Circuit diagram on one wire labelled q: two boxed gates in a row, H then S."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`inverse()` undoes the circuit: it walks the instruction list backwards and replaces every gate by its inverse. The circuit applies H then S (matrix S·H), so its inverse is (S·H)† = H†·S† = H·S†, i.e. S† (`sdg`) is applied first and H second. H is its own inverse; S is not — its inverse is S†.",
+    "distractors": {
+      "A": "This inverts each gate but keeps the original order. An inverse must undo the LAST gate first, so the order is reversed as well.",
+      "B": "This reverses the order but treats S as self-inverse. S is a quarter turn about Z (diag(1, i)); undoing it needs S† = diag(1, −i).",
+      "D": "This is the original circuit. Only H is self-inverse; S is not, and even self-inverse gates come back in reversed order."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SGate"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q055.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\n\n# The four circuits MUST mirror data/figures/s1-q055/generate.py — the option\n# figures are mpl drawings of exactly these circuits.\nVARIANTS = {\n    \"A\": (\"h\", \"sdg\"),\n    \"B\": (\"s\", \"h\"),\n    \"C\": (\"sdg\", \"h\"),\n    \"D\": (\"h\", \"s\"),\n}\n\n\ndef circuit(names):\n    qc = QuantumCircuit(1)\n    for n in names:\n        getattr(qc, n)(0)\n    return qc\n\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)\ninv = qc.inverse()\ninv_names = tuple(i.operation.name for i in inv.data)\nundo = Operator(qc).adjoint()\n\nproven, evidence, observed = [], {}, {\"inverse_gate_list\": list(inv_names)}\nfor key, names in sorted(VARIANTS.items()):\n    v = circuit(names)\n    same_drawing = names == inv_names\n    undoes = Operator(v).equiv(undo)\n    observed[key] = {\"gates\": list(names), \"same_gate_list\": same_drawing,\n                     \"unitary_is_inverse\": undoes}\n    evidence[key] = (\n        f\"drawn circuit {'-'.join(names)}; qc.inverse() executed -> \"\n        f\"{'-'.join(inv_names)}; same gate list -> {same_drawing}; \"\n        f\"Operator equals Operator(qc).adjoint() up to phase -> {undoes}\"\n    )\n    if same_drawing and undoes:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (figure, image options): every option is an mpl render of a circuit the proof builds and compares with the executed qc.inverse() by gate list and unitary."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

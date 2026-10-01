@@ -1,0 +1,75 @@
+{
+  "id": "s3-q062",
+  "section": "s3",
+  "objectives": [
+    "s3o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "What does this code print?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter('theta')\nphi = Parameter('phi')\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\nqc.ry(theta + phi, 0)\n\nnew = qc.assign_parameters({theta: 2 * phi})\nprint(new.num_parameters, [str(g.operation.params[0]) for g in new.data])",
+  "options": [
+    {
+      "key": "A",
+      "text": "`2 ['2*phi', '3*phi']`"
+    },
+    {
+      "key": "B",
+      "text": "`0 ['2*phi', '3*phi']`"
+    },
+    {
+      "key": "C",
+      "text": "`1 ['2*phi', '3*phi']`"
+    },
+    {
+      "key": "D",
+      "text": "It raises a `TypeError`: `assign_parameters` values have to be numbers."
+    },
+    {
+      "key": "E",
+      "text": "`2 ['theta', 'theta + phi']`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "`assign_parameters` accepts a parameter EXPRESSION as a value, which substitutes rather than binds: every `theta` becomes `2*phi`. The angles become `2*phi` and `2*phi + phi`, which simplifies to `3*phi`. `theta` no longer appears anywhere, so the new circuit's parameter table holds only `phi`: one free parameter.",
+    "distractors": {
+      "A": "Stale parameter table: `theta` is removed once every use of it has been replaced. Only `phi` is left, so the count is 1, not 2.",
+      "B": "Binding assumed: a symbolic value is a substitution, not a numeric binding, so the circuit is still parameterised — by `phi`.",
+      "D": "Values may be numbers OR parameter expressions; parameter-for-parameter substitution is a documented use of `assign_parameters` and raises nothing.",
+      "E": "Substitution assumed to be ignored: the expression value is applied, so `theta` disappears from both gates and from the parameter table."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q062.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import io, contextlib\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter('theta')\nphi = Parameter('phi')\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\nqc.ry(theta + phi, 0)\n\nerr = None\nbuf = io.StringIO()\ntry:\n    new = qc.assign_parameters({theta: 2 * phi})\n    with contextlib.redirect_stdout(buf):\n        print(new.num_parameters, [str(g.operation.params[0]) for g in new.data])\nexcept Exception as exc:\n    err = f\"{type(exc).__name__}: {exc}\"\nprinted = buf.getvalue().strip()\nnames = [p.name for p in new.parameters] if err is None else None\n\nclaims = {\n    \"A\": \"2 ['2*phi', '3*phi']\",\n    \"B\": \"0 ['2*phi', '3*phi']\",\n    \"C\": \"1 ['2*phi', '3*phi']\",\n    \"E\": \"2 ['theta', 'theta + phi']\",\n}\nproven, evidence = [], {}\nfor key, val in claims.items():\n    ok = err is None and printed == val\n    if ok:\n        proven.append(key)\n    evidence[key] = f\"claim {val!r}; printed {printed!r} (free parameters {names}) -> {ok}\"\nd_ok = err is not None and err.startswith(\"TypeError\")\nevidence[\"D\"] = f\"assign_parameters with a ParameterExpression value raised: {err}; claim TypeError -> {d_ok}\"\nif d_ok:\n    proven.append(\"D\")\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {\"printed\": printed, \"parameters\": names, \"original_num_parameters\": qc.num_parameters}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s3)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: parameter-for-expression substitution via assign_parameters (expression arithmetic + parameter-table update); distinct from the numeric-binding basics in q049-q051."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

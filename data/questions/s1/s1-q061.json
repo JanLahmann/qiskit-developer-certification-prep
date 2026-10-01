@@ -1,0 +1,91 @@
+{
+  "id": "s1-q061",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which diagram does this code draw?",
+  "code": "from qiskit.circuit.library import real_amplitudes\n\nansatz = real_amplitudes(3, reps=1, entanglement=\"full\")\nansatz.draw(\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s1-q061/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s1-q061/s1-q061-A.svg",
+        "alt": "Circuit diagram on wires q0, q1, q2: an RY gate on each wire with parameters θ[0] to θ[2], then three CNOTs in the order q2→q0, q0→q1, q1→q2 (control→target), then a final RY on each wire with θ[3] to θ[5]."
+      },
+      "B": {
+        "file": "figures/s1-q061/s1-q061-B.svg",
+        "alt": "Circuit diagram on wires q0, q1, q2: an RY gate on each wire with parameters θ[0] to θ[2], then three CNOTs in the order q0→q1, q0→q2, q1→q2 (control→target), then a final RY on each wire with θ[3] to θ[5]."
+      },
+      "C": {
+        "file": "figures/s1-q061/s1-q061-C.svg",
+        "alt": "Circuit diagram on wires q0, q1, q2: an RY gate on each wire with parameters θ[0] to θ[2], then two CNOTs in the order q0→q1, q1→q2 (control→target), then a final RY on each wire with θ[3] to θ[5]."
+      },
+      "D": {
+        "file": "figures/s1-q061/s1-q061-D.svg",
+        "alt": "Circuit diagram on wires q0, q1, q2: an RY gate on each wire with parameters θ[0] to θ[2], then two CNOTs in the order q1→q2, q0→q1 (control→target), then a final RY on each wire with θ[3] to θ[5]."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`entanglement=\"full\"` entangles EVERY pair of qubits once per repetition: for 3 qubits that is CX(0→1), CX(0→2), CX(1→2), each control the lower index. With `reps=1` the block is wrapped in two `ry` rotation layers (θ[0]–θ[2] and θ[3]–θ[5]).",
+    "distractors": {
+      "A": "This is `\"circular\"`: a nearest-neighbour chain plus a wrap-around CX from the last qubit to the first. It also has three CNOTs, but q2→q0 replaces q0→q2.",
+      "C": "This is `\"linear\"`: only neighbouring pairs, two CNOTs for three qubits. `\"full\"` adds the q0→q2 pair.",
+      "D": "This is `\"reverse_linear\"`, the function's default entanglement — but the code overrides the default with `\"full\"`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.real_amplitudes",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/circuit_library"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q061.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.circuit.library import real_amplitudes\n\n# MUST mirror data/figures/s1-q061/generate.py.\nVARIANTS = {\"A\": \"circular\", \"B\": \"full\", \"C\": \"linear\", \"D\": \"reverse_linear\"}\n\n\ndef cx_pairs(qc):\n    return [tuple(qc.find_bit(q).index for q in i.qubits)\n            for i in qc.data if i.operation.name == \"cx\"]\n\n\ndef ry_count(qc):\n    return sum(1 for i in qc.data if i.operation.name == \"ry\")\n\n\nstem = real_amplitudes(3, reps=1, entanglement=\"full\")  # the stem code\nstem_pairs = cx_pairs(stem)\nproven, evidence, observed = [], {}, {\"stem_cx\": stem_pairs}\nfor key, ent in sorted(VARIANTS.items()):\n    v = real_amplitudes(3, reps=1, entanglement=ent)\n    pairs = cx_pairs(v)\n    match = pairs == stem_pairs and ry_count(v) == ry_count(stem)\n    observed[key] = pairs\n    evidence[key] = (\n        f\"drawn real_amplitudes(3, reps=1, entanglement='{ent}'): {ry_count(v)} ry, \"\n        f\"cx (control, target) = {pairs}; stem 'full' executes {stem_pairs} -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (figure, image options): n-local entanglement strategies drawn; keyed figure is the busiest (full, 20.7 KB) by design per the image-size recipe. CX lists measured on qiskit 2.5.0: full [(0,1),(0,2),(1,2)], circular [(2,0),(0,1),(1,2)], linear [(0,1),(1,2)], reverse_linear [(1,2),(0,1)]."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

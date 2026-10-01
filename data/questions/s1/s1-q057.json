@@ -1,0 +1,75 @@
+{
+  "id": "s1-q057",
+  "section": "s1",
+  "objectives": [
+    "s1o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "What does `(a @ a).simplify()` return?",
+  "code": "from qiskit.quantum_info import SparsePauliOp\n\na = SparsePauliOp([\"X\", \"Z\"])  # X + Z\nprint((a @ a).simplify())",
+  "options": [
+    {
+      "key": "A",
+      "text": "2·I − 2i·Y, since XZ and ZX add up"
+    },
+    {
+      "key": "B",
+      "text": "XX + XZ + ZX + ZZ on two qubits"
+    },
+    {
+      "key": "C",
+      "text": "I − iY + iY + I, four terms kept"
+    },
+    {
+      "key": "D",
+      "text": "It raises `TypeError` for `@`"
+    },
+    {
+      "key": "E",
+      "text": "2·I, with no Y term left"
+    }
+  ],
+  "answer": [
+    "E"
+  ],
+  "display_count": 4,
+  "explanation": {
+    "correct": "`@` is the operator (matrix) product, so (X + Z)(X + Z) = X² + XZ + ZX + Z². X² = Z² = I, while X and Z anticommute: XZ = −iY and ZX = +iY cancel. `simplify()` merges the duplicate labels (summing coefficients) and drops the zero Y term, leaving `SparsePauliOp(['I'], coeffs=[2.+0.j])`.",
+    "distractors": {
+      "A": "This treats X and Z as commuting (XZ = ZX). They anticommute, so the two cross terms carry opposite phases −i and +i and cancel.",
+      "B": "That is `a.tensor(a)` — a two-qubit operator. `@` multiplies operators on the same qubit; it is not a tensor product.",
+      "C": "These are the raw terms of `a @ a`; `simplify()` sums duplicate Pauli labels and removes terms whose coefficient is zero.",
+      "D": "`SparsePauliOp` implements `@` (operator composition, like `dot`); no exception is raised."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q057.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit.quantum_info import SparsePauliOp\n\na = SparsePauliOp([\"X\", \"Z\"])\nerr = None\ntry:\n    out = (a @ a).simplify()\nexcept Exception as e:  # option D claims this raises\n    out, err = None, f\"{type(e).__name__}: {e}\"\n\ndef same(x, y):\n    return x.num_qubits == y.num_qubits and x.equiv(y) and len(x) == len(y) and \\\n        sorted(x.paulis.to_labels()) == sorted(y.paulis.to_labels())\n\nraw = a @ a\ncand = {\n    \"A\": SparsePauliOp([\"I\", \"Y\"], coeffs=[2, -2j]),\n    \"B\": SparsePauliOp([\"XX\", \"XZ\", \"ZX\", \"ZZ\"]),\n    \"C\": SparsePauliOp([\"I\", \"Y\", \"Y\", \"I\"], coeffs=[1, -1j, 1j, 1]),\n    \"E\": SparsePauliOp([\"I\"], coeffs=[2]),\n}\nproven, evidence = [], {}\nprinted = repr(out).replace(\"\\n\", \" \") if out is not None else err\nfor k, c in cand.items():\n    m = out is not None and same(out, c)\n    evidence[k] = f\"executed (a @ a).simplify() -> {printed}; option {k} claims {repr(c).replace(chr(10), ' ')} -> match={m}\"\n    if m:\n        proven.append(k)\nevidence[\"D\"] = f\"attempted a @ a on SparsePauliOp: {'raised ' + err if err else 'no exception, returned ' + type(raw).__name__}\"\nif err:\n    proven.append(\"D\")\nevidence[\"C\"] += f\"  (before simplify(): {raw.paulis.to_labels()} with coeffs {raw.coeffs.tolist()})\"\nevidence[\"B\"] += f\"  (that is a.tensor(a), a {a.tensor(a).num_qubits}-qubit operator; a @ a has {raw.num_qubits} qubit)\"\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {\"labels\": out.paulis.to_labels() if out is not None else None,\n                           \"coeffs\": [str(c) for c in out.coeffs] if out is not None else None}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s1)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: anticommuting cross terms cancel under SparsePauliOp @ + simplify(); raw a @ a = ['I','Y','Y','I'] with coeffs [1,-i,+i,1], measured on qiskit 2.5.0."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

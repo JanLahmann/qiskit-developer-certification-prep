@@ -1,0 +1,39 @@
+{
+  "question": "s3-q070",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "claim {'cx': 2, 'barrier': 1}; level-1 output {'cx': 2, 'barrier': 1} -> True",
+      "B": "claim {'barrier': 1}; level-1 output {'cx': 2, 'barrier': 1} -> False (without the barrier level 1 gives {})",
+      "C": "claim {'cx': 2, 'barrier': 1, 'h': 2}; level-1 output {'cx': 2, 'barrier': 1} -> False",
+      "D": "claim {'rz': 4, 'cx': 2, 'sx': 2, 'barrier': 1}; level-1 output {'cx': 2, 'barrier': 1} -> False (that dict is the level-0 output: {'rz': 4, 'cx': 2, 'sx': 2, 'barrier': 1})",
+      "E": "claim {'cx': 2}; level-1 output {'cx': 2, 'barrier': 1} -> False"
+    },
+    "observed": {
+      "level1": {
+        "cx": 2,
+        "barrier": 1
+      },
+      "level0": {
+        "rz": 4,
+        "cx": 2,
+        "sx": 2,
+        "barrier": 1
+      },
+      "level1_no_barrier": {}
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 3.53,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"claim {'cx': 2, 'barrier': 1}; level-1 output {'cx': 2, 'barrier': 1} -> True\", \"B\": \"claim {'barrier': 1}; level-1 output {'cx': 2, 'barrier': 1} -> False (without the barrier level 1 gives {})\", \"C\": \"claim {'cx': 2, 'barrier': 1, 'h': 2}; level-1 output {'cx': 2, 'barrier': 1} -> False\", \"D\": \"claim {'rz': 4, 'cx': 2, 'sx': 2, 'barrier': 1}; level-1 output {'cx': 2, 'barrier': 1} -> False (that dict is the level-0 output: {'rz': 4, 'cx': 2, 'sx': 2, 'barrier': 1})\", \"E\": \"claim {'cx': 2}; level-1 output {'cx': 2, 'barrier': 1} -> False\"}, \"observed\": {\"level1\": {\"cx\": 2, \"barrier\": 1}, \"level0\": {\"rz\": 4, \"cx\": 2, \"sx\": 2, \"barrier\": 1}, \"level1_no_barrier\": {}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

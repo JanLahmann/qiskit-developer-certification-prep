@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You want a 3-qubit hardware-efficient variational ansatz whose gate set is nothing but `ry` rotations and `cx` entanglers, so that every amplitude it can prepare stays real. Which single circuit-library call builds it?",
+  "stem": "Which call builds a 3-qubit ansatz made only of `ry` rotations and `cx` entanglers?",
   "code": "from qiskit.circuit.library import (\n    efficient_su2,\n    excitation_preserving,\n    pauli_two_design,\n    quantum_volume,\n    real_amplitudes,\n    zz_feature_map,\n)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (s1/s2 official-alignment fix wave)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Circuit-library coverage gap from data/audits/official_alignment.md (task 1.2). Gate sets measured on qiskit 2.5.0."
+    "notes": "Circuit-library coverage gap from data/audits/official_alignment.md (task 1.2). Gate sets measured on qiskit 2.5.0. | realism audit 2026-10-01: stem 33->14 words; difficulty 1 confirmed; proof re-verified, answer unchanged"
   },
   "display_count": 5,
   "freshness": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

@@ -5,8 +5,8 @@
     "s4o2"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "The circuit `qc` is built with abstract gates and passed straight to a primitive bound to a real-device backend, without any transpilation. What happens when this code runs?",
+  "difficulty": 1,
+  "stem": "This circuit is run on FakeManilaV2 without ever being transpiled. What happens?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\n\nsampler = SamplerV2(mode=backend)\njob = sampler.run([qc])          # qc was never transpiled\nprint(job.result()[0].data.meas.get_counts())",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened + stem-echoed the auto-transpile distractor. | pool wave: +E (local testing mode skips the ISA check), +F (right error, blamed on the meas register)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened + stem-echoed the auto-transpile distractor. | pool wave: +E (local testing mode skips the ISA check), +F (right error, blamed on the meas register) | realism audit 2026-10-01: stem trimmed; dropped the 'abstract gates' gloss; one-step ISA fact -> 2->1; stem 28 -> 12 words; difficulty 2 -> 1"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "For `Statevector.from_label('10')` on a two-qubit system, which computational-basis amplitude is 1?",
+  "stem": "Which basis-state amplitude of `Statevector.from_label('10')` equals 1?",
   "code": "from qiskit.quantum_info import Statevector\n\nprint(Statevector.from_label('10').data)",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "length tell cleared (correct trimmed, distractor D spells out the reversed reading) | pool wave: +E single-character-label misconception for from_label"
+    "notes": "length tell cleared (correct trimmed, distractor D spells out the reversed reading) | pool wave: +E single-character-label misconception for from_label | realism audit 2026-10-01: stem 11->7 words; difficulty 1 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

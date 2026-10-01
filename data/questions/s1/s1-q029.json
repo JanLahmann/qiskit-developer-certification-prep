@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "What is the statevector after applying a Y gate to |0⟩?",
+  "stem": "What statevector results from applying a Y gate to |0⟩?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.y(0)\nprint(Statevector.from_instruction(qc))",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E Pauli-Y-vs-RY(π/2) confusion, +F sign-vs-phase error (−1 instead of i)"
+    "notes": "pool wave: +E Pauli-Y-vs-RY(π/2) confusion, +F sign-vs-phase error (−1 instead of i) | realism audit 2026-10-01: stem 11->10 words; difficulty 1 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -5,8 +5,8 @@
     "s4o1"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "In a session, what is the difference between the interactive TTL and the maximum TTL?",
+  "difficulty": 1,
+  "stem": "How does a session's interactive TTL differ from its maximum TTL?",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+hedged reversed-definition distractor (length/absolute-tell fix). | pool wave: +E (TTLs are per-job budgets), +F (max TTL excludes idle time)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+hedged reversed-definition distractor (length/absolute-tell fix). | pool wave: +E (TTLs are per-job budgets), +F (max TTL excludes idle time) | realism audit 2026-10-01: stem trimmed; one recalled definition pair -> 3->1; stem 15 -> 11 words; difficulty 3 -> 1"
   },
   "display_count": 5
 }

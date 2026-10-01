@@ -5,8 +5,8 @@
     "s3o1"
   ],
   "type": "predict-output",
-  "difficulty": 3,
-  "stem": "Circuit `a` applies X to its single qubit; circuit `b` applies identity to its single qubit. Which two-qubit state does `a.tensor(b)` prepare (bit order `q1 q0`)?",
+  "difficulty": 2,
+  "stem": "Which two-qubit state does `combined` prepare (bit order `q1 q0`)?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\na = QuantumCircuit(1)\na.x(0)      # a's qubit -> |1>\n\nb = QuantumCircuit(1)\nb.id(0)     # b's qubit -> |0>\n\ncombined = a.tensor(b)\nsv = Statevector(combined)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "answer-longest tie broken and absolute-wording tell cleared (correct option's gloss trimmed, distractor A now hedges; the predicted values are unchanged) | pool wave: +E (tensor mistaken for matrix multiplication) +F (believes tensor is Operator-only)"
+    "notes": "answer-longest tie broken and absolute-wording tell cleared (correct option's gloss trimmed, distractor A now hedges; the predicted values are unchanged) | pool wave: +E (tensor mistaken for matrix multiplication) +F (believes tensor is Operator-only) | realism audit 2026-10-01: stem trimmed; difficulty 3->2 (one convention with a twist: tensor puts the argument on the low qubits)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

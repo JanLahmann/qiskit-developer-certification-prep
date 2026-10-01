@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "After measuring qubit 0 into `cr[0]`, you want to apply X to qubit 1 only when that bit equals 1. Which snippet is valid in Qiskit 2.x and produces a conditional (`if_else`) operation?",
+  "stem": "Which Qiskit 2.x snippet applies X to qubit 1 as an `if_else` that fires only when `cr[0]` is 1?",
   "code": "# qr = QuantumRegister(2,'q'); cr = ClassicalRegister(2,'c')\n# qc has already done: qc.h(0); qc.measure(0, 0)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (== comparison instead of the condition tuple) +F (while_loop builder instead of if_test)"
+    "notes": "pool wave: +E (== comparison instead of the condition tuple) +F (while_loop builder instead of if_test) | realism audit 2026-10-01: stem trimmed (kept 'if_else' - needed to exclude the while_loop near-miss); difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "Qubit 0 is set to `|1⟩` and measured into c0. A `switch` on c0 applies X to qubit 1 in `case(0)` and identity in the DEFAULT case. Qubit 1 is then measured. What outcome (order `c1 c0`) appears on every shot?",
+  "stem": "What outcome (order `c1 c0`) appears on every shot?",
   "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(2, 'q')\ncr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.x(0)\nqc.measure(0, 0)\nwith qc.switch(cr[0]) as case:\n    with case(0):\n        qc.x(1)\n    with case(case.DEFAULT):\n        qc.id(1)\nqc.measure(1, 1)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "hedge wording rebalanced in the meta-pattern pass (hedged wording now sits with the correct option's DEFAULT-branch reasoning) | pool wave: +E (DEFAULT believed to require first position) +F (believes a switch consumes the classical bit) | orchestrator pool calibration: E/F trimmed below correct length (keeper set)"
+    "notes": "hedge wording rebalanced in the meta-pattern pass (hedged wording now sits with the correct option's DEFAULT-branch reasoning) | pool wave: +E (DEFAULT believed to require first position) +F (believes a switch consumes the classical bit) | orchestrator pool calibration: E/F trimmed below correct length (keeper set) | realism audit 2026-10-01: stem trimmed to a generic form (clears the pre-existing MEDIUM stem_echo flag); difficulty 2 confirmed (switch DEFAULT + bit order)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -5,8 +5,8 @@
     "s2o3"
   ],
   "type": "multi",
-  "difficulty": 3,
-  "stem": "Each snippet is applied to a fresh single-qubit circuit `qc = QuantumCircuit(1)`. For which TWO does `plot_bloch_multivector` place the arrow exactly on the equator of the Bloch sphere (⟨Z⟩ = 0)? (Select 2.)",
+  "difficulty": 2,
+  "stem": "For which TWO single-qubit circuits does the Bloch arrow lie on the equator (⟨Z⟩ = 0)? (Select 2.)",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\n# each option acts on a fresh:  qc = QuantumCircuit(1)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern pass: absolute wording removed from distractor E by substantive rewording | pool wave: +F rz on |0> assumed to tilt the arrow (it stays at the north pole)"
+    "notes": "meta-pattern pass: absolute wording removed from distractor E by substantive rewording | pool wave: +F rz on |0> assumed to tilt the arrow (it stays at the north pole) | realism audit 2026-10-01: stem trimmed (equator definition ⟨Z⟩ = 0 kept); difficulty 3->2 (evaluate six one/two-gate circuits)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

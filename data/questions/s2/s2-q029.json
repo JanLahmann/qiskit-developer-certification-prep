@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You have a `Statevector` `sv` and want to render it as a q-sphere figure directly from the object. Which call does that?",
+  "stem": "Which call renders the `Statevector` `sv` as a q-sphere directly from the object?",
   "code": "from qiskit.quantum_info import Statevector\n\nsv = Statevector.from_label(\"01\")",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E near-miss method name sv.plot() instead of sv.draw()"
+    "notes": "pool wave: +E near-miss method name sv.plot() instead of sv.draw() | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

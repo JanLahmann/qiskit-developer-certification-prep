@@ -84,9 +84,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure wave, task #27)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Figure question on transpiler output. All five option images are genuine pass-manager outputs (own circuit, own coupling map, seed_transpiler pinned), so the layout labels appear on every option and cannot be used as a shortcut. The proof re-runs the same five pass managers and compares the wire labels and gate sequences the drawer receives."
+    "notes": "Figure question on transpiler output. All five option images are genuine pass-manager outputs (own circuit, own coupling map, seed_transpiler pinned), so the layout labels appear on every option and cannot be used as a shortcut. The proof re-runs the same five pass managers and compares the wire labels and gate sequences the drawer receives. | realism audit 2026-10-01: stem already exam-length; difficulty 2 confirmed (level-0 trivial layout forces a SWAP)"
   },
   "freshness": {
     "verified_against": {
@@ -95,7 +95,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

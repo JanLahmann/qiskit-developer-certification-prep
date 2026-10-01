@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "According to the documented best practices, which execution mode should you use to submit a single primitive request (one small experiment)?",
+  "stem": "Per IBM's best practices, which execution mode suits one small, standalone experiment?",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — code-formatted + hedged the batch distractor (format/absolute-tell fix). Also: correct option now carries the stem vocabulary (stem-echo calibration). Also: levelled stem vocabulary across the options (stem-echo fix). | pool wave: +E (a lone request inherits a mode), +F (local testing mode is an execution mode)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — code-formatted + hedged the batch distractor (format/absolute-tell fix). Also: correct option now carries the stem vocabulary (stem-echo calibration). Also: levelled stem vocabulary across the options (stem-echo fix). | pool wave: +E (a lone request inherits a mode), +F (local testing mode is an execution mode) | realism audit 2026-10-01: stem trimmed; stem 21 -> 12 words (reworded to avoid a stem-echo of the keyed option's 'single primitive request'); difficulty 1 -> 1"
   },
   "display_count": 5
 }

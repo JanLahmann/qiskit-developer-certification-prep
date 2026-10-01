@@ -5,8 +5,8 @@
     "s3o3"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "The gates use parameter EXPRESSIONS. After binding `t = π`, what numeric angles do `rx` and `rz` receive?",
+  "difficulty": 1,
+  "stem": "What angles do `rx` and `rz` receive in `bound`?",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\nt = Parameter('t')\nqc = QuantumCircuit(1)\nqc.rx(2 * t, 0)\nqc.rz(t + np.pi / 2, 0)\n\nbound = qc.assign_parameters({t: np.pi})",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (absolute removed from distractor C; distractor D now hedges) | pool wave: +E (coefficient dropped, constant kept) +F (thinks Parameter arithmetic needs an explicit ParameterExpression)"
+    "notes": "absolute-wording tell cleared (absolute removed from distractor C; distractor D now hedges) | pool wave: +E (coefficient dropped, constant kept) +F (thinks Parameter arithmetic needs an explicit ParameterExpression) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (substitute and evaluate two expressions)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

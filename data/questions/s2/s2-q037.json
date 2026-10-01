@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "Before choosing which qubits to run on, you want the diagram of the QPU itself: a node per qubit and a line between the qubit pairs that support a two-qubit gate. Which call draws it?",
+  "stem": "Which call draws the QPU's qubit map with its two-qubit connections?",
   "code": "from qiskit.visualization import plot_gate_map, plot_histogram\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\ncounts = {\"00\": 512, \"11\": 512}",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (s1/s2 official-alignment fix wave)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "plot_gate_map coverage gap from data/audits/official_alignment.md (task 2.2). Graphviz binary absent in the pinned env: the proof stubs the leaf renderer plot_coupling_map and asserts on what the real code forwards to it."
+    "notes": "plot_gate_map coverage gap from data/audits/official_alignment.md (task 2.2). Graphviz binary absent in the pinned env: the proof stubs the leaf renderer plot_coupling_map and asserts on what the real code forwards to it. | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
   },
   "display_count": 5,
   "freshness": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

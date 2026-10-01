@@ -5,8 +5,8 @@
     "s3o2"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "This dynamic circuit measures qubit 0 and, only if that result is 1, applies X to qubit 1; then it measures qubit 1. Over many shots (bit order `c1 c0`), which outcomes appear?",
+  "difficulty": 1,
+  "stem": "Over many shots, which outcomes appear (bit order `c1 c0`)?",
   "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(2, 'q')\ncr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.if_test((cr[0], 1)):\n    qc.x(1)\nqc.measure(1, 1)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "high length tell cleared (correct option's gloss trimmed to match the other outcome options; the predicted values are unchanged) | option text de-duplicated against s3-q026 (identical outcome gloss played both roles across the bank) | pool wave: +E (condition believed to fire on c0=0) +F (right outcomes, halved probability for the conditioned branch)"
+    "notes": "high length tell cleared (correct option's gloss trimmed to match the other outcome options; the predicted values are unchanged) | option text de-duplicated against s3-q026 (identical outcome gloss played both roles across the bank) | pool wave: +E (condition believed to fire on c0=0) +F (right outcomes, halved probability for the conditioned branch) | realism audit 2026-10-01: stem trimmed (dropped prose restating the if_test); difficulty 2->1 (one-step trace of a feedforward copy)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

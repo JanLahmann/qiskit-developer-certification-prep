@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "A backend's target has basis gates {cx, rz, sx, x} on a linear coupling map (qubit i connected only to i-1 and i+1). Which circuit is ALREADY an ISA circuit for this backend — needing no further transpilation?",
+  "stem": "A 5-qubit line backend has basis {cx, rz, sx, x}. Which circuit is already an ISA circuit for it?",
   "code": null,
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "length tell cleared (correct trimmed, distractor C spells out the coupling-map violation) | pool wave: +E (decompose() mistaken for transpilation) +F (ISA check ignoring the device width)"
+    "notes": "length tell cleared (correct trimmed, distractor C spells out the coupling-map violation) | pool wave: +E (decompose() mistaken for transpilation) +F (ISA check ignoring the device width) | realism audit 2026-10-01: CORRECTNESS: stem now states the 5-qubit device size that option F's refutation (and the proof backend) depends on; stem trimmed, 'needing no further transpilation' ISA gloss removed - rated with the hint gone; difficulty 2 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

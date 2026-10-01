@@ -5,8 +5,8 @@
     "s4o1"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "The timeline below sketches how a three-job workload is scheduled on a QPU. Which execution mode does it show?",
+  "difficulty": 1,
+  "stem": "The timeline sketches how a three-job workload is scheduled on a QPU. Which execution mode does it show?",
   "code": null,
   "options": [
     {
@@ -43,12 +43,12 @@
     }
   },
   "explanation": {
-    "correct": "Two features of the picture pin the mode down. First, only the very first job queues: the whole workload enters the queue once, which is what a session and a batch have in common. Second, the QPU is dedicated for the whole active window \u2014 the gaps between jobs are held for this workload and nothing else, not even a calibration job, may run in them. Exclusive access during the active window is the defining property of session mode, and it is what makes sessions suit iterative workloads whose next input depends on the previous result.",
+    "correct": "Two features of the picture pin the mode down. First, only the very first job queues: the whole workload enters the queue once, which is what a session and a batch have in common. Second, the QPU is dedicated for the whole active window — the gaps between jobs are held for this workload and nothing else, not even a calibration job, may run in them. Exclusive access during the active window is the defining property of session mode, and it is what makes sessions suit iterative workloads whose next input depends on the previous result.",
     "distractors": {
       "A": "Job mode would draw a queue wait in front of every job. The picture has a single queue block for the whole workload, so the jobs were submitted under one context, not one at a time.",
       "B": "This describes batch mode correctly, and it is exactly what the picture rules out: a batch does not hold the QPU, so other users' jobs and calibration jobs can slot in between the batched jobs. The drawn window is closed to everyone else.",
       "D": "The window does not end at the first idle moment. The interactive timer allows a gap between consecutive jobs while the workload keeps its window; the workload is only deactivated once that timer expires with nothing ready to run.",
-      "E": "Batch mode gets its jobs scheduled together and packed closely, but it never reserves the QPU exclusively \u2014 that benefit is what distinguishes a session from a batch, and it is also why sessions cost more."
+      "E": "Batch mode gets its jobs scheduled together and packed closely, but it never reserves the QPU exclusively — that benefit is what distinguishes a session from a batch, and it is also why sessions cost more."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
@@ -65,8 +65,8 @@
   "provenance": {
     "generated": "2026-07-27",
     "model": "claude-opus (figure wave 2, task #28)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Conceptual figure item on queueing semantics (guide section 5 allows mode none for plan/queueing questions: nothing local can execute a scheduler). Every feature of the hand-drawn timeline is stated in prose on guides/execution-modes (one queue entry per workload; dedicated, exclusive active window in which no other job and no calibration job runs; interactive TTL gaps between jobs) and guides/choose-execution-mode (batch is scheduled together but not exclusive, and is cheaper). Both pages were fetched on 2026-07-27 and the diagram was drawn to match their descriptions; no wording is reproduced from them."
+    "notes": "Conceptual figure item on queueing semantics (guide section 5 allows mode none for plan/queueing questions: nothing local can execute a scheduler). Every feature of the hand-drawn timeline is stated in prose on guides/execution-modes (one queue entry per workload; dedicated, exclusive active window in which no other job and no calibration job runs; interactive TTL gaps between jobs) and guides/choose-execution-mode (batch is scheduled together but not exclusive, and is cheaper). Both pages were fetched on 2026-07-27 and the diagram was drawn to match their descriptions; no wording is reproduced from them. | realism audit 2026-10-01: stem trimmed; figure read of one defining property -> 2->1; no re-render (stem-only); stem 19 -> 18 words; difficulty 2 -> 1"
   }
 }

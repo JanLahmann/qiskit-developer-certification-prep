@@ -5,8 +5,8 @@
     "s4o2"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "A developer has a backend name as a string and writes `SamplerV2(mode=\"ibm_manila\")`, expecting the primitive to resolve it. What is the result?",
+  "difficulty": 1,
+  "stem": "A backend name string is passed as `mode`. What happens?",
   "code": "from qiskit_ibm_runtime import SamplerV2\nsampler = SamplerV2(mode=\"ibm_manila\")",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (silent local-simulator fallback), +F (TypeError from the annotation)"
+    "notes": "pool wave: +E (silent local-simulator fallback), +F (TypeError from the annotation) | realism audit 2026-10-01: stem trimmed; one recalled fact -> 2->1; stem 22 -> 10 words; difficulty 2 -> 1"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

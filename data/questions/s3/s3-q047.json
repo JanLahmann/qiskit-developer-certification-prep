@@ -6,7 +6,7 @@
   ],
   "type": "spot-bug",
   "difficulty": 1,
-  "stem": "This code raises a `CircuitError` at the `measure` call. What is the fix?",
+  "stem": "The `measure` call raises a `CircuitError`. What is the fix?",
   "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)          # 2 qubits, 0 classical bits\nqc.h(0)\nqc.cx(0, 1)\nqc.measure([0, 1], [0, 1])     # CircuitError",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor B given substance and a hedge) | pool wave: +E (blames positional-argument ambiguity) +F (register added after the measure call)"
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor B given substance and a hedge) | pool wave: +E (blames positional-argument ambiguity) +F (register added after the measure call) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

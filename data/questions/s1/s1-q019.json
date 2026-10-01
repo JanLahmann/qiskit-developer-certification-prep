@@ -7,7 +7,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "What is the expectation value of the observable O = Z⊗Z + 0.5·(X⊗X) in the state |00⟩?",
+  "stem": "What is the expectation value of O = Z⊗Z + 0.5·(X⊗X) in the state |00⟩?",
   "code": "from qiskit.quantum_info import Statevector, SparsePauliOp\n\nO = SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"XX\", 0.5)])\npsi = Statevector.from_label(\"00\")\nprint(psi.expectation_value(O))",
   "options": [
     {
@@ -58,9 +58,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (absolute removed from distractor C) | pool wave: +E Z-eigenvalue sign-convention flip (bit 0 read as −1)"
+    "notes": "absolute-wording tell cleared (absolute removed from distractor C) | pool wave: +E Z-eigenvalue sign-convention flip (bit 0 read as −1) | realism audit 2026-10-01: stem 17->15 words; difficulty 2 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -69,7 +69,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

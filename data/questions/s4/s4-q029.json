@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You partition a long list of independent circuits into several jobs and run them in batch mode. Besides shorter queuing, what practical advantage does this give over submitting everything as one giant job?",
+  "stem": "Besides shorter queuing, what does splitting independent circuits into several batch jobs offer over one giant job?",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened exclusivity distractor (length-tell fix). Also: hedge added to the correct option (hedge-heuristic calibration). | pool wave: +E (the service re-transpiles each batched job), +F (a batch merges its results)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened exclusivity distractor (length-tell fix). Also: hedge added to the correct option (hedge-heuristic calibration). | pool wave: +E (the service re-transpiles each batched job), +F (a batch merges its results) | realism audit 2026-10-01: stem trimmed; stem 33 -> 17 words; difficulty 1 -> 1"
   },
   "display_count": 4
 }

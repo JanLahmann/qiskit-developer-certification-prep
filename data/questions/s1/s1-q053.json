@@ -7,7 +7,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "Each figure below draws a single-qubit circuit built from three library gates. Which drawn circuit implements the same operation as a single `x` gate, up to global phase?",
+  "stem": "Which drawn circuit equals a single `x` gate up to global phase?",
   "code": null,
   "options": [
     {
@@ -85,9 +85,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure agent, task #28 wave 1)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Image-option item: every option is an mpl render of one of the five circuits the proof builds, and the proof scores each with Operator.equiv against XGate."
+    "notes": "Image-option item: every option is an mpl render of one of the five circuits the proof builds, and the proof scores each with Operator.equiv against XGate. | realism audit 2026-10-01: stem 28->12 words; difficulty 1 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -96,7 +96,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

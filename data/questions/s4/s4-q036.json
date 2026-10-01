@@ -5,8 +5,8 @@
     "s4o2"
   ],
   "type": "spot-bug",
-  "difficulty": 3,
-  "stem": "This 'map the problem -> optimize -> execute' workflow skips a step and fails at `run`. Which change makes it run correctly?",
+  "difficulty": 2,
+  "stem": "This workflow fails at `run`. Which change makes it run correctly?",
   "code": "backend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\n\nestimator = EstimatorV2(mode=backend)\njob = estimator.run([(qc, obs)])     # runs the abstract circuit + raw observable\nprint(job.result()[0].data.evs)",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened+stem-echoed the positional-backend distractor (length-tell fix). | pool wave: +E (SparsePauliOp(target=...)), +F (the Sampler accepts abstract circuits)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened+stem-echoed the positional-backend distractor (length-tell fix). | pool wave: +E (SparsePauliOp(target=...)), +F (the Sampler accepts abstract circuits) | realism audit 2026-10-01: stem trimmed; dropped the 'skips a step' hint; two concepts (ISA + observable layout) -> 3->2; stem 22 -> 11 words; difficulty 3 -> 2"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

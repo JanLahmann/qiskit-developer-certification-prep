@@ -85,9 +85,9 @@
   "provenance": {
     "generated": "2026-07-27",
     "model": "claude-opus (figure wave 2, task #28)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Figure question on the entanglement signature of plot_bloch_multivector (no arrow at all, ledger 2026-07-26). Figures are renders of the five variant states in figures/s1-q054/generate.py; the proof reduces each state to its per-qubit Bloch vectors, which is exactly what the drawer receives. platform_sensitive: true because the spheres are mplot3d renders."
+    "notes": "Figure question on the entanglement signature of plot_bloch_multivector (no arrow at all, ledger 2026-07-26). Figures are renders of the five variant states in figures/s1-q054/generate.py; the proof reduces each state to its per-qubit Bloch vectors, which is exactly what the drawer receives. platform_sensitive: true because the spheres are mplot3d renders. | realism audit 2026-10-01: stem kept; difficulty 2 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -96,7 +96,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

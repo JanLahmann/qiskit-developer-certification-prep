@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "The counts dictionary below is built in a scrambled order. With no extra arguments, how does `plot_histogram(counts)` arrange the bars, and what does it return?",
+  "stem": "With no extra arguments, how does `plot_histogram(counts)` order the bars, and what does it return?",
   "code": "from qiskit.visualization import plot_histogram\n\ncounts = {\"11\": 10, \"00\": 40, \"10\": 5, \"01\": 7}\nfig = plot_histogram(counts)",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern pass: correct option shortened off the top-length tie so the longest/avoid-longest heuristics both sit at chance | pool wave: +E default bitstring sort assumed descending"
+    "notes": "meta-pattern pass: correct option shortened off the top-length tie so the longest/avoid-longest heuristics both sit at chance | pool wave: +E default bitstring sort assumed descending | realism audit 2026-10-01: stem trimmed (dropped the 'scrambled order' cue); difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You are preparing a figure of a quantum circuit for a published paper: you want colored gate boxes, a clean layout, and to save it as a high-resolution PNG with `savefig`. Which `draw()` output should you use?",
+  "stem": "For a publication figure with colored gates, saved as a high-resolution PNG via `savefig`, which `draw()` output fits?",
   "code": null,
   "options": [
     {
@@ -56,9 +56,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern pass: stem-echo tell cleared (distractor C now shares the high-resolution vocabulary; correct option no longer echoes 'save') | pool wave: +E latex renderer (PIL Image, no savefig) mistaken for the publication path"
+    "notes": "meta-pattern pass: stem-echo tell cleared (distractor C now shares the high-resolution vocabulary; correct option no longer echoes 'save') | pool wave: +E latex renderer (PIL Image, no savefig) mistaken for the publication path | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed; citations re-opened (visualize-circuits, visualization API) and support key + distractors"
   },
   "display_count": 4
 }

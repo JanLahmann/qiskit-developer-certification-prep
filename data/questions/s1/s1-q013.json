@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "The `.dot` method returns the operator product A·B and tracks the resulting phase. What does this print?",
+  "stem": "What does this code print?",
   "code": "from qiskit.quantum_info import Pauli\n\nresult = Pauli('X').dot(Pauli('Y'))\nprint(result.to_label())",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E letter-retention misconception (product keeps the first operand's letter)"
+    "notes": "pool wave: +E letter-retention misconception (product keeps the first operand's letter) | realism audit 2026-10-01: stem 17->5 words; difficulty 2 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

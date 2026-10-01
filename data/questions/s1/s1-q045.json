@@ -6,7 +6,7 @@
   ],
   "type": "multi",
   "difficulty": 2,
-  "stem": "A qubit is in state |0⟩. After which of the following single operations does a computational-basis measurement STILL yield outcome 0 with probability 1? Select all that apply.",
+  "stem": "After which single gate on |0⟩ is outcome 0 still measured with probability 1? Select all that apply.",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +F √X-as-partial-flip misconception"
+    "notes": "pool wave: +F √X-as-partial-flip misconception | realism audit 2026-10-01: stem 28->18 words; difficulty 2 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

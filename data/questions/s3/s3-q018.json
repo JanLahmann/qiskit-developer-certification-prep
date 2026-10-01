@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "Three parameters are created and added to a circuit in the order `gamma`, `alpha`, `beta`. What does `[p.name for p in qc.parameters]` return?",
+  "stem": "What does this code print?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ng = Parameter('gamma'); a = Parameter('alpha'); b = Parameter('beta')\nqc = QuantumCircuit(1)\nqc.rz(g, 0)\nqc.rx(a, 0)\nqc.ry(b, 0)\n\nprint([p.name for p in qc.parameters])",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (reverse-alphabetical sort) +F (ParameterView believed non-iterable)"
+    "notes": "pool wave: +E (reverse-alphabetical sort) +F (ParameterView believed non-iterable) | realism audit 2026-10-01: stem trimmed (insertion order is visible in the code); difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

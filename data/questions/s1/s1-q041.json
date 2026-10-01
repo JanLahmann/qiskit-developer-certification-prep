@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "A Bell circuit applies H to qubit 0 then CX(0, 1). What does `probabilities_dict()` of the resulting statevector return?",
+  "stem": "What does `probabilities_dict()` return for this Bell circuit?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nprint(Statevector.from_instruction(qc).probabilities_dict())",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor C now hedges, so the correct option needs no absolute) | pool wave: +E marginal-vs-joint distribution confusion"
+    "notes": "absolute-wording tell cleared (distractor C now hedges, so the correct option needs no absolute) | pool wave: +E marginal-vs-joint distribution confusion | realism audit 2026-10-01: stem 19->8 words; difficulty 1 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

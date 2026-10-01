@@ -7,10 +7,10 @@
   "pass_line": 0.69,
   "heuristics": {
     "longest_option": {
-      "expected_accuracy": 0.228,
+      "expected_accuracy": 0.2242,
       "questions_answered": 258.0,
       "coverage": 1.0,
-      "exam_score_estimate": 0.228
+      "exam_score_estimate": 0.2242
     },
     "shortest_option": {
       "expected_accuracy": 0.228,
@@ -19,10 +19,10 @@
       "exam_score_estimate": 0.228
     },
     "avoid_longest": {
-      "expected_accuracy": 0.244,
+      "expected_accuracy": 0.2451,
       "questions_answered": 234.9,
       "coverage": 0.91,
-      "exam_score_estimate": 0.2435
+      "exam_score_estimate": 0.2445
     },
     "position_A": {
       "expected_accuracy": 0.3134,
@@ -31,10 +31,10 @@
       "exam_score_estimate": 0.296
     },
     "position_B": {
-      "expected_accuracy": 0.3224,
-      "questions_answered": 198.5,
+      "expected_accuracy": 0.3177,
+      "questions_answered": 198.3,
       "coverage": 0.769,
-      "exam_score_estimate": 0.3031
+      "exam_score_estimate": 0.2995
     },
     "position_C": {
       "expected_accuracy": 0.3248,
@@ -49,10 +49,10 @@
       "exam_score_estimate": 0.2901
     },
     "stem_keyword_overlap": {
-      "expected_accuracy": 0.235,
-      "questions_answered": 207.95,
-      "coverage": 0.806,
-      "exam_score_estimate": 0.2357
+      "expected_accuracy": 0.2292,
+      "questions_answered": 201.75,
+      "coverage": 0.782,
+      "exam_score_estimate": 0.2313
     },
     "most_hedged": {
       "expected_accuracy": 0.1783,
@@ -79,9 +79,9 @@
       "exam_score_estimate": 0.2582
     },
     "code_formatted_only": {
-      "expected_accuracy": 0.1932,
-      "questions_answered": 43.3,
-      "coverage": 0.168
+      "expected_accuracy": 0.1941,
+      "questions_answered": 43.1,
+      "coverage": 0.167
     },
     "numeric_middle": {
       "expected_accuracy": 0.3547,
@@ -154,10 +154,11 @@
     "s4": {
       "counts": {
         "A": 9,
-        "B": 9,
+        "B": 8,
         "C": 9,
         "D": 9,
-        "E": 1
+        "E": 1,
+        "F": 1
       },
       "n": 37,
       "max_share": 0.243,
@@ -462,11 +463,6 @@
           "flag": "length_tell",
           "severity": "low",
           "detail": "correct option(s) strictly longest (min correct 99 chars vs longest distractor 79, ratio 1.25) (in >=1 displayed pool variant)"
-        },
-        {
-          "flag": "stem_echo_tell",
-          "severity": "medium",
-          "detail": "correct option echoes stem vocabulary (overlap 4 vs best distractor 2) (in >=1 displayed pool variant)"
         }
       ]
     },
@@ -551,11 +547,6 @@
           "flag": "length_tell",
           "severity": "low",
           "detail": "correct option(s) strictly longest (min correct 82 chars vs longest distractor 72, ratio 1.14) (in >=1 displayed pool variant)"
-        },
-        {
-          "flag": "stem_echo_tell",
-          "severity": "medium",
-          "detail": "correct option echoes stem vocabulary (overlap 5 vs best distractor 2) (in >=1 displayed pool variant)"
         }
       ]
     },
@@ -592,18 +583,6 @@
           "flag": "length_tell",
           "severity": "low",
           "detail": "correct option(s) strictly longest (min correct 55 chars vs longest distractor 54, ratio 1.02) (in >=1 displayed pool variant)"
-        }
-      ]
-    },
-    {
-      "id": "s4-q020",
-      "type": "mcq",
-      "file": "data/questions/s4/s4-q020.json",
-      "flags": [
-        {
-          "flag": "length_tell",
-          "severity": "low",
-          "detail": "correct option(s) strictly longest (min correct 112 chars vs longest distractor 102, ratio 1.10) (in >=1 displayed pool variant)"
         }
       ]
     },

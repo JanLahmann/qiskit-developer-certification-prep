@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "Your workload is a set of independent circuits with no feedback between them. A colleague suggests always using a session 'to be safe'. According to IBM's guidance, why is batch usually the better default here?",
+  "stem": "For independent circuits with no feedback between them, why is batch usually a better default than a session?",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C + true absolute in it, lengthened session distractor (length/hedge/absolute-tell fix). Also: hedge restored to the correct option (hedge-heuristic calibration). | pool wave: +E (batch transpiles for you), +F (a session must be reopened per call)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C + true absolute in it, lengthened session distractor (length/hedge/absolute-tell fix). Also: hedge restored to the correct option (hedge-heuristic calibration). | pool wave: +E (batch transpiles for you), +F (a session must be reopened per call) | realism audit 2026-10-01: stem trimmed; stem 35 -> 18 words; difficulty 1 -> 1"
   },
   "display_count": 4
 }

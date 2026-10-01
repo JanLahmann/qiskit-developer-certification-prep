@@ -84,9 +84,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure wave, task #27)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Second histogram-conventions figure item (companion to s2-q041): the five option images are plot_histogram renderings of the five calls in figures/s2-q045/generate.py, and the proof re-renders each one and reads the bar labels and heights off the axes. The keyed image is the stem call itself, so the correct figure is an execution artifact rather than a hand-built dict."
+    "notes": "Second histogram-conventions figure item (companion to s2-q041): the five option images are plot_histogram renderings of the five calls in figures/s2-q045/generate.py, and the proof re-renders each one and reads the bar labels and heights off the axes. The keyed image is the stem call itself, so the correct figure is an execution artifact rather than a hand-built dict. | realism audit 2026-10-01: stem kept; difficulty 2 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -95,7 +95,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

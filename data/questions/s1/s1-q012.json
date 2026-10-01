@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "For `Pauli('IX')` on a two-qubit system, which qubit does the X act on, and what operator is built?",
+  "stem": "Which qubit does the X in `Pauli('IX')` act on, and what operator is built?",
   "code": "from qiskit.quantum_info import Pauli\n\nprint(Pauli('IX').to_matrix())",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E identity-elision misconception (I factor dropped, operator is 2×2)"
+    "notes": "pool wave: +E identity-elision misconception (I factor dropped, operator is 2×2) | realism audit 2026-10-01: stem 18->14 words; difficulty 1 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

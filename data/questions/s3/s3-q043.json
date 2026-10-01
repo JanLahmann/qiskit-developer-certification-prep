@@ -5,8 +5,8 @@
     "s3o4"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "A 3-qubit circuit is transpiled with `initial_layout=[2, 3, 4]` onto a 5-qubit backend. What does this argument do?",
+  "difficulty": 2,
+  "stem": "What does `initial_layout=[2, 3, 4]` do in this call?",
   "code": "from qiskit import transpile\n\nisa = transpile(qc, backend, initial_layout=[2, 3, 4], optimization_level=0)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "length tell + absolute-wording tell cleared (correct trimmed, distractor B given substance, distractor A now hedges) | pool wave: +E (layout list read physical->virtual) +F (initial_layout treated as an unordered qubit set)"
+    "notes": "length tell + absolute-wording tell cleared (correct trimmed, distractor B given substance, distractor A now hedges) | pool wave: +E (layout list read physical->virtual) +F (initial_layout treated as an unordered qubit set) | realism audit 2026-10-01: stem trimmed; difficulty 3->2 (one concept with a twist: ordered virtual->physical map, not a set)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

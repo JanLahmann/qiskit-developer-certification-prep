@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "What state results from applying a Z gate to |+⟩ = (|0⟩ + |1⟩)/√2?",
+  "stem": "What state results from applying a Z gate to |+⟩?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.h(0)   # prepare |+>\nqc.z(0)\nprint(Statevector.from_instruction(qc))",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E sign-slot confusion (Z negating the |0⟩ amplitude)"
+    "notes": "pool wave: +E sign-slot confusion (Z negating the |0⟩ amplitude) | realism audit 2026-10-01: stem 14->10 words; difficulty 1 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -5,8 +5,8 @@
     "s1o2"
   ],
   "type": "spot-bug",
-  "difficulty": 3,
-  "stem": "This code tries to read the statevector of a circuit but raises an error. What is the true cause and correct fix?",
+  "difficulty": 1,
+  "stem": "This code raises an error. What is the cause and the correct fix?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nsv = Statevector.from_instruction(qc)",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "length tell cleared; distractor A no longer hangs on an unstated shots default | pool wave: +E constructor-vs-classmethod misconception (Statevector(qc) tolerating measurement)"
+    "notes": "length tell cleared; distractor A no longer hangs on an unstated shots default | pool wave: +E constructor-vs-classmethod misconception (Statevector(qc) tolerating measurement) | realism audit 2026-10-01: stem 22->13 words; difficulty 3->1; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

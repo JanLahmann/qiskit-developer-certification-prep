@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You call `plot_bloch_multivector(state)` on this 3-qubit statevector. How many Bloch spheres are drawn, and what does the call return?",
+  "stem": "How many Bloch spheres does `plot_bloch_multivector(state)` draw here, and what does it return?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_multivector\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.x(1)\nstate = Statevector.from_instruction(qc)\nfig = plot_bloch_multivector(state)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E idle qubit assumed skipped, +F extra summary sphere for the joint state"
+    "notes": "pool wave: +E idle qubit assumed skipped, +F extra summary sphere for the joint state | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

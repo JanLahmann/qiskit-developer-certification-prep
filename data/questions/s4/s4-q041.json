@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "When does a session (or batch) actually start — that is, when does its maximum TTL timer begin counting?",
+  "stem": "When does the maximum TTL timer of a session or batch start?",
   "code": null,
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — made the correct option the shortest (shortest-option calibration). Also: de-code-formatted a distractor (format-tell fix). | pool wave: +E (submission starts the clock), +F (the interactive TTL starts it)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — made the correct option the shortest (shortest-option calibration). Also: de-code-formatted a distractor (format-tell fix). | pool wave: +E (submission starts the clock), +F (the interactive TTL starts it) | realism audit 2026-10-01: stem trimmed; stem 19 -> 12 words; difficulty 1 -> 1"
   },
   "display_count": 4
 }

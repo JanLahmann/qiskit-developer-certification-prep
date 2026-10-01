@@ -5,8 +5,8 @@
     "s1o2"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "You build a circuit and set `qc.global_phase = np.pi / 4` (no other change), then sample it many times on a simulator. How does the global phase affect the measured bitstring counts?",
+  "difficulty": 1,
+  "stem": "A circuit sets `qc.global_phase = np.pi / 4` and is then sampled. How does this change the measured counts?",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.global_phase = np.pi / 4   # multiplies the whole statevector by e^{i pi/4}\nqc.measure_all()",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "high-severity length tell + stem-echo tell cleared (correct trimmed, distractors re-voiced) | pool wave: +E global-phase-as-scale-factor misconception"
+    "notes": "high-severity length tell + stem-echo tell cleared (correct trimmed, distractors re-voiced) | pool wave: +E global-phase-as-scale-factor misconception | realism audit 2026-10-01: stem 32->19 words; difficulty 2->1; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

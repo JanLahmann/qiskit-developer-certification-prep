@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "Among the broadcasting patterns named in the *Primitive inputs and outputs* guide is one called **zip**. Which pairing of a parameter-value array with an observables array, submitted as a single Estimator PUB, is that pattern?",
+  "stem": "For a one-parameter circuit, which Estimator PUB pairing is the zip broadcasting pattern?",
   "code": null,
   "options": [
     {
@@ -31,7 +31,7 @@
     },
     {
       "key": "F",
-      "text": "Parameter values of shape `(3, 1)` with an observables array of shape `(3,)`."
+      "text": "Parameter values of shape `(2, 3)` with an observables array of shape `(3,)`."
     }
   ],
   "answer": [
@@ -44,7 +44,7 @@
       "B": "A `(1, 3)` parameter array against a `(2, 1)` observables array broadcasts to `(2, 3)` — every observable at every parameter value. That is *outer/product*.",
       "C": "Here the observables array carries one dimension more than the parameter array, which broadcasts to `(4, 2, 3)`. That is the guide's *standard nd generalization* row.",
       "D": "Shapes `(3,)` and `(4,)` disagree on their only axis and neither is 1, so nothing is zipped: the PUB is rejected with a `ValueError` about the shapes not being broadcastable.",
-      "F": "The extra trailing axis breaks the element-by-element match: `(3, 1)` against `(3,)` broadcasts into a product rather than a pairing, so this is outer/product written with a shape that looks like zip."
+      "F": "The trailing axes agree but the shapes differ: the `(3,)` observables array is stretched across the leading axis of the `(2, 3)` parameter array, so `evs` has shape `(2, 3)` — the same three observables reused in each row, not an element-by-element pairing of two equal shapes."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
@@ -57,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.primitives.containers import ObservablesArray\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.ry(theta, 0)\nest = StatevectorEstimator()\nz, x, y, zz = (SparsePauliOp(p) for p in (\"ZI\", \"XI\", \"YI\", \"ZZ\"))\n\npairings = {\n    \"A\": (np.zeros((3,)), zz),\n    \"B\": (np.zeros((1, 3)), [[z], [x]]),\n    \"C\": (np.zeros((2, 3)), [[[z], [x]], [[y], [zz]], [[z], [y]], [[x], [zz]]]),\n    \"D\": (np.zeros((3,)), [z, x, y, zz]),\n    \"E\": (np.zeros((3,)), [z, x, y]),\n    \"F\": (np.zeros((3, 1)), [z, x, y]),\n}\nflags, evidence, observed = {}, {}, {}\nfor key, (params, obs) in pairings.items():\n    par_shape = tuple(int(i) for i in np.asarray(params).shape)\n    obs_shape = tuple(int(i) for i in ObservablesArray.coerce(obs).shape)\n    try:\n        res_shape = tuple(int(i) for i in est.run([(qc, obs, params)]).result()[0].data.evs.shape)\n        err = None\n    except ValueError as exc:\n        res_shape, err = None, type(exc).__name__\n    is_zip = bool(obs_shape != () and obs_shape == par_shape and res_shape == par_shape)\n    flags[key] = is_zip\n    observed[key] = {\"params\": par_shape, \"observables\": obs_shape, \"evs\": res_shape, \"error\": err}\n    evidence[key] = (\n        f\"parameters {par_shape} with observables {obs_shape} -> evs {res_shape}\"\n        f\"{'' if err is None else ' (' + err + ': the shapes do not broadcast)'}; \"\n        f\"zip requires two equally shaped non-scalar arrays matched element by element -> match={is_zip}\"\n    )\nemit_verdict({\n    \"answer\": sorted(k for k, v in flags.items() if v),\n    \"evidence\": evidence,\n    \"observed\": observed,\n})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.primitives.containers import BindingsArray, ObservablesArray\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.ry(theta, 0)\nest = StatevectorEstimator()\nz, x, y, zz = (SparsePauliOp(p) for p in (\"ZI\", \"XI\", \"YI\", \"ZZ\"))\n\npairings = {\n    \"A\": (np.zeros((3,)), zz),\n    \"B\": (np.zeros((1, 3)), [[z], [x]]),\n    \"C\": (np.zeros((2, 3)), [[[z], [x]], [[y], [zz]], [[z], [y]], [[x], [zz]]]),\n    \"D\": (np.zeros((3,)), [z, x, y, zz]),\n    \"E\": (np.zeros((3,)), [z, x, y]),\n    \"F\": (np.zeros((2, 3)), [z, x, y]),\n}\nflags, evidence, observed = {}, {}, {}\nfor key, (params, obs) in pairings.items():\n    # parameter-value-SET shape as the primitive sees it (a trailing axis of size\n    # num_parameters is consumed), not the raw array shape\n    par_shape = tuple(int(i) for i in BindingsArray.coerce({tuple(qc.parameters): params}).shape)\n    obs_shape = tuple(int(i) for i in ObservablesArray.coerce(obs).shape)\n    try:\n        res_shape = tuple(int(i) for i in est.run([(qc, obs, params)]).result()[0].data.evs.shape)\n        err = None\n    except ValueError as exc:\n        res_shape, err = None, type(exc).__name__\n    is_zip = bool(obs_shape != () and obs_shape == par_shape and res_shape == par_shape)\n    flags[key] = is_zip\n    observed[key] = {\"params\": par_shape, \"observables\": obs_shape, \"evs\": res_shape, \"error\": err}\n    evidence[key] = (\n        f\"parameters {par_shape} with observables {obs_shape} -> evs {res_shape}\"\n        f\"{'' if err is None else ' (' + err + ': the shapes do not broadcast)'}; \"\n        f\"zip requires two equally shaped non-scalar arrays matched element by element -> match={is_zip}\"\n    )\nemit_verdict({\n    \"answer\": sorted(k for k, v in flags.items() if v),\n    \"evidence\": evidence,\n    \"observed\": observed,\n})\n"
   },
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "official-alignment gap task 4.2 (pattern NAMES). Companion to s4-q045, asked in the reverse direction. Every pairing is executed: the proof reports the coerced observables-array shape, the parameter-array shape and the resulting evs shape, and scores zip as 'two equally shaped non-scalar arrays, result keeps that shape'."
+    "notes": "official-alignment gap task 4.2 (pattern NAMES). Companion to s4-q045, asked in the reverse direction. Every pairing is executed: the proof reports the coerced observables-array shape, the parameter-array shape and the resulting evs shape, and scores zip as 'two equally shaped non-scalar arrays, result keeps that shape'. | realism audit 2026-10-01: CORRECTNESS FIX — old pool distractor F ((3, 1) params x (3,) observables) is ALSO zip on a one-parameter circuit (the trailing size-1 axis is the parameter axis -> sets (3,), evs (3,)); the proof scored the raw array shape and missed it. F now (2, 3) x (3,) -> evs (2, 3); proof now scores the coerced BindingsArray shape. Stem names the one-parameter circuit; stem 27 -> 13 words; difficulty 1 -> 1."
   },
   "display_count": 5,
   "freshness": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

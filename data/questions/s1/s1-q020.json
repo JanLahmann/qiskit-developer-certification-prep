@@ -5,8 +5,8 @@
     "s1o1"
   ],
   "type": "spot-bug",
-  "difficulty": 2,
-  "stem": "This code is meant to build the two-qubit operator that applies Pauli Z to qubit 0 and leaves qubit 1 unchanged (i.e. I ⊗ Z). It builds the wrong operator. What is the correct fix?",
+  "difficulty": 1,
+  "stem": "This code should build I ⊗ Z (Z on qubit 0) but builds the wrong operator. What is the fix?",
   "code": "from qiskit.quantum_info import Pauli\n\n# want: Z on qubit 0, identity on qubit 1\nop = Pauli('ZI')",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E adjoint-vs-reverse_qargs misconception"
+    "notes": "pool wave: +E adjoint-vs-reverse_qargs misconception | realism audit 2026-10-01: stem 35->20 words; difficulty 2->1; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

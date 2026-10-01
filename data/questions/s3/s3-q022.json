@@ -6,7 +6,7 @@
   ],
   "type": "multi",
   "difficulty": 2,
-  "stem": "A circuit is built with a `ParameterVector`. Select ALL true statements.",
+  "stem": "Select ALL true statements about this circuit.",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import ParameterVector\n\nx = ParameterVector('x', 3)\nqc = QuantumCircuit(3)\nfor i in range(3):\n    qc.ry(x[i], i)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'all three') | pool wave: +F (ParameterVector believed to auto-grow on out-of-range indexing)"
+    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'all three') | pool wave: +F (ParameterVector believed to auto-grow on out-of-range indexing) | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

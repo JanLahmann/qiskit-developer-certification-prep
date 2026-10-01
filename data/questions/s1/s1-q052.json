@@ -85,9 +85,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure agent, task #28 wave 1)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Image-option item. The five option figures are plot_state_city renders of exactly the five states the proof builds; the proof compares the drawn density matrices cell by cell. plot_state_city uses mplot3d, hence platform_sensitive."
+    "notes": "Image-option item. The five option figures are plot_state_city renders of exactly the five states the proof builds; the proof compares the drawn density matrices cell by cell. plot_state_city uses mplot3d, hence platform_sensitive. | realism audit 2026-10-01: stem kept; difficulty 2 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -96,7 +96,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

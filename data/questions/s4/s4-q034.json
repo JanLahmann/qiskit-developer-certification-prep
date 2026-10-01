@@ -5,8 +5,8 @@
     "s4o2"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "You want to run a transpiled circuit as a single standalone job (job mode) on `backend`. Which construction is correct?",
+  "difficulty": 1,
+  "stem": "Which construction runs a transpiled circuit in job mode on `backend`?",
   "code": "from qiskit_ibm_runtime import SamplerV2\n# backend is a real-device (fake) backend\nsampler = ...  # which one?",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (mode=backend.name), +F (mode=backend.target)"
+    "notes": "pool wave: +E (mode=backend.name), +F (mode=backend.target) | realism audit 2026-10-01: stem trimmed; one recalled API fact -> 2->1; stem 20 -> 11 words; difficulty 2 -> 1"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

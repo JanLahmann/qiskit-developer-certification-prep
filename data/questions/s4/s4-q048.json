@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "The diagram below shows how the Estimator pairs the observables and the parameter values of this single PUB. Which broadcasting pattern from the primitive input/output guide is it?",
+  "stem": "The diagram shows how the Estimator pairs this PUB's observables and parameter values (`circuit` has one parameter). Which broadcasting pattern is it?",
   "code": "import numpy as np\nfrom qiskit.quantum_info import SparsePauliOp\n\nobservables = [SparsePauliOp(\"Z\"), SparsePauliOp(\"X\"), SparsePauliOp(\"Y\"),\n               SparsePauliOp(\"I\"), SparsePauliOp(\"Z\")]\nvalues = np.linspace(0.0, 1.0, 5).reshape(5, 1)\n\nestimator.run([(circuit, observables, values)])",
   "options": [
     {
@@ -66,9 +66,9 @@
   "provenance": {
     "generated": "2026-07-27",
     "model": "claude-opus (figure wave 2, task #28)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Second broadcasting-diagram item (s4-q047 keys the outer/product pattern; this one keys zip and draws a different picture — paired rows instead of a row-by-column grid). The diagram is drawn from scratch with matplotlib primitives; the proof coerces the same pub, reports the shapes the primitive actually derives, runs a StatevectorEstimator on it and scores each named pattern's defining condition against the measurement."
+    "notes": "Second broadcasting-diagram item (s4-q047 keys the outer/product pattern; this one keys zip and draws a different picture — paired rows instead of a row-by-column grid). The diagram is drawn from scratch with matplotlib primitives; the proof coerces the same pub, reports the shapes the primitive actually derives, runs a StatevectorEstimator on it and scores each named pattern's defining condition against the measurement. | realism audit 2026-10-01: stem trimmed; added that `circuit` has one parameter (the (5, 1) array collapses to 5 sets only then); stays 2 (shape coercion twist); no re-render (stem-only); stem 28 -> 22 words; difficulty 2 -> 2"
   },
   "freshness": {
     "verified_against": {
@@ -77,7 +77,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

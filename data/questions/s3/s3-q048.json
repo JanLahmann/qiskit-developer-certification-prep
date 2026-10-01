@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "What is the practical benefit of building a circuit from named registers such as `QuantumRegister(3, 'data')` and `QuantumRegister(1, 'anc')` instead of the bare `QuantumCircuit(4)` form?",
+  "stem": "What is the practical benefit of named registers like `QuantumRegister(3, 'data')` over `QuantumCircuit(4)`?",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor D given substance, distractor A now hedges) | pool wave: +E (register names believed to steer the layout) +F (register names believed to survive transpilation)"
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor D given substance, distractor A now hedges) | pool wave: +E (register names believed to steer the layout) +F (register names believed to survive transpilation) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed; citations re-checked, option F re-executed (ISA circuit has one register 'q')"
   },
   "display_count": 4
 }

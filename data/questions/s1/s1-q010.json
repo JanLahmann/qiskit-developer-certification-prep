@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "In Qiskit, which two-qubit operator does `Pauli('XZ')` represent?",
+  "stem": "Which two-qubit operator does `Pauli('XZ')` represent?",
   "code": "from qiskit.quantum_info import Pauli\n\np = Pauli('XZ')\nprint(p.to_matrix())",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E phase-prefixed-label misconception (labels normalized with ±i)"
+    "notes": "pool wave: +E phase-prefixed-label misconception (labels normalized with ±i) | realism audit 2026-10-01: stem 8->6 words; difficulty 1 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

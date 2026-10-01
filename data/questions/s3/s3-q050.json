@@ -5,8 +5,8 @@
     "s3o3"
   ],
   "type": "multi",
-  "difficulty": 3,
-  "stem": "Select ALL true statements about parameterized circuits and how they interact with binding and transpilation.",
+  "difficulty": 2,
+  "stem": "Select ALL true statements about binding and transpiling parameterized circuits.",
   "code": null,
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "length tell cleared (distractor C names the stage it blames) | pool wave: +F (believes binding invalidates the layout of an ISA circuit)"
+    "notes": "length tell cleared (distractor C names the stage it blames) | pool wave: +F (believes binding invalidates the layout of an ISA circuit) | realism audit 2026-10-01: stem trimmed; difficulty 3->2 (three recalled binding facts, no tracing)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

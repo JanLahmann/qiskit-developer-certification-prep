@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "length tell + absolute-wording tell cleared (correct trimmed, absolute left in distractor B only, distractor D now hedges) | pool wave: +E (believes levels are 1-4 with an add-on) +F (blames keyword-argument order) | orchestrator pool calibration: E/F trimmed below correct length (keeper set)"
+    "notes": "length tell + absolute-wording tell cleared (correct trimmed, absolute left in distractor B only, distractor D now hedges) | pool wave: +E (believes levels are 1-4 with an add-on) +F (blames keyword-argument order) | orchestrator pool calibration: E/F trimmed below correct length (keeper set) | realism audit 2026-10-01: stem already exam-length; difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

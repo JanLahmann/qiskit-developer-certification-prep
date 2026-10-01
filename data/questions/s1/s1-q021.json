@@ -6,8 +6,8 @@
     "s1o2"
   ],
   "type": "predict-output",
-  "difficulty": 3,
-  "stem": "The two single-qubit operators below are combined with `compose` and the result is applied to |0⟩. What does this print?",
+  "difficulty": 2,
+  "stem": "What does this code print?",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator, Statevector\n\nh = QuantumCircuit(1)\nh.h(0)\ns = QuantumCircuit(1)\ns.s(0)\n\nop = Operator(h).compose(Operator(s))\nprint(np.round(Statevector.from_label('0').evolve(op).data, 4))",
   "options": [
     {
@@ -58,9 +58,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "retargeted in the s1 meta-pattern pass: the original item (Z·X = iY) duplicated q013/q014 — q014 option C states that identity verbatim as a correct option — and s1 was already heavy on Pauli-label ordering. Now tests `Operator.compose` argument order (self acts first, matrix B·A) vs `.dot`, an uncovered quantum_info manipulation point. | pool wave: +E phase-slot confusion (S phasing |0⟩ instead of |1⟩)"
+    "notes": "retargeted in the s1 meta-pattern pass: the original item (Z·X = iY) duplicated q013/q014 — q014 option C states that identity verbatim as a correct option — and s1 was already heavy on Pauli-label ordering. Now tests `Operator.compose` argument order (self acts first, matrix B·A) vs `.dot`, an uncovered quantum_info manipulation point. | pool wave: +E phase-slot confusion (S phasing |0⟩ instead of |1⟩) | realism audit 2026-10-01: stem 20->5 words; difficulty 3->2; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -69,7 +69,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

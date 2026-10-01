@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "A circuit applies `qc.cx(0, 1)` (control = qubit 0, target = qubit 1). Writing states as |q1 q0⟩, which basis-state transformation does it implement?",
+  "stem": "Writing states as |q1 q0⟩, which basis-state mapping does `qc.cx(0, 1)` implement?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\n\nqc = QuantumCircuit(2)\nqc.cx(0, 1)\nprint(Operator(qc).data.real)",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "length + stem-echo tells cleared (correct trimmed, distractor C carries the API vocabulary) | pool wave: +E symmetric/OR-like CX misconception"
+    "notes": "length + stem-echo tells cleared (correct trimmed, distractor C carries the API vocabulary) | pool wave: +E symmetric/OR-like CX misconception | realism audit 2026-10-01: stem 24->12 words; difficulty 2 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

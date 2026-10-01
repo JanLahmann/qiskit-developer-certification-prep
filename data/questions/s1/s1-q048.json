@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "A hardware-efficient ansatz is built with the Qiskit 2.x circuit-library function `efficient_su2`. What does the last line print?",
+  "stem": "What does this code print?",
   "code": "from qiskit.circuit.library import efficient_su2\n\nansatz = efficient_su2(4, reps=2)\nprint(ansatz.num_parameters)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (s1/s2 official-alignment fix wave)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Circuit-library coverage gap from data/audits/official_alignment.md (task 1.2). Parameter counts measured on qiskit 2.5.0."
+    "notes": "Circuit-library coverage gap from data/audits/official_alignment.md (task 1.2). Parameter counts measured on qiskit 2.5.0. | realism audit 2026-10-01: stem 18->5 words; difficulty 2 confirmed; proof re-verified, answer unchanged"
   },
   "display_count": 5,
   "freshness": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

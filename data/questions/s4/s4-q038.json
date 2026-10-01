@@ -6,8 +6,8 @@
     "s4o1"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "Inside `with Session(backend=backend) as session:` you want an Estimator that submits its jobs inside the session. Which construction is correct?",
+  "difficulty": 1,
+  "stem": "Which construction makes the Estimator submit its jobs inside `session`?",
   "code": "with Session(backend=backend) as session:\n    estimator = ...  # which one?",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — broke the two-way longest tie by widening the V1-idiom distractor. | pool wave: +E (session.estimator() factory), +F (mode passed inside options=)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — broke the two-way longest tie by widening the V1-idiom distractor. | pool wave: +E (session.estimator() factory), +F (mode passed inside options=) | realism audit 2026-10-01: stem trimmed; one recalled API fact -> 2->1; stem 20 -> 10 words; difficulty 2 -> 1"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

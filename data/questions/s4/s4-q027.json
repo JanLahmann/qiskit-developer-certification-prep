@@ -5,8 +5,8 @@
     "s4o1"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "A session (or batch) reaches its maximum time to live (max TTL) while some of its jobs are still running and others are still waiting in the queue. What happens?",
+  "difficulty": 1,
+  "stem": "A session or batch reaches its max TTL while some jobs are running and others queued. What happens?",
   "code": null,
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the auto-extension distractor (absolute-tell fix). | pool wave: +E (queued jobs roll into a fresh session), +F (running jobs die, queued jobs survive)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the auto-extension distractor (absolute-tell fix). | pool wave: +E (queued jobs roll into a fresh session), +F (running jobs die, queued jobs survive) | realism audit 2026-10-01: stem trimmed; one recalled fact -> 2->1; stem 30 -> 18 words; difficulty 2 -> 1"
   },
   "display_count": 5
 }

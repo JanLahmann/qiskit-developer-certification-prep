@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "A list of values is passed to `assign_parameters`. What angles do the `rx` and `rz` gates end up with?",
+  "stem": "What angles do the two gates in `bound` receive?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter('theta')\nphi = Parameter('phi')\n\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)   # added first\nqc.rz(phi, 0)     # added second\n\nbound = qc.assign_parameters([0.5, 1.5])",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (assign_parameters assumed in-place/None) +F (thinks positional binding needs a ParameterVector) | orchestrator pool calibration: E/F trimmed below correct length (keeper set)"
+    "notes": "pool wave: +E (assign_parameters assumed in-place/None) +F (thinks positional binding needs a ParameterVector) | orchestrator pool calibration: E/F trimmed below correct length (keeper set) | realism audit 2026-10-01: stem trimmed to a generic form (also clears the pre-existing MEDIUM stem_echo flag); difficulty 2 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

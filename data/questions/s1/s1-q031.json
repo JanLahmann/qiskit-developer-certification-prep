@@ -5,8 +5,8 @@
     "s1o2"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "A two-qubit circuit applies X to qubit 0 only. What does `probabilities_dict()` of the resulting statevector return?",
+  "difficulty": 1,
+  "stem": "X is applied to qubit 0 of a two-qubit circuit. What does `probabilities_dict()` return?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.x(0)\nprint(Statevector.from_instruction(qc).probabilities_dict())",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "length tell cleared (correct trimmed, distractor A names the API it misreads) | pool wave: +E probabilities_dict key-type confusion (int index vs bitstring)"
+    "notes": "length tell cleared (correct trimmed, distractor A names the API it misreads) | pool wave: +E probabilities_dict key-type confusion (int index vs bitstring) | realism audit 2026-10-01: stem 17->14 words; difficulty 2->1; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

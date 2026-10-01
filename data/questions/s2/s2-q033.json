@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "What input does each of `plot_bloch_vector` and `plot_bloch_multivector` expect?",
+  "stem": "What input do `plot_bloch_vector` and `plot_bloch_multivector` each expect?",
   "code": null,
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern pass: length tell cleared (correct option trimmed) and absolute tell cleared by hedging distractor D, leaving distractor A's absolute in place | pool wave: +E multivector misread as taking a list of Bloch vectors"
+    "notes": "meta-pattern pass: length tell cleared (correct option trimmed) and absolute tell cleared by hedging distractor D, leaving distractor A's absolute in place | pool wave: +E multivector misread as taking a list of Bloch vectors | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

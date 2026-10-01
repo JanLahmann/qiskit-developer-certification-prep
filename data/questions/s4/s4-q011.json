@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You want to compare the effect of several different error-mitigation settings on one circuit and observable. The jobs are independent, all known at the outset, and you want them to run as closely together in time as possible (to limit device drift) while still being able to inspect each job's result separately. Which execution mode does the documentation recommend?",
+  "stem": "Independent jobs compare error-mitigation settings on one circuit; all are known upfront, should run close together, and return separate results. Which mode does the documentation recommend?",
   "code": null,
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged + lengthened the session distractor (absolute-tell fix). | pool wave: +E (options are per-PUB), +F (parallel submission substitutes for batching)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged + lengthened the session distractor (absolute-tell fix). | pool wave: +E (options are per-PUB), +F (parallel submission substitutes for batching) | realism audit 2026-10-01: stem trimmed; kept 'separate results' (option E's refutation uses it); stem 59 -> 26 words; difficulty 1 -> 1"
   },
   "display_count": 5
 }

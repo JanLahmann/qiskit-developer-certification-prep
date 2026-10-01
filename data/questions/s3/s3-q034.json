@@ -5,8 +5,8 @@
     "s3o4"
   ],
   "type": "spot-bug",
-  "difficulty": 2,
-  "stem": "This code transpiles a 4-qubit circuit for a 3-qubit backend and raises a `TranspilerError`. What is the root cause?",
+  "difficulty": 1,
+  "stem": "Why does this transpilation raise a `TranspilerError`?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=3, seed=42)\nqc = QuantumCircuit(4)\nqc.h(range(4))\nqc.measure_all()\n\npm = generate_preset_pass_manager(optimization_level=1, backend=backend)\nisa = pm.run(qc)   # raises TranspilerError",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "format tell cleared (the correct option now names the backend in code formatting, like the distractors do) | stem-echo tell cleared (distractor D given the stem's own API vocabulary) | pool wave: +E (hand-pinned initial_layout believed to fix a width mismatch) +F (blames the classical bits) | orchestrator pool calibration: E/F trimmed below correct length (keeper set)"
+    "notes": "format tell cleared (the correct option now names the backend in code formatting, like the distractors do) | stem-echo tell cleared (distractor D given the stem's own API vocabulary) | pool wave: +E (hand-pinned initial_layout believed to fix a width mismatch) +F (blames the classical bits) | orchestrator pool calibration: E/F trimmed below correct length (keeper set) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (4 virtual qubits > 3 physical)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

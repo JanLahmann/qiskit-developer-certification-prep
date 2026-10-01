@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "The counts dict has four distinct bitstrings. What does `plot_histogram(counts, number_to_keep=2)` put on the x-axis?",
+  "stem": "What does `plot_histogram(counts, number_to_keep=2)` put on the x-axis?",
   "code": "from qiskit.visualization import plot_histogram\n\ncounts = {\"01\": 20, \"00\": 500, \"10\": 4, \"11\": 500}\nfig = plot_histogram(counts, number_to_keep=2)",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern pass: absolute tell inverted deliberately — absolutes removed from distractors B/D and the (factually true) 'all other outcomes' kept in the correct option | pool wave: +E 'rest' bar read as the average rather than the sum of folded counts"
+    "notes": "meta-pattern pass: absolute tell inverted deliberately — absolutes removed from distractors B/D and the (factually true) 'all other outcomes' kept in the correct option | pool wave: +E 'rest' bar read as the average rather than the sum of folded counts | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (rest-bar sum vs average twist)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

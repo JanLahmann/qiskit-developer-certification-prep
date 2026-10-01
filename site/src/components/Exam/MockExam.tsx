@@ -2,7 +2,8 @@
  * MockExam — faithful C1000-179 simulator.
  *
  * 68 questions / 90 minutes / pass at 47, sampled from the verified bank
- * stratified by official section weights (largest-remainder method), with
+ * stratified by official section weights and the official difficulty mix
+ * (40/45/15 easy/medium/hard; largest-remainder method for both), with
  * a seeded shuffle so any exam can be reproduced from its seed. Deferred
  * grading; per-section score report vs the pass line; attempt history and
  * full review mode. Everything client-side.
@@ -59,6 +60,33 @@ function allocate(sections: SectionBank[], total: number): Map<string, number> {
   return new Map(sections.map((s, i) => [s.section.id, base[i]]));
 }
 
+/**
+ * Official difficulty mix (sample-test calibration, data/audits/official_alignment):
+ * ~40% easy / 45% medium / 15% hard. Largest-remainder split of a section's quota.
+ */
+const DIFF_MIX: Array<[1 | 2 | 3, number]> = [
+  [1, 0.4],
+  [2, 0.45],
+  [3, 0.15],
+];
+
+function allocateDifficulty(want: number): Map<1 | 2 | 3, number> {
+  const exact = DIFF_MIX.map(([, share]) => want * share);
+  const base = exact.map(Math.floor);
+  let assigned = base.reduce((a, b) => a + b, 0);
+  const order = exact
+    .map((x, i) => ({i, frac: x - Math.floor(x)}))
+    .sort((a, b) => b.frac - a.frac);
+  for (const {i} of order) {
+    if (assigned >= want) {
+      break;
+    }
+    base[i] += 1;
+    assigned += 1;
+  }
+  return new Map(DIFF_MIX.map(([d], i) => [d, base[i]]));
+}
+
 function buildPaper(sections: SectionBank[], seed: number): ExamPaper {
   const rand = mulberry32(seed);
   const available = sections.reduce((a, s) => a + s.questions.length, 0);
@@ -75,12 +103,32 @@ function buildPaper(sections: SectionBank[], seed: number): ExamPaper {
   for (const s of sections) {
     const want = quota.get(s.section.id) ?? 0;
     const shuffled = seededShuffle(s.questions, rand);
-    const figs = shuffled.filter(hasFigures);
-    const figWant = Math.min(figs.length, Math.round(want * 0.2));
-    const figPicked = figs.slice(0, figWant);
-    const figSet = new Set(figPicked.map((q) => q.id));
-    const rest = shuffled.filter((q) => !figSet.has(q.id));
-    const take = [...figPicked, ...rest.slice(0, Math.max(0, want - figPicked.length))];
+    const figWant = Math.min(shuffled.filter(hasFigures).length, Math.round(want * 0.2));
+
+    // Difficulty mix first (official 40/45/15), figure reservation inside each
+    // bucket: figure items float to the front of a bucket until the section's
+    // figure quota is met. Bucket shortfalls refill from the section's
+    // remaining items in seeded order, so thin sections degrade gracefully.
+    const dQuota = allocateDifficulty(want);
+    const take: BankQuestion[] = [];
+    let figTaken = 0;
+    for (const [d] of DIFF_MIX) {
+      const bucket = shuffled.filter((q) => q.difficulty === d);
+      const figsFirst = [
+        ...bucket.filter(hasFigures).slice(0, Math.max(0, figWant - figTaken)),
+      ];
+      const figIds = new Set(figsFirst.map((q) => q.id));
+      const ordered = [...figsFirst, ...bucket.filter((q) => !figIds.has(q.id))];
+      const slice = ordered.slice(0, dQuota.get(d) ?? 0);
+      figTaken += slice.filter(hasFigures).length;
+      take.push(...slice);
+    }
+    if (take.length < want) {
+      const haveIds = new Set(take.map((q) => q.id));
+      take.push(
+        ...shuffled.filter((q) => !haveIds.has(q.id)).slice(0, want - take.length),
+      );
+    }
     picked.push(...take);
     const taken = new Set(take.map((q) => q.id));
     leftovers.push(...shuffled.filter((q) => !taken.has(q.id)));

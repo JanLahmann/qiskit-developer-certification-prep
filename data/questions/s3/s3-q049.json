@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "A 3-parameter circuit is partially bound with a dict that supplies only `q`. How many free parameters does `partial` have, and which remain?",
+  "stem": "How many free parameters does `partial` have, and which remain?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\np = Parameter('p'); q = Parameter('q'); r = Parameter('r')\nqc = QuantumCircuit(1)\nqc.rx(p, 0)\nqc.ry(q, 0)\nqc.rz(r, 0)\n\npartial = qc.assign_parameters({q: 1.0})",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (right count, wrong parameter bound) +F (believes dict keys must be name strings)"
+    "notes": "pool wave: +E (right count, wrong parameter bound) +F (believes dict keys must be name strings) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "Your workload is a single circuit. A colleague wraps it in a batch, expecting the batch to reduce its queuing time. Why does this not help?",
+  "stem": "A single circuit is wrapped in a batch to cut its queuing time. Why does this not help?",
   "code": null,
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+hedged distractors (length/stem-echo/absolute-tell fix). Also: stem-echo calibration (correct option now carries the stem vocabulary). Also: levelled stem vocabulary across the options (stem-echo fix). | pool wave: +E (a batch is itself queued), +F (batch parallelizes your transpilation)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+hedged distractors (length/stem-echo/absolute-tell fix). Also: stem-echo calibration (correct option now carries the stem vocabulary). Also: levelled stem vocabulary across the options (stem-echo fix). | pool wave: +E (a batch is itself queued), +F (batch parallelizes your transpilation) | realism audit 2026-10-01: stem trimmed; stem 26 -> 18 words; difficulty 1 -> 1"
   },
   "display_count": 5
 }

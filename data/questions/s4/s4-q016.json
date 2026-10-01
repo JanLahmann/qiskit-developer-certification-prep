@@ -5,8 +5,8 @@
     "s4o2"
   ],
   "type": "spot-bug",
-  "difficulty": 2,
-  "stem": "This code, adapted from a Qiskit V1 tutorial, fails on the line that constructs the sampler. What is the bug?",
+  "difficulty": 1,
+  "stem": "This V1-era code fails on the line that constructs the sampler. What is the bug?",
   "code": "from qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\n# isa: a circuit already transpiled for `backend`\nsampler = SamplerV2(backend=backend)\njob = sampler.run([isa])",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened+hedged run() distractor (length/absolute-tell fix). | pool wave: +E (mode moved to run()), +F (backend= wants the name string)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened+hedged run() distractor (length/absolute-tell fix). | pool wave: +E (mode moved to run()), +F (backend= wants the name string) | realism audit 2026-10-01: stem trimmed; backend= vs mode= is one recalled fact -> 2->1; stem 20 -> 15 words; difficulty 2 -> 1"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

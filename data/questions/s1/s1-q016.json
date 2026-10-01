@@ -5,8 +5,8 @@
     "s1o1"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "What matrix does `Pauli('X').tensor(Pauli('Y'))` produce?",
+  "difficulty": 1,
+  "stem": "What operator does `Pauli('X').tensor(Pauli('Y'))` produce?",
   "code": "from qiskit.quantum_info import Pauli\n\nop = Pauli('X').tensor(Pauli('Y'))\nprint(op.to_label())",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E tensor-vs-dot confusion (Kronecker product read as operator product)"
+    "notes": "pool wave: +E tensor-vs-dot confusion (Kronecker product read as operator product) | realism audit 2026-10-01: stem 5->5 words; difficulty 2->1; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

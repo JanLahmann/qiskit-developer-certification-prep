@@ -5,8 +5,8 @@
     "s2o2"
   ],
   "type": "spot-bug",
-  "difficulty": 2,
-  "stem": "After running a `SamplerV2` job, this code tries to plot the measurement results but raises `AttributeError`. Which change plots the histogram correctly?",
+  "difficulty": 1,
+  "stem": "This raises `AttributeError`. Which change plots the `SamplerV2` results correctly?",
   "code": "from qiskit.visualization import plot_histogram\n\n# result = SamplerV2(mode=backend).run([isa_qc], shots=1024).result()\ndata = result[0].data.meas      # a BitArray\nfig = plot_histogram(data)      # AttributeError",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern pass: shots made explicit (1024) in the stem code and proof so distractor D's `shots=1024` cannot be read as an unstated default | pool wave: +E counts()-vs-get_counts() near-miss, +F per-shot bitstring list passed where a counts dict belongs"
+    "notes": "meta-pattern pass: shots made explicit (1024) in the stem code and proof so distractor D's `shots=1024` cannot be read as an unstated default | pool wave: +E counts()-vs-get_counts() near-miss, +F per-shot bitstring list passed where a counts dict belongs | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one recalled fact: BitArray.get_counts())"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

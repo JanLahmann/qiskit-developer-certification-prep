@@ -5,8 +5,8 @@
     "s4o2"
   ],
   "type": "predict-output",
-  "difficulty": 3,
-  "stem": "A Bell circuit is transpiled and run with the Estimator on a noisy fake backend to measure `<ZZ>`. Ideally the Bell state gives `<ZZ> = +1`. Which best describes the value actually obtained?",
+  "difficulty": 2,
+  "stem": "Which best describes the `<ZZ>` value this Bell circuit returns on the noisy fake backend?",
   "code": "backend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)     # Bell state\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa = pm.run(qc)\nmapped = obs.apply_layout(isa.layout)\nevs = EstimatorV2(mode=backend).run([(isa, mapped)]).result()[0].data.evs\nprint(evs)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+stem-echoed the noise-free distractor (length-tell fix). Also: stem-echo calibration. | pool wave: +E (mitigation pushes <ZZ> above +1), +F (noise halves the correlation)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+stem-echoed the noise-free distractor (length-tell fix). Also: stem-echo calibration. | pool wave: +E (mitigation pushes <ZZ> above +1), +F (noise halves the correlation) | realism audit 2026-10-01: stem trimmed; removed the 'ideally +1' gloss — rated with it gone; ideal value + noise = two steps -> 3->2; stem 33 -> 15 words; difficulty 3 -> 2"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

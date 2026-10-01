@@ -5,8 +5,8 @@
     "s2o3"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "You prepare the Bell state (|00> + |11>)/√2 and call `plot_bloch_multivector(state)`. What do the two Bloch spheres show?",
+  "difficulty": 2,
+  "stem": "For this Bell state, what do the two spheres of `plot_bloch_multivector(state)` show?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nstate = Statevector.from_instruction(qc)",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E entanglement read as classical anti-correlation (opposite poles)"
+    "notes": "pool wave: +E entanglement read as classical anti-correlation (opposite poles) | realism audit 2026-10-01: stem trimmed (ket formula dropped, 'Bell state' kept); difficulty 3->2 (entanglement -> mixed reduced state, a standard pairing)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

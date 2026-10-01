@@ -5,8 +5,8 @@
     "s4o1"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "You plan an iterative workload that uses Probabilistic Error Cancellation (PEC), where a learned noise model should stay valid across many jobs. Why is a session particularly suited to this, compared with batch or job mode?",
+  "difficulty": 2,
+  "stem": "Why does an iterative PEC workload that reuses one learned noise model suit a session better than batch or job mode?",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C, lengthened+hedged distractors (length/hedge/absolute-tell fix). | pool wave: +E (the session caches the noise model), +F (only sessions may run PEC learning)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C, lengthened+hedged distractors (length/hedge/absolute-tell fix). | pool wave: +E (the session caches the noise model), +F (only sessions may run PEC learning) | realism audit 2026-10-01: stem trimmed; one documented rationale -> 3->2; stem 36 -> 21 words; difficulty 3 -> 2"
   },
   "display_count": 5
 }

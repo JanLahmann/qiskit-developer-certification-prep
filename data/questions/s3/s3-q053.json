@@ -5,8 +5,8 @@
     "s3o2"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "Both qubits 0 and 1 are set to `|1⟩` and measured into the 2-bit register `c`. An `if_test` guarded by `expr.equal(c, 3)` flips qubit 2, which is read into register `o`. What value does `o` hold?",
+  "difficulty": 2,
+  "stem": "What value does register `o` hold?",
   "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.circuit.classical import expr\n\nqr = QuantumRegister(3, 'q')\nc = ClassicalRegister(2, 'c')\no = ClassicalRegister(1, 'o')\nqc = QuantumCircuit(qr, c, o)\nqc.x(0); qc.x(1)\nqc.measure(0, 0); qc.measure(1, 1)\nwith qc.if_test(expr.equal(c, 3)):\n    qc.x(2)\nqc.measure(2, o[0])",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'always') | pool wave: +E (believes expr operands must be lifted manually)"
+    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'always') | pool wave: +E (believes expr operands must be lifted manually) | realism audit 2026-10-01: stem trimmed; difficulty 3->2 (register-valued expr condition, 11 = 3)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -5,8 +5,8 @@
     "s2o3"
   ],
   "type": "multi",
-  "difficulty": 3,
-  "stem": "On a q-sphere, a node (marker) is drawn at every computational basis state whose amplitude is nonzero. For the state below, which basis states appear as nodes? (Select 2.)",
+  "difficulty": 2,
+  "stem": "Which basis states appear as nodes on this state's q-sphere? (Select 2.)",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_state_qsphere\n\nqc = QuantumCircuit(3)\nqc.h(1)\nqc.x(2)\nstate = Statevector.from_instruction(qc)\nfig = plot_state_qsphere(state)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "official-alignment fix wave 2026-07-26: widened from 2 to 3 qubits so the option set can hold a distractor pool. The 2-qubit version listed ALL four basis states, so no fifth option could be a basis state (REVIEW_LEDGER: 'whole-basis questions cannot be pooled'); on 3 qubits six of the eight basis states are offered, every option stays a legal basis state, and display_count 5 rotates 3 of the 4 distractors."
+    "notes": "official-alignment fix wave 2026-07-26: widened from 2 to 3 qubits so the option set can hold a distractor pool. The 2-qubit version listed ALL four basis states, so no fifth option could be a basis state (REVIEW_LEDGER: 'whole-basis questions cannot be pooled'); on 3 qubits six of the eight basis states are offered, every option stays a legal basis state, and display_count 5 rotates 3 of the 4 distractors. | realism audit 2026-10-01: stem trimmed (dropped the 'node at every nonzero amplitude' gloss, which slightly raises difficulty); difficulty 3->2 even with the gloss gone (state + endianness: two steps)"
   },
   "display_count": 5,
   "freshness": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

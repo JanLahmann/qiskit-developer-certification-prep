@@ -5,8 +5,8 @@
     "s1o2"
   ],
   "type": "predict-output",
-  "difficulty": 3,
-  "stem": "What is the statevector after applying `rz(π/2)` to |0⟩? (Qiskit defines RZ(θ) = diag(e^{−iθ/2}, e^{iθ/2}).)",
+  "difficulty": 2,
+  "stem": "What statevector results from applying `rz(π/2)` to |0⟩?",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.rz(np.pi / 2, 0)\nprint(Statevector.from_instruction(qc))",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor D rewritten without an absolute) | pool wave: +E RZ full-angle-vs-half-angle misconception"
+    "notes": "absolute-wording tell cleared (distractor D rewritten without an absolute) | pool wave: +E RZ full-angle-vs-half-angle misconception | realism audit 2026-10-01: stem 15->8 words; difficulty 3->2; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

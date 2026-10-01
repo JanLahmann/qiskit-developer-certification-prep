@@ -6,8 +6,8 @@
     "s4o2"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "You have opened a batch with `batch = Batch(backend=backend)` and want to create a SamplerV2 that submits its jobs inside that batch. Which construction is correct?",
+  "difficulty": 1,
+  "stem": "Which construction makes the sampler submit its jobs inside `batch`?",
   "code": "from qiskit_ibm_runtime import SamplerV2, Batch\n\nbatch = Batch(backend=backend)\nsampler = ...  # which one?",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (backend= kwarg with a Batch), +F (mode=batch.backend() returns a name string)"
+    "notes": "pool wave: +E (backend= kwarg with a Batch), +F (mode=batch.backend() returns a name string) | realism audit 2026-10-01: stem trimmed; single API recall -> 2->1; stem 26 -> 10 words; difficulty 2 -> 1"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

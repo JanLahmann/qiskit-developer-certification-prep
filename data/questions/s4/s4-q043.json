@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You have two transpiled ISA circuits `isa1` and `isa2` and want to run both in a single Sampler job on `backend`. Which call is correct?",
+  "stem": "Which call runs both `isa1` and `isa2` in one Sampler job?",
   "code": "sampler = SamplerV2(mode=backend)\njob = ...  # run both isa1 and isa2 in one job",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (chaining run on the job), +F (a per-PUB shots list)"
+    "notes": "pool wave: +E (chaining run on the job), +F (a per-PUB shots list) | realism audit 2026-10-01: stem trimmed; stem 25 -> 11 words; difficulty 1 -> 1"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

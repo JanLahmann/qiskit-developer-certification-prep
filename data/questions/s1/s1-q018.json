@@ -5,7 +5,7 @@
     "s1o1"
   ],
   "type": "predict-output",
-  "difficulty": 2,
+  "difficulty": 1,
   "stem": "What does this code print?",
   "code": "from qiskit.quantum_info import SparsePauliOp\n\nop = SparsePauliOp.from_list([(\"Z\", 1), (\"Z\", 2), (\"X\", 1)])\nprint(op.simplify())",
   "options": [
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor D now hedges, so the correct option needs no absolute) | pool wave: +E duplicate-averaging misconception, +F small-term-truncation misconception"
+    "notes": "absolute-wording tell cleared (distractor D now hedges, so the correct option needs no absolute) | pool wave: +E duplicate-averaging misconception, +F small-term-truncation misconception | realism audit 2026-10-01: stem kept; difficulty 2->1; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You are running a variational algorithm: each iteration submits one Estimator job whose circuit parameters are chosen by a classical optimizer from the previous iteration's expectation value. You want to avoid re-queuing between iterations and keep the QPU responsive to the tight classical-quantum feedback loop. Which execution mode is the best fit?",
+  "stem": "Each iteration of a variational algorithm sets its parameters from the previous Estimator result. Which execution mode avoids re-queuing between iterations?",
   "code": null,
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the job-mode distractor (absolute-tell fix). | pool wave: +E (batch keeps the QPU allocated), +F (fair-share priority accrues to repeat submitters)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the job-mode distractor (absolute-tell fix). | pool wave: +E (batch keeps the QPU allocated), +F (fair-share priority accrues to repeat submitters) | realism audit 2026-10-01: stem trimmed; stem 52 -> 21 words; difficulty 1 -> 1"
   },
   "display_count": 5
 }

@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "When you construct `QiskitRuntimeService()` without specifying a `channel`, which channel is used by default?",
+  "stem": "With no `channel` argument, which channel does `QiskitRuntimeService()` use?",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — gave every channel option a descriptor so the correct one is no longer the longest. | pool wave: +E (channel has no default), +F (bare constructor falls back to the local channel)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — gave every channel option a descriptor so the correct one is no longer the longest. | pool wave: +E (channel has no default), +F (bare constructor falls back to the local channel) | realism audit 2026-10-01: stem trimmed; stem 14 -> 9 words; difficulty 1 -> 1"
   },
   "display_count": 4
 }

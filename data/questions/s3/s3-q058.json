@@ -5,7 +5,7 @@
     "s3o2"
   ],
   "type": "predict-output",
-  "difficulty": 2,
+  "difficulty": 1,
   "stem": "Which figure is the `mpl` rendering produced by this code?",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0)\nwith qc.for_loop(range(3)):\n    qc.rx(np.pi / 4, 1)\n    qc.cx(0, 1)\n\nqc.draw(output=\"mpl\")",
   "options": [
@@ -84,9 +84,9 @@
   "provenance": {
     "generated": "2026-07-27",
     "model": "claude-opus (figure wave 2, task #28)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Dynamic-circuit figure question (for_loop). Figures are mpl renders of the five variant circuits in figures/s3-q058/generate.py; the proof builds the same five circuits and compares the top-level instruction list, the loop box label (the stored index set) and the nested body."
+    "notes": "Dynamic-circuit figure question (for_loop). Figures are mpl renders of the five variant circuits in figures/s3-q058/generate.py; the proof builds the same five circuits and compares the top-level instruction list, the loop box label (the stored index set) and the nested body. | realism audit 2026-10-01: stem already exam-length; difficulty 2->1 (one-step read of the for_loop box contents/order)"
   },
   "freshness": {
     "verified_against": {
@@ -95,7 +95,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

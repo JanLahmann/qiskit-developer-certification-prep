@@ -1768,3 +1768,132 @@ Image-size calibration:
   variant deviation to 33.5% with the misconceptions untouched.
 - Answer keys for the wave: A x1, B x2, C x3, D x1, E x1; difficulty 2 across all
   eight (figure items are read-the-picture items, so level 2 is the honest tag).
+
+## Realism audit R1 — s1 (2026-10-01, qiskit 2.5.0)
+
+- All 44 s1 questions are executed (`verification.mode: "script"`); every proof
+  re-ran PROVEN with the stored key — no correctness fixes needed.
+- **Stem trims that removed in-stem API definitions raise honest difficulty:**
+  s1-q013 (`.dot` = A·B hint), s1-q017 (definition of "commute"), s1-q026 (RZ
+  matrix convention), s1-q032 (control/target spelled out) no longer hand the
+  candidate the tested fact. These were rated with the hint gone; a later wave
+  must not re-add such glosses without re-rating down.
+- **Stem trims are anti-tell neutral here:** median 17 -> 10 words, the s1
+  meta-audit stayed at the same 9 low length flags, 0 blockers/warnings;
+  `stem_keyword_overlap` 20.1 % (below chance). Generic stems ("What does this
+  code print?") cannot create stem-echo tells.
+- Honest re-rating of s1 lands far easier than the bank target (24/19/1): the
+  section is dominated by one-fact items (Pauli label endianness ×6, single-gate
+  statevectors ×8). Hard items have to come from R2 adds (interacting concepts:
+  compose+endianness, equiv+global phase), not from inflating ratings.
+
+## Realism audit R1 — s2 (2026-10-01, qiskit 2.5.0)
+
+- 36/37 s2 questions are executed; all re-ran PROVEN with the stored key. The one
+  conceptual item (s2-q018, publication figure -> `output="mpl"`) was re-checked
+  against both citations (guides/visualize-circuits: `mpl` -> `matplotlib.Figure`,
+  `latex` -> `PIL.Image`, text is the default, `style` is mpl-only;
+  api/qiskit/visualization: `savefig` on the returned Figure) plus the
+  `QuantumCircuit.draw` API (`latex_source` -> `str`). No correctness fixes.
+- **Stem glosses removed, rated with the hint gone:** s2-q012 (q_0-on-top default),
+  s2-q031 ("node at every nonzero amplitude"), s2-q034 ("`plot_bloch_vector` treats
+  its argument as a raw [x, y, z]"), s2-q039 ("sampled straight from the
+  statevector"). Kept deliberately: s2-q035 equator definition ⟨Z⟩ = 0 (defines the
+  term, not the tested gates), s2-q032 equal-size/different-color detail (options
+  depend on it), s2-q038 "`isa` is transpiled for `backend`" (option B uses `isa`).
+- **Stem-echo trap on spot-bug trims:** trimming s2-q036 to "should plot the
+  physical qubits the transpiled circuit occupies" raised `stem_echo_tell` to
+  MEDIUM (key D overlap 4 vs 2: `plot`, `circuit` …). Fixed by a stem that names
+  the symptom without the API's own vocabulary ("raises instead of drawing which
+  device qubits are in use"). Short stems that paraphrase the keyed option's
+  nouns are the risk; generic symptom stems are safe.
+- Honest re-rating: 12/20/5 -> 22/15/0 (one 1->2: s2-q041 needs entanglement +
+  endianness of `x(2)`). Like s1, s2 has no genuinely 3-level item left; hard
+  items must come from R2 adds. Stem median 22 -> 12 words, max 18; meta-audit
+  unchanged at 8 low length flags, 0 blockers/warnings.
+
+## Realism audit R1 — s3 (2026-10-01, qiskit 2.5.0)
+
+- 44/49 s3 questions are executed; all re-ran PROVEN with the stored keys. The five
+  conceptual items were re-checked against their citations: s3-q027
+  (classical-feedforward-and-control-flow: mid-circuit measurement + in-circuit
+  classical logic = dynamic circuit), s3-q036 (set-optimization: level 0 = no
+  optimization but still TrivialLayout + SabreSwap routing; higher levels "do not
+  always make a difference"; D keyed to the 2.5 library default 2 per the earlier
+  docs-drift entry), s3-q038 (transpiler-stages: routing inserts SWAPs, layout only
+  selects qubits), s3-q044 (transpile: "circuits must adhere to the backend's ISA"),
+  s3-q048 (construct-circuits: registers can be named and combined; option F
+  re-executed — an ISA circuit from `data`/`anc` registers has one register `q`).
+  construct-circuits supports q048 only weakly (it shows naming, not "readability");
+  the claim is uncontroversial, but a future wave could add a stronger citation.
+- **Correctness fix (self-containedness), s3-q033:** distractor F ("6-qubit circuit
+  … on adjacent qubits") was refuted by "6 virtual qubits cannot map onto 5
+  physical ones", but the stem never stated the device size (the proof uses a
+  5-qubit line). Stem now says "A 5-qubit line backend". Key, options and proof
+  unchanged. Rule: when a distractor's refutation depends on a target property
+  (qubit count, basis, connectivity), the stem must state it — trimming must not
+  drop it.
+- **Glosses removed, rated with the hint gone:** s3-q015 (in-stem `width()`
+  definition that decided options B/E), s3-q026 (prose spelling out the if/else
+  branches of `if_test((cr[0], 0)) as else_`), s3-q027 (parenthetical definition
+  of a dynamic circuit, which also echoed the key), s3-q028 ("applying X three
+  times"), s3-q033 ("needing no further transpilation" = ISA definition). Kept
+  deliberately: s3-q024 "`if_else`" (excludes the `while_loop` near-miss), s3-q037
+  basis set (scenario data, not a hint).
+- **Generic stems cleared two PRE-EXISTING MEDIUM stem_echo flags** (s3-q017,
+  s3-q052): both had descriptive stems re-using the keyed option's vocabulary
+  ("list … alphabetical order", "DEFAULT … every shot"); "What angles do the two
+  gates in `bound` receive?" / "What outcome (order `c1 c0`) appears on every shot?"
+  remove the echo. stem_keyword_overlap 0.242 -> 0.221; 9 low length flags
+  unchanged, 0 blockers/warnings.
+- Honest re-rating 13/28/8 -> 30/18/1 (2->1 ×16, 3->2 ×6, 3->1 ×1: s3-q051, a
+  reused Parameter is one parameter). Only s3-q026 stays at 3. Stem median 22 -> 10
+  words, max 41 -> 19. As in s1/s2, hard items must come from R2 adds.
+
+## Realism audit R1 — s4 (2026-10-01, qiskit 2.5.0 / runtime 0.48.0)
+
+- 19/41 s4 questions are executed; all re-ran PROVEN. The 22 conceptual items were
+  re-checked against freshly fetched guides/execution-modes, choose-execution-mode,
+  run-jobs-session, run-jobs-batch and initialize-account; all supported except
+  s4-q020 (below). s4-q030 gained guides/save-credentials (initialize-account only
+  links to `save_account`, it never shows the call).
+- **Correctness fix, s4-q020 (key B -> F): `mode=backend` inside an open
+  `Session`/`Batch` does NOT force job mode any more.** Runtime release notes 0.34.0:
+  passing a backend as the mode while a session context manager is open now runs the
+  job INSIDE that session/batch; a backend different from the session's raises.
+  Source (0.48, `base_primitive.get_mode_service_backend`): for an `IBMBackend` with
+  `get_cm_session()` open it logs a warning and returns the session as the mode, or
+  raises `ValueError("The backend passed in to the primitive is different from the
+  session backend…")`. A plain `BackendV2` (every fake backend) still goes to job mode
+  via `QiskitRuntimeLocalService` — so this is NOT locally provable with fake
+  backends and the stem must say "real IBM QPU". The run-jobs-batch Caution ("If you
+  set `backend=backend` in a primitive, the program is run in job mode, even if it's
+  inside a batch or session context") is about the deprecated `backend=` KEYWORD,
+  not `mode=backend` — never cite it for `mode=`. Rated 3 (subtle, doc-misleading).
+- **Correctness fix, s4-q046 (pool distractor F): a `(3, 1)` value array on a
+  ONE-parameter circuit is three parameter SETS, shape `(3,)`** — a trailing axis of
+  size `num_parameters` is consumed (`BindingsArray.coerce`: `(3, 1)` -> `(3,)`,
+  `(5, 1)` -> `(5,)`, but `(1, 6)` -> `(1, 6)`, `(1, 4)` -> `(1, 4)`). So
+  "`(3, 1)` params x `(3,)` observables" is ZIP (evs `(3,)`), not a product; the
+  stored proof scored the RAW array shape and missed the second correct answer
+  (its own evidence printed `evs (3,)`). F is now `(2, 3)` x `(3,)` -> `(2, 3)`; the
+  proof scores the coerced `BindingsArray` shape. **This corrects the 2026-07-26
+  entry above** ("`(3, 1)` x `(3,)` -> `(3, 3)`" is false for a one-parameter
+  circuit). `data/study/s4.json` repeats the false claim in its s4-q046 fact
+  ("`(3, 1)` against `(3,)` is a product") — outside the audit's write scope,
+  flagged to the orchestrator. Rule: broadcasting options that quote shapes must
+  avoid a trailing size-1 parameter axis, or say "parameter-value-set shape".
+- Self-containedness: s4-q047/q048 stems now state that `circuit` has one parameter
+  (the value-array coercion depends on it; the figures' shape captions already
+  agreed). Stem-only edits, no re-render.
+- **Glosses removed, rated with the hint gone:** s4-q018 ("pads it to the device's
+  qubit count"), s4-q044 ("Ideally the Bell state gives +1"), s4-q036 ("skips a
+  step"), s4-q012 ("built with abstract gates"). Kept deliberately: s4-q026 device
+  size + line topology (option A's refutation), s4-q011 "return separate results"
+  (option E's refutation).
+- **Stem-echo trap hit once:** "Which execution mode do the best practices recommend
+  for a single primitive request?" raised a NEW MEDIUM `stem_echo_tell` on s4-q035
+  (key repeats "single primitive request"); reworded to "one small, standalone
+  experiment". stem_keyword_overlap 24.7 % -> 21.6 %; 7 low length flags (was 8:
+  s4-q020's keeper flag vanished with the re-key), 0 blockers/warnings.
+- Honest re-rating 13/22/6 -> 29/11/1. Stem median 26 -> 14 words, max 59 -> 26.

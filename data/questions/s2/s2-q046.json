@@ -84,9 +84,9 @@
   "provenance": {
     "generated": "2026-07-27",
     "model": "claude-opus (figure wave 2, task #28)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Second q-sphere item, code-to-image direction (s2-q043 runs image-to-code). The five options differ in marker position, size and count so the item survives greyscale, but the phase wheel is drawn and phase is colour-coded, hence color_essential: true. The proof reduces each state to the markers the drawer places."
+    "notes": "Second q-sphere item, code-to-image direction (s2-q043 runs image-to-code). The five options differ in marker position, size and count so the item survives greyscale, but the phase wheel is drawn and phase is colour-coded, hence color_essential: true. The proof reduces each state to the markers the drawer places. | realism audit 2026-10-01: stem kept; difficulty 2 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -95,7 +95,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

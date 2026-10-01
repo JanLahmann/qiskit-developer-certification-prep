@@ -5,8 +5,8 @@
     "s2o1"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "In the default text drawing of this circuit, qubit `q_0` is on the top wire. What does passing `reverse_bits=True` to `draw()` change?",
+  "difficulty": 1,
+  "stem": "What does passing `reverse_bits=True` to `draw()` change?",
   "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.x(0)\n\nprint(qc.draw(\"text\", reverse_bits=True))",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern pass: format tell cleared (distractor B now code-formatted) and absolute tell cleared (distractor B hedges, so distractor C keeps its absolute) | pool wave: +E reverse_bits confused with reverse_ops (time order mirrored)"
+    "notes": "meta-pattern pass: format tell cleared (distractor B now code-formatted) and absolute tell cleared (distractor B hedges, so distractor C keeps its absolute) | pool wave: +E reverse_bits confused with reverse_ops (time order mirrored) | realism audit 2026-10-01: stem trimmed (dropped the q_0-on-top gloss, which hinted the answer); difficulty 2->1 even without it (one recalled fact)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

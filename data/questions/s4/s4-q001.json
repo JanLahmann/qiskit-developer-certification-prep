@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "A researcher needs to run 30 circuits that are fully independent of each other (no circuit depends on another's results) on a busy IBM Quantum device, and wants to minimize total time spent waiting in the queue. Which execution mode fits best?",
+  "stem": "You must run 30 independent circuits on a busy QPU with minimal total queue waiting. Which execution mode fits best?",
   "code": null,
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude (orchestrator seed)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | distractor pool pilot: +E (session max_time misuse), display_count=4 | pool wave: +F (nesting Batch inside Session to 'get both')"
+    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | distractor pool pilot: +E (session max_time misuse), display_count=4 | pool wave: +F (nesting Batch inside Session to 'get both') | realism audit 2026-10-01: stem trimmed; stem 42 -> 20 words; difficulty 1 -> 1"
   },
   "display_count": 4
 }

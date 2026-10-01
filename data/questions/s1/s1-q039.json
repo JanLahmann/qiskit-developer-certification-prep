@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "A qubit starts in |0⟩ and an RY(π/3) rotation is applied. What is the probability of measuring outcome 1?",
+  "stem": "RY(π/3) is applied to |0⟩. What is the probability of measuring 1?",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.ry(np.pi / 3, 0)\nprint(Statevector.from_instruction(qc).probabilities())",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (correct option now carries the absolute) | pool wave: +E amplitude-vs-probability error at the full angle"
+    "notes": "absolute-wording tell cleared (correct option now carries the absolute) | pool wave: +E amplitude-vs-probability error at the full angle | realism audit 2026-10-01: stem 19->12 words; difficulty 2 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

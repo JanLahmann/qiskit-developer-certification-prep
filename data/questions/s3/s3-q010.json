@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "The circuit below flips only qubit 0 of a 3-qubit register and then measures every qubit with `measure_all()`. Running it on the default `AerSimulator`, which single bitstring is returned for every shot?",
+  "stem": "Run on `AerSimulator`, which bitstring does this circuit return on every shot?",
   "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.measure_all()",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (measure_all confused with measure_active -> 1-bit key)"
+    "notes": "pool wave: +E (measure_all confused with measure_active -> 1-bit key) | realism audit 2026-10-01: stem trimmed (dropped prose restating the code); difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

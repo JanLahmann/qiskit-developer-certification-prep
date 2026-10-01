@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "Starting from |00>, a three-gate sequence prepares a two-qubit product state whose `plot_bloch_multivector` rendering is shown below. Which sequence prepared it?",
+  "stem": "Starting from |00⟩, which sequence prepares the product state in this `plot_bloch_multivector` figure?",
   "code": null,
   "options": [
     {
@@ -67,9 +67,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure agent, task #28 wave 1)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Stem-figure item: the Bloch drawing is the question, the options are candidate gate sequences. figures/s1-q051/generate.py asserts that the rendered state has exactly the Bloch vectors the proof uses as TARGET."
+    "notes": "Stem-figure item: the Bloch drawing is the question, the options are candidate gate sequences. figures/s1-q051/generate.py asserts that the rendered state has exactly the Bloch vectors the proof uses as TARGET. | realism audit 2026-10-01: stem 21->13 words; difficulty 2 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -78,7 +78,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

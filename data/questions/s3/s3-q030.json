@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You build `pm = generate_preset_pass_manager(optimization_level=2, backend=backend)`, which returns a `StagedPassManager`. What are its stages, in execution order?",
+  "stem": "What does `print(pm.stages)` show?",
   "code": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n\npm = generate_preset_pass_manager(optimization_level=2, backend=backend)\nprint(pm.stages)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "wording rebalanced in the meta-pattern pass (correct option now carries the true 'all six'/'by default', distractor A names what it drops) | pool wave: +E (scheduling believed conditional) +F (translation believed to run before layout/routing) | orchestrator pool calibration: E/F trimmed below correct length (keeper set)"
+    "notes": "wording rebalanced in the meta-pattern pass (correct option now carries the true 'all six'/'by default', distractor A names what it drops) | pool wave: +E (scheduling believed conditional) +F (translation believed to run before layout/routing) | orchestrator pool calibration: E/F trimmed below correct length (keeper set) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

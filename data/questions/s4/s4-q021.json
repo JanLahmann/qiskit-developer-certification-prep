@@ -5,8 +5,8 @@
     "s4o2"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "A `SamplerV2` is constructed with no mode and is not inside any session or batch context, then `run` is called. What is the result?",
+  "difficulty": 1,
+  "stem": "A `SamplerV2` is created with no mode, outside any session or batch. What happens?",
   "code": "from qiskit_ibm_runtime import SamplerV2\n# isa: a transpiled circuit; no Session/Batch context is open\nsampler = SamplerV2()          # no mode given\njob = sampler.run([isa])",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C to shortest, lengthened distractors (length-tell fix). Also: hedge-heuristic calibration. | pool wave: +E (the ValueError is deferred to result()), +F (the PUB carries the target) | reality fix: SamplerV2() raises the ValueError in the CONSTRUCTOR, not at run() — explanation corrected"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C to shortest, lengthened distractors (length-tell fix). Also: hedge-heuristic calibration. | pool wave: +E (the ValueError is deferred to result()), +F (the PUB carries the target) | reality fix: SamplerV2() raises the ValueError in the CONSTRUCTOR, not at run() — explanation corrected | realism audit 2026-10-01: stem trimmed; one recalled fact -> 2->1; stem 24 -> 14 words; difficulty 2 -> 1"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "A 2-qubit circuit is created with `QuantumCircuit(2)` (no classical register). Which statement correctly describes what `qc.measure_all()` does to it?",
+  "stem": "What does `qc.measure_all()` do to this circuit?",
   "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "high length tell + absolute-wording tell cleared (correct trimmed and now carries the true 'every'/'by default', distractor C given substance) | pool wave: +E (add_bits default reuse) +F (barrier placed after the measurements)"
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed and now carries the true 'every'/'by default', distractor C given substance) | pool wave: +E (add_bits default reuse) +F (barrier placed after the measurements) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -5,8 +5,8 @@
     "s1o2"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "What is the statevector of the qubit after this circuit runs, in the computational basis `[amp(|0⟩), amp(|1⟩)]`?",
+  "difficulty": 1,
+  "stem": "What statevector `[amp(|0⟩), amp(|1⟩)]` does this circuit produce?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)\n\nprint(Statevector.from_instruction(qc))",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude (orchestrator seed)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | pool wave: +E S-vs-sx (half-rotation) confusion, +F S-vs-Z phase confusion"
+    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | pool wave: +E S-vs-sx (half-rotation) confusion, +F S-vs-Z phase confusion | realism audit 2026-10-01: stem 17->8 words; difficulty 2->1; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

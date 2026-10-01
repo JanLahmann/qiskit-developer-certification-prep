@@ -5,8 +5,8 @@
     "s3o4"
   ],
   "type": "predict-output",
-  "difficulty": 3,
-  "stem": "A circuit whose only gate is `cx(0, 4)` is transpiled onto a 5-qubit LINE backend (connectivity 0-1-2-3-4, so qubits 0 and 4 are NOT directly connected). Comparing `optimization_level=0` with `optimization_level=1`, what happens to the number of CX gates?",
+  "difficulty": 2,
+  "stem": "How does the CX count differ between optimization levels 0 and 1 here?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(5, coupling_map=CouplingMap.from_line(5), seed=1)\nqc = QuantumCircuit(5)\nqc.cx(0, 4)\n\nfor lvl in (0, 1):\n    isa = generate_preset_pass_manager(optimization_level=lvl,\n                                       backend=backend, seed_transpiler=1).run(qc)\n    print(lvl, isa.count_ops())",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor C given substance and the absolute, distractor B now hedges) | pool wave: +E (level-1 gain attributed to gate cancellation) +F (SWAP cost believed distance-independent)"
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor C given substance and the absolute, distractor B now hedges) | pool wave: +E (level-1 gain attributed to gate cancellation) +F (SWAP cost believed distance-independent) | realism audit 2026-10-01: stem trimmed (connectivity gloss dropped; the line map is in the code); difficulty 3->2 (transpile then reason about layout)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

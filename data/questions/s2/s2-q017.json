@@ -6,7 +6,7 @@
   ],
   "type": "multi",
   "difficulty": 2,
-  "stem": "Select the TWO calls that each return a `matplotlib.figure.Figure` for circuit `qc`. (Select 2.)",
+  "stem": "Which TWO calls return a `matplotlib.figure.Figure` for `qc`? (Select 2.)",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.visualization import circuit_drawer\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +F ax= supplied, so the mpl drawer returns None instead of a Figure"
+    "notes": "pool wave: +F ax= supplied, so the mpl drawer returns None instead of a Figure | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (multi-select with the ax= trap)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

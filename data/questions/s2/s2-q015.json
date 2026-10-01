@@ -5,8 +5,8 @@
     "s2o1"
   ],
   "type": "spot-bug",
-  "difficulty": 2,
-  "stem": "This cell is meant to produce a Matplotlib figure of the circuit but raises an error. What is the correct fix?",
+  "difficulty": 1,
+  "stem": "This cell should return a Matplotlib figure but raises. What is the fix?",
   "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\n\nfig = qc.draw(output=\"matplotlib\")   # raises VisualizationError",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E standalone circuit_drawer believed to accept the long 'matplotlib' name"
+    "notes": "pool wave: +E standalone circuit_drawer believed to accept the long 'matplotlib' name | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (recall the 'mpl' output string)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

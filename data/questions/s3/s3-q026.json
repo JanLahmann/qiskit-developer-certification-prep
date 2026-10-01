@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 3,
-  "stem": "This dynamic circuit branches on `cr[0]`: if it is 0 it applies X to qubit 1, ELSE it applies Z to qubit 1; then it measures qubit 1. Which outcomes appear (bit order `c1 c0`)?",
+  "stem": "Over many shots, which outcomes appear (bit order `c1 c0`)?",
   "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(2, 'q')\ncr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.if_test((cr[0], 0)) as else_:\n    qc.x(1)\nwith else_:\n    qc.z(1)\nqc.measure(1, 1)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (Z mistaken for a bit flip in the else branch) +F (else_ builder scoping believed illegal)"
+    "notes": "pool wave: +E (Z mistaken for a bit flip in the else branch) +F (else_ builder scoping believed illegal) | realism audit 2026-10-01: stem trimmed; removed the prose that spelled out the if/else branches (glossed the tested reading of if_test((cr[0], 0)) as else_) - rated with the hint gone; difficulty 3 kept (inverted condition + else branch + Z on |0> + bit order)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

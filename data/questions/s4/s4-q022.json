@@ -6,7 +6,7 @@
   ],
   "type": "multi",
   "difficulty": 2,
-  "stem": "Which TWO statements correctly describe what happens when you CLOSE a session (for example, by exiting the `with Session(...)` context manager)? (Select two.)",
+  "stem": "Which two statements describe closing a session, for example by exiting its `with` block? (Select two.)",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — true absolute added to a correct option (absolute-tell fix). | pool wave: +F (results must be fetched inside the with block)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — true absolute added to a correct option (absolute-tell fix). | pool wave: +F (results must be fetched inside the with block) | realism audit 2026-10-01: stem trimmed; stem 23 -> 16 words; difficulty 2 -> 2"
   },
   "display_count": 4
 }

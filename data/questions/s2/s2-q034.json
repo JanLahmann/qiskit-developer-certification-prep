@@ -5,8 +5,8 @@
     "s2o3"
   ],
   "type": "spot-bug",
-  "difficulty": 2,
-  "stem": "You have the 2-qubit Bell state and want one Bloch sphere per qubit, but this line does not do that — `plot_bloch_vector` treats its argument as a raw [x, y, z] vector. Which call draws one sphere per qubit?",
+  "difficulty": 1,
+  "stem": "This line does not draw one Bloch sphere per qubit of the Bell state. Which call does?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_vector, plot_bloch_multivector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nstate = Statevector.from_instruction(qc)\nfig = plot_bloch_vector(state)   # does NOT produce per-qubit spheres",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E manual partial_trace before drawing (yields one sphere, not one per qubit)"
+    "notes": "pool wave: +E manual partial_trace before drawing (yields one sphere, not one per qubit) | realism audit 2026-10-01: stem trimmed (dropped the gloss that plot_bloch_vector takes a raw [x, y, z]; rated with it gone); difficulty 2->1 (one recalled fact)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

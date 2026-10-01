@@ -5,8 +5,8 @@
     "s1o2"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "A qubit is prepared in |1⟩, then a T gate is applied. What is the resulting statevector `[amp(|0⟩), amp(|1⟩)]`?",
+  "difficulty": 1,
+  "stem": "A T gate is applied to |1⟩. What is the resulting statevector `[amp(|0⟩), amp(|1⟩)]`?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.x(0)\nqc.t(0)\nprint(Statevector.from_instruction(qc))",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "length tell cleared (correct option trimmed, distractor D given substance) | pool wave: +E T-vs-RZ half-angle confusion, +F phase-slot confusion (phase on |0⟩)"
+    "notes": "length tell cleared (correct option trimmed, distractor D given substance) | pool wave: +E T-vs-RZ half-angle confusion, +F phase-slot confusion (phase on |0⟩) | realism audit 2026-10-01: stem 19->14 words; difficulty 2->1; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -5,8 +5,8 @@
     "s4o2"
   ],
   "type": "mcq",
-  "difficulty": 3,
-  "stem": "You saved two accounts named `open_acct` and `premium_acct` without marking a default, then run `service = QiskitRuntimeService()` with no arguments. According to the documented behavior, which account's credentials are used?",
+  "difficulty": 2,
+  "stem": "Accounts `open_acct` and `premium_acct` are saved with no default. Which one does `QiskitRuntimeService()` load?",
   "code": null,
   "options": [
     {
@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — removed hedge pile-up from the distractors (avoid-hedged calibration). | pool wave: +E (alphabetically first wins), +F (broadest access wins)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — removed hedge pile-up from the distractors (avoid-hedged calibration). | pool wave: +E (alphabetically first wins), +F (broadest access wins) | realism audit 2026-10-01: stem trimmed; one obscure documented rule -> 3->2; stem 30 -> 14 words; difficulty 3 -> 2"
   },
   "display_count": 5
 }

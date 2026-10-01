@@ -6,7 +6,7 @@
   ],
   "type": "multi",
   "difficulty": 2,
-  "stem": "Two Pauli operators commute when reordering them leaves the product unchanged. Which of the following pairs COMMUTE? Select all that apply.",
+  "stem": "Which pairs of Pauli operators commute? Select all that apply.",
   "code": "from qiskit.quantum_info import Pauli\n# e.g. Pauli('XX').commutes(Pauli('ZZ'))",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +F identity-factor commutation misconception"
+    "notes": "pool wave: +F identity-factor commutation misconception | realism audit 2026-10-01: stem 21->10 words; difficulty 2 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

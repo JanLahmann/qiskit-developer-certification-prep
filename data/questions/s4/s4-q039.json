@@ -5,8 +5,8 @@
     "s4o1"
   ],
   "type": "multi",
-  "difficulty": 3,
-  "stem": "Which THREE of the following statements about Qiskit Runtime execution modes are correct? (Select three.)",
+  "difficulty": 2,
+  "stem": "Which three statements about Qiskit Runtime execution modes are correct? (Select three.)",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: display_count=5 rotation only — 6 options already (schema cap), so no new distractor can be added"
+    "notes": "pool wave: display_count=5 rotation only — 6 options already (schema cap), so no new distractor can be added | realism audit 2026-10-01: stem trimmed; three recalled facts, no interaction -> 3->2; stem 15 -> 12 words; difficulty 3 -> 2"
   },
   "display_count": 5
 }

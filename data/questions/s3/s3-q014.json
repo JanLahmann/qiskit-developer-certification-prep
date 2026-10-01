@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You want a circuit with a 2-qubit register `q` and a 2-bit register `c`, both qubits in superposition, measuring `q[i]` into `c[i]`. Which snippet builds AND runs on `AerSimulator` without raising, producing 2-bit outcomes?",
+  "stem": "Which snippet measures each qubit of register `q` into the same-index bit of register `c` and runs without error?",
   "code": null,
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "high length tell cleared (correct option D now uses the compact register-wide `measure(q,c)` form, distractor C given a barrier; both re-proved by execution) | pool wave: +E (measure_all on top of an existing creg) +F (add_register onto QuantumCircuit(2,2) name clash)"
+    "notes": "high length tell cleared (correct option D now uses the compact register-wide `measure(q,c)` form, distractor C given a barrier; both re-proved by execution) | pool wave: +E (measure_all on top of an existing creg) +F (add_register onto QuantumCircuit(2,2) name clash) | realism audit 2026-10-01: stem trimmed (dropped irrelevant superposition detail); difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

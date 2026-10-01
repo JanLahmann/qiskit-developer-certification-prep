@@ -7,7 +7,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "Which figure is the `mpl` rendering produced by this code?",
+  "stem": "Which figure is the `mpl` rendering of this code?",
   "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(2, \"q\")\ncr = ClassicalRegister(1, \"c\")\nqc = QuantumCircuit(qr, cr)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.if_test((cr, 1)):\n    qc.x(1)\n\nqc.draw(output=\"mpl\")",
   "options": [
     {
@@ -85,9 +85,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-fable-5 (orchestrator, gold example for figure waves)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": true,
-    "notes": "First figure question (task #27). Figures are mpl renders of the five variant circuits in figures/s2-q040/generate.py; the proof proves structural identity/difference of exactly those circuits against the stem code. Topic mirrors an official-sample THEME (conditional-circuit rendering) with a different circuit, per NDA rules."
+    "notes": "First figure question (task #27). Figures are mpl renders of the five variant circuits in figures/s2-q040/generate.py; the proof proves structural identity/difference of exactly those circuits against the stem code. Topic mirrors an official-sample THEME (conditional-circuit rendering) with a different circuit, per NDA rules. | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed; no re-render (stem-only)"
   },
   "freshness": {
     "verified_against": {
@@ -96,7 +96,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

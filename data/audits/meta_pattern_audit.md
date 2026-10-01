@@ -10,19 +10,19 @@ Scope: **all sections** — 287 questions (258 single-answer, 29 multi-select). 
 |---|---|---|---|
 | position_C | 32.5% | 76% | 30.4% |
 | similar_twin_member | 38.4% | 45% | 30.4% |
-| position_B | 32.2% | 77% | 30.3% |
+| position_B | 31.8% | 77% | 29.9% |
 | position_A | 31.3% | 77% | 29.6% |
 | position_D | 30.6% | 76% | 29.0% |
 | most_absolute | 30.4% | 30% | 25.8% |
 | avoid_hedged | 27.6% | 26% | 24.9% |
-| avoid_longest | 24.4% | 91% | 24.3% |
-| stem_keyword_overlap | 23.5% | 81% | 23.6% |
-| longest_option | 22.8% | 100% | 22.8% |
+| avoid_longest | 24.5% | 91% | 24.4% |
+| stem_keyword_overlap | 22.9% | 78% | 23.1% |
 | shortest_option | 22.8% | 100% | 22.8% |
+| longest_option | 22.4% | 100% | 22.4% |
 | most_hedged | 17.8% | 26% | 22.3% |
 | least_absolute | 15.3% | 30% | 21.3% |
 | odd_one_out | 11.7% | 100% | 11.7% |
-| code_formatted_only | 19.3% | 17% | – |
+| code_formatted_only | 19.4% | 17% | – |
 | numeric_middle | 35.5% | 16% | – |
 | largest_image_option | 28.0% | 7% | – |
 | smallest_image_option | 24.3% | 7% | – |
@@ -31,7 +31,7 @@ Scope: **all sections** — 287 questions (258 single-answer, 29 multi-select). 
 
 - ✅ no aggregate biases above thresholds
 
-## Flagged questions (57)
+## Flagged questions (56)
 
 - `s1-q012` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 82 chars vs longest distractor 70, ratio 1.17) (in >=1 displayed pool variant)
 - `s1-q015` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 70 chars vs longest distractor 69, ratio 1.01) (in >=1 displayed pool variant)
@@ -52,7 +52,6 @@ Scope: **all sections** — 287 questions (258 single-answer, 29 multi-select). 
 - `s2-q037` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 87 chars vs longest distractor 80, ratio 1.09) (in >=1 displayed pool variant)
 - `s3-q016` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 65 chars vs longest distractor 54, ratio 1.20) (in >=1 displayed pool variant)
 - `s3-q017` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 99 chars vs longest distractor 79, ratio 1.25) (in >=1 displayed pool variant)
-- `s3-q017` (predict-output) — **stem_echo_tell** [medium]: correct option echoes stem vocabulary (overlap 4 vs best distractor 2) (in >=1 displayed pool variant)
 - `s3-q024` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 44 chars vs longest distractor 42, ratio 1.05) (in >=1 displayed pool variant)
 - `s3-q028` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 78 chars vs longest distractor 77, ratio 1.01) (in >=1 displayed pool variant)
 - `s3-q030` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 99 chars vs longest distractor 96, ratio 1.03) (in >=1 displayed pool variant)
@@ -60,11 +59,9 @@ Scope: **all sections** — 287 questions (258 single-answer, 29 multi-select). 
 - `s3-q037` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 88 chars vs longest distractor 79, ratio 1.11) (in >=1 displayed pool variant)
 - `s3-q039` (spot-bug) — **length_tell** [low]: correct option(s) strictly longest (min correct 95 chars vs longest distractor 77, ratio 1.23) (in >=1 displayed pool variant)
 - `s3-q052` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 82 chars vs longest distractor 72, ratio 1.14) (in >=1 displayed pool variant)
-- `s3-q052` (predict-output) — **stem_echo_tell** [medium]: correct option echoes stem vocabulary (overlap 5 vs best distractor 2) (in >=1 displayed pool variant)
 - `s4-q012` (predict-output) — **length_tell** [low]: correct option(s) strictly longest (min correct 161 chars vs longest distractor 144, ratio 1.12) (in >=1 displayed pool variant)
 - `s4-q015` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 91 chars vs longest distractor 90, ratio 1.01) (in >=1 displayed pool variant)
 - `s4-q019` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 55 chars vs longest distractor 54, ratio 1.02) (in >=1 displayed pool variant)
-- `s4-q020` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 112 chars vs longest distractor 102, ratio 1.10) (in >=1 displayed pool variant)
 - `s4-q027` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 81 chars vs longest distractor 74, ratio 1.09) (in >=1 displayed pool variant)
 - `s4-q032` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 108 chars vs longest distractor 99, ratio 1.09) (in >=1 displayed pool variant)
 - `s4-q040` (mcq) — **length_tell** [low]: correct option(s) strictly longest (min correct 71 chars vs longest distractor 65, ratio 1.09) (in >=1 displayed pool variant)

@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You want the Runtime service to automatically pick a real QPU that is currently operational and has the shortest queue. Which call does this?",
+  "stem": "Which call picks an operational real QPU with the shortest queue?",
   "code": "from qiskit_ibm_runtime import QiskitRuntimeService\nservice = QiskitRuntimeService()\nbackend = ...  # which call?",
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened simulator distractor to level the option lengths. Also: reworded the invented-API distractor (hedge-heuristic calibration). | pool wave: +E (first entry of backends() is the least busy), +F (smallest device = shortest queue)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened simulator distractor to level the option lengths. Also: reworded the invented-API distractor (hedge-heuristic calibration). | pool wave: +E (first entry of backends() is the least busy), +F (smallest device = shortest queue) | realism audit 2026-10-01: stem trimmed; stem 24 -> 11 words; difficulty 1 -> 1"
   },
   "display_count": 5
 }

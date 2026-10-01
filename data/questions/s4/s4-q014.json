@@ -6,7 +6,7 @@
   ],
   "type": "multi",
   "difficulty": 2,
-  "stem": "Which of the following statements about batch mode are TRUE? (Select two.)",
+  "stem": "Which two statements about batch mode are true? (Select two.)",
   "code": null,
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened exclusivity distractor (length-tell fix). | pool wave: +F (max TTL pauses while other users run)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened exclusivity distractor (length-tell fix). | pool wave: +F (max TTL pauses while other users run) | realism audit 2026-10-01: stem trimmed; stem 12 -> 10 words; difficulty 2 -> 2"
   },
   "display_count": 5
 }

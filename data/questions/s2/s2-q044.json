@@ -84,9 +84,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure wave, task #27)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Figure question on drawing CONVENTIONS rather than circuit semantics: options A and E show the same gate geometry and differ only in the wire labels, which is precisely the reverse_bits=True (a layout option) versus QuantumCircuit.reverse_bits() (a new circuit) distinction. The proof reads the drawer's own layout engine (_get_layered_instructions, shared by the text/mpl/latex renderers) rather than comparing pixels."
+    "notes": "Figure question on drawing CONVENTIONS rather than circuit semantics: options A and E show the same gate geometry and differ only in the wire labels, which is precisely the reverse_bits=True (a layout option) versus QuantumCircuit.reverse_bits() (a new circuit) distinction. The proof reads the drawer's own layout engine (_get_layered_instructions, shared by the text/mpl/latex renderers) rather than comparing pixels. | realism audit 2026-10-01: stem kept; difficulty 2 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -95,7 +95,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

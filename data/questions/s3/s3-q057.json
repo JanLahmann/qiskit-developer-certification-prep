@@ -84,9 +84,9 @@
   "provenance": {
     "generated": "2026-07-27",
     "model": "claude-opus (figure wave 2, task #28)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Figure question on optimization levels. All five option images are genuine generate_preset_pass_manager outputs (own circuit, seed_transpiler pinned, no coupling map so no layout labels appear anywhere), so no drawer convention distinguishes the keyed figure. The proof re-runs the same five pass managers and compares the gate sequence each drawer receives."
+    "notes": "Figure question on optimization levels. All five option images are genuine generate_preset_pass_manager outputs (own circuit, seed_transpiler pinned, no coupling map so no layout labels appear anywhere), so no drawer convention distinguishes the keyed figure. The proof re-runs the same five pass managers and compares the gate sequence each drawer receives. | realism audit 2026-10-01: stem already exam-length; difficulty 2 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -95,7 +95,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-27",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

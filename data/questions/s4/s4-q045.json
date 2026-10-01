@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "The *Primitive inputs and outputs* guide gives a name to each common way an Estimator PUB combines its parameter-value array with its observables array. A colleague submits the PUB below, whose parameter-value set has shape `(1, 4)` and whose observables array has shape `(3, 1)`. Which named pattern is this, and what comes back?",
+  "stem": "Which broadcasting pattern does this PUB use, and what comes back?",
   "code": "theta = Parameter(\"theta\")\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.ry(theta, 0)\n\nparams = np.linspace(0.0, 1.0, 4).reshape(1, 4)                 # shape (1, 4)\nobs = [[SparsePauliOp(\"ZI\")], [SparsePauliOp(\"IZ\")], [SparsePauliOp(\"ZZ\")]]  # shape (3, 1)\n\nevs = StatevectorEstimator().run([(qc, obs, params)]).result()[0].data.evs",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "official-alignment gap task 4.2: the guide's NAMED broadcasting patterns (broadcast single observable / zip / outer-product / standard nd generalization) were never tested, only the shape mechanics. Shapes chosen differently from the guide's own example figures; proof executes the pairing and reads evs.shape."
+    "notes": "official-alignment gap task 4.2: the guide's NAMED broadcasting patterns (broadcast single observable / zip / outer-product / standard nd generalization) were never tested, only the shape mechanics. Shapes chosen differently from the guide's own example figures; proof executes the pairing and reads evs.shape. | realism audit 2026-10-01: stem trimmed (shapes are in the code comments); stem 54 -> 11 words; difficulty 2 -> 2"
   },
   "display_count": 5,
   "freshness": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

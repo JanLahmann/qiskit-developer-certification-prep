@@ -5,8 +5,8 @@
     "s3o3"
   ],
   "type": "predict-output",
-  "difficulty": 3,
-  "stem": "The SAME parameter `th` is used on two different gates. How many free parameters does `qc` have, and what happens when `th` is bound?",
+  "difficulty": 1,
+  "stem": "How many free parameters does `qc` have, and what does binding `th` do?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\nth = Parameter('th')\nqc = QuantumCircuit(2)\nqc.rx(th, 0)\nqc.rx(th, 1)\n\nbound = qc.assign_parameters({th: 0.5})",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor C now hedges instead of using an absolute) | pool wave: +E (believes Parameters are matched by name rather than identity)"
+    "notes": "absolute-wording tell cleared (distractor C now hedges instead of using an absolute) | pool wave: +E (believes Parameters are matched by name rather than identity) | realism audit 2026-10-01: stem trimmed (dropped 'The SAME parameter' emphasis, visible in the code); difficulty 3->1 (one fact: a reused Parameter is one parameter)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

@@ -6,7 +6,7 @@
   ],
   "type": "multi",
   "difficulty": 2,
-  "stem": "Select ALL statements that are TRUE about transpiler optimization levels 0-3.",
+  "stem": "Select ALL true statements about transpiler optimization levels 0-3.",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +F (believes level 0 skips routing)"
+    "notes": "pool wave: +F (believes level 0 skips routing) | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed; citations re-checked (set-optimization supports A/B/C/F; D keyed to the 2.5 library default per ledger)"
   },
   "display_count": 5
 }

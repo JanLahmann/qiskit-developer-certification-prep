@@ -7,7 +7,7 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "Which snippet correctly opens a session on `backend`, runs a transpiled circuit `isa` with a Sampler inside it, and retrieves the counts?",
+  "stem": "Which snippet runs `isa` with a Sampler inside a session on `backend` and retrieves the counts?",
   "code": "# backend is a real-device (fake) backend; isa is transpiled for it",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (DataBin.get_counts), +F (submit through session.run)"
+    "notes": "pool wave: +E (DataBin.get_counts), +F (submit through session.run) | realism audit 2026-10-01: stem trimmed; stem 22 -> 16 words; difficulty 2 -> 2"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

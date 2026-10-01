@@ -5,8 +5,8 @@
     "s4o1"
   ],
   "type": "multi",
-  "difficulty": 2,
-  "stem": "For which TWO of the following workloads is SESSION mode the most appropriate execution mode? (Select two.)",
+  "difficulty": 1,
+  "stem": "For which two workloads is session mode the most appropriate execution mode? (Select two.)",
   "code": null,
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened + hedged distractors (length/absolute-tell fix). | pool wave: +F (a parameter sweep needs a session)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened + hedged distractors (length/absolute-tell fix). | pool wave: +F (a parameter sweep needs a session) | realism audit 2026-10-01: stem trimmed; both keys are the documented session use cases -> 2->1; stem 17 -> 14 words; difficulty 2 -> 1"
   },
   "display_count": 5
 }

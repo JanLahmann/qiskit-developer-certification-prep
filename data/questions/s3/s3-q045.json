@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "Qubit 0 is flipped to `|1⟩`. The measurements deliberately map q0 -> c1 and q1 -> c0. What bitstring (order `c1 c0`) is observed on every shot?",
+  "stem": "What bitstring (order `c1 c0`) appears on every shot?",
   "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2, 2)\nqc.x(0)\nqc.measure(0, 1)   # qubit 0 -> classical bit 1\nqc.measure(1, 0)   # qubit 1 -> classical bit 0",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (integer counts key instead of the bitstring)"
+    "notes": "pool wave: +E (integer counts key instead of the bitstring) | realism audit 2026-10-01: stem trimmed (cross-mapping is in the code comments); difficulty 2 confirmed (cross-mapping + bit order)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

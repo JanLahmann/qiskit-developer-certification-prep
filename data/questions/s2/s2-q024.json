@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "Noiseless simulation. What outcome probabilities does this print — i.e., which bar dominates the histogram?",
+  "stem": "What does this code print?",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.ry(2 * np.pi / 3, 0)\nsv = Statevector.from_instruction(qc)\n\nprint({k: round(v, 3) for k, v in sv.probabilities_dict().items()})",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E amplitudes reported where probabilities_dict squares them"
+    "notes": "pool wave: +E amplitudes reported where probabilities_dict squares them | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (theta/2 then cos^2: two steps)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

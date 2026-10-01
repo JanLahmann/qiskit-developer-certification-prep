@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "On a single-qubit Bloch sphere the arrow points along the −X axis, i.e. the Bloch vector is (−1, 0, 0). Which state does this visualization represent?",
+  "stem": "A Bloch-sphere arrow points along −X, i.e. (−1, 0, 0). Which state does it show?",
   "code": null,
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E +Y state read off the -X arrow, +F -Y state (equatorial axis mix-up)"
+    "notes": "pool wave: +E +Y state read off the -X arrow, +F -Y state (equatorial axis mix-up) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

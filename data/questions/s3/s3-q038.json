@@ -5,8 +5,8 @@
     "s3o4"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "In the preset transpilation pipeline, which stage inserts SWAP gates so that every two-qubit gate acts on a physically-connected pair of qubits?",
+  "difficulty": 1,
+  "stem": "Which preset transpiler stage inserts SWAP gates to satisfy qubit connectivity?",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (scheduling mistaken for routing) +F (init stage mistaken for routing)"
+    "notes": "pool wave: +E (scheduling mistaken for routing) +F (init stage mistaken for routing) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (recall); citations re-checked"
   },
   "display_count": 4
 }

@@ -5,8 +5,8 @@
     "s1o2"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "For the Bell state (|00⟩ + |11⟩)/√2, what does `sv.probabilities([0])` (the marginal distribution over qubit 0) return?",
+  "difficulty": 1,
+  "stem": "For this Bell state, what does `sv.probabilities([0])` return?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nsv = Statevector.from_instruction(qc)\nprint(sv.probabilities([0]))",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor C now hedges, so the correct option needs no absolute) | pool wave: +E probabilities-vs-probabilities_dict return-type confusion"
+    "notes": "absolute-wording tell cleared (distractor C now hedges, so the correct option needs no absolute) | pool wave: +E probabilities-vs-probabilities_dict return-type confusion | realism audit 2026-10-01: stem 17->8 words; difficulty 2->1; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

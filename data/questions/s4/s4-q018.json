@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "The circuit is transpiled to the backend's ISA (which pads it to the device's qubit count), but the two-qubit observable is passed to the Estimator without being mapped to the transpiled layout. What happens?",
+  "stem": "The two-qubit observable is passed unchanged alongside the transpiled circuit. What happens?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa = pm.run(qc)\nestimator = EstimatorV2(mode=backend)\njob = estimator.run([(isa, obs)])   # obs NOT mapped with apply_layout\nprint(job.result()[0].data.evs)",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct B, lengthened+stem-echoed wrong-exception distractor (length/stem-echo fix). | pool wave: +E (Estimator pads the observable with identities), +F (SparsePauliOp raises the layout error)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct B, lengthened+stem-echoed wrong-exception distractor (length/stem-echo fix). | pool wave: +E (Estimator pads the observable with identities), +F (SparsePauliOp raises the layout error) | realism audit 2026-10-01: stem trimmed; removed the 'pads it to the device's qubit count' gloss that handed over the tested fact — rated 2 with the hint gone; stem 34 -> 12 words; difficulty 2 -> 2"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

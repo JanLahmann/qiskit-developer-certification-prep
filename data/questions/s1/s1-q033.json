@@ -7,7 +7,7 @@
   ],
   "type": "multi",
   "difficulty": 3,
-  "stem": "`Operator.__eq__` (`==`) tests exact matrix equality, while `Operator.equiv` tests equality up to a global phase. For which of the following pairs does `Operator(a).equiv(Operator(b))` return True? Select all that apply.",
+  "stem": "`equiv` ignores global phase. For which pairs does `Operator(a).equiv(Operator(b))` return True? Select all that apply.",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\n# a: e.g. QuantumCircuit with z(0); b: with rz(pi, 0)",
   "options": [
     {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E T-vs-RZ(π/2) half-angle mismatch, +F H-as-RY(π/2) misconception"
+    "notes": "pool wave: +E T-vs-RZ(π/2) half-angle mismatch, +F H-as-RY(π/2) misconception | realism audit 2026-10-01: stem 29->15 words; difficulty 3 confirmed; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

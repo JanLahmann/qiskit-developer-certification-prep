@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "Which figure is the `plot_bloch_multivector` rendering produced by this code?",
+  "stem": "Which figure does this `plot_bloch_multivector` call render?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_bloch_multivector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.s(0)\nqc.x(1)\n\nplot_bloch_multivector(Statevector(qc))",
   "options": [
     {
@@ -85,9 +85,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure wave, task #27)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Figure question: the five option images are plot_bloch_multivector renderings of the five states in figures/s2-q042/generate.py; the proof rebuilds the same states and compares what the drawer encodes — the number of spheres and each sphere's Bloch vector. Direction, not colour, carries the meaning, so the figures survive greyscale."
+    "notes": "Figure question: the five option images are plot_bloch_multivector renderings of the five states in figures/s2-q042/generate.py; the proof rebuilds the same states and compares what the drawer encodes — the number of spheres and each sphere's Bloch vector. Direction, not colour, carries the meaning, so the figures survive greyscale. | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed; no re-render (stem-only)"
   },
   "freshness": {
     "verified_against": {
@@ -96,7 +96,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

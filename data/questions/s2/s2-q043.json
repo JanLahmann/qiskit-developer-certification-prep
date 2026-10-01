@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "The q-sphere below was produced by the code shown, for a two-qubit circuit that starts in the all-zero state. Which gate sequence was used in place of the comment?",
+  "stem": "Starting from |00>, which gate sequence in place of the comment produces the q-sphere below?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_state_qsphere\n\nqc = QuantumCircuit(2)\n# <- one of the gate sequences below\nplot_state_qsphere(Statevector(qc))",
   "options": [
     {
@@ -66,9 +66,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure wave, task #27)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Inverse-direction figure question (figure in the stem, code in the options), the shape the official sample test uses. The stem SVG is the q-sphere of the sequence keyed C, rendered by figures/s2-q043/generate.py; the proof builds all five sequences and compares the markers each would place on the sphere. Phase is carried by colour only (show_state_phases defaults to False), hence color_essential: true; the alt text states the phases so the item survives without colour."
+    "notes": "Inverse-direction figure question (figure in the stem, code in the options), the shape the official sample test uses. The stem SVG is the q-sphere of the sequence keyed C, rendered by figures/s2-q043/generate.py; the proof builds all five sequences and compares the markers each would place on the sphere. Phase is carried by colour only (show_state_phases defaults to False), hence color_essential: true; the alt text states the phases so the item survives without colour. | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed; no re-render (stem-only)"
   },
   "freshness": {
     "verified_against": {
@@ -77,7 +77,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

@@ -5,8 +5,8 @@
     "s1o2"
   ],
   "type": "spot-bug",
-  "difficulty": 2,
-  "stem": "The goal is to prepare the state (|0⟩ − i|1⟩)/√2. The code below produces the wrong relative phase on |1⟩. What is the fix?",
+  "difficulty": 1,
+  "stem": "This code should prepare (|0⟩ − i|1⟩)/√2 but gives the wrong phase on |1⟩. What is the fix?",
   "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)   # intended: relative phase of -i on |1>",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "high-severity length tell cleared (correct trimmed, distractor B given substance) | pool wave: +E T†-vs-S† phase-size confusion, +F P-gate angle error (−π vs −π/2)"
+    "notes": "high-severity length tell cleared (correct trimmed, distractor B given substance) | pool wave: +E T†-vs-S† phase-size confusion, +F P-gate angle error (−π vs −π/2) | realism audit 2026-10-01: stem 24->18 words; difficulty 2->1; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

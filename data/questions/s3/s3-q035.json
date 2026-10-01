@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "You have no backend object, but you know the target's basis gates `['cx','rz','sx','x']` and its coupling map `cmap`. Which call builds a pass manager that transpiles `qc` into an ISA circuit for that target?",
+  "stem": "Knowing only `basis` and the coupling map `cmap`, which call transpiles `qc` into an ISA circuit?",
   "code": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n# cmap is a CouplingMap; qc is an abstract circuit containing an h gate\nbasis = ['cx', 'rz', 'sx', 'x']",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (basis list passed as target=) +F (coupling map believed inferable from the circuit)"
+    "notes": "pool wave: +E (basis list passed as target=) +F (coupling map believed inferable from the circuit) | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (basis alone does not route)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

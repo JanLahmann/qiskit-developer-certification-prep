@@ -5,8 +5,8 @@
     "s4o2"
   ],
   "type": "predict-output",
-  "difficulty": 2,
-  "stem": "Using local testing mode, a session is opened on FakeManilaV2 and its `backend()` accessor is called. What is printed?",
+  "difficulty": 1,
+  "stem": "What does this local-testing code print?",
   "code": "from qiskit_ibm_runtime import Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nwith Session(backend=backend) as session:\n    print(session.backend())",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the returns-the-object distractor (absolute-tell fix). | pool wave: +E (the class name), +F (the mimicked hardware name)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the returns-the-object distractor (absolute-tell fix). | pool wave: +E (the class name), +F (the mimicked hardware name) | realism audit 2026-10-01: stem trimmed; one-step read -> 2->1; stem 19 -> 6 words; difficulty 2 -> 1"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

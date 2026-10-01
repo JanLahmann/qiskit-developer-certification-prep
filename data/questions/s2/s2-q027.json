@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "After this circuit, `plot_bloch_multivector` draws the single qubit's arrow along which axis, and which state does that arrow represent?",
+  "stem": "Where does `plot_bloch_multivector` point this qubit's arrow, and which state is it?",
   "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)",
   "options": [
     {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E S vs S-dagger phase sign (arrow on -Y instead of +Y)"
+    "notes": "pool wave: +E S vs S-dagger phase sign (arrow on -Y instead of +Y) | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (H then S: two steps)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

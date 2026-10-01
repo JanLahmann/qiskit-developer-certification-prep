@@ -5,8 +5,8 @@
     "s1o2"
   ],
   "type": "multi",
-  "difficulty": 3,
-  "stem": "The qubit is in the state |+⟩ = H|0⟩. Which of the following statements are TRUE? Select all that apply.",
+  "difficulty": 2,
+  "stem": "A qubit is in |+⟩ = H|0⟩. Which statements are true? Select all that apply.",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\n\nqc = QuantumCircuit(1)\nqc.h(0)   # |+>\nsv = Statevector.from_instruction(qc)",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +F eigenstate-of-every-Pauli misconception (|+⟩ as a Y eigenstate)"
+    "notes": "pool wave: +F eigenstate-of-every-Pauli misconception (|+⟩ as a Y eigenstate) | realism audit 2026-10-01: stem 20->15 words; difficulty 3->2; proof re-verified, answer unchanged"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

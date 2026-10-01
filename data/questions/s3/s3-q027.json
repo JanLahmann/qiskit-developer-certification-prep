@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "Which scenario genuinely REQUIRES a dynamic circuit (a mid-circuit measurement whose classical result feeds forward to control a later gate), rather than a plain static circuit?",
+  "stem": "Which scenario genuinely REQUIRES a dynamic circuit rather than a static one?",
   "code": null,
   "options": [
     {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "length + stem-echo + absolute-wording tells cleared (distractor A given the stem's vocabulary and the absolutes, distractor C now hedges) | pool wave: +E (between-jobs classical loop) +F (post-selection mistaken for feedforward)"
+    "notes": "length + stem-echo + absolute-wording tells cleared (distractor A given the stem's vocabulary and the absolutes, distractor C now hedges) | pool wave: +E (between-jobs classical loop) +F (post-selection mistaken for feedforward) | realism audit 2026-10-01: stem trimmed; removed the parenthetical definition of a dynamic circuit (glossed the tested concept and echoed the key) - rated with the hint gone; difficulty 1 confirmed; citations re-checked"
   },
   "display_count": 4
 }

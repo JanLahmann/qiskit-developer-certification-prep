@@ -5,8 +5,8 @@
     "s4o2"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "On a trusted laptop, you want to authenticate once and then reuse your credentials in later Python sessions without pasting your API key each time. Which approach matches the documented workflow?",
+  "difficulty": 1,
+  "stem": "On a trusted laptop, how do you store credentials once so later scripts need no API key?",
   "code": null,
   "options": [
     {
@@ -48,7 +48,8 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/hello-world",
-      "https://quantum.cloud.ibm.com/docs/guides/initialize-account"
+      "https://quantum.cloud.ibm.com/docs/guides/initialize-account",
+      "https://quantum.cloud.ibm.com/docs/guides/save-credentials"
     ]
   },
   "proof": {
@@ -61,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C, lengthened+hedged distractors (length/stem-echo/absolute-tell fix). | pool wave: +E (save_account(api_key=...)), +F (service.save() persists the account)"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C, lengthened+hedged distractors (length/stem-echo/absolute-tell fix). | pool wave: +E (save_account(api_key=...)), +F (service.save() persists the account) | realism audit 2026-10-01: stem trimmed; one recalled call -> 2->1; added guides/save-credentials citation (initialize-account only links to it); stem 31 -> 17 words; difficulty 2 -> 1"
   },
   "display_count": 5
 }

@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You have built `pm = generate_preset_pass_manager(optimization_level=1, backend=backend)`. Which call actually transpiles `qc` into an ISA circuit using this pass manager?",
+  "stem": "Which call transpiles `qc` into an ISA circuit with `pm`?",
   "code": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n\npm = generate_preset_pass_manager(optimization_level=1, backend=backend)\n# isa = ?",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "pool wave: +E (list-in/list-out shape) +F (transpile mistaken for a circuit method)"
+    "notes": "pool wave: +E (list-in/list-out shape) +F (transpile mistaken for a circuit method) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 4

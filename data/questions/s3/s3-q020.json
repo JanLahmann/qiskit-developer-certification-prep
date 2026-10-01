@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "After this binding step, which statement about `qc` and `bound` is correct?",
+  "stem": "Which statement about `qc` and `bound` is correct after this code runs?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\ntheta = Parameter('theta')\nqc = QuantumCircuit(1)\nqc.rx(theta, 0)\n\nbound = qc.assign_parameters({theta: 3.14})",
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "hedge wording rebalanced in the meta-pattern pass (the correct option now states the `inplace=False` default alongside distractor D) | pool wave: +E (bound believed to share the caller's instruction list) +F (substitution believed deferred to transpile time)"
+    "notes": "hedge wording rebalanced in the meta-pattern pass (the correct option now states the `inplace=False` default alongside distractor D) | pool wave: +E (bound believed to share the caller's instruction list) +F (substitution believed deferred to transpile time) | realism audit 2026-10-01: stem reworded; difficulty 1 confirmed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   },
   "display_count": 5

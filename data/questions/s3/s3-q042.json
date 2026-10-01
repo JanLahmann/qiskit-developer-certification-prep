@@ -5,8 +5,8 @@
     "s3o4"
   ],
   "type": "multi",
-  "difficulty": 2,
-  "stem": "For a `StagedPassManager` from `generate_preset_pass_manager(...)`, select ALL names that are actual stages of the pipeline (they appear in `pm.stages`).",
+  "difficulty": 1,
+  "stem": "Which names appear in a preset pass manager's `pm.stages`? Select ALL.",
   "code": null,
   "options": [
     {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "multi-select answer count varied (every s3 multi shipped exactly 3 correct options): added option F `translation`, a real preset stage, making this a 4-of-6 item; re-proved"
+    "notes": "multi-select answer count varied (every s3 multi shipped exactly 3 correct options): added option F `translation`, a real preset stage, making this a 4-of-6 item; re-proved | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (recall of the six stage names)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

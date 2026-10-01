@@ -5,8 +5,8 @@
     "s4o2"
   ],
   "type": "mcq",
-  "difficulty": 2,
-  "stem": "The diagram below shows how the Estimator pairs the observables and the parameter values of this single PUB. Which broadcasting pattern from the primitive input/output guide is it?",
+  "difficulty": 1,
+  "stem": "The diagram shows how the Estimator pairs this PUB's observables and parameter values (`circuit` has one parameter). Which broadcasting pattern is it?",
   "code": "import numpy as np\nfrom qiskit.quantum_info import SparsePauliOp\n\nobservables = [[SparsePauliOp(\"Z\")], [SparsePauliOp(\"X\")],\n               [SparsePauliOp(\"Y\")], [SparsePauliOp(\"I\")]]\nvalues = np.linspace(0.0, 1.0, 6).reshape(1, 6)\n\nestimator.run([(circuit, observables, values)])",
   "options": [
     {
@@ -66,9 +66,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure wave, task #27)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Figure-in-the-stem question with text options. The diagram is drawn from scratch with matplotlib primitives in figures/s4-q047/generate.py; the proof runs a StatevectorEstimator on the same (4, 1) x (1, 6) pub and scores each named pattern's defining condition against the measured shapes. Pattern names are the four the primitive input/output guide uses verbatim (ledger, 2026-07-26)."
+    "notes": "Figure-in-the-stem question with text options. The diagram is drawn from scratch with matplotlib primitives in figures/s4-q047/generate.py; the proof runs a StatevectorEstimator on the same (4, 1) x (1, 6) pub and scores each named pattern's defining condition against the measured shapes. Pattern names are the four the primitive input/output guide uses verbatim (ledger, 2026-07-26). | realism audit 2026-10-01: stem trimmed; added that `circuit` has one parameter (value-array shape coercion depends on it); figure read is one step -> 2->1; no re-render (stem-only); stem 28 -> 22 words; difficulty 2 -> 1"
   },
   "freshness": {
     "verified_against": {
@@ -77,7 +77,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-07-26",
+    "verified_on": "2026-10-01",
     "stale": false
   }
 }

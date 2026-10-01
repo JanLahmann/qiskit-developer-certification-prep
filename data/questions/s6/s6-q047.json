@@ -1,0 +1,78 @@
+{
+  "id": "s6-q047",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "The figure shows `qc`. What does this code print?",
+  "code": "import numpy as np\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\n# qc is the circuit in the figure\nlabels = [\"IXX\", \"XXI\", \"ZII\", \"IIZ\"]\nobs = [SparsePauliOp(l) for l in labels]\nevs = StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs\nprint(np.round(evs, 3))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`[ 1.  0. -1.  0.]`"
+    },
+    {
+      "key": "B",
+      "text": "`[ 0. -1.  0. -1.]`"
+    },
+    {
+      "key": "C",
+      "text": "`[ 0.  0. -1.  0.]`"
+    },
+    {
+      "key": "D",
+      "text": "`[-1.  0. -1.  0.]`"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "figures": {
+    "generator": "figures/s6-q047/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s6-q047/s6-q047-stem.svg",
+      "alt": "Circuit diagram on three qubit wires q0, q1 and q2: an H gate on q0, then a CNOT with control q0 and target q1, then a Z gate on q0; an X gate sits on q2."
+    }
+  },
+  "explanation": {
+    "correct": "H then CX makes (|00⟩ + |11⟩)/√2 on qubits 0 and 1; the Z on qubit 0 flips the sign of |11⟩, giving (|00⟩ − |11⟩)/√2, for which <X0 X1> = −1. Qubit 2 is in |1⟩. Labels read right to left, so `IXX` = X on qubits 0 and 1 → −1; `XXI` = X on qubits 1 and 2 → 0 (qubit 2 is a Z eigenstate); `ZII` = Z on qubit 2 → −1; `IIZ` = Z on qubit 0 → 0 (each Bell qubit alone is unbiased).",
+    "distractors": {
+      "A": "Drops the Z phase: without it the pair is (|00⟩ + |11⟩)/√2 with <XX> = +1. A Z on either qubit of the entangled pair turns the XX correlation negative.",
+      "B": "Reads the labels with qubit 0 on the LEFT, so `IXX` would probe qubits 1 and 2 (0), `XXI` the Bell pair (−1), `ZII` qubit 0 and `IIZ` qubit 2. Qiskit puts qubit 0 at the rightmost character.",
+      "C": "Treats the entangled pair as a product state and multiplies single-qubit values: each Bell qubit has <X> = 0, but the correlation <XX> is not the product of the marginals."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q047.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\n# MUST mirror data/figures/s6-q047/generate.py (same GATES literal, asserted there).\nGATES = [(\"h\", (0,)), (\"cx\", (0, 1)), (\"z\", (0,)), (\"x\", (2,))]\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.z(0)\nqc.x(2)\nseen = [(i.operation.name, tuple(qc.find_bit(q).index for q in i.qubits)) for i in qc.data]\nassert seen == GATES, seen\n\nLABELS = [\"IXX\", \"XXI\", \"ZII\", \"IIZ\"]\nest = StatevectorEstimator()\n\ndef evs(circ, labels):\n    out = est.run([(circ, [SparsePauliOp(l) for l in labels])]).result()[0].data.evs\n    return [float(v) for v in np.round(out, 3)]\n\nactual = evs(qc, LABELS)\n\n# Execute the DISPLAYED code with the figure's circuit injected as `qc`.\nimport contextlib, io\nCODE = 'import numpy as np\\nfrom qiskit.primitives import StatevectorEstimator\\nfrom qiskit.quantum_info import SparsePauliOp\\n\\n# qc is the circuit in the figure\\nlabels = [\"IXX\", \"XXI\", \"ZII\", \"IIZ\"]\\nobs = [SparsePauliOp(l) for l in labels]\\nevs = StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs\\nprint(np.round(evs, 3))'\nbuf = io.StringIO()\nwith contextlib.redirect_stdout(buf):\n    exec(CODE, {\"qc\": qc})\nprinted = buf.getvalue().strip()\n\nno_z = QuantumCircuit(3); no_z.h(0); no_z.cx(0, 1); no_z.x(2)\nreversed_labels = evs(qc, [l[::-1] for l in LABELS])\nphase_ignored = evs(no_z, LABELS)\n# product-state misconception: <XX> taken as <X><X> of the single-qubit marginals\nsingles = evs(qc, [\"IIX\", \"IXI\", \"XII\"])\nfactorised = [singles[0] * singles[1], singles[1] * singles[2]] + actual[2:]\n\nCLAIMS = {\n    \"A\": ([1.0, 0.0, -1.0, 0.0], f\"Z phase ignored (Bell state without z) -> computed {phase_ignored}\"),\n    \"B\": ([0.0, -1.0, 0.0, -1.0], f\"labels read with qubit 0 on the LEFT -> computed {reversed_labels}\"),\n    \"C\": ([0.0, 0.0, -1.0, 0.0], f\"two-qubit X terms factorised into single-qubit <X> products -> computed {factorised}\"),\n    \"D\": ([-1.0, 0.0, -1.0, 0.0], \"the figure's circuit with Qiskit's qubit-0-rightmost labels\"),\n}\nproven, evidence = [], {}\nfor key, (claim, story) in sorted(CLAIMS.items()):\n    shown = str(np.round(np.array(claim), 3))\n    match = printed == shown\n    evidence[key] = f\"claims print {shown!r} = {claim} ({story}); the code printed {printed!r} -> match={match}\"\n    if match:\n        proven.append(key)\nassert phase_ignored == CLAIMS[\"A\"][0] and reversed_labels == CLAIMS[\"B\"][0]\nassert [abs(v) for v in factorised] == [abs(v) for v in CLAIMS[\"C\"][0]]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"printed\": printed, \"evs\": actual, \"reversed\": reversed_labels, \"no_z\": phase_ignored,\n                           \"single_x\": singles}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (stem figure, d3): circuit read from an mpl drawing; Bell phase (Z after CX -> <XX> = -1), 3-qubit right-to-left labels, correlated vs product expectation values. Generator and proof assert the same GATES literal; proof recomputes each misconception's array (reversed labels, phase dropped, factorised marginals)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

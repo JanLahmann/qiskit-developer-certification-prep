@@ -1,0 +1,101 @@
+{
+  "id": "s6-q051",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "Which bar chart does this code draw?",
+  "code": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nqc = QuantumCircuit(2)\nqc.ry(2 * np.pi / 3, 0)\nqc.x(1)\n\nlabels = [\"IZ\", \"ZI\", \"ZZ\", \"IX\"]\nobs = [SparsePauliOp(l) for l in labels]\nevs = StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs\n\nfig, ax = plt.subplots()\nax.bar(labels, evs)",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "figures": {
+    "generator": "figures/s6-q051/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s6-q051/s6-q051-A.svg",
+        "alt": "Bar chart of expectation value (axis from -1.1 to 1.1) for observables IZ, ZI, ZZ and IX: IZ -1, ZI -0.5, ZZ +0.5, IX 0."
+      },
+      "B": {
+        "file": "figures/s6-q051/s6-q051-B.svg",
+        "alt": "Bar chart of expectation value (axis from -1.1 to 1.1) for observables IZ, ZI, ZZ and IX: IZ +0.5, ZI -1, ZZ -0.5, IX +0.87."
+      },
+      "C": {
+        "file": "figures/s6-q051/s6-q051-C.svg",
+        "alt": "Bar chart of expectation value (axis from -1.1 to 1.1) for observables IZ, ZI, ZZ and IX: IZ -0.5, ZI +1, ZZ -0.5, IX +0.87."
+      },
+      "D": {
+        "file": "figures/s6-q051/s6-q051-D.svg",
+        "alt": "Bar chart of expectation value (axis from -1.1 to 1.1) for observables IZ, ZI, ZZ and IX: IZ -0.5, ZI -1, ZZ +0.5, IX -0.87."
+      },
+      "E": {
+        "file": "figures/s6-q051/s6-q051-E.svg",
+        "alt": "Bar chart of expectation value (axis from -1.1 to 1.1) for observables IZ, ZI, ZZ and IX: IZ -0.5, ZI -1, ZZ +0.5, IX +0.87."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "RY(θ) on |0⟩ gives <Z> = cos θ and <X> = sin θ, so qubit 0 has <Z> = cos(2π/3) = −0.5 and <X> = sin(2π/3) ≈ +0.87; qubit 1 is flipped to |1⟩, <Z> = −1. Labels read right to left: `IZ` (qubit 0) = −0.5, `ZI` (qubit 1) = −1, `ZZ` = (−1)(−0.5) = +0.5 on this product state, `IX` (qubit 0) = +0.87.",
+    "distractors": {
+      "A": "Reads the labels with qubit 0 on the LEFT: `IZ` would then probe qubit 1 (−1) and `IX` would probe qubit 1 in a Z eigenstate (0).",
+      "B": "Halves the angle, as if RY(θ) gave <Z> = cos(θ/2). The half angle lives in the amplitudes (cos(θ/2) on |0⟩); expectation values use the full angle.",
+      "C": "Overlooks the X on qubit 1: with qubit 1 left in |0⟩, `ZI` would be +1 and `ZZ` would flip sign to −0.5.",
+      "D": "Reverses the rotation sense of RY: a positive angle turns |0⟩ toward +X, so <X> is positive here."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q051.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\n# MUST mirror data/figures/s6-q051/generate.py: the option images are bar\n# charts of exactly these five arrays.\nLABELS = [\"IZ\", \"ZI\", \"ZZ\", \"IX\"]\n\n\ndef evs(theta, flip_q1=True, labels=LABELS):\n    qc = QuantumCircuit(2)\n    qc.ry(theta, 0)\n    if flip_q1:\n        qc.x(1)\n    obs = [SparsePauliOp(l) for l in labels]\n    return np.round(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs), 3)\n\n\nVARIANTS = {\n    \"A\": evs(2 * np.pi / 3, labels=[l[::-1] for l in LABELS]),\n    \"B\": evs(np.pi / 3),\n    \"C\": evs(2 * np.pi / 3, flip_q1=False),\n    \"D\": evs(-2 * np.pi / 3),\n    \"E\": evs(2 * np.pi / 3),\n}\nSTORY = {\n    \"A\": \"labels read qubit-0-first\",\n    \"B\": \"ry angle halved (<Z> = cos(theta/2))\",\n    \"C\": \"x(1) overlooked\",\n    \"D\": \"ry rotation sense reversed\",\n    \"E\": \"stem code\",\n}\n\n# The stem code, executed independently of the variant table.\nqc = QuantumCircuit(2)\nqc.ry(2 * np.pi / 3, 0)\nqc.x(1)\ntarget = np.round(np.asarray(StatevectorEstimator().run(\n    [(qc, [SparsePauliOp(l) for l in LABELS])]).result()[0].data.evs), 3)\n\nproven, evidence, observed = [], {}, {}\nfor key, series in sorted(VARIANTS.items()):\n    match = bool(np.allclose(series, target))\n    observed[key] = series.tolist()\n    evidence[key] = (f\"bars ({STORY[key]}) = {dict(zip(LABELS, series.tolist()))}; the stem code gives \"\n                     f\"{dict(zip(LABELS, target.tolist()))} -> match={match}\")\n    if match:\n        proven.append(key)\nobserved[\"stem\"] = target.tolist()\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (option-image figure, d2): RY expectation values + right-to-left labels + product-state ZZ. Generator and proof build the same five variant arrays; proof also executes the stem code independently and compares."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

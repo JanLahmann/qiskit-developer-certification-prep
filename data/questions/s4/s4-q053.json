@@ -1,0 +1,75 @@
+{
+  "id": "s4-q053",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "Which call returns the same counts dictionary every time it is repeated?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.providers.fake_provider import GenericBackendV2\nfrom qiskit.transpiler import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\n\nbell = QuantumCircuit(2)\nbell.h(0); bell.cx(0, 1); bell.measure_all()\n\ndef counts(backend_seed=None, sim_seed=None, shots=4000):\n    backend = GenericBackendV2(2, seed=backend_seed)\n    pm = generate_preset_pass_manager(1, backend, seed_transpiler=1)\n    sampler = SamplerV2(mode=backend)\n    if sim_seed is not None:\n        sampler.options.simulator.seed_simulator = sim_seed\n    job = sampler.run([pm.run(bell)], shots=shots)\n    return job.result()[0].data.meas.get_counts()",
+  "options": [
+    {
+      "key": "A",
+      "text": "`counts(backend_seed=42, sim_seed=7)`"
+    },
+    {
+      "key": "B",
+      "text": "`counts(backend_seed=42)`"
+    },
+    {
+      "key": "C",
+      "text": "`counts(sim_seed=7)`"
+    },
+    {
+      "key": "D",
+      "text": "`counts(backend_seed=42, shots=100_000)`"
+    },
+    {
+      "key": "E",
+      "text": "`counts(sim_seed=7, shots=100_000)`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Two independent sources of randomness are involved. `GenericBackendV2` samples its error rates and durations at construction, so without `seed` every fresh backend carries a different noise model. The noisy simulation then draws shots, which only `options.simulator.seed_simulator` fixes in local testing mode. Only when both are seeded is the whole pipeline reproducible.",
+    "distractors": {
+      "B": "The backend seed fixes the generated noise properties, not the shot sampling: each call still draws different outcomes from the same noise model.",
+      "C": "The sampling stream is fixed, but every call builds an unseeded backend with freshly drawn error rates, so the simulated noise — and therefore the counts — changes.",
+      "D": "More shots shrink the statistical spread but never make two random samples identical; sampling is still unseeded.",
+      "E": "Seeded sampling at high shot count still runs against a new random noise model each call, so the noisy outcome counts differ."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.providers.fake_provider.GenericBackendV2",
+      "https://quantum.cloud.ibm.com/docs/guides/local-testing-mode"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q053.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport warnings\nwarnings.filterwarnings(\"ignore\")\nfrom qiskit import QuantumCircuit\nfrom qiskit.providers.fake_provider import GenericBackendV2\nfrom qiskit.transpiler import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\n\nbell = QuantumCircuit(2)\nbell.h(0); bell.cx(0, 1); bell.measure_all()\n\ndef counts(backend_seed=None, sim_seed=None, shots=4000):\n    backend = GenericBackendV2(2, seed=backend_seed)\n    pm = generate_preset_pass_manager(1, backend, seed_transpiler=1)\n    sampler = SamplerV2(mode=backend)\n    if sim_seed is not None:\n        sampler.options.simulator.seed_simulator = sim_seed\n    job = sampler.run([pm.run(bell)], shots=shots)\n    return job.result()[0].data.meas.get_counts()\n\ndef cx_error(seed):\n    return GenericBackendV2(2, seed=seed).target[\"cx\"][(0, 1)].error\n\ncalls = {\n    \"A\": dict(backend_seed=42, sim_seed=7),\n    \"B\": dict(backend_seed=42),\n    \"C\": dict(sim_seed=7),\n    \"D\": dict(backend_seed=42, shots=100_000),\n    \"E\": dict(sim_seed=7, shots=100_000),\n}\nflags, evidence, observed = {}, {}, {}\nfor k, kw in calls.items():\n    runs = [dict(sorted(counts(**kw).items())) for _ in range(3)]\n    same = all(r == runs[0] for r in runs)\n    flags[k] = same\n    observed[k] = runs\n    label = \"counts(\" + \", \".join(f\"{a}={b:_}\" if isinstance(b, int) else f\"{a}={b}\" for a, b in kw.items()) + \")\"\n    evidence[k] = f\"{label} x3 -> {runs}; identical every time: {same}\"\ne1, e2, e3 = cx_error(None), cx_error(None), cx_error(42)\nevidence[\"C\"] += f\" (two unseeded backends: cx(0,1) error {e1:.5f} vs {e2:.5f})\"\nevidence[\"E\"] += f\" (unseeded backends draw different error rates, e.g. {e1:.5f} vs {e2:.5f})\"\nevidence[\"B\"] += f\" (seed=42 pins the cx(0,1) error at {e3:.5f}; sampling stays unseeded)\"\nemit_verdict({\"answer\": sorted(k for k, v in flags.items() if v),\n              \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (d3): reproducibility needs BOTH the GenericBackendV2 seed (random noise properties) and options.simulator.seed_simulator (shot sampling); measured 2026-10-01 — backend seed alone and sim seed alone each give differing counts (unseeded backends: 0/15 identical at 4000 shots). Proof repeats each call 3x."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

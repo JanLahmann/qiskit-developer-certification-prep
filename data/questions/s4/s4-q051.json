@@ -1,0 +1,75 @@
+{
+  "id": "s4-q051",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "What does this code print?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorSampler\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\nqc.measure_all()\n\nvalues = np.zeros((2, 3, 1))\njob = StatevectorSampler(seed=1).run([(qc, values, 50)], shots=1000)\nmeas = job.result()[0].data.meas\nprint(meas.shape, meas.num_shots, sum(meas.get_counts().values()))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`(2, 3, 1) 50 300`"
+    },
+    {
+      "key": "B",
+      "text": "`(2, 3) 50 300`"
+    },
+    {
+      "key": "C",
+      "text": "`(2, 3) 1000 6000`"
+    },
+    {
+      "key": "D",
+      "text": "`(2, 3) 50 50`"
+    },
+    {
+      "key": "E",
+      "text": "`(6,) 50 300`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "Three rules combine. (1) With one circuit parameter, the trailing size-1 axis of `values` is the per-parameter axis, so `(2, 3, 1)` means a `(2, 3)` grid of parameter sets, and the `BitArray` takes that shape. (2) A shot count inside the PUB overrides the `shots` argument of `run()`, so each of the six sets is sampled 50 times (`num_shots` is per set). (3) `get_counts()` with no `loc` merges every set, so the counts sum to 6 x 50 = 300.",
+    "distractors": {
+      "A": "Keeps the parameter axis as part of the data shape. With one parameter, the size-1 trailing axis holds the single value of each set and is consumed.",
+      "C": "Lets the `run()` keyword win. The PUB's own shot count takes precedence; `shots=1000` only applies to PUBs that do not specify one.",
+      "D": "Assumes `get_counts()` reads only the first parameter set. Without a `loc` argument it aggregates over every position of the array.",
+      "E": "Assumes the Sampler flattens the parameter sets into a list. The data array keeps the broadcast shape of the parameter sets."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q051.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport contextlib, io\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorSampler\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\nqc.measure_all()\n\nvalues = np.zeros((2, 3, 1))\nbuf = io.StringIO()\nwith contextlib.redirect_stdout(buf):\n    job = StatevectorSampler(seed=1).run([(qc, values, 50)], shots=1000)\n    meas = job.result()[0].data.meas\n    print(meas.shape, meas.num_shots, sum(meas.get_counts().values()))\nprinted = buf.getvalue().strip()\nfirst_set = sum(meas.get_counts(loc=(0, 0)).values())\n\nclaims = {\n    \"A\": \"(2, 3, 1) 50 300\",\n    \"B\": \"(2, 3) 50 300\",\n    \"C\": \"(2, 3) 1000 6000\",\n    \"D\": \"(2, 3) 50 50\",\n    \"E\": \"(6,) 50 300\",\n}\nflags = {k: printed == v for k, v in claims.items()}\nevidence = {k: f\"printed '{printed}'; option claims '{v}' -> match={flags[k]}\" for k, v in claims.items()}\nevidence[\"D\"] += f\" (only get_counts(loc=(0, 0)) sums to {first_set}; the no-loc call merges all six sets)\"\nevidence[\"C\"] += \" (the PUB's 50 shots override run(shots=1000))\"\nemit_verdict({\n    \"answer\": sorted(k for k, v in flags.items() if v),\n    \"evidence\": evidence,\n    \"observed\": {\"printed\": printed, \"first_set_total\": first_set},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (d3): Sampler side of broadcasting — one-parameter trailing-axis coercion (2, 3, 1) -> (2, 3), PUB shots beating run(shots=), and get_counts() aggregating over all parameter sets, combined in one printed line. Proof captures the literal stdout."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

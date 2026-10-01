@@ -1,0 +1,84 @@
+{
+  "id": "s4-q054",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The figure shows the gate map of `FakeLimaV2`. What happens when `isa` is run on it?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeLimaV2, FakeManilaV2\n\nbell = QuantumCircuit(2)\nbell.h(0); bell.cx(0, 1); bell.measure_all()\n\npm = generate_preset_pass_manager(optimization_level=1, backend=FakeManilaV2(),\n                                  initial_layout=[2, 3], seed_transpiler=7)\nisa = pm.run(bell)\n\njob = SamplerV2(mode=FakeLimaV2()).run([isa])",
+  "options": [
+    {
+      "key": "A",
+      "text": "It runs: both devices have five qubits and the same `cx` basis gate, so the ISA carries over."
+    },
+    {
+      "key": "B",
+      "text": "It raises an ISA error, because the CX acts on qubits 2 and 3, which this device doesn't couple."
+    },
+    {
+      "key": "C",
+      "text": "It runs after the primitive re-routes the circuit onto this device's coupling map."
+    },
+    {
+      "key": "D",
+      "text": "It runs, but the CX is silently executed on a coupled pair such as qubits 1 and 3."
+    },
+    {
+      "key": "E",
+      "text": "It raises because an ISA circuit records which device it was built for and rejects others."
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s4-q054/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s4-q054/s4-q054-stem.svg",
+      "alt": "Gate map of a 5-qubit device drawn as numbered circles joined by lines. Qubits 0, 1 and 2 sit in a row with lines 0-1 and 1-2; qubit 3 sits below qubit 1 with a line 1-3; qubit 4 sits below qubit 3 with a line 3-4. There is no line between qubits 2 and 3."
+    }
+  },
+  "explanation": {
+    "correct": "An ISA circuit is tied to physical qubits, not to a device name. `FakeManilaV2` is a line (0-1-2-3-4), so the pinned layout `[2, 3]` puts the CX on physical qubits 2 and 3 with no routing. The figure shows that this device couples 1-3, not 2-3. The runtime primitive checks every PUB against the target before submitting, and fake backends enforce it like hardware: `IBMInputValueError` — the CX on qubits (2, 3) is not supported by the target. Transpile against the backend you will actually run on.",
+    "distractors": {
+      "A": "Matching qubit count and basis gates is not enough: the ISA also includes connectivity, and the two devices differ there.",
+      "C": "Primitives no longer transpile for you; they validate and reject non-ISA input. Routing is the transpiler's job, before `run()`.",
+      "D": "Nothing silently re-maps qubits — that would change the computation. The mismatch is rejected up front.",
+      "E": "The check is structural, not a name check: the same `isa` runs on another 5-qubit line device such as `FakeAthensV2`, because qubits 2 and 3 are coupled there."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpile",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2",
+      "https://quantum.cloud.ibm.com/docs/guides/local-testing-mode"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q054.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport warnings\nwarnings.filterwarnings(\"ignore\")\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeLimaV2, FakeManilaV2, FakeAthensV2\n\n# Literal the stem figure draws (data/figures/s4-q054/generate.py asserts it too).\nEDGES = [(0, 1), (1, 2), (1, 3), (3, 4)]\nlima = FakeLimaV2()\ndrawn = sorted({tuple(sorted(e)) for e in lima.coupling_map.get_edges()})\nassert drawn == EDGES, drawn\n\nbell = QuantumCircuit(2)\nbell.h(0); bell.cx(0, 1); bell.measure_all()\npm = generate_preset_pass_manager(optimization_level=1, backend=FakeManilaV2(),\n                                  initial_layout=[2, 3], seed_transpiler=7)\nisa = pm.run(bell)\ntwoq = [tuple(isa.find_bit(b).index for b in i.qubits) for i in isa.data\n        if i.operation.name == \"cx\"]\n\ndef attempt(backend):\n    try:\n        res = SamplerV2(mode=backend).run([isa], shots=100).result()\n        return True, None, dict(res[0].data.meas.get_counts())\n    except Exception as exc:\n        return False, f\"{type(exc).__name__}: {str(exc)[:110]}\", None\n\nok, err, counts = attempt(lima)\nok_line, err_line, _ = attempt(FakeAthensV2())\npair_coupled = any(tuple(sorted(p)) in EDGES for p in twoq)\nflags = {\n    \"A\": ok,\n    \"B\": (not ok) and \"(2, 3)\" in (err or \"\") and not pair_coupled,\n    \"C\": ok,\n    \"D\": ok,\n    \"E\": (not ok) and not ok_line,\n}\nbase = f\"isa CX on physical {twoq}; FakeLimaV2 couples {EDGES}; run -> ok={ok}, error={err}\"\nevidence = {k: f\"{base} -> match={v}\" for k, v in flags.items()}\nevidence[\"E\"] += f\" (the same isa on FakeAthensV2, a 5-qubit line: ok={ok_line}, error={err_line})\"\nemit_verdict({\"answer\": sorted(k for k, v in flags.items() if v), \"evidence\": evidence,\n              \"observed\": {\"cx_pairs\": twoq, \"lima_error\": err, \"athens_ok\": ok_line}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (stem figure, d2): transpile-then-run pitfall — an ISA built for FakeManilaV2 (line) with layout [2, 3] run on FakeLimaV2 (T-shape, no 2-3 link) is rejected by the runtime ISA check (IBMInputValueError). Figure hand-drawn (Graphviz absent) from FakeLimaV2.coupling_map; generator and proof assert the same edge literal. FakeAthensV2 (line) accepts the same isa, refuting the device-name misconception."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

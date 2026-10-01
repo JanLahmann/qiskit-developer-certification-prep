@@ -2188,3 +2188,161 @@ Fourteen adds s3-q059..q072 (d1 ×1, d2 ×6, d3 ×7; 6 figure items — 5 option
   any wave. New shape: `QuantumCircuit(3, 1)`, `ry(π/3, 1)`, `measure(1, 0)`,
   `if_test((c0, 0)) as else_: cx(0, 2)` / `else_: swap(0, 2)`; key C. Renders: correct
   21605 B tied with the swapped-bodies variant, D 22388 B, B 18848 B (no image tell).
+
+## R2 expansion — s4 (2026-10-01, qiskit 2.5.0 / runtime 0.48.0)
+
+Eleven adds s4-q050..q060 (d2 ×5, d3 ×6; 4 figure items — 3 stem-figure, 1 option-image;
+8 executed, 3 conceptual). Measured in the pinned venv:
+
+- **Primitive mode is resolved in the CONSTRUCTOR** (`BasePrimitiveV2.__init__` ->
+  `get_mode_service_backend`). A `SamplerV2()` built inside `with Session(...)` / `with
+  Batch(...)` stores that session; `run()` after the block exits raises
+  `IBMRuntimeError: 'The session is closed.'` (the `_active_session` guard on
+  `Session._run`; `__exit__` calls `close()`). Same message for a `Batch` (subclass).
+  Locally provable with fake backends — the guard fires before the local service (s4-q052).
+  Corollary for the s4-q020 entry: the "mode=backend joins the open session" check also
+  happens at construction, so a primitive built BEFORE the `with` block keeps job mode
+  (read from source, not executable locally — needs a real IBMBackend).
+- **Broadcasting with a TWO-parameter circuit:** values `(4, 2)` = 4 sets; against
+  observables `(3, 1)` -> `evs.shape (3, 4)`. Raw `np.broadcast_shapes((4, 2), (3, 1))`
+  raises — the "not broadcastable" distractor is the raw-array misconception (s4-q050).
+- **Sampler side of the one-parameter coercion:** `StatevectorSampler(seed=1).run([(qc,
+  np.zeros((2, 3, 1)), 50)], shots=1000)` -> `meas.shape (2, 3)`, `num_shots 50` (PUB
+  shots win, per set), `sum(get_counts().values()) == 300` (no-`loc` `get_counts` merges
+  every set); `get_counts(loc=(0, 0))` sums to 50 (s4-q051).
+- **GenericBackendV2 reproducibility needs TWO seeds:** `seed=` fixes the randomly drawn
+  noise properties (e.g. cx error), `options.simulator.seed_simulator` fixes shot sampling.
+  Backend seed alone -> counts differ run to run; sim seed alone on unseeded backends ->
+  differ (0/15 identical at 4000 shots, new error rates every construction); both -> byte-
+  identical. Proofs repeat each call 3x (s4-q053).
+- **Runtime ISA check scope (`utils.is_simulator`):** validation runs only for
+  non-simulator backends. `SamplerV2(mode=AerSimulator())` runs an untranspiled H/CX
+  circuit; `AerSimulator.from_backend(FakeManilaV2())` passes the runtime check but Aer
+  raises `AerError: unknown instruction: h`; FakeManilaV2 and GenericBackendV2 raise
+  `IBMInputValueError`; `StatevectorSampler` has no target (s4-q059). The check is
+  DIRECTIONAL on a directed coupling map: `GenericBackendV2(3, coupling_map=[[0,1],[1,2]])`
+  rejects `cx(2, 1)`; it also rejects an un-translated `swap` (s4-q055).
+- **Cross-device ISA:** an ISA built for FakeManilaV2 (line) with `initial_layout=[2, 3]`
+  is rejected on FakeLimaV2 (T: 0-1, 1-2, 1-3, 3-4) with `cx on qubits (2, 3)`, but runs on
+  FakeAthensV2 (line) — the check is structural, never a device-name check (s4-q054).
+  Small fake backends (<=7 q) are ALL `cx` devices; lines: Athens/Bogota/Manila/Rome/
+  Santiago; T: Belem/Burlington/Essex/Lima/London/Ourense/Quito/Valencia/Vigo;
+  H (7 q): Casablanca/Jakarta/Lagos/Nairobi; Yorktown is the bow-tie.
+- **`apply_layout(isa.layout)` uses the FINAL layout:** 3-line, level 0, coupling map only,
+  `initial_layout=[1, 0, 2]`, `h(1); cx(1,0); cx(1,2)` -> `h[0], cx[0,1], swap[1,2],
+  cx[0,1]`, final `[2, 0, 1]`; `SparsePauliOp("XYZ")` -> `ZXY` (initial-only `XZY`).
+  **Physics cross-check hazard:** a probe state built from ry/rx/rz gave `<XYZ> = 0` for
+  EVERY candidate label (degenerate, proves nothing) — use generic `u(θ, φ, λ)` product
+  probes and assert the reference value is non-zero (s4-q056).
+- Hand-drawn gate map (Graphviz absent): draw from `backend.coupling_map.get_edges()`
+  and assert the undirected edge literal in both generator and proof (s4-q054).
+- Craft: `must` inside a quoted error message ("A backend or session must be specified")
+  tripped a MEDIUM `absolute_distractor_tell` — paraphrase error messages that carry
+  absolute words. Three new low `length_tell` keepers (q053/q054/q058) moved
+  `longest_option` 18.9% -> 20.7% (still below chance); `shortest_option` 32.0% -> 29.1%.
+  0 blockers / 0 warnings, no high/medium flags, no cross-question duplicate options.
+  q055 option renders 22.2-23.2 KB (keyed E second-largest, 2 B under A).
+- Conceptual adds cite guides/execution-modes-faq (session usage = wall-clock commitment
+  incl. interactive-TTL idle time and compilation; batch = quantum time only; execution
+  lanes fill with batch jobs, no exclusivity) and guides/execution-modes + max-execution-time
+  (interactive-TTL lapse DEACTIVATES, job must re-queue to reactivate within max TTL).
+  s4-q060 uses different numbers from the FAQ's lanes example on purpose.
+- Answer keys of the adds: A2 B2 C2 D1 E3 + multi {B, D}.
+
+## R2 expansion — s5 (2026-10-01, qiskit 2.5.0 / runtime 0.48.0)
+
+Eight adds s5-q044..q051 (d2 ×3, d3 ×5; 3 figure items — 2 option-image histograms,
+1 stem-figure histogram; 7 executed, 1 conceptual). Measured in the pinned venv:
+
+- **`SamplerPubResult.join_data()` puts the FIRST-declared register on the LOW (right)
+  end.** `QuantumCircuit(q, out[2], anc[1])`, q1 = q2 = 1, q0 -> out[0], q1 -> out[1],
+  q2 -> anc[0]: `join_data()` -> `{'110': 50}` (anc + out); `join_data(["anc", "out"])`
+  -> `'101'`. Same layout as `BitArray.concatenate_bits([out, anc])` and as Aer's legacy
+  `'1 01'` counts minus the space. **Docstring hazard:** it says the first name "is placed
+  to the left of" the next — that means lower bit INDEX, which PRINTS on the right. Key on
+  execution, explain via bit indices (s5-q044). `names=None` is legal (no error).
+- **`BitArray.postselect(indices, selection)`**: indices are bit indices (`meas[i]`, same
+  as `slice_bits`), `selection` lists the values to KEEP, result keeps `num_bits` (3 -> 3)
+  and is flattened to shape `()`. Seeded `StatevectorSampler(seed=3)` 400 shots of
+  `h0; cx01; h2; measure_all` -> `{'000': 96, '111': 92, '100': 117, '011': 95}`;
+  `postselect([2], [0])` -> `{'000': 96, '011': 95}` (s5-q045).
+- **`slice_bits([1, 2, 3])` on `1101`** -> `'110'`; character slicing gives `101`,
+  list-order string `011`, `slice_shots([1, 2, 3])` -> `{'1101': 3}` (s5-q050).
+- **Shot precedence is per PUB, then multiplied by the set count:** FakeManilaV2,
+  `default_shots = 300`, `run([(a, None, 100), (b_2param, zeros((3, 2)))], shots=200)` ->
+  PUB 1 `num_shots 100`, PUB 2 shape `(3,)` x 200; total 700. Without `shots=` PUB 2 takes
+  300 per set — `default_shots` IS honored locally as the last fallback (s5-q046).
+- **Twirling allocation (TwirlingOptions 0.48 API page, fetched 2026-10-01):** with
+  `num_randomizations` fixed and `shots_per_randomization="auto"` -> `ceil(shots /
+  num_randomizations)`; both auto -> `max(64, ceil(shots/32))` then num = ceil(shots/spr);
+  PUB/run shots are "always obeyed", twirling product outranks only `default_shots`.
+  guides/sampler-options (0.50 docs) adds: the job FAILS if the twirling product is smaller
+  than PUB/run shots — a future d3 candidate. The live guide now lists Sampler
+  `twirling.enable_gates`/`enable_measure` default False and `default_shots` default None
+  (0.50 drift; the 0.48 API page agrees on the twirling False defaults) (s5-q047, conceptual).
+- **Crossed measure mapping:** `QuantumCircuit(3, 3); x(0); h(1); measure(0, 2);
+  measure(1, 0)`, `StatevectorSampler(seed=5)` 400 shots -> `{'101': 191, '100': 209}`;
+  the unwritten `c[1]` prints 0, keys stay 3 bits (s5-q048).
+- **Readout inversion check in Aer:** `ReadoutError([[0.95, 0.05], [0.10, 0.90]])` on a
+  state with true P(1) = 0.300 reads raw 0.305 (200k shots, `seed_simulator=42`, within
+  0.004) — `SamplerV2(mode=AerSimulator(noise_model=...))` runs untranspiled `ry` fine
+  (s5-q051).
+- Marginal from a histogram: `ry(2π/3, 0); ry(π/3, 1)`, `StatevectorSampler(seed=1)` 1000
+  shots -> `{'00': 175, '01': 555, '10': 73, '11': 197}`; P(q0 = 1) = 0.752 via
+  `slice_bits([0])` (s5-q049).
+- Craft: histogram option families with 2 bars each render 12.7-13.7 KB (2-bit-key and
+  1-bar variants are the smallest); keyed s5-q048 ties two distractors at 12858 B. All-tie
+  bare-value options (dict literals, numbers) are free length ballast. Adds moved
+  `numeric_middle` 49.5% -> 44.1%, `largest_image_option` 56% -> 44%,
+  `smallest_image_option` 25% -> 17% (6 image questions — a later wave should key a
+  strict-smallest drawing). Same 6 low `length_tell` keepers, 0 blockers/warnings, no
+  cross-question duplicates, no flag on any add. Answer keys of the adds: A1 B2 C1 D2 E2.
+
+## R2 expansion — s6 (2026-10-01, qiskit 2.5.0 / runtime 0.48.0)
+
+Nine adds s6-q043..q051 (d2 ×4, d3 ×5; 3 figure items — 2 stem-figure, 1 option-image;
+7 executed, 2 conceptual). Every executed proof scores EVERY option key (string/print
+claims compared to captured stdout, raise-claims scored from the observed run). Measured:
+
+- **`SparsePauliOp(["ZI","IZ"]).compose(itself).simplify()` = `2·II + 2·ZZ`** — commuting
+  cross terms ADD (contrast the s1 anticommuting `["X","Z"]` case where they cancel). On a
+  Bell state `[H, H2]` prints `[0. 4.]`; `H.tensor(H)` in the same observables list raises
+  `ValueError: The number of qubits must be the same for all observables` (s6-q043).
+- **`BackendEstimatorV2` circuit count = Σ over parameter sets of qubit-wise-commuting
+  groups of the Paulis that set needs.** It merges every Pauli the broadcast assigns to a
+  set, then `group_commuting(qubit_wise=True)`. Observables `(2,)` × one-parameter values
+  `[[0.3],[1.2]]` (2 sets, shape `(2,)`) ZIP: set 0 gets `ZZ/XX/YY` (3 groups), set 1 gets
+  `ZI/IX` (1 group) -> AerSimulator.run receives **4** circuits in one call (s6-q044).
+  Counting hook: wrap `backend.run` on an `AerSimulator(seed_simulator=7)`.
+- **Runtime `EstimatorV2(mode=AerSimulator())` (local mode) -> BackendEstimatorV2:**
+  `precision=0.05` -> `metadata['shots'] == 400` (`ceil(1/p²)`), `target_precision 0.05`;
+  `stds = Σ|c_i|·sqrt(1 − <P_i>²) / sqrt(shots)`. On |+⟩: Z stds ≈ 0.0499–0.0500 over seeds
+  1–3, X stds exactly 0.0 (eigenstate). Untranspiled `h` runs (simulator: no ISA check) (s6-q045).
+- **ZNE result fields (ZneOptions docstring, identical in installed 0.48.0 source and the
+  live 0.50 API page):** `evs_noise_factors`/`stds_noise_factors`/`ensemble_stds_noise_factors`
+  shape `(*pub_shape, num_noise_factors)`; `evs_extrapolated` `(*shape, num_extrapolators,
+  num_evaluation_points)`; `extrapolated_noise_factors` defaults to `[0, *noise_factors]`;
+  `"fallback"` returns the lowest-noise-factor raw value; default extrapolators
+  `("exponential", "linear")`, `evs` = first successful. `zne.noise_factors = (1, 3, 5, 7)`
+  is accepted in 0.48 (s6-q046, s6-q050 — both conceptual: ZNE is server-side).
+- guides/estimator-input-output (fetched 2026-10-01) is a good s6 citation: commuting
+  observables in one PUB grouped via `group_qubit_wise_commuting`, different PUBs never share
+  a measurement; stds vs `ensemble_standard_error`; ZNE stds = fit uncertainty at factor 0.
+- **`from_sparse_list([("ZX", [0, 2], 0.5)], num_qubits=3)` -> `XIZ`** (characters pair with
+  indices left to right) (s6-q048). **Dict and str observables are coerced**:
+  `[{"ZI": 2.0, "IX": 1.0}, "XZ"]` -> `evs` shape `(2,)`, the dict is ONE weighted
+  observable (s6-q049).
+- **3-qubit reversed-label hazard:** reading `IXX` qubit-0-first probes qubits 1 and 2, not
+  "the same pair" — the first draft of s6-q047's endianness distractor was mis-derived by
+  hand; the proof's assert caught it. Always compute reversed-label variants by executing
+  `label[::-1]`, never by hand.
+- `np.round(evs, 3)` print forms used as options: `[-1.  0. -1.  0.]`, `[ 0. -1.]`,
+  `[-0.333  0.   ]` (numpy pads); compare the captured stdout, not the floats.
+- Craft: s6-q051 option renders 21888–21892 B (keyed E tied with B/C at 21890; A smallest)
+  — no image tell, but the "strictly smallest correct drawing" wish was NOT met (byte
+  sizes move by 2 B with bar heights; not worth a contrived variant). A first q049 draft
+  shared `[0. 0.]` with q043 (both wrong) — replaced by the weighted-average
+  misconception. Bare numeric options `3`/`2` on s6-q044 coincide with s3-q031 (benign).
+  Section audit after: 0 blockers / 0 warnings, the same 7 pre-existing low `length_tell`
+  keepers, no flag on any add; `shortest_option` 20.2% -> 21.1%, `position_C`
+  36.6% -> 34.7%. Answer keys of the adds: A2 C2 D2 E3 (B avoided — it led s6 with 9).

@@ -1,0 +1,77 @@
+{
+  "id": "s5-q049",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "This histogram shows a 2-qubit Sampler run with `measure_all()`. What is the estimated probability that qubit 0 reads 1?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "0.270"
+    },
+    {
+      "key": "B",
+      "text": "0.555"
+    },
+    {
+      "key": "C",
+      "text": "0.197"
+    },
+    {
+      "key": "D",
+      "text": "0.752"
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "figures": {
+    "generator": "figures/s5-q049/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s5-q049/s5-q049-stem.svg",
+      "alt": "Bar chart with a Count axis and four bars, labelled left to right 00 at height 175, 01 at height 555, 10 at height 73 and 11 at height 197, each with its value printed above it."
+    }
+  },
+  "explanation": {
+    "correct": "Qubit 0 is the RIGHTMOST character of each key, so its marginal adds every bar ending in 1: (555 + 197) / 1000 = 0.752. Marginalizing means summing over the other qubit's outcomes, never reading a single bar.",
+    "distractors": {
+      "A": "Endianness flipped: summing the bars whose LEFT character is 1 (73 + 197) gives qubit 1's marginal, not qubit 0's.",
+      "B": "Single-bar reading: `01` is the outcome 'qubit 0 = 1 AND qubit 1 = 0'; it misses the shots where both qubits read 1.",
+      "C": "Joint instead of marginal: `11` counts only shots where both qubits read 1, i.e. the probability that qubit 0 AND qubit 1 are 1."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q049.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.visualization import plot_histogram\n\n# MUST mirror data/figures/s5-q049/generate.py (the drawn histogram).\nCOUNTS = {\"00\": 175, \"01\": 555, \"10\": 73, \"11\": 197}\n\nqc = QuantumCircuit(2)\nqc.ry(2 * np.pi / 3, 0)\nqc.ry(np.pi / 3, 1)\nqc.measure_all()\nbits = StatevectorSampler(seed=1).run([qc], shots=1000).result()[0].data.meas\ncounts = bits.get_counts()\nassert counts == COUNTS, counts\n\n# Read the bars back off the drawing (pair by tick slot).\nax = plot_histogram(counts).axes[0]\nlabels = [t.get_text() for t in ax.get_xticklabels()]\ndrawn = {labels[int(round(p.get_x() + p.get_width() / 2))]: int(round(p.get_height())) for p in ax.patches}\nassert drawn == COUNTS, drawn\nshots = sum(drawn.values())\n\n# Independent marginal: slice out classical bit 0 (fed by qubit 0) from the BitArray.\nq0_ones = bits.slice_bits([0]).get_counts().get(\"1\", 0)\np_q0 = round(q0_ones / shots, 3)\nleft_bit = round(sum(v for k, v in drawn.items() if k[0] == \"1\") / shots, 3)\n\nclaims = {\"A\": 0.270, \"B\": 0.555, \"C\": 0.197, \"D\": 0.752}\nproven, evidence = [], {}\nfor k, c in claims.items():\n    m = abs(c - p_q0) < 5e-4\n    evidence[k] = f\"slice_bits([0]) of the drawn run gives P(q0=1) = {p_q0}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nevidence[\"A\"] += f\" (that is the LEFT bit, qubit 1: {left_bit})\"\nevidence[\"B\"] += f\" (the single bar '01' alone: {round(drawn['01'] / shots, 3)})\"\nevidence[\"C\"] += f\" (the single bar '11' alone: {round(drawn['11'] / shots, 3)})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"drawn\": drawn, \"p_q0\": p_q0, \"left_bit\": left_bit}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 stem-figure add: marginal probability read off a Sampler histogram (endianness + marginalization). Counts from seeded StatevectorSampler (seed=1), asserted in generator and proof; proof reads the bars back and computes the marginal independently via slice_bits([0])."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

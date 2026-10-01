@@ -1,0 +1,91 @@
+{
+  "id": "s5-q045",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "Which histogram does the last line draw?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.visualization import plot_histogram\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.h(2)\nqc.measure_all()\n\nbits = StatevectorSampler(seed=3).run([qc], shots=400).result()[0].data.meas\nprint(bits.get_counts())   # {'000': 96, '111': 92, '100': 117, '011': 95}\n\nkept = bits.postselect([2], [0])\nplot_histogram(kept.get_counts())",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s5-q045/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s5-q045/s5-q045-A.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 000 at height 96 and 100 at height 117, each with its value printed above it."
+      },
+      "B": {
+        "file": "figures/s5-q045/s5-q045-B.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 000 at height 96 and 011 at height 95, each with its value printed above it."
+      },
+      "C": {
+        "file": "figures/s5-q045/s5-q045-C.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 100 at height 117 and 111 at height 92, each with its value printed above it."
+      },
+      "D": {
+        "file": "figures/s5-q045/s5-q045-D.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 00 at height 96 and 11 at height 95, each with its value printed above it."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`postselect(indices, selection)` keeps the shots whose classical bits at the given INDICES equal the selection, where index `i` is bit `meas[i]` — the same convention as `slice_bits`, so index 2 is the LEFTMOST character of a printed key. Keeping bit 2 = 0 retains `000` (96) and `011` (95) and discards the `1xx` shots. The result is still a 3-bit array (post-selection filters shots, it never removes bits), and because q0 and q1 form a Bell pair the kept keys show only `00` or `11` on the right.",
+    "distractors": {
+      "A": "Index read as a string position: the third character of a key is bit 0, not bit 2. Keeping bit 0 = 0 would retain `000` and `100`.",
+      "C": "Selection inverted: `selection` lists the values to KEEP, so `[0]` retains shots whose bit 2 is 0, not the ones where it is 1.",
+      "D": "Width misconception: `postselect` returns a BitArray with the same `num_bits`; the conditioned bit stays in every key (here always `0` on the left)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q045.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# Variants MUST mirror data/figures/s5-q045/generate.py.\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.visualization import plot_histogram\n\nCOUNTS = {\"000\": 96, \"111\": 92, \"100\": 117, \"011\": 95}\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.h(2)\nqc.measure_all()\nbits = StatevectorSampler(seed=3).run([qc], shots=400).result()[0].data.meas\nassert bits.get_counts() == COUNTS, f\"sampler drift: {bits.get_counts()}\"\nkept = bits.postselect([2], [0])\n\nvariants = {\n    # A: index 2 read as the third character of the printed key (that is c0).\n    \"A\": bits.postselect([0], [0]).get_counts(),\n    # B: the stem's call.\n    \"B\": kept.get_counts(),\n    # C: selection value read as \"discard shots whose bit is 0\".\n    \"C\": bits.postselect([2], [1]).get_counts(),\n    # D: the post-selected bit believed to be dropped from the keys.\n    \"D\": {k[1:]: v for k, v in kept.get_counts().items()},\n}\n\n\ndef bars(fig):\n    \"\"\"Read the drawing back off the axes, pairing patches with tick slots\n    (never by patch order — ledger, 2026-07-26).\"\"\"\n    ax = fig.axes[0]\n    labels = [t.get_text() for t in ax.get_xticklabels()]\n    out = {}\n    for p in ax.patches:\n        slot = int(round(p.get_x() + p.get_width() / 2))\n        out[labels[slot]] = int(round(p.get_height()))\n    return tuple(sorted(out.items()))\n\nassert kept.num_bits == 3\ntarget = bars(plot_histogram(kept.get_counts()))\nproven, evidence, observed = [], {}, {}\nfor key, counts in sorted(variants.items()):\n    b = bars(plot_histogram(counts))\n    m = b == target\n    observed[key] = [list(x) for x in b]\n    evidence[key] = (f\"figure draws {len(b)} bars {[list(x) for x in b]} vs the stem call's \"\n                     f\"{[list(x) for x in target]} -> match={m}\")\n    if m:\n        proven.append(key)\nevidence[\"D\"] += f\" (postselect keeps num_bits={kept.num_bits})\"\nobserved[\"kept_num_bits\"] = int(kept.num_bits)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 figure add: BitArray.postselect index convention (bit index, not character), kept width, Bell correlation. Counts from seeded StatevectorSampler (seed=3) asserted in generator and proof; proof reads each drawing back off the axes."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

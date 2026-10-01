@@ -1,0 +1,73 @@
+{
+  "id": "s6-q050",
+  "section": "s6",
+  "objectives": [
+    "s6o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The figure shows raw ZNE estimates. With `zne.extrapolator = \"linear\"`, what does `evs` report?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "0.70"
+    },
+    {
+      "key": "B",
+      "text": "0.62"
+    },
+    {
+      "key": "C",
+      "text": "0.78"
+    },
+    {
+      "key": "D",
+      "text": "0.46"
+    },
+    {
+      "key": "E",
+      "text": "0.14"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "A"
+  ],
+  "figures": {
+    "generator": "figures/s6-q050/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s6-q050/s6-q050-stem.svg",
+      "alt": "Scatter plot of raw expectation value against noise factor, x axis from 0 to 6, y axis from 0 to 1. Three labelled points: 0.62 at noise factor 1, 0.46 at noise factor 3 and 0.30 at noise factor 5."
+    }
+  },
+  "explanation": {
+    "correct": "ZNE fits a model to the estimates measured at amplified noise and reports the fit evaluated at noise factor 0. The points fall by 0.16 per 2 units of noise, a slope of −0.08; stepping from factor 1 back to factor 0 adds 0.08, so the linear extrapolation is 0.62 + 0.08 = 0.70. The raw points stay available in `evs_noise_factors`.",
+    "distractors": {
+      "B": "Reports the factor-1 value, i.e. the unamplified circuit. That is what the `fallback` extrapolator returns; a linear fit continues the trend down to zero noise.",
+      "C": "Treats the three points as equally spaced one unit apart (1, 2, 3), so the slope becomes −0.16 per unit. The noise factors are 1, 3 and 5, so the step is 0.16 per 2 units.",
+      "D": "Averages the three measurements. Averaging noisier estimates moves the result away from the zero-noise value instead of toward it.",
+      "E": "Extrapolates in the wrong direction, to noise factor 7. The target is the zero-noise limit, to the left of every measured point."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/options-zne-options",
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-noise-management"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (stem figure, d2, conceptual): what ZNE reports in evs (fit evaluated at noise factor 0) read off a plot of raw per-factor estimates. Generator asserts the three points are collinear with slope -0.08 / intercept 0.70; no local ZNE execution exists (server-side feature)."
+  }
+}

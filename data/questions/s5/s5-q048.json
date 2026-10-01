@@ -1,0 +1,102 @@
+{
+  "id": "s5-q048",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "Which histogram does this code draw?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.visualization import plot_histogram\n\nqc = QuantumCircuit(3, 3)\nqc.x(0)\nqc.h(1)\nqc.measure(0, 2)\nqc.measure(1, 0)\n\nbits = StatevectorSampler(seed=5).run([qc], shots=400).result()[0].data.c\nplot_histogram(bits.get_counts())   # q1 gave 1 in 191 of the shots",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "figures": {
+    "generator": "figures/s5-q048/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s5-q048/s5-q048-A.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 001 at height 209 and 011 at height 191, each with its value printed above it."
+      },
+      "B": {
+        "file": "figures/s5-q048/s5-q048-B.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 001 at height 209 and 101 at height 191, each with its value printed above it."
+      },
+      "C": {
+        "file": "figures/s5-q048/s5-q048-C.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 10 at height 209 and 11 at height 191, each with its value printed above it."
+      },
+      "D": {
+        "file": "figures/s5-q048/s5-q048-D.svg",
+        "alt": "Bar chart with a Count axis and one bar, labelled 010 at height 400, with its value printed above it."
+      },
+      "E": {
+        "file": "figures/s5-q048/s5-q048-E.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 100 at height 209 and 101 at height 191, each with its value printed above it."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`measure(qubit, clbit)` routes q0 (always 1) into `c[2]` and q1 (a fair coin) into `c[0]`; `c[1]` is never written and stays 0. The register still has 3 bits, printed `c[2] c[1] c[0]`, so every key starts with `1`, has `0` in the middle and ends with q1's result: `101` (191) and `100` (209).",
+    "distractors": {
+      "A": "Mapping ignored: assuming `c[i]` always holds `q[i]` gives `011` / `001`. The second argument of `measure` chooses the classical bit, and here it crosses the qubit order.",
+      "B": "Register printed in index order: writing `c[0]` first gives `101` / `001`. Sampler bitstrings are little-endian — the highest classical index is the leftmost character.",
+      "C": "Unwritten bit dropped: a register declared with 3 bits always yields 3-bit keys; `c[1]` was never measured, so it reads 0 rather than disappearing.",
+      "D": "Argument order swapped: reading `measure(0, 2)` as clbit 0 <- qubit 2 sends the idle q2 into `c[0]` and q0 into `c[1]`, giving a single `010` bar. The signature is `measure(qubit, cbit)`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q048.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# Variants MUST mirror data/figures/s5-q048/generate.py.\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.visualization import plot_histogram\n\nCOUNTS = {\"101\": 191, \"100\": 209}\n\n\ndef build(pairs):\n    qc = QuantumCircuit(3, 3)\n    qc.x(0)\n    qc.h(1)\n    for qubit, clbit in pairs:\n        qc.measure(qubit, clbit)\n    return qc\n\n\ndef support(qc):\n    c = StatevectorSampler(seed=5).run([qc], shots=400).result()[0].data.c.get_counts()\n    return sorted(c)\n\n\nbits = StatevectorSampler(seed=5).run([build([(0, 2), (1, 0)])], shots=400).result()[0].data.c\ncounts = bits.get_counts()\nassert counts == COUNTS, f\"sampler drift: {counts}\"\n\n# Each misconception keeps the SAME shots (same q1 coin flips), relabelled.\nvariants = {\n    # A: mapping ignored, c[i] taken from q[i] (key = c2 c1 c0 = 0, q1, q0).\n    \"A\": {\"0\" + k[2] + k[0]: v for k, v in counts.items()},\n    # B: register printed with c0 on the left.\n    \"B\": {k[::-1]: v for k, v in counts.items()},\n    # C: unmeasured c1 believed absent from the key (c2 c0 only).\n    \"C\": {k[0] + k[2]: v for k, v in counts.items()},\n    # D: measure(0, 2) read as (clbit, qubit): q2 -> c0, q0 -> c1.\n    \"D\": {\"010\": sum(counts.values())},\n    # E: the stem's counts.\n    \"E\": dict(counts),\n}\n\n\ndef bars(fig):\n    \"\"\"Read the drawing back off the axes, pairing patches with tick slots\n    (never by patch order — ledger, 2026-07-26).\"\"\"\n    ax = fig.axes[0]\n    labels = [t.get_text() for t in ax.get_xticklabels()]\n    out = {}\n    for p in ax.patches:\n        slot = int(round(p.get_x() + p.get_width() / 2))\n        out[labels[slot]] = int(round(p.get_height()))\n    return tuple(sorted(out.items()))\n\n# Execute the misconception circuits to confirm the relabelled keys are what\n# those circuits really produce.\nignored = support(build([(0, 0), (1, 1)]))\nswapped_args = support(build([(2, 0), (0, 1)]))\nassert ignored == sorted(variants[\"A\"]), ignored\nassert swapped_args == sorted(variants[\"D\"]), swapped_args\n\ntarget = bars(plot_histogram(counts))\nproven, evidence, observed = [], {}, {}\nfor key, c in sorted(variants.items()):\n    b = bars(plot_histogram(c))\n    m = b == target\n    observed[key] = [list(x) for x in b]\n    evidence[key] = (f\"figure draws {len(b)} bars {[list(x) for x in b]} vs the stem call's \"\n                     f\"{[list(x) for x in target]} -> match={m}\")\n    if m:\n        proven.append(key)\nevidence[\"A\"] += f\" (circuit measuring q0->c0, q1->c1 executed: keys {ignored})\"\nevidence[\"D\"] += f\" (circuit measuring q2->c0, q0->c1 executed: keys {swapped_args})\"\nevidence[\"C\"] += f\" (the register has {bits.num_bits} bits; unmeasured c1 prints as 0)\"\nobserved[\"num_bits\"] = int(bits.num_bits)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 figure add: crossed measure mapping + unwritten classical bit + little-endian keys. Counts from seeded StatevectorSampler (seed=5) asserted in generator and proof; misconception circuits A/D executed for their key support; drawings read back off the axes."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

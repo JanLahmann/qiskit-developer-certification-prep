@@ -1,0 +1,76 @@
+{
+  "id": "s5-q046",
+  "section": "s5",
+  "objectives": [
+    "s5o1",
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "How many shots does this job execute in total?",
+  "code": "import numpy as np\n\n# isa_a has no parameters; isa_b has 2 free parameters\nsampler = SamplerV2(mode=backend)\nsampler.options.default_shots = 300\n\nvals = np.zeros((3, 2))\njob = sampler.run([(isa_a, None, 100), (isa_b, vals)], shots=200)",
+  "options": [
+    {
+      "key": "A",
+      "text": "700"
+    },
+    {
+      "key": "B",
+      "text": "300"
+    },
+    {
+      "key": "C",
+      "text": "800"
+    },
+    {
+      "key": "D",
+      "text": "1000"
+    },
+    {
+      "key": "E",
+      "text": "1300"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "A"
+  ],
+  "explanation": {
+    "correct": "Shots are resolved per PUB: a PUB's own shot count wins, then `run(shots=...)`, and `default_shots` is only the fallback. The first PUB carries 100, so it runs 100 shots. The second PUB carries none, so it takes the run-level 200; its `(3, 2)` array against 2 parameters is 3 parameter sets (the trailing axis binds the parameters), and every set gets the full 200 shots. Total: 100 + 3 x 200 = 700. `default_shots = 300` is never used.",
+    "distractors": {
+      "B": "Broadcasting ignored: counting each PUB once (100 + 200) forgets that a PUB runs its shot count for EVERY parameter set in its sweep.",
+      "C": "Precedence inverted between PUB and run: `run(shots=200)` does not override the 100 the first PUB carries; a PUB-level value always wins for that PUB (200 + 3 x 200 would be 800).",
+      "D": "Option outranking the call: `default_shots` is the lowest step of the chain, used only when neither the PUB nor `run()` gives shots (100 + 3 x 300 would be 1000).",
+      "E": "Parameter axis misread: treating all six numbers in the `(3, 2)` array as separate sets gives 100 + 6 x 200. With 2 parameters the trailing size-2 axis is consumed by the binding, leaving 3 sets."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-options",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q046.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.transpiler import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(optimization_level=1, backend=backend, seed_transpiler=1)\na = QuantumCircuit(1)\na.h(0)\na.measure_all()\nt1, t2 = Parameter(\"t1\"), Parameter(\"t2\")\nb = QuantumCircuit(1)\nb.ry(t1, 0)\nb.rz(t2, 0)\nb.measure_all()\nisa_a, isa_b = pm.run(a), pm.run(b)\nassert isa_b.num_parameters == 2\n\nsampler = SamplerV2(mode=backend)\nsampler.options.default_shots = 300\nsampler.options.simulator.seed_simulator = 1\nvals = np.zeros((3, 2))\nresult = sampler.run([(isa_a, None, 100), (isa_b, vals)], shots=200).result()\n\nper_pub = []\nfor pub in result:\n    ba = pub.data.meas\n    per_pub.append({\"shape\": list(ba.shape), \"num_shots\": int(ba.num_shots),\n                    \"sets\": int(ba.size),\n                    \"tallied\": int(sum(ba.get_counts().values()))})\ntotal = sum(p[\"tallied\"] for p in per_pub)\nassert total == sum(p[\"num_shots\"] * p[\"sets\"] for p in per_pub)\n\nclaims = {\"A\": 700, \"B\": 300, \"C\": 800, \"D\": 1000, \"E\": 1300}\ndesc = (f\"PUB 1: {per_pub[0]['sets']} set x {per_pub[0]['num_shots']} shots; \"\n        f\"PUB 2: shape {tuple(per_pub[1]['shape'])}, {per_pub[1]['sets']} sets x {per_pub[1]['num_shots']} shots\")\nproven, evidence = [], {}\nfor k, c in claims.items():\n    m = total == c\n    evidence[k] = f\"executed on FakeManilaV2: {desc}; tallied total {total}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"per_pub\": per_pub, \"total\": total}})"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: shots precedence chain (PUB > run > default_shots) combined with broadcast set count; executed on FakeManilaV2 with 1-qubit circuits, total tallied from get_counts."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

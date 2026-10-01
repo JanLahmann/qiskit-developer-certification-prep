@@ -1,0 +1,76 @@
+{
+  "id": "s5-q044",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "What does this code print?",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(3, \"q\")\nout = ClassicalRegister(2, \"out\")\nanc = ClassicalRegister(1, \"anc\")\nqc = QuantumCircuit(qr, out, anc)\nqc.x(1)\nqc.x(2)\nqc.measure(qr[0], out[0])\nqc.measure(qr[1], out[1])\nqc.measure(qr[2], anc[0])\n\nres = StatevectorSampler().run([qc], shots=50).result()[0]\nprint(res.join_data().get_counts())",
+  "options": [
+    {
+      "key": "A",
+      "text": "`{'101': 50}`"
+    },
+    {
+      "key": "B",
+      "text": "`{'011': 50}`"
+    },
+    {
+      "key": "C",
+      "text": "`{'1 10': 50}`"
+    },
+    {
+      "key": "D",
+      "text": "`{'110': 50}`"
+    },
+    {
+      "key": "E",
+      "text": "It raises a `TypeError`: `join_data()` needs the register names"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "`join_data()` with no argument joins every register in circuit order (`out`, then `anc`) along the bits axis, so joined bit 0 is `out[0]`, bit 1 is `out[1]` and bit 2 is `anc[0]`. A bitstring prints its highest bit index on the left, which puts the register declared LAST on the left: `anc` = `1`, then `out` = `out[1] out[0]` = `10` (q1 = 1, q0 = 0). Every shot reads `110`. This is the same layout `BitArray.concatenate_bits([out, anc])` produces and the same order the old `backend.run` counts used, minus the space.",
+    "distractors": {
+      "A": "Register order flipped: placing the first-declared register `out` on the left gives `10` + `1`. Joining appends later registers to the HIGH end of the bit index, and high indices print leftmost — that is what `join_data([\"anc\", \"out\"])` would print.",
+      "B": "Qubit order read left to right: writing q0, q1, q2 as `0 1 1` ignores both little-endian printing and the register layout. The rightmost character is joined bit 0 (`out[0]`, fed by q0).",
+      "C": "V1 counts habit: the legacy `backend.run` result separated registers with a space. A `BitArray` has no register boundaries; `join_data()` returns one plain 3-bit array.",
+      "E": "Invented requirement: `names` is optional and defaults to every register in circuit order. Passing a list only selects and reorders registers."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.SamplerPubResult",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q044.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit.primitives import StatevectorSampler\n\nqr = QuantumRegister(3, \"q\")\nout = ClassicalRegister(2, \"out\")\nanc = ClassicalRegister(1, \"anc\")\nqc = QuantumCircuit(qr, out, anc)\nqc.x(1)\nqc.x(2)\nqc.measure(qr[0], out[0])\nqc.measure(qr[1], out[1])\nqc.measure(qr[2], anc[0])\n\nres = StatevectorSampler().run([qc], shots=50).result()[0]\njoined = res.join_data().get_counts()          # the stem's print\nprinted = str(joined)\nregs = list(res.data.keys())\nper_reg = {n: res.data[n].get_counts() for n in regs}\nswapped = res.join_data([\"anc\", \"out\"]).get_counts()   # 'out' given the high end\n\nclaims = {\n    \"A\": \"{'101': 50}\",\n    \"B\": \"{'011': 50}\",\n    \"C\": \"{'1 10': 50}\",\n    \"D\": \"{'110': 50}\",\n}\nproven, evidence = [], {}\nfor k, c in claims.items():\n    m = printed == c\n    evidence[k] = f\"executed print -> {printed}; option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nevidence[\"A\"] += f\" (that string is the join with 'out' on the HIGH end, join_data(['anc', 'out']) -> {swapped}; circuit order is {regs})\"\nevidence[\"B\"] += f\" (q0 q1 q2 written left to right; the per-register counts are {per_reg})\"\nevidence[\"C\"] += f\" (a space-separated key is the legacy backend.run format; joined keys here have {len(next(iter(joined)))} characters and no space)\"\n\n# E: join_data() with no names is legal — attempt it.\ntry:\n    res.join_data()\n    e_raises = False\n    evidence[\"E\"] = f\"join_data() with no names ran without error and returned {joined} -> option E refuted\"\nexcept Exception as exc:  # pragma: no cover\n    e_raises = True\n    evidence[\"E\"] = f\"join_data() raised {type(exc).__name__}: {exc}\"\n    proven.append(\"E\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"printed\": printed, \"registers\": regs, \"per_register\": per_reg,\n                           \"join_anc_out\": swapped, \"e_raises\": e_raises}})"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: multi-register join order + in-register little-endian printing; executed on StatevectorSampler (deterministic X/measure circuit). Note: the join_data docstring says the first register is placed 'to the left' meaning lower bit index — it prints on the RIGHT; key follows execution."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

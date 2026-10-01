@@ -1,0 +1,46 @@
+{
+  "question": "s6-q044",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "claims 4 circuits (zip pairing (set 0 -> 3-term observable, set 1 -> 2-term observable), one circuit per qubit-wise commuting group); the backend received 4 circuits (pub shape (2,), qubit-wise groups per observable [3, 1]) -> match=True",
+      "B": "claims 6 circuits (every observable paired with every parameter set, 3 groups per set); the backend received 4 circuits (pub shape (2,), qubit-wise groups per observable [3, 1]) -> match=False",
+      "C": "claims 3 circuits (three qubit-wise groups for all five terms, counted once regardless of parameter sets); the backend received 4 circuits (pub shape (2,), qubit-wise groups per observable [3, 1]) -> match=False",
+      "D": "claims 5 circuits (one circuit per Pauli term under the zip pairing); the backend received 4 circuits (pub shape (2,), qubit-wise groups per observable [3, 1]) -> match=False",
+      "E": "claims 10 circuits (one circuit per Pauli term for every observable/set combination); the backend received 4 circuits (pub shape (2,), qubit-wise groups per observable [3, 1]) -> match=False",
+      "F": "claims 2 circuits (one circuit per observable (or per parameter set) measuring everything at once); the backend received 4 circuits (pub shape (2,), qubit-wise groups per observable [3, 1]) -> match=False"
+    },
+    "observed": {
+      "circuits_executed": 4,
+      "pub_shape": [
+        2
+      ],
+      "observables_shape": [
+        2
+      ],
+      "parameter_sets_shape": [
+        2
+      ],
+      "qwc_groups_per_observable": [
+        3,
+        1
+      ],
+      "evs_shape": [
+        2
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 2.72,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"claims 4 circuits (zip pairing (set 0 -> 3-term observable, set 1 -> 2-term observable), one circuit per qubit-wise commuting group); the backend received 4 circuits (pub shape (2,), qubit-wise groups per observable [3, 1]) -> match=True\", \"B\": \"claims 6 circuits (every observable paired with every parameter set, 3 groups per set); the backend received 4 circuits (pub shape (2,), qubit-wise groups per observable [3, 1]) -> match=False\", \"C\": \"claims 3 circuits (three qubit-wise groups for all five terms, counted once regardless of parameter sets); the backend received 4 circuits (pub shape (2,), qubit-wise groups per observable [3, 1]) -> match=False\", \"D\": \"claims 5 circuits (one circuit per Pauli term under the zip pairing); the backend received 4 circuits (pub shape (2,), qubit-wise groups per observable [3, 1]) -> match=False\", \"E\": \"claims 10 circuits (one circuit per Pauli term for every observable/set combination); the backend received 4 circuits (pub shape (2,), qubit-wise groups per observable [3, 1]) -> match=False\", \"F\": \"claims 2 circuits (one circuit per observable (or per parameter set) measuring everything at once); the backend received 4 circuits (pub shape (2,), qubit-wise groups per observable [3, 1]) -> match=False\"}, \"observed\": {\"circuits_executed\": 4, \"pub_shape\": [2], \"observables_shape\": [2], \"parameter_sets_shape\": [2], \"qwc_groups_per_observable\": [3, 1], \"evs_shape\": [2]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

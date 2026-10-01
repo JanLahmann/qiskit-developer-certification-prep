@@ -1,0 +1,75 @@
+{
+  "id": "s4-q059",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "multi",
+  "difficulty": 2,
+  "stem": "`qc` was never transpiled. Which two samplers run it and return counts? (Select two.)",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.providers.fake_provider import GenericBackendV2\nfrom qiskit_aer import AerSimulator\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()",
+  "options": [
+    {
+      "key": "A",
+      "text": "`SamplerV2(mode=FakeManilaV2()).run([qc])`"
+    },
+    {
+      "key": "B",
+      "text": "`SamplerV2(mode=AerSimulator()).run([qc])`"
+    },
+    {
+      "key": "C",
+      "text": "`SamplerV2(mode=GenericBackendV2(2, seed=1)).run([qc])`"
+    },
+    {
+      "key": "D",
+      "text": "`StatevectorSampler().run([qc])`"
+    },
+    {
+      "key": "E",
+      "text": "`SamplerV2(mode=AerSimulator.from_backend(FakeManilaV2())).run([qc])`"
+    }
+  ],
+  "answer": [
+    "B",
+    "D"
+  ],
+  "explanation": {
+    "correct": "The runtime primitive validates every PUB against the backend's target unless the backend is a simulator. A plain `AerSimulator()` is a simulator with no device basis, so it accepts H and CX as written. `StatevectorSampler` is the SDK's reference primitive: it simulates the abstract circuit exactly and has no target at all. Anything that models a device must receive an ISA circuit.",
+    "distractors": {
+      "A": "Fake backends enforce the ISA exactly like hardware: `h` is not a basis gate of `FakeManilaV2`, so `IBMInputValueError` is raised before simulation.",
+      "C": "`GenericBackendV2` is a device model too (basis `cx`, `id`, `rz`, `sx`, `x`); the runtime primitive rejects the `h` the same way.",
+      "E": "The runtime skips its ISA check because this is a simulator, but `from_backend` copies the device's basis into Aer, which then fails on the unknown `h` instruction (`AerError`)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/local-testing-mode",
+      "https://quantum.cloud.ibm.com/docs/guides/transpile",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q059.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport warnings\nwarnings.filterwarnings(\"ignore\")\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.providers.fake_provider import GenericBackendV2\nfrom qiskit_aer import AerSimulator\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\n\ntries = {\n    \"A\": lambda: SamplerV2(mode=FakeManilaV2()).run([qc], shots=200),\n    \"B\": lambda: SamplerV2(mode=AerSimulator(seed_simulator=1)).run([qc], shots=200),\n    \"C\": lambda: SamplerV2(mode=GenericBackendV2(2, seed=1)).run([qc], shots=200),\n    \"D\": lambda: StatevectorSampler(seed=1).run([qc], shots=200),\n    \"E\": lambda: SamplerV2(mode=AerSimulator.from_backend(FakeManilaV2())).run([qc], shots=200),\n}\nproven, evidence, observed = [], {}, {}\nfor k, fn in tries.items():\n    try:\n        counts = fn().result()[0].data.meas.get_counts()\n        ok = sum(counts.values()) == 200 and set(counts) <= {\"00\", \"01\", \"10\", \"11\"}\n        evidence[k] = f\"ran and returned counts {dict(sorted(counts.items()))} -> returns counts: {ok}\"\n        observed[k] = dict(counts)\n        if ok:\n            proven.append(k)\n    except Exception as exc:\n        msg = f\"{type(exc).__name__}: {str(exc)[:90]}\"\n        evidence[k] = f\"raised {msg} -> returns counts: False\"\n        observed[k] = msg\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (multi, d2): where ISA validation applies — runtime SamplerV2 checks the target only for non-simulator backends (utils.is_simulator, runtime 0.48); AerSimulator() accepts abstract gates, AerSimulator.from_backend skips the runtime check but Aer itself rejects 'h' (AerError); StatevectorSampler has no target. Measured 2026-10-01."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

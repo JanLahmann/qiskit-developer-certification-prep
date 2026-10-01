@@ -1,0 +1,64 @@
+{
+  "id": "s5-q047",
+  "section": "s5",
+  "objectives": [
+    "s5o1"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "On an IBM QPU, how many shots does each twirling randomization of this PUB run?",
+  "code": "sampler = SamplerV2(mode=backend)\nsampler.options.default_shots = 4096\nsampler.options.twirling.enable_gates = True\nsampler.options.twirling.num_randomizations = 8\n# shots_per_randomization is left at \"auto\"\n\njob = sampler.run([isa], shots=1000)",
+  "options": [
+    {
+      "key": "A",
+      "text": "512"
+    },
+    {
+      "key": "B",
+      "text": "64"
+    },
+    {
+      "key": "C",
+      "text": "1000"
+    },
+    {
+      "key": "D",
+      "text": "32"
+    },
+    {
+      "key": "E",
+      "text": "125"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "explanation": {
+    "correct": "Two rules interact. First, shot precedence: `run(shots=1000)` is part of the primitive interface and is always obeyed, so `default_shots = 4096` plays no role. Second, the twirling allocation: when `num_randomizations` is fixed and `shots_per_randomization` is \"auto\", the latter is set to `ceil(shots / num_randomizations)` = `ceil(1000 / 8)` = 125, so 8 randomizations x 125 shots cover the requested 1000.",
+    "distractors": {
+      "A": "Precedence misconception: `default_shots` is the lowest-priority source; a `run()` shot count overrides it, so 4096 / 8 is never computed.",
+      "B": "Wrong auto branch: `max(64, ceil(shots / 32))` is used only when BOTH twirling counts are \"auto\". With `num_randomizations` fixed at 8, the shots are divided by 8.",
+      "C": "Total read as per-randomization: the 1000 requested shots are spread across the 8 randomizations, not repeated for each one.",
+      "D": "Default count assumed: dividing by 32 treats the randomization count as some built-in 32, ignoring the explicit `num_randomizations = 8`."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/0.48/options-twirling-options",
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-options"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add, conceptual: twirling auto shots_per_randomization = ceil(shots/num_randomizations) when num_randomizations is fixed (TwirlingOptions 0.48 API page) + run() shots outrank default_shots (guides/sampler-options precedence list). Server-side allocation, not observable in local mode."
+  }
+}

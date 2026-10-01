@@ -1,0 +1,72 @@
+{
+  "id": "s4-q057",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The timeline shows one session on a QPU. What happens to job 3?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "It waits in the normal queue, then runs in the session and reactivates it."
+    },
+    {
+      "key": "B",
+      "text": "It fails, because the session was closed when its interactive TTL ran out."
+    },
+    {
+      "key": "C",
+      "text": "It starts at once: the QPU stays reserved for the session until the max TTL."
+    },
+    {
+      "key": "D",
+      "text": "It runs as an ordinary job-mode job while the session itself stays deactivated."
+    },
+    {
+      "key": "E",
+      "text": "It reopens the session, and the maximum TTL timer starts again from zero."
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "A"
+  ],
+  "figures": {
+    "generator": "figures/s4-q057/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s4-q057/s4-q057-stem.svg",
+      "alt": "Timeline along a time axis. Job 1 and job 2 run one after another with a short gap between them. After job 2 a bracket marks the interactive TTL; the stretch after it is labelled 'no job'. Later an arrow marks 'job 3 submitted'. A dashed bracket above everything, labelled 'maximum TTL (starts when job 1 starts)', runs from the start of job 1 to a point beyond job 3's submission."
+    }
+  },
+  "explanation": {
+    "correct": "The two timers do different things. The interactive TTL restarts after every job; when no session job arrives within it, the session is DEACTIVATED — the QPU is released and normal job selection resumes — but it is not closed. The maximum TTL started with job 1 and is still running, so job 3 can reactivate the session; to do so it must go through the normal queue first.",
+    "distractors": {
+      "B": "Deactivation is not closing: an inactive session still accepts jobs until its maximum TTL is reached or it is closed explicitly.",
+      "C": "The dedicated reservation lasts only while jobs keep arriving within the interactive TTL; after it lapses other users' jobs run, which is why job 3 has to queue.",
+      "D": "Job 3 belongs to the session and reactivates it; nothing demotes it to job mode.",
+      "E": "The maximum TTL timer starts with the first job and never pauses or resets; reactivation continues the same window."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+      "https://quantum.cloud.ibm.com/docs/guides/max-execution-time"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (stem figure, conceptual, d2): interactive TTL lapse deactivates (not closes) a session; job 3 queues normally and reactivates it within the max TTL, which never resets. Source: guides/execution-modes 'Basic workflow' steps 2-3 + note (fetched 2026-10-01). Queueing semantics cannot run locally (local testing mode ignores execution modes)."
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "id": "s4-q055",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "Which circuit can `SamplerV2(mode=backend)` run without an ISA error?",
+  "code": "from qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(\n    3,\n    basis_gates=[\"cx\", \"rz\", \"sx\", \"x\"],\n    coupling_map=[[0, 1], [1, 2]],   # directed: 0 -> 1 and 1 -> 2 only\n    seed=1,\n)",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "figures": {
+    "generator": "figures/s4-q055/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s4-q055/s4-q055-A.svg",
+        "alt": "Circuit diagram on wires q_0, q_1, q_2 (top to bottom) with a classical register meas: on q_0 an Rz(π/2) box followed by an SX (√X) box; then a CX with control q_0 and target q_1; then a CX with control q_2 and target q_1; then a barrier and a measurement of each qubit."
+      },
+      "B": {
+        "file": "figures/s4-q055/s4-q055-B.svg",
+        "alt": "Circuit diagram on wires q_0, q_1, q_2 (top to bottom) with a classical register meas: on q_0 an Rz(π/2) box followed by an SX (√X) box; then a CX with control q_0 and target q_1; then a SWAP between q_1 and q_2; then a barrier and a measurement of each qubit."
+      },
+      "C": {
+        "file": "figures/s4-q055/s4-q055-C.svg",
+        "alt": "Circuit diagram on wires q_0, q_1, q_2 (top to bottom) with a classical register meas: on q_0 an Rz(π/2) box followed by an H box; then a CX with control q_0 and target q_1; then a CX with control q_1 and target q_2; then a barrier and a measurement of each qubit."
+      },
+      "D": {
+        "file": "figures/s4-q055/s4-q055-D.svg",
+        "alt": "Circuit diagram on wires q_0, q_1, q_2 (top to bottom) with a classical register meas: on q_0 an Rz(π/2) box followed by an SX (√X) box; then a CX with control q_0 and target q_1; then a CX with control q_0 and target q_2; then a barrier and a measurement of each qubit."
+      },
+      "E": {
+        "file": "figures/s4-q055/s4-q055-E.svg",
+        "alt": "Circuit diagram on wires q_0, q_1, q_2 (top to bottom) with a classical register meas: on q_0 an Rz(π/2) box followed by an SX (√X) box; then a CX with control q_0 and target q_1; then a CX with control q_1 and target q_2; then a barrier and a measurement of each qubit."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "An ISA circuit must satisfy three target constraints at once: every gate is in the basis (`cx`, `rz`, `sx`, `x`, plus `measure`/`barrier`), every two-qubit gate sits on a coupled pair, and — because this coupling map is directed — in the listed direction. The circuit with Rz, SX, CX 0→1 and CX 1→2 meets all three; the runtime Sampler accepts it, and rejects each of the others with `IBMInputValueError` naming the offending instruction.",
+    "distractors": {
+      "A": "Right pair, wrong direction: this target defines CX as 0 → 1 and 1 → 2, so a CX with control q_2 and target q_1 is not supported, even though the two qubits are neighbours.",
+      "B": "Routed but not translated: SWAP is what routing inserts, yet it is not a basis gate of this device; the transpiler's translation stage would expand it into CX gates.",
+      "C": "Connectivity is fine, but H is not in the basis; it has to be rewritten as Rz/SX before the circuit is ISA.",
+      "D": "All gates are basis gates, but qubits 0 and 2 are not coupled, so the second CX would need routing first."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpile",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.providers.fake_provider.GenericBackendV2",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q055.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport warnings\nwarnings.filterwarnings(\"ignore\")\nfrom math import pi\nfrom qiskit import QuantumCircuit\nfrom qiskit.providers.fake_provider import GenericBackendV2\nfrom qiskit_ibm_runtime import SamplerV2\n\nbackend = GenericBackendV2(3, basis_gates=[\"cx\", \"rz\", \"sx\", \"x\"],\n                           coupling_map=[[0, 1], [1, 2]], seed=1)\n\n# Block MUST mirror data/figures/s4-q055/generate.py (figure variants == proof variants).\nVARIANTS = {\n    \"A\": [(\"rz\", pi / 2, 0), (\"sx\", 0), (\"cx\", 0, 1), (\"cx\", 2, 1)],\n    \"B\": [(\"rz\", pi / 2, 0), (\"sx\", 0), (\"cx\", 0, 1), (\"swap\", 1, 2)],\n    \"C\": [(\"rz\", pi / 2, 0), (\"h\", 0), (\"cx\", 0, 1), (\"cx\", 1, 2)],\n    \"D\": [(\"rz\", pi / 2, 0), (\"sx\", 0), (\"cx\", 0, 1), (\"cx\", 0, 2)],\n    \"E\": [(\"rz\", pi / 2, 0), (\"sx\", 0), (\"cx\", 0, 1), (\"cx\", 1, 2)],\n}\n\n\ndef build(ops):\n    qc = QuantumCircuit(3)\n    for name, *args in ops:\n        getattr(qc, name)(*args)\n    qc.measure_all()\n    return qc\n\n\ncx_pairs = sorted(backend.target[\"cx\"].keys())\nproven, evidence, observed = [], {}, {}\nfor key, ops in VARIANTS.items():\n    try:\n        res = SamplerV2(mode=backend).run([build(ops)], shots=64).result()\n        n = res[0].data.meas.num_shots\n        evidence[key] = f\"ran on the directed backend (cx pairs {cx_pairs}): {n} shots returned\"\n        observed[key] = \"ok\"\n        proven.append(key)\n    except Exception as exc:\n        msg = f\"{type(exc).__name__}: {str(exc)[:90]}\"\n        evidence[key] = f\"rejected by the ISA check (cx pairs {cx_pairs}) -> {msg}\"\n        observed[key] = msg\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (option images, d3): ISA = basis AND connectivity AND direction. Directed GenericBackendV2 (cx only 0->1, 1->2); misconceptions: reversed CX on a coupled pair, routed-but-untranslated SWAP, non-basis H, non-adjacent CX. Every option is a hand-built circuit (no layout-label tell); proof submits each to runtime SamplerV2 in local mode."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

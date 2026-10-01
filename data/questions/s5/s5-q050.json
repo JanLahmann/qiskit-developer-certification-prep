@@ -1,0 +1,69 @@
+{
+  "id": "s5-q050",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "What does this code print?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(4)\nqc.x([0, 2, 3])\nqc.measure_all()\n\nbits = StatevectorSampler().run([qc], shots=100).result()[0].data.meas\nprint(bits.slice_bits([1, 2, 3]).get_counts())",
+  "options": [
+    {
+      "key": "A",
+      "text": "`{'011': 100}`"
+    },
+    {
+      "key": "B",
+      "text": "`{'101': 100}`"
+    },
+    {
+      "key": "C",
+      "text": "`{'110': 100}`"
+    },
+    {
+      "key": "D",
+      "text": "`{'1101': 3}`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "Every shot reads `1101` (q3 q2 q1 q0). `slice_bits([1, 2, 3])` keeps classical bits 1, 2 and 3 by bit INDEX, and the new array prints them little-endian like any other: bit 3 on the left, bit 1 on the right. Bits 3, 2, 1 are 1, 1, 0, so each of the 100 shots becomes `110`.",
+    "distractors": {
+      "B": "String positions used as bit indices: characters 1-3 of `1101` are `101`, but index 0 of a bitstring printout is the HIGHEST bit. `slice_bits` indexes bits, not characters.",
+      "A": "Kept bits written in list order: bits 1, 2, 3 are 0, 1, 1, but the sliced array prints its own highest index first, so the order reverses to `110`.",
+      "D": "Shots and bits confused: selecting shots 1, 2 and 3 is `slice_shots`; `slice_bits` keeps every shot and narrows each bitstring."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q050.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(4)\nqc.x([0, 2, 3])\nqc.measure_all()\n\nbits = StatevectorSampler().run([qc], shots=100).result()[0].data.meas\nprinted = str(bits.slice_bits([1, 2, 3]).get_counts())\nfull = next(iter(bits.get_counts()))\nidx = [1, 2, 3]\nby_position = \"\".join(full[i] for i in idx)                       # string characters 1..3\nlist_order = \"\".join(full[::-1][i] for i in idx)                  # bit values written in list order\nas_shots = str(bits.slice_shots(idx).get_counts())                # indices taken as shot indices\n\nclaims = {\n    \"C\": \"{'110': 100}\",\n    \"B\": \"{'101': 100}\",\n    \"A\": \"{'011': 100}\",\n    \"D\": \"{'1101': 3}\",\n}\nproven, evidence = [], {}\nfor k, c in claims.items():\n    m = printed == c\n    evidence[k] = f\"executed print -> {printed} (full key {full}); option {k} claims {c} -> match={m}\"\n    if m:\n        proven.append(k)\nevidence[\"B\"] += f\" (string characters 1, 2, 3 of {full} read {by_position})\"\nevidence[\"A\"] += f\" (bits 1, 2, 3 written left to right read {list_order})\"\nevidence[\"D\"] += f\" (that is slice_shots, which selects shots: {as_shots})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"printed\": printed, \"full\": full, \"by_position\": by_position,\n                           \"list_order\": list_order, \"slice_shots\": as_shots}})"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: BitArray.slice_bits index semantics + little-endian printing; executed on StatevectorSampler; misconception values executed (character slicing, list-order string, slice_shots)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

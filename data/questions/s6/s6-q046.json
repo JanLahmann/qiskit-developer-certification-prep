@@ -1,0 +1,66 @@
+{
+  "id": "s6-q046",
+  "section": "s6",
+  "objectives": [
+    "s6o1",
+    "s6o2"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "With ZNE enabled as shown, what is `raw.shape`?",
+  "code": "# qc has ONE parameter; estimator is a Runtime EstimatorV2 on a QPU\nestimator.options.resilience.zne_mitigation = True\nestimator.options.resilience.zne.noise_factors = (1, 3, 5, 7)\n\nobservables = [[obs_a], [obs_b]]\nvalues = [[0.1], [0.2], [0.3]]\nresult = estimator.run([(isa_qc, observables, values)]).result()\nraw = result[0].data.evs_noise_factors",
+  "options": [
+    {
+      "key": "A",
+      "text": "`(2, 3)`"
+    },
+    {
+      "key": "B",
+      "text": "`(4, 2, 3)`"
+    },
+    {
+      "key": "C",
+      "text": "`(2, 3, 4)`"
+    },
+    {
+      "key": "D",
+      "text": "`(2, 3, 5)`"
+    },
+    {
+      "key": "E",
+      "text": "`(6, 4)`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "First the PUB shape: `[[obs_a], [obs_b]]` is (2, 1), and three one-element rows on a one-parameter circuit are 3 parameter sets of shape (3,), so the PUB broadcasts to (2, 3). With ZNE on, `evs_noise_factors` keeps the raw estimate at every noise factor, documented as shape `(*shape, num_noise_factors)`: four factors append a trailing axis of 4, giving (2, 3, 4). `evs` itself stays (2, 3), holding the extrapolated values.",
+    "distractors": {
+      "A": "That is the shape of `evs`, which holds the extrapolated zero-noise estimates. The per-factor raw values need an extra axis.",
+      "B": "Puts the noise-factor axis first. The ZNE fields append their extra axes after the PUB shape, so each PUB element's values over the noise factors sit along the last axis.",
+      "D": "Counts the zero-noise evaluation point too. `[0, *noise_factors]` is the default for `extrapolated_noise_factors`, which shapes `evs_extrapolated`, not the raw `evs_noise_factors`.",
+      "E": "Flattens the PUB into 6 elements. Result arrays keep the broadcast shape (2, 3) rather than a single flat axis."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/options-zne-options",
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (d3, conceptual): PUB broadcasting with one-parameter coercion ((2,1) x 3 sets -> (2,3)) combined with the ZNE result field shape (*shape, num_noise_factors). ZNE data fields exist only on the server; shape rule quoted from the ZneOptions docstring (identical in installed 0.48.0 source and the live API page, fetched 2026-10-01)."
+  }
+}

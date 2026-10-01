@@ -1,0 +1,68 @@
+{
+  "question": "s5-q045",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "figure draws 2 bars [['000', 96], ['100', 117]] vs the stem call's [['000', 96], ['011', 95]] -> match=False",
+      "B": "figure draws 2 bars [['000', 96], ['011', 95]] vs the stem call's [['000', 96], ['011', 95]] -> match=True",
+      "C": "figure draws 2 bars [['100', 117], ['111', 92]] vs the stem call's [['000', 96], ['011', 95]] -> match=False",
+      "D": "figure draws 2 bars [['00', 96], ['11', 95]] vs the stem call's [['000', 96], ['011', 95]] -> match=False (postselect keeps num_bits=3)"
+    },
+    "observed": {
+      "A": [
+        [
+          "000",
+          96
+        ],
+        [
+          "100",
+          117
+        ]
+      ],
+      "B": [
+        [
+          "000",
+          96
+        ],
+        [
+          "011",
+          95
+        ]
+      ],
+      "C": [
+        [
+          "100",
+          117
+        ],
+        [
+          "111",
+          92
+        ]
+      ],
+      "D": [
+        [
+          "00",
+          96
+        ],
+        [
+          "11",
+          95
+        ]
+      ],
+      "kept_num_bits": 3
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 2.8,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"figure draws 2 bars [['000', 96], ['100', 117]] vs the stem call's [['000', 96], ['011', 95]] -> match=False\", \"B\": \"figure draws 2 bars [['000', 96], ['011', 95]] vs the stem call's [['000', 96], ['011', 95]] -> match=True\", \"C\": \"figure draws 2 bars [['100', 117], ['111', 92]] vs the stem call's [['000', 96], ['011', 95]] -> match=False\", \"D\": \"figure draws 2 bars [['00', 96], ['11', 95]] vs the stem call's [['000', 96], ['011', 95]] -> match=False (postselect keeps num_bits=3)\"}, \"observed\": {\"A\": [[\"000\", 96], [\"100\", 117]], \"B\": [[\"000\", 96], [\"011\", 95]], \"C\": [[\"100\", 117], [\"111\", 92]], \"D\": [[\"00\", 96], [\"11\", 95]], \"kept_num_bits\": 3}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

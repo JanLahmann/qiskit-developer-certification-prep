@@ -1,0 +1,84 @@
+{
+  "id": "s4-q056",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "The figure shows `isa`. What label does `isa_obs` hold?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler import CouplingMap, generate_preset_pass_manager\n\nqc = QuantumCircuit(3)\nqc.h(1); qc.cx(1, 0); qc.cx(1, 2)\n\npm = generate_preset_pass_manager(optimization_level=0,\n                                  coupling_map=CouplingMap.from_line(3),\n                                  initial_layout=[1, 0, 2], seed_transpiler=42)\nisa = pm.run(qc)\nisa_obs = SparsePauliOp(\"XYZ\").apply_layout(isa.layout)\nprint(isa_obs.paulis[0])",
+  "options": [
+    {
+      "key": "A",
+      "text": "`XZY`"
+    },
+    {
+      "key": "B",
+      "text": "`XYZ`"
+    },
+    {
+      "key": "C",
+      "text": "`YXZ`"
+    },
+    {
+      "key": "D",
+      "text": "`ZXY`"
+    },
+    {
+      "key": "E",
+      "text": "`YZX`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "D"
+  ],
+  "figures": {
+    "generator": "figures/s4-q056/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s4-q056/s4-q056-stem.svg",
+      "alt": "Transpiled circuit diagram with three wires labelled, top to bottom, q_1 ↦ 0, q_0 ↦ 1 and q_2 ↦ 2. An H box on the top wire (q_1 ↦ 0); a CX with its control on the top wire and its target on the middle wire (q_0 ↦ 1); a SWAP between the middle wire and the bottom wire (q_2 ↦ 2); then a second CX with its control on the top wire and its target on the middle wire."
+    }
+  },
+  "explanation": {
+    "correct": "`apply_layout(isa.layout)` uses the FINAL layout: where each virtual qubit sits at the end of the circuit, routing included. The wire labels give the initial placement q_1→0, q_0→1, q_2→2; the SWAP between physical 1 and 2 then moves q_0 to physical 2 and q_2 to physical 1. Label `XYZ` means Z on q_0, Y on q_1, X on q_2 (rightmost character = qubit 0). Placing them: physical 2 gets Z, physical 1 gets X, physical 0 gets Y, which written physical 2-1-0 is `ZXY`.",
+    "distractors": {
+      "A": "Uses only the initial layout from the wire labels and ignores the routing SWAP, which moved q_0 and q_2 before the end of the circuit.",
+      "B": "Assumes the observable needs no change. Physical qubits differ from virtual ones here, both through the layout and through the SWAP.",
+      "C": "Correct placement, but written with physical qubit 0 on the left. Qiskit Pauli labels put qubit 0 rightmost.",
+      "E": "Initial layout only AND written qubit-0-first: two errors stacked."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q056.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport contextlib, io\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp, Statevector\nfrom qiskit.transpiler import CouplingMap, generate_preset_pass_manager\n\n# Block MUST mirror data/figures/s4-q056/generate.py.\nqc = QuantumCircuit(3)\nqc.h(1)\nqc.cx(1, 0)\nqc.cx(1, 2)\npm = generate_preset_pass_manager(optimization_level=0, coupling_map=CouplingMap.from_line(3),\n                                  initial_layout=[1, 0, 2], seed_transpiler=42)\nisa = pm.run(qc)\nTARGET = (\n    ((\"h\", (0,)), (\"cx\", (0, 1)), (\"swap\", (1, 2)), (\"cx\", (0, 1))),\n    (1, 0, 2),\n    (2, 0, 1),\n)\ngot = (\n    tuple((i.operation.name, tuple(isa.find_bit(b).index for b in i.qubits)) for i in isa.data),\n    tuple(isa.layout.initial_index_layout()),\n    tuple(isa.layout.final_index_layout()),\n)\nassert got == TARGET, got\n\nbuf = io.StringIO()\nwith contextlib.redirect_stdout(buf):\n    isa_obs = SparsePauliOp(\"XYZ\").apply_layout(isa.layout)\n    print(isa_obs.paulis[0])\nprinted = buf.getvalue().strip()\n\n# Independent physical check: <obs> on qc must equal <candidate> on isa.\n# A generic product probe state makes different labels give different values.\nANGLES = [(0.3, 1.2, -0.5), (1.9, 0.4, 0.8), (0.7, -1.1, 2.2)]\ninit = TARGET[1]\nprep = QuantumCircuit(3)\nprep_phys = QuantumCircuit(3)\nfor v, ang in enumerate(ANGLES):\n    prep.u(*ang, v)\n    prep_phys.u(*ang, init[v])   # same probe on the physical qubit holding v at the start\nref = Statevector(prep.compose(qc)).expectation_value(SparsePauliOp(\"XYZ\")).real\nassert abs(ref) > 0.05, ref\nsv = Statevector(prep_phys.compose(isa))\n\nclaims = {\"A\": \"XZY\", \"B\": \"XYZ\", \"C\": \"YXZ\", \"D\": \"ZXY\", \"E\": \"YZX\"}\nflags, evidence = {}, {}\nfor k, lab in claims.items():\n    val = sv.expectation_value(SparsePauliOp(lab)).real\n    phys_ok = abs(val - ref) < 1e-9\n    flags[k] = printed == lab and phys_ok\n    evidence[k] = (f\"printed '{printed}'; option '{lab}': <{lab}> on isa = {val:.4f} vs \"\n                   f\"<XYZ> on qc = {ref:.4f} -> same physics={phys_ok}, printed match={printed == lab}\")\nemit_verdict({\"answer\": sorted(k for k, v in flags.items() if v), \"evidence\": evidence,\n              \"observed\": {\"printed\": printed, \"final_layout\": list(TARGET[2]), \"reference\": ref}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (stem figure, d3): apply_layout uses the FINAL layout (initial layout read from the wire labels + the routing SWAP) and Pauli labels are qubit-0-rightmost. Figure = real level-0 pass-manager output (coupling map only, SWAP drawn); generator and proof assert the same literal. Proof also checks physics independently: only the keyed label reproduces <XYZ> of qc on a product probe state."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

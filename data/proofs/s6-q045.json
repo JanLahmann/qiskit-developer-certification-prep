@@ -1,0 +1,66 @@
+{
+  "question": "s6-q045",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "claims stds ~ [0.05, 0.05]; observed stds over 3 seeds [[0.05, 0.0], [0.0499, 0.0], [0.0499, 0.0]] with shots=400 (evs [[0.01, 1.0], [-0.065, 1.0], [0.05, 1.0]]) -> match=False",
+      "B": "claims stds ~ [0.0, 0.0]; observed stds over 3 seeds [[0.05, 0.0], [0.0499, 0.0], [0.0499, 0.0]] with shots=400 (evs [[0.01, 1.0], [-0.065, 1.0], [0.05, 1.0]]) -> match=False",
+      "C": "claims stds ~ [0.0, 0.05]; observed stds over 3 seeds [[0.05, 0.0], [0.0499, 0.0], [0.0499, 0.0]] with shots=400 (evs [[0.01, 1.0], [-0.065, 1.0], [0.05, 1.0]]) -> match=False",
+      "D": "claims stds ~ [0.05, 0.0]; observed stds over 3 seeds [[0.05, 0.0], [0.0499, 0.0], [0.0499, 0.0]] with shots=400 (evs [[0.01, 1.0], [-0.065, 1.0], [0.05, 1.0]]) -> match=True",
+      "E": "claims stds ~ [0.0025, 0.0]; observed stds over 3 seeds [[0.05, 0.0], [0.0499, 0.0], [0.0499, 0.0]] with shots=400 (evs [[0.01, 1.0], [-0.065, 1.0], [0.05, 1.0]]) -> match=False"
+    },
+    "observed": {
+      "runs": [
+        {
+          "evs": [
+            0.01,
+            1.0
+          ],
+          "stds": [
+            0.04999749993749687,
+            0.0
+          ],
+          "shots": 400,
+          "target_precision": 0.05
+        },
+        {
+          "evs": [
+            -0.065,
+            1.0
+          ],
+          "stds": [
+            0.049894263197285516,
+            0.0
+          ],
+          "shots": 400,
+          "target_precision": 0.05
+        },
+        {
+          "evs": [
+            0.05,
+            1.0
+          ],
+          "stds": [
+            0.04993746088859545,
+            0.0
+          ],
+          "shots": 400,
+          "target_precision": 0.05
+        }
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 2.81,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"claims stds ~ [0.05, 0.05]; observed stds over 3 seeds [[0.05, 0.0], [0.0499, 0.0], [0.0499, 0.0]] with shots=400 (evs [[0.01, 1.0], [-0.065, 1.0], [0.05, 1.0]]) -> match=False\", \"B\": \"claims stds ~ [0.0, 0.0]; observed stds over 3 seeds [[0.05, 0.0], [0.0499, 0.0], [0.0499, 0.0]] with shots=400 (evs [[0.01, 1.0], [-0.065, 1.0], [0.05, 1.0]]) -> match=False\", \"C\": \"claims stds ~ [0.0, 0.05]; observed stds over 3 seeds [[0.05, 0.0], [0.0499, 0.0], [0.0499, 0.0]] with shots=400 (evs [[0.01, 1.0], [-0.065, 1.0], [0.05, 1.0]]) -> match=False\", \"D\": \"claims stds ~ [0.05, 0.0]; observed stds over 3 seeds [[0.05, 0.0], [0.0499, 0.0], [0.0499, 0.0]] with shots=400 (evs [[0.01, 1.0], [-0.065, 1.0], [0.05, 1.0]]) -> match=True\", \"E\": \"claims stds ~ [0.0025, 0.0]; observed stds over 3 seeds [[0.05, 0.0], [0.0499, 0.0], [0.0499, 0.0]] with shots=400 (evs [[0.01, 1.0], [-0.065, 1.0], [0.05, 1.0]]) -> match=False\"}, \"observed\": {\"runs\": [{\"evs\": [0.01, 1.0], \"stds\": [0.04999749993749687, 0.0], \"shots\": 400, \"target_precision\": 0.05}, {\"evs\": [-0.065, 1.0], \"stds\": [0.049894263197285516, 0.0], \"shots\": 400, \"target_precision\": 0.05}, {\"evs\": [0.05, 1.0], \"stds\": [0.04993746088859545, 0.0], \"shots\": 400, \"target_precision\": 0.05}]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

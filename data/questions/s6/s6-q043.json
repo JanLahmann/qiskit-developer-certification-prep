@@ -1,0 +1,75 @@
+{
+  "id": "s6-q043",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "What does this code print?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nbell = QuantumCircuit(2)\nbell.h(0)\nbell.cx(0, 1)\n\nH = SparsePauliOp([\"ZI\", \"IZ\"])\nH2 = H.compose(H).simplify()\nevs = StatevectorEstimator().run([(bell, [H, H2])]).result()[0].data.evs\nprint(evs)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`[0. 0.]`"
+    },
+    {
+      "key": "B",
+      "text": "`[0. 2.]`"
+    },
+    {
+      "key": "C",
+      "text": "`[2. 4.]`"
+    },
+    {
+      "key": "D",
+      "text": "It raises `ValueError`: `compose` returns a 4-qubit operator"
+    },
+    {
+      "key": "E",
+      "text": "`[0. 4.]`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "explanation": {
+    "correct": "`compose` is the operator product, so H·H = ZI·ZI + IZ·IZ + ZI·IZ + IZ·ZI = 2·II + 2·ZZ after `simplify()` (the two Z factors act on different qubits, commute, and their cross terms add instead of cancelling). On the Bell state each single-qubit Z averages to 0, so <H> = 0, while the correlated <ZZ> = +1 gives <H²> = 2 + 2·1 = 4. A list of two observables returns a length-2 `evs` array.",
+    "distractors": {
+      "A": "Assumes <H²> = <H>². The expectation of a square is not the square of the expectation — their difference is the variance, which is 4 here because the Bell state is not an eigenstate of H.",
+      "B": "Squares term by term (ZI² + IZ² = 2·II) and drops the cross terms ZI·IZ and IZ·ZI. Those two commuting products add up to 2·ZZ, whose Bell-state value contributes the missing 2.",
+      "C": "Reads each qubit of the Bell state as sitting in |0⟩, so <ZI> = <IZ> = +1. In (|00⟩ + |11⟩)/√2 each qubit alone is maximally mixed: the local Z values are 0, only the ZZ correlation is +1.",
+      "D": "Confuses `compose` (operator product on the same qubits) with `tensor` (side-by-side, widening to 4 qubits). `compose` keeps 2 qubits; only a `tensor` product would trip the estimator's equal-width check."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q043.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import contextlib, io\nimport numpy as np\n\nCODE = 'from qiskit import QuantumCircuit\\nfrom qiskit.primitives import StatevectorEstimator\\nfrom qiskit.quantum_info import SparsePauliOp\\n\\nbell = QuantumCircuit(2)\\nbell.h(0)\\nbell.cx(0, 1)\\n\\nH = SparsePauliOp([\"ZI\", \"IZ\"])\\nH2 = H.compose(H).simplify()\\nevs = StatevectorEstimator().run([(bell, [H, H2])]).result()[0].data.evs\\nprint(evs)'\n\nCLAIMS = {\n    \"A\": \"[0. 0.]\",\n    \"B\": \"[0. 2.]\",\n    \"C\": \"[2. 4.]\",\n    \"E\": \"[0. 4.]\",\n}\n\nbuf = io.StringIO()\nraised = None\ntry:\n    with contextlib.redirect_stdout(buf):\n        exec(CODE, {})\nexcept Exception as exc:  # noqa: BLE001\n    raised = f\"{type(exc).__name__}: {exc}\"\nprinted = buf.getvalue().strip()\n\nfrom qiskit.quantum_info import SparsePauliOp\nH = SparsePauliOp([\"ZI\", \"IZ\"])\nH2 = H.compose(H).simplify()\nterms = {p.to_label(): float(np.real(c)) for p, c in zip(H2.paulis, H2.coeffs)}\ntry:\n    H.tensor(H)  # the 4-qubit operator the \"raises\" option has in mind\n    width = H.tensor(H).num_qubits\nexcept Exception as exc:  # noqa: BLE001\n    width = repr(exc)\n\nproven, evidence = [], {}\nfor key, claim in sorted(CLAIMS.items()):\n    match = raised is None and printed == claim\n    evidence[key] = f\"option claims the print {claim!r}; the code printed {printed!r} -> match={match}\"\n    if match:\n        proven.append(key)\nd_ok = raised is not None and \"ValueError\" in raised\nevidence[\"D\"] = (f\"compose keeps 2 qubits (H2 terms {terms}, H2.num_qubits={H2.num_qubits}); the code \"\n                 f\"raised={raised!r}; only tensor widens the operator (H.tensor(H).num_qubits={width}) -> match={d_ok}\")\nif d_ok:\n    proven.append(\"D\")\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {\"printed\": printed, \"raised\": raised, \"H2_terms\": terms}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (d3): SparsePauliOp operator product with surviving commuting cross terms + Bell-state local vs correlated expectation values. Proof execs the displayed code, scores every printed claim, and refutes the raises option from the observed run (tensor width shown for contrast)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "question": "s6-q051",
+  "verdict": {
+    "answer": [
+      "E"
+    ],
+    "evidence": {
+      "A": "bars (labels read qubit-0-first) = {'IZ': -1.0, 'ZI': -0.5, 'ZZ': 0.5, 'IX': 0.0}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False",
+      "B": "bars (ry angle halved (<Z> = cos(theta/2))) = {'IZ': 0.5, 'ZI': -1.0, 'ZZ': -0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False",
+      "C": "bars (x(1) overlooked) = {'IZ': -0.5, 'ZI': 1.0, 'ZZ': -0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False",
+      "D": "bars (ry rotation sense reversed) = {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': -0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False",
+      "E": "bars (stem code) = {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=True"
+    },
+    "observed": {
+      "A": [
+        -1.0,
+        -0.5,
+        0.5,
+        0.0
+      ],
+      "B": [
+        0.5,
+        -1.0,
+        -0.5,
+        0.866
+      ],
+      "C": [
+        -0.5,
+        1.0,
+        -0.5,
+        0.866
+      ],
+      "D": [
+        -0.5,
+        -1.0,
+        0.5,
+        -0.866
+      ],
+      "E": [
+        -0.5,
+        -1.0,
+        0.5,
+        0.866
+      ],
+      "stem": [
+        -0.5,
+        -1.0,
+        0.5,
+        0.866
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 2.97,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"bars (labels read qubit-0-first) = {'IZ': -1.0, 'ZI': -0.5, 'ZZ': 0.5, 'IX': 0.0}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False\", \"B\": \"bars (ry angle halved (<Z> = cos(theta/2))) = {'IZ': 0.5, 'ZI': -1.0, 'ZZ': -0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False\", \"C\": \"bars (x(1) overlooked) = {'IZ': -0.5, 'ZI': 1.0, 'ZZ': -0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False\", \"D\": \"bars (ry rotation sense reversed) = {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': -0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False\", \"E\": \"bars (stem code) = {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=True\"}, \"observed\": {\"A\": [-1.0, -0.5, 0.5, 0.0], \"B\": [0.5, -1.0, -0.5, 0.866], \"C\": [-0.5, 1.0, -0.5, 0.866], \"D\": [-0.5, -1.0, 0.5, -0.866], \"E\": [-0.5, -1.0, 0.5, 0.866], \"stem\": [-0.5, -1.0, 0.5, 0.866]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

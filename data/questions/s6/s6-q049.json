@@ -1,0 +1,75 @@
+{
+  "id": "s6-q049",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "What does this code print?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.x(1)\n\nobs = [{\"ZI\": 2.0, \"IX\": 1.0}, \"XZ\"]\nevs = StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs\nprint(np.round(evs, 3))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`[ 0. -1.]`"
+    },
+    {
+      "key": "B",
+      "text": "`[-2.  1.  0.]`"
+    },
+    {
+      "key": "C",
+      "text": "`[-0.333  0.   ]`"
+    },
+    {
+      "key": "D",
+      "text": "It raises `TypeError`: each observable has to be a `SparsePauliOp`"
+    },
+    {
+      "key": "E",
+      "text": "`[-1.  0.]`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "explanation": {
+    "correct": "An observables array accepts Pauli strings and `{label: coefficient}` dicts as well as `SparsePauliOp`. The dict is ONE observable, the weighted sum 2·<ZI> + 1·<IX>. Qubit 0 is |+⟩ and qubit 1 is |1⟩, so with labels read right to left: <ZI> = Z on qubit 1 = −1 and <IX> = X on qubit 0 = +1, giving −2 + 1 = −1. `XZ` = X on qubit 1 times Z on qubit 0 = 0 · 0 = 0.",
+    "distractors": {
+      "A": "Reads the labels with qubit 0 on the LEFT: the dict would become 2·<Z0> + <X1> = 0 and `XZ` would become <X0>·<Z1> = −1.",
+      "B": "Splits the dict into one value per term. Like a multi-term `SparsePauliOp`, a dict is a single observable and returns a single summed value.",
+      "C": "Normalises the dict like a probability distribution, (2·(−1) + 1·(+1)) / 3. The coefficients multiply the Pauli terms and are summed as given, never divided by their total.",
+      "D": "The observables array coerces strings and dicts itself (the `ObservablesArrayLike` forms); no conversion to `SparsePauliOp` is needed."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q049.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import contextlib, io\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nCODE = 'import numpy as np\\nfrom qiskit import QuantumCircuit\\nfrom qiskit.primitives import StatevectorEstimator\\n\\nqc = QuantumCircuit(2)\\nqc.h(0)\\nqc.x(1)\\n\\nobs = [{\"ZI\": 2.0, \"IX\": 1.0}, \"XZ\"]\\nevs = StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs\\nprint(np.round(evs, 3))'\nbuf = io.StringIO()\nraised = None\ntry:\n    with contextlib.redirect_stdout(buf):\n        exec(CODE, {})\nexcept Exception as exc:  # noqa: BLE001\n    raised = f\"{type(exc).__name__}: {exc}\"\nprinted = buf.getvalue().strip()\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.x(1)\nest = StatevectorEstimator()\ndef evs(obs):\n    return [float(v) for v in np.round(est.run([(qc, obs)]).result()[0].data.evs, 3)]\nactual = evs([{\"ZI\": 2.0, \"IX\": 1.0}, \"XZ\"])\nreversed_ = evs([{\"IZ\": 2.0, \"XI\": 1.0}, \"ZX\"])\nper_term = evs([\"ZI\", \"IX\", \"XZ\"]); per_term = [2.0 * per_term[0], per_term[1], per_term[2]]\nweighted = evs([{\"ZI\": 2.0, \"IX\": 1.0}, \"XZ\"]); averaged = [round(weighted[0] / 3.0, 3), weighted[1]]\n\nCLAIMS = {\n    \"A\": ([0.0, -1.0], f\"labels read qubit-0-first -> computed {reversed_}\"),\n    \"B\": ([-2.0, 1.0, 0.0], f\"one value per dict term -> computed {per_term}\"),\n    \"C\": ([-0.333, 0.0], f\"dict read as a weighted AVERAGE (sum / total weight 3) -> computed {averaged}\"),\n    \"E\": ([-1.0, 0.0], \"dict = weighted sum, qubit-0-rightmost labels\"),\n}\nproven, evidence = [], {}\nfor key, (claim, story) in sorted(CLAIMS.items()):\n    match = raised is None and len(claim) == len(actual) and np.allclose(claim, actual, atol=1e-3)\n    evidence[key] = (f\"claims {claim} ({story}); the code printed {printed!r} \"\n                     f\"(evs {actual}) -> match={match}\")\n    if match:\n        proven.append(key)\nd_ok = raised is not None and \"TypeError\" in raised\nevidence[\"D\"] = (f\"claims a TypeError for non-SparsePauliOp observables; the code raised={raised!r} \"\n                 f\"and printed {printed!r} -> match={d_ok}\")\nif d_ok:\n    proven.append(\"D\")\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {\"printed\": printed, \"raised\": raised, \"evs\": actual,\n                           \"reversed\": reversed_, \"per_term\": per_term, \"averaged\": averaged}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (d2): dict/str observables are coerced (dict = one weighted observable) + right-to-left label order. Proof execs the displayed code and recomputes every misconception array."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

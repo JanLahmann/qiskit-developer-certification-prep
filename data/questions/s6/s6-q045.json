@@ -1,0 +1,77 @@
+{
+  "id": "s6-q045",
+  "section": "s6",
+  "objectives": [
+    "s6o1",
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "On this noiseless simulator, what does `stds` hold, approximately?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit_aer import AerSimulator\nfrom qiskit_ibm_runtime import EstimatorV2\n\nqc = QuantumCircuit(1)\nqc.h(0)\nobs = [SparsePauliOp(\"Z\"), SparsePauliOp(\"X\")]\n\nestimator = EstimatorV2(mode=AerSimulator())\nres = estimator.run([(qc, obs)], precision=0.05).result()\nstds = res[0].data.stds",
+  "options": [
+    {
+      "key": "A",
+      "text": "`[0.05, 0.05]`"
+    },
+    {
+      "key": "B",
+      "text": "`[0.0, 0.0]`"
+    },
+    {
+      "key": "C",
+      "text": "`[0.0, 0.05]`"
+    },
+    {
+      "key": "D",
+      "text": "`[0.05, 0.0]`"
+    },
+    {
+      "key": "E",
+      "text": "`[0.0025, 0.0]`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "D"
+  ],
+  "explanation": {
+    "correct": "`precision=0.05` is a target: in local mode the estimator turns it into ceil(1/0.05²) = 400 shots and then REPORTS the standard error it actually observed, sqrt(Var/N). The state |+⟩ gives Z outcomes ±1 at random (variance ≈ 1, so ≈ 1/sqrt(400) = 0.05) but is an eigenstate of X: every shot returns +1, the variance is 0 and so is the reported error.",
+    "distractors": {
+      "A": "Treats `stds` as an echo of the requested precision. The requested value sits in `metadata['target_precision']`; `stds` is computed from the measured spread, which depends on the observable and the state.",
+      "B": "Carries the `StatevectorEstimator` habit (exact values, `stds` of 0) over to a shot-based run. Noiseless does not mean shot-free: the Z outcomes still fluctuate across 400 shots.",
+      "C": "Swaps the bases: |+⟩ is the X eigenstate, so X is the deterministic one and Z the random one.",
+      "E": "Squares the precision, confusing the standard error with the variance of the mean (0.05² = 0.0025)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-input-output",
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-options",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BackendEstimatorV2"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q045.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit_aer import AerSimulator\nfrom qiskit_ibm_runtime import EstimatorV2\n\nqc = QuantumCircuit(1)\nqc.h(0)\nobs = [SparsePauliOp(\"Z\"), SparsePauliOp(\"X\")]\n\nruns = []\nfor seed in (1, 2, 3):\n    est = EstimatorV2(mode=AerSimulator(seed_simulator=seed))\n    res = est.run([(qc, obs)], precision=0.05).result()\n    runs.append({\"evs\": np.asarray(res[0].data.evs).tolist(),\n                 \"stds\": np.asarray(res[0].data.stds).tolist(),\n                 \"shots\": res[0].metadata.get(\"shots\"),\n                 \"target_precision\": res[0].metadata.get(\"target_precision\")})\n\nCLAIMS = {\n    \"A\": [0.05, 0.05],\n    \"B\": [0.0, 0.0],\n    \"C\": [0.0, 0.05],\n    \"D\": [0.05, 0.0],\n    \"E\": [0.0025, 0.0],\n}\nTOL = 0.004\nproven, evidence = [], {}\nfor key, claim in sorted(CLAIMS.items()):\n    match = all(np.allclose(r[\"stds\"], claim, atol=TOL, rtol=0) for r in runs)\n    evidence[key] = (f\"claims stds ~ {claim}; observed stds over 3 seeds \"\n                     f\"{[[round(v, 4) for v in r['stds']] for r in runs]} with shots={runs[0]['shots']} \"\n                     f\"(evs {[[round(v, 3) for v in r['evs']] for r in runs]}) -> match={match}\")\n    if match:\n        proven.append(key)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"runs\": runs}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (d3): precision -> shots (400) + reported stds = observed sqrt(Var/N), which vanishes on an eigenstate. Runtime EstimatorV2 in local mode on AerSimulator (delegates to BackendEstimatorV2); proof runs 3 seeds and scores every option within 0.004."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

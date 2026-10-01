@@ -1,0 +1,69 @@
+{
+  "id": "s5-q051",
+  "section": "s5",
+  "objectives": [
+    "s5o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "With this calibration data, what is the readout-corrected probability of measuring 1?",
+  "code": "# readout calibration of the measured qubit\np1_given_0 = 0.05   # prepared |0>, read 1\np0_given_1 = 0.10   # prepared |1>, read 0\n\np1_raw = 0.305      # fraction of 1s in the raw Sampler counts",
+  "options": [
+    {
+      "key": "A",
+      "text": "0.255"
+    },
+    {
+      "key": "B",
+      "text": "0.300"
+    },
+    {
+      "key": "C",
+      "text": "0.309"
+    },
+    {
+      "key": "D",
+      "text": "0.339"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "explanation": {
+    "correct": "Raw frequencies are the true ones pushed through the confusion matrix: raw P(1) = 0.05 * P(0) + 0.90 * P(1). Undoing it means inverting that matrix: P(1) = (0.305 - 0.05) / (1 - 0.05 - 0.10) = 0.255 / 0.85 = 0.300. This is the do-it-yourself readout mitigation you apply to Sampler counts, which carry no built-in readout correction.",
+    "distractors": {
+      "A": "Half a correction: subtracting the false-positive rate removes the |0> shots that flipped to 1, but ignores the |1> shots lost to 0, so the result is never rescaled by 1 - 0.05 - 0.10.",
+      "C": "Matrix applied forward: multiplying the raw distribution by the confusion matrix adds a second round of readout noise instead of removing the first.",
+      "D": "Only one error rate used: dividing by the |1> fidelity 0.90 compensates for lost 1s but keeps the spurious 1s that came from |0>."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/tutorials/readout-error-mitigation-sampler",
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q051.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit_aer import AerSimulator\nfrom qiskit_aer.noise import NoiseModel, ReadoutError\nfrom qiskit_ibm_runtime import SamplerV2\n\np1_given_0, p0_given_1, p1_raw = 0.05, 0.10, 0.305\nA = np.array([[1 - p1_given_0, p0_given_1],\n              [p1_given_0, 1 - p0_given_1]])     # column j = prepared state j\nmitigated = np.linalg.solve(A, [1 - p1_raw, p1_raw])\np_corr = round(float(mitigated[1]), 3)\n\n# Independent physical check: prepare a state whose true P(1) is p_corr, apply\n# this exact readout error in Aer, and observe that the RAW frequency is p1_raw.\nnm = NoiseModel()\nnm.add_all_qubit_readout_error(ReadoutError([[1 - p1_given_0, p1_given_0],\n                                             [p0_given_1, 1 - p0_given_1]]))\ntheta = 2 * np.arcsin(np.sqrt(p_corr))\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\nqc.measure_all()\nsampler = SamplerV2(mode=AerSimulator(noise_model=nm, seed_simulator=42))\nshots = 200_000\nones = sampler.run([qc], shots=shots).result()[0].data.meas.get_counts().get(\"1\", 0)\nraw_obs = ones / shots\nassert abs(raw_obs - p1_raw) < 0.004, raw_obs\n\nforward = round(float((A @ [1 - p1_raw, p1_raw])[1]), 3)\nclaims = {\"A\": 0.255, \"B\": 0.300, \"C\": 0.309, \"D\": 0.339}\nhow = {\"A\": \"p1_raw - p1_given_0\", \"C\": \"confusion matrix applied forward\",\n       \"D\": \"p1_raw / (1 - p0_given_1)\"}\nproven, evidence = [], {}\nfor k, c in claims.items():\n    m = abs(c - p_corr) < 5e-4\n    evidence[k] = (f\"solving A p = raw gives P(1) = {p_corr}; a true P(1) of {p_corr} under this readout \"\n                   f\"error in Aer read {raw_obs:.4f} raw; option {k} claims {c} -> match={m}\")\n    if m:\n        proven.append(k)\nevidence[\"A\"] += f\" ({how['A']} = {round(p1_raw - p1_given_0, 3)})\"\nevidence[\"C\"] += f\" ({how['C']} = {forward})\"\nevidence[\"D\"] += f\" ({how['D']} = {round(p1_raw / (1 - p0_given_1), 3)})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"p_corr\": p_corr, \"raw_observed\": round(raw_obs, 4), \"forward\": forward}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s5)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add: single-qubit confusion-matrix inversion (DIY readout mitigation). Proof solves the linear system and independently checks the forward model in Aer with a ReadoutError of the same rates (200k shots, seeded)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

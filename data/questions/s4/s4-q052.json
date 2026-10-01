@@ -1,0 +1,77 @@
+{
+  "id": "s4-q052",
+  "section": "s4",
+  "objectives": [
+    "s4o1",
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "The sampler is created inside the `with` block but run after it. What happens?",
+  "code": "from qiskit_ibm_runtime import SamplerV2, Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\n# isa: a measured circuit transpiled for backend\n\nwith Session(backend=backend):\n    sampler = SamplerV2()\n\njob = sampler.run([isa])",
+  "options": [
+    {
+      "key": "A",
+      "text": "It runs in job mode on `backend`, since the session that it was bound to has now ended."
+    },
+    {
+      "key": "B",
+      "text": "It raises `ValueError` at `run()`, because no backend or session is given."
+    },
+    {
+      "key": "C",
+      "text": "It raises `IBMRuntimeError` ('The session is closed.') when `run()` is called."
+    },
+    {
+      "key": "D",
+      "text": "It runs inside the session, which reopens on demand for as long as its max TTL lasts."
+    },
+    {
+      "key": "E",
+      "text": "It runs: closing a session just blocks primitives created after the close."
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "The mode is resolved once, in the primitive's constructor: inside the block, `SamplerV2()` with no mode picks up the open session and stores it. Leaving the `with` block calls `session.close()`, which stops the session from accepting new jobs. The later `run()` still submits through the stored session object, whose closed-state check raises `IBMRuntimeError: 'The session is closed.'` The same holds for a `Batch`. Submit inside the block, or create a new primitive for later work.",
+    "distractors": {
+      "A": "Nothing re-resolves the mode at `run()`: the primitive keeps the session it was built with, so it has no fallback to job mode.",
+      "B": "That error is raised by the constructor when no mode and no open context exist. Here the constructor ran inside the block and succeeded; the failure comes later, from the closed session.",
+      "D": "A closed session does not reopen. Reactivation applies to an INACTIVE session (interactive TTL lapsed), not to one closed by exiting its block.",
+      "E": "Close means no new jobs from anyone; only jobs already submitted run to completion. The primitive's age does not matter."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes-faq",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/session"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q052.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport warnings\nwarnings.filterwarnings(\"ignore\")\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2, Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = generate_preset_pass_manager(optimization_level=1, backend=backend, seed_transpiler=1).run(qc)\n\nwith Session(backend=backend) as session:\n    sampler = SamplerV2()\nbound = type(sampler._mode).__name__\nactive_after = getattr(session, \"_active\", None)\n\nran, exc_type, exc_msg = False, None, None\ntry:\n    sampler.run([isa]).result()\n    ran = True\nexcept Exception as exc:\n    exc_type, exc_msg = type(exc).__name__, str(exc)\n\nflags = {\n    \"A\": ran and sampler._mode is None,\n    \"B\": exc_type == \"ValueError\",\n    \"C\": exc_type == \"IBMRuntimeError\" and \"closed\" in (exc_msg or \"\"),\n    \"D\": ran and bool(getattr(session, \"_active\", False)),\n    \"E\": ran,\n}\nbase = (f\"primitive bound to a {bound} at construction; session active after the block: \"\n        f\"{active_after}; run() -> ran={ran}, exception={exc_type}: {exc_msg}\")\nevidence = {k: f\"{base} -> match={v}\" for k, v in flags.items()}\nemit_verdict({\n    \"answer\": sorted(k for k, v in flags.items() if v),\n    \"evidence\": evidence,\n    \"observed\": {\"bound_mode\": bound, \"ran\": ran, \"exception\": exc_type, \"message\": exc_msg},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (d3): mode resolution happens in the primitive constructor (base_primitive.get_mode_service_backend, runtime 0.48) + exiting the context manager closes the session (Session.__exit__ -> close) + the _active_session guard on Session._run. Locally provable: the closed-check runs before the local service is touched; identical code path on real hardware."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

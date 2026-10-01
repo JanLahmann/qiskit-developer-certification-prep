@@ -1,0 +1,75 @@
+{
+  "id": "s4-q050",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 3,
+  "stem": "`circuit` has two parameters. What is `evs.shape`?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\na, b = Parameter(\"a\"), Parameter(\"b\")\ncircuit = QuantumCircuit(2)\ncircuit.ry(a, 0)\ncircuit.ry(b, 1)\n\nvalues = np.linspace(0.0, 1.0, 8).reshape(4, 2)\nobservables = [[SparsePauliOp(\"ZI\")], [SparsePauliOp(\"IZ\")], [SparsePauliOp(\"ZZ\")]]\n\njob = StatevectorEstimator().run([(circuit, observables, values)])\nevs = job.result()[0].data.evs",
+  "options": [
+    {
+      "key": "A",
+      "text": "`(3, 4, 2)`: the trailing axis of `values` survives as a third result axis"
+    },
+    {
+      "key": "B",
+      "text": "None: `run()` raises `ValueError`, because `(4, 2)` and `(3, 1)` cannot broadcast"
+    },
+    {
+      "key": "C",
+      "text": "`(4, 3)`: the parameter-set axis comes first and the observables axis second"
+    },
+    {
+      "key": "D",
+      "text": "`(12,)`: the Estimator returns one flat entry per observable/parameter-set pair"
+    },
+    {
+      "key": "E",
+      "text": "`(3, 4)`: four sets of two values, each paired with all three observables"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "explanation": {
+    "correct": "A parameter-value array's LAST axis holds one value per circuit parameter, so it is consumed before broadcasting: with two parameters, `values` of shape `(4, 2)` is four parameter sets, i.e. parameter-set shape `(4,)`. The observables array is `(3, 1)`. NumPy rules align `(4,)` with the trailing axis of `(3, 1)`; the size-1 axis stretches, giving `(3, 4)` — every observable is estimated at every parameter set, 12 values in total.",
+    "distractors": {
+      "A": "Treats the per-parameter axis as a broadcast axis. It is not: its length must equal `circuit.num_parameters` and it disappears from the result shape.",
+      "B": "Raw-array broadcasting: `(4, 2)` against `(3, 1)` would indeed clash (4 vs 3) in plain NumPy, but the Estimator first strips the parameter axis, leaving `(4,)` against `(3, 1)`, which broadcasts.",
+      "C": "Reverses the result axes. The broadcast shape is computed by NumPy rules, so the observables' leading axis of length 3 stays first.",
+      "D": "The result is an array with the broadcast shape, not a flattened list; `evs.size` is 12 but `evs.shape` keeps both axes."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/estimator-v2"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q050.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.primitives.containers.estimator_pub import EstimatorPub\nfrom qiskit.quantum_info import SparsePauliOp\n\na, b = Parameter(\"a\"), Parameter(\"b\")\ncircuit = QuantumCircuit(2)\ncircuit.ry(a, 0)\ncircuit.ry(b, 1)\nvalues = np.linspace(0.0, 1.0, 8).reshape(4, 2)\nobservables = [[SparsePauliOp(\"ZI\")], [SparsePauliOp(\"IZ\")], [SparsePauliOp(\"ZZ\")]]\n\nraised, shape = None, None\ntry:\n    evs = StatevectorEstimator().run([(circuit, observables, values)]).result()[0].data.evs\n    shape = tuple(int(x) for x in evs.shape)\nexcept Exception as exc:\n    raised = f\"{type(exc).__name__}: {exc}\"\n\npub = EstimatorPub.coerce((circuit, observables, values))\npar_shape = tuple(pub.parameter_values.shape)\nobs_shape = tuple(pub.observables.shape)\ntry:\n    np.broadcast_shapes((4, 2), (3, 1))\n    raw = \"raw arrays broadcast\"\nexcept ValueError as exc:\n    raw = f\"raw (4, 2) vs (3, 1) in plain NumPy -> ValueError ({exc})\"\n\nclaims = {\"A\": (3, 4, 2), \"C\": (4, 3), \"D\": (12,), \"E\": (3, 4)}\nflags = {k: (raised is None and shape == v) for k, v in claims.items()}\nflags[\"B\"] = raised is not None\nbase = (f\"coerced parameter-set shape {par_shape}, observables shape {obs_shape}; \"\n        f\"observed evs.shape {shape} (exception: {raised})\")\nevidence = {k: f\"{base}; option claims {v} -> match={flags[k]}\" for k, v in claims.items()}\nevidence[\"B\"] = f\"{base}; {raw}; but run() did not raise -> match={flags['B']}\"\nemit_verdict({\n    \"answer\": sorted(k for k, v in flags.items() if v),\n    \"evidence\": evidence,\n    \"observed\": {\"evs_shape\": shape, \"parameter_set_shape\": par_shape,\n                 \"observables_shape\": obs_shape, \"raised\": raised},\n})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (d3): broadcasting with a TWO-parameter circuit — the trailing parameter axis is consumed ((4, 2) -> 4 sets) before NumPy broadcasting against (3, 1) observables; raw-array broadcasting would wrongly predict an error. Proof scores the coerced EstimatorPub shapes and the observed evs.shape."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

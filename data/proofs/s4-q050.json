@@ -1,0 +1,40 @@
+{
+  "question": "s4-q050",
+  "verdict": {
+    "answer": [
+      "E"
+    ],
+    "evidence": {
+      "A": "coerced parameter-set shape (4,), observables shape (3, 1); observed evs.shape (3, 4) (exception: None); option claims (3, 4, 2) -> match=False",
+      "C": "coerced parameter-set shape (4,), observables shape (3, 1); observed evs.shape (3, 4) (exception: None); option claims (4, 3) -> match=False",
+      "D": "coerced parameter-set shape (4,), observables shape (3, 1); observed evs.shape (3, 4) (exception: None); option claims (12,) -> match=False",
+      "E": "coerced parameter-set shape (4,), observables shape (3, 1); observed evs.shape (3, 4) (exception: None); option claims (3, 4) -> match=True",
+      "B": "coerced parameter-set shape (4,), observables shape (3, 1); observed evs.shape (3, 4) (exception: None); raw (4, 2) vs (3, 1) in plain NumPy -> ValueError (shape mismatch: objects cannot be broadcast to a single shape.  Mismatch is between arg 0 with shape (4, 2) and arg 1 with shape (3, 1).); but run() did not raise -> match=False"
+    },
+    "observed": {
+      "evs_shape": [
+        3,
+        4
+      ],
+      "parameter_set_shape": [
+        4
+      ],
+      "observables_shape": [
+        3,
+        1
+      ],
+      "raised": null
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 6.89,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"coerced parameter-set shape (4,), observables shape (3, 1); observed evs.shape (3, 4) (exception: None); option claims (3, 4, 2) -> match=False\", \"C\": \"coerced parameter-set shape (4,), observables shape (3, 1); observed evs.shape (3, 4) (exception: None); option claims (4, 3) -> match=False\", \"D\": \"coerced parameter-set shape (4,), observables shape (3, 1); observed evs.shape (3, 4) (exception: None); option claims (12,) -> match=False\", \"E\": \"coerced parameter-set shape (4,), observables shape (3, 1); observed evs.shape (3, 4) (exception: None); option claims (3, 4) -> match=True\", \"B\": \"coerced parameter-set shape (4,), observables shape (3, 1); observed evs.shape (3, 4) (exception: None); raw (4, 2) vs (3, 1) in plain NumPy -> ValueError (shape mismatch: objects cannot be broadcast to a single shape.  Mismatch is between arg 0 with shape (4, 2) and arg 1 with shape (3, 1).); but run() did not raise -> match=False\"}, \"observed\": {\"evs_shape\": [3, 4], \"parameter_set_shape\": [4], \"observables_shape\": [3, 1], \"raised\": null}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

@@ -1,0 +1,64 @@
+{
+  "id": "s4-q060",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "A QPU has five execution lanes; one runs another user's job. Your 8-job batch is next in line. How many of its jobs start?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "One: batch jobs start one at a time, in the order they were submitted"
+    },
+    {
+      "key": "B",
+      "text": "Five: an active batch takes over the whole QPU, so the other job is preempted"
+    },
+    {
+      "key": "C",
+      "text": "Eight: a batch hands its jobs to the QPU together, regardless of lanes"
+    },
+    {
+      "key": "D",
+      "text": "Zero for now: a batch waits until no other user's job is running"
+    },
+    {
+      "key": "E",
+      "text": "Four: the free lanes fill, and the rest start as lanes become free"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "explanation": {
+    "correct": "A backend runs as many jobs in parallel as it has execution lanes (five on most backends). When your batch reaches the front, the scheduler starts enough of its jobs to fill the lanes that are free — four here — and starts the remaining four as lanes free up. Batch mode never gets exclusive access, so the other user's job keeps its lane, and batch jobs are not guaranteed to run in submission order.",
+    "distractors": {
+      "A": "Batch jobs are run in parallel across lanes, not serially; and their order is not even guaranteed to follow submission.",
+      "B": "Exclusive access is a SESSION property. A batch shares the backend, so a running job of another user is never displaced.",
+      "C": "Parallelism is capped by the number of lanes; jobs beyond the free lanes wait for one to open.",
+      "D": "A batch does not wait for the backend to empty — sharing the QPU with other users' jobs is exactly what distinguishes it from a session."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes-faq",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (conceptual, d2): batch parallelism = execution lanes; free lanes fill with batch jobs, no exclusivity, no preemption. Source: guides/execution-modes-faq ('When would my batch mode jobs run in parallel with other users' jobs?'), fetched 2026-10-01. Numbers deliberately differ from the FAQ's own worked example (5 lanes / 2 busy / 6 jobs)."
+  }
+}

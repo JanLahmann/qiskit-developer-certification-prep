@@ -1,0 +1,64 @@
+{
+  "id": "s4-q058",
+  "section": "s4",
+  "objectives": [
+    "s4o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "Which interval counts as usage in session mode but not in batch mode?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "The time the QPU spends actually executing the circuits of each submitted job"
+    },
+    {
+      "key": "B",
+      "text": "The time the first job waits in the normal queue before the workload starts running"
+    },
+    {
+      "key": "C",
+      "text": "Idle QPU time after a job ends while it waits, within the interactive TTL, for the next"
+    },
+    {
+      "key": "D",
+      "text": "The time after the workload has been closed and its last running job has finished"
+    },
+    {
+      "key": "E",
+      "text": "Classical post-processing of the results on the user's laptop after the workload ends"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "Session usage is the wall-clock time the QPU is committed to the session: from the start of the first job until the session goes inactive, is closed, or its last job completes, whichever is last. That includes compilation time and the idle wait between jobs inside the interactive TTL, because the QPU is reserved for you. In batch mode only time spent on the quantum hardware counts, so the idle gap costs nothing there — which is why a session should be closed as soon as no more jobs will be sent.",
+    "distractors": {
+      "A": "Quantum execution time is counted in BOTH modes; it is the one component batch usage consists of.",
+      "B": "Queue time before the first job starts counts in neither mode — usage only begins when that job starts running.",
+      "D": "Session usage ends when the session is closed or its last job completes, whichever is last; once both have happened nothing more accrues.",
+      "E": "Work done on your own machine after the workload ends never touches the QPU and is not usage in any mode."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes-faq",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+    ]
+  },
+  "proof": {
+    "status": "conceptual",
+    "artifact": null
+  },
+  "verification": {
+    "mode": "none"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (conceptual, d2): usage accounting differs by mode — session = wall-clock QPU commitment incl. interactive-TTL idle time and compilation; batch = quantum time only. Source: guides/execution-modes-faq ('Is compilation time counted as usage in session mode?' / '... in batch mode?'), fetched 2026-10-01."
+  }
+}

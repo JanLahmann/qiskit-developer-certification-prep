@@ -1,0 +1,69 @@
+{
+  "id": "s6-q048",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "What does this code print?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nop = SparsePauliOp.from_sparse_list([(\"ZX\", [0, 2], 0.5)], num_qubits=3)\n\nqc = QuantumCircuit(3)\nqc.ry(2 * np.pi / 3, 0)   # <Z> = -0.5, <X> = 0.866 on qubit 0\nqc.ry(np.pi / 3, 2)       # <Z> = 0.5,  <X> = 0.866 on qubit 2\n\nev = StatevectorEstimator().run([(qc, op)]).result()[0].data.evs\nprint(round(float(ev), 3))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`0.217`"
+    },
+    {
+      "key": "B",
+      "text": "`-0.433`"
+    },
+    {
+      "key": "C",
+      "text": "`-0.217`"
+    },
+    {
+      "key": "D",
+      "text": "`0.433`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "explanation": {
+    "correct": "`from_sparse_list` pairs label characters with the listed indices in order: 'Z' goes to qubit 0 and 'X' to qubit 2, giving the dense label `XIZ` with coefficient 0.5. On this product state the value factorises: 0.5 · <X2> · <Z0> = 0.5 · 0.866 · (−0.5) ≈ −0.217.",
+    "distractors": {
+      "A": "Maps the characters in reverse (Z to qubit 2, X to qubit 0), as if the sparse label were read right to left like a dense label. The index list is matched to the characters left to right.",
+      "B": "Drops the coefficient: the bare Pauli gives −0.433, but the 0.5 in the tuple scales the expectation value.",
+      "D": "Reverses the character-to-index mapping and also ignores the 0.5 coefficient."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp",
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q048.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import contextlib, io\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nCODE = 'import numpy as np\\nfrom qiskit import QuantumCircuit\\nfrom qiskit.primitives import StatevectorEstimator\\nfrom qiskit.quantum_info import SparsePauliOp\\n\\nop = SparsePauliOp.from_sparse_list([(\"ZX\", [0, 2], 0.5)], num_qubits=3)\\n\\nqc = QuantumCircuit(3)\\nqc.ry(2 * np.pi / 3, 0)   # <Z> = -0.5, <X> = 0.866 on qubit 0\\nqc.ry(np.pi / 3, 2)       # <Z> = 0.5,  <X> = 0.866 on qubit 2\\n\\nev = StatevectorEstimator().run([(qc, op)]).result()[0].data.evs\\nprint(round(float(ev), 3))'\nbuf = io.StringIO()\nwith contextlib.redirect_stdout(buf):\n    exec(CODE, {})\nprinted = buf.getvalue().strip()\n\nop = SparsePauliOp.from_sparse_list([(\"ZX\", [0, 2], 0.5)], num_qubits=3)\nlabel = op.paulis[0].to_label()\nqc = QuantumCircuit(3)\nqc.ry(2 * np.pi / 3, 0)\nqc.ry(np.pi / 3, 2)\nest = StatevectorEstimator()\ndef ev(o):\n    return round(float(est.run([(qc, o)]).result()[0].data.evs), 3)\nswapped = ev(SparsePauliOp(\"ZIX\", 0.5))      # Z on qubit 2, X on qubit 0\nno_coeff = ev(SparsePauliOp(label))          # coefficient dropped\nboth = ev(SparsePauliOp(\"ZIX\"))              # swapped and coefficient dropped\n\nCLAIMS = {\n    \"A\": (\"0.217\", f\"characters mapped in reverse (Z->2, X->0): computed {swapped}\"),\n    \"B\": (\"-0.433\", f\"coefficient 0.5 ignored: computed {no_coeff}\"),\n    \"C\": (\"-0.217\", f\"from_sparse_list label {label} (Z on qubit 0, X on qubit 2) with coefficient 0.5\"),\n    \"D\": (\"0.433\", f\"reversed mapping AND coefficient ignored: computed {both}\"),\n}\nproven, evidence = [], {}\nfor key, (claim, story) in sorted(CLAIMS.items()):\n    match = printed == claim\n    evidence[key] = f\"claims print {claim!r} ({story}); the code printed {printed!r} -> match={match}\"\n    if match:\n        proven.append(key)\nassert str(swapped) == CLAIMS[\"A\"][0] and str(no_coeff) == CLAIMS[\"B\"][0] and str(both) == CLAIMS[\"D\"][0]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"printed\": printed, \"label\": label, \"swapped\": swapped,\n                           \"no_coeff\": no_coeff, \"both\": both}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-01",
+    "model": "claude-opus (R2 generation agent, section s6)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "R2 add (d2): from_sparse_list character-to-index mapping (multi-character label) + coefficient + product-state expectation. Proof execs the displayed code and recomputes every misconception value."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-01",
+    "stale": false
+  }
+}

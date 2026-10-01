@@ -2426,3 +2426,30 @@ s8-q030 (mcq, dc=4, key E). Both executed. Measured in the pinned venv:
   variant (`shortest_option` 25.8% -> 29.7%); shortening the else-distractor to a tie
   brought it to 27.8%. Section audits after: s2 0/0, same 8 low length keepers; s8 0/0,
   same 4 low length keepers; no flag on either add.
+
+## R3 proof hardening (2026-10-01, qiskit 2.5.0 / runtime 0.48.0)
+
+- **Unscored pool distractors now scored (closes the R1 s6 deferral):** s6-q011 (F),
+  s6-q015 (E/F), s6-q022 (E/F), s6-q023 (F) score EVERY option through one
+  `printed_match(claim)` — the claim's array shape, complex-ness and values against the
+  real `evs` (what `print()` shows is fixed by those three). Observed: q011 `()` vs F
+  `(2,)`; q015 `(2,)` vs E `()` / F `(2, 1)`; q022 `()` float64 vs E `(1,)` / F
+  complex128; q023 `(3,)` vs F `(3, 1)` (the one-parameter coercion, as in s4-q046).
+  s6-q035 now wraps the call in try/except and scores E as "raised `QiskitError`"
+  (nothing raises) and F as label == `'Z'` (stored `'IIZ'`). All five re-proved with
+  the stored keys (C, B, D, A, D) — no disagreement, every `match=` flag computed.
+- **Drift-lint findings (13 in s5/s6/s7) were all execution-derived false positives,
+  not stale text:** every evidence string still describes its current option. The
+  anchors were proof inputs or measured values the question never quotes (s5-q013
+  ISA run total, s5-q025 `shots=200`, s5-q028 kept/total/DD-leak shot counts, s5-q033
+  the local fallback shot count, s6-q017 shot budgets `BASE * m`, s6-q020 the
+  `ZneOptions` repr `amplifier=Unset`, s7-q016/q018 BitArray shot/width numbers,
+  s7-q024 the fixed counts). Cleared WITHOUT touching evidence wording, options or
+  explanations: each proof now records those raw values in `observed`, which the lint
+  treats as legitimate corpus. Trap hit once: adding a >=3-digit number to `observed`
+  ARMS the lint's number check for that question — s5-q025's `shots_passed: 200`
+  surfaced the B counts (`109`); recording `c_counts` too cleared it.
+- Gates: verify_bank s5 36/36, s6 29/29, s7 28/28 PROVEN (exit 0, keys unchanged);
+  audit_meta_patterns s5/s6/s7 0 blockers / 0 warnings, only the pre-existing low
+  flags (6/7/7). Drift lint 19 -> 6 findings; the 6 left are outside R3 scope
+  (s1-q027 C, s3-q021 A-D, s3-q025 D).

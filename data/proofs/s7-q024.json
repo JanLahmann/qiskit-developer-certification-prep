@@ -13,7 +13,11 @@
       "F": "raised AttributeError: 'PrimitiveResult' object has no attribute 'meas'"
     },
     "observed": {
-      "buggy_line_error": "AttributeError: 'PrimitiveResult' object has no attribute 'data'"
+      "buggy_line_error": "AttributeError: 'PrimitiveResult' object has no attribute 'data'",
+      "fixed_counts": {
+        "00": 533,
+        "11": 491
+      }
     }
   },
   "versions": {
@@ -22,9 +26,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.68,
+  "wall_seconds": 2.82,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'get_counts'\", \"B\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'data'\", \"C\": \"returned dict={'00': 533, '11': 491}; valid counts -> True\", \"D\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'quasi_dists'\", \"E\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'results'\", \"F\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'meas'\"}, \"observed\": {\"buggy_line_error\": \"AttributeError: 'PrimitiveResult' object has no attribute 'data'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'get_counts'\", \"B\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'data'\", \"C\": \"returned dict={'00': 533, '11': 491}; valid counts -> True\", \"D\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'quasi_dists'\", \"E\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'results'\", \"F\": \"raised AttributeError: 'PrimitiveResult' object has no attribute 'meas'\"}, \"observed\": {\"buggy_line_error\": \"AttributeError: 'PrimitiveResult' object has no attribute 'data'\", \"fixed_counts\": {\"00\": 533, \"11\": 491}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

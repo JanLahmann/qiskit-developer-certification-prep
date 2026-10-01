@@ -27,7 +27,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.52,
+  "wall_seconds": 4.33,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"slice_bits([0]) of the drawn run gives P(q0=1) = 0.752; option A claims 0.27 -> match=False (that is the LEFT bit, qubit 1: 0.27)\", \"B\": \"slice_bits([0]) of the drawn run gives P(q0=1) = 0.752; option B claims 0.555 -> match=False (the single bar '01' alone: 0.555)\", \"C\": \"slice_bits([0]) of the drawn run gives P(q0=1) = 0.752; option C claims 0.197 -> match=False (the single bar '11' alone: 0.197)\", \"D\": \"slice_bits([0]) of the drawn run gives P(q0=1) = 0.752; option D claims 0.752 -> match=True\"}, \"observed\": {\"drawn\": {\"00\": 175, \"01\": 555, \"10\": 73, \"11\": 197}, \"p_q0\": 0.752, \"left_bit\": 0.27}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

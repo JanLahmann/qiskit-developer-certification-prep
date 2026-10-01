@@ -26,7 +26,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.41,
+  "wall_seconds": 2.82,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"option claims the print '[0. 0.]'; the code printed '[0. 4.]' -> match=False\", \"B\": \"option claims the print '[0. 2.]'; the code printed '[0. 4.]' -> match=False\", \"C\": \"option claims the print '[2. 4.]'; the code printed '[0. 4.]' -> match=False\", \"E\": \"option claims the print '[0. 4.]'; the code printed '[0. 4.]' -> match=True\", \"D\": \"compose keeps 2 qubits (H2 terms {'II': 2.0, 'ZZ': 2.0}, H2.num_qubits=2); the code raised=None; only tensor widens the operator (H.tensor(H).num_qubits=4) -> match=False\"}, \"observed\": {\"printed\": \"[0. 4.]\", \"raised\": null, \"H2_terms\": {\"II\": 2.0, \"ZZ\": 2.0}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

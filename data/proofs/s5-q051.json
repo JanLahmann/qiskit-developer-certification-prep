@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.12,
+  "wall_seconds": 3.29,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"solving A p = raw gives P(1) = 0.3; a true P(1) of 0.3 under this readout error in Aer read 0.3055 raw; option A claims 0.255 -> match=False (p1_raw - p1_given_0 = 0.255)\", \"B\": \"solving A p = raw gives P(1) = 0.3; a true P(1) of 0.3 under this readout error in Aer read 0.3055 raw; option B claims 0.3 -> match=True\", \"C\": \"solving A p = raw gives P(1) = 0.3; a true P(1) of 0.3 under this readout error in Aer read 0.3055 raw; option C claims 0.309 -> match=False (confusion matrix applied forward = 0.309)\", \"D\": \"solving A p = raw gives P(1) = 0.3; a true P(1) of 0.3 under this readout error in Aer read 0.3055 raw; option D claims 0.339 -> match=False (p1_raw / (1 - p0_given_1) = 0.339)\"}, \"observed\": {\"p_corr\": 0.3, \"raw_observed\": 0.3055, \"forward\": 0.309}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

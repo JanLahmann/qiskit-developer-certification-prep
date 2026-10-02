@@ -2760,3 +2760,38 @@ proof asserts too. Measured in the pinned venv (qiskit 2.5.0 / runtime 0.48.0):
 - Process trap: re-keying by swapping option dicts in place left the options list out of
   key order -> verify_bank schema FAIL "option keys must be in alphabetical order". Sort
   options by key after any re-key.
+
+## Study absorption (2026-10-02)
+
+Folded 22 newly proven facts from the R2 / adversarial / figure waves into `data/study/`
+(append-only: no primer, existing fact or checklist item touched; per-fact
+`fact_checked: true`, a one-line provenance note per file). Every fact cites an EXECUTED
+qid and was re-verified by re-executing its logic in the pinned venv (qiskit 2.5.0 /
+runtime 0.48.0 / aer 0.17.2); s7-q039/q043 re-verified against the installed
+`QiskitRuntimeService.jobs` / `RuntimeJobV2.result` source plus the stored proof verdicts.
+
+- Adds: s1 3 (s1o1: PauliEvolutionGate no ½ vs RXX/RZZ, cx·rz·cx = ZZ evolution at θ/2,
+  `@` is the operator product), s2 2 (s2o3: shortened reduced Bloch arrows, paulivec draws
+  only non-zero Paulis), s3 4 (depth/barrier sync, expression substitution in
+  `assign_parameters`, same-name Parameter compose CircuitError, barrier fences level-1
+  cancellation), s4 3 (constructor-bound mode + 'The session is closed.', simulator backends
+  skip the ISA check, directional coupling map), s5 3 (join_data order, StatevectorSampler
+  rejects dynamic circuits, postselect bit indices), s6 2 (dict = one weighted observable,
+  precision → ceil(1/p²) shots with eigenstate stds 0), s7 2 (jobs() silent limit=10,
+  ERROR vs CANCELLED result() exceptions), s8 3 (qasm2 one condition form, qasm3 bare-bit
+  conditions, qasm2 custom gates load un-inlined).
+- Caps after: s1o2, s4o2, s5o3, s7o1 now at 6 core / 5 trap; s2o3, s4o1 (trap), s6o2
+  (trap), s5o1 (trap) at one limit. A further absorption pass there must merge, not append.
+- Prose totals now s1 1125, s2 1147, s3 1255, s4 1077, s5 1135, s6 1197, s7 1108, s8 797
+  (contract target ~900-1100; s3/s6 are the ones to trim if a rewrite pass runs).
+- **Not absorbed, deliberately:** `mode=backend` inside an open batch/session runs IN it on a
+  real IBM QPU (s4-q020 is conceptual, not locally provable) — the s4o1 primer still says it
+  "silently puts you back in job mode", the stale pre-0.34 claim the R1 s4 audit corrected;
+  adding the right fact beside it would contradict the primer on the same page. **Primer fix
+  needed (out of append-only scope).** Also skipped: Gate.power closed form and inverse()
+  keeping Parameters (s1o2 at cap), final_index_layout reading (deep), per-parameter-set
+  commuting-group counts (BackendEstimatorV2 internal, docs-unbacked), shot-precedence counts
+  math (s5o1 primer table + s5-q026/q035 facts already cover it), DataBin `data["out"]` (s7o1
+  primer row already lists `db['meas']`; s7o1 at cap), level-1 vs level-2 CX cancellation
+  (primer level table already names InverseCancellation vs CommutativeCancellation).
+- Gates: `build_study.py` exit 0 (8 cram pages), `build_epub.py` exit 0.

@@ -193,6 +193,36 @@
         "type": "proof",
         "ref": "s1-q040"
       }
+    },
+    {
+      "objective": "s1o1",
+      "group": "trap",
+      "fact_md": "`PauliEvolutionGate(op, time=t)` is exp(−i·t·op) with NO factor ½, while `RXXGate(θ)` and `RZZGate(θ)` mean exp(−i·θ/2·P): XX evolution for t = π/6 on |00⟩ gives `{'00': 0.75, '11': 0.25}`, but `RXXGate(π/6)` only 0.933/0.067. So evolution time t matches an RXX/RZZ angle of 2t.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q064"
+      },
+      "fact_checked": true
+    },
+    {
+      "objective": "s1o1",
+      "group": "core",
+      "fact_md": "`cx(0, 1); rz(θ, 1); cx(0, 1)` is exactly the ZZ evolution `PauliEvolutionGate(SparsePauliOp('ZZ'), time=θ/2)` — `rz(π/3)` in the middle equals `time=π/6`, because RZ also carries the half-angle convention.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q065"
+      },
+      "fact_checked": true
+    },
+    {
+      "objective": "s1o1",
+      "group": "trap",
+      "fact_md": "`a @ b` on `SparsePauliOp`s is the operator PRODUCT, not a tensor product: `(X + Z) @ (X + Z)` has raw terms I, −iY, +iY, I, and `.simplify()` leaves `2·I` because the anticommuting cross terms cancel. `a.tensor(a)` is the different two-qubit `XX + XZ + ZX + ZZ`.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q057"
+      },
+      "fact_checked": true
     }
   ],
   "checklist": [
@@ -209,6 +239,6 @@
     "generated": "2026-08-15",
     "model": "claude-opus (v2 study rewrite agent)",
     "fact_checked": true,
-    "notes": "v2 claim-preserving rewrite of fact-checked v1 (generated 2026-07-26, claude-opus-5 s1 quick-study generation agent). No new factual claims: every sentence, table cell and code line here restates content already present in the v1 primers or facts of this file, condensed. Every kept fact was re-read against its v1 wording before being shortened, and each kept fact retains its original source unchanged; no fact was merged across two different sources. Structural changes only: the two long v1 primers were split into four teaching units (s1o1 label/combination methods + SparsePauliOp/commutation; s1o2 Statevector construction/read-out + phase family/equality), with the Pauli combination methods, the commutation parity examples, the phase-gate matrices and the RY(θ) formulas moved into pipe tables. Facts 27 -> 17, triaged into core/trap. Deleted as covered in full by a primer table or as edge-case detail: the tensor/expand caller-position fact (s1-q016), the compose/dot order fact (citation, guides/operator-class, still cited by the s1o1 primer), Statevector.from_label index-2 (s1-q030), from_int integer dims (s1-q038), S = sqrt(Z) = p(pi/2) (citation, SGate API page, still cited by the s1o2 phase primer), the sdg-after-H phase (s1-q024), T on |1> recording 0.7071+0.7071j (s1-q022), RZ(pi/2) splitting the phase (s1-q026), the RY probability instance sin^2(theta/2) = 0.25 (s1-q039) and the unobservable qc.global_phase (s1-q027). fact_checked stays true: the v1 file was fact-checked against stored proof artifacts and fetched documentation (see the v1 note preserved below), and this pass introduced no claim that was not already in it. Original v1 provenance note: \"Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json; the two citation-sourced facts were checked by curl -L fetching the page text. Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0) or read off the fetched documentation page. The 2026-07-26 official-alignment fix wave added s1-q048/q049/q050 (circuit library) and the task #28 figure wave added s1-q051/q052, all read off executed proof artifacts.\""
+    "notes": "v2 claim-preserving rewrite of fact-checked v1 (generated 2026-07-26, claude-opus-5 s1 quick-study generation agent). No new factual claims: every sentence, table cell and code line here restates content already present in the v1 primers or facts of this file, condensed. Every kept fact was re-read against its v1 wording before being shortened, and each kept fact retains its original source unchanged; no fact was merged across two different sources. Structural changes only: the two long v1 primers were split into four teaching units (s1o1 label/combination methods + SparsePauliOp/commutation; s1o2 Statevector construction/read-out + phase family/equality), with the Pauli combination methods, the commutation parity examples, the phase-gate matrices and the RY(θ) formulas moved into pipe tables. Facts 27 -> 17, triaged into core/trap. Deleted as covered in full by a primer table or as edge-case detail: the tensor/expand caller-position fact (s1-q016), the compose/dot order fact (citation, guides/operator-class, still cited by the s1o1 primer), Statevector.from_label index-2 (s1-q030), from_int integer dims (s1-q038), S = sqrt(Z) = p(pi/2) (citation, SGate API page, still cited by the s1o2 phase primer), the sdg-after-H phase (s1-q024), T on |1> recording 0.7071+0.7071j (s1-q022), RZ(pi/2) splitting the phase (s1-q026), the RY probability instance sin^2(theta/2) = 0.25 (s1-q039) and the unobservable qc.global_phase (s1-q027). fact_checked stays true: the v1 file was fact-checked against stored proof artifacts and fetched documentation (see the v1 note preserved below), and this pass introduced no claim that was not already in it. Original v1 provenance note: \"Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json; the two citation-sourced facts were checked by curl -L fetching the page text. Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0) or read off the fetched documentation page. The 2026-07-26 official-alignment fix wave added s1-q048/q049/q050 (circuit library) and the task #28 figure wave added s1-q051/q052, all read off executed proof artifacts.\" Study absorption 2026-10-02: appended 3 new facts from the October R2/figure waves, each re-verified by re-execution in the pinned venv (qiskit 2.5.0 / runtime 0.48.0) and marked per-fact `fact_checked: true`; no existing primer, fact or checklist item changed."
   }
 }

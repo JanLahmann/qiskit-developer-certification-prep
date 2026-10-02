@@ -167,6 +167,36 @@
         "type": "citation",
         "ref": "https://quantum.cloud.ibm.com/docs/guides/cloud-setup-rest-api"
       }
+    },
+    {
+      "objective": "s8o2",
+      "group": "trap",
+      "fact_md": "`qasm2.dumps` exports exactly one condition form — `if_test((creg, int))` with no else, emitted as `if (c == 1) x q[1];`. An `else` branch raises `QASM2ExportError`, and so does `expr.equal(c, 1)`, although it means the same comparison.",
+      "source": {
+        "type": "proof",
+        "ref": "s8-q030"
+      },
+      "fact_checked": true
+    },
+    {
+      "objective": "s8o2",
+      "group": "core",
+      "fact_md": "`qasm3.dumps` writes a single-bit condition as a bare bit test: `if_test((c[0], 1))` becomes `if (c[0]) {` and `if_test((c[0], 0))` becomes `if (!c[0]) {`, while a whole-register `(c, 0)` becomes `if (c == 0) {`.",
+      "source": {
+        "type": "proof",
+        "ref": "s8-q031"
+      },
+      "fact_checked": true
+    },
+    {
+      "objective": "s8o3",
+      "group": "core",
+      "fact_md": "Loading OpenQASM 2 keeps a user `gate` definition as a named custom gate, not inlined: `mix q[2], q[0];` loads as ONE `mix` instruction on qubits (2, 0) whose `.definition` holds the `h`/`cx` body, and it draws as a single `Mix` box.",
+      "source": {
+        "type": "proof",
+        "ref": "s8-q032"
+      },
+      "fact_checked": true
     }
   ],
   "checklist": [
@@ -183,6 +213,6 @@
     "generated": "2026-08-15",
     "model": "claude-opus (v2 study rewrite agent)",
     "fact_checked": true,
-    "notes": "v2 claim-preserving rewrite of fact-checked v1 (generated 2026-07-26, claude-fable orchestrator gold example). No new factual claims: every sentence and table cell restates content already present in the v1 primers or facts of this file, condensed. Every kept fact was re-read against its v1 wording before being shortened and keeps its original source unchanged; no fact was merged across two different sources. Structural changes only: the four v1 primers stayed one per objective and gained the tables that carry the detail — the OpenQASM 3 type inventory, the v2-versus-v3 feature comparison, the dumps/dump/loads/load quartet with the qasm2/qasm3 native-versus-import columns, and the Runtime REST jobs endpoints. Facts 18 -> 14, triaged into core/trap. Deleted because a primer or its table now carries the claim in full: the type inventory fact (openqasm.com types page, now the s8o1 type table, and that URL moved into the primer's citations), s8-q014 (arrow versus assignment measurement, now a row of the comparison table), s8-q011 (dump takes an open stream while load takes a path, now the quartet table plus one sentence), and the Runtime REST endpoint fact (api/qiskit-runtime-rest/tags/jobs, now the s8o4 endpoint table, and that URL moved into the primer's citations). The global-phase fact was narrowed to the SILENT drop because the comparison table already states that OpenQASM 2 cannot express a global phase while OpenQASM 3 emits gphase. fact_checked stays true: the v1 file was fact-checked against stored proof artifacts and fetched documentation (v1 note preserved below), and this pass introduced no claim that was not already in it. Note carried forward: the openqasm.com URL was never machine-verified here (the site answers this environment's fetch tool with HTTP 403), and syllabus.json uses the unversioned https://openqasm.com/language/types.html spelling. Original v1 provenance note: \"Authored entirely from REVIEW_LEDGER-verified facts and citations already curl-verified during the s8 adversarial review; serves as the gold pattern for the s1-s7 study generation agents. | official-alignment fix wave (2026-07-26): three facts added for the two thin tasks. The two s8o1 facts (type inventory and casting rules) come from the OpenQASM 3.0 language specification's types page; its content was read from the spec source because openqasm.com answers this environment's fetch tool with HTTP 403 (a user-agent block, not a dead page) — the URL itself was NOT machine-verified here, and note that syllabus.json cites the unversioned form https://openqasm.com/language/types.html, which is the safer spelling if the link checker objects. The s8o4 endpoint fact comes from the live Runtime REST reference (api/qiskit-runtime-rest and its jobs tag page, both fetched 200 on 2026-07-26): jobs POST/GET, jobs/{id} GET+DELETE, jobs/{id}/cancel POST, jobs/{id}/logs GET, jobs/{id}/metrics GET, jobs/{id}/results GET, jobs/{id}/tags PUT. | figure wave 2 (task #28, 2026-07-27): 1 fact(s) added, each sourced by a NEW executed figure question (s8-q029); every claim was read back against the stored evidence in data/proofs/<qid>.json before being written and nothing is asserted beyond it.\""
+    "notes": "v2 claim-preserving rewrite of fact-checked v1 (generated 2026-07-26, claude-fable orchestrator gold example). No new factual claims: every sentence and table cell restates content already present in the v1 primers or facts of this file, condensed. Every kept fact was re-read against its v1 wording before being shortened and keeps its original source unchanged; no fact was merged across two different sources. Structural changes only: the four v1 primers stayed one per objective and gained the tables that carry the detail — the OpenQASM 3 type inventory, the v2-versus-v3 feature comparison, the dumps/dump/loads/load quartet with the qasm2/qasm3 native-versus-import columns, and the Runtime REST jobs endpoints. Facts 18 -> 14, triaged into core/trap. Deleted because a primer or its table now carries the claim in full: the type inventory fact (openqasm.com types page, now the s8o1 type table, and that URL moved into the primer's citations), s8-q014 (arrow versus assignment measurement, now a row of the comparison table), s8-q011 (dump takes an open stream while load takes a path, now the quartet table plus one sentence), and the Runtime REST endpoint fact (api/qiskit-runtime-rest/tags/jobs, now the s8o4 endpoint table, and that URL moved into the primer's citations). The global-phase fact was narrowed to the SILENT drop because the comparison table already states that OpenQASM 2 cannot express a global phase while OpenQASM 3 emits gphase. fact_checked stays true: the v1 file was fact-checked against stored proof artifacts and fetched documentation (v1 note preserved below), and this pass introduced no claim that was not already in it. Note carried forward: the openqasm.com URL was never machine-verified here (the site answers this environment's fetch tool with HTTP 403), and syllabus.json uses the unversioned https://openqasm.com/language/types.html spelling. Original v1 provenance note: \"Authored entirely from REVIEW_LEDGER-verified facts and citations already curl-verified during the s8 adversarial review; serves as the gold pattern for the s1-s7 study generation agents. | official-alignment fix wave (2026-07-26): three facts added for the two thin tasks. The two s8o1 facts (type inventory and casting rules) come from the OpenQASM 3.0 language specification's types page; its content was read from the spec source because openqasm.com answers this environment's fetch tool with HTTP 403 (a user-agent block, not a dead page) — the URL itself was NOT machine-verified here, and note that syllabus.json cites the unversioned form https://openqasm.com/language/types.html, which is the safer spelling if the link checker objects. The s8o4 endpoint fact comes from the live Runtime REST reference (api/qiskit-runtime-rest and its jobs tag page, both fetched 200 on 2026-07-26): jobs POST/GET, jobs/{id} GET+DELETE, jobs/{id}/cancel POST, jobs/{id}/logs GET, jobs/{id}/metrics GET, jobs/{id}/results GET, jobs/{id}/tags PUT. | figure wave 2 (task #28, 2026-07-27): 1 fact(s) added, each sourced by a NEW executed figure question (s8-q029); every claim was read back against the stored evidence in data/proofs/<qid>.json before being written and nothing is asserted beyond it.\" Study absorption 2026-10-02: appended 3 new facts from the October R2/figure waves, each re-verified by re-execution in the pinned venv (qiskit 2.5.0 / runtime 0.48.0) and marked per-fact `fact_checked: true`; no existing primer, fact or checklist item changed."
   }
 }

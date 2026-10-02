@@ -254,6 +254,26 @@
         "type": "proof",
         "ref": "s2-q035"
       }
+    },
+    {
+      "objective": "s2o3",
+      "group": "core",
+      "fact_md": "`plot_bloch_multivector` draws each qubit's REDUCED state, so partial entanglement SHORTENS the arrows: after `ry(2π/3, 0); cx(0, 1); h(1)` qubit 0 points along −z and qubit 1 along −x, both at length 0.5. Full length means a pure single-qubit state; the centre means maximal entanglement.",
+      "source": {
+        "type": "proof",
+        "ref": "s2-q047"
+      },
+      "fact_checked": true
+    },
+    {
+      "objective": "s2o3",
+      "group": "core",
+      "fact_md": "`plot_state_paulivec` draws a bar only for Pauli strings with a NON-zero expectation value, labelled little-endian: `x(1); h(0); s(0)` gives exactly II, IY, ZI, ZY at +1, +1, −1, −1, and the qubit-swapped preparation gives YI, IZ, YZ instead.",
+      "source": {
+        "type": "proof",
+        "ref": "s1-q067"
+      },
+      "fact_checked": true
     }
   ],
   "checklist": [
@@ -270,6 +290,6 @@
     "generated": "2026-08-15",
     "model": "claude-opus (v2 study rewrite agent)",
     "fact_checked": true,
-    "notes": "v2 claim-preserving rewrite of fact-checked v1 (generated 2026-07-26, claude-opus-5 s2/s3 quick-study generation agent). No new factual claims: every sentence, table cell and code line here restates content already present in the v1 primers or facts of this file, condensed. Every kept fact was re-read against its v1 wording before being shortened, and each kept fact retains its original source unchanged; no fact was merged across two different sources. Structural changes only: the three long v1 primers became five teaching units (s2o1 renderers + options; s2o2 measurement plotters and device plots; s2o3 which state plot to use and how to read an arrow or a node), with the renderer return types, the drawing keywords, plot_histogram vs plot_distribution, the three device plots, the five state plots and the Bloch directions moved into pipe tables. Facts 30 -> 23, triaged into core/trap. Deleted as covered in full by a primer table or as edge-case detail: the draw() return-type fact (s2-q010), the shared vs renderer-specific kwargs fact (citation, guides/visualize-circuits, still cited by the s2o1 primer), the raw-counts vs normalized comparison (s2-q020, whose other claim survives as the shots= trap fact), the documented option list (citation, guides/visualize-results, still cited by the s2o2 primer), the device-plot colour comparison (s2-q038, now the device-plot table), and the Bloch-direction readings h -> +X, h;s -> +Y (s2-q027) and -X = minus state (s2-q028). The s2-q034 fact was kept but narrowed to its trap half, because the primer table now carries the two functions' inputs. fact_checked stays true: the v1 file was fact-checked against stored proof artifacts and fetched documentation (see the v1 note preserved below), and this pass introduced no claim that was not already in it. Original v1 provenance note: \"Every proof-sourced fact was read back against the stored evidence in data/proofs/<qid>.json before being written. The three citation-sourced facts were checked by curl -L fetching the page. Primer claims with no proof of their own were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0). The 2026-07-26 official-alignment fix wave added s2-q036/q037/q038/q039; note that the Graphviz binary is not installed in the pinned env, so those device-plot proofs stub the leaf renderer plot_coupling_map and assert on the arguments the real Qiskit code forwards to it — every input check, colour computation and label computation above the renderer runs unmodified.\""
+    "notes": "v2 claim-preserving rewrite of fact-checked v1 (generated 2026-07-26, claude-opus-5 s2/s3 quick-study generation agent). No new factual claims: every sentence, table cell and code line here restates content already present in the v1 primers or facts of this file, condensed. Every kept fact was re-read against its v1 wording before being shortened, and each kept fact retains its original source unchanged; no fact was merged across two different sources. Structural changes only: the three long v1 primers became five teaching units (s2o1 renderers + options; s2o2 measurement plotters and device plots; s2o3 which state plot to use and how to read an arrow or a node), with the renderer return types, the drawing keywords, plot_histogram vs plot_distribution, the three device plots, the five state plots and the Bloch directions moved into pipe tables. Facts 30 -> 23, triaged into core/trap. Deleted as covered in full by a primer table or as edge-case detail: the draw() return-type fact (s2-q010), the shared vs renderer-specific kwargs fact (citation, guides/visualize-circuits, still cited by the s2o1 primer), the raw-counts vs normalized comparison (s2-q020, whose other claim survives as the shots= trap fact), the documented option list (citation, guides/visualize-results, still cited by the s2o2 primer), the device-plot colour comparison (s2-q038, now the device-plot table), and the Bloch-direction readings h -> +X, h;s -> +Y (s2-q027) and -X = minus state (s2-q028). The s2-q034 fact was kept but narrowed to its trap half, because the primer table now carries the two functions' inputs. fact_checked stays true: the v1 file was fact-checked against stored proof artifacts and fetched documentation (see the v1 note preserved below), and this pass introduced no claim that was not already in it. Original v1 provenance note: \"Every proof-sourced fact was read back against the stored evidence in data/proofs/<qid>.json before being written. The three citation-sourced facts were checked by curl -L fetching the page. Primer claims with no proof of their own were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0). The 2026-07-26 official-alignment fix wave added s2-q036/q037/q038/q039; note that the Graphviz binary is not installed in the pinned env, so those device-plot proofs stub the leaf renderer plot_coupling_map and assert on the arguments the real Qiskit code forwards to it — every input check, colour computation and label computation above the renderer runs unmodified.\" Study absorption 2026-10-02: appended 2 new facts from the October R2/figure waves, each re-verified by re-execution in the pinned venv (qiskit 2.5.0 / runtime 0.48.0) and marked per-fact `fact_checked: true`; no existing primer, fact or checklist item changed."
   }
 }

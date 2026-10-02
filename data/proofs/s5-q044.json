@@ -37,7 +37,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 3.22,
+  "wall_seconds": 2.5,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"executed print -> {'110': 50}; option A claims {'101': 50} -> match=False (that string is the join with 'out' on the HIGH end, join_data(['anc', 'out']) -> {'101': 50}; circuit order is ['out', 'anc'])\", \"B\": \"executed print -> {'110': 50}; option B claims {'011': 50} -> match=False (q0 q1 q2 written left to right; the per-register counts are {'out': {'10': 50}, 'anc': {'1': 50}})\", \"C\": \"executed print -> {'110': 50}; option C claims {'1 10': 50} -> match=False (a space-separated key is the legacy backend.run format; joined keys here have 3 characters and no space)\", \"D\": \"executed print -> {'110': 50}; option D claims {'110': 50} -> match=True\", \"E\": \"join_data() with no names ran without error and returned {'110': 50} -> option E refuted\"}, \"observed\": {\"printed\": \"{'110': 50}\", \"registers\": [\"out\", \"anc\"], \"per_register\": {\"out\": {\"10\": 50}, \"anc\": {\"1\": 50}}, \"join_anc_out\": {\"101\": 50}, \"e_raises\": false}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

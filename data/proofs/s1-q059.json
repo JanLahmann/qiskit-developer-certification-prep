@@ -23,7 +23,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 14.1,
+  "wall_seconds": 2.49,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"executed ansatz.compose(ansatz.inverse()).num_parameters = 9; option A claims 18 -> match=False  (inverse() reuses the same Parameter objects: True; only a copy with a different prefix gives 18)\", \"B\": \"executed ansatz.compose(ansatz.inverse()).num_parameters = 9; option B claims 0 -> match=False  (the composed circuit is still unbound: 9 free parameters, 26 instructions)\", \"C\": \"executed ansatz.compose(ansatz.inverse()).num_parameters = 9; option C claims 9 -> match=True\", \"D\": \"executed ansatz.compose(ansatz.inverse()).num_parameters = 9; option D claims 6 -> match=False  (3 * reps = 6 needs skip_final_rotation_layer=True: 6)\"}, \"observed\": {\"num_parameters\": 9, \"ansatz_parameters\": 9, \"inverse_shares_parameters\": true, \"independent_copy\": 18}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

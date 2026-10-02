@@ -26,7 +26,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 3.45,
+  "wall_seconds": 2.25,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"code printed '(3,) 50 50'; option claims '(3,) 200 200' -> match=False\", \"B\": \"code printed '(3,) 50 50'; option claims '() 150 150' -> match=False\", \"C\": \"code printed '(3,) 50 50'; option claims '(3, 1) 50 50' -> match=False\", \"D\": \"code printed '(3,) 50 50'; option claims '(3,) 50 200' -> match=False\", \"E\": \"code printed '(3,) 50 50'; option claims '(3,) 50 50' -> match=True\", \"F\": \"code ran without error (None); decoded field is a BitArray, per-set counts identical to the original: True -> match=False\"}, \"observed\": {\"stdout\": \"(3,) 50 50\", \"error\": null, \"before_roundtrip\": \"((3,), 50, 50)\", \"decoded_type\": \"BitArray\", \"counts_equal\": true}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

@@ -41,7 +41,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 3.17,
+  "wall_seconds": 2.02,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"returned 10 of the session's 14 jobs (first job00, last job09); client stopped after 1 page request(s) -> match=False\", \"B\": \"returned 14 of the session's 14 jobs (first job13, last job00); client stopped after 1 page request(s) -> match=True\", \"C\": \"returned 10 of the session's 14 jobs (first job13, last job04); client stopped after 1 page request(s) -> match=False\", \"D\": \"raised RuntimeJobNotFound: 'Job not found: sess-alpha' -> match=False\", \"E\": \"returned 10 of the session's 14 jobs (first job13, last job04); client stopped after 1 page request(s) -> match=False\"}, \"observed\": {\"A\": {\"count\": 10, \"first\": \"job00\", \"last\": \"job09\"}, \"B\": {\"count\": 14, \"first\": \"job13\", \"last\": \"job00\"}, \"C\": {\"count\": 10, \"first\": \"job13\", \"last\": \"job04\"}, \"D\": \"RuntimeJobNotFound\", \"E\": {\"count\": 10, \"first\": \"job13\", \"last\": \"job04\"}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

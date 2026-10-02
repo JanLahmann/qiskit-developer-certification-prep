@@ -44,7 +44,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/estimator-v2"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BindingsArray"
     ]
   },
   "proof": {
@@ -58,9 +58,9 @@
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add (d3): broadcasting with a TWO-parameter circuit — the trailing parameter axis is consumed ((4, 2) -> 4 sets) before NumPy broadcasting against (3, 1) observables; raw-array broadcasting would wrongly predict an error. Proof scores the coerced EstimatorPub shapes and the observed evs.shape."
+    "notes": "R2 add (d3): broadcasting with a TWO-parameter circuit — the trailing parameter axis is consumed ((4, 2) -> 4 sets) before NumPy broadcasting against (3, 1) observables; raw-array broadcasting would wrongly predict an error. Proof scores the coerced EstimatorPub shapes and the observed evs.shape. | adversarial review 2026-10-02: citation replaced: estimator-v2 lists PUB parts but not the per-parameter last axis; BindingsArray states 'the last axis is over parameters'. Note: the primitive-input-output example's comments quote stale shapes ((100, 2) vs the real (10, 2)) — the rule is right, its numbers are not."
   },
   "freshness": {
     "verified_against": {
@@ -69,7 +69,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   }
 }

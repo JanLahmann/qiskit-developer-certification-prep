@@ -44,7 +44,8 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/primitives"
     ]
   },
   "proof": {
@@ -58,9 +59,9 @@
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add (d3): Sampler side of broadcasting — one-parameter trailing-axis coercion (2, 3, 1) -> (2, 3), PUB shots beating run(shots=), and get_counts() aggregating over all parameter sets, combined in one printed line. Proof captures the literal stdout."
+    "notes": "R2 add (d3): Sampler side of broadcasting — one-parameter trailing-axis coercion (2, 3, 1) -> (2, 3), PUB shots beating run(shots=), and get_counts() aggregating over all parameter sets, combined in one printed line. Proof captures the literal stdout. | adversarial review 2026-10-02: citation added: api/qiskit/primitives ('each pub ... its own value for shots, which takes precedence over any value given to the method'); primitive-input-output does not state the override."
   },
   "freshness": {
     "verified_against": {
@@ -69,7 +70,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   }
 }

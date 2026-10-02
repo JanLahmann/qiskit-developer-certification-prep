@@ -44,7 +44,8 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
+      "https://quantum.cloud.ibm.com/docs/guides/bit-ordering"
     ]
   },
   "proof": {
@@ -58,9 +59,9 @@
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s3)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add: switch on a whole ClassicalRegister + crossed measure targets (register value significance) + reading a second register's bit order."
+    "notes": "R2 add: switch on a whole ClassicalRegister + crossed measure targets (register value significance) + reading a second register's bit order. | adversarial review 2026-10-02: citation added: guides/bit-ordering ('bit 0 is the least significant bit') — the cited control-flow and QuantumCircuit pages only imply the c[0]=LSB rule the key turns on."
   },
   "freshness": {
     "verified_against": {
@@ -69,7 +70,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   }
 }

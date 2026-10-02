@@ -41,7 +41,7 @@
   "explanation": {
     "correct": "Two steps interact. First broadcasting: the observables have shape (2,) and the `(2, 1)` values on a one-parameter circuit are 2 parameter sets of shape (2,), so the PUB zips them — set 0 needs only ZZ, XX and YY, set 1 needs only ZI and IX. Second, measurement grouping: Paulis are measured together only when they commute qubit by qubit. ZZ, XX and YY clash on both qubits, so set 0 needs 3 measurement bases; ZI and IX (Z on qubit 1, X on qubit 0) share one basis. 3 + 1 = 4 circuits.",
     "distractors": {
-      "B": "Pairs every observable with every parameter set (an outer product). Shapes (2,) and (2,) broadcast element-wise, so each set is paired with ONE observable; the outer pattern needs `[[O1], [O2]]`.",
+      "B": "Pairs every observable with every parameter set (an outer product). Shapes (2,) and (2,) broadcast element-wise, so each set is paired with ONE observable; the outer pattern needs `[[O1], [O2]]`. The same 6 comes from grouping all five terms once (3 bases) and measuring every basis for both sets; the estimator groups only the Paulis each set actually needs.",
       "C": "Counts the qubit-wise groups of all five terms once, as if the two parameter sets shared one bound circuit. Each parameter set binds a different circuit, so its bases are measured separately.",
       "D": "Measures every Pauli term in its own circuit. ZI and IX commute qubit-wise and are read from one basis-change circuit — that grouping is what the Estimator exploits within a PUB.",
       "E": "Combines both mistakes: an outer pairing of observables and parameter sets plus one circuit per Pauli term.",
@@ -64,9 +64,9 @@
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s6)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add (d3): broadcasting (zip, one-parameter (2,1) coercion) x qubit-wise-commuting measurement grouping. Proof wraps AerSimulator.run to count the circuits BackendEstimatorV2 actually submits and scores every option against that count; reference-implementation behaviour (docs: commuting observables in one PUB are grouped with group_qubit_wise_commuting)."
+    "notes": "R2 add (d3): broadcasting (zip, one-parameter (2,1) coercion) x qubit-wise-commuting measurement grouping. Proof wraps AerSimulator.run to count the circuits BackendEstimatorV2 actually submits and scores every option against that count; reference-implementation behaviour (docs: commuting observables in one PUB are grouped with group_qubit_wise_commuting). | adversarial review 2026-10-02: second-answer attack on B (6 = PUB-wide grouping x 2 sets, a reading of the guide's 'commuting observables in the same PUB are grouped') does not stick — executed count is 4; distractor B now names that path too. Server-count caveat kept: the stem pins BackendEstimatorV2 on AerSimulator, the per-set grouping is execution-carried (BackendEstimatorV2 page documents abelian_grouping only)."
   },
   "freshness": {
     "verified_against": {
@@ -75,7 +75,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   }
 }

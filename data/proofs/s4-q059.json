@@ -32,7 +32,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 5.04,
+  "wall_seconds": 2.29,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\", \"D\"], \"evidence\": {\"A\": \"raised IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do  -> returns counts: False\", \"B\": \"ran and returned counts {'00': 103, '11': 97} -> returns counts: True\", \"C\": \"raised IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do  -> returns counts: False\", \"D\": \"ran and returned counts {'00': 100, '11': 100} -> returns counts: True\", \"E\": \"raised AerError: 'unknown instruction: h' -> returns counts: False\"}, \"observed\": {\"A\": \"IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do \", \"B\": {\"00\": 103, \"11\": 97}, \"C\": \"IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do \", \"D\": {\"11\": 100, \"00\": 100}, \"E\": \"AerError: 'unknown instruction: h'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

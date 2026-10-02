@@ -5,37 +5,42 @@
       "E"
     ],
     "evidence": {
-      "A": "bars (labels read qubit-0-first) = {'IZ': -1.0, 'ZI': -0.5, 'ZZ': 0.5, 'IX': 0.0}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False",
-      "B": "bars (ry angle halved (<Z> = cos(theta/2))) = {'IZ': 0.5, 'ZI': -1.0, 'ZZ': -0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False",
-      "C": "bars (x(1) overlooked) = {'IZ': -0.5, 'ZI': 1.0, 'ZZ': -0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False",
-      "D": "bars (ry rotation sense reversed) = {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': -0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False",
-      "E": "bars (stem code) = {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=True"
+      "A": "bars (labels read qubit-0-first) = {'IZ': -1.0, 'ZI': -0.5, 'ZZ': 0.5, 'IX': 0.0}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} (read off the code's own ax.bar drawing); styled SVG byte-identical: False -> match=False",
+      "B": "bars (ry angle halved (<Z> = cos(theta/2))) = {'IZ': 0.5, 'ZI': -1.0, 'ZZ': -0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} (read off the code's own ax.bar drawing); styled SVG byte-identical: False -> match=False",
+      "C": "bars (x(1) overlooked) = {'IZ': -0.5, 'ZI': 1.0, 'ZZ': -0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} (read off the code's own ax.bar drawing); styled SVG byte-identical: False -> match=False",
+      "D": "bars (ry rotation sense reversed) = {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': -0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} (read off the code's own ax.bar drawing); styled SVG byte-identical: False -> match=False",
+      "E": "bars (stem code) = {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} (read off the code's own ax.bar drawing); styled SVG byte-identical: True -> match=True"
     },
     "observed": {
+      "A_svg_identical": false,
       "A": [
         -1.0,
         -0.5,
         0.5,
         0.0
       ],
+      "B_svg_identical": false,
       "B": [
         0.5,
         -1.0,
         -0.5,
         0.866
       ],
+      "C_svg_identical": false,
       "C": [
         -0.5,
         1.0,
         -0.5,
         0.866
       ],
+      "D_svg_identical": false,
       "D": [
         -0.5,
         -1.0,
         0.5,
         -0.866
       ],
+      "E_svg_identical": true,
       "E": [
         -0.5,
         -1.0,
@@ -56,9 +61,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 3.52,
+  "wall_seconds": 3.89,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"bars (labels read qubit-0-first) = {'IZ': -1.0, 'ZI': -0.5, 'ZZ': 0.5, 'IX': 0.0}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False\", \"B\": \"bars (ry angle halved (<Z> = cos(theta/2))) = {'IZ': 0.5, 'ZI': -1.0, 'ZZ': -0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False\", \"C\": \"bars (x(1) overlooked) = {'IZ': -0.5, 'ZI': 1.0, 'ZZ': -0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False\", \"D\": \"bars (ry rotation sense reversed) = {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': -0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=False\", \"E\": \"bars (stem code) = {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} -> match=True\"}, \"observed\": {\"A\": [-1.0, -0.5, 0.5, 0.0], \"B\": [0.5, -1.0, -0.5, 0.866], \"C\": [-0.5, 1.0, -0.5, 0.866], \"D\": [-0.5, -1.0, 0.5, -0.866], \"E\": [-0.5, -1.0, 0.5, 0.866], \"stem\": [-0.5, -1.0, 0.5, 0.866]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"bars (labels read qubit-0-first) = {'IZ': -1.0, 'ZI': -0.5, 'ZZ': 0.5, 'IX': 0.0}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} (read off the code's own ax.bar drawing); styled SVG byte-identical: False -> match=False\", \"B\": \"bars (ry angle halved (<Z> = cos(theta/2))) = {'IZ': 0.5, 'ZI': -1.0, 'ZZ': -0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} (read off the code's own ax.bar drawing); styled SVG byte-identical: False -> match=False\", \"C\": \"bars (x(1) overlooked) = {'IZ': -0.5, 'ZI': 1.0, 'ZZ': -0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} (read off the code's own ax.bar drawing); styled SVG byte-identical: False -> match=False\", \"D\": \"bars (ry rotation sense reversed) = {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': -0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} (read off the code's own ax.bar drawing); styled SVG byte-identical: False -> match=False\", \"E\": \"bars (stem code) = {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866}; the stem code gives {'IZ': -0.5, 'ZI': -1.0, 'ZZ': 0.5, 'IX': 0.866} (read off the code's own ax.bar drawing); styled SVG byte-identical: True -> match=True\"}, \"observed\": {\"A_svg_identical\": false, \"A\": [-1.0, -0.5, 0.5, 0.0], \"B_svg_identical\": false, \"B\": [0.5, -1.0, -0.5, 0.866], \"C_svg_identical\": false, \"C\": [-0.5, 1.0, -0.5, 0.866], \"D_svg_identical\": false, \"D\": [-0.5, -1.0, 0.5, -0.866], \"E_svg_identical\": true, \"E\": [-0.5, -1.0, 0.5, 0.866], \"stem\": [-0.5, -1.0, 0.5, 0.866]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

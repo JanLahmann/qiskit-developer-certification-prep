@@ -39,7 +39,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.PauliEvolutionGate",
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.RXXGate"
     ]
   },
   "proof": {
@@ -53,9 +53,9 @@
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s1)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add (d3): PauliEvolutionGate convention exp(-i t H) + two-qubit Pauli exponent + parameter binding; every distractor is the executed result of its misconception (RXXGate, time 2t, product of RX)."
+    "notes": "R2 add (d3): PauliEvolutionGate convention exp(-i t H) + two-qubit Pauli exponent + parameter binding; every distractor is the executed result of its misconception (RXXGate, time 2t, product of RX). | adversarial review 2026-10-02: attacked all 3 distractors (none defensible); citation guides/operators-overview (never mentions PauliEvolutionGate or exp(-iHt)) replaced by the RXXGate API page, which states the exp(-i theta/2 XX) convention distractor A relies on. Key unchanged."
   },
   "freshness": {
     "verified_against": {

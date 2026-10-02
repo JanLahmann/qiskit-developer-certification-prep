@@ -2453,3 +2453,181 @@ s8-q030 (mcq, dc=4, key E). Both executed. Measured in the pinned venv:
   audit_meta_patterns s5/s6/s7 0 blockers / 0 warnings, only the pre-existing low
   flags (6/7/7). Drift lint 19 -> 6 findings; the 6 left are outside R3 scope
   (s1-q027 C, s3-q021 A-D, s3-q025 D).
+
+## Adversarial review R2 — s1+s2 (2026-10-02)
+
+Scope: s1-q055..q066 (12) + s2-q047. Every distractor got a good-faith second-answer
+attack, re-executed in the pinned venv (qiskit 2.5.0); all six figure items were
+rasterized and inspected. **0 second-answer attacks stuck, 0 key changes, 0 kills.**
+
+- **Proof weakness (figure items): the option-image proofs compared gate lists, not
+  drawings.** s1-q060's tested fact — `ctrl_state=0` is drawn as an OPEN circle — is in
+  no cited page, so the proof was adjacent to the claim. s1-q055/q060/q061 now render
+  every variant AND the stem code with `draw("mpl")` to SVG text in-process
+  (`matplotlib.rcParams["svg.hashsalt"]` fixed, `metadata={"Date": None}`) and require
+  byte-identity with the stem's rendering for a match. Identical circuits render
+  identically within one process; each keyed variant matches, every distractor differs.
+  Adds ~1-3 s per proof. Reusable recipe for any "which diagram does this draw" item.
+- **s2-q047 proof now cross-checks the drawer's own data:** each sphere vector from
+  `partial_trace` is asserted equal to
+  `qiskit.visualization.state_visualization._bloch_multivector_data` (the private helper
+  `plot_bloch_multivector` plots) for all 5 variants. Private-API dependence is
+  deliberate: if it moves, the proof fails loudly instead of drifting.
+- **Citation failures (4), all replaced with pages verified to state the fact:**
+  s1-q061 `api/qiskit/circuit_library` (no entanglement definitions; `real_amplitudes`
+  delegates to `n_local`) -> `qiskit.circuit.library.n_local`; s1-q064 and s1-q065
+  `guides/operators-overview` (never mentions PauliEvolutionGate, exp(-iHt) or the RZ
+  half angle) -> `RXXGate` (exp(-i θ/2 XX), distractor A) and `RZGate`
+  (RZ(φ) = exp(-i φ/2 Z)); s2-q047 `api/qiskit/visualization` (one-line listing) ->
+  `qiskit.visualization.plot_bloch_multivector` ("each component of the sphere labeled
+  'qubit i' is the expected value of the Pauli acting only on that qubit").
+  Partial support kept, noted: s1-q060 citations support ctrl_state semantics and
+  controls-first ordering but not the open-circle glyph (the proof now carries it).
+- **Docs-reading trap:** the Statevector `probabilities([1, 0])` example confirms
+  s1-q066 (`qargs[0]` = least-significant bit: `'+0'` -> `[0.5, 0.5, 0, 0]`), but an
+  LLM summary of that page claimed the opposite. Read the example's numbers yourself.
+  Same for `guides/operator-class` "A.compose(B) returns the operator with matrix B.A"
+  (= A runs first, as s1-q062 keys) — summaries paraphrase it backwards.
+- **Figure checks:** s1-q055/q060/q061 renders match their alt texts exactly;
+  s2-q047 −x vs +x is readable from the x-axis label, half vs full length obvious. Quick
+  Look (`qlmanage -t`) thumbnails crop wide SVGs to a square — the right-hand Bloch
+  sphere looked clipped; the SVG itself is fine (clip rects inside the viewBox).
+- **Difficulty:** all 13 ratings kept. Borderline noted: s1-q066 (d3) rests on one
+  subtle semantic (qargs order) plus marginalization; kept under "subtle semantics".
+- **s1-q027 option C drift finding:** execution-derived false positive (`phase=0.506`
+  is the seeded run's measured P(1)). Cleared the R3 way: `p1_gp`/`p1_ref`/`p1_ry`
+  recorded in `observed`; no claim or evidence text changed. Drift lint 6 -> 5 (left:
+  s3-q021 A-D, s3-q025 D, out of scope).
+- Gates: verify_bank s1 55/55, s2 37/37 (+1 conceptual) PROVEN, exit 0;
+  audit_meta_patterns s1 0/0 (9 pre-existing low flags), s2 0/0 (8), none on the
+  reviewed items; render_figures OK for all six figure qids.
+
+## Adversarial review R2 — s3+s4 (2026-10-02)
+
+Scope: s3-q059..q072 (14) + s4-q050..q060 (11), plus the two leftover drift-lint items
+(s3-q021, s3-q025). Every distractor got a good-faith second-answer attack, re-executed
+in the pinned venv (qiskit 2.5.0 / runtime 0.48.0); all ten figures were rasterized
+(generator re-run with savefig -> PNG) and inspected. **0 second-answer attacks stuck,
+0 key changes, 0 kills.**
+
+- **Image-option proofs now pin the drawing (s1+s2 recipe):** s3-q063/q064/q065/q066/q068
+  render every variant (with its draw kwargs, e.g. `reverse_bits=True` for q063 D) and
+  the stem code with `draw("mpl")` to SVG in-process (`svg.hashsalt` fixed, no Date) and
+  require byte-identity with the stem's rendering on top of the old structural match.
+  s3-q067 (stem figure) renders every candidate's level-0 output and compares with the
+  figure circuit's rendering. Observed: exactly the keyed variant renders identically
+  in each of the six. Routing-SWAP trap re-checked: no option except D reproduces the
+  q067 drawing; "which three gates" excludes a SWAP-containing input.
+- **s3-q070 mechanism wording:** a pass-callback trace shows the H·H pair is removed by
+  level 1's `InverseCancellation` (init stage, before translation), not by single-qubit
+  merging. `correct` + distractor D reworded (meaning/key unchanged); proof records
+  `observed.h_pair_removed_by`. s3-q072's mechanism verified: at level 2 the CX pair
+  is removed by `CommutativeCancellation` in the INIT stage (level 2 init also runs
+  ConsolidateBlocks/Split2QUnitaries); level 1 has only adjacent `InverseCancellation`.
+- **Alt-text leak (s4-q054):** the stem alt ended "There is no line between qubits 2 and
+  3" — the exact pair the key turns on; removed (edge list stays complete).
+- **Citation failures replaced (all new pages fetched; quotes read in the page source):**
+  s3-q066 visualize-circuits (no control flow) -> QuantumCircuit API (if_test/else);
+  s3-q069 construct-circuits (no name clash) -> QuantumCircuit API ("forbids having
+  multiple parameters of the same name"); s4-q054 sampler-v2 (no ISA content) removed;
+  s4-q055 sampler-v2 -> `qiskit.transpiler.CouplingMap` ("directed edges correspond to
+  permitted CNOT gates"); s4-q059 sampler-v2 + local-testing-mode (neither mentions the
+  simulator exemption) -> `api/qiskit/primitives`. Upgrades for partial support:
+  s3-q060/q063 + `guides/bit-ordering`; s3-q070 + `api/qiskit/circuit` (Barrier blocks
+  optimizations from crossing); s4-q050 estimator-v2 -> `BindingsArray` ("the last axis
+  is over parameters"); s4-q051 + `api/qiskit/primitives` (PUB shots take precedence);
+  s4-q053 + `options-simulator-options`; s4-q056 transpiler-stages -> `TranspileLayout`.
+- **Docs-only gaps (claims carried by execution, no page states them):** depth() keeps
+  a filtered barrier as a sync point (s3-q059); `apply_layout` uses the FINAL layout
+  (s4-q056); the runtime ISA check skips simulators (s4-q059, `is_simulator` guard);
+  the primitive's mode is fixed at construction + 'The session is closed.' (s4-q052).
+  Docs trap: the guides/primitive-input-output broadcasting example's comments quote
+  (100, 2)/(3, 100)/300 while its code builds (10, 2) -> (3, 10); never reuse its numbers.
+- **Conceptual items:** s4-q057 fully backed by guides/execution-modes "Basic workflow"
+  (deactivated, normal job selection resumes, job must go through the normal queue to
+  reactivate, max TTL never pauses). s4-q058 by the FAQ usage answer (interactive-TTL
+  idle time counts in session; batch = quantum time only) — distractor D survives the
+  "whichever happens last" wording because closing stops the TTL wait. s4-q060 by the
+  FAQ lanes answer + execution-modes batch notes. FAQ proximity of s4-q060: same
+  scenario shape as the FAQ's lanes example with different numbers (1 busy lane / 8
+  jobs vs 2 / 6) and original distractors — kept, but do not add a second lanes item.
+- **Determinism attacks:** s4-q053 key A re-run in two separate processes -> byte-
+  identical counts; s3-q070/q072 have no coupling map, so no layout randomness.
+- **Difficulty:** all 25 ratings kept. Borderline: s4-q060 (d2) is close to a one-fact
+  read of the FAQ; s3-q063 (d1) correctly easy.
+- **Drift lint s3-q021 (A-D), s3-q025 (D):** q021 = execution-derived false positive
+  (4-dp angles) -> `rx_4dp`/`rz_4dp` recorded in observed. q025 = genuinely stale label:
+  evidence said `x(0, condition=...)`, now quotes option D's call
+  `qc.x(0, condition=(cr, 1))` (same call executed); D's outcome also in observed.
+  Drift lint 5 -> 0.
+- Gates: verify_bank s3 58/58 (+5 conceptual), s4 27/27 (+25 conceptual) PROVEN, exit 0;
+  audit_meta_patterns s3 0/0 (9 pre-existing low length flags), s4 0/0 (10 low, incl. the
+  known q053/q054/q058 keepers), no high/medium; render_figures OK for s3-q063..q068 and
+  s4-q054 (SVGs unchanged).
+
+## Adversarial review R2 — s5-s8 (2026-10-02)
+
+Scope: s5-q044..q051 (8), s6-q043..q051 (9), s7-q039..q044 (6), s8-q030 (1). Every
+distractor got a good-faith second-answer attack (proofs re-run, independent re-execution
+for s5-q046/s6-q043/s7-q041/s7-q044 in the pinned venv, qiskit 2.5.0 / runtime 0.48.0); all
+six figure items rasterized (generator re-run with savefig -> PNG) and inspected; every
+cited page fetched and grepped for the claimed fact. **0 second-answer attacks stuck on
+execution, 0 key changes, 0 kills.** Two docs-reader attacks are real (the docs read the
+other way) and are now answered in the explanations; keys stay execution-proven.
+
+- **Docs-reader traps (wording hardened, keys unchanged):** s5-q044 — the `join_data`
+  reference says the first name is "placed to the left of" the next; a reader picks A
+  (`101`). Execution: the join keeps `out` at bits 0-1 and `anc` at bit 2, and low
+  indices print RIGHT (BitArray `slice_bits` note: index 0 = right-most `get_counts()`
+  character). `correct` + distractor A now say so; the proof slices the join by bit index
+  (`slice_bits([0, 1])` == out's counts, `slice_bits([2])` == anc's). s7-q039 — the 0.48
+  docstring says `session_id` "All jobs in the session will be returned" and
+  guides/monitor-job has a commented `jobs(session_id="<session id>")` "to retrieve all
+  jobs in a Session" — both read as option C. They describe filter membership; the
+  default `limit=10` still caps. Distractor C now names both sources.
+- **s7-q039 stub-method scrutiny:** read the real `jobs()` source — the truncation is
+  client logic (`if limit: ... break` once `len >= limit`; `limit or 20` page size), the
+  stub only slices `[skip:skip+limit]` and reports `count`, as a server does. Proof now
+  asserts the reloaded class is the library module's with its own paging loop, records
+  `inspect.signature(jobs)` default limit (10) and the page sizes the LIBRARY requested
+  (C/A/E `[10]`, B `[20]`). Residual assumption (noted, not provable offline): the real
+  server honours the requested page limit with `session_id` set.
+- **Figure proofs pinned to the drawing:** s5-q045/q048 (option histograms) now render each
+  variant and the stem's own `plot_histogram` call to SVG text in-process (fixed
+  `svg.hashsalt`, no Date) and require byte-identity on top of the bars read off the axes;
+  only the key is identical. s6-q051: the stem code's plain `ax.bar` render is NOT styled
+  like the option images (grey bars, fixed y-range) — stem reworded "Which bar chart shows
+  the values this code plots?"; the proof executes the code's `ax.bar`, reads heights by
+  tick slot, and requires SVG identity of the generator-styled render. s5-q049/s6-q047/
+  s6-q050 (stem figures) kept: q049 reads bars back off the drawing, q047 asserts the same
+  GATES literal in generator and proof, q050 is conceptual with a collinearity assert.
+- **s6-q044 server-count caveat:** a guide reader can get 6 (PUB-wide grouping, 3 bases,
+  times 2 sets) — execution gives 4 (grouping per parameter set). Distractor B now names
+  that path. The per-set grouping is execution-carried; the BackendEstimatorV2 page only
+  documents `abelian_grouping`. The stem pins BackendEstimatorV2 on AerSimulator.
+- **Citation failures replaced (2) + upgrades:** s8-q030 guides/interoperate-qiskit-qasm2
+  (no if/else/condition content at all) -> guides/composer (its OpenQASM 2 statement
+  table: `if(creg==int) qop;` is the only conditional form, `if(c==5) CX q[0],q[1];`);
+  s6-q049 guides/primitive-input-output (lists Pauli/SparsePauliOp/PauliList/str, never
+  dicts) -> api ObservablesArray (`coerce_observable` takes `Mapping[str | Pauli, float]`
+  and returns one observable). s6-q051 + SparsePauliOp API (`XIIZI` = Z_1 X_4).
+  Verified as supporting: s5-q047 (TwirlingOptions 0.48: "Otherwise ... ceil(shots/
+  num_randomizations)", `max(64, ceil(shots/32))` only when both auto, PUB/run shots
+  "always obeyed"; sampler-options precedence list), s5-q045 (BitArray `postselect`:
+  `creg[i]` as in slice_bits, selection = values kept, `num_bits` unchanged), s5-q051
+  (M3 tutorial: p̃ = M p; Sampler has no built-in mitigation), s6-q046/q050 (ZneOptions:
+  `(*shape, num_noise_factors)`, default `[0, *noise_factors]`, "fallback" = lowest-
+  factor raw data, linear = polynomial_degree_1), s7-q042/q043 (0.48 API: pending
+  semantics, default limit=10; `result()` raises RuntimeJobFailureError / Invalid-
+  StateError for cancelled; `error_message()`).
+- **Docs-page trap:** guides/bit-ordering now says BitArray's default is "big (endian)"
+  and the Runtime primitives "return big-endian results" (it means the packed byte
+  storage); its "Strings" paragraph (bit n-1 leftmost) is the citable part. Don't cite
+  that page for printed-key order without quoting the Strings section.
+- **Difficulty:** all 24 ratings kept (d3 items each combine >= 2 interacting rules).
+- **Minor:** s8-q030 distractor C no longer mentions the proof's `z(1)` else body as if
+  it were in the stem.
+- Gates: verify_bank s5 35/35 (+6 conceptual), s6 29/29 (+13), s7 27/27 (+6), s8 13/13 (+7)
+  PROVEN, exit 0, keys unchanged; audit_meta_patterns s5/s6/s7/s8 0 blockers / 0 warnings,
+  no high/medium flags, none on the reviewed items; render_figures OK for s5-q045/q048/q049,
+  s6-q047/q050/q051 (generators untouched); drift lint 0 findings.

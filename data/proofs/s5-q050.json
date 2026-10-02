@@ -24,7 +24,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.21,
+  "wall_seconds": 2.47,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"C\": \"executed print -> {'110': 100} (full key 1101); option C claims {'110': 100} -> match=True\", \"B\": \"executed print -> {'110': 100} (full key 1101); option B claims {'101': 100} -> match=False (string characters 1, 2, 3 of 1101 read 101)\", \"A\": \"executed print -> {'110': 100} (full key 1101); option A claims {'011': 100} -> match=False (bits 1, 2, 3 written left to right read 011)\", \"D\": \"executed print -> {'110': 100} (full key 1101); option D claims {'1101': 3} -> match=False (that is slice_shots, which selects shots: {'1101': 3})\"}, \"observed\": {\"printed\": \"{'110': 100}\", \"full\": \"1101\", \"by_position\": \"101\", \"list_order\": \"011\", \"slice_shots\": \"{'1101': 3}\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

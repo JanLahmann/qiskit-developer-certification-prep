@@ -30,7 +30,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.53,
+  "wall_seconds": 1.78,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"claim ['1 2', '2 2']; printed ['1 2', '2 0'] -> False (CommutativeCancellation alone leaves {'z': 1})\", \"B\": \"claim ['1 0', '2 0']; printed ['1 2', '2 0'] -> False (adjacent-only InverseCancellation leaves {'cx': 2, 'z': 1})\", \"C\": \"claim ['1 2', '2 0']; printed ['1 2', '2 0'] -> True\", \"D\": \"claim ['1 1', '2 1']; printed ['1 2', '2 0'] -> False\"}, \"observed\": {\"printed\": [\"1 2\", \"2 0\"], \"inverse_cancellation_only\": {\"cx\": 2, \"z\": 1}, \"commutative_cancellation_only\": {\"z\": 1}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

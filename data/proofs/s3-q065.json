@@ -5,10 +5,10 @@
       "B"
     ],
     "evidence": {
-      "A": "drawing carries rx[0]['theta'], ry[1][0.785398], cx[0, 1][] -> match=False",
-      "B": "drawing carries rx[0]['theta'], ry[1][1.570796], cx[0, 1][] -> match=True",
-      "C": "drawing carries rx[0][0.785398], ry[1][1.570796], cx[0, 1][] -> match=False",
-      "D": "drawing carries rx[0]['theta'], ry[1]['2*phi'], cx[0, 1][] -> match=False"
+      "A": "drawing carries rx[0]['theta'], ry[1][0.785398], cx[0, 1][]; mpl rendering identical to the stem's -> False; match=False",
+      "B": "drawing carries rx[0]['theta'], ry[1][1.570796], cx[0, 1][]; mpl rendering identical to the stem's -> True; match=True",
+      "C": "drawing carries rx[0][0.785398], ry[1][1.570796], cx[0, 1][]; mpl rendering identical to the stem's -> False; match=False",
+      "D": "drawing carries rx[0]['theta'], ry[1]['2*phi'], cx[0, 1][]; mpl rendering identical to the stem's -> False; match=False"
     },
     "observed": {
       "A": [
@@ -159,9 +159,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.95,
+  "wall_seconds": 3.55,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"drawing carries rx[0]['theta'], ry[1][0.785398], cx[0, 1][] -> match=False\", \"B\": \"drawing carries rx[0]['theta'], ry[1][1.570796], cx[0, 1][] -> match=True\", \"C\": \"drawing carries rx[0][0.785398], ry[1][1.570796], cx[0, 1][] -> match=False\", \"D\": \"drawing carries rx[0]['theta'], ry[1]['2*phi'], cx[0, 1][] -> match=False\"}, \"observed\": {\"A\": [[\"rx\", [0], [\"theta\"]], [\"ry\", [1], [0.785398]], [\"cx\", [0, 1], []]], \"B\": [[\"rx\", [0], [\"theta\"]], [\"ry\", [1], [1.570796]], [\"cx\", [0, 1], []]], \"C\": [[\"rx\", [0], [0.785398]], [\"ry\", [1], [1.570796]], [\"cx\", [0, 1], []]], \"D\": [[\"rx\", [0], [\"theta\"]], [\"ry\", [1], [\"2*phi\"]], [\"cx\", [0, 1], []]], \"stem\": [[\"rx\", [0], [\"theta\"]], [\"ry\", [1], [1.570796]], [\"cx\", [0, 1], []]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"drawing carries rx[0]['theta'], ry[1][0.785398], cx[0, 1][]; mpl rendering identical to the stem's -> False; match=False\", \"B\": \"drawing carries rx[0]['theta'], ry[1][1.570796], cx[0, 1][]; mpl rendering identical to the stem's -> True; match=True\", \"C\": \"drawing carries rx[0][0.785398], ry[1][1.570796], cx[0, 1][]; mpl rendering identical to the stem's -> False; match=False\", \"D\": \"drawing carries rx[0]['theta'], ry[1]['2*phi'], cx[0, 1][]; mpl rendering identical to the stem's -> False; match=False\"}, \"observed\": {\"A\": [[\"rx\", [0], [\"theta\"]], [\"ry\", [1], [0.785398]], [\"cx\", [0, 1], []]], \"B\": [[\"rx\", [0], [\"theta\"]], [\"ry\", [1], [1.570796]], [\"cx\", [0, 1], []]], \"C\": [[\"rx\", [0], [0.785398]], [\"ry\", [1], [1.570796]], [\"cx\", [0, 1], []]], \"D\": [[\"rx\", [0], [\"theta\"]], [\"ry\", [1], [\"2*phi\"]], [\"cx\", [0, 1], []]], \"stem\": [[\"rx\", [0], [\"theta\"]], [\"ry\", [1], [1.570796]], [\"cx\", [0, 1], []]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 6.18,
+  "wall_seconds": 4.12,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"printed '(2, 3) 50 300'; option claims '(2, 3, 1) 50 300' -> match=False\", \"B\": \"printed '(2, 3) 50 300'; option claims '(2, 3) 50 300' -> match=True\", \"C\": \"printed '(2, 3) 50 300'; option claims '(2, 3) 1000 6000' -> match=False (the PUB's 50 shots override run(shots=1000))\", \"D\": \"printed '(2, 3) 50 300'; option claims '(2, 3) 50 50' -> match=False (only get_counts(loc=(0, 0)) sums to 50; the no-loc call merges all six sets)\", \"E\": \"printed '(2, 3) 50 300'; option claims '(6,) 50 300' -> match=False\"}, \"observed\": {\"printed\": \"(2, 3) 50 300\", \"first_set_total\": 50}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

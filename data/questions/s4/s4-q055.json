@@ -71,7 +71,7 @@
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/transpile",
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.providers.fake_provider.GenericBackendV2",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.transpiler.CouplingMap"
     ]
   },
   "proof": {
@@ -85,9 +85,9 @@
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add (option images, d3): ISA = basis AND connectivity AND direction. Directed GenericBackendV2 (cx only 0->1, 1->2); misconceptions: reversed CX on a coupled pair, routed-but-untranslated SWAP, non-basis H, non-adjacent CX. Every option is a hand-built circuit (no layout-label tell); proof submits each to runtime SamplerV2 in local mode."
+    "notes": "R2 add (option images, d3): ISA = basis AND connectivity AND direction. Directed GenericBackendV2 (cx only 0->1, 1->2); misconceptions: reversed CX on a coupled pair, routed-but-untranslated SWAP, non-basis H, non-adjacent CX. Every option is a hand-built circuit (no layout-label tell); proof submits each to runtime SamplerV2 in local mode. | adversarial review 2026-10-02: citation failure: sampler-v2 has no ISA content; replaced with the CouplingMap API ('directed edges correspond to permitted CNOT gates, with source and destination corresponding to control and target'), which backs the direction distractor A."
   },
   "freshness": {
     "verified_against": {
@@ -96,7 +96,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   }
 }

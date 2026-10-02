@@ -5,13 +5,14 @@
       "E"
     ],
     "evidence": {
-      "A": "figure draws 2 bars [['001', 209], ['011', 191]] vs the stem call's [['100', 209], ['101', 191]] -> match=False (circuit measuring q0->c0, q1->c1 executed: keys ['001', '011'])",
-      "B": "figure draws 2 bars [['001', 209], ['101', 191]] vs the stem call's [['100', 209], ['101', 191]] -> match=False",
-      "C": "figure draws 2 bars [['10', 209], ['11', 191]] vs the stem call's [['100', 209], ['101', 191]] -> match=False (the register has 3 bits; unmeasured c1 prints as 0)",
-      "D": "figure draws 1 bars [['010', 400]] vs the stem call's [['100', 209], ['101', 191]] -> match=False (circuit measuring q2->c0, q0->c1 executed: keys ['010'])",
-      "E": "figure draws 2 bars [['100', 209], ['101', 191]] vs the stem call's [['100', 209], ['101', 191]] -> match=True"
+      "A": "figure draws 2 bars [['001', 209], ['011', 191]] vs the stem call's [['100', 209], ['101', 191]]; rendered SVG byte-identical to the stem call's chart: False -> match=False (circuit measuring q0->c0, q1->c1 executed: keys ['001', '011'])",
+      "B": "figure draws 2 bars [['001', 209], ['101', 191]] vs the stem call's [['100', 209], ['101', 191]]; rendered SVG byte-identical to the stem call's chart: False -> match=False",
+      "C": "figure draws 2 bars [['10', 209], ['11', 191]] vs the stem call's [['100', 209], ['101', 191]]; rendered SVG byte-identical to the stem call's chart: False -> match=False (the register has 3 bits; unmeasured c1 prints as 0)",
+      "D": "figure draws 1 bars [['010', 400]] vs the stem call's [['100', 209], ['101', 191]]; rendered SVG byte-identical to the stem call's chart: False -> match=False (circuit measuring q2->c0, q0->c1 executed: keys ['010'])",
+      "E": "figure draws 2 bars [['100', 209], ['101', 191]] vs the stem call's [['100', 209], ['101', 191]]; rendered SVG byte-identical to the stem call's chart: True -> match=True"
     },
     "observed": {
+      "A_svg_identical": false,
       "A": [
         [
           "001",
@@ -22,6 +23,7 @@
           191
         ]
       ],
+      "B_svg_identical": false,
       "B": [
         [
           "001",
@@ -32,6 +34,7 @@
           191
         ]
       ],
+      "C_svg_identical": false,
       "C": [
         [
           "10",
@@ -42,12 +45,14 @@
           191
         ]
       ],
+      "D_svg_identical": false,
       "D": [
         [
           "010",
           400
         ]
       ],
+      "E_svg_identical": true,
       "E": [
         [
           "100",
@@ -67,9 +72,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 3.34,
+  "wall_seconds": 3.92,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"figure draws 2 bars [['001', 209], ['011', 191]] vs the stem call's [['100', 209], ['101', 191]] -> match=False (circuit measuring q0->c0, q1->c1 executed: keys ['001', '011'])\", \"B\": \"figure draws 2 bars [['001', 209], ['101', 191]] vs the stem call's [['100', 209], ['101', 191]] -> match=False\", \"C\": \"figure draws 2 bars [['10', 209], ['11', 191]] vs the stem call's [['100', 209], ['101', 191]] -> match=False (the register has 3 bits; unmeasured c1 prints as 0)\", \"D\": \"figure draws 1 bars [['010', 400]] vs the stem call's [['100', 209], ['101', 191]] -> match=False (circuit measuring q2->c0, q0->c1 executed: keys ['010'])\", \"E\": \"figure draws 2 bars [['100', 209], ['101', 191]] vs the stem call's [['100', 209], ['101', 191]] -> match=True\"}, \"observed\": {\"A\": [[\"001\", 209], [\"011\", 191]], \"B\": [[\"001\", 209], [\"101\", 191]], \"C\": [[\"10\", 209], [\"11\", 191]], \"D\": [[\"010\", 400]], \"E\": [[\"100\", 209], [\"101\", 191]], \"num_bits\": 3}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"figure draws 2 bars [['001', 209], ['011', 191]] vs the stem call's [['100', 209], ['101', 191]]; rendered SVG byte-identical to the stem call's chart: False -> match=False (circuit measuring q0->c0, q1->c1 executed: keys ['001', '011'])\", \"B\": \"figure draws 2 bars [['001', 209], ['101', 191]] vs the stem call's [['100', 209], ['101', 191]]; rendered SVG byte-identical to the stem call's chart: False -> match=False\", \"C\": \"figure draws 2 bars [['10', 209], ['11', 191]] vs the stem call's [['100', 209], ['101', 191]]; rendered SVG byte-identical to the stem call's chart: False -> match=False (the register has 3 bits; unmeasured c1 prints as 0)\", \"D\": \"figure draws 1 bars [['010', 400]] vs the stem call's [['100', 209], ['101', 191]]; rendered SVG byte-identical to the stem call's chart: False -> match=False (circuit measuring q2->c0, q0->c1 executed: keys ['010'])\", \"E\": \"figure draws 2 bars [['100', 209], ['101', 191]] vs the stem call's [['100', 209], ['101', 191]]; rendered SVG byte-identical to the stem call's chart: True -> match=True\"}, \"observed\": {\"A_svg_identical\": false, \"A\": [[\"001\", 209], [\"011\", 191]], \"B_svg_identical\": false, \"B\": [[\"001\", 209], [\"101\", 191]], \"C_svg_identical\": false, \"C\": [[\"10\", 209], [\"11\", 191]], \"D_svg_identical\": false, \"D\": [[\"010\", 400]], \"E_svg_identical\": true, \"E\": [[\"100\", 209], [\"101\", 191]], \"num_bits\": 3}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

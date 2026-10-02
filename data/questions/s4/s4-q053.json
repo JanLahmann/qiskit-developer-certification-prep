@@ -44,7 +44,8 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.providers.fake_provider.GenericBackendV2",
-      "https://quantum.cloud.ibm.com/docs/guides/local-testing-mode"
+      "https://quantum.cloud.ibm.com/docs/guides/local-testing-mode",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/options-simulator-options"
     ]
   },
   "proof": {
@@ -58,9 +59,9 @@
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add (d3): reproducibility needs BOTH the GenericBackendV2 seed (random noise properties) and options.simulator.seed_simulator (shot sampling); measured 2026-10-01 — backend seed alone and sim seed alone each give differing counts (unseeded backends: 0/15 identical at 4000 shots). Proof repeats each call 3x."
+    "notes": "R2 add (d3): reproducibility needs BOTH the GenericBackendV2 seed (random noise properties) and options.simulator.seed_simulator (shot sampling); measured 2026-10-01 — backend seed alone and sim seed alone each give differing counts (unseeded backends: 0/15 identical at 4000 shots). Proof repeats each call 3x. | adversarial review 2026-10-02: citation added: SimulatorOptions ('seed_simulator: Random seed to control sampling'); local-testing-mode only shows the option in an example."
   },
   "freshness": {
     "verified_against": {
@@ -69,7 +70,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   }
 }

@@ -26,7 +26,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.48,
+  "wall_seconds": 4.71,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"executed (a @ a).simplify() -> SparsePauliOp(['I'],               coeffs=[2.+0.j]); option A claims SparsePauliOp(['I', 'Y'],               coeffs=[2.+0.j, 0.-2.j]) -> match=False\", \"B\": \"executed (a @ a).simplify() -> SparsePauliOp(['I'],               coeffs=[2.+0.j]); option B claims SparsePauliOp(['XX', 'XZ', 'ZX', 'ZZ'],               coeffs=[1.+0.j, 1.+0.j, 1.+0.j, 1.+0.j]) -> match=False  (that is a.tensor(a), a 2-qubit operator; a @ a has 1 qubit)\", \"C\": \"executed (a @ a).simplify() -> SparsePauliOp(['I'],               coeffs=[2.+0.j]); option C claims SparsePauliOp(['I', 'Y', 'Y', 'I'],               coeffs=[1.+0.j, 0.-1.j, 0.+1.j, 1.+0.j]) -> match=False  (before simplify(): ['I', 'Y', 'Y', 'I'] with coeffs [(1+0j), -1j, 1j, (1+0j)])\", \"E\": \"executed (a @ a).simplify() -> SparsePauliOp(['I'],               coeffs=[2.+0.j]); option E claims SparsePauliOp(['I'],               coeffs=[2.+0.j]) -> match=True\", \"D\": \"attempted a @ a on SparsePauliOp: no exception, returned SparsePauliOp\"}, \"observed\": {\"labels\": [\"I\"], \"coeffs\": [\"(2+0j)\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

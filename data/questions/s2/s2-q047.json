@@ -71,7 +71,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_bloch_multivector"
     ]
   },
   "proof": {
@@ -80,14 +80,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import math\n\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import DensityMatrix, Pauli, Statevector, partial_trace\n\n# The five circuits MUST mirror data/figures/s2-q047/generate.py — the rendered\n# figures are plot_bloch_multivector drawings of exactly these states.\n\nT = 2 * math.pi / 3\n\n\ndef state(*gates):\n    qc = QuantumCircuit(2)\n    for name, *args in gates:\n        getattr(qc, name)(*args)\n    return Statevector(qc)\n\n\ndef stem_state():\n    return state((\"ry\", T, 0), (\"cx\", 0, 1), (\"h\", 1))\n\n\nVARIANTS = {\n    \"A\": state((\"ry\", T, 1), (\"cx\", 1, 0), (\"h\", 0)),\n    \"B\": stem_state(),\n    \"C\": state((\"x\", 0), (\"x\", 1), (\"h\", 1)),\n    \"D\": state((\"ry\", T, 0), (\"h\", 1)),\n    \"E\": state((\"ry\", T, 0), (\"cx\", 0, 1), (\"x\", 1), (\"h\", 1)),\n}\n\n\ndef spheres(st):\n    \"\"\"One Bloch vector per sphere the drawer puts on the figure (x, y, z).\"\"\"\n    rho = DensityMatrix(st)\n    n = len(rho.dims())\n    out = []\n    for i in range(n):\n        red = partial_trace(rho, [j for j in range(n) if j != i])\n        out.append(tuple(\n            round(float(red.expectation_value(Pauli(p)).real), 3) + 0.0 for p in \"XYZ\"\n        ))\n    return tuple(out)\n\n\ndef length(v):\n    return round(math.sqrt(sum(c * c for c in v)), 3)\n\n\ntarget = spheres(stem_state())\n# Sanity: the stem state is entangled, so both drawn arrows are shorter than 1.\nassert all(length(v) < 0.99 for v in target), target\nproven, evidence, observed = [], {}, {}\nfor key, st in sorted(VARIANTS.items()):\n    s = spheres(st)\n    match = s == target\n    observed[key] = [list(v) for v in s]\n    evidence[key] = (\n        f\"figure draws Bloch vectors (x, y, z) qubit 0 {s[0]} len {length(s[0])}, \"\n        f\"qubit 1 {s[1]} len {length(s[1])} vs the stem's {list(target)} -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = [list(v) for v in target]\nobserved[\"stem_probabilities\"] = {\n    k: round(float(v), 3) for k, v in stem_state().probabilities_dict().items()\n}\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+    "proof_script": "import math\n\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import DensityMatrix, Pauli, Statevector, partial_trace\nfrom qiskit.visualization.state_visualization import _bloch_multivector_data\n\n# The five circuits MUST mirror data/figures/s2-q047/generate.py — the rendered\n# figures are plot_bloch_multivector drawings of exactly these states.\n\nT = 2 * math.pi / 3\n\n\ndef state(*gates):\n    qc = QuantumCircuit(2)\n    for name, *args in gates:\n        getattr(qc, name)(*args)\n    return Statevector(qc)\n\n\ndef stem_state():\n    return state((\"ry\", T, 0), (\"cx\", 0, 1), (\"h\", 1))\n\n\nVARIANTS = {\n    \"A\": state((\"ry\", T, 1), (\"cx\", 1, 0), (\"h\", 0)),\n    \"B\": stem_state(),\n    \"C\": state((\"x\", 0), (\"x\", 1), (\"h\", 1)),\n    \"D\": state((\"ry\", T, 0), (\"h\", 1)),\n    \"E\": state((\"ry\", T, 0), (\"cx\", 0, 1), (\"x\", 1), (\"h\", 1)),\n}\n\n\ndef spheres(st):\n    \"\"\"One Bloch vector per sphere the drawer puts on the figure (x, y, z).\"\"\"\n    rho = DensityMatrix(st)\n    n = len(rho.dims())\n    out = []\n    for i in range(n):\n        red = partial_trace(rho, [j for j in range(n) if j != i])\n        out.append(tuple(\n            round(float(red.expectation_value(Pauli(p)).real), 3) + 0.0 for p in \"XYZ\"\n        ))\n    return tuple(out)\n\n\ndef drawer_vectors(st):\n    \"\"\"The vectors plot_bloch_multivector itself hands to each sphere (pinned helper).\"\"\"\n    return tuple(tuple(round(float(c), 3) + 0.0 for c in v) for v in _bloch_multivector_data(st))\n\n\ndef length(v):\n    return round(math.sqrt(sum(c * c for c in v)), 3)\n\n\ntarget = spheres(stem_state())\n# Sanity: the stem state is entangled, so both drawn arrows are shorter than 1.\nassert all(length(v) < 0.99 for v in target), target\nproven, evidence, observed = [], {}, {}\nfor key, st in sorted(VARIANTS.items()):\n    s = spheres(st)\n    drawn = drawer_vectors(st)\n    # the drawer's own data must agree with the partial-trace computation\n    assert drawn == s, (key, drawn, s)\n    match = s == target\n    observed[key] = [list(v) for v in s]\n    evidence[key] = (\n        f\"figure draws Bloch vectors (x, y, z) qubit 0 {s[0]} len {length(s[0])}, \"\n        f\"qubit 1 {s[1]} len {length(s[1])} (same as plot_bloch_multivector's own \"\n        f\"_bloch_multivector_data: {drawn == s}) vs the stem's {list(target)} -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = [list(v) for v in target]\nobserved[\"stem_probabilities\"] = {\n    k: round(float(v), 3) for k, v in stem_state().probabilities_dict().items()\n}\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
   },
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, s2+s8)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 d3 add (s2's only hard item): amplitude math (ry angle -> P(1) = 3/4) + entanglement shortening the reduced Bloch vectors + a local H rotating only one qubit's arrow + sphere order by qubit index. The five option images are plot_bloch_multivector renderings of the five circuits in figures/s2-q047/generate.py; the proof rebuilds the same states and compares each sphere's Bloch vector (direction and length)."
+    "notes": "R2 d3 add (s2's only hard item): amplitude math (ry angle -> P(1) = 3/4) + entanglement shortening the reduced Bloch vectors + a local H rotating only one qubit's arrow + sphere order by qubit index. The five option images are plot_bloch_multivector renderings of the five circuits in figures/s2-q047/generate.py; the proof rebuilds the same states and compares each sphere's Bloch vector (direction and length). | adversarial review 2026-10-02: attacked all 4 distractors (none defensible; -x vs +x readable from the x-axis label in the rasterized renders, half vs full length clearly visible); proof now cross-checks every sphere vector against plot_bloch_multivector's own _bloch_multivector_data (agree for all 5 variants); citation api/qiskit/visualization (one-line listing) replaced by the plot_bloch_multivector API page, which states each 'qubit i' sphere shows that qubit's Pauli expectation values. Key unchanged."
   },
   "freshness": {
     "verified_against": {
@@ -96,7 +96,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   }
 }

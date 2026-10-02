@@ -27,7 +27,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 3.65,
+  "wall_seconds": 2.3,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"while_loop counts {'0': 4000} (p0=1.000); claim always 0 -> True\", \"B\": \"p0=1.000; claim ~75/25 -> False (that split is what an if_test body gives: {'0': 2998, '1': 1002})\", \"C\": \"p0=1.000; claim ~50/50 -> False\", \"D\": \"p1=0.000; claim always 1 -> False\", \"E\": \"circuit built and simulated (error=None); claim raises -> False\"}, \"observed\": {\"counts\": {\"0\": 4000}, \"if_test_counts\": {\"0\": 2998, \"1\": 1002}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

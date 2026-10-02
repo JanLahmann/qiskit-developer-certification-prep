@@ -70,7 +70,8 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/guides/bit-ordering"
     ]
   },
   "proof": {
@@ -79,14 +80,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "# Variants MUST mirror data/figures/s3-q063/generate.py.\nfrom qiskit import QuantumCircuit, QuantumRegister\n\n\ndef build(anc_first=False, h_on=1, reversed_cx=False):\n    data = QuantumRegister(2, \"d\")\n    anc = QuantumRegister(1, \"anc\")\n    qc = QuantumCircuit(anc, data) if anc_first else QuantumCircuit(data, anc)\n    qc.h(data[h_on])\n    if reversed_cx:\n        qc.cx(anc[0], data[h_on])\n    else:\n        qc.cx(data[h_on], anc[0])\n    return qc\n\n\nVARIANTS = {\n    \"A\": (lambda: build(anc_first=True), {}),        # register order swapped\n    \"B\": (lambda: build(h_on=0), {}),                # d[1] read as the first wire\n    \"C\": (lambda: build(reversed_cx=True), {}),      # control/target swapped\n    \"D\": (lambda: build(), {\"reverse_bits\": True}),  # highest index drawn on top\n    \"E\": (lambda: build(), {}),                      # the stem code, verbatim\n}\n\nfrom qiskit.visualization.circuit._utils import _get_layered_instructions\n\n\ndef drawn(circ, **kwargs):\n    \"\"\"What the drawer lays out: wire labels top to bottom and each gate\n    addressed by the wire positions it is drawn on.\"\"\"\n    qubits, _clbits, layers = _get_layered_instructions(circ, **kwargs)\n    labels = []\n    for b in qubits:\n        reg, idx = circ.find_bit(b).registers[0]\n        labels.append(reg.name if reg.size == 1 else f\"{reg.name}_{idx}\")\n    ops = tuple((node.op.name, tuple(qubits.index(b) for b in node.qargs))\n                for layer in layers for node in layer)\n    return tuple(labels), ops\n\nfrom qiskit import QuantumCircuit, QuantumRegister\n\ndata = QuantumRegister(2, \"d\")\nanc = QuantumRegister(1, \"anc\")\nqc = QuantumCircuit(data, anc)\nqc.h(data[1])\nqc.cx(data[1], anc[0])\ntarget = drawn(qc)\n\nproven, evidence, observed = [], {}, {}\nfor key, (make, kwargs) in sorted(VARIANTS.items()):\n    wires, ops = drawn(make(), **kwargs)\n    match = (wires, ops) == target\n    observed[key] = {\"wires_top_to_bottom\": list(wires), \"ops\": [[n, list(q)] for n, q in ops]}\n    evidence[key] = (f\"drawer lays out wires {list(wires)} carrying \"\n                     + \", \".join(f\"{n}@{list(q)}\" for n, q in ops) + f\" -> match={match}\")\n    if match:\n        proven.append(key)\nobserved[\"stem\"] = {\"wires_top_to_bottom\": list(target[0]), \"ops\": [[n, list(q)] for n, q in target[1]]}\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+    "proof_script": "import io\n\nimport matplotlib\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"proof\"  # deterministic SVG ids\nimport matplotlib.pyplot as plt\n\n\ndef drawing(circ, **kwargs):\n    \"\"\"The actual mpl rendering, as SVG text (what the option image shows).\"\"\"\n    fig = circ.draw(output=\"mpl\", **kwargs)\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\n# Variants MUST mirror data/figures/s3-q063/generate.py.\nfrom qiskit import QuantumCircuit, QuantumRegister\n\n\ndef build(anc_first=False, h_on=1, reversed_cx=False):\n    data = QuantumRegister(2, \"d\")\n    anc = QuantumRegister(1, \"anc\")\n    qc = QuantumCircuit(anc, data) if anc_first else QuantumCircuit(data, anc)\n    qc.h(data[h_on])\n    if reversed_cx:\n        qc.cx(anc[0], data[h_on])\n    else:\n        qc.cx(data[h_on], anc[0])\n    return qc\n\n\nVARIANTS = {\n    \"A\": (lambda: build(anc_first=True), {}),        # register order swapped\n    \"B\": (lambda: build(h_on=0), {}),                # d[1] read as the first wire\n    \"C\": (lambda: build(reversed_cx=True), {}),      # control/target swapped\n    \"D\": (lambda: build(), {\"reverse_bits\": True}),  # highest index drawn on top\n    \"E\": (lambda: build(), {}),                      # the stem code, verbatim\n}\n\nfrom qiskit.visualization.circuit._utils import _get_layered_instructions\n\n\ndef drawn(circ, **kwargs):\n    \"\"\"What the drawer lays out: wire labels top to bottom and each gate\n    addressed by the wire positions it is drawn on.\"\"\"\n    qubits, _clbits, layers = _get_layered_instructions(circ, **kwargs)\n    labels = []\n    for b in qubits:\n        reg, idx = circ.find_bit(b).registers[0]\n        labels.append(reg.name if reg.size == 1 else f\"{reg.name}_{idx}\")\n    ops = tuple((node.op.name, tuple(qubits.index(b) for b in node.qargs))\n                for layer in layers for node in layer)\n    return tuple(labels), ops\n\nfrom qiskit import QuantumCircuit, QuantumRegister\n\ndata = QuantumRegister(2, \"d\")\nanc = QuantumRegister(1, \"anc\")\nqc = QuantumCircuit(data, anc)\nqc.h(data[1])\nqc.cx(data[1], anc[0])\ntarget = drawn(qc)\nstem_svg = drawing(qc)  # what the stem's draw(output=\"mpl\") renders\n\nproven, evidence, observed = [], {}, {}\nfor key, (make, kwargs) in sorted(VARIANTS.items()):\n    wires, ops = drawn(make(), **kwargs)\n    same_render = drawing(make(), **kwargs) == stem_svg\n    match = (wires, ops) == target and same_render\n    observed[key] = {\"wires_top_to_bottom\": list(wires), \"ops\": [[n, list(q)] for n, q in ops]}\n    evidence[key] = (f\"drawer lays out wires {list(wires)} carrying \"\n                     + \", \".join(f\"{n}@{list(q)}\" for n, q in ops) + f\"; mpl rendering identical to the stem's -> {same_render}; match={match}\")\n    if match:\n        proven.append(key)\nobserved[\"stem\"] = {\"wires_top_to_bottom\": list(target[0]), \"ops\": [[n, list(q)] for n, q in target[1]]}\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
   },
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s3)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add (figure): register order + index + control/target reading of a default mpl drawing. Proof reads the drawer's own layout engine (_get_layered_instructions) for the stem and every variant."
+    "notes": "R2 add (figure): register order + index + control/target reading of a default mpl drawing. Proof reads the drawer's own layout engine (_get_layered_instructions) for the stem and every variant. | adversarial review 2026-10-02: proof compared drawer layer data, not the drawing; it now also renders each option circuit (with its draw kwargs, e.g. reverse_bits for D) and the stem code to mpl SVG and requires byte-identity with the stem's rendering (only E matches). Second-answer attacks on A-D failed; key unchanged.; also citation added: guides/bit-ordering ('qubit 0 is the topmost qubit' on a circuit diagram); the two cited guides only show examples of wire order."
   },
   "freshness": {
     "verified_against": {
@@ -95,7 +96,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   }
 }

@@ -40,12 +40,12 @@
     "distractors": {
       "A": "Same meaning, different representation: `expr.equal(c, 1)` builds a classical-expression condition. `qasm3.dumps` writes it as the identical `if (c == 1)`, but the OpenQASM 2 exporter only maps the `(register, value)` tuple form and rejects the expression with `QASM2ExportError`.",
       "B": "Single-bit condition: OpenQASM 2 can only compare a WHOLE register, so `(c[0], 1)` has no OpenQASM 2 spelling; the exporter raises 'only supports register-equality conditions' instead of rewriting it.",
-      "C": "`else` assumed to be emitted as a second, negated `if`: OpenQASM 2 has no `else` and no `!=`, so a false branch (here applying `z(1)`) makes the exporter raise 'does not support else statements'. Only OpenQASM 3 has `if (...) { } else { }`.",
+      "C": "`else` assumed to be emitted as a second, negated `if`: OpenQASM 2 has no `else` and no `!=`, so a false branch (any `else` body, for example a `z(1)`) makes the exporter raise 'does not support else statements'. Only OpenQASM 3 has `if (...) { } else { }`.",
       "D": "Boolean test of a register read as `if (c == 0)`: `logic_not(c)` is an expression (exported to OpenQASM 3 as `if (!c)`), and the OpenQASM 2 exporter refuses every expression condition rather than translating it into a register comparison."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm2",
-      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm2",
+      "https://quantum.cloud.ibm.com/docs/guides/composer",
       "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table"
     ]
   },
@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, s2+s8)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 d3 add: OpenQASM 2's single conditional form (whole register == int, no else) interacting with Qiskit's two condition representations (legacy tuple vs classical Expr) — the semantically identical expr.equal(c, 1) is refused by the OpenQASM 2 exporter while qasm3.dumps emits the same `if (c == 1)`. The proof builds all five variants, attempts qasm2.dumps on each, and records the qasm3 condition lines."
+    "notes": "R2 d3 add: OpenQASM 2's single conditional form (whole register == int, no else) interacting with Qiskit's two condition representations (legacy tuple vs classical Expr) — the semantically identical expr.equal(c, 1) is refused by the OpenQASM 2 exporter while qasm3.dumps emits the same `if (c == 1)`. The proof builds all five variants, attempts qasm2.dumps on each, and records the qasm3 condition lines. | adversarial review 2026-10-02: citation fix: guides/interoperate-qiskit-qasm2 never mentions conditions, if or else — replaced by guides/composer, whose OpenQASM 2 statement table lists `if(creg==int) qop;` as the ONLY conditional statement (no else); distractor C no longer refers to the proof's z(1) else body as if it were in the stem. Exporter behaviour stays pinned by the executed proof (all five variants attempted)."
   },
   "freshness": {
     "verified_against": {

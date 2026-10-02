@@ -5,11 +5,11 @@
       "D"
     ],
     "evidence": {
-      "A": "level-0 output on physical wires: h[2], cx[2, 1], cx[2, 1] (layout [2, 1, 0]) -> matches figure: False",
-      "B": "level-0 output on physical wires: h[0], cx[0, 1], swap[1, 2], cx[0, 1] (layout [2, 1, 0]) -> matches figure: False",
-      "C": "level-0 output on physical wires: h[2], swap[1, 2], cx[1, 0], cx[1, 2] (layout [2, 1, 0]) -> matches figure: False",
-      "D": "level-0 output on physical wires: h[2], cx[2, 1], swap[1, 0], cx[2, 1] (layout [2, 1, 0]) -> matches figure: True",
-      "E": "level-0 output on physical wires: h[2], cx[2, 1], cx[1, 0] (layout [2, 1, 0]) -> matches figure: False"
+      "A": "level-0 output on physical wires: h[2], cx[2, 1], cx[2, 1] (layout [2, 1, 0]); mpl rendering identical to the figure's -> False; matches figure: False",
+      "B": "level-0 output on physical wires: h[0], cx[0, 1], swap[1, 2], cx[0, 1] (layout [2, 1, 0]); mpl rendering identical to the figure's -> False; matches figure: False",
+      "C": "level-0 output on physical wires: h[2], swap[1, 2], cx[1, 0], cx[1, 2] (layout [2, 1, 0]); mpl rendering identical to the figure's -> False; matches figure: False",
+      "D": "level-0 output on physical wires: h[2], cx[2, 1], swap[1, 0], cx[2, 1] (layout [2, 1, 0]); mpl rendering identical to the figure's -> True; matches figure: True",
+      "E": "level-0 output on physical wires: h[2], cx[2, 1], cx[1, 0] (layout [2, 1, 0]); mpl rendering identical to the figure's -> False; matches figure: False"
     },
     "observed": {
       "A": {
@@ -222,9 +222,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 3.46,
+  "wall_seconds": 3.38,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"level-0 output on physical wires: h[2], cx[2, 1], cx[2, 1] (layout [2, 1, 0]) -> matches figure: False\", \"B\": \"level-0 output on physical wires: h[0], cx[0, 1], swap[1, 2], cx[0, 1] (layout [2, 1, 0]) -> matches figure: False\", \"C\": \"level-0 output on physical wires: h[2], swap[1, 2], cx[1, 0], cx[1, 2] (layout [2, 1, 0]) -> matches figure: False\", \"D\": \"level-0 output on physical wires: h[2], cx[2, 1], swap[1, 0], cx[2, 1] (layout [2, 1, 0]) -> matches figure: True\", \"E\": \"level-0 output on physical wires: h[2], cx[2, 1], cx[1, 0] (layout [2, 1, 0]) -> matches figure: False\"}, \"observed\": {\"A\": {\"ops\": [[\"h\", [2]], [\"cx\", [2, 1]], [\"cx\", [2, 1]]], \"initial_layout\": [2, 1, 0]}, \"B\": {\"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"swap\", [1, 2]], [\"cx\", [0, 1]]], \"initial_layout\": [2, 1, 0]}, \"C\": {\"ops\": [[\"h\", [2]], [\"swap\", [1, 2]], [\"cx\", [1, 0]], [\"cx\", [1, 2]]], \"initial_layout\": [2, 1, 0]}, \"D\": {\"ops\": [[\"h\", [2]], [\"cx\", [2, 1]], [\"swap\", [1, 0]], [\"cx\", [2, 1]]], \"initial_layout\": [2, 1, 0]}, \"E\": {\"ops\": [[\"h\", [2]], [\"cx\", [2, 1]], [\"cx\", [1, 0]]], \"initial_layout\": [2, 1, 0]}, \"figure\": {\"ops\": [[\"h\", [2]], [\"cx\", [2, 1]], [\"swap\", [1, 0]], [\"cx\", [2, 1]]], \"initial_layout\": [2, 1, 0]}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"level-0 output on physical wires: h[2], cx[2, 1], cx[2, 1] (layout [2, 1, 0]); mpl rendering identical to the figure's -> False; matches figure: False\", \"B\": \"level-0 output on physical wires: h[0], cx[0, 1], swap[1, 2], cx[0, 1] (layout [2, 1, 0]); mpl rendering identical to the figure's -> False; matches figure: False\", \"C\": \"level-0 output on physical wires: h[2], swap[1, 2], cx[1, 0], cx[1, 2] (layout [2, 1, 0]); mpl rendering identical to the figure's -> False; matches figure: False\", \"D\": \"level-0 output on physical wires: h[2], cx[2, 1], swap[1, 0], cx[2, 1] (layout [2, 1, 0]); mpl rendering identical to the figure's -> True; matches figure: True\", \"E\": \"level-0 output on physical wires: h[2], cx[2, 1], cx[1, 0] (layout [2, 1, 0]); mpl rendering identical to the figure's -> False; matches figure: False\"}, \"observed\": {\"A\": {\"ops\": [[\"h\", [2]], [\"cx\", [2, 1]], [\"cx\", [2, 1]]], \"initial_layout\": [2, 1, 0]}, \"B\": {\"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"swap\", [1, 2]], [\"cx\", [0, 1]]], \"initial_layout\": [2, 1, 0]}, \"C\": {\"ops\": [[\"h\", [2]], [\"swap\", [1, 2]], [\"cx\", [1, 0]], [\"cx\", [1, 2]]], \"initial_layout\": [2, 1, 0]}, \"D\": {\"ops\": [[\"h\", [2]], [\"cx\", [2, 1]], [\"swap\", [1, 0]], [\"cx\", [2, 1]]], \"initial_layout\": [2, 1, 0]}, \"E\": {\"ops\": [[\"h\", [2]], [\"cx\", [2, 1]], [\"cx\", [1, 0]]], \"initial_layout\": [2, 1, 0]}, \"figure\": {\"ops\": [[\"h\", [2]], [\"cx\", [2, 1]], [\"swap\", [1, 0]], [\"cx\", [2, 1]]], \"initial_layout\": [2, 1, 0]}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

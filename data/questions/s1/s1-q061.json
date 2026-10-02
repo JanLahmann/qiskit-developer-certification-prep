@@ -60,7 +60,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.real_amplitudes",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/circuit_library"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.n_local"
     ]
   },
   "proof": {
@@ -69,14 +69,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.circuit.library import real_amplitudes\n\n# MUST mirror data/figures/s1-q061/generate.py.\nVARIANTS = {\"A\": \"circular\", \"B\": \"full\", \"C\": \"linear\", \"D\": \"reverse_linear\"}\n\n\ndef cx_pairs(qc):\n    return [tuple(qc.find_bit(q).index for q in i.qubits)\n            for i in qc.data if i.operation.name == \"cx\"]\n\n\ndef ry_count(qc):\n    return sum(1 for i in qc.data if i.operation.name == \"ry\")\n\n\nstem = real_amplitudes(3, reps=1, entanglement=\"full\")  # the stem code\nstem_pairs = cx_pairs(stem)\nproven, evidence, observed = [], {}, {\"stem_cx\": stem_pairs}\nfor key, ent in sorted(VARIANTS.items()):\n    v = real_amplitudes(3, reps=1, entanglement=ent)\n    pairs = cx_pairs(v)\n    match = pairs == stem_pairs and ry_count(v) == ry_count(stem)\n    observed[key] = pairs\n    evidence[key] = (\n        f\"drawn real_amplitudes(3, reps=1, entanglement='{ent}'): {ry_count(v)} ry, \"\n        f\"cx (control, target) = {pairs}; stem 'full' executes {stem_pairs} -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+    "proof_script": "import io\n\nimport matplotlib\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"proof\"  # deterministic SVG ids\nimport matplotlib.pyplot as plt\n\n\ndef drawing(circ):\n    \"\"\"The actual mpl rendering, as SVG text (what the option image shows).\"\"\"\n    fig = circ.draw(output=\"mpl\")\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\nfrom qiskit.circuit.library import real_amplitudes\n\n# MUST mirror data/figures/s1-q061/generate.py.\nVARIANTS = {\"A\": \"circular\", \"B\": \"full\", \"C\": \"linear\", \"D\": \"reverse_linear\"}\n\n\ndef cx_pairs(qc):\n    return [tuple(qc.find_bit(q).index for q in i.qubits)\n            for i in qc.data if i.operation.name == \"cx\"]\n\n\ndef ry_count(qc):\n    return sum(1 for i in qc.data if i.operation.name == \"ry\")\n\n\nstem = real_amplitudes(3, reps=1, entanglement=\"full\")  # the stem code\nstem_pairs = cx_pairs(stem)\nstem_svg = drawing(stem)  # what ansatz.draw(\"mpl\") renders\nproven, evidence, observed = [], {}, {\"stem_cx\": stem_pairs}\nfor key, ent in sorted(VARIANTS.items()):\n    v = real_amplitudes(3, reps=1, entanglement=ent)\n    pairs = cx_pairs(v)\n    same_render = drawing(v) == stem_svg\n    match = pairs == stem_pairs and ry_count(v) == ry_count(stem) and same_render\n    observed[key] = pairs\n    evidence[key] = (\n        f\"drawn real_amplitudes(3, reps=1, entanglement='{ent}'): {ry_count(v)} ry, \"\n        f\"cx (control, target) = {pairs}; stem 'full' executes {stem_pairs}; \"\n        f\"mpl rendering identical to the stem's -> {same_render}; match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
   },
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s1)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add (figure, image options): n-local entanglement strategies drawn; keyed figure is the busiest (full, 20.7 KB) by design per the image-size recipe. CX lists measured on qiskit 2.5.0: full [(0,1),(0,2),(1,2)], circular [(2,0),(0,1),(1,2)], linear [(0,1),(1,2)], reverse_linear [(1,2),(0,1)]."
+    "notes": "R2 add (figure, image options): n-local entanglement strategies drawn; keyed figure is the busiest (full, 20.7 KB) by design per the image-size recipe. CX lists measured on qiskit 2.5.0: full [(0,1),(0,2),(1,2)], circular [(2,0),(0,1),(1,2)], linear [(0,1),(1,2)], reverse_linear [(1,2),(0,1)]. | adversarial review 2026-10-02: attacked all 3 distractors (none defensible; linear/pairwise collision avoided); citation circuit_library replaced by the n_local API page, which actually defines full/linear/reverse_linear/circular (real_amplitudes delegates to it); proof now also compares actual mpl SVG renderings with the stem's. Key unchanged."
   },
   "freshness": {
     "verified_against": {

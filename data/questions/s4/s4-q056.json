@@ -53,7 +53,7 @@
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp",
       "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
-      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.transpiler.TranspileLayout"
     ]
   },
   "proof": {
@@ -67,9 +67,9 @@
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add (stem figure, d3): apply_layout uses the FINAL layout (initial layout read from the wire labels + the routing SWAP) and Pauli labels are qubit-0-rightmost. Figure = real level-0 pass-manager output (coupling map only, SWAP drawn); generator and proof assert the same literal. Proof also checks physics independently: only the keyed label reproduces <XYZ> of qc on a product probe state."
+    "notes": "R2 add (stem figure, d3): apply_layout uses the FINAL layout (initial layout read from the wire labels + the routing SWAP) and Pauli labels are qubit-0-rightmost. Figure = real level-0 pass-manager output (coupling map only, SWAP drawn); generator and proof assert the same literal. Proof also checks physics independently: only the keyed label reproduces <XYZ> of qc on a product probe state. | adversarial review 2026-10-02: citation replaced: transpiler-stages only says SWAPs move states; TranspileLayout documents the final layout permutation caused by routing SWAPs (final_index_layout). No docs page states that apply_layout uses the final layout — the proof executes it (and the physics cross-check)."
   },
   "freshness": {
     "verified_against": {
@@ -78,7 +78,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   }
 }

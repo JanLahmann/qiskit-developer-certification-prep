@@ -38,7 +38,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter",
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
     ]
   },
   "proof": {
@@ -52,9 +52,9 @@
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s3)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add: Parameter identity vs. unique-name rule when composing circuits (CircuitError name conflict); proof includes a shared-object control."
+    "notes": "R2 add: Parameter identity vs. unique-name rule when composing circuits (CircuitError name conflict); proof includes a shared-object control. | adversarial review 2026-10-02: citation failure: guides/construct-circuits never mentions parameter-name clashes; replaced with the QuantumCircuit API ('forbids having multiple parameters of the same name')."
   },
   "freshness": {
     "verified_against": {
@@ -63,7 +63,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   }
 }

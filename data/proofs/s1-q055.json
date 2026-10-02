@@ -5,10 +5,10 @@
       "C"
     ],
     "evidence": {
-      "A": "drawn circuit h-sdg; qc.inverse() executed -> sdg-h; same gate list -> False; Operator equals Operator(qc).adjoint() up to phase -> False",
-      "B": "drawn circuit s-h; qc.inverse() executed -> sdg-h; same gate list -> False; Operator equals Operator(qc).adjoint() up to phase -> False",
-      "C": "drawn circuit sdg-h; qc.inverse() executed -> sdg-h; same gate list -> True; Operator equals Operator(qc).adjoint() up to phase -> True",
-      "D": "drawn circuit h-s; qc.inverse() executed -> sdg-h; same gate list -> False; Operator equals Operator(qc).adjoint() up to phase -> False"
+      "A": "drawn circuit h-sdg; qc.inverse() executed -> sdg-h; same gate list -> False; Operator equals Operator(qc).adjoint() up to phase -> False; mpl rendering identical to qc.inverse().draw('mpl') -> False",
+      "B": "drawn circuit s-h; qc.inverse() executed -> sdg-h; same gate list -> False; Operator equals Operator(qc).adjoint() up to phase -> False; mpl rendering identical to qc.inverse().draw('mpl') -> False",
+      "C": "drawn circuit sdg-h; qc.inverse() executed -> sdg-h; same gate list -> True; Operator equals Operator(qc).adjoint() up to phase -> True; mpl rendering identical to qc.inverse().draw('mpl') -> True",
+      "D": "drawn circuit h-s; qc.inverse() executed -> sdg-h; same gate list -> False; Operator equals Operator(qc).adjoint() up to phase -> False; mpl rendering identical to qc.inverse().draw('mpl') -> False"
     },
     "observed": {
       "inverse_gate_list": [
@@ -21,7 +21,8 @@
           "sdg"
         ],
         "same_gate_list": false,
-        "unitary_is_inverse": false
+        "unitary_is_inverse": false,
+        "same_rendered_svg": false
       },
       "B": {
         "gates": [
@@ -29,7 +30,8 @@
           "h"
         ],
         "same_gate_list": false,
-        "unitary_is_inverse": false
+        "unitary_is_inverse": false,
+        "same_rendered_svg": false
       },
       "C": {
         "gates": [
@@ -37,7 +39,8 @@
           "h"
         ],
         "same_gate_list": true,
-        "unitary_is_inverse": true
+        "unitary_is_inverse": true,
+        "same_rendered_svg": true
       },
       "D": {
         "gates": [
@@ -45,7 +48,8 @@
           "s"
         ],
         "same_gate_list": false,
-        "unitary_is_inverse": false
+        "unitary_is_inverse": false,
+        "same_rendered_svg": false
       }
     }
   },
@@ -55,9 +59,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.12,
+  "wall_seconds": 6.81,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"drawn circuit h-sdg; qc.inverse() executed -> sdg-h; same gate list -> False; Operator equals Operator(qc).adjoint() up to phase -> False\", \"B\": \"drawn circuit s-h; qc.inverse() executed -> sdg-h; same gate list -> False; Operator equals Operator(qc).adjoint() up to phase -> False\", \"C\": \"drawn circuit sdg-h; qc.inverse() executed -> sdg-h; same gate list -> True; Operator equals Operator(qc).adjoint() up to phase -> True\", \"D\": \"drawn circuit h-s; qc.inverse() executed -> sdg-h; same gate list -> False; Operator equals Operator(qc).adjoint() up to phase -> False\"}, \"observed\": {\"inverse_gate_list\": [\"sdg\", \"h\"], \"A\": {\"gates\": [\"h\", \"sdg\"], \"same_gate_list\": false, \"unitary_is_inverse\": false}, \"B\": {\"gates\": [\"s\", \"h\"], \"same_gate_list\": false, \"unitary_is_inverse\": false}, \"C\": {\"gates\": [\"sdg\", \"h\"], \"same_gate_list\": true, \"unitary_is_inverse\": true}, \"D\": {\"gates\": [\"h\", \"s\"], \"same_gate_list\": false, \"unitary_is_inverse\": false}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"drawn circuit h-sdg; qc.inverse() executed -> sdg-h; same gate list -> False; Operator equals Operator(qc).adjoint() up to phase -> False; mpl rendering identical to qc.inverse().draw('mpl') -> False\", \"B\": \"drawn circuit s-h; qc.inverse() executed -> sdg-h; same gate list -> False; Operator equals Operator(qc).adjoint() up to phase -> False; mpl rendering identical to qc.inverse().draw('mpl') -> False\", \"C\": \"drawn circuit sdg-h; qc.inverse() executed -> sdg-h; same gate list -> True; Operator equals Operator(qc).adjoint() up to phase -> True; mpl rendering identical to qc.inverse().draw('mpl') -> True\", \"D\": \"drawn circuit h-s; qc.inverse() executed -> sdg-h; same gate list -> False; Operator equals Operator(qc).adjoint() up to phase -> False; mpl rendering identical to qc.inverse().draw('mpl') -> False\"}, \"observed\": {\"inverse_gate_list\": [\"sdg\", \"h\"], \"A\": {\"gates\": [\"h\", \"sdg\"], \"same_gate_list\": false, \"unitary_is_inverse\": false, \"same_rendered_svg\": false}, \"B\": {\"gates\": [\"s\", \"h\"], \"same_gate_list\": false, \"unitary_is_inverse\": false, \"same_rendered_svg\": false}, \"C\": {\"gates\": [\"sdg\", \"h\"], \"same_gate_list\": true, \"unitary_is_inverse\": true, \"same_rendered_svg\": true}, \"D\": {\"gates\": [\"h\", \"s\"], \"same_gate_list\": false, \"unitary_is_inverse\": false, \"same_rendered_svg\": false}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

@@ -57,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\nt = Parameter('t')\nqc = QuantumCircuit(1)\nqc.rx(2 * t, 0)\nqc.rz(t + np.pi / 2, 0)\nbound = qc.assign_parameters({t: np.pi})\nang = {ins.operation.name: float(ins.operation.params[0]) for ins in bound.data}\nrx_a, rz_a = ang[\"rx\"], ang[\"rz\"]\nclaims = {\n    \"A\": np.isclose(rx_a, 2*np.pi) and np.isclose(rz_a, 3*np.pi/2),\n    \"B\": np.isclose(rx_a, np.pi) and np.isclose(rz_a, np.pi),\n    \"C\": np.isclose(rx_a, 2*np.pi) and np.isclose(rz_a, np.pi/2),\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"observed rx={rx_a:.4f}, rz={rz_a:.4f}; expect 2pi={2*np.pi:.4f}, 3pi/2={3*np.pi/2:.4f} -> {claims['A']}\",\n    \"B\": f\"observed rx={rx_a:.4f}, rz={rz_a:.4f}; claim both=pi -> {claims['B']}\",\n    \"C\": f\"observed rz={rz_a:.4f}; claim rz=pi/2={np.pi/2:.4f} (constant dropped) -> {claims['C']}\",\n    \"D\": f\"binding expressions succeeded (rx={rx_a:.4f}, rz={rz_a:.4f}); claim 'error' -> {claims['D']}\",\n}\nclaims[\"E\"] = np.isclose(rx_a, np.pi) and np.isclose(rz_a, 3*np.pi/2)\nclaims[\"F\"] = False\nevidence[\"E\"] = (f\"observed rx={rx_a:.3f}; the 2* multiplier IS applied (2pi={2*np.pi:.3f}), so the claim \"\n                 f\"rx=pi={np.pi:.3f} is {claims['E']}\")\nevidence[\"F\"] = (f\"t + np.pi/2 built a {type(qc.data[1].operation.params[0]).__name__} with no explicit \"\n                 f\"wrapper and bound to rz={rz_a:.3f} -> claim TypeError is {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"rx\": rx_a, \"rz\": rz_a}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\n\nt = Parameter('t')\nqc = QuantumCircuit(1)\nqc.rx(2 * t, 0)\nqc.rz(t + np.pi / 2, 0)\nbound = qc.assign_parameters({t: np.pi})\nang = {ins.operation.name: float(ins.operation.params[0]) for ins in bound.data}\nrx_a, rz_a = ang[\"rx\"], ang[\"rz\"]\nclaims = {\n    \"A\": np.isclose(rx_a, 2*np.pi) and np.isclose(rz_a, 3*np.pi/2),\n    \"B\": np.isclose(rx_a, np.pi) and np.isclose(rz_a, np.pi),\n    \"C\": np.isclose(rx_a, 2*np.pi) and np.isclose(rz_a, np.pi/2),\n    \"D\": False,\n}\nevidence = {\n    \"A\": f\"observed rx={rx_a:.4f}, rz={rz_a:.4f}; expect 2pi={2*np.pi:.4f}, 3pi/2={3*np.pi/2:.4f} -> {claims['A']}\",\n    \"B\": f\"observed rx={rx_a:.4f}, rz={rz_a:.4f}; claim both=pi -> {claims['B']}\",\n    \"C\": f\"observed rz={rz_a:.4f}; claim rz=pi/2={np.pi/2:.4f} (constant dropped) -> {claims['C']}\",\n    \"D\": f\"binding expressions succeeded (rx={rx_a:.4f}, rz={rz_a:.4f}); claim 'error' -> {claims['D']}\",\n}\nclaims[\"E\"] = np.isclose(rx_a, np.pi) and np.isclose(rz_a, 3*np.pi/2)\nclaims[\"F\"] = False\nevidence[\"E\"] = (f\"observed rx={rx_a:.3f}; the 2* multiplier IS applied (2pi={2*np.pi:.3f}), so the claim \"\n                 f\"rx=pi={np.pi:.3f} is {claims['E']}\")\nevidence[\"F\"] = (f\"t + np.pi/2 built a {type(qc.data[1].operation.params[0]).__name__} with no explicit \"\n                 f\"wrapper and bound to rz={rz_a:.3f} -> claim TypeError is {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"rx\": rx_a, \"rz\": rz_a,\n              \"rx_4dp\": round(rx_a, 4), \"rz_4dp\": round(rz_a, 4)}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (absolute removed from distractor C; distractor D now hedges) | pool wave: +E (coefficient dropped, constant kept) +F (thinks Parameter arithmetic needs an explicit ParameterExpression) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (substitute and evaluate two expressions)"
+    "notes": "absolute-wording tell cleared (absolute removed from distractor C; distractor D now hedges) | pool wave: +E (coefficient dropped, constant kept) +F (thinks Parameter arithmetic needs an explicit ParameterExpression) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (substitute and evaluate two expressions) | adversarial review 2026-10-02: drift-lint false positive cleared (evidence quotes the measured angles at 4 dp; those rounded values are now recorded in the proof's observed block); no claim or wording changed."
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   },
   "display_count": 4

@@ -29,7 +29,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 3.71,
+  "wall_seconds": 2.21,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"claim 4; qc.depth() observed 5 -> False; that value is what 'barrier removed entirely (no synchronisation)' gives (4)\", \"B\": \"claim 5; qc.depth() observed 5 -> True\", \"C\": \"claim 7; qc.depth() observed 5 -> False; that value is what 'barriers counted as layers' gives (7)\", \"D\": \"claim 3; qc.depth() observed 5 -> False; that value is what 'barriers and measurements removed' gives (3)\", \"E\": \"claim 9; qc.depth() observed 5 -> False; that value is what 'len(qc.data)' gives (9)\"}, \"observed\": {\"depth\": 5, \"size\": 7, \"len_data\": 9, \"misconceptions\": {\"A\": 4, \"C\": 7, \"D\": 3, \"E\": 9}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

@@ -39,7 +39,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.06,
+  "wall_seconds": 2.12,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"code printed '[-1. -1.]'; option claims '[ 1. -1.]' (reading labels qubit-0-first gives [ 1. -1.]) -> match=False\", \"B\": \"code printed '[-1. -1.]'; option claims '[-1.  0.]' (pooling both sets first gives [-1.  0.]) -> match=False\", \"C\": \"code printed '[-1. -1.]'; option claims '[1. 1.]' (scoring outcome 1 as +1 gives [1. 1.]) -> match=False\", \"D\": \"code printed '[-1. -1.]'; option claims '[-1. -1.]' (this is the per-set zip of the two labels) -> match=True\", \"E\": \"no exception (None); bits.shape=(2,) broadcasts with the (2,) label list, while a (2, 1) list gives shape (2, 2) -> match=False\"}, \"observed\": {\"stdout\": \"[-1. -1.]\", \"error\": null, \"bits_shape\": [2], \"counts\": {\"10\": 100, \"11\": 100}, \"models\": {\"A\": \"[ 1. -1.]\", \"B\": \"[-1.  0.]\", \"C\": \"[1. 1.]\", \"D\": \"[-1. -1.]\"}, \"outer_shape\": [2, 2]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

@@ -25,7 +25,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.33,
+  "wall_seconds": 1.84,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"claim {}; InverseCancellation([CXGate()]) output {'h': 2, 'x': 2} -> False (the no-argument pass gives {})\", \"B\": \"claim {'cx': 2}; InverseCancellation([CXGate()]) output {'h': 2, 'x': 2} -> False\", \"C\": \"claim {'h': 2, 'cx': 1, 'x': 2}; InverseCancellation([CXGate()]) output {'h': 2, 'x': 2} -> False\", \"D\": \"claim {'h': 2, 'x': 2}; InverseCancellation([CXGate()]) output {'h': 2, 'x': 2} -> True\"}, \"observed\": {\"listed_cx_only\": {\"h\": 2, \"x\": 2}, \"no_argument\": {}, \"printed\": \"{'h': 2, 'x': 2}\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

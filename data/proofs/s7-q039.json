@@ -5,34 +5,47 @@
       "B"
     ],
     "evidence": {
-      "A": "returned 10 of the session's 14 jobs (first job00, last job09); client stopped after 1 page request(s) -> match=False",
-      "B": "returned 14 of the session's 14 jobs (first job13, last job00); client stopped after 1 page request(s) -> match=True",
-      "C": "returned 10 of the session's 14 jobs (first job13, last job04); client stopped after 1 page request(s) -> match=False",
+      "A": "returned 10 of the session's 14 jobs (first job00, last job09); the library's client requested pages of [10] and stopped (stub only slices what is asked; jobs() default limit=10) -> match=False",
+      "B": "returned 14 of the session's 14 jobs (first job13, last job00); the library's client requested pages of [20] and stopped (stub only slices what is asked; jobs() default limit=10) -> match=True",
+      "C": "returned 10 of the session's 14 jobs (first job13, last job04); the library's client requested pages of [10] and stopped (stub only slices what is asked; jobs() default limit=10) -> match=False",
       "D": "raised RuntimeJobNotFound: 'Job not found: sess-alpha' -> match=False",
-      "E": "returned 10 of the session's 14 jobs (first job13, last job04); client stopped after 1 page request(s) -> match=False"
+      "E": "returned 10 of the session's 14 jobs (first job13, last job04); the library's client requested pages of [10] and stopped (stub only slices what is asked; jobs() default limit=10) -> match=False"
     },
     "observed": {
       "A": {
         "count": 10,
         "first": "job00",
-        "last": "job09"
+        "last": "job09",
+        "page_limits": [
+          10
+        ]
       },
       "B": {
         "count": 14,
         "first": "job13",
-        "last": "job00"
+        "last": "job00",
+        "page_limits": [
+          20
+        ]
       },
       "C": {
         "count": 10,
         "first": "job13",
-        "last": "job04"
+        "last": "job04",
+        "page_limits": [
+          10
+        ]
       },
       "D": "RuntimeJobNotFound",
       "E": {
         "count": 10,
         "first": "job13",
-        "last": "job04"
-      }
+        "last": "job04",
+        "page_limits": [
+          10
+        ]
+      },
+      "jobs_default_limit": 10
     }
   },
   "versions": {
@@ -41,9 +54,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.02,
+  "wall_seconds": 2.78,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"returned 10 of the session's 14 jobs (first job00, last job09); client stopped after 1 page request(s) -> match=False\", \"B\": \"returned 14 of the session's 14 jobs (first job13, last job00); client stopped after 1 page request(s) -> match=True\", \"C\": \"returned 10 of the session's 14 jobs (first job13, last job04); client stopped after 1 page request(s) -> match=False\", \"D\": \"raised RuntimeJobNotFound: 'Job not found: sess-alpha' -> match=False\", \"E\": \"returned 10 of the session's 14 jobs (first job13, last job04); client stopped after 1 page request(s) -> match=False\"}, \"observed\": {\"A\": {\"count\": 10, \"first\": \"job00\", \"last\": \"job09\"}, \"B\": {\"count\": 14, \"first\": \"job13\", \"last\": \"job00\"}, \"C\": {\"count\": 10, \"first\": \"job13\", \"last\": \"job04\"}, \"D\": \"RuntimeJobNotFound\", \"E\": {\"count\": 10, \"first\": \"job13\", \"last\": \"job04\"}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"returned 10 of the session's 14 jobs (first job00, last job09); the library's client requested pages of [10] and stopped (stub only slices what is asked; jobs() default limit=10) -> match=False\", \"B\": \"returned 14 of the session's 14 jobs (first job13, last job00); the library's client requested pages of [20] and stopped (stub only slices what is asked; jobs() default limit=10) -> match=True\", \"C\": \"returned 10 of the session's 14 jobs (first job13, last job04); the library's client requested pages of [10] and stopped (stub only slices what is asked; jobs() default limit=10) -> match=False\", \"D\": \"raised RuntimeJobNotFound: 'Job not found: sess-alpha' -> match=False\", \"E\": \"returned 10 of the session's 14 jobs (first job13, last job04); the library's client requested pages of [10] and stopped (stub only slices what is asked; jobs() default limit=10) -> match=False\"}, \"observed\": {\"A\": {\"count\": 10, \"first\": \"job00\", \"last\": \"job09\", \"page_limits\": [10]}, \"B\": {\"count\": 14, \"first\": \"job13\", \"last\": \"job00\", \"page_limits\": [20]}, \"C\": {\"count\": 10, \"first\": \"job13\", \"last\": \"job04\", \"page_limits\": [10]}, \"D\": \"RuntimeJobNotFound\", \"E\": {\"count\": 10, \"first\": \"job13\", \"last\": \"job04\", \"page_limits\": [10]}, \"jobs_default_limit\": 10}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

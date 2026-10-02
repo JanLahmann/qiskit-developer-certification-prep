@@ -35,16 +35,17 @@
     "A"
   ],
   "explanation": {
-    "correct": "A barrier is an optimization boundary: passes never move or cancel gates across it, so the two CX gates — one on each side — both survive. The H pair sits on one side; level 1's single-qubit optimization merges H·H into the identity and drops it, so nothing needs translating. The barrier itself stays in the output.",
+    "correct": "A barrier is an optimization boundary: passes never move or cancel gates across it, so the two CX gates — one on each side — both survive. The H pair sits on one side; level 1 cancels that adjacent self-inverse pair before translation, so nothing needs translating. The barrier itself stays in the output.",
     "distractors": {
       "B": "Barrier treated as transparent: inverse-pair cancellation stops at a barrier, so the CX pair split by it is kept.",
       "C": "Barrier read as a freeze line: a barrier only stops gates from being moved or cancelled ACROSS it. Gates after it are still optimized and translated, and an untranslated `h` could not appear with this basis anyway.",
-      "D": "No single-qubit optimization at level 1: this is the level-0 result, where each H is only translated to `rz`/`sx`/`rz`. Level 1 already merges adjacent single-qubit gates.",
+      "D": "No single-qubit optimization at level 1: this is the level-0 result, where each H is only translated to `rz`/`sx`/`rz`. Level 1 already cancels the adjacent H pair.",
       "E": "Barrier removed after doing its job: the boundary is honoured AND kept — barriers survive transpilation and appear in `count_ops()`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
-      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages"
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/circuit"
     ]
   },
   "proof": {
@@ -53,14 +54,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\n\ndef circuit(with_barrier=True):\n    qc = QuantumCircuit(2)\n    qc.cx(0, 1)\n    if with_barrier:\n        qc.barrier()\n    qc.cx(0, 1)\n    qc.h(1)\n    qc.h(1)\n    return qc\n\ndef run(level, qc):\n    pm = generate_preset_pass_manager(optimization_level=level, basis_gates=[\"rz\", \"sx\", \"x\", \"cx\"])\n    return dict(pm.run(qc).count_ops())\n\nout = run(1, circuit())\nlvl0 = run(0, circuit())\nno_barrier = run(1, circuit(with_barrier=False))\n\nclaims = {\n    \"A\": {\"cx\": 2, \"barrier\": 1},\n    \"B\": {\"barrier\": 1},\n    \"C\": {\"cx\": 2, \"barrier\": 1, \"h\": 2},\n    \"D\": {\"rz\": 4, \"cx\": 2, \"sx\": 2, \"barrier\": 1},\n    \"E\": {\"cx\": 2},\n}\nproven, evidence = [], {}\nfor key, val in claims.items():\n    ok = out == val\n    if ok:\n        proven.append(key)\n    evidence[key] = f\"claim {val}; level-1 output {out} -> {ok}\"\nevidence[\"B\"] += f\" (without the barrier level 1 gives {no_barrier})\"\nevidence[\"D\"] += f\" (that dict is the level-0 output: {lvl0})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"level1\": out, \"level0\": lvl0, \"level1_no_barrier\": no_barrier}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\n\ndef circuit(with_barrier=True):\n    qc = QuantumCircuit(2)\n    qc.cx(0, 1)\n    if with_barrier:\n        qc.barrier()\n    qc.cx(0, 1)\n    qc.h(1)\n    qc.h(1)\n    return qc\n\ndef run(level, qc):\n    pm = generate_preset_pass_manager(optimization_level=level, basis_gates=[\"rz\", \"sx\", \"x\", \"cx\"])\n    return dict(pm.run(qc).count_ops())\n\nout = run(1, circuit())\n# Which level-1 pass removes the H pair (the mechanism the explanation names):\ntrace = []\ndef _cb(**kw):\n    trace.append((type(kw[\"pass_\"]).__name__, dict(kw[\"dag\"].count_ops())))\ngenerate_preset_pass_manager(optimization_level=1, basis_gates=[\"rz\", \"sx\", \"x\", \"cx\"]).run(circuit(), callback=_cb)\nh_removed_by = next(name for name, ops in trace if \"h\" not in ops)\nlvl0 = run(0, circuit())\nno_barrier = run(1, circuit(with_barrier=False))\n\nclaims = {\n    \"A\": {\"cx\": 2, \"barrier\": 1},\n    \"B\": {\"barrier\": 1},\n    \"C\": {\"cx\": 2, \"barrier\": 1, \"h\": 2},\n    \"D\": {\"rz\": 4, \"cx\": 2, \"sx\": 2, \"barrier\": 1},\n    \"E\": {\"cx\": 2},\n}\nproven, evidence = [], {}\nfor key, val in claims.items():\n    ok = out == val\n    if ok:\n        proven.append(key)\n    evidence[key] = f\"claim {val}; level-1 output {out} -> {ok}\"\nevidence[\"B\"] += f\" (without the barrier level 1 gives {no_barrier})\"\nevidence[\"D\"] += f\" (that dict is the level-0 output: {lvl0}; at level 1 the H pair is removed by {h_removed_by})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"level1\": out, \"level0\": lvl0, \"level1_no_barrier\": no_barrier,\n                           \"h_pair_removed_by\": h_removed_by}})\n"
   },
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s3)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add: barrier as an optimization boundary at level 1 + single-qubit fusion on one side + barrier survival; D is the measured level-0 output."
+    "notes": "R2 add: barrier as an optimization boundary at level 1 + single-qubit fusion on one side + barrier survival; D is the measured level-0 output. | adversarial review 2026-10-02: explanation named the wrong mechanism: a pass trace shows the H·H pair is removed by level 1's InverseCancellation (init stage) before translation, not by single-qubit merging; correct text and distractor D reworded accordingly (meaning and key unchanged), and the proof now records the pass that removes the H pair (observed.h_pair_removed_by).; also citation added: api/qiskit/circuit (Barrier 'blocks any optimizations from crossing the barrier'); neither cited guide mentions barriers."
   },
   "freshness": {
     "verified_against": {
@@ -69,7 +70,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   }
 }

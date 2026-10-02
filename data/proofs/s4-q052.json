@@ -24,7 +24,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 6.65,
+  "wall_seconds": 4.1,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"primitive bound to a Session at construction; session active after the block: False; run() -> ran=False, exception=IBMRuntimeError: 'The session is closed.' -> match=False\", \"B\": \"primitive bound to a Session at construction; session active after the block: False; run() -> ran=False, exception=IBMRuntimeError: 'The session is closed.' -> match=False\", \"C\": \"primitive bound to a Session at construction; session active after the block: False; run() -> ran=False, exception=IBMRuntimeError: 'The session is closed.' -> match=True\", \"D\": \"primitive bound to a Session at construction; session active after the block: False; run() -> ran=False, exception=IBMRuntimeError: 'The session is closed.' -> match=False\", \"E\": \"primitive bound to a Session at construction; session active after the block: False; run() -> ran=False, exception=IBMRuntimeError: 'The session is closed.' -> match=False\"}, \"observed\": {\"bound_mode\": \"Session\", \"ran\": false, \"exception\": \"IBMRuntimeError\", \"message\": \"'The session is closed.'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

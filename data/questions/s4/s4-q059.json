@@ -42,9 +42,8 @@
       "E": "The runtime skips its ISA check because this is a simulator, but `from_backend` copies the device's basis into Aer, which then fails on the unknown `h` instruction (`AerError`)."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/local-testing-mode",
       "https://quantum.cloud.ibm.com/docs/guides/transpile",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/primitives"
     ]
   },
   "proof": {
@@ -58,9 +57,9 @@
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add (multi, d2): where ISA validation applies — runtime SamplerV2 checks the target only for non-simulator backends (utils.is_simulator, runtime 0.48); AerSimulator() accepts abstract gates, AerSimulator.from_backend skips the runtime check but Aer itself rejects 'h' (AerError); StatevectorSampler has no target. Measured 2026-10-01."
+    "notes": "R2 add (multi, d2): where ISA validation applies — runtime SamplerV2 checks the target only for non-simulator backends (utils.is_simulator, runtime 0.48); AerSimulator() accepts abstract gates, AerSimulator.from_backend skips the runtime check but Aer itself rejects 'h' (AerError); StatevectorSampler has no target. Measured 2026-10-01. | adversarial review 2026-10-02: citation failures: sampler-v2 (no ISA content) and local-testing-mode (never says simulators skip the ISA check) removed; api/qiskit/primitives added (StatevectorSampler is a full state-vector reference implementation). The simulator exemption itself is documented nowhere — it is source-level (is_simulator guard) and carried by the executed proof."
   },
   "freshness": {
     "verified_against": {
@@ -69,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   }
 }

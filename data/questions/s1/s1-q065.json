@@ -53,7 +53,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.PauliEvolutionGate",
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.RZGate"
     ]
   },
   "proof": {
@@ -67,9 +67,9 @@
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s1)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add (figure, stem figure, d3): CNOT conjugation Z -> ZZ combined with the exp(-i t H) vs RZ(theta)=exp(-i theta/2 Z) convention; exact Operator equality measured on qiskit 2.5.0."
+    "notes": "R2 add (figure, stem figure, d3): CNOT conjugation Z -> ZZ combined with the exp(-i t H) vs RZ(theta)=exp(-i theta/2 Z) convention; exact Operator equality measured on qiskit 2.5.0. | adversarial review 2026-10-02: attacked all 4 distractors (none defensible; exact Operator equality only for ZZ at pi/6, none of the others equal even up to phase); citation guides/operators-overview (silent on evolution gates and the RZ half-angle) replaced by the RZGate API page, which states RZ(phi) = exp(-i phi/2 Z). Key unchanged."
   },
   "freshness": {
     "verified_against": {

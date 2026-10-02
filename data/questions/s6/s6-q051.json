@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "Which bar chart does this code draw?",
+  "stem": "Which bar chart shows the values this code plots?",
   "code": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nqc = QuantumCircuit(2)\nqc.ry(2 * np.pi / 3, 0)\nqc.x(1)\n\nlabels = [\"IZ\", \"ZI\", \"ZZ\", \"IX\"]\nobs = [SparsePauliOp(l) for l in labels]\nevs = StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs\n\nfig, ax = plt.subplots()\nax.bar(labels, evs)",
   "options": [
     {
@@ -70,7 +70,8 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp"
     ]
   },
   "proof": {
@@ -79,14 +80,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\n# MUST mirror data/figures/s6-q051/generate.py: the option images are bar\n# charts of exactly these five arrays.\nLABELS = [\"IZ\", \"ZI\", \"ZZ\", \"IX\"]\n\n\ndef evs(theta, flip_q1=True, labels=LABELS):\n    qc = QuantumCircuit(2)\n    qc.ry(theta, 0)\n    if flip_q1:\n        qc.x(1)\n    obs = [SparsePauliOp(l) for l in labels]\n    return np.round(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs), 3)\n\n\nVARIANTS = {\n    \"A\": evs(2 * np.pi / 3, labels=[l[::-1] for l in LABELS]),\n    \"B\": evs(np.pi / 3),\n    \"C\": evs(2 * np.pi / 3, flip_q1=False),\n    \"D\": evs(-2 * np.pi / 3),\n    \"E\": evs(2 * np.pi / 3),\n}\nSTORY = {\n    \"A\": \"labels read qubit-0-first\",\n    \"B\": \"ry angle halved (<Z> = cos(theta/2))\",\n    \"C\": \"x(1) overlooked\",\n    \"D\": \"ry rotation sense reversed\",\n    \"E\": \"stem code\",\n}\n\n# The stem code, executed independently of the variant table.\nqc = QuantumCircuit(2)\nqc.ry(2 * np.pi / 3, 0)\nqc.x(1)\ntarget = np.round(np.asarray(StatevectorEstimator().run(\n    [(qc, [SparsePauliOp(l) for l in LABELS])]).result()[0].data.evs), 3)\n\nproven, evidence, observed = [], {}, {}\nfor key, series in sorted(VARIANTS.items()):\n    match = bool(np.allclose(series, target))\n    observed[key] = series.tolist()\n    evidence[key] = (f\"bars ({STORY[key]}) = {dict(zip(LABELS, series.tolist()))}; the stem code gives \"\n                     f\"{dict(zip(LABELS, target.tolist()))} -> match={match}\")\n    if match:\n        proven.append(key)\nobserved[\"stem\"] = target.tolist()\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+    "proof_script": "import io\nimport matplotlib\nimport matplotlib.pyplot as plt\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\n# MUST mirror data/figures/s6-q051/generate.py: the option images are bar\n# charts of exactly these five arrays.\nLABELS = [\"IZ\", \"ZI\", \"ZZ\", \"IX\"]\n\n\ndef evs(theta, flip_q1=True, labels=LABELS):\n    qc = QuantumCircuit(2)\n    qc.ry(theta, 0)\n    if flip_q1:\n        qc.x(1)\n    obs = [SparsePauliOp(l) for l in labels]\n    return np.round(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs), 3)\n\n\nVARIANTS = {\n    \"A\": evs(2 * np.pi / 3, labels=[l[::-1] for l in LABELS]),\n    \"B\": evs(np.pi / 3),\n    \"C\": evs(2 * np.pi / 3, flip_q1=False),\n    \"D\": evs(-2 * np.pi / 3),\n    \"E\": evs(2 * np.pi / 3),\n}\nSTORY = {\n    \"A\": \"labels read qubit-0-first\",\n    \"B\": \"ry angle halved (<Z> = cos(theta/2))\",\n    \"C\": \"x(1) overlooked\",\n    \"D\": \"ry rotation sense reversed\",\n    \"E\": \"stem code\",\n}\n\n# The stem code, executed independently of the variant table — INCLUDING its\n# ax.bar call; the target heights are read back off that drawing.\nqc = QuantumCircuit(2)\nqc.ry(2 * np.pi / 3, 0)\nqc.x(1)\nstem_evs = StatevectorEstimator().run(\n    [(qc, [SparsePauliOp(l) for l in LABELS])]).result()[0].data.evs\nfig, ax = plt.subplots()\nax.bar(LABELS, stem_evs)\nticks = [t.get_text() for t in ax.get_xticklabels()]\ndrawn = {}\nfor patch in ax.patches:  # pair bars with tick slots, never by patch order\n    drawn[ticks[int(round(patch.get_x() + patch.get_width() / 2))]] = float(patch.get_height())\ndrawn = {l: drawn[l] for l in ticks}\nplt.close(fig)\nassert list(drawn) == LABELS, list(drawn)\ntarget = np.round(np.array([drawn[l] for l in LABELS]), 3)\n\n# Option images are the generator's styled render of each variant. Render the\n# same styling (copied from generate.py) to SVG text in-process and require\n# byte-identity with the styled render of the stem's drawn heights.\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"certiq-proof\"\n\n\ndef styled_svg(values):\n    f, a = plt.subplots(figsize=(5, 3.5))\n    a.bar(LABELS, values, color=\"0.55\", edgecolor=\"black\")\n    a.axhline(0.0, color=\"black\", linewidth=0.8)\n    a.set_ylim(-1.1, 1.1)\n    a.set_xlabel(\"observable\")\n    a.set_ylabel(\"expectation value\")\n    buf = io.StringIO()\n    f.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(f)\n    return buf.getvalue()\n\n\ntarget_svg = styled_svg(target)\n\nproven, evidence, observed = [], {}, {}\nfor key, series in sorted(VARIANTS.items()):\n    same_svg = styled_svg(series) == target_svg\n    match = bool(np.allclose(series, target)) and same_svg\n    observed[f\"{key}_svg_identical\"] = same_svg\n    observed[key] = series.tolist()\n    evidence[key] = (f\"bars ({STORY[key]}) = {dict(zip(LABELS, series.tolist()))}; the stem code gives \"\n                     f\"{dict(zip(LABELS, target.tolist()))} (read off the code's own ax.bar drawing); styled SVG byte-identical: {same_svg} -> match={match}\")\n    if match:\n        proven.append(key)\nobserved[\"stem\"] = target.tolist()\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
   },
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s6)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add (option-image figure, d2): RY expectation values + right-to-left labels + product-state ZZ. Generator and proof build the same five variant arrays; proof also executes the stem code independently and compares."
+    "notes": "R2 add (option-image figure, d2): RY expectation values + right-to-left labels + product-state ZZ. Generator and proof build the same five variant arrays; proof also executes the stem code independently and compares. | adversarial review 2026-10-02: stem reworded to 'shows the values this code plots' (the code's plain ax.bar render is not styled like the option images, so 'which chart does this code draw' had no literal answer); proof now executes the code's ax.bar call, reads the heights back off that drawing, and requires SVG byte-identity of the styled render (generator styling copied) on top of the value match; + SparsePauliOp API citation for right-to-left labels ('XIIZI' = Z_1 X_4)."
   },
   "freshness": {
     "verified_against": {
@@ -95,7 +96,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   }
 }

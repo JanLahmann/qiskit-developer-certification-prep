@@ -44,7 +44,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/estimator-input-output",
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.ObservablesArray"
     ]
   },
   "proof": {
@@ -58,9 +58,9 @@
   "provenance": {
     "generated": "2026-10-01",
     "model": "claude-opus (R2 generation agent, section s6)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "R2 add (d2): dict/str observables are coerced (dict = one weighted observable) + right-to-left label order. Proof execs the displayed code and recomputes every misconception array."
+    "notes": "R2 add (d2): dict/str observables are coerced (dict = one weighted observable) + right-to-left label order. Proof execs the displayed code and recomputes every misconception array. | adversarial review 2026-10-02: citation fix: guides/primitive-input-output lists Pauli/SparsePauliOp/PauliList/str but never dicts, so it could not back the key's dict coercion; replaced by the ObservablesArray API page (coerce_observable accepts Mapping[str | Pauli, float] and returns ONE observable). Second-answer attacks on A-D re-derived; none stick."
   },
   "freshness": {
     "verified_against": {
@@ -69,7 +69,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-01",
+    "verified_on": "2026-10-02",
     "stale": false
   }
 }

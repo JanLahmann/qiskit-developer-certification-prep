@@ -1,0 +1,83 @@
+{
+  "id": "s7-q048",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The histogram plots `counts` from this retrieved job. Which gates replaced the comment?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit_ibm_runtime import QiskitRuntimeService\n\nqc = QuantumCircuit(3)\n# <- the gates in one of the options\nqc.measure_all()\n# qc was transpiled and run for 1000 shots on a noisy 5-qubit QPU\n\nservice = QiskitRuntimeService()\ncounts = service.job(job_id).result()[0].data.meas.get_counts()",
+  "options": [
+    {
+      "key": "A",
+      "text": "`qc.x(0); qc.h(2)`"
+    },
+    {
+      "key": "B",
+      "text": "`qc.x(2); qc.h(0)`"
+    },
+    {
+      "key": "C",
+      "text": "`qc.h(0); qc.cx(0, 2)`"
+    },
+    {
+      "key": "D",
+      "text": "`qc.x(2); qc.ry(np.pi / 3, 0)`"
+    },
+    {
+      "key": "E",
+      "text": "`qc.x(2); qc.h(1)`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s7-q048/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s7-q048/s7-q048-stem.svg",
+      "alt": "Bar chart with a Count axis and seven bars, labelled left to right 000 at 62, 001 at 58, 011 at 1, 100 at 443, 101 at 429, 110 at 5 and 111 at 2, each with its value printed above it."
+    }
+  },
+  "explanation": {
+    "correct": "Almost all shots land on `100` and `101` in roughly equal numbers. The leftmost character is qubit 2, which reads 1 on both tall bars (an X on qubit 2); the rightmost character is qubit 0, which splits about 50/50 (an H on qubit 0); qubit 1 stays 0. The small bars are readout and gate noise of the QPU, mostly qubit 2 misread as 0.",
+    "distractors": {
+      "A": "Bit order reversed: X on qubit 0 and H on qubit 2 would put the fixed 1 on the RIGHT and the coin flip on the LEFT, giving `001` and `101` as the tall bars.",
+      "E": "Wrong varying position: an H on qubit 1 would split the MIDDLE character, giving `100` and `110`; here the middle bit stays 0 on the tall bars.",
+      "C": "Correlation read into the bars: H then CX(0, 2) makes qubits 0 and 2 agree, giving `000` and `101`. The tall bars here share qubit 2 = 1 while qubit 0 varies independently.",
+      "D": "Bar heights ignored: RY(π/3) on qubit 0 gives P(1) = sin²(π/6) = 0.25, so `100` would be about three times `101`; the two tall bars here are nearly equal (443 vs 429), the signature of an H."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
+      "https://quantum.cloud.ibm.com/docs/guides/bit-ordering"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q048.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# COUNTS MUST match the literal asserted by data/figures/s7-q048/generate.py.\n# Retrieval rebuilt offline: each candidate circuit is run with the SAME transpile\n# and simulator seeds as the figure's job.\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nCOUNTS = {\"100\": 443, \"101\": 429, \"001\": 58, \"000\": 62, \"111\": 2, \"011\": 1, \"110\": 5}\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(optimization_level=1, backend=backend, seed_transpiler=42)\n\n\ndef body(key):\n    qc = QuantumCircuit(3)\n    if key == \"A\":\n        qc.x(0); qc.h(2)\n    elif key == \"B\":\n        qc.x(2); qc.h(0)\n    elif key == \"C\":\n        qc.h(0); qc.cx(0, 2)\n    elif key == \"D\":\n        qc.x(2); qc.ry(np.pi / 3, 0)\n    elif key == \"E\":\n        qc.x(2); qc.h(1)\n    qc.measure_all()\n    return qc\n\n\ndef run(qc):\n    sampler = SamplerV2(mode=backend)\n    sampler.options.simulator.seed_simulator = 17\n    return sampler.run([pm.run(qc)], shots=1000).result()[0].data.meas.get_counts()\n\n\ndef tvd(a, b):\n    keys = set(a) | set(b)\n    return 0.5 * sum(abs(a.get(k, 0) - b.get(k, 0)) for k in keys) / 1000\n\n\nproven, evidence, observed = [], {}, {\"figure\": COUNTS}\nfor key in \"ABCDE\":\n    c = run(body(key))\n    top2 = sorted(sorted(c, key=c.get, reverse=True)[:2])\n    d = tvd(c, COUNTS)\n    m = c == COUNTS\n    observed[key] = {\"counts\": c, \"tvd_vs_figure\": round(d, 3)}\n    evidence[key] = (f\"same seeds give {c} (two largest bars {top2}); total-variation distance from the \"\n                     f\"figure's counts = {d:.3f}; identical to the figure: {m}\")\n    if m:\n        proven.append(key)\n    else:\n        assert d > 0.15, (key, d)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s2/s5-s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure wave add (stem figure): identify the circuit behind a retrieved, noisy histogram (bit order, which position varies, correlation, bar-height ratio). Retrieval rebuilt offline on FakeManilaV2 with seeded transpile/simulator; generator and proof assert the same COUNTS; the proof runs every option circuit with the same seeds (only the key reproduces the figure; each distractor's total-variation distance > 0.15)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

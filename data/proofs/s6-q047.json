@@ -43,7 +43,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.87,
+  "wall_seconds": 5.66,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"claims print '[ 1.  0. -1.  0.]' = [1.0, 0.0, -1.0, 0.0] (Z phase ignored (Bell state without z) -> computed [1.0, 0.0, -1.0, 0.0]); the code printed '[-1.  0. -1.  0.]' -> match=False\", \"B\": \"claims print '[ 0. -1.  0. -1.]' = [0.0, -1.0, 0.0, -1.0] (labels read with qubit 0 on the LEFT -> computed [0.0, -1.0, 0.0, -1.0]); the code printed '[-1.  0. -1.  0.]' -> match=False\", \"C\": \"claims print '[ 0.  0. -1.  0.]' = [0.0, 0.0, -1.0, 0.0] (two-qubit X terms factorised into single-qubit <X> products -> computed [0.0, 0.0, -1.0, 0.0]); the code printed '[-1.  0. -1.  0.]' -> match=False\", \"D\": \"claims print '[-1.  0. -1.  0.]' = [-1.0, 0.0, -1.0, 0.0] (the figure's circuit with Qiskit's qubit-0-rightmost labels); the code printed '[-1.  0. -1.  0.]' -> match=True\"}, \"observed\": {\"printed\": \"[-1.  0. -1.  0.]\", \"evs\": [-1.0, 0.0, -1.0, 0.0], \"reversed\": [0.0, -1.0, 0.0, -1.0], \"no_z\": [1.0, 0.0, -1.0, 0.0], \"single_x\": [0.0, 0.0, 0.0]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

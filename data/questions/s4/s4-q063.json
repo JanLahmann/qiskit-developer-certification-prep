@@ -1,0 +1,77 @@
+{
+  "id": "s4-q063",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "The figure shows `isa`, an ISA circuit for `FakeManilaV2`. Which key is most frequent in `counts`?",
+  "code": "from qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nsampler = SamplerV2(mode=FakeManilaV2())\nresult = sampler.run([isa], shots=1000).result()\ncounts = result[0].data.meas.get_counts()",
+  "options": [
+    {
+      "key": "A",
+      "text": "`'011'`"
+    },
+    {
+      "key": "B",
+      "text": "`'110'`"
+    },
+    {
+      "key": "C",
+      "text": "`'00011'`"
+    },
+    {
+      "key": "D",
+      "text": "`'100'`"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s4-q063/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s4-q063/s4-q063-stem.svg",
+      "alt": "Transpiled circuit diagram with three quantum wires labelled, top to bottom, q_1 ↦ 0, q_2 ↦ 1 and q_0 ↦ 3, and a 3-bit classical register meas. An X box on the q_2 ↦ 1 wire; a CX with its control on q_2 ↦ 1 and its target on q_1 ↦ 0; a barrier across all three wires; then measurements: q_0 ↦ 3 into meas bit 0, q_1 ↦ 0 into meas bit 1, and q_2 ↦ 1 into meas bit 2."
+    }
+  },
+  "explanation": {
+    "correct": "Follow the drawing: X sets physical qubit 1 (q_2), and the CX with its control there flips physical qubit 0 (q_1); q_0 on physical 3 stays 0. The `meas` register has 3 bits, one per measured qubit, wired as the arrows show: q_0 → bit 0, q_1 → bit 1, q_2 → bit 2. Keys print bit 2 on the left, so the ideal outcome is `'110'`; on the noisy fake device it still dominates (about 90% of shots).",
+    "distractors": {
+      "A": "Bit order reversed: the key's leftmost character is the HIGHEST meas bit (bit 2, written by q_2), not bit 0.",
+      "C": "Keys indexed by physical qubit: counts come from the classical register `meas`, which has 3 bits — the ISA layout changes which wire is measured, not the key width.",
+      "D": "CX read upside down: the dot on physical 1 is the control and the ⊕ on physical 0 is the target, so the X on physical 1 flips physical 0 too."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-sampler",
+      "https://quantum.cloud.ibm.com/docs/guides/bit-ordering"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q063.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import warnings\n\nwarnings.filterwarnings(\"ignore\")\n\n# Block MUST mirror data/figures/s4-q063/generate.py (source circuit, pass manager, TARGET).\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.transpiler import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nqc = QuantumCircuit(3)\nqc.x(2)\nqc.cx(2, 1)\nqc.measure_all()\n\npm = generate_preset_pass_manager(optimization_level=1, backend=FakeManilaV2(),\n                                  initial_layout=[3, 0, 1], seed_transpiler=7)\nisa = pm.run(qc)\n\nTARGET = ((\"x\", (1,), ()), (\"cx\", (1, 0), ()), (\"barrier\", (3, 0, 1), ()),\n          (\"measure\", (3,), (0,)), (\"measure\", (0,), (1,)), (\"measure\", (1,), (2,)))\nops = tuple((i.operation.name, tuple(isa.find_bit(b).index for b in i.qubits),\n             tuple(isa.find_bit(b).index for b in i.clbits)) for i in isa.data)\nassert ops == TARGET, ops\n\n# the stem code: run the drawn isa on the fake device (seeded for reproducibility)\nsampler = SamplerV2(mode=FakeManilaV2())\nsampler.options.simulator.seed_simulator = 11\ncounts = sampler.run([isa], shots=1000).result()[0].data.meas.get_counts()\ntop = max(counts, key=counts.get)\nshare = counts[top] / 1000\n\n# noiseless cross-check of the same drawn circuit\nideal = StatevectorSampler(seed=3).run([isa], shots=200).result()[0].data.meas.get_counts()\n\nOPTIONS = {\"A\": \"011\", \"B\": \"110\", \"C\": \"00011\", \"D\": \"100\"}\nproven, evidence = [], {}\nfor key, claim in OPTIONS.items():\n    match = claim == top and ideal == {claim: 200}\n    evidence[key] = (f\"claim '{claim}'; FakeManilaV2 run, 1000 shots -> most frequent '{top}' \"\n                     f\"({share:.0%}), keys are {len(top)} bits wide (the meas register); \"\n                     f\"noiseless run of the same isa -> {ideal}; claimed key seen {counts.get(claim, 0)} times; \"\n                     f\"match={match}\")\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"counts\": counts, \"top\": top, \"ideal\": ideal,\n                           \"ops\": [[n, list(q), list(c)] for n, q, c in ops]}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s1/s3/s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "figure wave add (stem figure, d2): read an ISA drawing (layout labels q_i ↦ p, idle wires hidden) and predict the dominant Sampler key — measurement arrows into the 3-bit meas register, little-endian key printing, CX control/target. The source circuit is hidden: the figure IS the circuit. Proof rebuilds isa with the same pass manager, asserts the TARGET op/qubit/clbit literal shared with the generator, runs SamplerV2 on FakeManilaV2 (seed_simulator 11: '110' 905/1000) and a noiseless StatevectorSampler run (always '110')."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

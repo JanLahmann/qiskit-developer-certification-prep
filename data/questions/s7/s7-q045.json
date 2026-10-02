@@ -1,0 +1,83 @@
+{
+  "id": "s7-q045",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "mcq",
+  "difficulty": 1,
+  "stem": "A retrieved Sampler job ran the circuit shown. Which expression returns the counts of its two-bit register?",
+  "code": "from qiskit_ibm_runtime import QiskitRuntimeService\n\nservice = QiskitRuntimeService()\npub = service.job(job_id).result()[0]",
+  "options": [
+    {
+      "key": "A",
+      "text": "`pub.data.meas.get_counts()`"
+    },
+    {
+      "key": "B",
+      "text": "`pub.data.c.get_counts()`"
+    },
+    {
+      "key": "C",
+      "text": "`pub.data.flag.get_counts()`"
+    },
+    {
+      "key": "D",
+      "text": "`pub.data.c1.get_counts()`"
+    },
+    {
+      "key": "E",
+      "text": "`pub.data.out.get_counts()`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "figures": {
+    "generator": "figures/s7-q045/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s7-q045/s7-q045-stem.svg",
+      "alt": "Circuit diagram on qubit wires q0, q1 and q2 and two bundled classical wires: flag of width 1 and out of width 2. H on q0, a CNOT from q0 to q1, and RY(0.6) on q2. q2 is measured into flag bit 0, q0 into out bit 0 and q1 into out bit 1."
+    }
+  },
+  "explanation": {
+    "correct": "A Sampler pub result stores one `BitArray` per classical register, as a field of `pub.data` named after the register. The drawing labels the two classical wires `flag` (width 1) and `out` (width 2), so the two-bit counts are `pub.data.out.get_counts()` — the field name is the register name the circuit was built with.",
+    "distractors": {
+      "A": "`meas` is only the name of the register that `measure_all()` adds. This circuit measures into its own registers, so the data bin has no `meas` field (AttributeError).",
+      "B": "`c` is the default name of a register created implicitly by `QuantumCircuit(n, m)`. Named registers keep their names, so there is no `c` field here (AttributeError).",
+      "C": "Wrong register: `flag` is the one-bit register the drawing lists first; its counts have single-character keys, not two-bit outcomes.",
+      "D": "Registers assumed to be numbered by declaration order: the data bin uses each register's own name. Counter names such as `c1` exist only for registers created WITHOUT a name; these are named `flag` and `out` (AttributeError)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.DataBin"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q045.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# The circuit MUST match REGISTERS / GATES asserted by data/figures/s7-q045/generate.py.\n# Retrieval is rebuilt offline: a seeded local run yields the same DataBin layout a\n# retrieved job's result carries (the container path is what is tested).\nfrom qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister\nfrom qiskit.primitives import StatevectorSampler\n\nREGISTERS = [(\"flag\", 1), (\"out\", 2)]\nGATES = [(\"h\", (0,), ()), (\"cx\", (0, 1), ()), (\"ry\", (2,), ()),\n         (\"measure\", (2,), (0,)), (\"measure\", (0,), (1,)), (\"measure\", (1,), (2,))]\nq = QuantumRegister(3, \"q\")\nflag = ClassicalRegister(1, \"flag\")\nout = ClassicalRegister(2, \"out\")\nqc = QuantumCircuit(q, flag, out)\nqc.h(0)\nqc.cx(0, 1)\nqc.ry(0.6, 2)\nqc.measure(2, flag[0])\nqc.measure(0, out[0])\nqc.measure(1, out[1])\nassert [(r.name, r.size) for r in qc.cregs] == REGISTERS\nassert [(ci.operation.name, tuple(qc.find_bit(x).index for x in ci.qubits),\n         tuple(qc.find_bit(c).index for c in ci.clbits)) for ci in qc.data] == GATES\n\npub = StatevectorSampler(seed=4).run([qc], shots=500).result()[0]\nfields = sorted(pub.data.keys())\n\nATTEMPTS = {\n    \"A\": lambda p: p.data.meas.get_counts(),\n    \"B\": lambda p: p.data.c.get_counts(),\n    \"C\": lambda p: p.data.flag.get_counts(),\n    \"D\": lambda p: p.data.c1.get_counts(),\n    \"E\": lambda p: p.data.out.get_counts(),\n}\nproven, evidence, observed = [], {}, {\"data_fields\": fields}\nfor key, f in sorted(ATTEMPTS.items()):\n    try:\n        counts = f(pub)\n    except Exception as exc:  # noqa: BLE001 - the refutation is the exception\n        observed[key] = f\"{type(exc).__name__}: {exc}\"\n        evidence[key] = f\"raises {type(exc).__name__} ({exc}); the data bin holds {fields} -> match=False\"\n        continue\n    width = len(next(iter(counts)))\n    m = width == 2\n    observed[key] = {\"counts\": counts, \"width\": width}\n    evidence[key] = f\"returns {width}-bit counts {counts} -> two-bit register: {m}\"\n    if m:\n        proven.append(key)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s2/s5-s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure wave add (stem figure): read classical-register names off a drawing to address a retrieved Sampler result's DataBin. Retrieval rebuilt offline with a seeded StatevectorSampler run (same DataBin layout); generator and proof assert the same REGISTERS/GATES literals; the proof attempts every option expression."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

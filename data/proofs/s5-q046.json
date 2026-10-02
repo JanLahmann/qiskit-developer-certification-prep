@@ -37,9 +37,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 3.05,
+  "wall_seconds": 6.6,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"executed on FakeManilaV2: PUB 1: 1 set x 100 shots; PUB 2: shape (3,), 3 sets x 200 shots; tallied total 700; option A claims 700 -> match=True\", \"B\": \"executed on FakeManilaV2: PUB 1: 1 set x 100 shots; PUB 2: shape (3,), 3 sets x 200 shots; tallied total 700; option B claims 300 -> match=False\", \"C\": \"executed on FakeManilaV2: PUB 1: 1 set x 100 shots; PUB 2: shape (3,), 3 sets x 200 shots; tallied total 700; option C claims 800 -> match=False\", \"D\": \"executed on FakeManilaV2: PUB 1: 1 set x 100 shots; PUB 2: shape (3,), 3 sets x 200 shots; tallied total 700; option D claims 1000 -> match=False\", \"E\": \"executed on FakeManilaV2: PUB 1: 1 set x 100 shots; PUB 2: shape (3,), 3 sets x 200 shots; tallied total 700; option E claims 1300 -> match=False\"}, \"observed\": {\"per_pub\": [{\"shape\": [], \"num_shots\": 100, \"sets\": 1, \"tallied\": 100}, {\"shape\": [3], \"num_shots\": 200, \"sets\": 3, \"tallied\": 600}], \"total\": 700}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
-  "stderr_tail": "/var/folders/tv/mcg343g558z01xp833vtdj3h0000gn/T/qcs-s5-q046-5rjl_iyp/proof_s5_q046.py:44: DeprecationWarning: Specifying different 'shots' across pubs is deprecated as of qiskit-ibm-runtime 0.48.0 and will be removed no sooner than 3 months after the release date. Submit one job for each desired shot count instead. To reduce overhead, Consider submitting these jobs inside a Batch execution mode.\n  result = sampler.run([(isa_a, None, 100), (isa_b, vals)], shots=200).result()\n",
+  "stderr_tail": "/var/folders/tv/mcg343g558z01xp833vtdj3h0000gn/T/qcs-s5-q046-t522n4nq/proof_s5_q046.py:44: DeprecationWarning: Specifying different 'shots' across pubs is deprecated as of qiskit-ibm-runtime 0.48.0 and will be removed no sooner than 3 months after the release date. Submit one job for each desired shot count instead. To reduce overhead, Consider submitting these jobs inside a Batch execution mode.\n  result = sampler.run([(isa_a, None, 100), (isa_b, vals)], shots=200).result()\n",
   "python": "3.12.2"
 }

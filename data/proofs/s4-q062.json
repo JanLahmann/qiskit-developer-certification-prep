@@ -1,0 +1,67 @@
+{
+  "question": "s4-q062",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "A": "layout [3, 1, 5, 4]: q_0 on physical 3, its CX partners on [1, 5, 4]; uncoupled pairs [(3, 4)]; routing inserts 1 SWAP(s); level-1 isa has 6 cx (3 = none added); layout kept -> True; match=False",
+      "B": "layout [0, 1, 2, 3]: q_0 on physical 0, its CX partners on [1, 2, 3]; uncoupled pairs [(0, 2), (0, 3)]; routing inserts 1 SWAP(s); level-1 isa has 6 cx (3 = none added); layout kept -> True; match=False",
+      "C": "layout [1, 0, 2, 3]: q_0 on physical 1, its CX partners on [0, 2, 3]; uncoupled pairs []; routing inserts 0 SWAP(s); level-1 isa has 3 cx (3 = none added); layout kept -> True; match=True",
+      "D": "layout [5, 4, 6, 1]: q_0 on physical 5, its CX partners on [4, 6, 1]; uncoupled pairs [(5, 1)]; routing inserts 1 SWAP(s); level-1 isa has 6 cx (3 = none added); layout kept -> True; match=False"
+    },
+    "observed": {
+      "figure_matches_device": true,
+      "A": {
+        "cx": 6,
+        "swaps": 1,
+        "uncoupled": [
+          [
+            3,
+            4
+          ]
+        ]
+      },
+      "B": {
+        "cx": 6,
+        "swaps": 1,
+        "uncoupled": [
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ]
+        ]
+      },
+      "C": {
+        "cx": 3,
+        "swaps": 0,
+        "uncoupled": []
+      },
+      "D": {
+        "cx": 6,
+        "swaps": 1,
+        "uncoupled": [
+          [
+            5,
+            1
+          ]
+        ]
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 6.11,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"layout [3, 1, 5, 4]: q_0 on physical 3, its CX partners on [1, 5, 4]; uncoupled pairs [(3, 4)]; routing inserts 1 SWAP(s); level-1 isa has 6 cx (3 = none added); layout kept -> True; match=False\", \"B\": \"layout [0, 1, 2, 3]: q_0 on physical 0, its CX partners on [1, 2, 3]; uncoupled pairs [(0, 2), (0, 3)]; routing inserts 1 SWAP(s); level-1 isa has 6 cx (3 = none added); layout kept -> True; match=False\", \"C\": \"layout [1, 0, 2, 3]: q_0 on physical 1, its CX partners on [0, 2, 3]; uncoupled pairs []; routing inserts 0 SWAP(s); level-1 isa has 3 cx (3 = none added); layout kept -> True; match=True\", \"D\": \"layout [5, 4, 6, 1]: q_0 on physical 5, its CX partners on [4, 6, 1]; uncoupled pairs [(5, 1)]; routing inserts 1 SWAP(s); level-1 isa has 6 cx (3 = none added); layout kept -> True; match=False\"}, \"observed\": {\"figure_matches_device\": true, \"A\": {\"cx\": 6, \"swaps\": 1, \"uncoupled\": [[3, 4]]}, \"B\": {\"cx\": 6, \"swaps\": 1, \"uncoupled\": [[0, 2], [0, 3]]}, \"C\": {\"cx\": 3, \"swaps\": 0, \"uncoupled\": []}, \"D\": {\"cx\": 6, \"swaps\": 1, \"uncoupled\": [[5, 1]]}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

@@ -1,0 +1,92 @@
+{
+  "id": "s3-q075",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which diagram shows the circuit that `pm.run(qc)` returns?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.x(1)\nqc.barrier(0)\nqc.h(0)\nqc.x(1)\nqc.cx(0, 1)\n\npm = generate_preset_pass_manager(optimization_level=1, seed_transpiler=7)\npm.run(qc).draw(\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "figures": {
+    "generator": "figures/s3-q075/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s3-q075/s3-q075-A.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: on q_0 an H box, a barrier drawn on q_0 only, and a second H box; then a CX with its control on q_0 and its target on q_1."
+      },
+      "B": {
+        "file": "figures/s3-q075/s3-q075-B.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: no single-qubit gates and no barrier; only a CX with its control on q_0 and its target on q_1."
+      },
+      "C": {
+        "file": "figures/s3-q075/s3-q075-C.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: on q_0 an H box, a barrier drawn on q_0 only, and a second H box; on q_1 two X boxes; then a CX with its control on q_0 and its target on q_1."
+      },
+      "D": {
+        "file": "figures/s3-q075/s3-q075-D.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: on q_0 a U(π/2, 0, π) box, a barrier drawn on q_0 only, and a second U(π/2, 0, π) box; then a CX with its control on q_0 and its target on q_1."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "Level 1 cancels adjacent self-inverse pairs (`InverseCancellation`). The barrier sits on q_0 only: it separates the two H gates, and no pass optimizes across a barrier, so both H gates stay. On q_1 nothing stands between the two X gates, so that pair cancels. With no target or basis given there is no translation or layout, so the kept gates stay H and CX with plain q_0/q_1 labels.",
+    "distractors": {
+      "B": "Barrier ignored: a barrier is an optimization fence, so the H pair it separates on q_0 cannot be cancelled.",
+      "C": "Barrier taken to freeze the whole circuit: `barrier(0)` covers q_0 only; the X pair on q_1 is adjacent and level 1 removes it.",
+      "D": "Re-synthesis assumed: level 1 merges RUNS of single-qubit gates; each H here stands alone between the barrier and a CX, so it is left as H."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/circuit",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.transpiler.passes.InverseCancellation",
+      "https://quantum.cloud.ibm.com/docs/guides/set-optimization"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q075.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import io\n\nimport matplotlib\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"proof\"  # deterministic SVG ids\nimport matplotlib.pyplot as plt\n\nfrom qiskit.transpiler import generate_preset_pass_manager\n\n\ndef drawing(circ):\n    \"\"\"The actual mpl rendering, as SVG text (what the option image shows).\"\"\"\n    fig = circ.draw(output=\"mpl\")\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\n# Block MUST mirror data/figures/s3-q075/generate.py (variant()).\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit.library import UGate\n\n\ndef variant(key):\n    qc = QuantumCircuit(2)\n    if key == \"A\":    # real level-1 output: X pair cancelled, H pair kept by the barrier\n        qc.h(0)\n        qc.barrier(0)\n        qc.h(0)\n    elif key == \"B\":  # barrier ignored: both pairs cancelled\n        pass\n    elif key == \"C\":  # barrier taken to freeze the whole circuit: nothing cancelled\n        qc.h(0)\n        qc.x(1)\n        qc.barrier(0)\n        qc.h(0)\n        qc.x(1)\n    elif key == \"D\":  # kept H gates assumed re-synthesised as U gates\n        qc.append(UGate(np.pi / 2, 0, np.pi), [0])\n        qc.barrier(0)\n        qc.append(UGate(np.pi / 2, 0, np.pi), [0])\n    qc.cx(0, 1)\n    return qc\n\n\n\n# the stem code, verbatim\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.x(1)\nqc.barrier(0)\nqc.h(0)\nqc.x(1)\nqc.cx(0, 1)\n\npm = generate_preset_pass_manager(optimization_level=1, seed_transpiler=7)\nout = pm.run(qc)\nout_svg = drawing(out)\n\n\ndef sig(circ):\n    return [(i.operation.name, [circ.find_bit(b).index for b in i.qubits],\n             [round(float(p), 6) for p in i.operation.params]) for i in circ.data]\n\n\nout_sig = sig(out)\nproven, evidence = [], {}\nobserved = {\"level1_output\": out_sig, \"layout\": str(out.layout)}\nfor key in \"ABCD\":\n    v = variant(key)\n    s = sig(v)\n    same_render = drawing(v) == out_svg\n    match = s == out_sig and same_render\n    observed[key] = s\n    evidence[key] = (f\"drawn ops {[(n, q) for n, q, _ in s]}; level-1 output {[(n, q) for n, q, _ in out_sig]}; \"\n                     f\"mpl rendering identical to the output's -> {same_render}; match={match}\")\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s1/s3/s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "figure wave add (option images, d2): a ONE-wire barrier at optimization level 1 — it fences the H pair on its wire while the X pair on the other wire cancels. Distractors: barrier ignored, barrier freezing every wire, lone H gates re-synthesised as U. Proof runs the stem pass manager and requires structural + SVG byte-identity of each variant with the real output's rendering (only A)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

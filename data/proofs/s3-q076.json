@@ -1,0 +1,217 @@
+{
+  "question": "s3-q076",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "drawn ops [('tdg', [1]), ('cx', [0, 1]), ('sdg', [0]), ('h', [0])]; qc.reverse_ops() holds [('t', [1]), ('cx', [0, 1]), ('s', [0]), ('h', [0])]; mpl rendering identical to reverse_ops()'s -> False; match=False",
+      "B": "drawn ops [('h', [1]), ('s', [1]), ('cx', [1, 0]), ('t', [0])]; qc.reverse_ops() holds [('t', [1]), ('cx', [0, 1]), ('s', [0]), ('h', [0])]; mpl rendering identical to reverse_ops()'s -> False; match=False",
+      "C": "drawn ops [('t', [1]), ('cx', [1, 0]), ('s', [0]), ('h', [0])]; qc.reverse_ops() holds [('t', [1]), ('cx', [0, 1]), ('s', [0]), ('h', [0])]; mpl rendering identical to reverse_ops()'s -> False; match=False",
+      "D": "drawn ops [('t', [1]), ('cx', [0, 1]), ('s', [0]), ('h', [0])]; qc.reverse_ops() holds [('t', [1]), ('cx', [0, 1]), ('s', [0]), ('h', [0])]; mpl rendering identical to reverse_ops()'s -> True; match=True"
+    },
+    "observed": {
+      "reverse_ops": [
+        [
+          "t",
+          [
+            1
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ]
+        ],
+        [
+          "s",
+          [
+            0
+          ]
+        ],
+        [
+          "h",
+          [
+            0
+          ]
+        ]
+      ],
+      "inverse": [
+        [
+          "tdg",
+          [
+            1
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ]
+        ],
+        [
+          "sdg",
+          [
+            0
+          ]
+        ],
+        [
+          "h",
+          [
+            0
+          ]
+        ]
+      ],
+      "reverse_bits": [
+        [
+          "h",
+          [
+            1
+          ]
+        ],
+        [
+          "s",
+          [
+            1
+          ]
+        ],
+        [
+          "cx",
+          [
+            1,
+            0
+          ]
+        ],
+        [
+          "t",
+          [
+            0
+          ]
+        ]
+      ],
+      "reverse_ops_equals_inverse_unitary": false,
+      "A": [
+        [
+          "tdg",
+          [
+            1
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ]
+        ],
+        [
+          "sdg",
+          [
+            0
+          ]
+        ],
+        [
+          "h",
+          [
+            0
+          ]
+        ]
+      ],
+      "B": [
+        [
+          "h",
+          [
+            1
+          ]
+        ],
+        [
+          "s",
+          [
+            1
+          ]
+        ],
+        [
+          "cx",
+          [
+            1,
+            0
+          ]
+        ],
+        [
+          "t",
+          [
+            0
+          ]
+        ]
+      ],
+      "C": [
+        [
+          "t",
+          [
+            1
+          ]
+        ],
+        [
+          "cx",
+          [
+            1,
+            0
+          ]
+        ],
+        [
+          "s",
+          [
+            0
+          ]
+        ],
+        [
+          "h",
+          [
+            0
+          ]
+        ]
+      ],
+      "D": [
+        [
+          "t",
+          [
+            1
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ]
+        ],
+        [
+          "s",
+          [
+            0
+          ]
+        ],
+        [
+          "h",
+          [
+            0
+          ]
+        ]
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 5.25,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"drawn ops [('tdg', [1]), ('cx', [0, 1]), ('sdg', [0]), ('h', [0])]; qc.reverse_ops() holds [('t', [1]), ('cx', [0, 1]), ('s', [0]), ('h', [0])]; mpl rendering identical to reverse_ops()'s -> False; match=False\", \"B\": \"drawn ops [('h', [1]), ('s', [1]), ('cx', [1, 0]), ('t', [0])]; qc.reverse_ops() holds [('t', [1]), ('cx', [0, 1]), ('s', [0]), ('h', [0])]; mpl rendering identical to reverse_ops()'s -> False; match=False\", \"C\": \"drawn ops [('t', [1]), ('cx', [1, 0]), ('s', [0]), ('h', [0])]; qc.reverse_ops() holds [('t', [1]), ('cx', [0, 1]), ('s', [0]), ('h', [0])]; mpl rendering identical to reverse_ops()'s -> False; match=False\", \"D\": \"drawn ops [('t', [1]), ('cx', [0, 1]), ('s', [0]), ('h', [0])]; qc.reverse_ops() holds [('t', [1]), ('cx', [0, 1]), ('s', [0]), ('h', [0])]; mpl rendering identical to reverse_ops()'s -> True; match=True\"}, \"observed\": {\"reverse_ops\": [[\"t\", [1]], [\"cx\", [0, 1]], [\"s\", [0]], [\"h\", [0]]], \"inverse\": [[\"tdg\", [1]], [\"cx\", [0, 1]], [\"sdg\", [0]], [\"h\", [0]]], \"reverse_bits\": [[\"h\", [1]], [\"s\", [1]], [\"cx\", [1, 0]], [\"t\", [0]]], \"reverse_ops_equals_inverse_unitary\": false, \"A\": [[\"tdg\", [1]], [\"cx\", [0, 1]], [\"sdg\", [0]], [\"h\", [0]]], \"B\": [[\"h\", [1]], [\"s\", [1]], [\"cx\", [1, 0]], [\"t\", [0]]], \"C\": [[\"t\", [1]], [\"cx\", [1, 0]], [\"s\", [0]], [\"h\", [0]]], \"D\": [[\"t\", [1]], [\"cx\", [0, 1]], [\"s\", [0]], [\"h\", [0]]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

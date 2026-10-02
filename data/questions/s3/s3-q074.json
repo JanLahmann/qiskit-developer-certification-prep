@@ -1,0 +1,83 @@
+{
+  "id": "s3-q074",
+  "section": "s3",
+  "objectives": [
+    "s3o4"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "The figure shows `isa`. What does the last line print?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap, generate_preset_pass_manager\n\nqc = QuantumCircuit(4)\nqc.h(3)\nqc.cx(3, 1)\nqc.cx(3, 0)\n\npm = generate_preset_pass_manager(\n    optimization_level=0,\n    coupling_map=CouplingMap.from_line(4),\n    initial_layout=[0, 1, 2, 3],\n    seed_transpiler=42,\n)\nisa = pm.run(qc)\nprint(isa.layout.final_index_layout())",
+  "options": [
+    {
+      "key": "A",
+      "text": "`[0, 3, 1, 2]`"
+    },
+    {
+      "key": "B",
+      "text": "`[0, 3, 2, 1]`"
+    },
+    {
+      "key": "C",
+      "text": "`[0, 1, 2, 3]`"
+    },
+    {
+      "key": "D",
+      "text": "`[0, 1, 3, 2]`"
+    },
+    {
+      "key": "E",
+      "text": "`[0, 2, 3, 1]`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "figures": {
+    "generator": "figures/s3-q074/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s3-q074/s3-q074-stem.svg",
+      "alt": "Transpiled circuit diagram with four wires labelled, top to bottom, q_0 ↦ 0, q_1 ↦ 1, q_2 ↦ 2 and q_3 ↦ 3. In order: an H box on wire 3; a SWAP between wires 2 and 3; a CX with its control on wire 2 and its target on wire 1; a SWAP between wires 1 and 2; then a CX with its control on wire 1 and its target on wire 0."
+    }
+  },
+  "explanation": {
+    "correct": "`final_index_layout()[i]` is the physical qubit that holds virtual qubit `q_i` at the END of the circuit. The wire labels give the start (q_i on physical i); then follow each routing SWAP. SWAP(2, 3) moves q_3 to physical 2 and q_2 to 3; SWAP(1, 2) moves q_3 on to 1 and q_1 to 2. q_0 never moves. Result: q_0→0, q_1→2, q_2→3, q_3→1, i.e. `[0, 2, 3, 1]`.",
+    "distractors": {
+      "A": "Direction inverted: this lists, for each PHYSICAL qubit, which virtual qubit it ends up holding (physical 1 holds q_3, …). The method is indexed by virtual qubit.",
+      "B": "Net move read as one exchange: q_3 does travel from 3 to 1, but by two neighbouring SWAPs that each move a different partner — q_2 ends on 3 and q_1 on 2, not q_1 on 3.",
+      "C": "SWAPs ignored: this is the initial layout the wire labels print. Routing SWAPs permute the qubits, and the final layout includes them.",
+      "D": "Only the first SWAP applied: the second SWAP, between physical 1 and 2, moves q_3 again before the last CX."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.transpiler.TranspileLayout",
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q074.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import contextlib\nimport io\n\nimport matplotlib\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"proof\"  # deterministic SVG ids\nimport matplotlib.pyplot as plt\n\n# Block MUST mirror data/figures/s3-q074/generate.py (circuit, pass manager, TARGET).\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler import CouplingMap, generate_preset_pass_manager\n\nqc = QuantumCircuit(4)\nqc.h(3)\nqc.cx(3, 1)\nqc.cx(3, 0)\n\npm = generate_preset_pass_manager(\n    optimization_level=0,\n    coupling_map=CouplingMap.from_line(4),\n    initial_layout=[0, 1, 2, 3],\n    seed_transpiler=42,\n)\nTARGET = ((\"h\", (3,)), (\"swap\", (2, 3)), (\"cx\", (2, 1)), (\"swap\", (1, 2)), (\"cx\", (1, 0)))\n\n\ndef drawing(circ):\n    fig = circ.draw(output=\"mpl\")\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\n# the stem code, verbatim (twice: the drawn isa must be reproducible)\nisa = pm.run(qc)\nisa_again = pm.run(qc)\nops = tuple((i.operation.name, tuple(isa.find_bit(b).index for b in i.qubits)) for i in isa.data)\nassert ops == TARGET, ops\nsame_drawing = drawing(isa) == drawing(isa_again)\n\nout = io.StringIO()\nwith contextlib.redirect_stdout(out):\n    print(isa.layout.final_index_layout())\nprinted = out.getvalue().strip()\n\n# Independent derivation: track every virtual qubit through the drawn SWAPs.\nwhere = {v: p for v, p in enumerate(isa.layout.initial_index_layout())}\nfor name, qargs in TARGET:\n    if name == \"swap\":\n        a, b = qargs\n        for v, p in where.items():\n            if p == a:\n                where[v] = b\n            elif p == b:\n                where[v] = a\ntracked = [where[v] for v in range(4)]\n\nOPTIONS = {\n    \"A\": \"[0, 3, 1, 2]\",\n    \"B\": \"[0, 3, 2, 1]\",\n    \"C\": \"[0, 1, 2, 3]\",\n    \"D\": \"[0, 1, 3, 2]\",\n    \"E\": \"[0, 2, 3, 1]\",\n}\nproven, evidence = [], {}\nfor key, claim in OPTIONS.items():\n    match = claim == printed and claim == str(tracked)\n    evidence[key] = (f\"claim {claim}; printed {printed}; virtual qubits tracked through the drawn \"\n                     f\"SWAPs {[n for n, _ in TARGET].count('swap')}x -> {tracked}; match={match}\")\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"ops\": [[n, list(q)] for n, q in ops], \"printed\": printed,\n                           \"tracked\": tracked,\n                           \"initial\": isa.layout.initial_index_layout(),\n                           \"routing_permutation\": isa.layout.routing_permutation(),\n                           \"drawing_reproducible\": same_drawing}})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s1/s3/s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "figure wave add (stem figure, d3): read a routed level-0 drawing with two SWAPs (4-line, trivial initial layout) and give TranspileLayout.final_index_layout() — tracking a 3-cycle through two SWAPs plus the method's virtual-indexed semantics (the inverse permutation is a distractor; a 3-cycle makes final != inverse). Proof runs the stem code, asserts the TARGET op literal shared with the generator, captures the print, and derives the answer independently by tracking each virtual qubit through the drawn SWAPs."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

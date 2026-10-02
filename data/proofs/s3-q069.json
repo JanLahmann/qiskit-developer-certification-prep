@@ -24,7 +24,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.28,
+  "wall_seconds": 3.83,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"compose outcome: printed=None, error=('CircuitError', '\\\"name conflict adding parameter \\\\'theta\\\\'\\\"'); claim prints 1 -> False\", \"B\": \"compose raised ('CircuitError', '\\\"name conflict adding parameter \\\\'theta\\\\'\\\"'); claim CircuitError naming theta -> True\", \"C\": \"compose outcome: printed=None, error=('CircuitError', '\\\"name conflict adding parameter \\\\'theta\\\\'\\\"'); claim prints 2 -> False (shared-object control prints 1)\", \"D\": \"exception type observed: CircuitError; claim TypeError -> False (shared-object compose of parameterized circuits works: 1 parameter)\"}, \"observed\": {\"error\": [\"CircuitError\", \"\\\"name conflict adding parameter 'theta'\\\"\"], \"shared_object_num_parameters\": 1}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

@@ -1,0 +1,112 @@
+{
+  "question": "s2-q048",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "A": "figure plots rho = [[0.25, 0.433], [0.433, 0.75]] (imag max 0.000); the stem's reduced state is [[0.25, 0.0], [0.0, 0.75]]; rendered SVG byte-identical to the stem call's city plot: False -> match=False (pure RY state has off-diagonal 0.433; reduced purity is 0.625)",
+      "B": "figure plots rho = [[1.0, 0.0], [0.0, 0.0]] (imag max 0.000); the stem's reduced state is [[0.25, 0.0], [0.0, 0.75]]; rendered SVG byte-identical to the stem call's city plot: False -> match=False",
+      "C": "figure plots rho = [[0.25, 0.0], [0.0, 0.75]] (imag max 0.000); the stem's reduced state is [[0.25, 0.0], [0.0, 0.75]]; rendered SVG byte-identical to the stem call's city plot: True -> match=True",
+      "D": "figure plots rho = [[0.5, 0.0], [0.0, 0.866]] (imag max 0.000); the stem's reduced state is [[0.25, 0.0], [0.0, 0.75]]; rendered SVG byte-identical to the stem call's city plot: False -> match=False"
+    },
+    "observed": {
+      "A": {
+        "cells_re_im": [
+          [
+            0.25,
+            0.0
+          ],
+          [
+            0.433,
+            0.0
+          ],
+          [
+            0.433,
+            0.0
+          ],
+          [
+            0.75,
+            0.0
+          ]
+        ],
+        "svg_identical": false
+      },
+      "B": {
+        "cells_re_im": [
+          [
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "svg_identical": false
+      },
+      "C": {
+        "cells_re_im": [
+          [
+            0.25,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.75,
+            0.0
+          ]
+        ],
+        "svg_identical": true
+      },
+      "D": {
+        "cells_re_im": [
+          [
+            0.5,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.866,
+            0.0
+          ]
+        ],
+        "svg_identical": false
+      },
+      "rho0_purity": 0.625
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 8.47,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"figure plots rho = [[0.25, 0.433], [0.433, 0.75]] (imag max 0.000); the stem's reduced state is [[0.25, 0.0], [0.0, 0.75]]; rendered SVG byte-identical to the stem call's city plot: False -> match=False (pure RY state has off-diagonal 0.433; reduced purity is 0.625)\", \"B\": \"figure plots rho = [[1.0, 0.0], [0.0, 0.0]] (imag max 0.000); the stem's reduced state is [[0.25, 0.0], [0.0, 0.75]]; rendered SVG byte-identical to the stem call's city plot: False -> match=False\", \"C\": \"figure plots rho = [[0.25, 0.0], [0.0, 0.75]] (imag max 0.000); the stem's reduced state is [[0.25, 0.0], [0.0, 0.75]]; rendered SVG byte-identical to the stem call's city plot: True -> match=True\", \"D\": \"figure plots rho = [[0.5, 0.0], [0.0, 0.866]] (imag max 0.000); the stem's reduced state is [[0.25, 0.0], [0.0, 0.75]]; rendered SVG byte-identical to the stem call's city plot: False -> match=False\"}, \"observed\": {\"A\": {\"cells_re_im\": [[0.25, 0.0], [0.433, 0.0], [0.433, 0.0], [0.75, 0.0]], \"svg_identical\": false}, \"B\": {\"cells_re_im\": [[1.0, 0.0], [0.0, 0.0], [0.0, 0.0], [0.0, 0.0]], \"svg_identical\": false}, \"C\": {\"cells_re_im\": [[0.25, 0.0], [0.0, 0.0], [0.0, 0.0], [0.75, 0.0]], \"svg_identical\": true}, \"D\": {\"cells_re_im\": [[0.5, 0.0], [0.0, 0.0], [0.0, 0.0], [0.866, 0.0]], \"svg_identical\": false}, \"rho0_purity\": 0.625}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

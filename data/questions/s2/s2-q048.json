@@ -1,0 +1,92 @@
+{
+  "id": "s2-q048",
+  "section": "s2",
+  "objectives": [
+    "s2o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which city plot does the last line draw?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, partial_trace\nfrom qiskit.visualization import plot_state_city\n\nqc = QuantumCircuit(2)\nqc.ry(2 * np.pi / 3, 0)\nqc.cx(0, 1)\n\nrho0 = partial_trace(Statevector(qc), [1])\nplot_state_city(rho0)",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "figures": {
+    "generator": "figures/s2-q048/generate.py",
+    "color_essential": false,
+    "platform_sensitive": true,
+    "options": {
+      "A": {
+        "file": "figures/s2-q048/s2-q048-A.svg",
+        "alt": "City plot of a one-qubit density matrix. Real-part panel: diagonal bars of about 0.25 at 0,0 and 0.75 at 1,1, plus two off-diagonal bars of about 0.43. Imaginary-part panel: all four cells flat at zero."
+      },
+      "B": {
+        "file": "figures/s2-q048/s2-q048-B.svg",
+        "alt": "City plot of a one-qubit density matrix. Real-part panel: one diagonal bar of 1.0 at 0,0, the 1,1 cell and both off-diagonal cells flat at zero. Imaginary-part panel: all four cells flat at zero."
+      },
+      "C": {
+        "file": "figures/s2-q048/s2-q048-C.svg",
+        "alt": "City plot of a one-qubit density matrix. Real-part panel: diagonal bars of about 0.25 at 0,0 and 0.75 at 1,1, both off-diagonal cells flat at zero. Imaginary-part panel: all four cells flat at zero."
+      },
+      "D": {
+        "file": "figures/s2-q048/s2-q048-D.svg",
+        "alt": "City plot of a one-qubit density matrix. Real-part panel: diagonal bars of about 0.5 at 0,0 and 0.87 at 1,1, both off-diagonal cells flat at zero. Imaginary-part panel: all four cells flat at zero."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "The circuit prepares 0.5|00> + 0.87|11>. Tracing out qubit 1 averages over its two outcomes, which are perfectly correlated with qubit 0, so qubit 0 is left in a MIXED state: populations 0.25 and 0.75 (the squared amplitudes) and no coherence between |0> and |1>. A city plot shows exactly that — two diagonal towers in the real panel, flat off-diagonal cells, and an empty imaginary panel. The missing off-diagonal bars are how a city plot reveals entanglement with a qubit you no longer see.",
+    "distractors": {
+      "A": "Entanglement ignored: this is the pure state RY(2π/3)|0> on its own. Before the CX, qubit 0 would show these off-diagonal bars of 0.43; after the CX its coherence is shared with qubit 1, and tracing qubit 1 out removes it.",
+      "B": "Tracing out confused with post-selection: `partial_trace` does not keep only the shots where qubit 1 reads 0. It sums over both outcomes, so the |1> population of qubit 0 (0.75) survives.",
+      "D": "Amplitudes put on the diagonal: density-matrix diagonals are probabilities, the squared magnitudes 0.25 and 0.75, not the amplitudes 0.5 and 0.87 (which would not even sum to one)."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_state_city",
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s2-q048.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# Variants MUST mirror data/figures/s2-q048/generate.py (figure variants == proof variants).\nimport io\nimport numpy as np\nimport matplotlib\nimport matplotlib.pyplot as plt\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import DensityMatrix, Statevector, partial_trace\nfrom qiskit.visualization import plot_state_city\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"certiq-proof\"\n\nqc = QuantumCircuit(2)\nqc.ry(2 * np.pi / 3, 0)\nqc.cx(0, 1)\nrho0 = partial_trace(Statevector(qc), [1])\n\nsingle = QuantumCircuit(1)\nsingle.ry(2 * np.pi / 3, 0)\namps = np.abs(Statevector(qc).data)\n\nVARIANTS = {\n    \"A\": DensityMatrix(single),\n    \"B\": DensityMatrix.from_label(\"0\"),\n    \"D\": DensityMatrix(np.diag([amps[0], amps[3]]).astype(complex)),\n    \"C\": rho0,\n}\n\n\ndef svg_text(fig):\n    \"\"\"Render the drawing itself to SVG text (fixed hashsalt, no Date).\"\"\"\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\ndef cells(state):\n    m = np.asarray(state.data)\n    return [[round(float(z.real), 3), round(float(z.imag), 3)] for z in m.ravel()]\n\n\n# The stem's own call, rendered in-process.\ntarget_svg = svg_text(plot_state_city(partial_trace(Statevector(qc), [1])))\ntarget_cells = cells(rho0)\nproven, evidence, observed = [], {}, {}\nfor key, state in sorted(VARIANTS.items()):\n    same_svg = svg_text(plot_state_city(state)) == target_svg\n    c = cells(state)\n    same_matrix = c == target_cells\n    m = same_svg and same_matrix\n    observed[key] = {\"cells_re_im\": c, \"svg_identical\": same_svg}\n    evidence[key] = (f\"figure plots rho = {np.round(np.asarray(state.data).real, 3).tolist()} \"\n                     f\"(imag max {np.abs(np.asarray(state.data).imag).max():.3f}); the stem's reduced state is \"\n                     f\"{np.round(rho0.data.real, 3).tolist()}; rendered SVG byte-identical to the stem call's \"\n                     f\"city plot: {same_svg} -> match={m}\")\n    if m:\n        proven.append(key)\nobserved[\"rho0_purity\"] = round(float(rho0.purity().real), 4)\nevidence[\"A\"] += f\" (pure RY state has off-diagonal {np.round(VARIANTS['A'].data[0, 1].real, 3)}; reduced purity is {observed['rho0_purity']})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s2/s5-s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure wave add: plot_state_city of a reduced (mixed) one-qubit state — populations on the diagonal, coherences gone after entangling. Proof renders each variant and the stem's own call to SVG in-process (fixed hashsalt, no Date) and requires byte-identity plus an exact density-matrix match. 3D render -> platform_sensitive."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

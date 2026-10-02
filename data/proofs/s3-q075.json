@@ -1,0 +1,184 @@
+{
+  "question": "s3-q075",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "drawn ops [('h', [0]), ('barrier', [0]), ('h', [0]), ('cx', [0, 1])]; level-1 output [('h', [0]), ('barrier', [0]), ('h', [0]), ('cx', [0, 1])]; mpl rendering identical to the output's -> True; match=True",
+      "B": "drawn ops [('cx', [0, 1])]; level-1 output [('h', [0]), ('barrier', [0]), ('h', [0]), ('cx', [0, 1])]; mpl rendering identical to the output's -> False; match=False",
+      "C": "drawn ops [('h', [0]), ('x', [1]), ('barrier', [0]), ('h', [0]), ('x', [1]), ('cx', [0, 1])]; level-1 output [('h', [0]), ('barrier', [0]), ('h', [0]), ('cx', [0, 1])]; mpl rendering identical to the output's -> False; match=False",
+      "D": "drawn ops [('u', [0]), ('barrier', [0]), ('u', [0]), ('cx', [0, 1])]; level-1 output [('h', [0]), ('barrier', [0]), ('h', [0]), ('cx', [0, 1])]; mpl rendering identical to the output's -> False; match=False"
+    },
+    "observed": {
+      "level1_output": [
+        [
+          "h",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "barrier",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "h",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ],
+          []
+        ]
+      ],
+      "layout": "None",
+      "A": [
+        [
+          "h",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "barrier",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "h",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ],
+          []
+        ]
+      ],
+      "B": [
+        [
+          "cx",
+          [
+            0,
+            1
+          ],
+          []
+        ]
+      ],
+      "C": [
+        [
+          "h",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "x",
+          [
+            1
+          ],
+          []
+        ],
+        [
+          "barrier",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "h",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "x",
+          [
+            1
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ],
+          []
+        ]
+      ],
+      "D": [
+        [
+          "u",
+          [
+            0
+          ],
+          [
+            1.570796,
+            0.0,
+            3.141593
+          ]
+        ],
+        [
+          "barrier",
+          [
+            0
+          ],
+          []
+        ],
+        [
+          "u",
+          [
+            0
+          ],
+          [
+            1.570796,
+            0.0,
+            3.141593
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            1
+          ],
+          []
+        ]
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 5.27,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"drawn ops [('h', [0]), ('barrier', [0]), ('h', [0]), ('cx', [0, 1])]; level-1 output [('h', [0]), ('barrier', [0]), ('h', [0]), ('cx', [0, 1])]; mpl rendering identical to the output's -> True; match=True\", \"B\": \"drawn ops [('cx', [0, 1])]; level-1 output [('h', [0]), ('barrier', [0]), ('h', [0]), ('cx', [0, 1])]; mpl rendering identical to the output's -> False; match=False\", \"C\": \"drawn ops [('h', [0]), ('x', [1]), ('barrier', [0]), ('h', [0]), ('x', [1]), ('cx', [0, 1])]; level-1 output [('h', [0]), ('barrier', [0]), ('h', [0]), ('cx', [0, 1])]; mpl rendering identical to the output's -> False; match=False\", \"D\": \"drawn ops [('u', [0]), ('barrier', [0]), ('u', [0]), ('cx', [0, 1])]; level-1 output [('h', [0]), ('barrier', [0]), ('h', [0]), ('cx', [0, 1])]; mpl rendering identical to the output's -> False; match=False\"}, \"observed\": {\"level1_output\": [[\"h\", [0], []], [\"barrier\", [0], []], [\"h\", [0], []], [\"cx\", [0, 1], []]], \"layout\": \"None\", \"A\": [[\"h\", [0], []], [\"barrier\", [0], []], [\"h\", [0], []], [\"cx\", [0, 1], []]], \"B\": [[\"cx\", [0, 1], []]], \"C\": [[\"h\", [0], []], [\"x\", [1], []], [\"barrier\", [0], []], [\"h\", [0], []], [\"x\", [1], []], [\"cx\", [0, 1], []]], \"D\": [[\"u\", [0], [1.570796, 0.0, 3.141593]], [\"barrier\", [0], []], [\"u\", [0], [1.570796, 0.0, 3.141593]], [\"cx\", [0, 1], []]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

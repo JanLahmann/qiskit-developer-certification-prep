@@ -1,0 +1,101 @@
+{
+  "id": "s7-q046",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "This job swept a 2 x 3 grid of angles. Which histogram does the last line draw?",
+  "code": "import numpy as np\nfrom qiskit.visualization import plot_histogram\nfrom qiskit_ibm_runtime import QiskitRuntimeService\n\n# The retrieved job ran sampler.run([(qc, grid)], shots=100), where qc is\n# ry(theta, 0) followed by measure_all(), and\ngrid = np.array([[[0.0], [np.pi], [np.pi]],\n                 [[np.pi], [0.0], [0.0]]])\n\nservice = QiskitRuntimeService()\nbits = service.job(job_id).result()[0].data.meas\nplot_histogram(bits[1].get_counts())",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "A"
+  ],
+  "figures": {
+    "generator": "figures/s7-q046/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s7-q046/s7-q046-A.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 0 at height 200 and 1 at height 100, each with its value printed above it."
+      },
+      "B": {
+        "file": "figures/s7-q046/s7-q046-B.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 0 at height 100 and 1 at height 100, each with its value printed above it."
+      },
+      "C": {
+        "file": "figures/s7-q046/s7-q046-C.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 0 at height 300 and 1 at height 300, each with its value printed above it."
+      },
+      "D": {
+        "file": "figures/s7-q046/s7-q046-D.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 0 at height 100 and 1 at height 200, each with its value printed above it."
+      },
+      "E": {
+        "file": "figures/s7-q046/s7-q046-E.svg",
+        "alt": "Bar chart with a Count axis and a single bar, labelled 1 at height 100, with its value printed above it."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "The grid has shape (2, 3, 1); its last axis holds the one parameter, so the PUB — and the returned `BitArray` — has shape (2, 3), with 100 shots at each of the six locations. Indexing works like NumPy: `bits[1]` is the whole second row, the three locations with angles π, 0, 0. `get_counts()` pools the shots of every location it holds: 100 shots of `1` plus 200 shots of `0`.",
+    "distractors": {
+      "B": "Index read as a column: `bits[1]` selects along the FIRST axis (a row of three locations). `bits[:, 1]` would pick the column with angles π and 0, giving 100 and 100.",
+      "C": "Index assumed to be ignored by `get_counts()`: on the full array `get_counts()` pools all six locations (300/300), but `bits[1]` is already a smaller BitArray holding one row only.",
+      "D": "One-based indexing: `bits[1]` is the second row, not the first. The first row (angles 0, π, π) would give 100 zeros and 200 ones.",
+      "E": "Index read as a flat location number: on a (2, 3) array `bits[1]` is not the second location in row-major order (angle π, a single bar of 100 ones) but a whole row of three."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q046.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# Variants MUST mirror data/figures/s7-q046/generate.py (figure variants == proof variants).\n# Retrieval rebuilt offline: a seeded local run of the same grid PUB yields the same\n# (2, 3) BitArray layout a retrieved job's result carries.\nimport io\nimport numpy as np\nimport matplotlib\nimport matplotlib.pyplot as plt\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.visualization import plot_histogram\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"certiq-proof\"\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\nqc.measure_all()\ngrid = np.array([[[0.0], [np.pi], [np.pi]],\n                 [[np.pi], [0.0], [0.0]]])\nbits = StatevectorSampler(seed=8).run([(qc, grid)], shots=100).result()[0].data.meas\nassert bits.shape == (2, 3)\n\nVARIANTS = {\n    \"A\": bits[1].get_counts(),\n    \"B\": bits[:, 1].get_counts(),\n    \"C\": bits.get_counts(),\n    \"D\": bits[0].get_counts(),\n    \"E\": bits.reshape(6)[1].get_counts(),\n}\n\n\ndef bars(fig):\n    ax = fig.axes[0]\n    labels = [t.get_text() for t in ax.get_xticklabels()]\n    out = {}\n    for p in ax.patches:\n        out[labels[int(round(p.get_x() + p.get_width() / 2))]] = int(round(p.get_height()))\n    return tuple(sorted(out.items()))\n\n\ndef svg_text(fig):\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\nstem_fig = plot_histogram(bits[1].get_counts())    # the stem's own call\ntarget, target_svg = bars(stem_fig), svg_text(stem_fig)\nproven, evidence, observed = [], {}, {\"bits_shape\": list(bits.shape),\n                                       \"per_location\": [[bits[i, j].get_counts() for j in range(3)] for i in range(2)]}\nfor key, counts in sorted(VARIANTS.items()):\n    fig = plot_histogram(counts)\n    b = bars(fig)\n    same_svg = svg_text(fig) == target_svg\n    m = b == target and same_svg\n    observed[key] = {\"bars\": [list(x) for x in b], \"svg_identical\": same_svg}\n    evidence[key] = (f\"figure draws {[list(x) for x in b]} vs bits[1]'s {[list(x) for x in target]}; \"\n                     f\"rendered SVG byte-identical to the stem call's histogram: {same_svg} -> match={m}\")\n    if m:\n        proven.append(key)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s2/s5-s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure wave add: indexing a (2, 3)-shaped BitArray from a retrieved parameter-grid Sampler job, then pooling with get_counts(). Angles 0/pi make every location deterministic, so the counts are exact. Retrieval rebuilt offline with a seeded StatevectorSampler run; the proof renders every variant (real BitArray slicing calls) and the stem's own plot_histogram call to SVG in-process and requires byte-identity plus matching bars."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

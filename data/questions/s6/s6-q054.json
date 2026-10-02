@@ -1,0 +1,77 @@
+{
+  "id": "s6-q054",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The histogram shows 1000 shots of a two-qubit circuit. What estimate of ⟨ZZ⟩ do they give?",
+  "code": null,
+  "options": [
+    {
+      "key": "A",
+      "text": "0.808"
+    },
+    {
+      "key": "B",
+      "text": "0.616"
+    },
+    {
+      "key": "C",
+      "text": "0.106"
+    },
+    {
+      "key": "D",
+      "text": "0.380"
+    }
+  ],
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s6-q054/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s6-q054/s6-q054-stem.svg",
+      "alt": "Bar chart with a Count axis and four bars, labelled left to right 00 at height 569, 01 at height 71, 10 at height 121 and 11 at height 239, each with its value printed above it."
+    }
+  },
+  "explanation": {
+    "correct": "An expectation value is the average eigenvalue over the shots. ZZ has eigenvalue +1 on outcomes with even parity (`00`, `11`) and -1 on odd parity (`01`, `10`), so the estimate is (569 + 239 - 71 - 121) / 1000 = 0.616. This is exactly the reduction an Estimator performs after measuring in the Z basis, and what `BitArray.expectation_values(\"ZZ\")` returns for these shots.",
+    "distractors": {
+      "A": "Probability of agreement, not an expectation value: P(00) + P(11) = 0.808 counts the +1 outcomes but never subtracts the -1 outcomes. <ZZ> = P(even) - P(odd) = 2 x 0.808 - 1.",
+      "C": "Correlation ignored: multiplying the single-qubit estimates <ZI> = 0.28 and <IZ> = 0.38 gives 0.106, which equals <ZZ> only for a product state. These outcomes are strongly correlated, so the two-qubit term must be averaged shot by shot.",
+      "D": "Single-qubit term: 0.380 is <IZ>, which weights the outcomes by qubit 0's bit alone ((569 + 121 - 71 - 239) / 1000) and ignores qubit 1."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q054.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# COUNTS MUST match the literal asserted by data/figures/s6-q054/generate.py.\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.quantum_info import SparsePauliOp, Statevector\nfrom qiskit.visualization import plot_histogram\n\nCOUNTS = {\"00\": 569, \"01\": 71, \"10\": 121, \"11\": 239}\nqc = QuantumCircuit(2)\nqc.ry(1.2, 0)\nqc.cx(0, 1)\nqc.ry(0.9, 1)\nqc.measure_all()\nbits = StatevectorSampler(seed=11).run([qc], shots=1000).result()[0].data.meas\nassert bits.get_counts() == COUNTS\n\n# Read the figure back off the axes (pair patches with tick slots).\nfig = plot_histogram(COUNTS)\nax = fig.axes[0]\nlabels = [t.get_text() for t in ax.get_xticklabels()]\ndrawn = {labels[int(round(p.get_x() + p.get_width() / 2))]: int(round(p.get_height())) for p in ax.patches}\nassert drawn == COUNTS, drawn\nN = sum(drawn.values())\n\n# Estimator eigenvalue rule: each shot contributes the Pauli-Z eigenvalue product.\nzz = sum(v * (1 if k.count(\"1\") % 2 == 0 else -1) for k, v in drawn.items()) / N\nzz_lib = float(bits.expectation_values(\"ZZ\"))\nassert abs(zz - zz_lib) < 1e-12\nagree = (drawn[\"00\"] + drawn[\"11\"]) / N\niz = float(bits.expectation_values(\"IZ\"))\nzi = float(bits.expectation_values(\"ZI\"))\nexact = float(Statevector(qc.remove_final_measurements(inplace=False)).expectation_value(SparsePauliOp(\"ZZ\")).real)\n\nOPTIONS = {\"A\": 0.808, \"B\": 0.616, \"C\": 0.106, \"D\": 0.380}\nmodels = {\"A\": (\"P(00) + P(11), eigenvalues not applied\", agree),\n          \"B\": (\"parity-weighted mean = BitArray.expectation_values('ZZ')\", zz),\n          \"C\": (\"<ZI> x <IZ>, correlation ignored\", zi * iz),\n          \"D\": (\"<IZ>, qubit 0 alone\", iz)}\nproven, evidence, observed = [], {}, {\"drawn\": drawn, \"zz\": zz, \"exact_zz\": round(exact, 4)}\nfor key, claim in sorted(OPTIONS.items()):\n    what, val = models[key]\n    m = abs(claim - round(zz, 3)) < 1e-9\n    observed[key] = round(val, 4)\n    evidence[key] = (f\"{what} = {val:.3f}; the estimate of <ZZ> from the drawn bars \"\n                     f\"(569 + 239 - 71 - 121)/{N} = {zz:.3f} -> option {claim} match={m}\")\n    if m:\n        proven.append(key)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s2/s5-s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure wave add (stem figure): Estimator theory — <ZZ> as the parity-weighted mean of measured outcomes. Counts from a seeded StatevectorSampler run, asserted in generator and proof; the proof reads the bars back off plot_histogram, computes the parity mean, cross-checks BitArray.expectation_values('ZZ'), and evaluates each misconception model."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

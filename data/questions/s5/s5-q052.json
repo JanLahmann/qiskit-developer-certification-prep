@@ -1,0 +1,101 @@
+{
+  "id": "s5-q052",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which histogram does the last line draw?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.visualization import plot_histogram\nfrom qiskit_aer import AerSimulator\nfrom qiskit_ibm_runtime import SamplerV2\n\nqc = QuantumCircuit(2, 2)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.if_test((qc.clbits[0], 0)):\n    qc.x(1)\nqc.measure(1, 1)\n\nsampler = SamplerV2(mode=AerSimulator())\nsampler.options.simulator.seed_simulator = 21\nbits = sampler.run([qc], shots=400).result()[0].data.c\n# c[0] read 1 in 205 of the 400 shots\nplot_histogram(bits.get_counts())",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "figures": {
+    "generator": "figures/s5-q052/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s5-q052/s5-q052-A.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 00 at height 195 and 11 at height 205, each with its value printed above it."
+      },
+      "B": {
+        "file": "figures/s5-q052/s5-q052-B.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 10 at height 195 and 11 at height 205, each with its value printed above it."
+      },
+      "C": {
+        "file": "figures/s5-q052/s5-q052-C.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 00 at height 195 and 01 at height 205, each with its value printed above it."
+      },
+      "D": {
+        "file": "figures/s5-q052/s5-q052-D.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 01 at height 195 and 10 at height 205, each with its value printed above it."
+      },
+      "E": {
+        "file": "figures/s5-q052/s5-q052-E.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 01 at height 205 and 10 at height 195, each with its value printed above it."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "The mid-circuit measurement writes c[0] on every shot, and the `if_test` body runs only when c[0] equals the given value, 0. So the 195 shots that read 0 apply X to qubit 1 and then measure c[1] = 1, giving key `10` (c[1] prints on the left); the 205 shots that read 1 skip the X and give `01`. Every shot ends with the two bits different, and the counts land on `01` (205) and `10` (195).",
+    "distractors": {
+      "A": "Condition value ignored: `(clbit, 0)` fires when the bit is 0, not whenever the bit is \"set\". Firing on c[0] = 1 would copy c[0] into c[1] and give `00`/`11`.",
+      "C": "Feed-forward assumed to be skipped: the Sampler executes the classical condition shot by shot (the simulator supports dynamic circuits), so the X is applied on the c[0] = 0 shots; qubit 1 is not always left in |0>.",
+      "D": "Bit order reversed: c[0] is the RIGHTMOST character of a key. The 195 shots with c[0] = 0 and c[1] = 1 print as `10`, not `01`.",
+      "B": "The `with` block read as ordinary sequential code: its body is conditional, so X does not run on the 205 shots where c[0] read 1 — those keep c[1] = 0."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/guides/bit-ordering"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q052.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# Variants MUST mirror data/figures/s5-q052/generate.py (figure variants == proof variants).\nimport io\nimport matplotlib\nimport matplotlib.pyplot as plt\nfrom qiskit import QuantumCircuit\nfrom qiskit.visualization import plot_histogram\nfrom qiskit_aer import AerSimulator\nfrom qiskit_ibm_runtime import SamplerV2\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"certiq-proof\"\nCOUNTS = {\"10\": 195, \"01\": 205}\n\n\ndef build(mode):\n    qc = QuantumCircuit(2, 2)\n    qc.h(0)\n    qc.measure(0, 0)\n    if mode in (0, 1):\n        with qc.if_test((qc.clbits[0], mode)):\n            qc.x(1)\n    elif mode == \"always\":\n        qc.x(1)\n    qc.measure(1, 1)\n    return qc\n\n\ndef run(qc):\n    sampler = SamplerV2(mode=AerSimulator())\n    sampler.options.simulator.seed_simulator = 21\n    return sampler.run([qc], shots=400).result()[0].data.c\n\n\nbits = run(build(0))                    # the stem's circuit and run\nassert bits.get_counts() == COUNTS, f\"sampler drift: {bits.get_counts()}\"\nn0, n1 = COUNTS[\"10\"], COUNTS[\"01\"]\n\nVARIANTS = {\n    \"A\": {\"00\": n0, \"11\": n1},\n    \"B\": {\"10\": n0, \"11\": n1},\n    \"C\": {\"00\": n0, \"01\": n1},\n    \"D\": {\"01\": n0, \"10\": n1},\n    \"E\": bits.get_counts(),\n}\n# Structural cross-check: the misconception circuits really produce these outcome sets.\nEXECUTED = {\"A\": build(1), \"C\": build(None), \"B\": build(\"always\")}\n\n\ndef bars(fig):\n    ax = fig.axes[0]\n    labels = [t.get_text() for t in ax.get_xticklabels()]\n    out = {}\n    for p in ax.patches:\n        out[labels[int(round(p.get_x() + p.get_width() / 2))]] = int(round(p.get_height()))\n    return tuple(sorted(out.items()))\n\n\ndef svg_text(fig):\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\nstem_fig = plot_histogram(bits.get_counts())     # the stem's own call\ntarget, target_svg = bars(stem_fig), svg_text(stem_fig)\nproven, evidence, observed = [], {}, {}\nfor key, counts in sorted(VARIANTS.items()):\n    fig = plot_histogram(counts)\n    b = bars(fig)\n    same_svg = svg_text(fig) == target_svg\n    m = b == target and same_svg\n    observed[key] = {\"bars\": [list(x) for x in b], \"svg_identical\": same_svg}\n    evidence[key] = (f\"figure draws {[list(x) for x in b]} vs the stem run's {[list(x) for x in target]}; \"\n                     f\"rendered SVG byte-identical to the stem call's histogram: {same_svg} -> match={m}\")\n    if key in EXECUTED:\n        labels = sorted(run(EXECUTED[key]).get_counts())\n        assert labels == sorted(counts), (key, labels)\n        observed[key][\"executed_labels\"] = labels\n        evidence[key] += f\" (the misconception circuit, executed, yields outcomes {labels})\"\n    if m:\n        proven.append(key)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s2/s5-s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure wave add: feed-forward with if_test on value 0 after a mid-circuit measurement; runtime SamplerV2 on a seeded AerSimulator (StatevectorSampler cannot run control flow). COUNTS asserted in generator and proof; the proof renders every variant and the stem's own plot_histogram call to SVG in-process (byte-identity + bars read off the axes) and executes the A/C/E misconception circuits to confirm their outcome sets."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

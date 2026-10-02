@@ -1,0 +1,84 @@
+{
+  "id": "s1-q067",
+  "section": "s1",
+  "objectives": [
+    "s1o1",
+    "s1o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The figure is `plot_state_paulivec(Statevector(qc))`. Which gates build `qc`?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nfrom qiskit.visualization import plot_state_paulivec\n\nqc = QuantumCircuit(2)\n# ... one of the gate sequences below ...\nplot_state_paulivec(Statevector(qc))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`qc.z(1); qc.h(0); qc.s(0)`"
+    },
+    {
+      "key": "B",
+      "text": "`qc.x(0); qc.h(1); qc.s(1)`"
+    },
+    {
+      "key": "C",
+      "text": "`qc.x(1); qc.h(0); qc.sdg(0)`"
+    },
+    {
+      "key": "D",
+      "text": "`qc.x(1); qc.h(0); qc.s(0)`"
+    },
+    {
+      "key": "E",
+      "text": "`qc.x(1); qc.s(0); qc.h(0)`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "D"
+  ],
+  "figures": {
+    "generator": "figures/s1-q067/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s1-q067/s1-q067-stem.svg",
+      "alt": "Bar chart (x axis Pauli, y axis Coefficients from −1 to 1) with four bars, labelled from left to right II, IY, ZI and ZY. The II and IY bars rise to +1; the ZI and ZY bars drop to −1."
+    }
+  },
+  "explanation": {
+    "correct": "Each bar is ⟨P⟩ for a two-qubit Pauli label, and labels are little-endian: the RIGHTMOST letter acts on qubit 0. ⟨IY⟩ = +1 puts qubit 0 in the +y eigenstate |+i⟩, which H then S produces from |0⟩. ⟨ZI⟩ = −1 puts qubit 1 in |1⟩ (the X on qubit 1). For this product state ⟨ZY⟩ = ⟨Z⟩₁·⟨Y⟩₀ = −1, the fourth bar.",
+    "distractors": {
+      "A": "Z taken for a bit flip: Z on |0⟩ only adds a phase, so qubit 1 stays |0⟩ and ⟨ZI⟩ and ⟨ZY⟩ would both be +1 — the figure's two negative bars rule it out.",
+      "B": "Label read left-to-right as qubit 0 first: this puts |+i⟩ on qubit 1 and |1⟩ on qubit 0, whose bars are labelled YI, IZ and YZ, not IY, ZI and ZY.",
+      "C": "S vs S†: H then S† gives |−i⟩, so ⟨IY⟩ = −1 and ⟨ZY⟩ = +1 — the signs of the two Y bars flip.",
+      "E": "Gate order reversed: S on |0⟩ does nothing, and the following H leaves |+⟩, a +x state — the bars would read IX and ZX, not IY and ZY."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_state_paulivec",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Pauli"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q067.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import io\n\nimport matplotlib\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"proof\"  # deterministic SVG ids\nimport matplotlib.pyplot as plt\n\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Pauli, Statevector\nfrom qiskit.visualization import plot_state_paulivec\n\n# Block MUST mirror data/figures/s1-q067/generate.py (CANDIDATES, STEM_KEY, TARGET).\nCANDIDATES = {\n    \"A\": [(\"z\", 1), (\"h\", 0), (\"s\", 0)],\n    \"B\": [(\"x\", 0), (\"h\", 1), (\"s\", 1)],\n    \"C\": [(\"x\", 1), (\"h\", 0), (\"sdg\", 0)],\n    \"D\": [(\"x\", 1), (\"h\", 0), (\"s\", 0)],\n    \"E\": [(\"x\", 1), (\"s\", 0), (\"h\", 0)],\n}\nSTEM_KEY = \"D\"\nTARGET = {\"II\": 1.0, \"IY\": 1.0, \"ZI\": -1.0, \"ZY\": -1.0}\n\n\ndef build(ops):\n    qc = QuantumCircuit(2)\n    for name, q in ops:\n        getattr(qc, name)(q)\n    return qc\n\n\ndef bars(fig):\n    ax = fig.axes[0]\n    labels = [t.get_text() for t in ax.get_xticklabels()]\n    heights = [round(float(p.get_height()), 6) for p in ax.patches]\n    return dict(zip(labels, heights))\n\n\ndef plot(qc):\n    \"\"\"The figure call, plus its bars read back and its SVG text.\"\"\"\n    fig = plot_state_paulivec(Statevector(qc))\n    b = bars(fig)\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return b, buf.getvalue()\n\n\ndef expectations(qc):\n    \"\"\"Independent check: every two-qubit Pauli expectation, non-zero ones only.\"\"\"\n    sv = Statevector(qc)\n    out = {}\n    for a in \"IXYZ\":\n        for b in \"IXYZ\":\n            v = float(sv.expectation_value(Pauli(a + b)).real)\n            if abs(v) > 1e-9:\n                out[a + b] = round(v, 6)\n    return out\n\n\nfigure_bars, figure_svg = plot(build(CANDIDATES[STEM_KEY]))\nassert figure_bars == TARGET, figure_bars\n\nproven, evidence, observed = [], {}, {\"figure\": figure_bars}\nfor key, ops in sorted(CANDIDATES.items()):\n    qc = build(ops)\n    b, svg = plot(qc)\n    exp = expectations(qc)\n    same_render = svg == figure_svg\n    match = b == TARGET and exp == TARGET and same_render\n    observed[key] = b\n    code = \"; \".join(f\"qc.{n}({q})\" for n, q in ops)\n    evidence[key] = (f\"{code} -> paulivec bars {b} (direct <P> computation agrees: {exp == b}); \"\n                     f\"SVG identical to the figure's -> {same_render}; match={match}\")\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s1/s3/s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "figure wave add (stem figure, d2): read a plot_state_paulivec bar chart — little-endian Pauli labels (rightmost = qubit 0) plus the S/S† and H-then-S state preparation. Proof builds every candidate, plots it with the same call, reads the bars back off the axes, cross-checks them against direct Statevector.expectation_value, and requires SVG byte-identity with the figure (only D)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "question": "s7-q047",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "figure draws [['1', 86], ['3', 604], ['4', 310]] vs the stem call's [['1', 310], ['4', 86], ['6', 604]]; rendered SVG byte-identical: False -> match=False",
+      "B": "figure draws [['001', 310], ['100', 86], ['110', 604]] vs the stem call's [['1', 310], ['4', 86], ['6', 604]]; rendered SVG byte-identical: False -> match=False",
+      "C": "figure draws [['1', 396], ['2', 604]] vs the stem call's [['1', 310], ['4', 86], ['6', 604]]; rendered SVG byte-identical: False -> match=False",
+      "D": "figure draws [['1', 310], ['4', 86], ['6', 604]] vs the stem call's [['1', 310], ['4', 86], ['6', 604]]; rendered SVG byte-identical: True -> match=True"
+    },
+    "observed": {
+      "int_counts": {
+        "1": 310,
+        "6": 604,
+        "4": 86
+      },
+      "A": {
+        "bars": [
+          [
+            "1",
+            86
+          ],
+          [
+            "3",
+            604
+          ],
+          [
+            "4",
+            310
+          ]
+        ],
+        "svg_identical": false
+      },
+      "B": {
+        "bars": [
+          [
+            "001",
+            310
+          ],
+          [
+            "100",
+            86
+          ],
+          [
+            "110",
+            604
+          ]
+        ],
+        "svg_identical": false
+      },
+      "C": {
+        "bars": [
+          [
+            "1",
+            396
+          ],
+          [
+            "2",
+            604
+          ]
+        ],
+        "svg_identical": false
+      },
+      "D": {
+        "bars": [
+          [
+            "1",
+            310
+          ],
+          [
+            "4",
+            86
+          ],
+          [
+            "6",
+            604
+          ]
+        ],
+        "svg_identical": true
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 6.98,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"figure draws [['1', 86], ['3', 604], ['4', 310]] vs the stem call's [['1', 310], ['4', 86], ['6', 604]]; rendered SVG byte-identical: False -> match=False\", \"B\": \"figure draws [['001', 310], ['100', 86], ['110', 604]] vs the stem call's [['1', 310], ['4', 86], ['6', 604]]; rendered SVG byte-identical: False -> match=False\", \"C\": \"figure draws [['1', 396], ['2', 604]] vs the stem call's [['1', 310], ['4', 86], ['6', 604]]; rendered SVG byte-identical: False -> match=False\", \"D\": \"figure draws [['1', 310], ['4', 86], ['6', 604]] vs the stem call's [['1', 310], ['4', 86], ['6', 604]]; rendered SVG byte-identical: True -> match=True\"}, \"observed\": {\"int_counts\": {\"1\": 310, \"6\": 604, \"4\": 86}, \"A\": {\"bars\": [[\"1\", 86], [\"3\", 604], [\"4\", 310]], \"svg_identical\": false}, \"B\": {\"bars\": [[\"001\", 310], [\"100\", 86], [\"110\", 604]], \"svg_identical\": false}, \"C\": {\"bars\": [[\"1\", 396], [\"2\", 604]], \"svg_identical\": false}, \"D\": {\"bars\": [[\"1\", 310], [\"4\", 86], [\"6\", 604]], \"svg_identical\": true}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

@@ -1,0 +1,92 @@
+{
+  "id": "s8-q032",
+  "section": "s8",
+  "objectives": [
+    "s8o2",
+    "s8o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which figure is the `mpl` drawing of the circuit this program loads into?",
+  "code": "from qiskit import QuantumCircuit\n\nprogram = \"\"\"\nOPENQASM 2.0;\ninclude \"qelib1.inc\";\ngate mix a, b { h a; cx a, b; }\nqreg q[3];\nmix q[2], q[0];\n\"\"\"\n\nQuantumCircuit.from_qasm_str(program).draw(output=\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "figures": {
+    "generator": "figures/s8-q032/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s8-q032/s8-q032-A.svg",
+        "alt": "Circuit diagram on wires q0, q1 and q2: an H box on q2, then a CNOT whose control dot is on q2 and whose target is on q0; q1 is empty."
+      },
+      "B": {
+        "file": "figures/s8-q032/s8-q032-B.svg",
+        "alt": "Circuit diagram on wires q0, q1 and q2: one tall box labelled Mix spanning q0 to q2, with argument index 0 marked at q0 and index 1 marked at q2; q1 passes through."
+      },
+      "C": {
+        "file": "figures/s8-q032/s8-q032-C.svg",
+        "alt": "Circuit diagram on wires q0, q1 and q2: an H box on q0, then a CNOT whose control dot is on q0 and whose target is on q2; q1 is empty."
+      },
+      "D": {
+        "file": "figures/s8-q032/s8-q032-D.svg",
+        "alt": "Circuit diagram on wires q0, q1 and q2: one tall box labelled Mix spanning q0 to q2, with argument index 0 marked at q2 and index 1 marked at q0; q1 passes through."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "The OpenQASM 2 loader turns each `gate` definition into a custom instruction named after it, with the body kept as its definition, so the call appears as ONE `mix` box rather than as H and CX. The call `mix q[2], q[0];` binds the first formal argument `a` to q[2] and `b` to q[0]; the drawer marks those argument positions inside the box, so index 0 sits on q2 and index 1 on q0.",
+    "distractors": {
+      "A": "Definition assumed to be inlined at load time: the loader keeps user-defined gates as their own instructions (their body is only the definition), so no separate H and CX appear until the circuit is decomposed or transpiled. The gates shown are what the body would expand to.",
+      "B": "Call operands read in the opposite order: arguments bind positionally, so the first operand q[2] is argument 0. This drawing is what `mix q[0], q[2];` loads into.",
+      "C": "Inlined, and the formal parameters bound in register order rather than call order: `a` is q[2] because it is the first operand of the call, not because it is the lower index; even an inlined body would put H on q2."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm2",
+      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm2"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s8-q032.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# PROGRAMS MUST mirror data/figures/s8-q032/generate.py (figure variants == proof variants).\nimport io\nimport matplotlib\nimport matplotlib.pyplot as plt\nfrom qiskit import QuantumCircuit\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"certiq-proof\"\nHEADER = 'OPENQASM 2.0;\\ninclude \"qelib1.inc\";\\n'\nGATE = \"gate mix a, b { h a; cx a, b; }\\n\"\nPROGRAMS = {\n    \"A\": HEADER + \"qreg q[3];\\nh q[2];\\ncx q[2], q[0];\\n\",\n    \"B\": HEADER + GATE + \"qreg q[3];\\nmix q[0], q[2];\\n\",\n    \"C\": HEADER + \"qreg q[3];\\nh q[0];\\ncx q[0], q[2];\\n\",\n    \"D\": HEADER + GATE + \"qreg q[3];\\nmix q[2], q[0];\\n\",\n}\nSTEM = ('OPENQASM 2.0;\\ninclude \"qelib1.inc\";\\ngate mix a, b { h a; cx a, b; }\\n'\n        \"qreg q[3];\\nmix q[2], q[0];\\n\")\n\n\ndef svg_text(fig):\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\ndef sig(qc):\n    return [(ci.operation.name, tuple(qc.find_bit(q).index for q in ci.qubits)) for ci in qc.data]\n\n\nstem_qc = QuantumCircuit.from_qasm_str(STEM)     # the stem's own load + draw\ntarget, target_svg = sig(stem_qc), svg_text(stem_qc.draw(output=\"mpl\"))\nbody = [(ci.operation.name, tuple(stem_qc.data[0].operation.definition.find_bit(q).index for q in ci.qubits))\n        for ci in stem_qc.data[0].operation.definition.data]\nproven, evidence, observed = [], {}, {\"stem_ops\": [list(map(str, x)) for x in target], \"mix_body\": [list(map(str, x)) for x in body]}\nfor key, prog in sorted(PROGRAMS.items()):\n    qc = QuantumCircuit.from_qasm_str(prog)\n    s = sig(qc)\n    same_svg = svg_text(qc.draw(output=\"mpl\")) == target_svg\n    m = s == target and same_svg\n    observed[key] = {\"ops\": [[n, list(q)] for n, q in s], \"svg_identical\": same_svg}\n    evidence[key] = (f\"figure's circuit has {[(n, list(q)) for n, q in s]} vs the loaded stem program's \"\n                     f\"{[(n, list(q)) for n, q in target]}; rendered SVG byte-identical: {same_svg} -> match={m}\")\n    if m:\n        proven.append(key)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s2/s5-s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure wave add: OpenQASM 2 custom gate definition -> one named custom instruction, with argument binding by call order visible as the drawer's in-box argument indices. Every option is a genuine from_qasm_str load; the proof loads the same four programs and the stem program, compares instruction lists and requires SVG byte-identity of the in-process renders."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

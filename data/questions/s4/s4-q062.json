@@ -1,0 +1,77 @@
+{
+  "id": "s4-q062",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The figure shows the gate map of `FakeNairobiV2`. Which `layout` lets the transpiler map `qc` without SWAPs?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\nfrom qiskit_ibm_runtime.fake_provider import FakeNairobiV2\n\nqc = QuantumCircuit(4)\nqc.h(0)\nqc.cx(0, 1)\nqc.cx(0, 2)\nqc.cx(0, 3)\nqc.measure_all()\n\npm = generate_preset_pass_manager(optimization_level=1, backend=FakeNairobiV2(),\n                                  initial_layout=layout, seed_transpiler=7)\nisa = pm.run(qc)",
+  "options": [
+    {
+      "key": "A",
+      "text": "`layout = [3, 1, 5, 4]`"
+    },
+    {
+      "key": "B",
+      "text": "`layout = [0, 1, 2, 3]`"
+    },
+    {
+      "key": "C",
+      "text": "`layout = [1, 0, 2, 3]`"
+    },
+    {
+      "key": "D",
+      "text": "`layout = [5, 4, 6, 1]`"
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "figures": {
+    "generator": "figures/s4-q062/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s4-q062/s4-q062-stem.svg",
+      "alt": "Gate map of a 7-qubit device drawn as numbered circles joined by lines in an H shape. Top row: qubits 0, 1, 2 with lines 0-1 and 1-2. Qubit 3 sits below qubit 1 with a line 1-3. Bottom row: qubits 4, 5, 6 with lines 4-5 and 5-6, and a line 3-5 joins qubit 3 to qubit 5."
+    }
+  },
+  "explanation": {
+    "correct": "`initial_layout[i]` is the physical qubit for `q_i`. Every CX has `q_0` as control, so `q_0` needs a physical qubit coupled to all three partners. Physical 1 is coupled to 0, 2 and 3, so `[1, 0, 2, 3]` puts each CX on a coupled pair and routing has nothing to fix: the ISA circuit keeps exactly three CX gates.",
+    "distractors": {
+      "A": "Drawing position read as connectivity: qubit 3 sits in the middle of the figure but is coupled only to 1 and 5, so the CX to physical 4 needs a SWAP.",
+      "B": "Identity layout assumed to fit: physical 0 has a single coupling (to 1), so the CX gates to physical 2 and 3 need routing.",
+      "D": "Hub degree alone checked: physical 5 does have three couplings, but they go to 3, 4 and 6 — the partner placed on physical 1 is not one of them."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.transpiler.CouplingMap"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q062.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import io\nimport warnings\n\nwarnings.filterwarnings(\"ignore\")\nimport matplotlib\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"proof\"  # deterministic SVG ids\nimport matplotlib.pyplot as plt\nfrom matplotlib.patches import Circle\n\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\nfrom qiskit_ibm_runtime.fake_provider import FakeNairobiV2\n\n# Block MUST mirror data/figures/s4-q062/generate.py (EDGES, POS, draw_map()).\nEDGES = [(0, 1), (1, 2), (1, 3), (3, 5), (4, 5), (5, 6)]   # undirected pairs drawn\nPOS = {0: (0, 0), 1: (1, 0), 2: (2, 0), 3: (1, -1), 4: (0, -2), 5: (1, -2), 6: (2, -2)}\n\n\ndef draw_map(edges, pos):\n    fig, ax = plt.subplots(figsize=(3.2, 3.2))\n    ax.set_xlim(-0.5, 2.5)\n    ax.set_ylim(-2.5, 0.5)\n    ax.set_aspect(\"equal\")\n    ax.axis(\"off\")\n    for a, b in edges:\n        (x1, y1), (x2, y2) = pos[a], pos[b]\n        ax.plot([x1, x2], [y1, y2], color=\"#555555\", linewidth=4, zorder=1)\n    for q in sorted(pos):\n        x, y = pos[q]\n        ax.add_patch(Circle((x, y), 0.24, facecolor=\"#9ecae1\", edgecolor=\"black\",\n                            linewidth=1.0, zorder=2))\n        ax.text(x, y, str(q), ha=\"center\", va=\"center\", fontsize=12, zorder=3)\n    return fig\n\n\n\ndef svg(fig):\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\nbackend = FakeNairobiV2()\ndrawn = sorted({tuple(sorted(e)) for e in backend.coupling_map.get_edges()})\nassert drawn == EDGES, drawn\nfigure_matches_device = svg(draw_map(drawn, POS)) == svg(draw_map(EDGES, POS))\n\n# the stem code, verbatim, once per candidate layout\nqc = QuantumCircuit(4)\nqc.h(0)\nqc.cx(0, 1)\nqc.cx(0, 2)\nqc.cx(0, 3)\nqc.measure_all()\n\nOPTIONS = {\n    \"A\": [3, 1, 5, 4],\n    \"B\": [0, 1, 2, 3],\n    \"C\": [1, 0, 2, 3],\n    \"D\": [5, 4, 6, 1],\n}\nproven, evidence, observed = [], {}, {\"figure_matches_device\": figure_matches_device}\nfor key, layout in OPTIONS.items():\n    pm = generate_preset_pass_manager(optimization_level=1, backend=backend,\n                                      initial_layout=layout, seed_transpiler=7)\n    isa = pm.run(qc)\n    ops = isa.count_ops()\n    n_cx = ops.get(\"cx\", 0)\n    kept = isa.layout.initial_index_layout()[:4] == layout\n    # routing-only view of the same layout: how many SWAPs did routing insert?\n    rpm = generate_preset_pass_manager(optimization_level=0, coupling_map=backend.coupling_map,\n                                       initial_layout=layout, seed_transpiler=7)\n    n_swap = rpm.run(qc).count_ops().get(\"swap\", 0)\n    hub_links = [(layout[0], p) for p in layout[1:]]\n    uncoupled = [l for l in hub_links if tuple(sorted(l)) not in EDGES]\n    match = n_swap == 0 and n_cx == 3 and kept and figure_matches_device\n    observed[key] = {\"cx\": n_cx, \"swaps\": n_swap, \"uncoupled\": uncoupled}\n    evidence[key] = (f\"layout {layout}: q_0 on physical {layout[0]}, its CX partners on {layout[1:]}; \"\n                     f\"uncoupled pairs {uncoupled}; routing inserts {n_swap} SWAP(s); level-1 isa has \"\n                     f\"{n_cx} cx (3 = none added); layout kept -> {kept}; match={match}\")\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s1/s3/s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "figure wave add (stem figure, d2): choose an initial_layout from a hand-drawn H-shaped gate map (FakeNairobiV2, no Graphviz) so a star of three CX gates needs no routing — the hub must be a physical qubit coupled to all three chosen partners. Distractors: the visually central qubit, the identity layout, a degree-3 hub with a wrong leaf. Proof asserts the drawn edge literal against the backend and re-renders the map from the backend's own coupling map (byte-identical), then per layout counts routing SWAPs (coupling-map-only level 0) and level-1 CX gates (only C: 0 SWAPs, 3 CX)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

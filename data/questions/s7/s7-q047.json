@@ -1,0 +1,91 @@
+{
+  "id": "s7-q047",
+  "section": "s7",
+  "objectives": [
+    "s7o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which histogram does the last line draw for this retrieved result?",
+  "code": "from qiskit.visualization import plot_histogram\nfrom qiskit_ibm_runtime import QiskitRuntimeService\n\nservice = QiskitRuntimeService()\nbits = service.job(job_id).result()[0].data.meas\nprint(bits.get_counts())   # {'001': 310, '110': 604, '100': 86}\n\nplot_histogram(bits.get_int_counts())",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "figures": {
+    "generator": "figures/s7-q047/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s7-q047/s7-q047-A.svg",
+        "alt": "Bar chart with a Count axis and three bars, labelled left to right 1 at height 86, 3 at height 604 and 4 at height 310, each with its value printed above it."
+      },
+      "B": {
+        "file": "figures/s7-q047/s7-q047-B.svg",
+        "alt": "Bar chart with a Count axis and three bars, labelled left to right 001 at height 310, 100 at height 86 and 110 at height 604, each with its value printed above it."
+      },
+      "C": {
+        "file": "figures/s7-q047/s7-q047-C.svg",
+        "alt": "Bar chart with a Count axis and two bars, labelled left to right 1 at height 396 and 2 at height 604, each with its value printed above it."
+      },
+      "D": {
+        "file": "figures/s7-q047/s7-q047-D.svg",
+        "alt": "Bar chart with a Count axis and three bars, labelled left to right 1 at height 310, 4 at height 86 and 6 at height 604, each with its value printed above it."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`get_int_counts()` returns the same tallies as `get_counts()` but keyed by the integer value of each outcome, reading the printed bitstring as an ordinary binary number (bit 0 is the rightmost character, worth 1). So `001` -> 1, `100` -> 4 and `110` -> 6, and the histogram shows bars 1: 310, 4: 86 and 6: 604.",
+    "distractors": {
+      "A": "Integer built with the LEFTMOST character as bit 0: that turns `001` into 4, `110` into 3 and `100` into 1. The integer key uses the same convention as the printed string, so bit 0 is the rightmost character.",
+      "B": "`get_int_counts()` assumed to return the same keys as `get_counts()`: only the keys change (to integers); bitstring labels would come from `get_counts()`.",
+      "C": "Integer read as the number of 1 bits in the outcome (a Hamming-weight tally): `get_int_counts()` keeps every distinct outcome as its own key, so `001` and `100` stay separate."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/save-jobs"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s7-q047.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# Variants MUST mirror data/figures/s7-q047/generate.py (figure variants == proof variants).\n# Retrieval rebuilt offline: a seeded local run gives the same BitArray a retrieved\n# job's result carries; COUNTS is asserted in both files.\nimport io\nimport numpy as np\nimport matplotlib\nimport matplotlib.pyplot as plt\nfrom qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\nfrom qiskit.visualization import plot_histogram\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"certiq-proof\"\nCOUNTS = {\"001\": 310, \"110\": 604, \"100\": 86}\namp = np.zeros(8)\namp[1], amp[4], amp[6] = np.sqrt(0.3), np.sqrt(0.1), np.sqrt(0.6)\nqc = QuantumCircuit(3)\nqc.initialize(amp)\nqc.measure_all()\nbits = StatevectorSampler(seed=2).run([qc], shots=1000).result()[0].data.meas\nassert bits.get_counts() == COUNTS, bits.get_counts()\n\ncounts = bits.get_counts()\nVARIANTS = {\n    \"A\": {int(k[::-1], 2): v for k, v in counts.items()},\n    \"B\": counts,\n    \"C\": {w: sum(v for k, v in counts.items() if k.count(\"1\") == w)\n          for w in sorted({k.count(\"1\") for k in counts})},\n    \"D\": bits.get_int_counts(),\n}\n\n\ndef bars(fig):\n    ax = fig.axes[0]\n    labels = [t.get_text() for t in ax.get_xticklabels()]\n    out = {}\n    for p in ax.patches:\n        out[labels[int(round(p.get_x() + p.get_width() / 2))]] = int(round(p.get_height()))\n    return tuple(sorted(out.items()))\n\n\ndef svg_text(fig):\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\nstem_fig = plot_histogram(bits.get_int_counts())     # the stem's own call\ntarget, target_svg = bars(stem_fig), svg_text(stem_fig)\nproven, evidence, observed = [], {}, {\"int_counts\": {str(k): v for k, v in bits.get_int_counts().items()}}\nfor key, c in sorted(VARIANTS.items()):\n    fig = plot_histogram(c)\n    b = bars(fig)\n    same_svg = svg_text(fig) == target_svg\n    m = b == target and same_svg\n    observed[key] = {\"bars\": [list(x) for x in b], \"svg_identical\": same_svg}\n    evidence[key] = (f\"figure draws {[list(x) for x in b]} vs the stem call's {[list(x) for x in target]}; \"\n                     f\"rendered SVG byte-identical: {same_svg} -> match={m}\")\n    if m:\n        proven.append(key)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s2/s5-s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure wave add: reading get_int_counts() of a retrieved Sampler result as a histogram (integer value of the printed bitstring). Retrieval rebuilt offline with a seeded StatevectorSampler run (COUNTS asserted in generator and proof); the proof renders each variant and the stem's own plot_histogram call to SVG in-process and requires byte-identity plus matching bars."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

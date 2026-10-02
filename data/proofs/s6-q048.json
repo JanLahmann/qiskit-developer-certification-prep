@@ -24,7 +24,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 3.37,
+  "wall_seconds": 7.24,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"claims print '0.217' (characters mapped in reverse (Z->2, X->0): computed 0.217); the code printed '-0.217' -> match=False\", \"B\": \"claims print '-0.433' (coefficient 0.5 ignored: computed -0.433); the code printed '-0.217' -> match=False\", \"C\": \"claims print '-0.217' (from_sparse_list label XIZ (Z on qubit 0, X on qubit 2) with coefficient 0.5); the code printed '-0.217' -> match=True\", \"D\": \"claims print '0.433' (reversed mapping AND coefficient ignored: computed 0.433); the code printed '-0.217' -> match=False\"}, \"observed\": {\"printed\": \"-0.217\", \"label\": \"XIZ\", \"swapped\": 0.217, \"no_coeff\": -0.433, \"both\": 0.433}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

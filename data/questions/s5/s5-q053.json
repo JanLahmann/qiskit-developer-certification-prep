@@ -1,0 +1,83 @@
+{
+  "id": "s5-q053",
+  "section": "s5",
+  "objectives": [
+    "s5o3"
+  ],
+  "type": "predict-output",
+  "difficulty": 3,
+  "stem": "The figure shows `qc`. What does this code print?",
+  "code": "from qiskit_aer import AerSimulator\nfrom qiskit_ibm_runtime import SamplerV2\n\n# qc is the circuit in the figure\nsampler = SamplerV2(mode=AerSimulator())\ncounts = sampler.run([qc], shots=1000).result()[0].data.c.get_counts()\nprint(sorted(counts))",
+  "options": [
+    {
+      "key": "A",
+      "text": "`['000', '111']`"
+    },
+    {
+      "key": "B",
+      "text": "`['000', '110']`"
+    },
+    {
+      "key": "C",
+      "text": "`['000', '011']`"
+    },
+    {
+      "key": "D",
+      "text": "`['000', '001']`"
+    },
+    {
+      "key": "E",
+      "text": "`['000', '001', '010', '011']`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "C"
+  ],
+  "figures": {
+    "generator": "figures/s5-q053/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s5-q053/s5-q053-stem.svg",
+      "alt": "Circuit diagram on qubit wires q0 and q1 with a 3-bit classical register c. H on q0, then a CNOT with control q0 and target q1. q1 is measured into c bit 0, then reset to |0> and measured again into c bit 2; q0 is measured into c bit 1."
+    }
+  },
+  "explanation": {
+    "correct": "H and CX make a Bell pair, so the first measurement of q1 reads a random b and collapses q0 to the same b: c[0] = b. The reset returns q1 to |0> regardless of b, so its second measurement writes c[2] = 0 on every shot. q0 still holds b, so c[1] = b. Printed with c[2] on the left, the only keys are `000` (b = 0) and `011` (b = 1).",
+    "distractors": {
+      "A": "Reset ignored: without the reset, q1 would still hold b and c[2] would copy it, giving `000`/`111`. `reset` deterministically returns the qubit to |0>, mid-circuit included.",
+      "B": "Bit order reversed: c[0] is the rightmost character. With c[2] = 0 and c[0] = c[1] = b, the key reads `0bb`, not `bb0`.",
+      "E": "Collapse ignored: measuring q1 projects the entangled pair, so q0 is no longer random relative to c[0]. The two bits always agree; `001` and `010` never occur.",
+      "D": "Reset believed to act on the entangled partner too: `reset(1)` touches only q1. q0 keeps the collapsed value b, so c[1] = 1 whenever c[0] = 1."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/guides/measure-qubits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s5-q053.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# qc MUST match the GATES literal asserted by data/figures/s5-q053/generate.py.\nimport contextlib\nimport io\nfrom qiskit import QuantumCircuit\nfrom qiskit_aer import AerSimulator\nfrom qiskit_ibm_runtime import SamplerV2\n\nGATES = [(\"h\", (0,), ()), (\"cx\", (0, 1), ()), (\"measure\", (1,), (0,)),\n         (\"reset\", (1,), ()), (\"measure\", (1,), (2,)), (\"measure\", (0,), (1,))]\n\n\ndef build(reset_q1=True, reset_q0=False):\n    qc = QuantumCircuit(2, 3)\n    qc.h(0)\n    qc.cx(0, 1)\n    qc.measure(1, 0)\n    if reset_q1:\n        qc.reset(1)\n    if reset_q0:\n        qc.reset(0)\n    qc.measure(1, 2)\n    qc.measure(0, 1)\n    return qc\n\n\ndef sig(qc):\n    return [(ci.operation.name, tuple(qc.find_bit(q).index for q in ci.qubits),\n             tuple(qc.find_bit(c).index for c in ci.clbits)) for ci in qc.data]\n\n\ndef outcomes(qc):\n    sampler = SamplerV2(mode=AerSimulator())\n    sampler.options.simulator.seed_simulator = 5\n    return sorted(sampler.run([qc], shots=1000).result()[0].data.c.get_counts())\n\n\nqc = build()\nassert sig(qc) == GATES, sig(qc)\n\n# Execute the stem's displayed code (seeded for reproducibility) and capture stdout.\nbuf = io.StringIO()\nwith contextlib.redirect_stdout(buf):\n    sampler = SamplerV2(mode=AerSimulator())\n    sampler.options.simulator.seed_simulator = 5\n    counts = sampler.run([qc], shots=1000).result()[0].data.c.get_counts()\n    print(sorted(counts))\nprinted = buf.getvalue().strip()\n\nOPTIONS = {\n    \"A\": \"['000', '111']\",\n    \"B\": \"['000', '110']\",\n    \"C\": \"['000', '011']\",\n    \"D\": \"['000', '001']\",\n    \"E\": \"['000', '001', '010', '011']\",\n}\nmodels = {\n    \"A\": (\"circuit without the reset, executed\", outcomes(build(reset_q1=False))),\n    \"B\": (\"true outcomes with each key reversed\", sorted(k[::-1] for k in counts)),\n    \"D\": (\"reset applied to both qubits, executed\", outcomes(build(reset_q0=True))),\n}\nproven, evidence, observed = [], {}, {\"printed\": printed, \"counts\": counts}\nfor key, text in sorted(OPTIONS.items()):\n    m = text == printed\n    evidence[key] = f\"the code prints {printed}; option claims {text} -> match={m}\"\n    if key in models:\n        what, val = models[key]\n        evidence[key] += f\" ({what}: {val})\"\n        observed[key] = val\n    if m:\n        proven.append(key)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s2/s5-s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure wave add (stem figure): mid-circuit measurement collapses the Bell partner, reset reuses q1, clbit order in the printed key. Generator and proof assert the same GATES literal; the proof executes the displayed code (seeded) and executes the no-reset / reset-both misconception circuits."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

@@ -2631,3 +2631,132 @@ other way) and are now answered in the explanations; keys stay execution-proven.
   PROVEN, exit 0, keys unchanged; audit_meta_patterns s5/s6/s7/s8 0 blockers / 0 warnings,
   no high/medium flags, none on the reviewed items; render_figures OK for s5-q045/q048/q049,
   s6-q047/q050/q051 (generators untouched); drift lint 0 findings.
+
+## Figure wave — s1+s3+s4 (2026-10-02)
+
+Nine figure adds toward the official ~19 % figure share: s1-q067/q068, s3-q073..q076,
+s4-q061..q063 (d1 ×1, d2 ×7, d3 ×1; 5 option-image items, 4 stem-figure items; all executed).
+Every option-image proof renders each variant AND the stem code's own drawing to SVG
+in-process (`svg.hashsalt` fixed, no Date) and requires byte-identity on top of a structural
+match; every stem-figure generator asserts a TARGET literal that its proof asserts too.
+Measured in the pinned venv (qiskit 2.5.0 / runtime 0.48.0):
+
+- **`plot_state_paulivec` draws ONLY the non-zero Pauli expectations** (x ticks = those
+  labels, axis labels `Pauli` / `Coefficients`, no title). Bars read back via
+  `ax.get_xticklabels()` + `ax.patches` (no zero bars, so zip pairing is safe here, unlike
+  `plot_histogram`). `x(1); h(0); s(0)` -> `{II: 1, IY: 1, ZI: -1, ZY: -1}`; the
+  qubit-swapped preparation prints YI/IZ/YZ — a clean endianness distractor (s1-q067).
+  `qc.h(0); qc.s(0)` is already an s2-q035 option text — the first draft collided.
+- **`TGate().power(3)` returns `PhaseGate(3π/4)`** (drawn as one P box); `SGate().power(2)`
+  -> P(π), `SdgGate().power(3)` -> P(−3π/2), `RZGate(0.4).power(3)` -> RZ(1.2),
+  `RXGate(π/2).power(2)` -> RX(π); `XGate/HGate/SXGate/CXGate.power(...)` fall back to
+  a `UnitaryGate` labelled `"<name>^<exp>"` (drawn `sx^2`). `annotated=True` is ignored
+  where a closed form exists. Gate.power docstring states the closed-form rule (s1-q068).
+- **switch drawing:** `case(1, 2)` is ONE region labelled `1, 2`; `case.DEFAULT` is a
+  region labelled `default` inside the box; the target prints `0x3` under the register.
+  `op.cases_specifier()` yields `(values, body)`; body qubits are LOCAL — map through the
+  switch instruction's qubits before comparing (first proof draft printed `x` on q1).
+  The control-flow guide states "There is no fallthrough" (s3-q073).
+- **Routed final layout (s3-q074):** 4-line, layout `[0,1,2,3]`, level 0, seed 42:
+  `h(3); cx(3,1); cx(3,0)` -> `h[3], swap[2,3], cx[2,1], swap[1,2], cx[1,0]`,
+  `final_index_layout() == [0, 2, 3, 1]` (inverse `[0, 3, 1, 2]` — pick 3-cycles so final !=
+  inverse; a 2-swap disjoint routing gave an involution). Avoid `h(0); cx(0,1); cx(0,2)`
+  -> `[2, 0, 1]`: that is the `final_index_layout` docstring's own example.
+- **One-wire barrier at level 1 (no target):** `h(0); x(1); barrier(0); h(0); x(1); cx`
+  -> `h, barrier(0), h, cx` (X pair cancelled, H pair fenced); identical at levels 1-3;
+  no layout, so hand-built variants draw byte-identically to the real output (s3-q075).
+- **`reverse_ops()`** = reversed order only (no adjoint, wires kept, CX roles kept);
+  the inverse()/reverse_bits() distractor variants are asserted equal to those methods'
+  outputs inside the proof (s3-q076).
+- **Gate-map option images (s4-q061):** FakeLimaV2 / FakeManilaV2 / FakeYorktownV2 maps
+  asserted in the generator; a `GenericBackendV2(5, basis_gates=[cx,rz,sx,x],
+  coupling_map=<both directions>, seed=1)` per map runs an already-ISA circuit under
+  runtime `SamplerV2` (only the map with all three CX pairs) and raises
+  `IBMInputValueError: 'The instruction cx on qubits (1, 3) is not supported ...'`
+  otherwise. Proof re-renders each map from the backend's own coupling map (byte-identical).
+- **FakeNairobiV2 / FakeJakartaV2 / FakeLagosV2 share the H map** `0-1,1-2,1-3,3-5,4-5,5-6`.
+  Star of 3 CX from q_0: layout `[1, 0, 2, 3]` -> 0 SWAPs / 3 CX at level 1; `[3,1,5,4]`,
+  `[0,1,2,3]`, `[5,4,6,1]` -> 1 SWAP / 6 CX each (s4-q062).
+- **ISA drawing -> counts (s4-q063):** `x(2); cx(2,1); measure_all()`, FakeManilaV2 level 1,
+  `initial_layout=[3, 0, 1]`, seed 7 -> no routing; `draw(idle_wires=False)` hides the
+  ancillas. `SamplerV2` with `options.simulator.seed_simulator = 11`, 1000 shots ->
+  `{'110': 905, '100': 46, '010': 38, '111': 10, '011': 1}` (byte-stable across runs);
+  noiseless `StatevectorSampler` -> `{'110': 200}`.
+- Image sizes (keyed vs distractors): s1-q068 key 9408 B, 2nd of 5 (7581-9874); s3-q073 key
+  26579 B mid (22615-28109); s3-q075 key 7414 B mid (5786-10749); s3-q076 key 8358 B 2nd of
+  4 (8351-8892, near-tie); s4-q061 key 8168 B TIED smallest with D (8204/8579 others).
+  No `image_size_tell`. s3 `smallest_image_option` stays low (4.5 %) — still no strictly
+  smallest keyed s3 drawing (the "only CX" barrier-ignored distractor is the natural minimum).
+- Craft: stem figures hide what the figure must carry (s4-q063 code omits the source
+  circuit; s3-q074 shows qc but the SWAP choice is only in the drawing). Alt texts list
+  complete gate/edge lists with equal specificity; none singles out the key pair.
+- Gates: verify_bank s1 57/57, s3 62/62 (+5 conceptual), s4 30/30 (+25 conceptual) PROVEN,
+  exit 0; audit_meta_patterns s1/s3/s4 0 blockers / 0 warnings, no flag on any add
+  (pre-existing low flags 9/9/10); drift lint 0; no cross-question duplicate option
+  texts. Answer keys of the adds: A2 B2 C2 D2 E1.
+
+## Figure wave — s2+s5-s8 (2026-10-02)
+
+Twelve figure adds toward the official ~19 % figure share: s2-q048, s5-q052/q053,
+s6-q052..q054, s7-q045..q048, s8-q031/q032 (d1 ×1, d2 ×9, d3 ×2; 5 option-image items,
+7 stem-figure items; all executed). Option-image proofs render every variant AND the stem
+code's own call to SVG in-process (`svg.hashsalt` fixed, no Date) and require byte-identity
+on top of a structural match (bars read off the axes by tick slot, density matrices,
+instruction lists); stem-figure generators assert a TARGET/COUNTS/GATES/LAYOUT literal the
+proof asserts too. Measured in the pinned venv (qiskit 2.5.0 / runtime 0.48.0):
+
+- **`StatevectorSampler` refuses dynamic circuits**: `QiskitError 'StatevectorSampler cannot
+  handle ControlFlowOp'` (if_test) and `'... cannot handle mid-circuit measurements'` (reset
+  / measure-then-gate). Use runtime `SamplerV2(mode=AerSimulator())` with
+  `options.simulator.seed_simulator` — byte-stable across processes (s5-q052 seed 21, 400
+  shots, `if_test((c[0], 0))` feed-forward -> `{'10': 195, '01': 205}`).
+- **Mid-circuit measure + reset on a Bell pair (s5-q053):** `h(0); cx(0,1); measure(1,0);
+  reset(1); measure(1,2); measure(0,1)` -> only `000`/`011`; without the reset `000`/`111`;
+  resetting both `000`/`001`. The mpl drawer layers the independent `measure(0,1)` BEFORE
+  the reset box — semantics unchanged, but say so if a stem ever leans on drawn order.
+- **`plot_state_city` of a ONE-qubit DensityMatrix** draws 2x2 panels at ~39-45 KB (vs ~68 KB
+  for two qubits) and auto-ranges the z axis: the pure RY(2π/3) state's axis starts near
+  0.25 so its 0.25 diagonal bar looks clipped — honest render, kept. Reduced state of
+  `ry(2π/3,0); cx` = diag(0.25, 0.75), no coherences; `partial_trace` accepts a Statevector.
+  A non-unit-trace `DensityMatrix(np.diag([0.5, 0.866]))` plots without complaint (s2-q048 D).
+- **qasm3 export of a single-bit, value-0 condition** is `if (!c[0]) {` (value 1 -> `if (c[0])
+  {`, register-wide `(creg, 0)` -> `if (c == 0) {`), measurements as `c[0] = measure q[0];`.
+  The mpl drawing shows `c_0=0x0` with an OPEN circle on the classical wire (s8-q031).
+  `IfElseOp.condition` returns `(Clbit, int)` — usable in a GATES signature.
+- **qasm2 `gate` definitions load as custom `Instruction`s named after the gate** (NOT inlined;
+  `.definition` holds the body). `mix q[2], q[0];` draws one box labelled `Mix` spanning
+  q0..q2 with the argument indices printed inside (0 at q2, 1 at q0); q1 passes through
+  (s8-q032). Box drawings tie at 6663 B, inlined H+CX drawings 7632-7634 B.
+- **DataBin supports `data["out"]`** (mapping access) as well as `data.out` — never offer the
+  subscript form as a distractor. Unnamed `ClassicalRegister(n)` auto-names `c0`, `c1`, …
+  (counter), so "positional names" distractors must say "only for unnamed registers" (s7-q045).
+- **BitArray 2-D indexing (s7-q046):** a `(2, 3, 1)` grid on a 1-parameter circuit -> BitArray
+  shape `(2, 3)`; `bits[1]` = row (3 locations, pooled by `get_counts()`), `bits[:, 1]` =
+  column, `bits.reshape(6)[1]` = one location. Angles 0/π give exact counts (no sampling noise).
+- **`plot_histogram` accepts integer keys** (`get_int_counts()`), sorting them numerically and
+  printing them as tick labels `1`, `4`, `6` (s7-q047).
+- **`apply_layout` on a routing-free ISA (s6-q053):** FakeManilaV2, level 1,
+  `initial_layout=[2, 3]`, seed 42 -> `final_index_layout() == [2, 3]`; `SparsePauliOp("ZX")
+  .apply_layout(isa.layout).paulis[0]` prints `IZXII`; `apply_layout(None, 5)` -> `IIIZX`.
+  `draw("mpl", idle_wires=True)` shows all five `ancilla_i -> p` / `q_i -> p` labels.
+- **Two-qubit correlator sweep (s6-q052):** `ry(θ,0); cx` -> <XX> = sin θ, <YY> = −sin θ,
+  <IX> = 0 everywhere (sin θ without the CX), <IZ> = cos θ, <ZZ> = 1.
+- **Noisy "which circuit" histogram (s7-q048):** `x(2); h(0); measure_all()`, FakeManilaV2,
+  level 1 seed 42, simulator seed 17, 1000 shots -> `{'100': 443, '101': 429, '001': 58,
+  '000': 62, '111': 2, '011': 1, '110': 5}`; every distractor circuit with the same seeds sits
+  at total-variation distance ≥ 0.23 (the RY(π/3) bar-ratio distractor is the closest).
+- Image sizes (keyed vs distractors): s2-q048 key 42489 B, 2nd of 4 (39217-44696); s5-q052 key
+  12710 B tied with B/D (others 12739); s7-q046 key 11911 B tied with D (11046-13875);
+  s7-q047 key 14795 B mid (14326-15232); s8-q032 key 6663 B tied smallest with B (7632/7634).
+  No strict extreme on any keyed image, no `image_size_tell`.
+- Gates: verify_bank s2 38/38 (+1 conceptual), s5 37/37 (+6), s6 32/32 (+13), s7 31/31 (+6),
+  s8 15/15 (+7) PROVEN, exit 0; audit_meta_patterns s2/s5/s6/s7/s8 0 blockers / 0 warnings,
+  no flag of any severity on the twelve adds (pre-existing low flags only: s6-q031/q032);
+  render_figures double-render OK for all twelve; drift lint 0 findings; no cross-question
+  duplicate option text introduced (the pre-existing s6-q026/q039 pair is untouched).
+  `numeric_middle` (ungated) s6 35.9 % — s6-q054's key 0.616 is one of two middle values of
+  four; s5 44.1 % is pre-existing (no numeric adds in s5). Answer keys of the adds:
+  A2 B2 C2 D3 E3.
+- Process trap: re-keying by swapping option dicts in place left the options list out of
+  key order -> verify_bank schema FAIL "option keys must be in alphabetical order". Sort
+  options by key after any re-key.

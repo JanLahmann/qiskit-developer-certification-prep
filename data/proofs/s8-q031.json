@@ -1,0 +1,32 @@
+{
+  "question": "s8-q031",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "qasm3.dumps(qc) contains the excerpt ['c[0] = measure q[0];', 'if (!c[0]) {', '  x q[1];', '}']: True",
+      "B": "qasm3.dumps(qc) contains the excerpt ['c[0] = measure q[0];', 'if (c[0]) {', '  x q[1];', '}']: False (the excerpt is what the export gives for same circuit with the condition value 1)",
+      "C": "qasm3.dumps(qc) contains the excerpt ['measure q[0] -> c[0];', 'if (!c[0]) {', '  x q[1];', '}']: False; measurements are exported as assignments: 'measure q[0] -> c[0];' in output: False",
+      "D": "qasm3.dumps(qc) contains the excerpt ['c[0] = measure q[0];', 'if (c == 0) {', '  x q[1];', '}']: False (the excerpt is what the export gives for condition on the whole register c == 0)"
+    },
+    "observed": {
+      "program": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\nbit[2] c;\nqubit[2] q;\nh q[0];\nc[0] = measure q[0];\nif (!c[0]) {\n  x q[1];\n}\nc[1] = measure q[1];\n",
+      "A": true,
+      "B": false,
+      "C": false,
+      "D": false
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 5.07,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"qasm3.dumps(qc) contains the excerpt ['c[0] = measure q[0];', 'if (!c[0]) {', '  x q[1];', '}']: True\", \"B\": \"qasm3.dumps(qc) contains the excerpt ['c[0] = measure q[0];', 'if (c[0]) {', '  x q[1];', '}']: False (the excerpt is what the export gives for same circuit with the condition value 1)\", \"C\": \"qasm3.dumps(qc) contains the excerpt ['measure q[0] -> c[0];', 'if (!c[0]) {', '  x q[1];', '}']: False; measurements are exported as assignments: 'measure q[0] -> c[0];' in output: False\", \"D\": \"qasm3.dumps(qc) contains the excerpt ['c[0] = measure q[0];', 'if (c == 0) {', '  x q[1];', '}']: False (the excerpt is what the export gives for condition on the whole register c == 0)\"}, \"observed\": {\"program\": \"OPENQASM 3.0;\\ninclude \\\"stdgates.inc\\\";\\nbit[2] c;\\nqubit[2] q;\\nh q[0];\\nc[0] = measure q[0];\\nif (!c[0]) {\\n  x q[1];\\n}\\nc[1] = measure q[1];\\n\", \"A\": true, \"B\": false, \"C\": false, \"D\": false}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

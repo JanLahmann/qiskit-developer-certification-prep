@@ -1,0 +1,91 @@
+{
+  "id": "s3-q076",
+  "section": "s3",
+  "objectives": [
+    "s3o1"
+  ],
+  "type": "predict-output",
+  "difficulty": 1,
+  "stem": "Which diagram does this code draw?",
+  "code": "from qiskit import QuantumCircuit\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.s(0)\nqc.cx(0, 1)\nqc.t(1)\nqc.reverse_ops().draw(\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    }
+  ],
+  "answer": [
+    "D"
+  ],
+  "figures": {
+    "generator": "figures/s3-q076/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s3-q076/s3-q076-A.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: a T† box on q_1, then a CX with its control on q_0 and its target on q_1, then an S† box and an H box on q_0."
+      },
+      "B": {
+        "file": "figures/s3-q076/s3-q076-B.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: an H box and an S box on q_1, then a CX with its control on q_1 and its target on q_0, then a T box on q_0."
+      },
+      "C": {
+        "file": "figures/s3-q076/s3-q076-C.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: a T box on q_1, then a CX with its control on q_1 and its target on q_0, then an S box and an H box on q_0."
+      },
+      "D": {
+        "file": "figures/s3-q076/s3-q076-D.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: a T box on q_1, then a CX with its control on q_0 and its target on q_1, then an S box and an H box on q_0."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`reverse_ops()` returns a new circuit with the instructions in reverse order and nothing else changed: no gate is daggered, the wires keep their order, and each gate keeps its qubit roles. So T on q_1 comes first, then the CX with its control still on q_0, then S and H on q_0.",
+    "distractors": {
+      "A": "Confused with `inverse()`: that also reverses the order but replaces each gate with its adjoint (T†, S†); `reverse_ops()` does not dagger anything.",
+      "B": "Confused with `reverse_bits()`: that flips the wire order and keeps the gate order; `reverse_ops()` leaves the wires alone.",
+      "C": "Roles swapped: reversing the instruction order does not reverse a CX — its control stays on q_0 and its target on q_1."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q076.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import io\n\nimport matplotlib\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"proof\"  # deterministic SVG ids\nimport matplotlib.pyplot as plt\n\nfrom qiskit.quantum_info import Operator\n\n\ndef drawing(circ):\n    \"\"\"The actual mpl rendering, as SVG text (what the option image shows).\"\"\"\n    fig = circ.draw(output=\"mpl\")\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\n# Block MUST mirror data/figures/s3-q076/generate.py (variant()).\nfrom qiskit import QuantumCircuit\n\n\ndef variant(key):\n    qc = QuantumCircuit(2)\n    if key == \"A\":    # confused with inverse(): order reversed AND each gate daggered\n        qc.tdg(1)\n        qc.cx(0, 1)\n        qc.sdg(0)\n        qc.h(0)\n    elif key == \"B\":  # confused with reverse_bits(): wires flipped, order kept\n        qc.h(1)\n        qc.s(1)\n        qc.cx(1, 0)\n        qc.t(0)\n    elif key == \"C\":  # reversal assumed to swap the CX's control and target too\n        qc.t(1)\n        qc.cx(1, 0)\n        qc.s(0)\n        qc.h(0)\n    elif key == \"D\":  # what reverse_ops() returns: same gates, reverse order\n        qc.t(1)\n        qc.cx(0, 1)\n        qc.s(0)\n        qc.h(0)\n    return qc\n\n\n\n# the stem code, verbatim\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.s(0)\nqc.cx(0, 1)\nqc.t(1)\nrev = qc.reverse_ops()\nrev_svg = drawing(rev)\n\n\ndef sig(circ):\n    return [(i.operation.name, [circ.find_bit(b).index for b in i.qubits]) for i in circ.data]\n\n\nrev_sig = sig(rev)\nproven, evidence = [], {}\nobserved = {\"reverse_ops\": rev_sig,\n            \"inverse\": sig(qc.inverse()),\n            \"reverse_bits\": sig(qc.reverse_bits()),\n            \"reverse_ops_equals_inverse_unitary\": Operator(rev) == Operator(qc.inverse())}\nfor key in \"ABCD\":\n    v = variant(key)\n    s = sig(v)\n    same_render = drawing(v) == rev_svg\n    match = s == rev_sig and same_render\n    observed[key] = s\n    evidence[key] = (f\"drawn ops {s}; qc.reverse_ops() holds {rev_sig}; \"\n                     f\"mpl rendering identical to reverse_ops()'s -> {same_render}; match={match}\")\n    if match:\n        proven.append(key)\n# cross-checks: the misconception variants really are what the confused methods return\nassert sig(variant(\"A\")) == observed[\"inverse\"], observed[\"inverse\"]\nassert drawing(variant(\"B\")) == drawing(qc.reverse_bits())\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s1/s3/s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "figure wave add (option images, d1): QuantumCircuit.reverse_ops() reverses instruction order only — no adjoints (inverse), no wire flip (reverse_bits), CX roles kept. Proof renders every variant and qc.reverse_ops() to SVG in-process and requires byte-identity (only D); it also asserts that the A variant is exactly qc.inverse() and that B renders identically to qc.reverse_bits()."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

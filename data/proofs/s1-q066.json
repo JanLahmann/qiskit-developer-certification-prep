@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 3.81,
+  "wall_seconds": 3.45,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"executed probabilities_dict(qargs=[2, 0]) -> {'10': 1.0}; option A claims {'10': 1.0} -> match=True\", \"B\": \"executed probabilities_dict(qargs=[2, 0]) -> {'10': 1.0}; option B claims {'01': 1.0} -> match=False  (that is the order of qargs=[0, 2]: {'01': 1.0})\", \"C\": \"executed probabilities_dict(qargs=[2, 0]) -> {'10': 1.0}; option C claims {'0': 0.5, '1': 0.5} -> match=False  (that is keeping only qubit 1: {'0': 0.5, '1': 0.5})\", \"D\": \"executed probabilities_dict(qargs=[2, 0]) -> {'10': 1.0}; option D claims {'001': 0.5, '011': 0.5} -> match=False  (that is the full distribution with no qargs: {'001': 0.5, '011': 0.5})\"}, \"observed\": {\"qargs_2_0\": {\"10\": 1.0}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

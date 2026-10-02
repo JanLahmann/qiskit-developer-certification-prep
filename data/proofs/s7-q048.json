@@ -1,0 +1,96 @@
+{
+  "question": "s7-q048",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "same seeds give {'001': 483, '101': 460, '100': 22, '111': 2, '000': 27, '011': 6} (two largest bars ['001', '101']); total-variation distance from the figure's counts = 0.461; identical to the figure: False",
+      "B": "same seeds give {'100': 443, '101': 429, '001': 58, '000': 62, '111': 2, '011': 1, '110': 5} (two largest bars ['100', '101']); total-variation distance from the figure's counts = 0.000; identical to the figure: True",
+      "C": "same seeds give {'000': 480, '101': 468, '001': 27, '100': 17, '111': 3, '010': 5} (two largest bars ['000', '101']); total-variation distance from the figure's counts = 0.463; identical to the figure: False",
+      "D": "same seeds give {'100': 650, '101': 222, '001': 35, '000': 85, '110': 6, '011': 1, '111': 1} (two largest bars ['100', '101']); total-variation distance from the figure's counts = 0.231; identical to the figure: False",
+      "E": "same seeds give {'100': 440, '110': 426, '010': 63, '000': 56, '101': 11, '111': 2, '011': 1, '001': 1} (two largest bars ['100', '110']); total-variation distance from the figure's counts = 0.484; identical to the figure: False"
+    },
+    "observed": {
+      "figure": {
+        "100": 443,
+        "101": 429,
+        "001": 58,
+        "000": 62,
+        "111": 2,
+        "011": 1,
+        "110": 5
+      },
+      "A": {
+        "counts": {
+          "001": 483,
+          "101": 460,
+          "100": 22,
+          "111": 2,
+          "000": 27,
+          "011": 6
+        },
+        "tvd_vs_figure": 0.461
+      },
+      "B": {
+        "counts": {
+          "100": 443,
+          "101": 429,
+          "001": 58,
+          "000": 62,
+          "111": 2,
+          "011": 1,
+          "110": 5
+        },
+        "tvd_vs_figure": 0.0
+      },
+      "C": {
+        "counts": {
+          "000": 480,
+          "101": 468,
+          "001": 27,
+          "100": 17,
+          "111": 3,
+          "010": 5
+        },
+        "tvd_vs_figure": 0.463
+      },
+      "D": {
+        "counts": {
+          "100": 650,
+          "101": 222,
+          "001": 35,
+          "000": 85,
+          "110": 6,
+          "011": 1,
+          "111": 1
+        },
+        "tvd_vs_figure": 0.231
+      },
+      "E": {
+        "counts": {
+          "100": 440,
+          "110": 426,
+          "010": 63,
+          "000": 56,
+          "101": 11,
+          "111": 2,
+          "011": 1,
+          "001": 1
+        },
+        "tvd_vs_figure": 0.484
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 6.95,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"same seeds give {'001': 483, '101': 460, '100': 22, '111': 2, '000': 27, '011': 6} (two largest bars ['001', '101']); total-variation distance from the figure's counts = 0.461; identical to the figure: False\", \"B\": \"same seeds give {'100': 443, '101': 429, '001': 58, '000': 62, '111': 2, '011': 1, '110': 5} (two largest bars ['100', '101']); total-variation distance from the figure's counts = 0.000; identical to the figure: True\", \"C\": \"same seeds give {'000': 480, '101': 468, '001': 27, '100': 17, '111': 3, '010': 5} (two largest bars ['000', '101']); total-variation distance from the figure's counts = 0.463; identical to the figure: False\", \"D\": \"same seeds give {'100': 650, '101': 222, '001': 35, '000': 85, '110': 6, '011': 1, '111': 1} (two largest bars ['100', '101']); total-variation distance from the figure's counts = 0.231; identical to the figure: False\", \"E\": \"same seeds give {'100': 440, '110': 426, '010': 63, '000': 56, '101': 11, '111': 2, '011': 1, '001': 1} (two largest bars ['100', '110']); total-variation distance from the figure's counts = 0.484; identical to the figure: False\"}, \"observed\": {\"figure\": {\"100\": 443, \"101\": 429, \"001\": 58, \"000\": 62, \"111\": 2, \"011\": 1, \"110\": 5}, \"A\": {\"counts\": {\"001\": 483, \"101\": 460, \"100\": 22, \"111\": 2, \"000\": 27, \"011\": 6}, \"tvd_vs_figure\": 0.461}, \"B\": {\"counts\": {\"100\": 443, \"101\": 429, \"001\": 58, \"000\": 62, \"111\": 2, \"011\": 1, \"110\": 5}, \"tvd_vs_figure\": 0.0}, \"C\": {\"counts\": {\"000\": 480, \"101\": 468, \"001\": 27, \"100\": 17, \"111\": 3, \"010\": 5}, \"tvd_vs_figure\": 0.463}, \"D\": {\"counts\": {\"100\": 650, \"101\": 222, \"001\": 35, \"000\": 85, \"110\": 6, \"011\": 1, \"111\": 1}, \"tvd_vs_figure\": 0.231}, \"E\": {\"counts\": {\"100\": 440, \"110\": 426, \"010\": 63, \"000\": 56, \"101\": 11, \"111\": 2, \"011\": 1, \"001\": 1}, \"tvd_vs_figure\": 0.484}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

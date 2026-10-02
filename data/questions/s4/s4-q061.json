@@ -1,0 +1,91 @@
+{
+  "id": "s4-q061",
+  "section": "s4",
+  "objectives": [
+    "s4o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "On which device's gate map does this job pass the ISA check?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit_ibm_runtime import SamplerV2\n\nisa = QuantumCircuit(5)   # basis gates rz/sx/x/cx only\nisa.sx(1)\nisa.cx(1, 0)\nisa.cx(1, 2)\nisa.cx(1, 3)\nisa.measure_all()\n\njob = SamplerV2(mode=backend).run([isa])",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    }
+  ],
+  "answer": [
+    "A"
+  ],
+  "figures": {
+    "generator": "figures/s4-q061/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s4-q061/s4-q061-A.svg",
+        "alt": "Gate map of five numbered qubits joined by lines, drawn as a T: qubits 0, 1, 2 in a row with qubits 3 and 4 hanging below qubit 1. Lines: 0-1, 1-2, 1-3, 3-4."
+      },
+      "B": {
+        "file": "figures/s4-q061/s4-q061-B.svg",
+        "alt": "Gate map of five numbered qubits joined by lines, drawn as a straight chain: qubits 0, 1, 2, 3, 4 in a row. Lines: 0-1, 1-2, 2-3, 3-4."
+      },
+      "C": {
+        "file": "figures/s4-q061/s4-q061-C.svg",
+        "alt": "Gate map of five numbered qubits joined by lines, drawn as a bow-tie: qubit 2 in the centre, qubits 0 and 1 on the left, 3 and 4 on the right. Lines: 0-1, 0-2, 1-2, 2-3, 2-4, 3-4."
+      },
+      "D": {
+        "file": "figures/s4-q061/s4-q061-D.svg",
+        "alt": "Gate map of five numbered qubits joined by lines, drawn as a T: qubits 2, 3, 4 in a row with qubits 1 and 0 hanging below qubit 3. Lines: 0-1, 1-3, 2-3, 3-4."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "An ISA circuit's two-qubit gates must sit on coupled PHYSICAL qubits; the primitive validates this and never re-routes. The circuit needs couplings 1-0, 1-2 and 1-3, so physical qubit 1 must be wired to 0, 2 and 3. Only the T-shaped map centred on qubit 1 has all three (it is the `FakeLimaV2` coupling map).",
+    "distractors": {
+      "B": "Routing expected at run time: on a line, qubits 1 and 3 are two hops apart. The primitive rejects the uncoupled `cx(1, 3)` instead of inserting SWAPs — routing is the transpiler's job.",
+      "C": "More couplers read as more capable: this bow-tie map has six couplings, but qubit 1 touches only 0 and 2, so `cx(1, 3)` is still rejected.",
+      "D": "Shape matched, labels ignored: this is also a T, but its centre is qubit 3. ISA checks use qubit numbers, and qubits 1 and 2 are not coupled here."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/transpile",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.transpiler.CouplingMap"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s4-q061.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import io\nimport warnings\n\nwarnings.filterwarnings(\"ignore\")\nimport matplotlib\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"proof\"  # deterministic SVG ids\nimport matplotlib.pyplot as plt\nfrom matplotlib.patches import Circle\n\nfrom qiskit import QuantumCircuit\nfrom qiskit.providers.fake_provider import GenericBackendV2\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeLimaV2, FakeManilaV2, FakeYorktownV2\n\n# Block MUST mirror data/figures/s4-q061/generate.py (MAPS, draw_map()).\n# key: (undirected edges, node positions)\nMAPS = {\n    \"A\": ([(0, 1), (1, 2), (1, 3), (3, 4)],\n          {0: (0, 0), 1: (1, 0), 2: (2, 0), 3: (1, -1), 4: (1, -2)}),\n    \"B\": ([(0, 1), (1, 2), (2, 3), (3, 4)],\n          {0: (0, 0), 1: (1, 0), 2: (2, 0), 3: (3, 0), 4: (4, 0)}),\n    \"C\": ([(0, 1), (0, 2), (1, 2), (2, 3), (2, 4), (3, 4)],\n          {0: (0, 0), 1: (0, -2), 2: (1, -1), 3: (2, 0), 4: (2, -2)}),\n    \"D\": ([(0, 1), (1, 3), (2, 3), (3, 4)],\n          {2: (0, 0), 3: (1, 0), 4: (2, 0), 1: (1, -1), 0: (1, -2)}),\n}\n\n\ndef draw_map(edges, pos):\n    fig, ax = plt.subplots(figsize=(3.6, 2.6))\n    ax.set_xlim(-0.5, 4.5)\n    ax.set_ylim(-2.5, 0.5)\n    ax.set_aspect(\"equal\")\n    ax.axis(\"off\")\n    for a, b in edges:\n        (x1, y1), (x2, y2) = pos[a], pos[b]\n        ax.plot([x1, x2], [y1, y2], color=\"#555555\", linewidth=4, zorder=1)\n    for q in sorted(pos):\n        x, y = pos[q]\n        ax.add_patch(Circle((x, y), 0.26, facecolor=\"#9ecae1\", edgecolor=\"black\",\n                            linewidth=1.0, zorder=2))\n        ax.text(x, y, str(q), ha=\"center\", va=\"center\", fontsize=12, zorder=3)\n    return fig\n\n\n\ndef svg(fig):\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\ndef undirected(backend):\n    return sorted({tuple(sorted(e)) for e in backend.coupling_map.get_edges()})\n\n\n# the stem code's circuit, verbatim\nisa = QuantumCircuit(5)\nisa.sx(1)\nisa.cx(1, 0)\nisa.cx(1, 2)\nisa.cx(1, 3)\nisa.measure_all()\nneeded = sorted({tuple(sorted(isa.find_bit(b).index for b in i.qubits))\n                 for i in isa.data if i.operation.num_qubits == 2 and i.operation.name == \"cx\"})\n\nreal = {\"A\": FakeLimaV2(), \"B\": FakeManilaV2(), \"C\": FakeYorktownV2()}\nproven, evidence, observed = [], {}, {\"cx_pairs\": needed}\nfor key, (edges, pos) in sorted(MAPS.items()):\n    both = [list(e) for e in edges] + [[b, a] for a, b in edges]\n    backend = GenericBackendV2(5, basis_gates=[\"cx\", \"rz\", \"sx\", \"x\"], coupling_map=both, seed=1)\n    drawn = undirected(backend)\n    same_render = svg(draw_map(drawn, pos)) == svg(draw_map(edges, pos))\n    try:\n        SamplerV2(mode=backend).run([isa], shots=50).result()\n        ok, err = True, None\n    except Exception as exc:\n        ok, err = False, f\"{type(exc).__name__}: {str(exc)[:80]}\"\n    missing = [p for p in needed if p not in drawn]\n    match = ok and same_render and not missing\n    note = f\" (= {type(real[key]).__name__} coupling map: {undirected(real[key]) == drawn})\" if key in real else \"\"\n    observed[key] = {\"edges\": [list(e) for e in drawn], \"ran\": ok, \"error\": err}\n    evidence[key] = (f\"drawn couplings {drawn}{note}; drawing re-rendered from the backend's own \"\n                     f\"coupling map identical -> {same_render}; CX pairs not coupled: {missing}; \"\n                     f\"SamplerV2 run -> ok={ok}, error={err}; match={match}\")\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s1/s3/s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "figure wave add (option images, d2): coupling-map recognition for an already-ISA circuit — the runtime ISA check is per physical qubit pair, no run-time routing. Maps A/B/C are FakeLimaV2/FakeManilaV2/FakeYorktownV2 (asserted in the generator); D is a T with another centre. Hand-drawn (no Graphviz). Proof builds a GenericBackendV2 per map, requires the drawing re-rendered from the backend's own coupling map to be byte-identical, and runs SamplerV2: only A runs, B/C/D raise IBMInputValueError naming the uncoupled pair."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

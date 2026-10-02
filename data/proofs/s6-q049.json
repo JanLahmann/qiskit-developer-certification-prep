@@ -39,7 +39,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 3.11,
+  "wall_seconds": 6.33,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"claims [0.0, -1.0] (labels read qubit-0-first -> computed [0.0, -1.0]); the code printed '[-1.  0.]' (evs [-1.0, 0.0]) -> match=False\", \"B\": \"claims [-2.0, 1.0, 0.0] (one value per dict term -> computed [-2.0, 1.0, 0.0]); the code printed '[-1.  0.]' (evs [-1.0, 0.0]) -> match=False\", \"C\": \"claims [-0.333, 0.0] (dict read as a weighted AVERAGE (sum / total weight 3) -> computed [-0.333, 0.0]); the code printed '[-1.  0.]' (evs [-1.0, 0.0]) -> match=False\", \"E\": \"claims [-1.0, 0.0] (dict = weighted sum, qubit-0-rightmost labels); the code printed '[-1.  0.]' (evs [-1.0, 0.0]) -> match=True\", \"D\": \"claims a TypeError for non-SparsePauliOp observables; the code raised=None and printed '[-1.  0.]' -> match=False\"}, \"observed\": {\"printed\": \"[-1.  0.]\", \"raised\": null, \"evs\": [-1.0, 0.0], \"reversed\": [0.0, -1.0], \"per_term\": [-2.0, 1.0, 0.0], \"averaged\": [-0.333, 0.0]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

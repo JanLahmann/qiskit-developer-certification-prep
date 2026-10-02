@@ -26,7 +26,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.85,
+  "wall_seconds": 5.27,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"result() did not return normally: it raised RuntimeJobFailureError -> match=False\", \"B\": \"result() raised RuntimeJobFailureError; RuntimeInvalidStateError is what a CANCELLED job raises (RuntimeInvalidStateError) -> match=False\", \"C\": \"result() raised RuntimeJobFailureError and returned nothing; job_results was never called -> match=False\", \"D\": \"result() returned control after 0.000s by raising RuntimeJobFailureError; status polls made: 0 -> match=False\", \"E\": \"result() raised RuntimeJobFailureError: 'Unable to retrieve job result. Error code 1517; Circuit uses more qubits than the backend has'; error_message() returned 'Error code 1517; Circuit uses more qubits than the backend has' -> match=True\"}, \"observed\": {\"status\": \"ERROR\", \"errored\": true, \"exception\": \"RuntimeJobFailureError\", \"exception_text\": \"'Unable to retrieve job result. Error code 1517; Circuit uses more qubits than the backend has'\", \"error_message\": \"Error code 1517; Circuit uses more qubits than the backend has\", \"cancelled_raises\": \"RuntimeInvalidStateError\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

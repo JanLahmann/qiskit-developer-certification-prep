@@ -49,7 +49,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 13.94,
+  "wall_seconds": 5.52,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"drawn gate cx with ctrl_state=1 (filled dot) on q1, target on q0; stem executes ctrl_state=0, control q1, target q0; same unitary -> False; mpl rendering identical to the stem's -> False; match=False\", \"B\": \"drawn gate cx_o0 with ctrl_state=0 (open circle) on q0, target on q1; stem executes ctrl_state=0, control q1, target q0; same unitary -> False; mpl rendering identical to the stem's -> False; match=False\", \"C\": \"drawn gate cx with ctrl_state=1 (filled dot) on q0, target on q1; stem executes ctrl_state=0, control q1, target q0; same unitary -> False; mpl rendering identical to the stem's -> False; match=False\", \"D\": \"drawn gate cx_o0 with ctrl_state=0 (open circle) on q1, target on q0; stem executes ctrl_state=0, control q1, target q0; same unitary -> True; mpl rendering identical to the stem's -> True; match=True\"}, \"observed\": {\"stem\": [\"cx_o0\", 0, 1, 0], \"A\": [\"cx\", 1, 1, 0], \"B\": [\"cx_o0\", 0, 0, 1], \"C\": [\"cx\", 1, 0, 1], \"D\": [\"cx_o0\", 0, 1, 0]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

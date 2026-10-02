@@ -1,0 +1,102 @@
+{
+  "id": "s1-q068",
+  "section": "s1",
+  "objectives": [
+    "s1o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which diagram does this code draw?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.circuit.library import TGate\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.append(TGate().power(3), [0])\nqc.cx(0, 1)\nqc.draw(\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    },
+    {
+      "key": "E",
+      "text": ""
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "B"
+  ],
+  "figures": {
+    "generator": "figures/s1-q068/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s1-q068/s1-q068-A.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: an H box on q_0, then three T boxes in a row on q_0, then a CX with its control on q_0 and its target on q_1."
+      },
+      "B": {
+        "file": "figures/s1-q068/s1-q068-B.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: an H box on q_0, then one box labelled P(3π/4) on q_0, then a CX with its control on q_0 and its target on q_1."
+      },
+      "C": {
+        "file": "figures/s1-q068/s1-q068-C.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: an H box on q_0, then one box labelled T† on q_0, then a CX with its control on q_0 and its target on q_1."
+      },
+      "D": {
+        "file": "figures/s1-q068/s1-q068-D.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: an H box on q_0, then one box labelled Rz(3π/4) on q_0, then a CX with its control on q_0 and its target on q_1."
+      },
+      "E": {
+        "file": "figures/s1-q068/s1-q068-E.svg",
+        "alt": "Circuit diagram on two wires q_0 and q_1: an H box on q_0, then one box labelled t^3 on q_0, then a CX with its control on q_0 and its target on q_1."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "T is the phase gate P(π/4), and phase gates compose by adding angles, so T³ = P(3π/4). `TGate.power` uses that closed form: it returns a `PhaseGate(3π/4)` instead of the generic labelled unitary, so the drawer shows one P(3π/4) box between the H and the CX.",
+    "distractors": {
+      "A": "Power read as repetition: three T gates are the same unitary, but `power(3)` returns ONE gate, so the circuit holds one instruction, drawn as one box.",
+      "C": "Order confusion: S has order 4, so S³ = S†; T has order 8, so T³ is P(3π/4), while T† is P(−π/4) = T⁷.",
+      "D": "Phase vs RZ: RZ(3π/4) equals P(3π/4) only up to a global phase, and the returned gate is a `PhaseGate`, drawn as P, not Rz.",
+      "E": "Generic path assumed: `Gate.power` builds a labelled `UnitaryGate` only when no standard closed form exists; for T it returns the phase gate directly."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.TGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.PhaseGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Gate"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s1-q068.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import io\n\nimport matplotlib\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"proof\"  # deterministic SVG ids\nimport matplotlib.pyplot as plt\n\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit.library import PhaseGate, RZGate, TdgGate, TGate, UnitaryGate\nfrom qiskit.quantum_info import Operator\n\n\ndef drawing(circ):\n    \"\"\"The actual mpl rendering, as SVG text (what the option image shows).\"\"\"\n    fig = circ.draw(output=\"mpl\")\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\n# MUST mirror data/figures/s1-q068/generate.py.\ndef variant(key):\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    if key == \"A\":\n        for _ in range(3):\n            qc.append(TGate(), [0])\n    elif key == \"B\":\n        qc.append(PhaseGate(3 * np.pi / 4), [0])\n    elif key == \"C\":\n        qc.append(TdgGate(), [0])\n    elif key == \"D\":\n        qc.append(RZGate(3 * np.pi / 4), [0])\n    elif key == \"E\":\n        qc.append(UnitaryGate(Operator(TGate()).power(3), label=\"t^3\"), [0])\n    qc.cx(0, 1)\n    return qc\n\n\n# the stem code, verbatim\nstem = QuantumCircuit(2)\nstem.h(0)\nstem.append(TGate().power(3), [0])\nstem.cx(0, 1)\nstem_svg = drawing(stem)\nstem_op = Operator(stem)\npowered = stem.data[1].operation\n\n\ndef sig(qc):\n    return [(i.operation.name, [round(float(p), 6) for p in i.operation.params\n                                if isinstance(p, (int, float))])\n            for i in qc.data]\n\n\nproven, evidence, observed = [], {}, {\n    \"power_returns\": type(powered).__name__,\n    \"power_params\": [round(float(p), 6) for p in powered.params],\n    \"stem_ops\": sig(stem),\n}\nfor key in \"ABCDE\":\n    v = variant(key)\n    same_render = drawing(v) == stem_svg\n    same_ops = sig(v) == sig(stem)\n    equiv = Operator(v).equiv(stem_op)   # equal up to global phase\n    exact = Operator(v) == stem_op\n    match = same_render and same_ops\n    observed[key] = {\"ops\": sig(v), \"equal_unitary\": exact, \"equal_up_to_phase\": equiv}\n    evidence[key] = (f\"drawn ops {sig(v)}; stem builds {sig(stem)} \"\n                     f\"(TGate().power(3) returns {type(powered).__name__}); \"\n                     f\"same unitary -> {exact} (up to global phase -> {equiv}); \"\n                     f\"mpl rendering identical to the stem's -> {same_render}; match={match}\")\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s1/s3/s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "figure wave add (option images, d2): TGate().power(3) returns the closed-form PhaseGate(3π/4) (Gate.power docstring: standard gates return a standard gate directly), drawn as one P box. Distractors: repetition, T³ = T† (S-order confusion), RZ vs P, the generic labelled UnitaryGate path. Proof renders every variant and the stem code to SVG in-process and requires byte-identity (only B); unitary equalities recorded."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

@@ -81,7 +81,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 13.88,
+  "wall_seconds": 5.53,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"drawn real_amplitudes(3, reps=1, entanglement='circular'): 6 ry, cx (control, target) = [(2, 0), (0, 1), (1, 2)]; stem 'full' executes [(0, 1), (0, 2), (1, 2)]; mpl rendering identical to the stem's -> False; match=False\", \"B\": \"drawn real_amplitudes(3, reps=1, entanglement='full'): 6 ry, cx (control, target) = [(0, 1), (0, 2), (1, 2)]; stem 'full' executes [(0, 1), (0, 2), (1, 2)]; mpl rendering identical to the stem's -> True; match=True\", \"C\": \"drawn real_amplitudes(3, reps=1, entanglement='linear'): 6 ry, cx (control, target) = [(0, 1), (1, 2)]; stem 'full' executes [(0, 1), (0, 2), (1, 2)]; mpl rendering identical to the stem's -> False; match=False\", \"D\": \"drawn real_amplitudes(3, reps=1, entanglement='reverse_linear'): 6 ry, cx (control, target) = [(1, 2), (0, 1)]; stem 'full' executes [(0, 1), (0, 2), (1, 2)]; mpl rendering identical to the stem's -> False; match=False\"}, \"observed\": {\"stem_cx\": [[0, 1], [0, 2], [1, 2]], \"A\": [[2, 0], [0, 1], [1, 2]], \"B\": [[0, 1], [0, 2], [1, 2]], \"C\": [[0, 1], [1, 2]], \"D\": [[1, 2], [0, 1]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

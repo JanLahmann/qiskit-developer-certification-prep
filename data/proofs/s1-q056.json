@@ -30,7 +30,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 4.6,
+  "wall_seconds": 4.93,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"executed print(Operator(qc).dim) -> (8, 8); option A claims (8, 8) -> match=True\", \"B\": \"executed print(Operator(qc).dim) -> (8, 8); option B claims (3, 3) -> match=False  (3 is num_qubits, not the matrix size: data.shape = (8, 8))\", \"C\": \"executed print(Operator(qc).dim) -> (8, 8); option C claims (2, 2, 2) -> match=False  ((2, 2, 2) is what input_dims() returns: (2, 2, 2))\", \"D\": \"executed print(Operator(qc).dim) -> (8, 8); option D claims 8 -> match=False\", \"E\": \"executed print(Operator(qc).dim) -> (8, 8); option E claims (4, 4) -> match=False  (the idle qubit 1 is kept: num_qubits = 3)\"}, \"observed\": {\"dim\": [8, 8], \"input_dims\": [2, 2, 2], \"num_qubits\": 3}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

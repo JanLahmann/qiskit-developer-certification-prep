@@ -1,0 +1,105 @@
+{
+  "question": "s5-q052",
+  "verdict": {
+    "answer": [
+      "E"
+    ],
+    "evidence": {
+      "A": "figure draws [['00', 195], ['11', 205]] vs the stem run's [['01', 205], ['10', 195]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False (the misconception circuit, executed, yields outcomes ['00', '11'])",
+      "B": "figure draws [['10', 195], ['11', 205]] vs the stem run's [['01', 205], ['10', 195]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False (the misconception circuit, executed, yields outcomes ['10', '11'])",
+      "C": "figure draws [['00', 195], ['01', 205]] vs the stem run's [['01', 205], ['10', 195]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False (the misconception circuit, executed, yields outcomes ['00', '01'])",
+      "D": "figure draws [['01', 195], ['10', 205]] vs the stem run's [['01', 205], ['10', 195]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False",
+      "E": "figure draws [['01', 205], ['10', 195]] vs the stem run's [['01', 205], ['10', 195]]; rendered SVG byte-identical to the stem call's histogram: True -> match=True"
+    },
+    "observed": {
+      "A": {
+        "bars": [
+          [
+            "00",
+            195
+          ],
+          [
+            "11",
+            205
+          ]
+        ],
+        "svg_identical": false,
+        "executed_labels": [
+          "00",
+          "11"
+        ]
+      },
+      "B": {
+        "bars": [
+          [
+            "10",
+            195
+          ],
+          [
+            "11",
+            205
+          ]
+        ],
+        "svg_identical": false,
+        "executed_labels": [
+          "10",
+          "11"
+        ]
+      },
+      "C": {
+        "bars": [
+          [
+            "00",
+            195
+          ],
+          [
+            "01",
+            205
+          ]
+        ],
+        "svg_identical": false,
+        "executed_labels": [
+          "00",
+          "01"
+        ]
+      },
+      "D": {
+        "bars": [
+          [
+            "01",
+            195
+          ],
+          [
+            "10",
+            205
+          ]
+        ],
+        "svg_identical": false
+      },
+      "E": {
+        "bars": [
+          [
+            "01",
+            205
+          ],
+          [
+            "10",
+            195
+          ]
+        ],
+        "svg_identical": true
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 9.17,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"figure draws [['00', 195], ['11', 205]] vs the stem run's [['01', 205], ['10', 195]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False (the misconception circuit, executed, yields outcomes ['00', '11'])\", \"B\": \"figure draws [['10', 195], ['11', 205]] vs the stem run's [['01', 205], ['10', 195]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False (the misconception circuit, executed, yields outcomes ['10', '11'])\", \"C\": \"figure draws [['00', 195], ['01', 205]] vs the stem run's [['01', 205], ['10', 195]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False (the misconception circuit, executed, yields outcomes ['00', '01'])\", \"D\": \"figure draws [['01', 195], ['10', 205]] vs the stem run's [['01', 205], ['10', 195]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False\", \"E\": \"figure draws [['01', 205], ['10', 195]] vs the stem run's [['01', 205], ['10', 195]]; rendered SVG byte-identical to the stem call's histogram: True -> match=True\"}, \"observed\": {\"A\": {\"bars\": [[\"00\", 195], [\"11\", 205]], \"svg_identical\": false, \"executed_labels\": [\"00\", \"11\"]}, \"B\": {\"bars\": [[\"10\", 195], [\"11\", 205]], \"svg_identical\": false, \"executed_labels\": [\"10\", \"11\"]}, \"C\": {\"bars\": [[\"00\", 195], [\"01\", 205]], \"svg_identical\": false, \"executed_labels\": [\"00\", \"01\"]}, \"D\": {\"bars\": [[\"01\", 195], [\"10\", 205]], \"svg_identical\": false}, \"E\": {\"bars\": [[\"01\", 205], [\"10\", 195]], \"svg_identical\": true}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

@@ -1,0 +1,49 @@
+{
+  "question": "s7-q045",
+  "verdict": {
+    "answer": [
+      "E"
+    ],
+    "evidence": {
+      "A": "raises AttributeError ('DataBin' object has no attribute 'meas'); the data bin holds ['flag', 'out'] -> match=False",
+      "B": "raises AttributeError ('DataBin' object has no attribute 'c'); the data bin holds ['flag', 'out'] -> match=False",
+      "C": "returns 1-bit counts {'1': 60, '0': 440} -> two-bit register: False",
+      "D": "raises AttributeError ('DataBin' object has no attribute 'c1'); the data bin holds ['flag', 'out'] -> match=False",
+      "E": "returns 2-bit counts {'00': 238, '11': 262} -> two-bit register: True"
+    },
+    "observed": {
+      "data_fields": [
+        "flag",
+        "out"
+      ],
+      "A": "AttributeError: 'DataBin' object has no attribute 'meas'",
+      "B": "AttributeError: 'DataBin' object has no attribute 'c'",
+      "C": {
+        "counts": {
+          "1": 60,
+          "0": 440
+        },
+        "width": 1
+      },
+      "D": "AttributeError: 'DataBin' object has no attribute 'c1'",
+      "E": {
+        "counts": {
+          "00": 238,
+          "11": 262
+        },
+        "width": 2
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 5.07,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"E\"], \"evidence\": {\"A\": \"raises AttributeError ('DataBin' object has no attribute 'meas'); the data bin holds ['flag', 'out'] -> match=False\", \"B\": \"raises AttributeError ('DataBin' object has no attribute 'c'); the data bin holds ['flag', 'out'] -> match=False\", \"C\": \"returns 1-bit counts {'1': 60, '0': 440} -> two-bit register: False\", \"D\": \"raises AttributeError ('DataBin' object has no attribute 'c1'); the data bin holds ['flag', 'out'] -> match=False\", \"E\": \"returns 2-bit counts {'00': 238, '11': 262} -> two-bit register: True\"}, \"observed\": {\"data_fields\": [\"flag\", \"out\"], \"A\": \"AttributeError: 'DataBin' object has no attribute 'meas'\", \"B\": \"AttributeError: 'DataBin' object has no attribute 'c'\", \"C\": {\"counts\": {\"1\": 60, \"0\": 440}, \"width\": 1}, \"D\": \"AttributeError: 'DataBin' object has no attribute 'c1'\", \"E\": {\"counts\": {\"00\": 238, \"11\": 262}, \"width\": 2}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

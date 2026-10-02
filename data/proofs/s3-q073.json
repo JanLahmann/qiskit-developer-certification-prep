@@ -1,0 +1,192 @@
+{
+  "question": "s3-q073",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "A": "case blocks [([1], [('x', [0])]), ([2], [('x', [0])]), (['default'], [('z', [1])])], ops after the switch []; stem code builds [([1, 2], [('x', [0])]), (['default'], [('z', [1])])] with [] after; mpl rendering identical to the stem's -> False; match=False",
+      "B": "case blocks [([1], [('x', [0])]), (['default'], [('z', [1])])], ops after the switch []; stem code builds [([1, 2], [('x', [0])]), (['default'], [('z', [1])])] with [] after; mpl rendering identical to the stem's -> False; match=False",
+      "C": "case blocks [([1, 2], [('x', [0])]), (['default'], [('z', [1])])], ops after the switch []; stem code builds [([1, 2], [('x', [0])]), (['default'], [('z', [1])])] with [] after; mpl rendering identical to the stem's -> True; match=True",
+      "D": "case blocks [([1, 2], [('x', [0])])], ops after the switch [('z', [1])]; stem code builds [([1, 2], [('x', [0])]), (['default'], [('z', [1])])] with [] after; mpl rendering identical to the stem's -> False; match=False"
+    },
+    "observed": {
+      "stem": {
+        "cases": [
+          [
+            [
+              1,
+              2
+            ],
+            [
+              [
+                "x",
+                [
+                  0
+                ]
+              ]
+            ]
+          ],
+          [
+            [
+              "default"
+            ],
+            [
+              [
+                "z",
+                [
+                  1
+                ]
+              ]
+            ]
+          ]
+        ],
+        "after_switch": []
+      },
+      "A": {
+        "cases": [
+          [
+            [
+              1
+            ],
+            [
+              [
+                "x",
+                [
+                  0
+                ]
+              ]
+            ]
+          ],
+          [
+            [
+              2
+            ],
+            [
+              [
+                "x",
+                [
+                  0
+                ]
+              ]
+            ]
+          ],
+          [
+            [
+              "default"
+            ],
+            [
+              [
+                "z",
+                [
+                  1
+                ]
+              ]
+            ]
+          ]
+        ],
+        "after_switch": []
+      },
+      "B": {
+        "cases": [
+          [
+            [
+              1
+            ],
+            [
+              [
+                "x",
+                [
+                  0
+                ]
+              ]
+            ]
+          ],
+          [
+            [
+              "default"
+            ],
+            [
+              [
+                "z",
+                [
+                  1
+                ]
+              ]
+            ]
+          ]
+        ],
+        "after_switch": []
+      },
+      "C": {
+        "cases": [
+          [
+            [
+              1,
+              2
+            ],
+            [
+              [
+                "x",
+                [
+                  0
+                ]
+              ]
+            ]
+          ],
+          [
+            [
+              "default"
+            ],
+            [
+              [
+                "z",
+                [
+                  1
+                ]
+              ]
+            ]
+          ]
+        ],
+        "after_switch": []
+      },
+      "D": {
+        "cases": [
+          [
+            [
+              1,
+              2
+            ],
+            [
+              [
+                "x",
+                [
+                  0
+                ]
+              ]
+            ]
+          ]
+        ],
+        "after_switch": [
+          [
+            "z",
+            [
+              1
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 6.0,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"case blocks [([1], [('x', [0])]), ([2], [('x', [0])]), (['default'], [('z', [1])])], ops after the switch []; stem code builds [([1, 2], [('x', [0])]), (['default'], [('z', [1])])] with [] after; mpl rendering identical to the stem's -> False; match=False\", \"B\": \"case blocks [([1], [('x', [0])]), (['default'], [('z', [1])])], ops after the switch []; stem code builds [([1, 2], [('x', [0])]), (['default'], [('z', [1])])] with [] after; mpl rendering identical to the stem's -> False; match=False\", \"C\": \"case blocks [([1, 2], [('x', [0])]), (['default'], [('z', [1])])], ops after the switch []; stem code builds [([1, 2], [('x', [0])]), (['default'], [('z', [1])])] with [] after; mpl rendering identical to the stem's -> True; match=True\", \"D\": \"case blocks [([1, 2], [('x', [0])])], ops after the switch [('z', [1])]; stem code builds [([1, 2], [('x', [0])]), (['default'], [('z', [1])])] with [] after; mpl rendering identical to the stem's -> False; match=False\"}, \"observed\": {\"stem\": {\"cases\": [[[1, 2], [[\"x\", [0]]]], [[\"default\"], [[\"z\", [1]]]]], \"after_switch\": []}, \"A\": {\"cases\": [[[1], [[\"x\", [0]]]], [[2], [[\"x\", [0]]]], [[\"default\"], [[\"z\", [1]]]]], \"after_switch\": []}, \"B\": {\"cases\": [[[1], [[\"x\", [0]]]], [[\"default\"], [[\"z\", [1]]]]], \"after_switch\": []}, \"C\": {\"cases\": [[[1, 2], [[\"x\", [0]]]], [[\"default\"], [[\"z\", [1]]]]], \"after_switch\": []}, \"D\": {\"cases\": [[[1, 2], [[\"x\", [0]]]]], \"after_switch\": [[\"z\", [1]]]}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

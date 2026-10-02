@@ -1,0 +1,45 @@
+{
+  "question": "s5-q053",
+  "verdict": {
+    "answer": [
+      "C"
+    ],
+    "evidence": {
+      "A": "the code prints ['000', '011']; option claims ['000', '111'] -> match=False (circuit without the reset, executed: ['000', '111'])",
+      "B": "the code prints ['000', '011']; option claims ['000', '110'] -> match=False (true outcomes with each key reversed: ['000', '110'])",
+      "C": "the code prints ['000', '011']; option claims ['000', '011'] -> match=True",
+      "D": "the code prints ['000', '011']; option claims ['000', '001'] -> match=False (reset applied to both qubits, executed: ['000', '001'])",
+      "E": "the code prints ['000', '011']; option claims ['000', '001', '010', '011'] -> match=False"
+    },
+    "observed": {
+      "printed": "['000', '011']",
+      "counts": {
+        "011": 502,
+        "000": 498
+      },
+      "A": [
+        "000",
+        "111"
+      ],
+      "B": [
+        "000",
+        "110"
+      ],
+      "D": [
+        "000",
+        "001"
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 6.54,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"the code prints ['000', '011']; option claims ['000', '111'] -> match=False (circuit without the reset, executed: ['000', '111'])\", \"B\": \"the code prints ['000', '011']; option claims ['000', '110'] -> match=False (true outcomes with each key reversed: ['000', '110'])\", \"C\": \"the code prints ['000', '011']; option claims ['000', '011'] -> match=True\", \"D\": \"the code prints ['000', '011']; option claims ['000', '001'] -> match=False (reset applied to both qubits, executed: ['000', '001'])\", \"E\": \"the code prints ['000', '011']; option claims ['000', '001', '010', '011'] -> match=False\"}, \"observed\": {\"printed\": \"['000', '011']\", \"counts\": {\"011\": 502, \"000\": 498}, \"A\": [\"000\", \"111\"], \"B\": [\"000\", \"110\"], \"D\": [\"000\", \"001\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

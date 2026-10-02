@@ -20,7 +20,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 6.05,
+  "wall_seconds": 5.34,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"executed Statevector(h; p(pi/3); h) -> P(1) = 0.250000; option A claims 0.25 -> match=True\", \"B\": \"executed Statevector(h; p(pi/3); h) -> P(1) = 0.250000; option B claims 0.0 -> match=False  (only without the phase gate: P(1) = 0.000)\", \"C\": \"executed Statevector(h; p(pi/3); h) -> P(1) = 0.250000; option C claims 0.5 -> match=False  (only before the second H: P(1) = 0.500)\", \"D\": \"executed Statevector(h; p(pi/3); h) -> P(1) = 0.250000; option D claims 0.75 -> match=False\"}, \"observed\": {\"p1\": 0.2499999999999999}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

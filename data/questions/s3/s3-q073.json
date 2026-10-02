@@ -1,0 +1,91 @@
+{
+  "id": "s3-q073",
+  "section": "s3",
+  "objectives": [
+    "s3o2"
+  ],
+  "type": "predict-output",
+  "difficulty": 2,
+  "stem": "Which diagram does this code draw?",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(2, \"q\")\ncr = ClassicalRegister(2, \"c\")\nqc = QuantumCircuit(qr, cr)\nqc.h(0)\nqc.h(1)\nqc.measure([0, 1], [0, 1])\nwith qc.switch(cr) as case:\n    with case(1, 2):\n        qc.x(0)\n    with case(case.DEFAULT):\n        qc.z(1)\nqc.draw(\"mpl\")",
+  "options": [
+    {
+      "key": "A",
+      "text": ""
+    },
+    {
+      "key": "B",
+      "text": ""
+    },
+    {
+      "key": "C",
+      "text": ""
+    },
+    {
+      "key": "D",
+      "text": ""
+    }
+  ],
+  "answer": [
+    "C"
+  ],
+  "figures": {
+    "generator": "figures/s3-q073/generate.py",
+    "color_essential": false,
+    "options": {
+      "A": {
+        "file": "figures/s3-q073/s3-q073-A.svg",
+        "alt": "Circuit diagram on wires q_0, q_1 and a 2-bit classical register c: H on both qubits, each measured into c, then a Switch box on c with three regions — Case 1 holding an X on q_0, Case 2 holding an X on q_0, and Case default holding a Z on q_1."
+      },
+      "B": {
+        "file": "figures/s3-q073/s3-q073-B.svg",
+        "alt": "Circuit diagram on wires q_0, q_1 and a 2-bit classical register c: H on both qubits, each measured into c, then a Switch box on c with two regions — Case 1 holding an X on q_0, and Case default holding a Z on q_1."
+      },
+      "C": {
+        "file": "figures/s3-q073/s3-q073-C.svg",
+        "alt": "Circuit diagram on wires q_0, q_1 and a 2-bit classical register c: H on both qubits, each measured into c, then a Switch box on c with two regions — Case 1, 2 holding an X on q_0, and Case default holding a Z on q_1."
+      },
+      "D": {
+        "file": "figures/s3-q073/s3-q073-D.svg",
+        "alt": "Circuit diagram on wires q_0, q_1 and a 2-bit classical register c: H on both qubits, each measured into c, then a Switch box on c with one region — Case 1, 2 holding an X on q_0 — followed by a Z on q_1 outside the box."
+      }
+    }
+  },
+  "explanation": {
+    "correct": "`case(1, 2)` opens ONE case block that matches either register value, so the switch box holds a single Case region labelled with both values, holding the X on q_0. `case.DEFAULT` adds a second region, labelled default, holding the Z on q_1, and it sits inside the switch: only one block ever runs, so there is no fall-through.",
+    "distractors": {
+      "A": "Values split into blocks: listing two values does not create two cases; it is one block whose body is shared, so the drawer shows one region labelled 1, 2.",
+      "B": "Read like `range(1, 2)`: the arguments are a list of values, not a start and stop, so value 2 is matched too and is printed on the case label.",
+      "D": "C-style fall-through: the DEFAULT body is its own block inside the switch and runs only when no case matched; it is not code placed after the switch."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s3-q073.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "import io\n\nimport matplotlib\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"proof\"  # deterministic SVG ids\nimport matplotlib.pyplot as plt\n\n\ndef drawing(circ):\n    \"\"\"The actual mpl rendering, as SVG text (what the option image shows).\"\"\"\n    fig = circ.draw(output=\"mpl\")\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\n# Block MUST mirror data/figures/s3-q073/generate.py (variant()).\nfrom qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister\n\n\ndef variant(key):\n    qr = QuantumRegister(2, \"q\")\n    cr = ClassicalRegister(2, \"c\")\n    qc = QuantumCircuit(qr, cr)\n    qc.h(0)\n    qc.h(1)\n    qc.measure([0, 1], [0, 1])\n    if key == \"A\":    # case(1, 2) split into two separate case blocks\n        with qc.switch(cr) as case:\n            with case(1):\n                qc.x(0)\n            with case(2):\n                qc.x(0)\n            with case(case.DEFAULT):\n                qc.z(1)\n    elif key == \"B\":  # case(1, 2) read like range(1, 2): value 1 only\n        with qc.switch(cr) as case:\n            with case(1):\n                qc.x(0)\n            with case(case.DEFAULT):\n                qc.z(1)\n    elif key == \"C\":  # the stem code: one case block listing 1, 2\n        with qc.switch(cr) as case:\n            with case(1, 2):\n                qc.x(0)\n            with case(case.DEFAULT):\n                qc.z(1)\n    elif key == \"D\":  # C-style fall-through: default body runs after the switch\n        with qc.switch(cr) as case:\n            with case(1, 2):\n                qc.x(0)\n        qc.z(1)\n    return qc\n\n\n\n# the stem code, verbatim\nqr = QuantumRegister(2, \"q\")\ncr = ClassicalRegister(2, \"c\")\nqc = QuantumCircuit(qr, cr)\nqc.h(0)\nqc.h(1)\nqc.measure([0, 1], [0, 1])\nwith qc.switch(cr) as case:\n    with case(1, 2):\n        qc.x(0)\n    with case(case.DEFAULT):\n        qc.z(1)\nstem_svg = drawing(qc)\n\n\ndef sig(circ):\n    \"\"\"Switch structure: case values with body gates (outer qubit indices), plus ops after it.\"\"\"\n    out, after, seen = [], [], False\n    for inst in circ.data:\n        op = inst.operation\n        if op.name == \"switch_case\":\n            seen = True\n            for values, body in op.cases_specifier():\n                vals = [\"default\" if not isinstance(v, int) else v for v in values]\n                gates = [(i.operation.name,\n                          [circ.find_bit(inst.qubits[body.find_bit(b).index]).index for b in i.qubits])\n                         for i in body.data]\n                out.append((vals, gates))\n        elif seen:\n            after.append((op.name, [circ.find_bit(b).index for b in inst.qubits]))\n    return {\"cases\": out, \"after_switch\": after}\n\n\nstem_sig = sig(qc)\nproven, evidence, observed = [], {}, {\"stem\": stem_sig}\nfor key in \"ABCD\":\n    v = variant(key)\n    s = sig(v)\n    same_render = drawing(v) == stem_svg\n    match = s == stem_sig and same_render\n    observed[key] = s\n    evidence[key] = (f\"case blocks {s['cases']}, ops after the switch {s['after_switch']}; \"\n                     f\"stem code builds {stem_sig['cases']} with {stem_sig['after_switch']} after; \"\n                     f\"mpl rendering identical to the stem's -> {same_render}; match={match}\")\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s1/s3/s4)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "figure wave add (option images, d2): switch drawing — a multi-value case(1, 2) is ONE region labelled '1, 2', DEFAULT is a region inside the switch (no fall-through, per the control-flow guide). Distractors: values split into two cases, case(1, 2) read as range(1, 2), default as fall-through code after the switch. Proof extracts each variant's case specifier (values + body gates on outer qubits) and requires SVG byte-identity with the stem code's rendering (only C)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

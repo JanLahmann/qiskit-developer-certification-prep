@@ -1,0 +1,117 @@
+{
+  "question": "s7-q046",
+  "verdict": {
+    "answer": [
+      "A"
+    ],
+    "evidence": {
+      "A": "figure draws [['0', 200], ['1', 100]] vs bits[1]'s [['0', 200], ['1', 100]]; rendered SVG byte-identical to the stem call's histogram: True -> match=True",
+      "B": "figure draws [['0', 100], ['1', 100]] vs bits[1]'s [['0', 200], ['1', 100]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False",
+      "C": "figure draws [['0', 300], ['1', 300]] vs bits[1]'s [['0', 200], ['1', 100]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False",
+      "D": "figure draws [['0', 100], ['1', 200]] vs bits[1]'s [['0', 200], ['1', 100]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False",
+      "E": "figure draws [['1', 100]] vs bits[1]'s [['0', 200], ['1', 100]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False"
+    },
+    "observed": {
+      "bits_shape": [
+        2,
+        3
+      ],
+      "per_location": [
+        [
+          {
+            "0": 100
+          },
+          {
+            "1": 100
+          },
+          {
+            "1": 100
+          }
+        ],
+        [
+          {
+            "1": 100
+          },
+          {
+            "0": 100
+          },
+          {
+            "0": 100
+          }
+        ]
+      ],
+      "A": {
+        "bars": [
+          [
+            "0",
+            200
+          ],
+          [
+            "1",
+            100
+          ]
+        ],
+        "svg_identical": true
+      },
+      "B": {
+        "bars": [
+          [
+            "0",
+            100
+          ],
+          [
+            "1",
+            100
+          ]
+        ],
+        "svg_identical": false
+      },
+      "C": {
+        "bars": [
+          [
+            "0",
+            300
+          ],
+          [
+            "1",
+            300
+          ]
+        ],
+        "svg_identical": false
+      },
+      "D": {
+        "bars": [
+          [
+            "0",
+            100
+          ],
+          [
+            "1",
+            200
+          ]
+        ],
+        "svg_identical": false
+      },
+      "E": {
+        "bars": [
+          [
+            "1",
+            100
+          ]
+        ],
+        "svg_identical": false
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 6.85,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"figure draws [['0', 200], ['1', 100]] vs bits[1]'s [['0', 200], ['1', 100]]; rendered SVG byte-identical to the stem call's histogram: True -> match=True\", \"B\": \"figure draws [['0', 100], ['1', 100]] vs bits[1]'s [['0', 200], ['1', 100]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False\", \"C\": \"figure draws [['0', 300], ['1', 300]] vs bits[1]'s [['0', 200], ['1', 100]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False\", \"D\": \"figure draws [['0', 100], ['1', 200]] vs bits[1]'s [['0', 200], ['1', 100]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False\", \"E\": \"figure draws [['1', 100]] vs bits[1]'s [['0', 200], ['1', 100]]; rendered SVG byte-identical to the stem call's histogram: False -> match=False\"}, \"observed\": {\"bits_shape\": [2, 3], \"per_location\": [[{\"0\": 100}, {\"1\": 100}, {\"1\": 100}], [{\"1\": 100}, {\"0\": 100}, {\"0\": 100}]], \"A\": {\"bars\": [[\"0\", 200], [\"1\", 100]], \"svg_identical\": true}, \"B\": {\"bars\": [[\"0\", 100], [\"1\", 100]], \"svg_identical\": false}, \"C\": {\"bars\": [[\"0\", 300], [\"1\", 300]], \"svg_identical\": false}, \"D\": {\"bars\": [[\"0\", 100], [\"1\", 200]], \"svg_identical\": false}, \"E\": {\"bars\": [[\"1\", 100]], \"svg_identical\": false}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

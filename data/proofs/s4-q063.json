@@ -1,0 +1,91 @@
+{
+  "question": "s4-q063",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "claim '011'; FakeManilaV2 run, 1000 shots -> most frequent '110' (90%), keys are 3 bits wide (the meas register); noiseless run of the same isa -> {'110': 200}; claimed key seen 1 times; match=False",
+      "B": "claim '110'; FakeManilaV2 run, 1000 shots -> most frequent '110' (90%), keys are 3 bits wide (the meas register); noiseless run of the same isa -> {'110': 200}; claimed key seen 905 times; match=True",
+      "C": "claim '00011'; FakeManilaV2 run, 1000 shots -> most frequent '110' (90%), keys are 3 bits wide (the meas register); noiseless run of the same isa -> {'110': 200}; claimed key seen 0 times; match=False",
+      "D": "claim '100'; FakeManilaV2 run, 1000 shots -> most frequent '110' (90%), keys are 3 bits wide (the meas register); noiseless run of the same isa -> {'110': 200}; claimed key seen 46 times; match=False"
+    },
+    "observed": {
+      "counts": {
+        "110": 905,
+        "100": 46,
+        "010": 38,
+        "111": 10,
+        "011": 1
+      },
+      "top": "110",
+      "ideal": {
+        "110": 200
+      },
+      "ops": [
+        [
+          "x",
+          [
+            1
+          ],
+          []
+        ],
+        [
+          "cx",
+          [
+            1,
+            0
+          ],
+          []
+        ],
+        [
+          "barrier",
+          [
+            3,
+            0,
+            1
+          ],
+          []
+        ],
+        [
+          "measure",
+          [
+            3
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          "measure",
+          [
+            0
+          ],
+          [
+            1
+          ]
+        ],
+        [
+          "measure",
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ]
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 4.89,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"claim '011'; FakeManilaV2 run, 1000 shots -> most frequent '110' (90%), keys are 3 bits wide (the meas register); noiseless run of the same isa -> {'110': 200}; claimed key seen 1 times; match=False\", \"B\": \"claim '110'; FakeManilaV2 run, 1000 shots -> most frequent '110' (90%), keys are 3 bits wide (the meas register); noiseless run of the same isa -> {'110': 200}; claimed key seen 905 times; match=True\", \"C\": \"claim '00011'; FakeManilaV2 run, 1000 shots -> most frequent '110' (90%), keys are 3 bits wide (the meas register); noiseless run of the same isa -> {'110': 200}; claimed key seen 0 times; match=False\", \"D\": \"claim '100'; FakeManilaV2 run, 1000 shots -> most frequent '110' (90%), keys are 3 bits wide (the meas register); noiseless run of the same isa -> {'110': 200}; claimed key seen 46 times; match=False\"}, \"observed\": {\"counts\": {\"110\": 905, \"100\": 46, \"010\": 38, \"111\": 10, \"011\": 1}, \"top\": \"110\", \"ideal\": {\"110\": 200}, \"ops\": [[\"x\", [1], []], [\"cx\", [1, 0], []], [\"barrier\", [3, 0, 1], []], [\"measure\", [3], [0]], [\"measure\", [0], [1]], [\"measure\", [1], [2]]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

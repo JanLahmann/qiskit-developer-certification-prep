@@ -1,0 +1,39 @@
+{
+  "question": "s6-q054",
+  "verdict": {
+    "answer": [
+      "B"
+    ],
+    "evidence": {
+      "A": "P(00) + P(11), eigenvalues not applied = 0.808; the estimate of <ZZ> from the drawn bars (569 + 239 - 71 - 121)/1000 = 0.616 -> option 0.808 match=False",
+      "B": "parity-weighted mean = BitArray.expectation_values('ZZ') = 0.616; the estimate of <ZZ> from the drawn bars (569 + 239 - 71 - 121)/1000 = 0.616 -> option 0.616 match=True",
+      "C": "<ZI> x <IZ>, correlation ignored = 0.106; the estimate of <ZZ> from the drawn bars (569 + 239 - 71 - 121)/1000 = 0.616 -> option 0.106 match=False",
+      "D": "<IZ>, qubit 0 alone = 0.380; the estimate of <ZZ> from the drawn bars (569 + 239 - 71 - 121)/1000 = 0.616 -> option 0.38 match=False"
+    },
+    "observed": {
+      "drawn": {
+        "00": 569,
+        "01": 71,
+        "10": 121,
+        "11": 239
+      },
+      "zz": 0.616,
+      "exact_zz": 0.6216,
+      "A": 0.808,
+      "B": 0.616,
+      "C": 0.1064,
+      "D": 0.38
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 6.29,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"P(00) + P(11), eigenvalues not applied = 0.808; the estimate of <ZZ> from the drawn bars (569 + 239 - 71 - 121)/1000 = 0.616 -> option 0.808 match=False\", \"B\": \"parity-weighted mean = BitArray.expectation_values('ZZ') = 0.616; the estimate of <ZZ> from the drawn bars (569 + 239 - 71 - 121)/1000 = 0.616 -> option 0.616 match=True\", \"C\": \"<ZI> x <IZ>, correlation ignored = 0.106; the estimate of <ZZ> from the drawn bars (569 + 239 - 71 - 121)/1000 = 0.616 -> option 0.106 match=False\", \"D\": \"<IZ>, qubit 0 alone = 0.380; the estimate of <ZZ> from the drawn bars (569 + 239 - 71 - 121)/1000 = 0.616 -> option 0.38 match=False\"}, \"observed\": {\"drawn\": {\"00\": 569, \"01\": 71, \"10\": 121, \"11\": 239}, \"zz\": 0.616, \"exact_zz\": 0.6216, \"A\": 0.808, \"B\": 0.616, \"C\": 0.1064, \"D\": 0.38}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

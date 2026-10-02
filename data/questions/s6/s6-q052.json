@@ -1,0 +1,83 @@
+{
+  "id": "s6-q052",
+  "section": "s6",
+  "objectives": [
+    "s6o2"
+  ],
+  "type": "mcq",
+  "difficulty": 2,
+  "stem": "The figure plots `evs` from this sweep. Which line defined `obs`?",
+  "code": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(2)\nqc.ry(theta, 0)\nqc.cx(0, 1)\n\nangles = np.linspace(0, 2 * np.pi, 9)\n# obs = ...  (one of the options)\nevs = StatevectorEstimator().run([(qc, obs, angles.reshape(-1, 1))]).result()[0].data.evs\nplt.plot(angles, evs, marker=\"o\")",
+  "options": [
+    {
+      "key": "A",
+      "text": "`obs = SparsePauliOp(\"ZZ\")`"
+    },
+    {
+      "key": "B",
+      "text": "`obs = SparsePauliOp(\"YY\")`"
+    },
+    {
+      "key": "C",
+      "text": "`obs = SparsePauliOp(\"IX\")`"
+    },
+    {
+      "key": "D",
+      "text": "`obs = SparsePauliOp(\"IZ\")`"
+    },
+    {
+      "key": "E",
+      "text": "`obs = SparsePauliOp(\"XX\")`"
+    }
+  ],
+  "display_count": 4,
+  "answer": [
+    "E"
+  ],
+  "figures": {
+    "generator": "figures/s6-q052/generate.py",
+    "color_essential": false,
+    "stem": {
+      "file": "figures/s6-q052/s6-q052-stem.svg",
+      "alt": "Line plot of expectation value against theta from 0 to about 6.3, nine markers joined by a line, y axis from -1 to 1 with a horizontal line at zero. The markers read 0, 0.71, 1, 0.71, 0, -0.71, -1, -0.71, 0 from left to right."
+    }
+  },
+  "explanation": {
+    "correct": "The circuit prepares cos(θ/2)|00> + sin(θ/2)|11>. XX maps |00> to |11> and back, so <XX> = 2 cos(θ/2) sin(θ/2) = sin θ: zero at 0, +1 at π/2, zero at π, -1 at 3π/2 — the plotted curve. The correlation lives in the two-qubit term, not in either qubit alone.",
+    "distractors": {
+      "B": "Sign of Y⊗Y missed: Y|0> = i|1> and Y|1> = -i|0>, so YY maps |00> to -|11>, and <YY> = -sin θ — the mirror image of the plot, starting downward.",
+      "C": "Single-qubit coherence assumed to survive the CX: before the CX, <X> on qubit 0 is sin θ. After it, qubit 0 is entangled and its reduced state has no coherence, so <IX> is 0 at every angle — a flat line.",
+      "D": "Population read instead of coherence: <IZ> = cos²(θ/2) - sin²(θ/2) = cos θ, which starts at +1, not at 0.",
+      "A": "Correlation of populations: |00> and |11> both have ZZ eigenvalue +1, so <ZZ> = 1 at every angle — a constant line, not an oscillation."
+    },
+    "citations": [
+      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp"
+    ]
+  },
+  "proof": {
+    "status": "executed",
+    "artifact": "proofs/s6-q052.json"
+  },
+  "verification": {
+    "mode": "script",
+    "proof_script": "# TARGET MUST stay in sync with data/figures/s6-q052/generate.py, which asserts\n# that the curve it draws has exactly these marker heights.\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.quantum_info import SparsePauliOp\n\nTARGET = (0.0, 0.707, 1.0, 0.707, 0.0, -0.707, -1.0, -0.707, -0.0)\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(2)\nqc.ry(theta, 0)\nqc.cx(0, 1)\nangles = np.linspace(0, 2 * np.pi, 9)\n\nOPTIONS = {\"A\": \"ZZ\", \"B\": \"YY\", \"C\": \"IX\", \"D\": \"IZ\", \"E\": \"XX\"}\nproven, evidence, observed = [], {}, {\"figure\": list(TARGET)}\nfor key, label in sorted(OPTIONS.items()):\n    obs = SparsePauliOp(label)\n    evs = StatevectorEstimator().run([(qc, obs, angles.reshape(-1, 1))]).result()[0].data.evs\n    vals = tuple(float(v) for v in np.round(evs, 3))\n    m = vals == TARGET\n    observed[key] = list(vals)\n    evidence[key] = (f\"obs = SparsePauliOp({label!r}) sweeps to {list(vals)}; the figure shows \"\n                     f\"{list(TARGET)} -> match={m}\")\n    if m:\n        proven.append(key)\n# Single-qubit reference for distractor C: X on qubit 0 BEFORE the CX gives sin(theta).\npre = QuantumCircuit(2)\npre.ry(theta, 0)\nref = StatevectorEstimator().run([(pre, SparsePauliOp(\"IX\"), angles.reshape(-1, 1))]).result()[0].data.evs\nobserved[\"IX_without_cx\"] = [float(v) for v in np.round(ref, 3)]\nevidence[\"C\"] += f\" (without the CX, <IX> would be {observed['IX_without_cx']})\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+  },
+  "provenance": {
+    "generated": "2026-10-02",
+    "model": "claude-opus (figure wave, s2/s5-s8)",
+    "adversarial_rounds": 0,
+    "reviewed": false,
+    "notes": "Figure wave add (stem figure): reading an exact estimator sweep of a two-qubit correlator. Generator asserts the TARGET marker heights; the proof runs all five candidate observables through the same sweep (plus the no-CX <IX> reference for distractor C)."
+  },
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-02",
+    "stale": false
+  }
+}

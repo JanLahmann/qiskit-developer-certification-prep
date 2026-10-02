@@ -25,7 +25,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.18,
+  "wall_seconds": 4.76,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"claim \\\"2 ['2*phi', '3*phi']\\\"; printed \\\"1 ['2*phi', '3*phi']\\\" (free parameters ['phi']) -> False\", \"B\": \"claim \\\"0 ['2*phi', '3*phi']\\\"; printed \\\"1 ['2*phi', '3*phi']\\\" (free parameters ['phi']) -> False\", \"C\": \"claim \\\"1 ['2*phi', '3*phi']\\\"; printed \\\"1 ['2*phi', '3*phi']\\\" (free parameters ['phi']) -> True\", \"E\": \"claim \\\"2 ['theta', 'theta + phi']\\\"; printed \\\"1 ['2*phi', '3*phi']\\\" (free parameters ['phi']) -> False\", \"D\": \"assign_parameters with a ParameterExpression value raised: None; claim TypeError -> False\"}, \"observed\": {\"printed\": \"1 ['2*phi', '3*phi']\", \"parameters\": [\"phi\"], \"original_num_parameters\": 2}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

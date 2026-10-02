@@ -1,0 +1,103 @@
+{
+  "question": "s8-q032",
+  "verdict": {
+    "answer": [
+      "D"
+    ],
+    "evidence": {
+      "A": "figure's circuit has [('h', [2]), ('cx', [2, 0])] vs the loaded stem program's [('mix', [2, 0])]; rendered SVG byte-identical: False -> match=False",
+      "B": "figure's circuit has [('mix', [0, 2])] vs the loaded stem program's [('mix', [2, 0])]; rendered SVG byte-identical: False -> match=False",
+      "C": "figure's circuit has [('h', [0]), ('cx', [0, 2])] vs the loaded stem program's [('mix', [2, 0])]; rendered SVG byte-identical: False -> match=False",
+      "D": "figure's circuit has [('mix', [2, 0])] vs the loaded stem program's [('mix', [2, 0])]; rendered SVG byte-identical: True -> match=True"
+    },
+    "observed": {
+      "stem_ops": [
+        [
+          "mix",
+          "(2, 0)"
+        ]
+      ],
+      "mix_body": [
+        [
+          "h",
+          "(0,)"
+        ],
+        [
+          "cx",
+          "(0, 1)"
+        ]
+      ],
+      "A": {
+        "ops": [
+          [
+            "h",
+            [
+              2
+            ]
+          ],
+          [
+            "cx",
+            [
+              2,
+              0
+            ]
+          ]
+        ],
+        "svg_identical": false
+      },
+      "B": {
+        "ops": [
+          [
+            "mix",
+            [
+              0,
+              2
+            ]
+          ]
+        ],
+        "svg_identical": false
+      },
+      "C": {
+        "ops": [
+          [
+            "h",
+            [
+              0
+            ]
+          ],
+          [
+            "cx",
+            [
+              0,
+              2
+            ]
+          ]
+        ],
+        "svg_identical": false
+      },
+      "D": {
+        "ops": [
+          [
+            "mix",
+            [
+              2,
+              0
+            ]
+          ]
+        ],
+        "svg_identical": true
+      }
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 5.88,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"figure's circuit has [('h', [2]), ('cx', [2, 0])] vs the loaded stem program's [('mix', [2, 0])]; rendered SVG byte-identical: False -> match=False\", \"B\": \"figure's circuit has [('mix', [0, 2])] vs the loaded stem program's [('mix', [2, 0])]; rendered SVG byte-identical: False -> match=False\", \"C\": \"figure's circuit has [('h', [0]), ('cx', [0, 2])] vs the loaded stem program's [('mix', [2, 0])]; rendered SVG byte-identical: False -> match=False\", \"D\": \"figure's circuit has [('mix', [2, 0])] vs the loaded stem program's [('mix', [2, 0])]; rendered SVG byte-identical: True -> match=True\"}, \"observed\": {\"stem_ops\": [[\"mix\", \"(2, 0)\"]], \"mix_body\": [[\"h\", \"(0,)\"], [\"cx\", \"(0, 1)\"]], \"A\": {\"ops\": [[\"h\", [2]], [\"cx\", [2, 0]]], \"svg_identical\": false}, \"B\": {\"ops\": [[\"mix\", [0, 2]]], \"svg_identical\": false}, \"C\": {\"ops\": [[\"h\", [0]], [\"cx\", [0, 2]]], \"svg_identical\": false}, \"D\": {\"ops\": [[\"mix\", [2, 0]]], \"svg_identical\": true}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

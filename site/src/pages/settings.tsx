@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Layout from '@theme/Layout';
+import Head from '@docusaurus/Head';
 import {
   exportAll,
   getMockState,
@@ -31,6 +32,9 @@ export default function SettingsPage(): React.ReactElement {
 
   return (
     <Layout title="Settings" description="CertiQ settings: data export/import and optional integrations.">
+      <Head>
+        <meta name="robots" content="noindex" />
+      </Head>
       <main className="container margin-vert--lg" style={{maxWidth: 760}}>
         <h1>Settings</h1>
         <p>

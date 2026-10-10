@@ -51,6 +51,9 @@ const config: Config = {
             'https://github.com/JanLahmann/qiskit-developer-certification-prep/tree/main/site/',
         },
         blog: false,
+        sitemap: {
+          ignorePatterns: ['/settings'],
+        },
         theme: {
           customCss: './src/css/custom.css',
         },

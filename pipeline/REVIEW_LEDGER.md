@@ -2808,3 +2808,32 @@ runtime 0.48.0 / aer 0.17.2); s7-q039/q043 re-verified against the installed
   "not X" contrasts the table rows lack.
 - Invariants checked by the orchestrator: every code fence byte-identical, no `source` changed or added,
   `fact_checked` kept true. Gates: build_study, build_epub, meta-audit --gate, npm build — all green.
+
+## 2026-10-10 — Runtime 0.50 impact check (no re-pin; report only)
+
+- Scratch env: the lock with only qiskit-ibm-runtime 0.48.0 → 0.50.0 (released 2026-09-24).
+  Its dependencies came along: ibm-quantum-schemas 0.12, samplomatic 0.21, and new transitive
+  installs qiskit-mitigation and qiskit-qasm3-import. qiskit 2.5.0 and aer 0.17.2 unchanged.
+- `verify_bank.py --check`: 302/302 proven, 0 failures. **No answer key changes under 0.50.**
+- Each proof was run under both versions with `PYTHONWARNINGS=always` and the outputs compared:
+  - **54 executed questions now emit DeprecationWarnings.** `SamplerV2` (44) and `EstimatorV2`
+    (11) are deprecated as of 0.50, with removal no sooner than 3 months after release (so
+    ≥2026-12-24). The successors are `qiskit_ibm_runtime.executor_sampler.Sampler` and
+    `executor_estimator.Estimator`. The bank mentions V2 classes in 85 question files, plus
+    study s2/s4/s5/s6. Affected executed qids:
+    s2-q022 s4-q012 q013 q016 q018 q021 q023 q026 q028 q032 q034 q036 q038 q044;
+    s5-q001 q010 q011 q013 q014 q015 q017 q018 q019 q020 q022 q023 q024 q025 q026 q027 q028
+    q029 q031 q032 q033 q035 q036 q039 q040 q041 q042 q043 q046 q051 q052 q053;
+    s6-q012 q013 q016 q041 q045; s7-q013 q038 q048.
+  - One question's evidence changed in meaning: in s8-q012, distractor E (`qasm3.loads` on a
+    QASM2 string) now raises `QASM3ImporterError`, not `MissingOptionalLibraryError`, because
+    runtime 0.50 pulls in qiskit-qasm3-import. The key is unaffected; the explanation's
+    "raises MissingOptionalLibraryError" holds only for a bare-qiskit install. s8-q021 is
+    robust because it blocks the module. s8-q026/q027/q029 notes ("not installed in the pinned
+    env") would go stale at the re-pin. The s8o3 primer claim (import needs the separate
+    package) stays true of qiskit itself.
+  - All other observed and evidence diffs are shot noise from unseeded fake-backend
+    sampling (s4-q018/q036/q038/q044/q053, s5-q001/q010/q024/q025/q039, s6-q012/q013)
+    or install-path strings in error messages (s2-q014/q029).
+- Re-pin trigger: when IBM moves the exam to the executor primitives, or when 0.5x removes the V2
+  classes. Until then, 0.48 stays pinned. The exam blueprint is written against the V2 primitives.

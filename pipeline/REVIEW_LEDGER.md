@@ -2795,3 +2795,16 @@ runtime 0.48.0 / aer 0.17.2); s7-q039/q043 re-verified against the installed
   primer row already lists `db['meas']`; s7o1 at cap), level-1 vs level-2 CX cancellation
   (primer level table already names InverseCancellation vs CommutativeCancellation).
 - Gates: `build_study.py` exit 0 (8 cram pages), `build_epub.py` exit 0.
+
+## 2026-10-10 — Study concision pass (s1–s3, s5–s7)
+
+- Claim-preserving trim toward the contract's ~900–1100 prose-word target. Prose words:
+  s1 1125→999, s2 1147→1002, s3 1255→1120, s5 1135→932, s6 1197→955, s7 1108→915
+  (s4 1095 and s8 797 untouched). Total 8859→7815.
+- 8 facts deleted, each verified by the orchestrator as fully covered elsewhere in its file
+  (primer table row, primer sentence or code comment): s1-q017, s1-q010, s1-q042, s1-q040,
+  s2-q011, s2-q017, s3-q024, s5-q029. The agent also deleted s7-q012 and s7-q019;
+  the orchestrator restored both verbatim, because their worked examples carry exam-style
+  "not X" contrasts the table rows lack.
+- Invariants checked by the orchestrator: every code fence byte-identical, no `source` changed or added,
+  `fact_checked` kept true. Gates: build_study, build_epub, meta-audit --gate, npm build — all green.

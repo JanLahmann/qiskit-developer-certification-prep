@@ -15,7 +15,7 @@
     {
       "objective": "s1o1",
       "title": "SparsePauliOp, and commutation by counting",
-      "body_md": "Observables are `SparsePauliOp` — a linear combination of Pauli strings — and that is what the Estimator primitive expects, not a hand-built `Pauli`.\n\n```python\nfrom qiskit.quantum_info import SparsePauliOp\nSparsePauliOp.from_list([(\"ZZ\", 1), (\"XX\", 0.5)])\nSparsePauliOp.from_sparse_list([(\"ZX\", [1, 4], 1)], num_qubits=5)  # prints XIIZI\n```\n\n`from_list` takes (label, coefficient) pairs on full-width labels. `from_sparse_list` takes (label, qubit_indices, coefficient) plus an explicit `num_qubits`, and there the label characters pair with the index list left-to-right — the little-endian display rule read back at you. `simplify()` drops only terms whose coefficient is zero within tolerance.\n\nCommutation is a counting exercise, not a matrix multiplication: two multi-qubit Paulis commute exactly when the number of positions at which their single-qubit factors anticommute is EVEN.\n\n| Pair | Anticommuting positions | Commute? |\n| --- | --- | --- |\n| X⊗X vs Z⊗Z | 2 (even) | yes |\n| X⊗I vs Z⊗Z | 1 (odd) | no |\n\nAn identity factor contributes zero to that count — it never buys commutation by itself.",
+      "body_md": "Observables are `SparsePauliOp` — a linear combination of Pauli strings — and that is what the Estimator primitive expects, not a hand-built `Pauli`.\n\n```python\nfrom qiskit.quantum_info import SparsePauliOp\nSparsePauliOp.from_list([(\"ZZ\", 1), (\"XX\", 0.5)])\nSparsePauliOp.from_sparse_list([(\"ZX\", [1, 4], 1)], num_qubits=5)  # prints XIIZI\n```\n\n`from_list` takes (label, coefficient) pairs on full-width labels. `from_sparse_list` takes (label, qubit_indices, coefficient) plus an explicit `num_qubits`, and there the label characters pair with the index list left-to-right — the little-endian display rule read back at you. `simplify()` drops only terms whose coefficient is zero within tolerance.\n\nCommutation is a counting exercise, not a matrix multiplication: two multi-qubit Paulis commute exactly when the number of positions at which their single-qubit factors anticommute is EVEN.\n\n| Pair | Anticommuting positions | `a.commutes(b)` |\n| --- | --- | --- |\n| `Pauli('XX')` vs `Pauli('ZZ')` (X⊗X vs Z⊗Z) | 2 (even) | True |\n| `Pauli('XI')` vs `Pauli('ZZ')` (X⊗I vs Z⊗Z) | 1 (odd) | False |\n\nAn identity factor contributes zero to that count — it never buys commutation by itself.",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
         "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
@@ -24,7 +24,7 @@
     {
       "objective": "s1o2",
       "title": "Statevector: build it, evolve it, read it",
-      "body_md": "`Statevector` is the simulator you carry in your head, and it runs UNITARY circuits only.\n\n```python\nfrom qiskit.quantum_info import Statevector\nStatevector.from_label('10')     # |q1 q0⟩ — amplitude 1 at index 2\nStatevector.from_int(2, dims=4)  # same state; an int dims is the TOTAL dimension\nsv = Statevector(qc)             # delegates to Statevector.from_instruction(qc)\nsv2 = sv.evolve(op)              # returns a NEW Statevector; sv is untouched\n```\n\n`from_label` also accepts the eigenstate letters '+', '−', 'r', 'l'. Leave a `measure` in the circuit and both constructors raise `QiskitError: Cannot apply instruction with classical bits: measure`. `evolve` accepts a `Pauli`, an `Operator`, a gate or a circuit.\n\nRead-out splits into families that questions love to swap.\n\n| Call | Returns | Note |\n| --- | --- | --- |\n| `.data` | complex amplitudes | in index order |\n| `.probabilities()` | ndarray | squared moduli, index order |\n| `.probabilities_dict()` | dict keyed by bitstring | keys run q_(n−1)…q_0 |\n| `.probabilities([0])` | ndarray of length 2 | marginalizes every qubit not listed |\n| `.expectation_value(obs)` | number | takes a `Pauli` or a `SparsePauliOp` |\n\nFor |00⟩ against Z⊗Z + 0.5·(X⊗X) the answer is 1.0: |00⟩ is a +1 eigenstate of ZZ, while XX maps it to the orthogonal |11⟩.",
+      "body_md": "`Statevector` is the simulator you carry in your head, and it runs UNITARY circuits only.\n\n```python\nfrom qiskit.quantum_info import Statevector\nStatevector.from_label('10')     # |q1 q0⟩ — amplitude 1 at index 2\nStatevector.from_int(2, dims=4)  # same state; an int dims is the TOTAL dimension\nsv = Statevector(qc)             # delegates to Statevector.from_instruction(qc)\nsv2 = sv.evolve(op)              # returns a NEW Statevector; sv is untouched\n```\n\n`from_label` also accepts the eigenstate letters '+', '−', 'r', 'l'. Leave a `measure` in the circuit and both constructors raise `QiskitError: Cannot apply instruction with classical bits: measure`. `evolve` accepts a `Pauli`, an `Operator`, a gate or a circuit.\n\nRead-out splits into families that questions love to swap.\n\n| Call | Returns | Note |\n| --- | --- | --- |\n| `.data` | complex amplitudes | in index order |\n| `.probabilities()` | ndarray | squared moduli, index order |\n| `.probabilities_dict()` | dict keyed by bitstring | keys run q_(n−1)…q_0 |\n| `.probabilities([0])` | ndarray of length 2 — not a dict | marginalizes every qubit not listed; a Bell state gives 0.5/0.5 |\n| `.expectation_value(obs)` | number | takes a `Pauli` or a `SparsePauliOp` |\n\nFor |00⟩ against Z⊗Z + 0.5·(X⊗X) the answer is 1.0: |00⟩ is a +1 eigenstate of ZZ, while XX maps it to the orthogonal |11⟩.",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
         "https://quantum.cloud.ibm.com/docs/guides/operator-class"
@@ -33,7 +33,7 @@
     {
       "objective": "s1o2",
       "title": "The phase family, and what equality means",
-      "body_md": "The phase gates leave probabilities untouched and differ only in where the phase lands.\n\n| Gate | Matrix | Phase on the 1 amplitude |\n| --- | --- | --- |\n| `z` | diag(1, −1) | −1 |\n| `s` | diag(1, i) | +i — the square root of Z, identical to `p(π/2)` |\n| `sdg` | diag(1, −i) | −i, the conjugate of `s` |\n| `t` | diag(1, e^(iπ/4)) | the square root of S |\n| `tdg` | diag(1, e^(−iπ/4)) | the conjugate of `t` |\n| `p(θ)` | diag(1, e^(iθ)) | the whole angle |\n| `rz(θ)` | diag(e^(−iθ/2), e^(+iθ/2)) | split symmetrically over both amplitudes |\n\nSo after `h`, `s` gives (|0⟩ + i|1⟩)/√2 and `sdg` gives (|0⟩ − i|1⟩)/√2. RZ and P of the same angle differ by a global phase, never by physics: `rz(π/2)` on |0⟩ records [0.7071−0.7071j, 0] while the probabilities stay [1.0, 0.0]. T on |1⟩ likewise records 0.7071+0.7071j — Qiskit keeps a global phase explicitly. That distinction is exactly what `Operator.equiv` and `==` separate. Setting `qc.global_phase` yourself is unobservable in the same way: exact probabilities and seeded counts come back bit-identical.\n\nTwo memorized formulas answer most probability questions without a simulator.\n\n| For RY(θ) on the zero state | Value |\n| --- | --- |\n| amplitudes | cos(θ/2) and sin(θ/2) |\n| P(outcome 1) | sin²(θ/2) |\n| ⟨Z⟩ | cos θ |",
+      "body_md": "The phase gates leave probabilities untouched and differ only in where the phase lands.\n\n| Gate | Matrix | Phase on the 1 amplitude |\n| --- | --- | --- |\n| `z` | diag(1, −1) | −1 |\n| `s` | diag(1, i) | +i — the square root of Z, identical to `p(π/2)` |\n| `sdg` | diag(1, −i) | −i, the conjugate of `s` |\n| `t` | diag(1, e^(iπ/4)) | the square root of S |\n| `tdg` | diag(1, e^(−iπ/4)) | the conjugate of `t` |\n| `p(θ)` | diag(1, e^(iθ)) | the whole angle |\n| `rz(θ)` | diag(e^(−iθ/2), e^(+iθ/2)) | split symmetrically over both amplitudes |\n\nSo after `h`, `s` gives (|0⟩ + i|1⟩)/√2 and `sdg` gives (|0⟩ − i|1⟩)/√2. RZ and P of the same angle differ by a global phase, never by physics: `rz(π/2)` on |0⟩ records [0.7071−0.7071j, 0] while the probabilities stay [1.0, 0.0]. T on |1⟩ likewise records 0.7071+0.7071j — Qiskit keeps a global phase explicitly. That distinction is exactly what `Operator.equiv` and `==` separate. Setting `qc.global_phase` yourself is unobservable in the same way: exact probabilities and seeded counts come back bit-identical.\n\nTwo memorized formulas answer most probability questions without a simulator.\n\n| For RY(θ) on the zero state | Value |\n| --- | --- |\n| amplitudes | cos(θ/2) and sin(θ/2) |\n| P(outcome 1) | sin²(θ/2) |\n| ⟨Z⟩ | cos θ — 0.5 at θ = π/3, not sin or cos of the half angle |",
       "citations": [
         "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SGate",
         "https://quantum.cloud.ibm.com/docs/guides/operator-class"
@@ -44,7 +44,7 @@
     {
       "objective": "s1o1",
       "group": "core",
-      "fact_md": "Pauli labels are little-endian: `Pauli('IX')` is I ⊗ X — X on qubit 0, identity on qubit 1 — and indexing the object returns the qubit-0 factor first.",
+      "fact_md": "`Pauli('IX')` is I ⊗ X — X on qubit 0, identity on qubit 1 — and indexing the object returns the qubit-0 factor first.",
       "source": {
         "type": "proof",
         "ref": "s1-q012"
@@ -62,16 +62,7 @@
     {
       "objective": "s1o1",
       "group": "core",
-      "fact_md": "`Pauli('XX').commutes(Pauli('ZZ'))` is True (two anticommuting positions, even) and `Pauli('XI').commutes(Pauli('ZZ'))` is False (one position, odd).",
-      "source": {
-        "type": "proof",
-        "ref": "s1-q017"
-      }
-    },
-    {
-      "objective": "s1o1",
-      "group": "core",
-      "fact_md": "`SparsePauliOp.simplify()` SUMS the coefficients of duplicate terms (Z with 1 and Z with 2 becomes Z with 3) — it never averages them and never keeps only the largest.",
+      "fact_md": "`SparsePauliOp.simplify()` SUMS duplicate terms' coefficients (Z with 1 and Z with 2 becomes Z with 3), never averaging them or keeping only the largest.",
       "source": {
         "type": "proof",
         "ref": "s1-q018"
@@ -80,16 +71,7 @@
     {
       "objective": "s1o1",
       "group": "trap",
-      "fact_md": "`Pauli('XZ').to_matrix()` is exactly `np.kron(X, Z)`, so label order and tensor order coincide — the convention stays invisible until a question asks which qubit an operator acts on.",
-      "source": {
-        "type": "proof",
-        "ref": "s1-q010"
-      }
-    },
-    {
-      "objective": "s1o1",
-      "group": "trap",
-      "fact_md": "To place Z on qubit 0 you must write `Pauli('IZ')` — `Pauli('ZI')` is the opposite operator, and `.adjoint()` does not reverse qubit order (Hermitian labels come back unchanged).",
+      "fact_md": "Z on qubit 0 is `Pauli('IZ')`; `Pauli('ZI')` is the opposite operator, and `.adjoint()` does not reverse qubit order (Hermitian labels come back unchanged).",
       "source": {
         "type": "proof",
         "ref": "s1-q020"
@@ -98,7 +80,7 @@
     {
       "objective": "s1o2",
       "group": "core",
-      "fact_md": "`Operator(qc)` for an H on qubit 0 of a two-qubit circuit is the 4×4 matrix I ⊗ H — qubit 0 sits on the RIGHT of the tensor product, not the left.",
+      "fact_md": "`Operator(qc)` for H on qubit 0 of a two-qubit circuit is I ⊗ H — qubit 0 sits on the RIGHT of the tensor product.",
       "source": {
         "type": "proof",
         "ref": "s1-q037"
@@ -152,7 +134,7 @@
     {
       "objective": "s1o2",
       "group": "trap",
-      "fact_md": "`Statevector.from_instruction` and `Statevector(qc)` both raise `QiskitError: Cannot apply instruction with classical bits: measure` on a measured circuit; there is no `shots`/`backend` parameter and appending a save instruction does not help.",
+      "fact_md": "On a measured circuit, `Statevector(qc)` and `from_instruction` offer no `shots`/`backend` parameter, and appending a save instruction does not avoid the `QiskitError`.",
       "source": {
         "type": "proof",
         "ref": "s1-q036"
@@ -161,19 +143,10 @@
     {
       "objective": "s1o2",
       "group": "trap",
-      "fact_md": "`probabilities_dict()` keys are q_(n−1)…q_0 bitstrings: applying X to qubit 0 of a two-qubit circuit gives the key `'01'` with probability 1.0, never `'10'` and never an integer index.",
+      "fact_md": "X on qubit 0 of a two-qubit circuit gives the `probabilities_dict()` key `'01'` with probability 1.0 — never `'10'`, never an integer index.",
       "source": {
         "type": "proof",
         "ref": "s1-q031"
-      }
-    },
-    {
-      "objective": "s1o2",
-      "group": "trap",
-      "fact_md": "`sv.probabilities([0])` marginalizes over the other qubits and returns an ndarray of length 2 (a Bell state gives 0.5/0.5) — not a dict.",
-      "source": {
-        "type": "proof",
-        "ref": "s1-q042"
       }
     },
     {
@@ -183,15 +156,6 @@
       "source": {
         "type": "proof",
         "ref": "s1-q033"
-      }
-    },
-    {
-      "objective": "s1o2",
-      "group": "trap",
-      "fact_md": "For RY(θ) on |0⟩ the expectation value is ⟨Z⟩ = cos θ — at θ = π/3 that is 0.5, not sin or cos of the half angle.",
-      "source": {
-        "type": "proof",
-        "ref": "s1-q040"
       }
     },
     {
@@ -239,6 +203,6 @@
     "generated": "2026-08-15",
     "model": "claude-opus (v2 study rewrite agent)",
     "fact_checked": true,
-    "notes": "v2 claim-preserving rewrite of fact-checked v1 (generated 2026-07-26, claude-opus-5 s1 quick-study generation agent). No new factual claims: every sentence, table cell and code line here restates content already present in the v1 primers or facts of this file, condensed. Every kept fact was re-read against its v1 wording before being shortened, and each kept fact retains its original source unchanged; no fact was merged across two different sources. Structural changes only: the two long v1 primers were split into four teaching units (s1o1 label/combination methods + SparsePauliOp/commutation; s1o2 Statevector construction/read-out + phase family/equality), with the Pauli combination methods, the commutation parity examples, the phase-gate matrices and the RY(θ) formulas moved into pipe tables. Facts 27 -> 17, triaged into core/trap. Deleted as covered in full by a primer table or as edge-case detail: the tensor/expand caller-position fact (s1-q016), the compose/dot order fact (citation, guides/operator-class, still cited by the s1o1 primer), Statevector.from_label index-2 (s1-q030), from_int integer dims (s1-q038), S = sqrt(Z) = p(pi/2) (citation, SGate API page, still cited by the s1o2 phase primer), the sdg-after-H phase (s1-q024), T on |1> recording 0.7071+0.7071j (s1-q022), RZ(pi/2) splitting the phase (s1-q026), the RY probability instance sin^2(theta/2) = 0.25 (s1-q039) and the unobservable qc.global_phase (s1-q027). fact_checked stays true: the v1 file was fact-checked against stored proof artifacts and fetched documentation (see the v1 note preserved below), and this pass introduced no claim that was not already in it. Original v1 provenance note: \"Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json; the two citation-sourced facts were checked by curl -L fetching the page text. Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0) or read off the fetched documentation page. The 2026-07-26 official-alignment fix wave added s1-q048/q049/q050 (circuit library) and the task #28 figure wave added s1-q051/q052, all read off executed proof artifacts.\" Study absorption 2026-10-02: appended 3 new facts from the October R2/figure waves, each re-verified by re-execution in the pinned venv (qiskit 2.5.0 / runtime 0.48.0) and marked per-fact `fact_checked: true`; no existing primer, fact or checklist item changed."
+    "notes": "v2 claim-preserving rewrite of fact-checked v1 (generated 2026-07-26, claude-opus-5 s1 quick-study generation agent). No new factual claims: every sentence, table cell and code line here restates content already present in the v1 primers or facts of this file, condensed. Every kept fact was re-read against its v1 wording before being shortened, and each kept fact retains its original source unchanged; no fact was merged across two different sources. Structural changes only: the two long v1 primers were split into four teaching units (s1o1 label/combination methods + SparsePauliOp/commutation; s1o2 Statevector construction/read-out + phase family/equality), with the Pauli combination methods, the commutation parity examples, the phase-gate matrices and the RY(θ) formulas moved into pipe tables. Facts 27 -> 17, triaged into core/trap. Deleted as covered in full by a primer table or as edge-case detail: the tensor/expand caller-position fact (s1-q016), the compose/dot order fact (citation, guides/operator-class, still cited by the s1o1 primer), Statevector.from_label index-2 (s1-q030), from_int integer dims (s1-q038), S = sqrt(Z) = p(pi/2) (citation, SGate API page, still cited by the s1o2 phase primer), the sdg-after-H phase (s1-q024), T on |1> recording 0.7071+0.7071j (s1-q022), RZ(pi/2) splitting the phase (s1-q026), the RY probability instance sin^2(theta/2) = 0.25 (s1-q039) and the unobservable qc.global_phase (s1-q027). fact_checked stays true: the v1 file was fact-checked against stored proof artifacts and fetched documentation (see the v1 note preserved below), and this pass introduced no claim that was not already in it. Original v1 provenance note: \"Every proof-sourced fact was checked against the stored evidence in data/proofs/<qid>.json; the two citation-sourced facts were checked by curl -L fetching the page text. Primer claims not covered by a proof were re-executed on the pinned stack (qiskit 2.5.0 / aer 0.17.2 / runtime 0.48.0) or read off the fetched documentation page. The 2026-07-26 official-alignment fix wave added s1-q048/q049/q050 (circuit library) and the task #28 figure wave added s1-q051/q052, all read off executed proof artifacts.\" Study absorption 2026-10-02: appended 3 new facts from the October R2/figure waves, each re-verified by re-execution in the pinned venv (qiskit 2.5.0 / runtime 0.48.0) and marked per-fact `fact_checked: true`; no existing primer, fact or checklist item changed.; concision pass 2026-10-10: 1125→999 prose words, claim-preserving (deleted as fully covered: s1-q017 commutes examples→s1o1 commutation table; s1-q010 XZ=kron(X,Z)→s1o1 primer code; s1-q042 probabilities([0])→s1o2 read-out table; s1-q040 <Z>=cos θ→s1o2 RY table)"
   }
 }

@@ -62,7 +62,7 @@
 
 .difficulty {
   letter-spacing: 0.15em;
-  color: var(--ifm-color-emphasis-600);
+  color: var(--ifm-color-emphasis-700);
 }
 
 .options {
@@ -136,7 +136,7 @@
 
 .kbdHint {
   font-size: 0.75rem;
-  color: var(--ifm-color-emphasis-500);
+  color: var(--ifm-color-emphasis-700);
 }
 
 .result {
@@ -188,7 +188,7 @@
 }
 
 .proofMeta {
-  color: var(--ifm-color-emphasis-600);
+  color: var(--ifm-color-emphasis-700);
   font-size: 0.75rem;
   margin-top: 0.4rem;
 }
@@ -207,7 +207,7 @@
   align-items: center;
   margin-top: 0.75rem;
   font-size: 0.75rem;
-  color: var(--ifm-color-emphasis-500);
+  color: var(--ifm-color-emphasis-700);
   gap: 0.75rem;
   flex-wrap: wrap;
 }
@@ -248,7 +248,7 @@
   border-radius: 12px;
   padding: 1.5rem;
   text-align: center;
-  color: var(--ifm-color-emphasis-600);
+  color: var(--ifm-color-emphasis-700);
   margin: 1rem 0;
 }
 

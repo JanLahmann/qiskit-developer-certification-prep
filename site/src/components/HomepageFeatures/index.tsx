@@ -54,7 +54,7 @@ function Feature({title, emoji, description}: FeatureItem) {
         </span>
       </div>
       <div className="text--center padding-horiz--md">
-        <Heading as="h3">{title}</Heading>
+        <Heading as="h2" className={styles.featureTitle}>{title}</Heading>
         <p>{description}</p>
       </div>
     </div>

@@ -16,3 +16,8 @@
   line-height: 1.2;
   margin-bottom: 0.5rem;
 }
+
+/* h2 for a valid heading outline under the hero h1, sized like the old h3. */
+.featureTitle {
+  font-size: var(--ifm-h3-font-size);
+}

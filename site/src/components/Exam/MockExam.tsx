@@ -178,8 +178,9 @@ export default function MockExam(): React.ReactElement {
     [phase],
   );
 
+  // Until the bank arrives, assume a full-size bank so the intro renders at once.
   const bankTotal = useMemo(
-    () => (sections ?? []).reduce((a, s) => a + s.questions.length, 0),
+    () => (sections ? sections.reduce((a, s) => a + s.questions.length, 0) : 68),
     [sections],
   );
 
@@ -264,10 +265,6 @@ export default function MockExam(): React.ReactElement {
     return () => window.removeEventListener('beforeunload', h);
   }, [phase]);
 
-  if (!sections) {
-    return <div className={styles.wrap}>Loading question bank…</div>;
-  }
-
   // ---------- intro ----------
   if (phase === 'intro') {
     const last = history[history.length - 1];
@@ -324,9 +321,9 @@ export default function MockExam(): React.ReactElement {
           <button
             type="button"
             className="button button--primary button--lg"
-            disabled={bankTotal === 0}
+            disabled={!sections || bankTotal === 0}
             onClick={start}>
-            Start exam →
+            {sections ? 'Start exam →' : 'Loading question bank…'}
           </button>
           {last ? (
             <p className={styles.trend}>
@@ -340,7 +337,7 @@ export default function MockExam(): React.ReactElement {
     );
   }
 
-  if (!paper) {
+  if (!sections || !paper) {
     return <div className={styles.wrap} />;
   }
 

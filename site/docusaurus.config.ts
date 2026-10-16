@@ -3,6 +3,30 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import {familyFooterColumn} from './family-footer';
 
+// Prism github/dracula with token colors darkened/lightened to WCAG AA (4.5:1)
+// against their code-block backgrounds; Lighthouse flagged the stock ones.
+const AA_LIGHT: Record<string, string> = {
+  '#999988': '#57606a', // comment
+  '#e3116c': '#b3125a', // string
+  '#36acaa': '#0f7b78', // number, boolean, constant, ...
+  '#00a4db': '#006b9a', // atrule, attr-name
+  '#d73a49': '#c02d3a', // function, tag
+};
+const lightCodeTheme = {
+  ...prismThemes.github,
+  styles: prismThemes.github.styles.map((s) => ({
+    ...s,
+    style: {...s.style, color: AA_LIGHT[s.style.color ?? ''] ?? s.style.color},
+  })),
+};
+const darkCodeTheme = {
+  ...prismThemes.dracula,
+  styles: prismThemes.dracula.styles.map((s) => ({
+    ...s,
+    style: s.types.includes('comment') ? {...s.style, color: '#8b9bd0'} : s.style,
+  })),
+};
+
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
@@ -138,8 +162,8 @@ const config: Config = {
       copyright: `Unofficial community project — not affiliated with, endorsed by, or sponsored by IBM. Qiskit is a trademark of IBM. Practice content is generated from public exam objectives and open documentation, never from actual exam content. Code Apache-2.0 · content CC BY-SA 4.0.`,
     },
     prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      theme: lightCodeTheme,
+      darkTheme: darkCodeTheme,
       additionalLanguages: ['python', 'json', 'bash'],
     },
   } satisfies Preset.ThemeConfig,

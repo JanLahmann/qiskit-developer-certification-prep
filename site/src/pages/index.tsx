@@ -1,8 +1,8 @@
 import type {ReactNode} from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
+import Head from '@docusaurus/Head';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import ProgressOverview from '@site/src/components/Progress/ProgressOverview';
 import Heading from '@theme/Heading';
@@ -31,12 +31,43 @@ function HomepageHeader() {
   );
 }
 
+// schema.org: lets search engines show CertiQ as a free learning resource for
+// the certification. Facts only — no ratings, no claims of IBM affiliation.
+const STRUCTURED_DATA = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: 'CertiQ',
+      url: 'https://certiq.dev/',
+    },
+    {
+      '@type': 'LearningResource',
+      name: 'CertiQ — Qiskit v2.x Developer certification prep',
+      url: 'https://certiq.dev/',
+      description:
+        'Unofficial, free prep for IBM exam C1000-179: guided study path, machine-verified question bank, and a mock exam that follows the official section weights.',
+      isAccessibleForFree: true,
+      inLanguage: 'en',
+      learningResourceType: ['Practice exam', 'Study guide', 'Flashcards'],
+      educationalLevel: 'Professional',
+      teaches: 'Qiskit SDK v2.x and Qiskit Runtime',
+      about: {
+        '@type': 'EducationalOccupationalCredential',
+        name: 'IBM Certified Quantum Computation using Qiskit v2.X Developer - Associate (C1000-179)',
+      },
+    },
+  ],
+};
+
 export default function Home(): ReactNode {
-  const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={siteConfig.title}
+      title="Qiskit Developer Certification (C1000-179) Prep"
       description="Unofficial, machine-verified prep platform for the IBM Qiskit v2.x Developer certification (C1000-179): guided study path, verified question bank, faithful mock exam.">
+      <Head>
+        <script type="application/ld+json">{JSON.stringify(STRUCTURED_DATA)}</script>
+      </Head>
       <HomepageHeader />
       <main>
         <div className="container">

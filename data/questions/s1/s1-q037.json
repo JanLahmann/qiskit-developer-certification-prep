@@ -42,8 +42,8 @@
       "E": "Direct-sum vs tensor-product confusion: an extra qubit multiplies the dimension by tensoring (2×2 → 4×4 with every entry replicated); it does not stack a separate block on the diagonal alongside the gate."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
-      "https://quantum.cloud.ibm.com/docs/guides/operator-class"
+      "https://quantum.cloud.ibm.com/docs/guides/operator-class",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E direct-sum-vs-tensor-product confusion | realism audit 2026-10-01: stem 16->14 words; difficulty 3->2; proof re-verified, answer unchanged"
+    "notes": "pool wave: +E direct-sum-vs-tensor-product confusion | realism audit 2026-10-01: stem 16->14 words; difficulty 3->2; proof re-verified, answer unchanged | adversarial A3 2026-10-16: citations replaced with pages verified to state the fact: operator-class (A.tensor(B): B on subsystem 0, A on subsystem 1), quantum_info little-endian note"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

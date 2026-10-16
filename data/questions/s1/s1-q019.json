@@ -28,7 +28,7 @@
     },
     {
       "key": "E",
-      "text": "−1.0 — bit 0 maps to the −1 eigenvalue of Z"
+      "text": "1.25 — the squared coefficients add: 1² + 0.5²"
     }
   ],
   "answer": [
@@ -40,11 +40,11 @@
       "A": "Assumes both Pauli terms have expectation 1. ⟨XX⟩ on |00⟩ is 0 (it maps the state to an orthogonal one), so the 0.5 term drops out.",
       "B": "The terms do not cancel; ⟨ZZ⟩ = 1 stands on its own while ⟨XX⟩ = 0.",
       "C": "It is the Z⊗Z term (not X⊗X) that contributes here; X⊗X has zero expectation on |00⟩.",
-      "E": "Eigenvalue-convention flip: in Qiskit Z|0⟩ = +|0⟩, so |00⟩ gives ⟨ZZ⟩ = +1. The 0 ↔ −1 mapping comes from Ising/QUBO encodings, not from the Z operator."
+      "E": "Second-moment confusion: 1² + 0.5² = 1.25 is ⟨O²⟩ on |00⟩ (the cross term ZZ·XX = −YY has zero expectation there), the quantity used for the variance ⟨O²⟩ − ⟨O⟩² = 0.25, not ⟨O⟩ itself. The expectation is linear in the coefficients: 1·⟨ZZ⟩ + 0.5·⟨XX⟩ = 1·1 + 0.5·0 = 1.0."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp"
     ]
   },
   "proof": {
@@ -53,14 +53,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.quantum_info import Statevector, SparsePauliOp\nO = SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"XX\", 0.5)])\nval = complex(Statevector.from_label(\"00\").expectation_value(O))\nclaims = {\"D\": 1.0, \"A\": 1.5, \"B\": 0.0, \"C\": 0.5, \"E\": -1.0}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    match = bool(abs(val - c) < 1e-9)\n    evidence[k] = f\"<00|O|00> = {val.real:.4f}; option {k} claims {c} -> match={match}\"\n    if match:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": val.real}})\n"
+    "proof_script": "from qiskit.quantum_info import Statevector, SparsePauliOp\nO = SparsePauliOp.from_list([(\"ZZ\", 1.0), (\"XX\", 0.5)])\nval = complex(Statevector.from_label(\"00\").expectation_value(O))\nclaims = {\"D\": 1.0, \"A\": 1.5, \"B\": 0.0, \"C\": 0.5, \"E\": 1.25}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    match = bool(abs(val - c) < 1e-9)\n    evidence[k] = f\"<00|O|00> = {val.real:.4f}; option {k} claims {c} -> match={match}\"\n    if match:\n        proven.append(k)\nval_sq = complex(Statevector.from_label(\"00\").expectation_value(O.compose(O).simplify()))\nevidence[\"E\"] += f\"  (<00|O^2|00> = {val_sq.real:.4f}: the squared-coefficient sum is the second moment, not <O>)\"\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": val.real, \"second_moment\": val_sq.real}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (absolute removed from distractor C) | pool wave: +E Z-eigenvalue sign-convention flip (bit 0 read as −1) | realism audit 2026-10-01: stem 17->15 words; difficulty 2 confirmed; proof re-verified, answer unchanged"
+    "notes": "absolute-wording tell cleared (absolute removed from distractor C) | pool wave: +E Z-eigenvalue sign-convention flip (bit 0 read as −1) | realism audit 2026-10-01: stem 17->15 words; difficulty 2 confirmed; proof re-verified, answer unchanged | adversarial A3 2026-10-16: distractor E (-1.0, 'bit 0 -> -1 eigenvalue') was unreachable: that misconception gives (-1)(-1)=+1 = the key's value; replaced by 1.25 = <O^2> second-moment confusion, proof refutes it; citations replaced with pages verified to state the fact (qiskit.quantum_info.Statevector, qiskit.quantum_info.SparsePauliOp)"
   },
   "freshness": {
     "verified_against": {
@@ -69,7 +69,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

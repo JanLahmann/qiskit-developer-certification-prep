@@ -43,12 +43,12 @@
       "D": "T is diagonal but not the identity: it multiplies the |1⟩ amplitude by e^{iπ/4}. Diagonal does not mean 'no effect' — only |0⟩ is left untouched.",
       "A": "A phase of i = e^{iπ/2} is the S gate. T applies half that angle, e^{iπ/4}.",
       "B": "T is diagonal; it never creates a superposition. It only adjusts the phase of |1⟩.",
-      "E": "T-vs-RZ half-angle confusion: RZ(θ) splits the phase as diag(e^{−iθ/2}, e^{+iθ/2}), while T = P(π/4) = diag(1, e^{iπ/4}) puts the full angle on |1⟩. The two differ by the global phase e^{−iπ/8}, which is plainly visible in a printed statevector.",
+      "E": "T-vs-RZ half-angle confusion: RZ(θ) splits the phase as diag(e^{−iθ/2}, e^{+iθ/2}), while T = P(π/4) = diag(1, e^{iπ/4}) puts the full angle on |1⟩. The two differ by the global phase e^{−iπ/8}, which is plainly visible in a printed statevector. Docs-reader trap: the TGate page calls T 'the π/8 gate' because it equals exp(iπ/8 Z) up to a global phase; its matrix is still diag(1, e^{iπ/4}).",
       "F": "Phase-slot confusion: T is diag(1, e^{iπ/4}), so the |0⟩ amplitude is multiplied by 1. After the X gate the state is |1⟩ anyway, so the |0⟩ amplitude stays 0."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.TGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.RZGate"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "length tell cleared (correct option trimmed, distractor D given substance) | pool wave: +E T-vs-RZ half-angle confusion, +F phase-slot confusion (phase on |0⟩) | realism audit 2026-10-01: stem 19->14 words; difficulty 2->1; proof re-verified, answer unchanged"
+    "notes": "length tell cleared (correct option trimmed, distractor D given substance) | pool wave: +E T-vs-RZ half-angle confusion, +F phase-slot confusion (phase on |0⟩) | realism audit 2026-10-01: stem 19->14 words; difficulty 2->1; proof re-verified, answer unchanged | adversarial A3 2026-10-16: distractor E now answers the TGate page's 'π/8 gate' naming trap; citations replaced with pages verified to state the fact (qiskit.circuit.library.TGate, qiskit.circuit.library.RZGate)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

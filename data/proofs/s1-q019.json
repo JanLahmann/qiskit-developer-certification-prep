@@ -9,10 +9,11 @@
       "A": "<00|O|00> = 1.0000; option A claims 1.5 -> match=False",
       "B": "<00|O|00> = 1.0000; option B claims 0.0 -> match=False",
       "C": "<00|O|00> = 1.0000; option C claims 0.5 -> match=False",
-      "E": "<00|O|00> = 1.0000; option E claims -1.0 -> match=False"
+      "E": "<00|O|00> = 1.0000; option E claims 1.25 -> match=False  (<00|O^2|00> = 1.2500: the squared-coefficient sum is the second moment, not <O>)"
     },
     "observed": {
-      "expectation": 1.0
+      "expectation": 1.0,
+      "second_moment": 1.25
     }
   },
   "versions": {
@@ -21,9 +22,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 6.88,
+  "wall_seconds": 5.21,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"D\": \"<00|O|00> = 1.0000; option D claims 1.0 -> match=True\", \"A\": \"<00|O|00> = 1.0000; option A claims 1.5 -> match=False\", \"B\": \"<00|O|00> = 1.0000; option B claims 0.0 -> match=False\", \"C\": \"<00|O|00> = 1.0000; option C claims 0.5 -> match=False\", \"E\": \"<00|O|00> = 1.0000; option E claims -1.0 -> match=False\"}, \"observed\": {\"expectation\": 1.0}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"D\": \"<00|O|00> = 1.0000; option D claims 1.0 -> match=True\", \"A\": \"<00|O|00> = 1.0000; option A claims 1.5 -> match=False\", \"B\": \"<00|O|00> = 1.0000; option B claims 0.0 -> match=False\", \"C\": \"<00|O|00> = 1.0000; option C claims 0.5 -> match=False\", \"E\": \"<00|O|00> = 1.0000; option E claims 1.25 -> match=False  (<00|O^2|00> = 1.2500: the squared-coefficient sum is the second moment, not <O>)\"}, \"observed\": {\"expectation\": 1.0, \"second_moment\": 1.25}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

@@ -36,14 +36,14 @@
   "explanation": {
     "correct": "With control = qubit 0, the target (qubit 1) is flipped exactly when qubit 0 = 1. In |q1 q0⟩ notation, qubit 0 = 1 holds for |01⟩ and |11⟩, so |01⟩ ↔ |11⟩ while |00⟩ and |10⟩ (qubit 0 = 0) are untouched.",
     "distractors": {
-      "C": "This treats qubit 1 as the control. The control is qubit 0, so the flip is conditioned on qubit 0 = 1, not qubit 1.",
+      "C": "This treats qubit 1 as the control. The control is qubit 0, so the flip is conditioned on qubit 0 = 1, not qubit 1. Docs-reader trap: the CXGate page's 'textbook matrix' note shows exactly this mapping, but for CX with q_1 as the control, not `cx(0, 1)`.",
       "D": "CX is not a SWAP; it changes only the target when the control is 1, leaving |00⟩/|10⟩ fixed. SWAP would move population differently.",
       "A": "CX flips one qubit (the target), not both. |11⟩ maps to |01⟩, not |00⟩.",
       "E": "Symmetric-CX misconception: CX is not an OR gate on the pair. It is directional — only the control (qubit 0 here) decides, and the target is flipped, so |10⟩ (control 0) is left untouched."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+      "https://quantum.cloud.ibm.com/docs/guides/bit-ordering",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.CXGate"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "length + stem-echo tells cleared (correct trimmed, distractor C carries the API vocabulary) | pool wave: +E symmetric/OR-like CX misconception | realism audit 2026-10-01: stem 24->12 words; difficulty 2 confirmed; proof re-verified, answer unchanged"
+    "notes": "length + stem-echo tells cleared (correct trimmed, distractor C carries the API vocabulary) | pool wave: +E symmetric/OR-like CX misconception | realism audit 2026-10-01: stem 24->12 words; difficulty 2 confirmed; proof re-verified, answer unchanged | adversarial A3 2026-10-16: distractor C now answers the CXGate page's textbook-matrix trap; citations replaced with pages verified to state the fact (bit-ordering, qiskit.circuit.library.CXGate)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

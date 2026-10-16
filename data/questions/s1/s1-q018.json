@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "What does this code print?",
+  "stem": "What does `op.simplify()` return?",
   "code": "from qiskit.quantum_info import SparsePauliOp\n\nop = SparsePauliOp.from_list([(\"Z\", 1), (\"Z\", 2), (\"X\", 1)])\nprint(op.simplify())",
   "options": [
     {
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "SparsePauliOp(['Z', 'Z', 'X'], coeffs=[1, 2, 1]) — from_list merges by default, so simplify does nothing"
+      "text": "SparsePauliOp(['Z', 'Z', 'X'], coeffs=[1, 2, 1]) — by default simplify just prunes zero coefficients"
     },
     {
       "key": "E",
@@ -40,15 +40,14 @@
   "explanation": {
     "correct": "`simplify()` combines repeated Pauli terms by summing their coefficients: the two 'Z' terms (1 + 2) become 3, and 'X' stays 1, yielding coeffs [3, 1].",
     "distractors": {
-      "D": "`from_list` does NOT merge duplicates; it stores all three terms verbatim. It is `simplify()` that reduces them to two.",
+      "D": "Zero-pruning-only misconception: `simplify` does both jobs its docstring names — it combines duplicate Pauli strings (summing their coefficients) and then removes terms whose total is zero. `from_list` stores all three terms verbatim, so it is `simplify()` that merges them into two.",
       "A": "Duplicate terms are summed, not deduplicated — 1 + 2 = 3, not 2.",
       "B": "Only terms with the SAME Pauli string are summed. 'X' is a different string, so its coefficient stays 1, not 2.",
       "E": "Averaging misconception: `simplify` sums the coefficients of identical Pauli strings (1 + 2 = 3); it never averages them.",
-      "F": "Truncation misconception: `simplify` only removes terms whose coefficient is zero (within `atol`). A term with coefficient 1 survives, so the X term is kept alongside the merged Z term."
+      "F": "Truncation misconception: the only terms `simplify` discards are those whose summed coefficient is zero (within `atol`). A term with coefficient 1 survives, so the X term is kept alongside the merged Z term."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp"
     ]
   },
   "proof": {
@@ -62,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor D now hedges, so the correct option needs no absolute) | pool wave: +E duplicate-averaging misconception, +F small-term-truncation misconception | realism audit 2026-10-01: stem kept; difficulty 2->1; proof re-verified, answer unchanged"
+    "notes": "absolute-wording tell cleared (distractor D now hedges, so the correct option needs no absolute) | pool wave: +E duplicate-averaging misconception, +F small-term-truncation misconception | realism audit 2026-10-01: stem kept; difficulty 2->1; proof re-verified, answer unchanged | adversarial A3 2026-10-16: stem 'print' -> 'return' (printed repr shows 3.+0.j); distractor D's self-contradictory rationale (from_list merges yet 3 terms shown) rewritten as a zero-pruning-only misconception; citations replaced with pages verified to state the fact (qiskit.quantum_info.SparsePauliOp)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +72,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

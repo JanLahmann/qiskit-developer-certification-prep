@@ -34,7 +34,7 @@
     "B"
   ],
   "explanation": {
-    "correct": "A global phase multiplies every amplitude by the same unit-modulus factor e^{iθ}. Since measurement probabilities are |amplitude|², the common factor cancels, so the counts are statistically identical to the phase-free circuit. Global phase is physically unobservable.",
+    "correct": "A global phase multiplies every amplitude by the same unit-modulus factor e^{iθ}. Since measurement probabilities are |amplitude|², the common factor cancels, so the counts are statistically identical to the phase-free circuit. Global phase is physically unobservable. (The QuantumCircuit docs note that global_phase can matter when the circuit is turned into a gate that is then controlled — there it becomes a relative phase. A circuit that is simply measured is unaffected.)",
     "distractors": {
       "C": "A global phase multiplies ALL amplitudes equally; it does not preferentially add weight to |1⟩. Relative frequencies are unchanged.",
       "D": "`global_phase` is a scalar factor on the whole state, not a single-qubit rotation. Unlike RY(π/4), it moves no population between basis states.",
@@ -42,8 +42,8 @@
       "E": "Phase-as-scale-factor misconception: e^{iπ/4} has modulus 1, so |amplitude|² is untouched — the probabilities still sum to 1 and every shot still returns a bitstring. Taking the real part cos(π/4) as a scale factor is the error."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+      "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/limitations-on-quantum-information",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 4,
+    "adversarial_rounds": 5,
     "reviewed": false,
-    "notes": "high-severity length tell + stem-echo tell cleared (correct trimmed, distractors re-voiced) | pool wave: +E global-phase-as-scale-factor misconception | realism audit 2026-10-01: stem 32->19 words; difficulty 2->1; proof re-verified, answer unchanged | adversarial review 2026-10-02: drift-lint finding on option C (phase=0.506) was an execution-derived false positive (the measured P(1) of the seeded run, not stale text); cleared the R3 way by recording p1_gp / p1_ref / p1_ry in the proof's observed block. No claim, option or evidence wording changed."
+    "notes": "high-severity length tell + stem-echo tell cleared (correct trimmed, distractors re-voiced) | pool wave: +E global-phase-as-scale-factor misconception | realism audit 2026-10-01: stem 32->19 words; difficulty 2->1; proof re-verified, answer unchanged | adversarial review 2026-10-02: drift-lint finding on option C (phase=0.506) was an execution-derived false positive (the measured P(1) of the seeded run, not stale text); cleared the R3 way by recording p1_gp / p1_ref / p1_ry in the proof's observed block. No claim, option or evidence wording changed. | adversarial A3 2026-10-16: correct explanation now answers the QuantumCircuit docs' 'global_phase can have some impact' trap; citations replaced with pages verified to state the fact (limitations-on-quantum-information, qiskit.circuit.QuantumCircuit)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

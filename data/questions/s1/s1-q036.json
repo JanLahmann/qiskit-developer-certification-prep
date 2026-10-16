@@ -42,8 +42,7 @@
       "E": "Constructor-vs-classmethod misconception: `Statevector(circuit)` delegates to the very same instruction evolution, so it raises the identical error. No entry point can simulate a measurement into a pure state."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector"
     ]
   },
   "proof": {
@@ -57,9 +56,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "length tell cleared; distractor A no longer hangs on an unstated shots default | pool wave: +E constructor-vs-classmethod misconception (Statevector(qc) tolerating measurement) | realism audit 2026-10-01: stem 22->13 words; difficulty 3->1; proof re-verified, answer unchanged"
+    "notes": "length tell cleared; distractor A no longer hangs on an unstated shots default | pool wave: +E constructor-vs-classmethod misconception (Statevector(qc) tolerating measurement) | realism audit 2026-10-01: stem 22->13 words; difficulty 3->1; proof re-verified, answer unchanged | adversarial A3 2026-10-16: citations replaced with pages verified to state the fact: Statevector (from_instruction raises QiskitError on instructions invalid for statevector simulation)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +67,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

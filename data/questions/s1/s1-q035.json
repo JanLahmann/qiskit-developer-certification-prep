@@ -42,8 +42,8 @@
       "E": "No-op-tensor misconception: tensoring is not multiplication by one — combining two single-qubit states always yields a two-qubit, four-amplitude state, whatever the labels are."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector",
+      "https://quantum.cloud.ibm.com/docs/guides/operator-class"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E no-op-tensor misconception (tensoring with |0⟩ read as identity) | realism audit 2026-10-01: stem 11->8 words; difficulty 3->2; proof re-verified, answer unchanged"
+    "notes": "pool wave: +E no-op-tensor misconception (tensoring with |0⟩ read as identity) | realism audit 2026-10-01: stem 11->8 words; difficulty 3->2; proof re-verified, answer unchanged | adversarial A3 2026-10-16: citations replaced with pages verified to state the fact: Statevector (tensor = self ⊗ other, expand = other ⊗ self), operator-class (A.tensor(B): B on subsystem 0)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

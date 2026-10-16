@@ -66,12 +66,12 @@
     "distractors": {
       "A": "S versus S-dagger: `sdg` would multiply the |11> amplitude by -i, which flips the sign of both imaginary off-diagonal bars relative to the drawing this code produces.",
       "C": "`s` is a quarter turn, not a half turn: `z` would multiply |11> by -1, keeping the coherence real and negative and leaving the imaginary panel flat.",
-      "D": "Entanglement dropped: replacing `cx` with a second `h` gives a product state, whose density matrix has a bar in every one of the sixteen cells instead of only on the |00>/|11> block.",
+      "D": "Entanglement dropped: replacing `cx` with a second `h` gives a product state, whose density matrix has a nonzero entry of magnitude 0.25 in every one of the sixteen cells (split between the real and imaginary panels) instead of only on the |00>/|11> block.",
       "E": "Treats the phase gate as unobservable: without `s` the coherence stays real and positive, so the imaginary panel would be flat. The phase here is relative, not global, so it does show up."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_state_city",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SGate"
     ]
   },
   "proof": {
@@ -80,14 +80,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import DensityMatrix, Statevector\n\n# The five states MUST mirror data/figures/s1-q052/generate.py — the rendered\n# figures are plot_state_city drawings of exactly these states, and a city plot\n# IS the density matrix (real part in the left panel, imaginary in the right).\n\n\ndef state(*gates):\n    qc = QuantumCircuit(2)\n    for name, *args in gates:\n        getattr(qc, name)(*args)\n    return Statevector(qc)\n\n\ndef stem_state():\n    return state((\"h\", 0), (\"cx\", 0, 1), (\"s\", 1))\n\n\nVARIANTS = {\n    \"A\": state((\"h\", 0), (\"cx\", 0, 1), (\"sdg\", 1)),\n    \"B\": stem_state(),\n    \"C\": state((\"h\", 0), (\"cx\", 0, 1), (\"z\", 1)),\n    \"D\": state((\"h\", 0), (\"h\", 1), (\"s\", 1)),\n    \"E\": state((\"h\", 0), (\"cx\", 0, 1)),\n}\n\n\ndef drawn(st):\n    \"\"\"What plot_state_city puts on its two panels: Re(rho) and Im(rho).\"\"\"\n    rho = np.round(DensityMatrix(st).data, 6)\n    return (tuple(map(tuple, rho.real.tolist())), tuple(map(tuple, rho.imag.tolist())))\n\n\ndef describe(bars):\n    re, im = bars\n    n_re = sum(1 for row in re for v in row if abs(v) > 1e-9)\n    n_im = sum(1 for row in im for v in row if abs(v) > 1e-9)\n    corner = re[0][3]\n    corner_i = im[0][3]\n    return (f\"real panel has {n_re} non-zero bars, imaginary panel has {n_im}; \"\n            f\"the |00><11| cell is {corner:+.2f} real / {corner_i:+.2f} imaginary\")\n\n\ntarget = drawn(stem_state())\nproven, evidence, observed = [], {}, {}\nfor key, st in sorted(VARIANTS.items()):\n    bars = drawn(st)\n    match = bars == target\n    observed[key] = describe(bars)\n    evidence[key] = (\n        f\"figure: {describe(bars)}; the stem code draws {describe(target)} -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = describe(target)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+    "proof_script": "import io\n\nimport matplotlib\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"proof\"  # deterministic SVG ids\nimport matplotlib.pyplot as plt\n\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import DensityMatrix, Statevector\nfrom qiskit.visualization import plot_state_city\n\n# The five states MUST mirror data/figures/s1-q052/generate.py — the rendered\n# figures are plot_state_city drawings of exactly these states, and a city plot\n# IS the density matrix (real part in the left panel, imaginary in the right).\n\n\ndef state(*gates):\n    qc = QuantumCircuit(2)\n    for name, *args in gates:\n        getattr(qc, name)(*args)\n    return Statevector(qc)\n\n\ndef stem_state():\n    # the stem code, verbatim\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    qc.cx(0, 1)\n    qc.s(1)\n    return Statevector(qc)\n\n\nVARIANTS = {\n    \"A\": state((\"h\", 0), (\"cx\", 0, 1), (\"sdg\", 1)),\n    \"B\": state((\"h\", 0), (\"cx\", 0, 1), (\"s\", 1)),\n    \"C\": state((\"h\", 0), (\"cx\", 0, 1), (\"z\", 1)),\n    \"D\": state((\"h\", 0), (\"h\", 1), (\"s\", 1)),\n    \"E\": state((\"h\", 0), (\"cx\", 0, 1)),\n}\n\n\ndef drawn(st):\n    \"\"\"What plot_state_city puts on its two panels: Re(rho) and Im(rho).\"\"\"\n    rho = np.round(DensityMatrix(st).data, 6)\n    return (tuple(map(tuple, rho.real.tolist())), tuple(map(tuple, rho.imag.tolist())))\n\n\ndef drawing(st):\n    \"\"\"The actual rendering, as SVG text (what the option image shows).\"\"\"\n    fig = plot_state_city(st)\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\ndef describe(bars):\n    re, im = bars\n    n_re = sum(1 for row in re for v in row if abs(v) > 1e-9)\n    n_im = sum(1 for row in im for v in row if abs(v) > 1e-9)\n    corner = re[0][3]\n    corner_i = im[0][3]\n    return (f\"real panel has {n_re} non-zero bars, imaginary panel has {n_im}; \"\n            f\"the |00><11| cell is {corner:+.2f} real / {corner_i:+.2f} imaginary\")\n\n\ntarget = drawn(stem_state())\nstem_svg = drawing(stem_state())\nproven, evidence, observed = [], {}, {}\nfor key, st in sorted(VARIANTS.items()):\n    bars = drawn(st)\n    same_render = drawing(st) == stem_svg\n    match = bars == target and same_render\n    observed[key] = describe(bars)\n    evidence[key] = (\n        f\"figure: {describe(bars)}; the stem code draws {describe(target)}; \"\n        f\"plot_state_city SVG identical to the stem code's -> {same_render}; match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = describe(target)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
   },
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure agent, task #28 wave 1)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "Image-option item. The five option figures are plot_state_city renders of exactly the five states the proof builds; the proof compares the drawn density matrices cell by cell. plot_state_city uses mplot3d, hence platform_sensitive. | realism audit 2026-10-01: stem kept; difficulty 2 confirmed; proof re-verified, answer unchanged"
+    "notes": "Image-option item. The five option figures are plot_state_city renders of exactly the five states the proof builds; the proof compares the drawn density matrices cell by cell. plot_state_city uses mplot3d, hence platform_sensitive. | realism audit 2026-10-01: stem kept; difficulty 2 confirmed; proof re-verified, answer unchanged | adversarial A3 2026-10-16: proof now renders each variant and the verbatim stem state with plot_state_city and requires SVG byte-identity (only B); D rationale aligned with its alt text; citations replaced with pages verified to state the fact: plot_state_city (\"real and imaginary part of the density matrix\"), SGate"
   },
   "freshness": {
     "verified_against": {
@@ -96,7 +96,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   }
 }

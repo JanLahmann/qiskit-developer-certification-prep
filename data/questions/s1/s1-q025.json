@@ -38,12 +38,11 @@
     "distractors": {
       "B": "SX is the square root of X: SX·SX = X. One application does not fully flip the qubit; it produces a complex-amplitude superposition.",
       "C": "H also gives 0.5/0.5 probabilities but with real amplitudes [0.7071, 0.7071]. SX produces complex amplitudes 0.5 ± 0.5j, so the states differ.",
-      "D": "The magnitudes are 0.5 each (not 0.7071), and both amplitudes are complex; the phase structure is 0.5 ± 0.5j, not a single i on |1⟩.",
+      "D": "The probabilities do match (|0.5 ± 0.5j| = 0.7071, so both magnitudes are 1/√2), but the relative phase is wrong: SX|0⟩ = e^{iπ/4}·[0.7071, −0.7071j], so the |1⟩ amplitude is −i times the |0⟩ amplitude, not +i. [0.7071, 0.7071j] is what H followed by S produces.",
       "E": "Conjugate/swap error: `sx` is (1/2)[[1+i, 1−i], [1−i, 1+i]], so acting on |0⟩ it returns [0.5+0.5j, 0.5−0.5j]. Exchanging the two conjugates describes `sxdg`, the inverse gate."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SXGate"
     ]
   },
   "proof": {
@@ -57,9 +56,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E conjugate-swap error (sx vs sxdg amplitudes) | realism audit 2026-10-01: stem 12->9 words; difficulty 2 confirmed; proof re-verified, answer unchanged"
+    "notes": "pool wave: +E conjugate-swap error (sx vs sxdg amplitudes) | realism audit 2026-10-01: stem 12->9 words; difficulty 2 confirmed; proof re-verified, answer unchanged | adversarial A3 2026-10-16: distractor D rationale falsely said the magnitudes are 0.5 (they are 0.7071); rewritten around the −i vs +i relative phase; citations replaced with pages verified to state the fact (qiskit.circuit.library.SXGate)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +67,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

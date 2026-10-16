@@ -40,15 +40,16 @@
     "E"
   ],
   "explanation": {
-    "correct": "|+⟩ is the +1 eigenstate of X, so ⟨X⟩ = +1 and X|+⟩ = |+⟩ (statements C and E). Its Z-basis populations are equal, so ⟨Z⟩ = 0 (statement B).",
+    "correct": "|+⟩ is the +1 eigenstate of X: X|+⟩ = |+⟩, so ⟨X⟩ = +1. Its Z-basis populations are equal (0.5 each), so ⟨Z⟩ = 0; it lies on the +x axis of the Bloch sphere with no Y component.",
     "distractors": {
       "A": "⟨Y⟩ = 0 for |+⟩ (it lies on the +X axis of the Bloch sphere, with no Y component), not +1.",
       "D": "A Z-basis measurement of |+⟩ gives 0 or 1 each with probability 0.5, not outcome 1 with certainty.",
       "F": "Eigenstate-of-every-Pauli misconception: |+⟩ is an eigenstate of X only. The +1 eigenstate of Y is |+i⟩ = (|0⟩ + i|1⟩)/√2, a different state."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.HGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.XGate"
     ]
   },
   "proof": {
@@ -62,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +F eigenstate-of-every-Pauli misconception (|+⟩ as a Y eigenstate) | realism audit 2026-10-01: stem 20->15 words; difficulty 3->2; proof re-verified, answer unchanged"
+    "notes": "pool wave: +F eigenstate-of-every-Pauli misconception (|+⟩ as a Y eigenstate) | realism audit 2026-10-01: stem 20->15 words; difficulty 3->2; proof re-verified, answer unchanged | adversarial A3 2026-10-16: explanation.correct cited display letters (\"statements C and E\", \"statement B\"); rewritten letter-free; citations replaced with pages verified to state the fact: Statevector (from_label eigenstate table, expectation_value), HGate, XGate"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 5

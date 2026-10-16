@@ -8,7 +8,7 @@
   "type": "multi",
   "difficulty": 3,
   "stem": "`equiv` ignores global phase. For which pairs does `Operator(a).equiv(Operator(b))` return True? Select all that apply.",
-  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\n# a: e.g. QuantumCircuit with z(0); b: with rz(pi, 0)",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Operator\n\n# example pair (not among the options): a = S gate, b = P(pi/2)\na = QuantumCircuit(1)\na.s(0)\nb = QuantumCircuit(1)\nb.p(np.pi / 2, 0)\nprint(Operator(a).equiv(Operator(b)))",
   "options": [
     {
       "key": "A",
@@ -45,11 +45,12 @@
       "A": "X and Y are genuinely different operators (they differ by more than a scalar phase — X·Y = iZ ≠ scalar), so `.equiv()` is False.",
       "D": "H and Z are distinct unitaries (H is not a phase multiple of Z), so `.equiv()` returns False.",
       "E": "Half-angle mismatch: RZ(π/2) equals S up to a global phase (T squared), not T. T corresponds to RZ(π/4).",
-      "F": "H-as-a-rotation misconception: RY(π/2) rotates |0⟩ to |+⟩ but is not H — their determinants differ in sign, so no global phase can bridge them. H equals RY(π/2)·Z, i.e. a Z applied before the rotation."
+      "F": "H-as-a-rotation misconception: RY(π/2) sends |0⟩ to |+⟩ just as H does, but the two matrices are not phase multiples: H = (1/√2)[[1, 1], [1, −1]] while RY(π/2) = (1/√2)[[1, −1], [1, 1]], so no single scalar maps one onto the other. H equals RY(π/2)·Z, i.e. a Z applied before the rotation."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/operator-class",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Operator",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.ZGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.XGate"
     ]
   },
   "proof": {
@@ -63,9 +64,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E T-vs-RZ(π/2) half-angle mismatch, +F H-as-RY(π/2) misconception | realism audit 2026-10-01: stem 29->15 words; difficulty 3 confirmed; proof re-verified, answer unchanged"
+    "notes": "pool wave: +E T-vs-RZ(π/2) half-angle mismatch, +F H-as-RY(π/2) misconception | realism audit 2026-10-01: stem 29->15 words; difficulty 3 confirmed; proof re-verified, answer unchanged | adversarial A3 2026-10-16: code comment named the keyed pair (z vs rz(pi)) as its example, now a neutral S vs P(π/2) pair; F rationale fixed (the determinant argument was wrong: det(iH) = +1 = det RY(π/2)); citations replaced with pages verified to state the fact: Operator (equiv \"up to global phase\"), ZGate (\"RZ(π) = −iZ\"), XGate (\"RX(π) = −iX\")"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +75,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

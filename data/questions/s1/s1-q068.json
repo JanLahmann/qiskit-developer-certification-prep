@@ -85,9 +85,9 @@
   "provenance": {
     "generated": "2026-10-02",
     "model": "claude-opus (figure wave, s1/s3/s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "figure wave add (option images, d2): TGate().power(3) returns the closed-form PhaseGate(3π/4) (Gate.power docstring: standard gates return a standard gate directly), drawn as one P box. Distractors: repetition, T³ = T† (S-order confusion), RZ vs P, the generic labelled UnitaryGate path. Proof renders every variant and the stem code to SVG in-process and requires byte-identity (only B); unitary equalities recorded."
+    "notes": "figure wave add (option images, d2): TGate().power(3) returns the closed-form PhaseGate(3π/4) (Gate.power docstring: standard gates return a standard gate directly), drawn as one P box. Distractors: repetition, T³ = T† (S-order confusion), RZ vs P, the generic labelled UnitaryGate path. Proof renders every variant and the stem code to SVG in-process and requires byte-identity (only B); unitary equalities recorded. | adversarial A3 2026-10-16: survived, no change"
   },
   "freshness": {
     "verified_against": {
@@ -96,7 +96,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   }
 }

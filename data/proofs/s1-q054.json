@@ -5,113 +5,143 @@
       "C"
     ],
     "evidence": {
-      "A": "spheres carry Bloch vectors qubit 0: (x,y,z)=[1.0, 0.0, 0.0] length 1.0, qubit 1: (x,y,z)=[0.0, 0.0, 1.0] length 1.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False",
-      "B": "spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 0.5] length 0.5, qubit 1: (x,y,z)=[0.0, 0.0, 0.5] length 0.5 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False",
-      "C": "spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 0.0] length 0.0, qubit 1: (x,y,z)=[0.0, 0.0, 0.0] length 0.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=True",
-      "D": "spheres carry Bloch vectors qubit 0: (x,y,z)=[1.0, 0.0, 0.0] length 1.0, qubit 1: (x,y,z)=[1.0, 0.0, 0.0] length 1.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False",
-      "E": "spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 1.0] length 1.0, qubit 1: (x,y,z)=[0.0, 0.0, -1.0] length 1.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False"
+      "A": "spheres carry Bloch vectors qubit 0: (x,y,z)=[1.0, 0.0, 0.0] length 1.0, qubit 1: (x,y,z)=[0.0, 0.0, 1.0] length 1.0 (drawer's own vectors agree: True); arrow visible per sphere [True, True] vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0]; SVG identical to the stem code's rendering -> False; match=False",
+      "B": "spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 0.5] length 0.5, qubit 1: (x,y,z)=[0.0, 0.0, 0.5] length 0.5 (drawer's own vectors agree: True); arrow visible per sphere [True, True] vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0]; SVG identical to the stem code's rendering -> False; match=False",
+      "C": "spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 0.0] length 0.0, qubit 1: (x,y,z)=[0.0, 0.0, 0.0] length 0.0 (drawer's own vectors agree: True); arrow visible per sphere [False, False] vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0]; SVG identical to the stem code's rendering -> True; match=True",
+      "D": "spheres carry Bloch vectors qubit 0: (x,y,z)=[1.0, 0.0, 0.0] length 1.0, qubit 1: (x,y,z)=[1.0, 0.0, 0.0] length 1.0 (drawer's own vectors agree: True); arrow visible per sphere [True, True] vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0]; SVG identical to the stem code's rendering -> False; match=False",
+      "E": "spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 1.0] length 1.0, qubit 1: (x,y,z)=[0.0, 0.0, -1.0] length 1.0 (drawer's own vectors agree: True); arrow visible per sphere [True, True] vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0]; SVG identical to the stem code's rendering -> False; match=False"
     },
     "observed": {
-      "A": [
-        [
-          "qubit 0",
+      "A": {
+        "spheres": [
           [
-            1.0,
-            0.0,
-            0.0
-          ],
-          1.0
-        ],
-        [
-          "qubit 1",
-          [
-            0.0,
-            0.0,
+            "qubit 0",
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
             1.0
           ],
-          1.0
-        ]
-      ],
-      "B": [
-        [
-          "qubit 0",
           [
-            0.0,
-            0.0,
+            "qubit 1",
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            1.0
+          ]
+        ],
+        "arrow_visible": [
+          true,
+          true
+        ]
+      },
+      "B": {
+        "spheres": [
+          [
+            "qubit 0",
+            [
+              0.0,
+              0.0,
+              0.5
+            ],
             0.5
           ],
-          0.5
-        ],
-        [
-          "qubit 1",
           [
-            0.0,
-            0.0,
+            "qubit 1",
+            [
+              0.0,
+              0.0,
+              0.5
+            ],
             0.5
-          ],
-          0.5
-        ]
-      ],
-      "C": [
-        [
-          "qubit 0",
-          [
-            0.0,
-            0.0,
-            0.0
-          ],
-          0.0
+          ]
         ],
-        [
-          "qubit 1",
-          [
-            0.0,
-            0.0,
-            0.0
-          ],
-          0.0
+        "arrow_visible": [
+          true,
+          true
         ]
-      ],
-      "D": [
-        [
-          "qubit 0",
+      },
+      "C": {
+        "spheres": [
           [
-            1.0,
-            0.0,
+            "qubit 0",
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
             0.0
           ],
-          1.0
+          [
+            "qubit 1",
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            0.0
+          ]
         ],
-        [
-          "qubit 1",
-          [
-            1.0,
-            0.0,
-            0.0
-          ],
-          1.0
+        "arrow_visible": [
+          false,
+          false
         ]
-      ],
-      "E": [
-        [
-          "qubit 0",
+      },
+      "D": {
+        "spheres": [
           [
-            0.0,
-            0.0,
+            "qubit 0",
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
             1.0
           ],
-          1.0
-        ],
-        [
-          "qubit 1",
           [
-            0.0,
-            0.0,
-            -1.0
-          ],
-          1.0
+            "qubit 1",
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            1.0
+          ]
+        ],
+        "arrow_visible": [
+          true,
+          true
         ]
-      ],
+      },
+      "E": {
+        "spheres": [
+          [
+            "qubit 0",
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            1.0
+          ],
+          [
+            "qubit 1",
+            [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            1.0
+          ]
+        ],
+        "arrow_visible": [
+          true,
+          true
+        ]
+      },
       "stem": [
         [
           "qubit 0",
@@ -140,9 +170,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 3.86,
+  "wall_seconds": 4.91,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[1.0, 0.0, 0.0] length 1.0, qubit 1: (x,y,z)=[0.0, 0.0, 1.0] length 1.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False\", \"B\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 0.5] length 0.5, qubit 1: (x,y,z)=[0.0, 0.0, 0.5] length 0.5 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False\", \"C\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 0.0] length 0.0, qubit 1: (x,y,z)=[0.0, 0.0, 0.0] length 0.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=True\", \"D\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[1.0, 0.0, 0.0] length 1.0, qubit 1: (x,y,z)=[1.0, 0.0, 0.0] length 1.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False\", \"E\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 1.0] length 1.0, qubit 1: (x,y,z)=[0.0, 0.0, -1.0] length 1.0 vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0] -> match=False\"}, \"observed\": {\"A\": [[\"qubit 0\", [1.0, 0.0, 0.0], 1.0], [\"qubit 1\", [0.0, 0.0, 1.0], 1.0]], \"B\": [[\"qubit 0\", [0.0, 0.0, 0.5], 0.5], [\"qubit 1\", [0.0, 0.0, 0.5], 0.5]], \"C\": [[\"qubit 0\", [0.0, 0.0, 0.0], 0.0], [\"qubit 1\", [0.0, 0.0, 0.0], 0.0]], \"D\": [[\"qubit 0\", [1.0, 0.0, 0.0], 1.0], [\"qubit 1\", [1.0, 0.0, 0.0], 1.0]], \"E\": [[\"qubit 0\", [0.0, 0.0, 1.0], 1.0], [\"qubit 1\", [0.0, 0.0, -1.0], 1.0]], \"stem\": [[\"qubit 0\", [0.0, 0.0, 0.0], 0.0], [\"qubit 1\", [0.0, 0.0, 0.0], 0.0]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[1.0, 0.0, 0.0] length 1.0, qubit 1: (x,y,z)=[0.0, 0.0, 1.0] length 1.0 (drawer's own vectors agree: True); arrow visible per sphere [True, True] vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0]; SVG identical to the stem code's rendering -> False; match=False\", \"B\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 0.5] length 0.5, qubit 1: (x,y,z)=[0.0, 0.0, 0.5] length 0.5 (drawer's own vectors agree: True); arrow visible per sphere [True, True] vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0]; SVG identical to the stem code's rendering -> False; match=False\", \"C\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 0.0] length 0.0, qubit 1: (x,y,z)=[0.0, 0.0, 0.0] length 0.0 (drawer's own vectors agree: True); arrow visible per sphere [False, False] vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0]; SVG identical to the stem code's rendering -> True; match=True\", \"D\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[1.0, 0.0, 0.0] length 1.0, qubit 1: (x,y,z)=[1.0, 0.0, 0.0] length 1.0 (drawer's own vectors agree: True); arrow visible per sphere [True, True] vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0]; SVG identical to the stem code's rendering -> False; match=False\", \"E\": \"spheres carry Bloch vectors qubit 0: (x,y,z)=[0.0, 0.0, 1.0] length 1.0, qubit 1: (x,y,z)=[0.0, 0.0, -1.0] length 1.0 (drawer's own vectors agree: True); arrow visible per sphere [True, True] vs the stem state's qubit 0: [0.0, 0.0, 0.0], qubit 1: [0.0, 0.0, 0.0]; SVG identical to the stem code's rendering -> False; match=False\"}, \"observed\": {\"A\": {\"spheres\": [[\"qubit 0\", [1.0, 0.0, 0.0], 1.0], [\"qubit 1\", [0.0, 0.0, 1.0], 1.0]], \"arrow_visible\": [true, true]}, \"B\": {\"spheres\": [[\"qubit 0\", [0.0, 0.0, 0.5], 0.5], [\"qubit 1\", [0.0, 0.0, 0.5], 0.5]], \"arrow_visible\": [true, true]}, \"C\": {\"spheres\": [[\"qubit 0\", [0.0, 0.0, 0.0], 0.0], [\"qubit 1\", [0.0, 0.0, 0.0], 0.0]], \"arrow_visible\": [false, false]}, \"D\": {\"spheres\": [[\"qubit 0\", [1.0, 0.0, 0.0], 1.0], [\"qubit 1\", [1.0, 0.0, 0.0], 1.0]], \"arrow_visible\": [true, true]}, \"E\": {\"spheres\": [[\"qubit 0\", [0.0, 0.0, 1.0], 1.0], [\"qubit 1\", [0.0, 0.0, -1.0], 1.0]], \"arrow_visible\": [true, true]}, \"stem\": [[\"qubit 0\", [0.0, 0.0, 0.0], 0.0], [\"qubit 1\", [0.0, 0.0, 0.0], 0.0]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

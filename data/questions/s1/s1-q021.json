@@ -44,7 +44,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/operator-class",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Operator"
     ]
   },
   "proof": {
@@ -58,9 +58,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "retargeted in the s1 meta-pattern pass: the original item (Z·X = iY) duplicated q013/q014 — q014 option C states that identity verbatim as a correct option — and s1 was already heavy on Pauli-label ordering. Now tests `Operator.compose` argument order (self acts first, matrix B·A) vs `.dot`, an uncovered quantum_info manipulation point. | pool wave: +E phase-slot confusion (S phasing |0⟩ instead of |1⟩) | realism audit 2026-10-01: stem 20->5 words; difficulty 3->2; proof re-verified, answer unchanged"
+    "notes": "retargeted in the s1 meta-pattern pass: the original item (Z·X = iY) duplicated q013/q014 — q014 option C states that identity verbatim as a correct option — and s1 was already heavy on Pauli-label ordering. Now tests `Operator.compose` argument order (self acts first, matrix B·A) vs `.dot`, an uncovered quantum_info manipulation point. | pool wave: +E phase-slot confusion (S phasing |0⟩ instead of |1⟩) | realism audit 2026-10-01: stem 20->5 words; difficulty 3->2; proof re-verified, answer unchanged | adversarial A3 2026-10-16: citations replaced with pages verified to state the fact (operator-class, qiskit.quantum_info.Operator)"
   },
   "freshness": {
     "verified_against": {
@@ -69,7 +69,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

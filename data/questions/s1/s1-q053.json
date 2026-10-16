@@ -65,13 +65,13 @@
     "correct": "Conjugating by Hadamard swaps the X and Z axes: H Z H = X exactly. The drawn H-Z-H circuit therefore has the same unitary as a bare `x` gate, which `Operator.equiv` confirms (here even without a phase difference).",
     "distractors": {
       "A": "The conjugation runs the other way: H X H = Z, so this drawing is a Z gate, not an X gate.",
-      "B": "Conjugating X by the phase gate rotates it inside the equatorial plane: S X S-dagger = Y.",
+      "B": "Conjugating X by the phase gate rotates it inside the equatorial plane, not back onto X. Read in time order, the drawn S, X, S-dagger has the unitary S-dagger·X·S = −Y (the docs' identity S X S-dagger = Y with the order reversed), a Y gate up to global phase.",
       "C": "Z H Z is not a Pauli at all — it is the Hadamard reflected about the z axis, a mix of X and Z.",
       "D": "H S H is a quarter turn about x, the square root of X. Squaring it would give X, but the drawn circuit itself is not equivalent to X."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/operator-class",
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+      "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-codes",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Operator"
     ]
   },
   "proof": {
@@ -85,9 +85,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure agent, task #28 wave 1)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "Image-option item: every option is an mpl render of one of the five circuits the proof builds, and the proof scores each with Operator.equiv against XGate. | realism audit 2026-10-01: stem 28->12 words; difficulty 1 confirmed; proof re-verified, answer unchanged"
+    "notes": "Image-option item: every option is an mpl render of one of the five circuits the proof builds, and the proof scores each with Operator.equiv against XGate. | realism audit 2026-10-01: stem 28->12 words; difficulty 1 confirmed; proof re-verified, answer unchanged | adversarial A3 2026-10-16: B rationale claimed the drawn S–X–S† equals Y; executed Operator = −Y (S†XS), still not X; rationale now answers the order trap; citations replaced with pages verified to state the fact: learning \"Stabilizer codes\" (HXH† = Z, HZH† = X, SXS† = Y), Operator.equiv"
   },
   "freshness": {
     "verified_against": {
@@ -96,7 +96,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   }
 }

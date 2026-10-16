@@ -47,8 +47,7 @@
       "F": "Reversed cyclic order: the +i identities follow the cycle X→Y→Z→X, so Y·Z = iX but Z·Y = −iX. Swapping the operands conjugates the phase."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Pauli"
     ]
   },
   "proof": {
@@ -62,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +F reversed-cyclic-order sign error (Z·Y) | realism audit 2026-10-01: stem 25->11 words; difficulty 2 confirmed; proof re-verified, answer unchanged"
+    "notes": "pool wave: +F reversed-cyclic-order sign error (Z·Y) | realism audit 2026-10-01: stem 25->11 words; difficulty 2 confirmed; proof re-verified, answer unchanged | adversarial A3 2026-10-16: citations replaced with pages verified to state the fact (qiskit.quantum_info.Pauli)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +72,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 5

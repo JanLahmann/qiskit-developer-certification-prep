@@ -42,8 +42,8 @@
       "E": "Amplitude-vs-probability error compounded with the full angle: the |1⟩ amplitude is sin(θ/2) = 0.5, and the probability is its square. Reading sin(θ) straight off the rotation angle doubles the error."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.RYGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (correct option now carries the absolute) | pool wave: +E amplitude-vs-probability error at the full angle | realism audit 2026-10-01: stem 19->12 words; difficulty 2 confirmed; proof re-verified, answer unchanged"
+    "notes": "absolute-wording tell cleared (correct option now carries the absolute) | pool wave: +E amplitude-vs-probability error at the full angle | realism audit 2026-10-01: stem 19->12 words; difficulty 2 confirmed; proof re-verified, answer unchanged | adversarial A3 2026-10-16: citations replaced with pages verified to state the fact: RYGate matrix, Statevector.probabilities"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

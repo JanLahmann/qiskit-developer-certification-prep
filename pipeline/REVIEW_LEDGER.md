@@ -2837,3 +2837,129 @@ runtime 0.48.0 / aer 0.17.2); s7-q039/q043 re-verified against the installed
     or install-path strings in error messages (s2-q014/q029).
 - Re-pin trigger: when IBM moves the exam to the executor primitives, or when 0.5x removes the V2
   classes. Until then, 0.48 stays pinned. The exam blueprint is written against the V2 primitives.
+
+## Adversarial review A3 — s1a (2026-10-16)
+
+Scope: s1-q001, s1-q010, s1-q012..q032 (23). Every option including pool distractors was
+re-executed in an independent script (pinned venv, qiskit 2.5.0); every cited page fetched
+and grepped. **0 second-answer attacks stuck, 0 key changes, 0 kills.** All 23 edited
+(citations), 3 hardened in options, 4 explanation fixes.
+
+- **Incoherent distractors (option + proof rewritten, keys unchanged):**
+  s1-q019 E (`−1.0`, "bit 0 maps to the −1 eigenvalue of Z") was unreachable: under that
+  misconception ⟨Z⊗Z⟩ on |00⟩ = (−1)(−1) = +1, i.e. the key's value. Now `1.25` = 1² + 0.5²,
+  the second moment; executed `⟨00|O·O|00⟩ = 1.25`, `⟨O⟩ = 1.0`, recorded as
+  `observed.second_moment`. s1-q028 C (`[i, 0]`, "phase applied to |0⟩") could not arise
+  from P acting on |1⟩ (a |0⟩-slot phase leaves `[0, 1]`); now the conjugate-phase sign
+  error `[0, −i]` (= P(−π/2)|1⟩ = S†|1⟩); executed P(π/2)|1⟩ = `[0, 1j]` ≠ `[0, −1j]`.
+  s1-q018 D's rationale ("from_list merges by default, so simplify does nothing") contradicted
+  its own 3-term repr; now the zero-pruning-only misconception (docstring: "combining
+  duplicates and removing zeros").
+- **False explanation:** s1-q025 distractor D said SX|0⟩'s magnitudes are 0.5; executed
+  `|0.5±0.5j| = 0.7071`. Rewritten: SX|0⟩ = e^{iπ/4}·[0.7071, −0.7071j] (relative phase −i).
+- **Stem:** s1-q018 "What does this code print?" — the literal print is
+  `SparsePauliOp(['Z', 'X'],\n coeffs=[3.+0.j, 1.+0.j])`, not the options' `[3, 1]`; stem
+  now "What does `op.simplify()` return?" (the returned op equals the keyed constructor).
+  q001/q019/q022/q031 ask for the state/value/return, not the print (q031 prints
+  `{np.str_('01'): np.float64(1.0)}` under numpy 2.x — equal to `{'01': 1.0}`).
+- **Citation failure (all 23):** `api/qiskit/quantum_info` (module index; only a
+  little-endian note) and `guides/operators-overview` (no label endianness, no dot/tensor
+  semantics, no simplify, no gate matrices) stated none of the tested facts; q001's
+  `construct-circuits` has no S gate. Replaced with pages that state each fact: Pauli API
+  ("qubit-0 corresponds to the right-most Pauli character … 'XYZ' … 'Z' on qubit-0";
+  `dot` = "self * other"; `tensor` a⊗b, `expand` b⊗a; `commutes`) for q010-q017/q020;
+  SparsePauliOp (`simplify`) q018/q019; Statevector (`from_label` table, `expectation_value`)
+  q019/q030/q031; gate pages (S, Sdg, SX, T, RZ, Z, P, Y, CX matrices) q001/q022-q029/q032;
+  operator-class ("A.compose(B) returns the operator with matrix B.A") + Operator note
+  q021; guides/bit-ordering ("bit n−1 is the leftmost", `from_label("0+")`, "this CX-gate
+  performs |01⟩ ↔ |11⟩") q030-q032; learning "Limitations on quantum information" (global
+  phase: "precisely the same probabilities") + QuantumCircuit q027. operators-overview kept
+  only where it supports a distractor (phase-prefixed labels, legal 'I').
+- **Docs-reader traps answered:** TGate page calls T "the π/8 gate" (exp(iπ/8 Z) up to global
+  phase) → q022 E; QuantumCircuit "global_phase … can have some impact on its output, if
+  the circuit is used to describe a Gate that may be controlled" → q027 correct; CXGate
+  "textbook matrix" (control q_1, |10⟩↔|11⟩) → q032 C.
+- **Survived attacks (executed):** q020 A `Pauli(['Z','I'])` raises QiskitError "Invalid input
+  data for Pauli."; q013 `X.compose(Y)` = `-iZ`, `X.dot(Y)` = `iZ`; q017 commutes
+  T/F/T/T/F/F; q024 tdg = [0.7071, 0.5−0.5j], p(−π) = [0.7071, −0.7071]; q025 sxdg|0⟩ =
+  [0.5−0.5j, 0.5+0.5j]. Noted, not changed: q024 F's snippet uses `np` (not imported in the
+  displayed code) — it is a wrong option on the angle anyway.
+- **Difficulty:** all 23 kept (q013/q025 borderline d2, one recalled fact plus a phase step).
+- Gates: verify_bank s1 57/57 PROVEN, exit 0; audit_meta_patterns s1 0/0 (9 pre-existing
+  low length flags, none new); lint_proof_drift 0 findings.
+
+## Adversarial review A3 — s1b (2026-10-16)
+
+Scope: s1-q033..q037, q039..q045, q047..q054, q067, q068 (22; q055..q066 were R2 adds,
+reviewed 2026-10-02). Every option including pool distractors re-executed in independent
+scripts (pinned venv, qiskit 2.5.0); every cited page fetched as text and grepped; all six
+figure items re-rendered and inspected. **0 second-answer attacks stuck, 0 key changes,
+0 kills.** 20 edited (citations), 7 with content or proof fixes, 2 survived unchanged
+(q067, q068).
+
+- **Literal-print mismatch (stem attack):** s1-q049 "What does this code print?" keyed
+  `{'h': 4, 'cp': 6, 'swap': 2}`, but `count_ops()` orders by count, so the displayed code
+  prints `{'cp': 6, 'h': 4, 'swap': 2}`. All option dicts re-ordered to print order; the
+  proof now compares each option string with the executed `str(dict(...))` literally.
+- **Tell in displayed code:** s1-q033's code comment ("a: e.g. … z(0); b: with rz(pi, 0)")
+  named a keyed pair as its example. Replaced by a runnable neutral pair (S vs P(π/2),
+  prints `True`), not among the options.
+- **False explanations (keys unchanged):** s1-q033 F argued "determinants differ in sign,
+  so no global phase can bridge them" — wrong for 2×2 (det(iH) = +1 = det RY(π/2));
+  now the entry comparison H = (1/√2)[[1,1],[1,−1]] vs RY(π/2) = (1/√2)[[1,−1],[1,1]]
+  (executed `equiv` False; RY(π/2)·Z == H True). s1-q053 B said the drawn S–X–S† "= Y";
+  executed `Operator` of the drawing is S†XS = −Y (`[[0, i], [−i, 0]]`), and the learning
+  page's "S X S† = Y" is the reversed order — rationale now answers that trap. s1-q051 B
+  said `sdg` "adds a phase" to |0⟩ (Sdg|0⟩ = |0⟩). s1-q052 D rationale aligned with its
+  alt (16 nonzero cells split 8 real / 8 imaginary, executed).
+- **Display letters:** s1-q044 `explanation.correct` cited "(statements C and E)" /
+  "(statement B)" on a shuffled 5-of-6 pool; rewritten letter-free.
+- **Proof weakness ("which drawing" items):** s1-q052 and s1-q054 compared density
+  matrices / Bloch vectors only; s1-q051 compared vectors to a literal TARGET. All three
+  now render every variant and the verbatim stem state in-process (`svg.hashsalt` fixed,
+  `metadata={"Date": None}`) and require SVG byte-identity (only B / C / D match); q051
+  and q054 also cross-check `_bloch_multivector_data`. Finding: for the Bell state
+  `plot_bloch_multivector` still adds one zero-length `Arrow3D` per sphere; q054's proof
+  rasterizes each figure with and without its arrow patches — Bell spheres are
+  pixel-identical to arrow-free spheres (alt "drawn empty" holds), every distractor arrow
+  changes pixels (control: 2511 px).
+- **Citation failure (20 of 22):** `api/qiskit/quantum_info` and
+  `guides/operators-overview` (SparsePauliOp/Pauli/Operator intro; no evolve, tensor
+  order, probabilities, expectation values or gate matrices) were cited on q033-q047;
+  `api/qiskit/circuit_library` (index) on q048-q050; `guides/visualize-circuits` (circuit
+  drawing only, no Bloch/city plots) on q051/q052; `api/qiskit/visualization` (index) on
+  q054. Replaced with pages verified to state each fact: Operator (`equiv` "up to global
+  phase"), ZGate ("RZ(π) = −iZ"), XGate ("RX(π) = −iX") q033; Statevector (`evolve`,
+  `tensor` = self ⊗ other / `expand` = other ⊗ self, `from_instruction` raises on
+  instructions invalid for statevector simulation, `probabilities([0])` qubit-0 example,
+  `probabilities_dict`, `expectation_value`, `from_label` eigenstate table) q034-q047;
+  operator-class ("A.tensor(B) … B on subsystem 0, A on subsystem 1") q035/q037; gate
+  pages (RY, Z, T, SX, H, X, S, Sdg matrices) q039-q047/q051/q052; efficient_su2 (reps,
+  `skip_final_rotation_layer`, 3-qubit drawing ending θ[17]) + EfficientSU2 ("deprecated
+  as of Qiskit 2.1") q048; QFTGate (num_qubits only) + QFT ("Hadamard gates on each
+  qubit, … controlled … gates and a layer of Swap gates", `do_swaps`) q049;
+  real_amplitudes ("alternating layers of Y rotations and CX"), pauli_two_design (random
+  axes, CZ) q050; plot_bloch_multivector (per-qubit Pauli expectations) q051/q054;
+  plot_state_city ("real and imaginary part of the density matrix") q052; learning
+  "Stabilizer codes" ("HXH† = Z, HZH† = X", "SXS† = Y") q053. Kept (verified):
+  plot-quantum-states (q054), q067 (plot_state_paulivec, Pauli "qubit-0 … right-most"),
+  q068 (TGate/PhaseGate/Gate.power "returned directly").
+- **Docs-reader traps noted:** the QFT class page says "controlled-U1" — `QFTGate`'s
+  definition decomposes to `cp` (no option uses cu1). TGate page "equivalent to
+  exp(iπ/8 Z) up to a global phase" has the sign of RZ(−π/4); T = e^{iπ/8}·RZ(π/4)
+  (executed `rz(π/4)` equiv `t` True) — q033 E stays correct. TGate's "π/4 rotation about
+  the Z axis" is answered by q068 D (RZ only up to phase; `power(3)` returns PhaseGate).
+- **Survived attacks (executed):** q036 all three entry points (`from_instruction`,
+  `Statevector(qc)`, `DensityMatrix.from_instruction`) raise "Cannot apply instruction
+  with classical bits: measure"; `save_statevector` raises "Cannot apply Instruction";
+  `backend=` is a TypeError. q050 only `real_amplitudes(3)` is {ry, cx}. q048 24 / 16
+  (skip final) / real_amplitudes 12. q067 every candidate's nonzero Pauli set matches
+  its rationale (A ZI=+1, B YI/IZ/YZ, C IY=−1, E IX/ZX). q068 `TGate.power` returns
+  `PhaseGate(0.25·π·exponent)`; `HGate().power(3)` is a `UnitaryGate` labelled `h^3`.
+- **Figures:** all six re-rendered (`render_figures --only`, 0 failures) and inspected;
+  renders match their alts. q052 A vs B differ only in which off-diagonal imaginary cell
+  is positive — readable from the axis labels, kept.
+- **Difficulty:** all 22 kept (q052, q067 borderline d3: phase sign through ρ / endianness
+  plus S vs S†; kept at d2, each is one concept with a twist).
+- Gates: verify_bank s1 57/57 PROVEN, exit 0; audit_meta_patterns s1 0 blockers /
+  0 warnings (9 pre-existing low length flags, none new); lint_proof_drift 0 findings.

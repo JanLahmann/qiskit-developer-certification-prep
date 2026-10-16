@@ -42,8 +42,8 @@
       "E": "Double-squaring error: the probability is |amplitude|² = (1/√2)² = 0.5. Squaring the probability again (0.5² = 0.25) applies the Born rule twice."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.HGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor C now hedges, so the correct option needs no absolute) | pool wave: +E double-squaring (Born rule applied twice) | realism audit 2026-10-01: stem 31->20 words; difficulty 3->1; proof re-verified, answer unchanged"
+    "notes": "absolute-wording tell cleared (distractor C now hedges, so the correct option needs no absolute) | pool wave: +E double-squaring (Born rule applied twice) | realism audit 2026-10-01: stem 31->20 words; difficulty 3->1; proof re-verified, answer unchanged | adversarial A3 2026-10-16: citations replaced with pages verified to state the fact: HGate (|0⟩→|+⟩, matrix), Statevector.probabilities"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

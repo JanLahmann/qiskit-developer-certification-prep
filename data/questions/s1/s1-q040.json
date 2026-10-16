@@ -42,8 +42,9 @@
       "E": "Two errors at once: the half-angle cos(θ/2) belongs to the amplitude, not the expectation value, and ⟨Z⟩ for RY(θ)|0⟩ is +cos θ — the state stays in the upper half of the Bloch sphere for θ = π/3."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info",
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.RYGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.ZGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector"
     ]
   },
   "proof": {
@@ -57,9 +58,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E combined sign-convention and half-angle error | realism audit 2026-10-01: stem kept; difficulty 2 confirmed; proof re-verified, answer unchanged"
+    "notes": "pool wave: +E combined sign-convention and half-angle error | realism audit 2026-10-01: stem kept; difficulty 2 confirmed; proof re-verified, answer unchanged | adversarial A3 2026-10-16: citations replaced with pages verified to state the fact: RYGate and ZGate matrices, Statevector.expectation_value"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +69,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

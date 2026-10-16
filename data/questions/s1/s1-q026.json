@@ -42,8 +42,8 @@
       "E": "Full-angle misconception: RZ(θ) = diag(e^{−iθ/2}, e^{+iθ/2}) splits the angle in half. The gate that applies the full θ to one amplitude is P(θ), not RZ(θ)."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.RZGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.PhaseGate"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor D rewritten without an absolute) | pool wave: +E RZ full-angle-vs-half-angle misconception | realism audit 2026-10-01: stem 15->8 words; difficulty 3->2; proof re-verified, answer unchanged"
+    "notes": "absolute-wording tell cleared (distractor D rewritten without an absolute) | pool wave: +E RZ full-angle-vs-half-angle misconception | realism audit 2026-10-01: stem 15->8 words; difficulty 3->2; proof re-verified, answer unchanged | adversarial A3 2026-10-16: citations replaced with pages verified to state the fact (qiskit.circuit.library.RZGate, qiskit.circuit.library.PhaseGate)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

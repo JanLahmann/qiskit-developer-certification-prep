@@ -67,9 +67,9 @@
   "provenance": {
     "generated": "2026-10-02",
     "model": "claude-opus (figure wave, s1/s3/s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "figure wave add (stem figure, d2): read a plot_state_paulivec bar chart — little-endian Pauli labels (rightmost = qubit 0) plus the S/S† and H-then-S state preparation. Proof builds every candidate, plots it with the same call, reads the bars back off the axes, cross-checks them against direct Statevector.expectation_value, and requires SVG byte-identity with the figure (only D)."
+    "notes": "figure wave add (stem figure, d2): read a plot_state_paulivec bar chart — little-endian Pauli labels (rightmost = qubit 0) plus the S/S† and H-then-S state preparation. Proof builds every candidate, plots it with the same call, reads the bars back off the axes, cross-checks them against direct Statevector.expectation_value, and requires SVG byte-identity with the figure (only D). | adversarial A3 2026-10-16: survived, no change"
   },
   "freshness": {
     "verified_against": {
@@ -78,7 +78,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   }
 }

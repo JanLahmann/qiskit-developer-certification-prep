@@ -47,8 +47,9 @@
       "F": "S-vs-Z confusion: S is the square root of Z, so it applies a quarter turn (phase i), not the half turn (phase −1) that Z applies. Negating the |1⟩ amplitude is what Z would do."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SdgGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SXGate"
     ]
   },
   "proof": {
@@ -62,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude (orchestrator seed)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | pool wave: +E S-vs-sx (half-rotation) confusion, +F S-vs-Z phase confusion | realism audit 2026-10-01: stem 17->8 words; difficulty 2->1; proof re-verified, answer unchanged"
+    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | pool wave: +E S-vs-sx (half-rotation) confusion, +F S-vs-Z phase confusion | realism audit 2026-10-01: stem 17->8 words; difficulty 2->1; proof re-verified, answer unchanged | adversarial A3 2026-10-16: citations replaced with pages verified to state the fact (qiskit.circuit.library.SGate, qiskit.circuit.library.SdgGate, qiskit.circuit.library.SXGate)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

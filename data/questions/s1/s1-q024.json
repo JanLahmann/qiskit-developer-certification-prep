@@ -47,8 +47,9 @@
       "F": "Phase-gate angle error: P(θ) = diag(1, e^{iθ}), so P(−π) contributes e^{−iπ} = −1, a sign flip rather than the −i quarter turn. P(−π/2) would be the equivalent of `sdg`."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SdgGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.PhaseGate"
     ]
   },
   "proof": {
@@ -62,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "high-severity length tell cleared (correct trimmed, distractor B given substance) | pool wave: +E T†-vs-S† phase-size confusion, +F P-gate angle error (−π vs −π/2) | realism audit 2026-10-01: stem 24->18 words; difficulty 2->1; proof re-verified, answer unchanged"
+    "notes": "high-severity length tell cleared (correct trimmed, distractor B given substance) | pool wave: +E T†-vs-S† phase-size confusion, +F P-gate angle error (−π vs −π/2) | realism audit 2026-10-01: stem 24->18 words; difficulty 2->1; proof re-verified, answer unchanged | adversarial A3 2026-10-16: citations replaced with pages verified to state the fact (qiskit.circuit.library.SGate, qiskit.circuit.library.SdgGate, qiskit.circuit.library.PhaseGate)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

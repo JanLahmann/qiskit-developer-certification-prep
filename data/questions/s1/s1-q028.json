@@ -19,7 +19,7 @@
     },
     {
       "key": "C",
-      "text": "[i, 0] — the phase is applied to the |0⟩ amplitude"
+      "text": "[0, −i] — P(θ) applies the conjugate phase e^{−iθ}"
     },
     {
       "key": "D",
@@ -38,12 +38,12 @@
     "distractors": {
       "A": "This has the diagonal the wrong way round: P(θ) = diag(1, e^{iθ}), so the phase lands on |1⟩, not |0⟩. |1⟩ is multiplied by e^{iθ} = i.",
       "B": "e^{iπ} = −1 corresponds to P(π) = Z. Here θ = π/2, giving e^{iπ/2} = i, not −1.",
-      "C": "The lower diagonal entry (e^{iθ}) acts on |1⟩, not |0⟩; the |0⟩ amplitude here is 0 anyway.",
+      "C": "Sign-convention error: P(θ) = diag(1, e^{+iθ}), so P(π/2) multiplies |1⟩ by +i. A factor e^{−iπ/2} = −i on |1⟩ comes from P(−π/2), which is S† (`sdg`).",
       "E": "P-vs-RZ half-angle confusion: only RZ splits the angle (e^{±iθ/2}). P(θ) = diag(1, e^{iθ}) applies the full angle to the |1⟩ amplitude, so P(π/2) contributes e^{iπ/2} = i."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/operators-overview",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.PhaseGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SdgGate"
     ]
   },
   "proof": {
@@ -52,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.x(0)\nqc.p(np.pi / 2, 0)\nobserved = Statevector.from_instruction(qc).data\ncands = {\"D\": np.array([0, 1j]), \"A\": np.array([0, 1]), \"B\": np.array([0, -1]), \"C\": np.array([1j, 0]),\n         \"E\": np.array([0, np.exp(1j * np.pi / 4)])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"P(pi/2)|1> = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"sv\": [str(x) for x in np.round(observed, 6)]}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\nqc = QuantumCircuit(1)\nqc.x(0)\nqc.p(np.pi / 2, 0)\nobserved = Statevector.from_instruction(qc).data\ncands = {\"D\": np.array([0, 1j]), \"A\": np.array([0, 1]), \"B\": np.array([0, -1]), \"C\": np.array([0, -1j]),\n         \"E\": np.array([0, np.exp(1j * np.pi / 4)])}\nevidence = {}\nproven = []\nfor k, v in cands.items():\n    m = bool(np.allclose(observed, v))\n    evidence[k] = f\"P(pi/2)|1> = {np.round(observed, 4).tolist()}; option {k} claims {np.round(v, 4).tolist()} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"sv\": [str(x) for x in np.round(observed, 6)]}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s1)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "length + absolute-wording tells cleared (correct trimmed, distractor A re-voiced) | pool wave: +E P-vs-RZ half-angle confusion | realism audit 2026-10-01: stem 13->8 words; difficulty 2->1; proof re-verified, answer unchanged"
+    "notes": "length + absolute-wording tells cleared (correct trimmed, distractor A re-voiced) | pool wave: +E P-vs-RZ half-angle confusion | realism audit 2026-10-01: stem 13->8 words; difficulty 2->1; proof re-verified, answer unchanged | adversarial A3 2026-10-16: distractor C ([i, 0], 'phase on |0⟩') was incoherent (a phase on the 0 amplitude of |1⟩ leaves [0, 1]); now the conjugate-phase sign error [0, −i]; citations replaced with pages verified to state the fact (qiskit.circuit.library.PhaseGate, qiskit.circuit.library.SdgGate)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

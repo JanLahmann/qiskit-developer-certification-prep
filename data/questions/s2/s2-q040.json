@@ -8,7 +8,7 @@
   "type": "predict-output",
   "difficulty": 1,
   "stem": "Which figure is the `mpl` rendering of this code?",
-  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(2, \"q\")\ncr = ClassicalRegister(1, \"c\")\nqc = QuantumCircuit(qr, cr)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.if_test((cr, 1)):\n    qc.x(1)\n\nqc.draw(output=\"mpl\")",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(3, \"q\")\ncr = ClassicalRegister(2, \"m\")\nqc = QuantumCircuit(qr, cr)\nqc.sx(0)\nqc.cx(0, 2)\nqc.measure([0, 2], cr)\nwith qc.if_test((cr, 2)):\n    qc.z(1)\n\nqc.draw(output=\"mpl\")",
   "options": [
     {
       "key": "A",
@@ -33,7 +33,7 @@
   ],
   "display_count": 4,
   "answer": [
-    "C"
+    "D"
   ],
   "figures": {
     "generator": "figures/s2-q040/generate.py",
@@ -41,33 +41,33 @@
     "options": {
       "A": {
         "file": "figures/s2-q040/s2-q040-A.svg",
-        "alt": "Circuit diagram: H on q0, measurement from q0 to classical bit c, then a box tied to the c wire by a condition dot marked 0x1, split into an 'If' part holding an X gate on q1 and an 'Else' part holding a Z gate on q1."
+        "alt": "Circuit diagram with wires q0, q1, q2 and a two-bit classical wire m: √X on q0, a CX from q0 to q2, and measurements of q0 into m bit 0 and q2 into m bit 1, then a box labelled 'If' holding a Z gate on q1, tied to the m wire by a condition dot marked m_1=0x1."
       },
       "B": {
         "file": "figures/s2-q040/s2-q040-B.svg",
-        "alt": "Circuit diagram: H on q0, measurement from q0 to classical bit c, and an X gate on q1 drawn in the first column, with no box and no link to the c wire."
+        "alt": "Circuit diagram with wires q0, q1, q2 and a two-bit classical wire m: √X on q0, a CX from q0 to q2, and measurements of q0 into m bit 0 and q2 into m bit 1, plus a Z gate on q1 drawn in the first column, with no box and no link to the m wire."
       },
       "C": {
         "file": "figures/s2-q040/s2-q040-C.svg",
-        "alt": "Circuit diagram: H on q0, measurement from q0 to classical bit c, then a box labelled 'If', tied to the c wire by a condition dot marked 0x1, holding an X gate on q1."
+        "alt": "Circuit diagram with wires q0, q1, q2 and a two-bit classical wire m: √X on q0, a CX from q0 to q2, and measurements of q0 into m bit 0 and q2 into m bit 1, then a box labelled 'If' holding a Z gate on q1, tied to the m wire by a condition dot marked 0x1."
       },
       "D": {
         "file": "figures/s2-q040/s2-q040-D.svg",
-        "alt": "Circuit diagram: H on q0, measurement from q0 to classical bit c, then a box labelled 'If', tied to the c wire by a condition dot marked 0x1, holding an X gate on q0."
+        "alt": "Circuit diagram with wires q0, q1, q2 and a two-bit classical wire m: √X on q0, a CX from q0 to q2, and measurements of q0 into m bit 0 and q2 into m bit 1, then a box labelled 'If' holding a Z gate on q1, tied to the m wire by a condition dot marked 0x2."
       },
       "E": {
         "file": "figures/s2-q040/s2-q040-E.svg",
-        "alt": "Circuit diagram: no H gate; measurement from q0 to classical bit c, then a box labelled 'If', tied to the c wire by a condition dot marked 0x1, holding an X gate on q1."
+        "alt": "Circuit diagram with wires q0, q1, q2 and a two-bit classical wire m: √X on q0, a CX from q0 to q2, and measurements of q0 into m bit 0 and q2 into m bit 1, then a box labelled 'If' holding a Z gate on q2, tied to the m wire by a condition dot marked 0x2."
       }
     }
   },
   "explanation": {
-    "correct": "`if_test((cr, 1))` opens a control-flow block that the `mpl` drawer renders as a box labelled 'If', linked to the classical wire by a condition dot marked with the tested value (0x1). The block here contains only `x(1)`, so the correct drawing shows H on q0, the measurement into c, and an If region enclosing a single X on q1 — no Else part, because none was created.",
+    "correct": "`if_test((cr, 2))` compares the whole two-bit register m with the integer 2, i.e. m_1 = 1 and m_0 = 0. The `mpl` drawer shows the block after the SX, CX and both measurements as a box labelled 'If' around its body, the single Z on q1, and links it to the bundled m wire with one condition dot labelled with the tested value in hex: 0x2. There is no Else part because none was opened.",
     "distractors": {
-      "A": "Phantom-else misconception: an Else region only appears when you capture the context (`as else_:`) and add one. This code never opens an Else branch, so no Else part is drawn.",
-      "B": "Ignores the conditional: `x(1)` sits inside the `if_test` context, so the drawer must show it inside a boxed If region tied to the classical wire — not as a bare gate.",
-      "D": "Target misread: the X inside the block acts on qubit 1, not on the measured qubit 0. The drawing must show the boxed X on the q1 wire.",
-      "E": "Missing preparation: the code applies H to q0 before the measurement, so the drawing must include the H box on q0."
+      "A": "Register test read as a single-bit test: `(cr, 2)` compares all of m with 2, so the dot carries only the value 0x2. A label naming one bit, m_1=0x1, is what `if_test((cr[1], 1))` draws, and that condition ignores m_0.",
+      "B": "Ignores the conditional: `z(1)` sits inside the `if_test` context, so it is drawn inside an If box tied to m after the measurements, not as a bare Z that the drawer would pull into the first column.",
+      "C": "Bit-order slip on the tested value: 2 is binary 10, meaning m_1 = 1 and m_0 = 0, and the drawer prints the integer itself as 0x2. A dot marked 0x1 belongs to `(cr, 1)`, the opposite bit pattern.",
+      "E": "Target misread: the Z inside the block acts on q1, the qubit that is never measured, not on q2, whose result lands in m_1. The If box must sit on the q1 wire."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
@@ -80,14 +80,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "# Variants MUST mirror data/figures/s2-q040/generate.py (figure variants == proof variants).\nimport io\nimport matplotlib\nimport matplotlib.pyplot as plt\nfrom qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"certiq-proof\"\n\n\ndef base():\n    qr = QuantumRegister(2, \"q\")\n    cr = ClassicalRegister(1, \"c\")\n    return QuantumCircuit(qr, cr), cr\n\n\ndef v_phantom_else():  # A\n    qc, cr = base()\n    qc.h(0)\n    qc.measure(0, 0)\n    with qc.if_test((cr, 1)) as else_:\n        qc.x(1)\n    with else_:\n        qc.z(1)\n    return qc\n\n\ndef v_unconditional():  # B\n    qc, _ = base()\n    qc.h(0)\n    qc.measure(0, 0)\n    qc.x(1)\n    return qc\n\n\ndef v_correct():  # C\n    qc, cr = base()\n    qc.h(0)\n    qc.measure(0, 0)\n    with qc.if_test((cr, 1)):\n        qc.x(1)\n    return qc\n\n\ndef v_wrong_target():  # D\n    qc, cr = base()\n    qc.h(0)\n    qc.measure(0, 0)\n    with qc.if_test((cr, 1)):\n        qc.x(0)\n    return qc\n\n\ndef v_no_h():  # E\n    qc, cr = base()\n    qc.measure(0, 0)\n    with qc.if_test((cr, 1)):\n        qc.x(1)\n    return qc\n\n\nVARIANTS = {\"A\": v_phantom_else, \"B\": v_unconditional, \"C\": v_correct,\n            \"D\": v_wrong_target, \"E\": v_no_h}\n\n# The stem code, verbatim (its last line returns the figure).\nqr = QuantumRegister(2, \"q\")\ncr = ClassicalRegister(1, \"c\")\nqc = QuantumCircuit(qr, cr)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.if_test((cr, 1)):\n    qc.x(1)\nstem_fig = qc.draw(output=\"mpl\")\n\n\ndef svg_text(fig):\n    \"\"\"Render the drawing itself to SVG text (fixed hashsalt, no Date).\"\"\"\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\ndef sig(c):\n    \"\"\"Structural signature: ops, wires, and the bodies of any if_else blocks.\"\"\"\n    out = []\n    for inst in c.data:\n        op = inst.operation\n        qubits = tuple(c.find_bit(b).index for b in inst.qubits)\n        if op.name == \"if_else\":\n            blocks = tuple(\n                tuple((bi.operation.name, tuple(qubits[blk.find_bit(b).index] for b in bi.qubits))\n                      for bi in blk.data)\n                for blk in op.blocks\n            )\n            out.append((op.name, qubits, blocks))\n        else:\n            out.append((op.name, qubits))\n    return tuple(out)\n\n\ntarget_svg = svg_text(stem_fig)\ntarget_sig = sig(qc)\nproven, evidence, observed = [], {}, {}\nfor key, make in sorted(VARIANTS.items()):\n    v = make()\n    s = sig(v)\n    same_svg = svg_text(v.draw(output=\"mpl\")) == target_svg\n    m = same_svg and s == target_sig\n    observed[key] = {\"signature\": repr(s), \"svg_identical\": same_svg}\n    evidence[key] = (f\"variant draws {s}; stem draws {target_sig}; rendered mpl SVG byte-identical \"\n                     f\"to the stem's own drawing: {same_svg} -> match={m}\")\n    if m:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
+    "proof_script": "# Variants MUST mirror data/figures/s2-q040/generate.py (figure variants == proof variants).\nimport io\nimport matplotlib\nimport matplotlib.pyplot as plt\nfrom qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"certiq-proof\"\n\n\ndef base():\n    qr = QuantumRegister(3, \"q\")\n    cr = ClassicalRegister(2, \"m\")\n    qc = QuantumCircuit(qr, cr)\n    qc.sx(0)\n    qc.cx(0, 2)\n    qc.measure([0, 2], cr)\n    return qc, cr\n\n\ndef v_single_bit():  # A\n    qc, cr = base()\n    with qc.if_test((cr[1], 1)):\n        qc.z(1)\n    return qc\n\n\ndef v_unconditional():  # B\n    qc, _ = base()\n    qc.z(1)\n    return qc\n\n\ndef v_value_one():  # C\n    qc, cr = base()\n    with qc.if_test((cr, 1)):\n        qc.z(1)\n    return qc\n\n\ndef v_correct():  # D\n    qc, cr = base()\n    with qc.if_test((cr, 2)):\n        qc.z(1)\n    return qc\n\n\ndef v_wrong_target():  # E\n    qc, cr = base()\n    with qc.if_test((cr, 2)):\n        qc.z(2)\n    return qc\n\n\nVARIANTS = {\"A\": v_single_bit, \"B\": v_unconditional, \"C\": v_value_one,\n            \"D\": v_correct, \"E\": v_wrong_target}\n\n# The stem code, verbatim (its last line returns the figure).\nqr = QuantumRegister(3, \"q\")\ncr = ClassicalRegister(2, \"m\")\nqc = QuantumCircuit(qr, cr)\nqc.sx(0)\nqc.cx(0, 2)\nqc.measure([0, 2], cr)\nwith qc.if_test((cr, 2)):\n    qc.z(1)\nstem_fig = qc.draw(output=\"mpl\")\n\n\ndef svg_text(fig):\n    \"\"\"Render the drawing itself to SVG text (fixed hashsalt, no Date).\"\"\"\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\ndef cond(c, op):\n    \"\"\"Condition as (register name | clbit index, value).\"\"\"\n    target, value = op.condition\n    if isinstance(target, ClassicalRegister):\n        return (\"register\", target.name, int(value))\n    return (\"clbit\", c.find_bit(target).index, int(value))\n\n\ndef sig(c):\n    \"\"\"Structural signature: ops, wires, if_else conditions and block bodies.\"\"\"\n    out = []\n    for inst in c.data:\n        op = inst.operation\n        qubits = tuple(c.find_bit(b).index for b in inst.qubits)\n        if op.name == \"if_else\":\n            blocks = tuple(\n                tuple((bi.operation.name, tuple(qubits[blk.find_bit(b).index] for b in bi.qubits))\n                      for bi in blk.data)\n                for blk in op.blocks if blk is not None\n            )\n            out.append((op.name, cond(c, op), qubits, blocks))\n        else:\n            out.append((op.name, qubits))\n    return tuple(out)\n\n\ntarget_svg = svg_text(stem_fig)\ntarget_sig = sig(qc)\nproven, evidence, observed = [], {}, {}\nfor key, make in sorted(VARIANTS.items()):\n    v = make()\n    s = sig(v)\n    same_svg = svg_text(v.draw(output=\"mpl\")) == target_svg\n    m = same_svg and s == target_sig\n    observed[key] = {\"signature\": repr(s), \"svg_identical\": same_svg}\n    evidence[key] = (f\"variant draws {s}; stem draws {target_sig}; rendered mpl SVG byte-identical \"\n                     f\"to the stem's own drawing: {same_svg} -> match={m}\")\n    if m:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
   },
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-fable-5 (orchestrator, gold example for figure waves)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": true,
-    "notes": "First figure question (task #27). Figures are mpl renders of the five variant circuits in figures/s2-q040/generate.py; the proof proves structural identity/difference of exactly those circuits against the stem code. Topic mirrors an official-sample THEME (conditional-circuit rendering) with a different circuit, per NDA rules. | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed; no re-render (stem-only) | adversarial A3 2026-10-16: figure: alts for C/D/E described an 'If-1' region, but the mpl box is labelled 'If' and the tested value appears as '0x1' under the condition dot on c (rasterized and inspected); all five alts rewritten at equal specificity (D's 'the qubit that was measured' gloss dropped); correct explanation aligned. Proof was tautological for C (it compared the stem circuit with itself) and compared circuits, not drawings: now copies the generator's five variants, renders each and the verbatim stem code in-process and requires SVG byte-identity plus structural match (only C). Citation: visualize-circuits (no control flow) -> QuantumCircuit.if_test ('chainable context manager ... to create subsequent else blocks'); control-flow guide kept ('an assignment target ... used to create an else block')"
+    "notes": "First figure question (task #27). Figures are mpl renders of the five variant circuits in figures/s2-q040/generate.py; the proof proves structural identity/difference of exactly those circuits against the stem code. Topic mirrors an official-sample THEME (conditional-circuit rendering) with a different circuit, per NDA rules. | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed; no re-render (stem-only) | adversarial A3 2026-10-16: figure: alts for C/D/E described an 'If-1' region, but the mpl box is labelled 'If' and the tested value appears as '0x1' under the condition dot on c (rasterized and inspected); all five alts rewritten at equal specificity (D's 'the qubit that was measured' gloss dropped); correct explanation aligned. Proof was tautological for C (it compared the stem circuit with itself) and compared circuits, not drawings: now copies the generator's five variants, renders each and the verbatim stem code in-process and requires SVG byte-identity plus structural match (only C). Citation: visualize-circuits (no control flow) -> QuantumCircuit.if_test ('chainable context manager ... to create subsequent else blocks'); control-flow guide kept ('an assignment target ... used to create an else block') | adversarial A3 2026-10-16: reworked off the canonical h/measure/if_test-X shape (anti-dup)"
   },
   "freshness": {
     "verified_against": {

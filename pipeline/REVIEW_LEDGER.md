@@ -3104,3 +3104,37 @@ All 19 edited (citations / proofs / notes); none survived fully unchanged.
 - Gates: verify_bank s2 38/38 PROVEN + 1 conceptual, exit 0; audit_meta_patterns s2
   0 blockers / 0 warnings, 7 low length flags (q030/q036/q037 pre-existing, options untouched;
   none new); lint_proof_drift 0 findings; render_figures OK for all eight figure qids.
+
+## A3 rework — s2-q040 (2026-10-16)
+
+- **Why:** the item still used the canonical docs shape (`h(0); measure(0, 0); with
+  if_test((cr, 1)): x(1)` on 2 qubits) that the s3-q066 entry bans (anti-duplication vs
+  official sample material). Same objective (reading an `if_test` block in `mpl` output),
+  same difficulty (1), `display_count` 4 kept.
+- **New circuit:** `QuantumRegister(3, "q")`, `ClassicalRegister(2, "m")`; `sx(0)`,
+  `cx(0, 2)`, `measure([0, 2], cr)`, `with qc.if_test((cr, 2)): z(1)`. Deliberately also
+  away from the guide's 3-qubit register example (`h([q0, q1])`, contiguous measures,
+  `0b001`, X on q2) and from s3-q066 (RY, single-clbit value 0, CX/SWAP else). Key C -> D.
+- **Distractors (all rendered, inspected as PNG):** A `if_test((cr[1], 1))` (register test
+  read as a single-bit test; dot labelled `m_1=0x1`), B bare `z(1)` (conditional ignored;
+  the drawer pulls it into the first column), C `if_test((cr, 1))` (bit-order slip on the
+  tested integer; `0x1`), E Z on q2 (target misread onto the measured qubit).
+- **Drawer facts (qiskit 2.5.0, default `cregbundle`):** a register condition draws ONE dot
+  on the bundled `m` wire labelled with the hex value only (`0x2`); a single-clbit
+  condition on the same register draws the dot labelled `m_1=0x1`. Docs-reader trap: the
+  feedforward guide describes solid/outlined circles per classical bit — that is the
+  unbundled drawing, not this default render.
+- **Image sizes:** A 18624, B 13940, C 17978, D (key) 17978, E 17989 B — key tied with C,
+  never the strict extreme in any displayed sample.
+- **Proof:** copies the generator's five variants, renders the verbatim stem code and every
+  variant in-process (`svg.hashsalt` fixed, `metadata={"Date": None}`), requires SVG
+  byte-identity plus a structural signature that now includes the `if_else` condition
+  (register name/clbit index + value); only D matches.
+- **Citations (fetched):** classical-feedforward guide ("conditionally perform operations
+  based on the value of a classical bit or register"; "condition on the value of a
+  classical register composed of multiple bits"); QuantumCircuit `if_test` ("a tuple of a
+  `ClassicalRegister` to be tested for equality with a given `int`", or "a `Clbit` to be
+  compared to either a `bool` or an `int`").
+- Gates: render_figures --only s2-q040 0 failures; verify_bank --only s2-q040 PROVEN;
+  --section s2 38/38 proven + 1 conceptual, exit 0; audit_meta_patterns s2 0 blockers /
+  0 warnings, no flag on s2-q040; lint_proof_drift 0 findings.

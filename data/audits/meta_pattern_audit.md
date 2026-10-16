@@ -8,10 +8,10 @@ Scope: **s2** — 39 questions (36 single-answer, 3 multi-select). Random-guess 
 
 | Heuristic | EV accuracy (answered) | Coverage | Est. exam score |
 |---|---|---|---|
-| position_C | 34.6% | 80% | 32.6% |
-| similar_twin_member | 31.9% | 65% | 29.3% |
+| position_C | 31.4% | 80% | 30.0% |
+| position_D | 31.4% | 80% | 30.0% |
+| similar_twin_member | 30.9% | 65% | 28.6% |
 | position_A | 28.2% | 79% | 27.4% |
-| position_D | 28.1% | 79% | 27.4% |
 | position_B | 27.6% | 81% | 27.0% |
 | stem_keyword_overlap | 25.2% | 58% | 24.9% |
 | longest_option | 23.6% | 100% | 23.6% |
@@ -24,8 +24,8 @@ Scope: **s2** — 39 questions (36 single-answer, 3 multi-select). Random-guess 
 | most_absolute | 47.1% | 12% | – |
 | code_formatted_only | 26.3% | 9% | – |
 | numeric_middle | 34.6% | 4% | – |
-| largest_image_option | 9.9% | 22% | – |
-| smallest_image_option | 23.4% | 22% | – |
+| largest_image_option | 6.8% | 22% | – |
+| smallest_image_option | 25.0% | 22% | – |
 
 ## Verdicts
 

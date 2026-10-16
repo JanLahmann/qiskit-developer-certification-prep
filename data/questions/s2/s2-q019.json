@@ -6,24 +6,24 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "What does this print, i.e. where would `plot_histogram` put its only bar?",
-  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.x(2)\nsv = Statevector.from_instruction(qc)\n\nprint(sv.probabilities_dict())",
+  "stem": "What does `sv.probabilities_dict()` return, i.e. where would `plot_histogram` put its only bar?",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(4)\nqc.x(0)\nqc.x(2)\nsv = Statevector.from_instruction(qc)\n\nprint(sv.probabilities_dict())",
   "options": [
     {
       "key": "A",
-      "text": "`{'011': 1.0}`"
+      "text": "`{'1010': 1.0}`"
     },
     {
       "key": "B",
-      "text": "`{'101': 1.0}`"
+      "text": "`{'0101': 1.0}`"
     },
     {
       "key": "C",
-      "text": "`{'110': 1.0}`"
+      "text": "`{'11': 1.0}`"
     },
     {
       "key": "D",
-      "text": "`{'0x5': 1.0}`"
+      "text": "`{'0b101': 1.0}`"
     },
     {
       "key": "E",
@@ -34,16 +34,17 @@
     "B"
   ],
   "explanation": {
-    "correct": "Qiskit labels outcomes little-endian: the string is written q2 q1 q0 (highest-index qubit on the left). X flips qubits 0 and 2 to |1>, qubit 1 stays |0>, so the label is 1·0·1 = '101'. The single histogram bar sits at '101'.",
+    "correct": "Qiskit labels outcomes little-endian: the string is written q3 q2 q1 q0 (highest-index qubit on the left). X flips qubits 0 and 2 while qubits 1 and 3 stay |0⟩, so the label is 0·1·0·1 = '0101' (state index 5). Every qubit of the state appears in the label, idle or not, so the single histogram bar sits at '0101'.",
     "distractors": {
-      "A": "'011' applies the reverse convention (q0 q1 q2 left-to-right). Qiskit puts qubit 0 on the RIGHT, so the set bits land at the rightmost and leftmost positions, giving '101'.",
-      "C": "'110' also mis-orders the bits; the flipped qubits (0 and 2) map to the rightmost and leftmost characters, giving '101', not '110'.",
-      "D": "`probabilities_dict` keys are binary bitstrings; '0x5' is the hexadecimal form of the state index (5), which is not how Qiskit labels these outcomes.",
-      "E": "Keys are bitstring labels, not integers: `probabilities_dict()` returns `np.str_` strings such as `'101'`. The integer indexing you are thinking of belongs to `probabilities()`, which returns a plain array."
+      "A": "'1010' writes qubit 0 as the LEFTMOST character (q0 q1 q2 q3), the big-endian reading. Qiskit puts qubit 0 in the rightmost character, so the flipped qubits 0 and 2 are the 1st and 3rd characters from the right: '0101'.",
+      "C": "Assumes idle qubits are left out of the label, as `idle_wires=False` hides wires in a drawing. A 4-qubit statevector always yields 4-character labels, so the untouched qubits 1 and 3 show up as 0s: '0101'.",
+      "D": "`probabilities_dict` keys are fixed-width bitstrings with no prefix; '0b101' is Python's `bin()` form of the state index 5, which drops the leading 0 of qubit 3 and is not how Qiskit labels outcomes.",
+      "E": "Keys are bitstring labels, not integers: `probabilities_dict()` returns `np.str_` strings such as `'0101'`. The integer indexing you are thinking of belongs to `probabilities()`, which returns a plain array."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/guides/bit-ordering",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results"
     ]
   },
   "proof": {
@@ -52,14 +53,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(3)\nqc.x(0)\nqc.x(2)\nsv = Statevector.from_instruction(qc)\npd = sv.probabilities_dict()\npeak = max(pd, key=pd.get)\npeak_prob = pd[peak]\n\nclaims = {\"A\": \"011\", \"B\": \"101\", \"C\": \"110\", \"D\": \"0x5\", \"E\": 5}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    match = (c == peak and abs(peak_prob - 1.0) < 1e-9)\n    evidence[k] = (\n        f\"option claims outcome {c!r}; executed probabilities_dict has peak \"\n        f\"{peak!r} at p={round(peak_prob,4)} (little-endian q2 q1 q0) -> match={match}\"\n    )\n    if match:\n        proven.append(k)\n\nkey_types = sorted({type(k).__name__ for k in pd})\nevidence[\"E\"] += f\"  (dict key types are {key_types}, so an integer key never appears)\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"probabilities_dict\": {k: round(v, 6) for k, v in pd.items()}},\n})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(4)\nqc.x(0)\nqc.x(2)\nsv = Statevector.from_instruction(qc)\npd = sv.probabilities_dict()\npeak = max(pd, key=pd.get)\npeak_prob = pd[peak]\nprinted = str(pd)\n\n# misconception models, each computed rather than asserted\nbig_endian = peak[::-1]                      # A: qubit 0 written leftmost\nidle = [i for i in range(qc.num_qubits) if not any(qc.find_bit(b).index == i for ci in qc.data for b in ci.qubits)]\nactive_only = \"\".join(ch for pos, ch in enumerate(peak) if (qc.num_qubits - 1 - pos) not in idle)  # C: idle qubits dropped\nbin_label = bin(int(peak, 2))                # D: Python bin() of the index\nint_key = int(peak, 2)                       # E\n\nclaims = {\"A\": \"1010\", \"B\": \"0101\", \"C\": \"11\", \"D\": \"0b101\", \"E\": 5}\nmodels = {\"A\": big_endian, \"C\": active_only, \"D\": bin_label, \"E\": int_key}\nevidence = {}\nproven = []\nfor k, c in claims.items():\n    match = (c == peak and abs(peak_prob - 1.0) < 1e-9)\n    evidence[k] = (\n        f\"option claims outcome {c!r}; executed probabilities_dict has peak \"\n        f\"{peak!r} at p={round(peak_prob, 4)} (little-endian q3 q2 q1 q0) -> match={match}\"\n    )\n    if k in models:\n        evidence[k] += f\"; misconception model yields {models[k]!r} (= option: {models[k] == c})\"\n    if match:\n        proven.append(k)\n\nkey_types = sorted({type(k).__name__ for k in pd})\nevidence[\"E\"] += f\"  (dict key types are {key_types}, so an integer key never appears)\"\nassert big_endian != peak, \"circuit must not be endianness-symmetric\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\n        \"probabilities_dict\": {k: round(v, 6) for k, v in pd.items()},\n        \"printed\": printed,\n        \"idle_qubits\": idle,\n    },\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern pass: distractor D relengthened to '0x5' so all four options are the same width (length heuristics now abstain) | pool wave: +E integer dict key (probabilities_dict keys are np.str_ bitstrings) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one-step read; '101' is endianness-symmetric)"
+    "notes": "meta-pattern pass: distractor D relengthened to '0x5' so all four options are the same width (length heuristics now abstain) | pool wave: +E integer dict key (probabilities_dict keys are np.str_ bitstrings) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one-step read; '101' is endianness-symmetric) | adversarial A3 2026-10-16: distractor A's 'reverse convention' was unreachable (x(0), x(2) on 3 qubits is endianness-symmetric: reverse_bits also gives '101'); circuit -> 4 qubits (key '0101', A '1010' big-endian, C '11' idle qubits dropped, executed); stem asked 'what does this print' but the print is {np.str_('0101'): np.float64(1.0)} -> asks for the return; proof computes each misconception; citations: visualization index -> guides/bit-ordering ('bit n-1 is the leftmost bit, and bit 0 is the rightmost') + Statevector API (probabilities_dict keys 'qudit strings for the subsystem basis vectors'); visualize-results kept (plot_histogram); D '0x5' -> '0b101' (bin() of index 5, same width as the key; clears a new low length flag)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +69,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

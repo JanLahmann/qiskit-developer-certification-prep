@@ -41,14 +41,14 @@
     "correct": "To overlay several result sets, pass a LIST of counts dicts as the single data argument and give a matching `legend` list. `plot_histogram([before, after], legend=[...])` draws grouped bars per bitstring with the two runs color-coded and labeled.",
     "distractors": {
       "A": "Two dicts cannot be combined with `+` (that raises `TypeError`); overlaying requires a list of dicts, not addition.",
-      "B": "`plot_histogram` takes one data argument; a second positional dict is consumed by the next parameter (`figsize`), which raises an error instead of overlaying.",
+      "B": "`plot_histogram` takes one data argument; the second positional dict lands in the next parameter (`figsize`), so only one execution is plotted and the two-entry legend is rejected with `VisualizationError` instead of overlaying.",
       "C": "A dict-of-dicts is not a list of counts; `plot_histogram` tries to read the outer dict as counts and raises a `TypeError`.",
       "E": "Right shape, near-miss keyword: the parameter that names the overlaid executions is `legend`; there is no `labels` parameter, so this raises `TypeError`.",
-      "F": "`legend` is matched element-wise against the list of executions, so a single string is read as a sequence of characters and the call raises `VisualizationError`."
+      "F": "`legend` is matched element-wise against the list of executions, so a single string counts as 13 characters against 2 executions and the call raises `VisualizationError`."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_histogram",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E labels= near-miss for legend=, +F legend given as one string instead of a per-execution list | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one recalled fact: list of dicts + list legend)"
+    "notes": "pool wave: +E labels= near-miss for legend=, +F legend given as one string instead of a per-execution list | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one recalled fact: list of dicts + list legend) | adversarial A3 2026-10-16: B rationale implied figsize raised; executed: VisualizationError 'Length of legend (2) doesn't match number of input executions (1)' -> reworded; F names the 13-vs-2 length mismatch (executed); citations: visualization index -> plot_histogram API (data 'list of dictionaries or a single dict'; legend 'number of entries must match the length of data'; Raises VisualizationError); guide kept (legend: 'list of strings used to label each execution's results')"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

@@ -2963,3 +2963,72 @@ figure items re-rendered and inspected. **0 second-answer attacks stuck, 0 key c
   plus S vs S†; kept at d2, each is one concept with a twist).
 - Gates: verify_bank s1 57/57 PROVEN, exit 0; audit_meta_patterns s1 0 blockers /
   0 warnings (9 pre-existing low length flags, none new); lint_proof_drift 0 findings.
+
+## Adversarial review A3 — s2a (2026-10-16)
+
+Scope: s2-q010..q028 (19; no figure items in this range). Every option including pool
+distractors re-executed in independent scripts (pinned venv, qiskit 2.5.0); every cited
+page fetched as text and grepped; drawer/plot source read where docs were silent.
+**0 second-answer attacks stuck, 0 key-letter changes, 0 kills.** All 19 edited
+(citations); 2 items rebuilt around a broken premise (q019, q024), 8 explanation fixes.
+
+- **Distractor misconception landed on the key (option values + code rebuilt, key letter
+  kept):** s2-q024 RY(2π/3): the full-angle error gives cos²(2π/3) = 0.25 / sin² = 0.75
+  = the key, so the item's own twist (θ/2) did not discriminate, and A's rationale ("full
+  angle gives 0.933/0.067") was false. Now RY(π/4): key `{'0': 0.854, '1': 0.146}`, A full
+  angle 0.5/0.5, B swapped, C linear-in-angle 0.75/0.25, E amplitudes 0.924/0.383
+  (self-labelling glosses like "the amplitudes, not their squares" dropped); proof computes
+  each model and asserts the full-angle model ≠ key. s2-q019 x(0), x(2) on 3 qubits is
+  endianness-symmetric (`reverse_bits()` also gives '101'), so A/C "reverse convention"
+  rationales were unreachable. Now 4 qubits: key '0101', A '1010' (q0 leftmost), C '11'
+  (idle qubits dropped), D '0b101' (`bin()` of index 5; replaces '0x5' to keep widths
+  equal), E int key; proof computes each model.
+- **Literal-print mismatch:** q019/q024 "What does this print?" — the prints are
+  `{np.str_('0101'): np.float64(1.0)}` / `{np.str_('0'): np.float64(0.854), ...}`; stems
+  now ask for the return / computed probabilities (q010's two class names do print as
+  keyed).
+- **False explanations (keys unchanged), executed or source-read:** q011 A "idle_wires=True
+  is the default" — default is `"auto"` (signature None → docstring "Default is auto").
+  q015 D "pylatexenc is a dependency of the LaTeX renderer, not mpl" — `MatplotlibDrawer` is
+  decorated `_optionals.HAS_PYLATEX.require_in_instance`; rewritten (missing lib =
+  MissingOptionalLibraryError; here the string fails first). q025 E "`sort="desc"` applies
+  to values, not keys" — `desc` keeps ascending ticks but `ax.invert_xaxis()`, drawing
+  '11','10','01','00' = E's order; proof now reads labels in drawn order. q013 B/C "nothing
+  is added" — `qc.x(0)` appends an unconditional X before `.c_if`/`.condition` raises (data
+  h, measure, x). q023 B: the error is VisualizationError "Length of legend (2) doesn't match
+  number of input executions (1)", not figsize. q010 F (notebooks use `_repr_html_`), q022 B
+  (`SamplerPubResult`), q015 E (draw() delegates to circuit_drawer) tightened.
+- **Displayed code:** s2-q017 option F used `plt` with no import in the displayed code;
+  `import matplotlib.pyplot as plt` added (F runs, returns None).
+- **Citation failure (19 of 19):** `api/qiskit/visualization` (index) was cited on 17;
+  `guides/visualize-circuits` on q011/q013/q016 states none of idle_wires, if_test,
+  initial_state; `guides/visualize-results` on q020/q024/q027 has no plot_distribution, RY or
+  Bloch content; plot-quantum-states on q024. Replaced with pages verified to state each fact:
+  circuit_drawer API (Returns TextDrawing/Figure/PIL.Image/str, valid outputs "text, mpl,
+  latex, latex_source", VisualizationError, idle_wires "auto", reverse_bits, initial_state,
+  ax "no returned Figure") q010-q018; QuantumCircuit API (draw kwargs, reverse_ops, if_test
+  tuple signature) q011/q012/q013/q016; guides/qiskit-2.0 ("Removal of legacy c_if
+  conditions", no condition attribute) q013; plot_histogram API (number_to_keep 'rest',
+  sort values + "Defaults to asc", legend length, Returns Figure) q020-q023/q025;
+  plot_distribution API q020; BitArray API (get_counts/get_bitstrings/get_int_counts) q022;
+  bit-ordering ("bit n−1 is the leftmost bit") + Statevector (probabilities_dict keys,
+  from_label table) q019/q024/q028; RYGate matrix q024; SGate diag(1, i) q027;
+  plot_bloch_multivector API ("Plot a Bloch sphere for each qubit") q026/q027.
+- **Docs-only gap:** no page states that plot_distribution normalizes (its API says only
+  "Plot a distribution from input sampled data"); q020 rests on execution (ylabels 'Count' vs
+  'Quasi-probability', heights sum 1024 vs 1.0).
+- **Docs-reader traps answered:** visualize-circuits calls the text return a "TextDrawer"
+  (class is `TextDrawing`) → q010 correct; circuit_drawer "latex: High-quality images" →
+  q018 E (PIL Image: `save`, no `savefig`).
+- **Proof strengthening:** q027 now asserts its Bloch vector equals
+  `_bloch_multivector_data` (the drawn vector, (0, 1, 0)); q025 reads tick labels in drawn
+  order.
+- **Survived attacks (executed):** q014 only `qiskit.visualization.circuit_drawer(...,
+  output=)` runs (tools: ModuleNotFoundError; top-level / draw_circuit: ImportError;
+  format=: TypeError); q016 only `initial_state=True` draws |0> (style dict ignored, typos
+  TypeError); q021 labels ['00','11','rest'] heights [500,500,24]; q022 only get_counts()
+  plots; q026 3 spheres titled qubit 0..2; q028 only '-' at (−1,0,0).
+- **Difficulty:** all 19 kept (q024 stays d2: half angle then square; q019 d1: one convention).
+- Gates: verify_bank s2 38/38 PROVEN + 1 conceptual, exit 0; audit_meta_patterns s2
+  0 blockers / 0 warnings, 7 low flags (pre-existing q010/q018/q022/q023 among them; q024's
+  pre-existing low flag cleared; none new); lint_proof_drift 0 findings.

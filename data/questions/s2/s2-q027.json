@@ -43,7 +43,8 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-results"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_bloch_multivector"
     ]
   },
   "proof": {
@@ -52,14 +53,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)\nsv = Statevector.from_instruction(qc)\nbloch = tuple(round(float(np.real(sv.expectation_value(Pauli(p)))), 4) for p in (\"X\", \"Y\", \"Z\"))\n\ntargets = {\n    \"A\": (1.0, 0.0, 0.0),\n    \"B\": (0.0, 0.0, -1.0),\n    \"C\": (0.0, 1.0, 0.0),\n    \"D\": (0.0, 0.0, 1.0),\n    \"E\": (0.0, -1.0, 0.0),\n}\nlabel = {\"A\": \"+X\", \"B\": \"-Z\", \"C\": \"+Y\", \"D\": \"+Z\", \"E\": \"-Y\"}\nevidence = {}\nproven = []\nfor k, t in targets.items():\n    match = all(abs(a - b) < 1e-6 for a, b in zip(bloch, t))\n    evidence[k] = f\"option claims axis {label[k]} -> Bloch {t}; executed state Bloch vector = {bloch} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"bloch_vector\": list(bloch), \"amplitudes\": [str(np.round(x, 4)) for x in sv.data]},\n})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, Pauli\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)\nsv = Statevector.from_instruction(qc)\nbloch = tuple(round(float(np.real(sv.expectation_value(Pauli(p)))), 4) for p in (\"X\", \"Y\", \"Z\"))\n\n# cross-check with the data plot_bloch_multivector itself draws (private helper, deliberate:\n# if it moves, the proof fails loudly instead of drifting)\nfrom qiskit.visualization.state_visualization import _bloch_multivector_data\ndrawn = tuple(round(float(c), 4) for c in _bloch_multivector_data(sv)[0])\nassert all(abs(a - b) < 1e-6 for a, b in zip(drawn, bloch)), (drawn, bloch)\n\ntargets = {\n    \"A\": (1.0, 0.0, 0.0),\n    \"B\": (0.0, 0.0, -1.0),\n    \"C\": (0.0, 1.0, 0.0),\n    \"D\": (0.0, 0.0, 1.0),\n    \"E\": (0.0, -1.0, 0.0),\n}\nlabel = {\"A\": \"+X\", \"B\": \"-Z\", \"C\": \"+Y\", \"D\": \"+Z\", \"E\": \"-Y\"}\nevidence = {}\nproven = []\nfor k, t in targets.items():\n    match = all(abs(a - b) < 1e-6 for a, b in zip(bloch, t))\n    evidence[k] = f\"option claims axis {label[k]} -> Bloch {t}; executed state Bloch vector = {bloch} -> match={match}\"\n    if match:\n        proven.append(k)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"bloch_vector\": list(bloch), \"drawn_vector\": list(drawn), \"amplitudes\": [str(np.round(x, 4)) for x in sv.data]},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E S vs S-dagger phase sign (arrow on -Y instead of +Y) | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (H then S: two steps)"
+    "notes": "pool wave: +E S vs S-dagger phase sign (arrow on -Y instead of +Y) | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (H then S: two steps) | adversarial A3 2026-10-16: proof compared expectation values only -> now also asserts equality with _bloch_multivector_data (the vector plot_bloch_multivector draws: (0, 1, 0)); citations: visualize-results (histograms only) -> SGate (S = diag(1, i)) + plot_bloch_multivector API; plot-quantum-states kept (Bloch vector = <X>,<Y>,<Z>)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +69,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

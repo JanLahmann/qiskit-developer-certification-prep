@@ -40,15 +40,15 @@
   "explanation": {
     "correct": "`idle_wires=False` tells the drawer to omit any qubit (or clbit) wire that has no operations on it, so the qubit-1 line disappears and only qubits 0 and 2 are drawn. It works the same across the text, mpl, and latex renderers.",
     "distractors": {
-      "A": "`idle_wires=True` is the default value — it keeps every wire, so the empty qubit-1 line is still drawn.",
+      "A": "`idle_wires=True` explicitly keeps every wire, so the empty qubit-1 line is still drawn. The default is `\"auto\"`, which also keeps it here because the circuit has no layout.",
       "C": "`plot_barriers` only toggles whether `barrier` instructions are shown; it has no effect on idle qubit wires.",
       "D": "`reverse_bits` only flips the top-to-bottom ordering of the wires; all three wires, including the idle one, are still rendered.",
       "E": "The `\"auto\"` setting only drops idle wires for a circuit that carries a transpiler layout; this circuit was never transpiled, so every wire — including the idle qubit 1 — is still drawn.",
       "F": "`cregbundle` controls whether classical registers are bundled onto one wire; it says nothing about qubit wires, so the idle qubit 1 line survives."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.circuit_drawer",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E idle_wires=\"auto\" (layout-dependent, keeps wires here), +F cregbundle confused with wire removal | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one recalled kwarg)"
+    "notes": "pool wave: +E idle_wires=\"auto\" (layout-dependent, keeps wires here), +F cregbundle confused with wire removal | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one recalled kwarg) | adversarial A3 2026-10-16: A rationale was false ('idle_wires=True is the default'; signature default None -> \"auto\" per docstring), rewritten; citations: guide + visualization index (neither mentions idle_wires) -> circuit_drawer API + QuantumCircuit API (idle_wires incl. \"auto\" = shown unless a layout is attached)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

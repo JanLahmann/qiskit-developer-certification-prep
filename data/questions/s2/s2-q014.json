@@ -42,7 +42,7 @@
       "E": "Right import, near-miss keyword: the renderer is selected with `output=`, and `circuit_drawer` has no `format` parameter, so this raises `TypeError`."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.circuit_drawer",
       "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits"
     ]
   },
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern pass: length tell cleared (distractor D now probes a wrong submodule path) | pool wave: +E near-miss kwarg format= instead of output= on circuit_drawer | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
+    "notes": "meta-pattern pass: length tell cleared (distractor D now probes a wrong submodule path) | pool wave: +E near-miss kwarg format= instead of output= on circuit_drawer | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed | adversarial A3 2026-10-16: citations: visualization index (one-line listing) -> circuit_drawer API (signature: output=, no format=; Returns TextDrawing); guide kept ('circuit_drawer() function ... from qiskit.visualization ... behaves identically to the circuit.draw() method'); all 5 imports/calls re-executed (only A runs)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

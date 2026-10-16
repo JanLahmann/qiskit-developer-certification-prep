@@ -7,7 +7,7 @@
   "type": "multi",
   "difficulty": 2,
   "stem": "Which TWO calls return a `matplotlib.figure.Figure` for `qc`? (Select 2.)",
-  "code": "from qiskit import QuantumCircuit\nfrom qiskit.visualization import circuit_drawer\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)",
+  "code": "import matplotlib.pyplot as plt\nfrom qiskit import QuantumCircuit\nfrom qiskit.visualization import circuit_drawer\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)",
   "options": [
     {
       "key": "A",
@@ -44,11 +44,11 @@
       "C": "`\"matplotlib\"` is not a valid output value — only `\"mpl\"` selects that renderer — so this raises `VisualizationError`.",
       "D": "With no output argument, `draw()` defaults to the text renderer and returns a `TextDrawing`, not a `Figure`.",
       "E": "`\"figure\"` is not a recognized output value; the Matplotlib output is `\"mpl\"`, so this raises `VisualizationError`.",
-      "F": "When you pass your own Matplotlib `Axes`, the drawer renders into it and returns `None` — the caller already owns the figure, so nothing is handed back."
+      "F": "When you pass your own Matplotlib `Axes`, the drawer renders into it and returns `None` (\"there will be no returned Figure since it is redundant\"); the caller already owns the figure."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.circuit_drawer",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +F ax= supplied, so the mpl drawer returns None instead of a Figure | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (multi-select with the ax= trap)"
+    "notes": "pool wave: +F ax= supplied, so the mpl drawer returns None instead of a Figure | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (multi-select with the ax= trap) | adversarial A3 2026-10-16: code: option F used plt without an import in the displayed code -> added 'import matplotlib.pyplot as plt' (F now runs, returns None, executed); F rationale quotes the ax docs; citations: visualization index -> circuit_drawer API (ax: 'no returned Figure'; valid outputs text/mpl/latex/latex_source; Returns Figure for mpl); guide kept ('mpl' returns a matplotlib.Figure)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

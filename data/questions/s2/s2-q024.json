@@ -6,44 +6,44 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "What does this code print?",
-  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.ry(2 * np.pi / 3, 0)\nsv = Statevector.from_instruction(qc)\n\nprint({k: round(v, 3) for k, v in sv.probabilities_dict().items()})",
+  "stem": "What probabilities does this code compute for the outcomes '0' and '1'?",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.ry(np.pi / 4, 0)\nsv = Statevector.from_instruction(qc)\n\nprint({k: round(v, 3) for k, v in sv.probabilities_dict().items()})",
   "options": [
     {
       "key": "A",
-      "text": "`{'0': 0.933, '1': 0.067}`"
+      "text": "`{'0': 0.5, '1': 0.5}`"
     },
     {
       "key": "B",
-      "text": "`{'0': 0.75, '1': 0.25}` — the '0' bar is taller."
+      "text": "`{'0': 0.146, '1': 0.854}`"
     },
     {
       "key": "C",
-      "text": "`{'0': 0.5, '1': 0.5}` — the two bars are equal."
+      "text": "`{'0': 0.75, '1': 0.25}`"
     },
     {
       "key": "D",
-      "text": "`{'0': 0.25, '1': 0.75}` — the '1' bar is three times taller."
+      "text": "`{'0': 0.854, '1': 0.146}`"
     },
     {
       "key": "E",
-      "text": "`{'0': 0.5, '1': 0.866}` — the amplitudes, not their squares."
+      "text": "`{'0': 0.924, '1': 0.383}`"
     }
   ],
   "answer": [
     "D"
   ],
   "explanation": {
-    "correct": "RY(θ)|0> = cos(θ/2)|0> + sin(θ/2)|1>, so P(1) = sin²(θ/2). With θ = 2π/3, θ/2 = π/3 and sin²(π/3) = 3/4. Thus P(0) = 0.25 and P(1) = 0.75, and the histogram's '1' bar is three times the height of the '0' bar.",
+    "correct": "RY(θ)|0⟩ = cos(θ/2)|0⟩ + sin(θ/2)|1⟩, so P(0) = cos²(θ/2) and P(1) = sin²(θ/2). With θ = π/4 the half angle is π/8: P(0) = cos²(π/8) ≈ 0.854 and P(1) = sin²(π/8) ≈ 0.146, so the '0' bar of the histogram dominates.",
     "distractors": {
-      "A": "This uses the full angle (cos²θ / sin²θ) instead of the half-angle θ/2. RY's rotation is by θ/2 on the state, giving the 0.25 / 0.75 split, not 0.933 / 0.067.",
-      "B": "This swaps the two probabilities. P(1) = sin²(θ/2) = 0.75 is the larger one, so '1' dominates, not '0'.",
-      "C": "Equal bars would need θ = π/2 (a balanced superposition); at θ = 2π/3 the state is biased toward |1>.",
-      "E": "These are the amplitudes cos(θ/2) and sin(θ/2) of the rotated state. `probabilities_dict()` reports |amplitude|², so the printed values are their squares and they sum to 1."
+      "A": "Uses the full angle θ instead of θ/2: cos²(π/4) = sin²(π/4) = 0.5. RY rotates the amplitudes by θ/2, so the split is cos²(π/8) ≈ 0.854 / sin²(π/8) ≈ 0.146, not an even one.",
+      "B": "Swaps the outcomes: sin²(θ/2) ≈ 0.146 is P(1), not P(0). A small RY angle leaves the state close to |0⟩, so '0' dominates.",
+      "C": "Assumes the probability grows linearly with the angle (π/4 is a quarter of the way to π, so 25 % on '1'). Probabilities follow sin²(θ/2), which gives ≈ 0.146 for '1'.",
+      "E": "These are the amplitudes cos(π/8) ≈ 0.924 and sin(π/8) ≈ 0.383, which do not even sum to 1. `probabilities_dict()` reports |amplitude|², i.e. 0.854 and 0.146."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
-      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.RYGate",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector"
     ]
   },
   "proof": {
@@ -52,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.ry(2 * np.pi / 3, 0)\npd = Statevector.from_instruction(qc).probabilities_dict()\np0 = round(pd.get(\"0\", 0.0), 3)\np1 = round(pd.get(\"1\", 0.0), 3)\n\nclaims = {\n    \"A\": (0.933, 0.067),\n    \"B\": (0.75, 0.25),\n    \"C\": (0.5, 0.5),\n    \"D\": (0.25, 0.75),\n    \"E\": (0.5, 0.866),\n}\nevidence = {}\nproven = []\nfor k, (c0, c1) in claims.items():\n    match = abs(p0 - c0) < 0.01 and abs(p1 - c1) < 0.01\n    evidence[k] = f\"option claims P(0)={c0}, P(1)={c1}; executed P(0)={p0}, P(1)={p1} -> match={match}\"\n    if match:\n        proven.append(k)\n\nevidence[\"E\"] += (\n    f\"  (0.5 and 0.866 are the amplitudes cos(theta/2), sin(theta/2); squaring them \"\n    f\"gives the printed {p0} and {p1})\"\n)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"probabilities\": {\"0\": p0, \"1\": p1}},\n})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\ntheta = np.pi / 4\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\nsv = Statevector.from_instruction(qc)\npd = sv.probabilities_dict()\np0 = round(float(pd.get(\"0\", 0.0)), 3)\np1 = round(float(pd.get(\"1\", 0.0)), 3)\nprinted = str({k: round(v, 3) for k, v in pd.items()})\n\n# each distractor's misconception, computed rather than asserted\nmodels = {\n    \"A\": (round(float(np.cos(theta) ** 2), 3), round(float(np.sin(theta) ** 2), 3)),   # full angle, no theta/2\n    \"B\": (p1, p0),                                                        # outcomes swapped\n    \"C\": (round(float(1 - theta / np.pi), 3), round(float(theta / np.pi), 3)),          # linear in angle\n    \"E\": tuple(round(float(abs(a)), 3) for a in sv.data),                 # amplitudes, not squared\n}\nclaims = {\n    \"A\": (0.5, 0.5),\n    \"B\": (0.146, 0.854),\n    \"C\": (0.75, 0.25),\n    \"D\": (0.854, 0.146),\n    \"E\": (0.924, 0.383),\n}\nevidence = {}\nproven = []\nfor k, (c0, c1) in claims.items():\n    match = abs(p0 - c0) < 0.001 and abs(p1 - c1) < 0.001\n    evidence[k] = f\"option claims P(0)={c0}, P(1)={c1}; executed P(0)={p0}, P(1)={p1} -> match={match}\"\n    if k in models:\n        evidence[k] += f\"; misconception model gives {models[k]} (= option: {models[k] == (c0, c1)})\"\n    if match:\n        proven.append(k)\n\n# the half-angle must matter: the full-angle model may not land on the key\nassert models[\"A\"] != (p0, p1)\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"probabilities\": {\"0\": p0, \"1\": p1}, \"printed\": printed},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E amplitudes reported where probabilities_dict squares them | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (theta/2 then cos^2: two steps)"
+    "notes": "pool wave: +E amplitudes reported where probabilities_dict squares them | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (theta/2 then cos^2: two steps) | adversarial A3 2026-10-16: theta 2pi/3 -> pi/4: at 2pi/3 the full-angle misconception gives cos^2(2pi/3)=0.25 = the key (A's rationale claimed it gave 0.933/0.067, unreachable); key D now {'0': 0.854, '1': 0.146} (executed), A full angle 0.5/0.5, B swapped, C linear-in-angle 0.75/0.25, E amplitudes 0.924/0.383, self-labelling option glosses removed; stem asks the computed probabilities (literal print is np.str_/np.float64 reprs); proof computes each misconception; citations: visualize-results + plot-quantum-states (no RY/probabilities) -> RYGate (matrix cos(theta/2)) + Statevector (probabilities_dict)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

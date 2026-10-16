@@ -47,8 +47,8 @@
       "F": "Plural near-miss: the parameter is `initial_state` (singular). `draw()` has a fixed signature and no catch-all keyword, so the plural spelling raises `TypeError`."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.circuit_drawer",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E style-dict misread as a drawer-flag channel, +F plural initial_states near-miss | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one recalled kwarg among near-miss spellings)"
+    "notes": "pool wave: +E style-dict misread as a drawer-flag channel, +F plural initial_states near-miss | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one recalled kwarg among near-miss spellings) | adversarial A3 2026-10-16: citations: guide + visualization index (neither mentions initial_state) -> circuit_drawer API ('initial_state (bool) - Adds |0> in the beginning of the qubit wires and 0 to classical wires') + QuantumCircuit API (draw signature: no with_initial_state/initial_states, no **kwargs); all 6 calls re-executed (only C draws |0>; E's style dict leaves text unlabelled)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

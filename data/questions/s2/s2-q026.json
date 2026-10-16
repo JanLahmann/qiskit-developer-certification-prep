@@ -47,8 +47,8 @@
       "F": "There is no joint-state sphere: a Bloch sphere can only represent a single qubit's reduced state, so the figure holds exactly one sphere per qubit."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_bloch_multivector",
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E idle qubit assumed skipped, +F extra summary sphere for the joint state | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
+    "notes": "pool wave: +E idle qubit assumed skipped, +F extra summary sphere for the joint state | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed | adversarial A3 2026-10-16: citations: visualization index -> plot_bloch_multivector API ('Plot a Bloch sphere for each qubit'; Returns matplotlib.figure.Figure); guide kept ('plots each qubit on a Bloch sphere'); re-executed: Figure with 3 3d axes titled qubit 0/1/2, idle qubit 2 at (0,0,1)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

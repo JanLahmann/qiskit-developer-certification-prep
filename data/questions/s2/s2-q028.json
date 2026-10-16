@@ -48,7 +48,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E +Y state read off the -X arrow, +F -Y state (equatorial axis mix-up) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
+    "notes": "pool wave: +E +Y state read off the -X arrow, +F -Y state (equatorial axis mix-up) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed | adversarial A3 2026-10-16: citations: visualization index -> Statevector API (from_label table: '-' = [1/sqrt2, -1/sqrt2], 'r'/'l' Y eigenstates); guide kept (Bloch vector = <X>,<Y>,<Z> on the axes); re-executed all six via _bloch_multivector_data: only '-' at (-1, 0, 0)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

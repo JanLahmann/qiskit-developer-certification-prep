@@ -42,8 +42,8 @@
       "E": "The `rest` bar aggregates by summing: it stands at 24, the sum of the 20 and 4 counts that were folded into it, not at their average of 12."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_histogram",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-results"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern pass: absolute tell inverted deliberately — absolutes removed from distractors B/D and the (factually true) 'all other outcomes' kept in the correct option | pool wave: +E 'rest' bar read as the average rather than the sum of folded counts | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (rest-bar sum vs average twist)"
+    "notes": "meta-pattern pass: absolute tell inverted deliberately — absolutes removed from distractors B/D and the (factually true) 'all other outcomes' kept in the correct option | pool wave: +E 'rest' bar read as the average rather than the sum of folded counts | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (rest-bar sum vs average twist) | adversarial A3 2026-10-16: citations: visualization index -> plot_histogram API ('number_to_keep - The number of terms to plot per dataset. The rest is made into a single bar called rest'); guide kept (same option list); re-executed: labels ['00','11','rest'], heights [500,500,24], figure size unchanged (D)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

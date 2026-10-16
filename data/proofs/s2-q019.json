@@ -5,16 +5,21 @@
       "B"
     ],
     "evidence": {
-      "A": "option claims outcome '011'; executed probabilities_dict has peak np.str_('101') at p=1.0 (little-endian q2 q1 q0) -> match=False",
-      "B": "option claims outcome '101'; executed probabilities_dict has peak np.str_('101') at p=1.0 (little-endian q2 q1 q0) -> match=True",
-      "C": "option claims outcome '110'; executed probabilities_dict has peak np.str_('101') at p=1.0 (little-endian q2 q1 q0) -> match=False",
-      "D": "option claims outcome '0x5'; executed probabilities_dict has peak np.str_('101') at p=1.0 (little-endian q2 q1 q0) -> match=False",
-      "E": "option claims outcome 5; executed probabilities_dict has peak np.str_('101') at p=1.0 (little-endian q2 q1 q0) -> match=False  (dict key types are ['str_'], so an integer key never appears)"
+      "A": "option claims outcome '1010'; executed probabilities_dict has peak np.str_('0101') at p=1.0 (little-endian q3 q2 q1 q0) -> match=False; misconception model yields '1010' (= option: True)",
+      "B": "option claims outcome '0101'; executed probabilities_dict has peak np.str_('0101') at p=1.0 (little-endian q3 q2 q1 q0) -> match=True",
+      "C": "option claims outcome '11'; executed probabilities_dict has peak np.str_('0101') at p=1.0 (little-endian q3 q2 q1 q0) -> match=False; misconception model yields '11' (= option: True)",
+      "D": "option claims outcome '0b101'; executed probabilities_dict has peak np.str_('0101') at p=1.0 (little-endian q3 q2 q1 q0) -> match=False; misconception model yields '0b101' (= option: True)",
+      "E": "option claims outcome 5; executed probabilities_dict has peak np.str_('0101') at p=1.0 (little-endian q3 q2 q1 q0) -> match=False; misconception model yields 5 (= option: True)  (dict key types are ['str_'], so an integer key never appears)"
     },
     "observed": {
       "probabilities_dict": {
-        "101": 1.0
-      }
+        "0101": 1.0
+      },
+      "printed": "{np.str_('0101'): np.float64(1.0)}",
+      "idle_qubits": [
+        1,
+        3
+      ]
     }
   },
   "versions": {
@@ -23,9 +28,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 8.24,
+  "wall_seconds": 1.49,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"option claims outcome '011'; executed probabilities_dict has peak np.str_('101') at p=1.0 (little-endian q2 q1 q0) -> match=False\", \"B\": \"option claims outcome '101'; executed probabilities_dict has peak np.str_('101') at p=1.0 (little-endian q2 q1 q0) -> match=True\", \"C\": \"option claims outcome '110'; executed probabilities_dict has peak np.str_('101') at p=1.0 (little-endian q2 q1 q0) -> match=False\", \"D\": \"option claims outcome '0x5'; executed probabilities_dict has peak np.str_('101') at p=1.0 (little-endian q2 q1 q0) -> match=False\", \"E\": \"option claims outcome 5; executed probabilities_dict has peak np.str_('101') at p=1.0 (little-endian q2 q1 q0) -> match=False  (dict key types are ['str_'], so an integer key never appears)\"}, \"observed\": {\"probabilities_dict\": {\"101\": 1.0}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"option claims outcome '1010'; executed probabilities_dict has peak np.str_('0101') at p=1.0 (little-endian q3 q2 q1 q0) -> match=False; misconception model yields '1010' (= option: True)\", \"B\": \"option claims outcome '0101'; executed probabilities_dict has peak np.str_('0101') at p=1.0 (little-endian q3 q2 q1 q0) -> match=True\", \"C\": \"option claims outcome '11'; executed probabilities_dict has peak np.str_('0101') at p=1.0 (little-endian q3 q2 q1 q0) -> match=False; misconception model yields '11' (= option: True)\", \"D\": \"option claims outcome '0b101'; executed probabilities_dict has peak np.str_('0101') at p=1.0 (little-endian q3 q2 q1 q0) -> match=False; misconception model yields '0b101' (= option: True)\", \"E\": \"option claims outcome 5; executed probabilities_dict has peak np.str_('0101') at p=1.0 (little-endian q3 q2 q1 q0) -> match=False; misconception model yields 5 (= option: True)  (dict key types are ['str_'], so an integer key never appears)\"}, \"observed\": {\"probabilities_dict\": {\"0101\": 1.0}, \"printed\": \"{np.str_('0101'): np.float64(1.0)}\", \"idle_qubits\": [1, 3]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

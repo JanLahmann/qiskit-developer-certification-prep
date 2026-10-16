@@ -36,14 +36,15 @@
   "explanation": {
     "correct": "In Qiskit 2.x classical feedforward is expressed with the `if_test` context manager. Operations added inside the `with qc.if_test((clbit, value)):` block run only when the condition holds, and the drawer renders them inside a boxed `If-0 ... End-0` block attached to the classical wire.",
     "distractors": {
-      "B": "`InstructionSet.c_if` was the v0.x/v1 way to attach a condition, but it was removed in Qiskit 2.0 — calling it now raises `AttributeError`, so nothing is added to the circuit.",
-      "C": "`InstructionSet` (what `qc.x(0)` returns) has no assignable `condition` attribute; this raises `AttributeError` and builds no conditional.",
+      "B": "`InstructionSet.c_if` was the v0.x/v1 way to attach a condition, but it was removed in Qiskit 2.0. `qc.x(0)` has already appended an unconditional X when `.c_if` raises `AttributeError`, so no conditional is built.",
+      "C": "`InstructionSet` (what `qc.x(0)` returns) has no assignable `condition` attribute (Qiskit 2.0 removed it from instructions); the assignment raises `AttributeError` after an unconditional X was appended, so no conditional is built.",
       "D": "`QuantumCircuit.x()` accepts no `condition` keyword; passing one raises a `TypeError`.",
       "E": "`if_test` wants a `(clbit, value)` tuple (or a `qiskit.circuit.classical.expr` condition). A plain Python `==` on a `Clbit` evaluates to a bare `bool`, which the context manager cannot unpack — it raises `TypeError`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits"
+      "https://quantum.cloud.ibm.com/docs/guides/qiskit-2.0",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
     ]
   },
   "proof": {
@@ -57,9 +58,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern pass: high length tell cleared (correct option trimmed, all four options given a parallel short tail) | pool wave: +E Python == comparison passed to if_test instead of a (clbit, value) tuple | realism audit 2026-10-01: stem trimmed; difficulty 3->2 (if_test syntax plus c_if removal, one concept with a twist)"
+    "notes": "meta-pattern pass: high length tell cleared (correct option trimmed, all four options given a parallel short tail) | pool wave: +E Python == comparison passed to if_test instead of a (clbit, value) tuple | realism audit 2026-10-01: stem trimmed; difficulty 3->2 (if_test syntax plus c_if removal, one concept with a twist) | adversarial A3 2026-10-16: B/C rationales claimed nothing is added; executed: qc.x(0) appends an unconditional X before AttributeError (data h, measure, x) -> rewritten; citations: visualize-circuits (no if_test) -> qiskit-2.0 migration guide ('Removal of legacy c_if conditions', no condition attribute) + QuantumCircuit API (if_test(condition: tuple[Clbit, int])); feedforward guide kept"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +69,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

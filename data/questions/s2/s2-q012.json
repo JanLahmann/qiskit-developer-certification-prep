@@ -42,8 +42,9 @@
       "E": "That describes `QuantumCircuit.reverse_ops()`, a circuit transformation. `reverse_bits` is a drawing option for the wire order and leaves the left-to-right time order alone."
     },
     "citations": [
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.circuit_drawer",
       "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
     ]
   },
   "proof": {
@@ -57,9 +58,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern pass: format tell cleared (distractor B now code-formatted) and absolute tell cleared (distractor B hedges, so distractor C keeps its absolute) | pool wave: +E reverse_bits confused with reverse_ops (time order mirrored) | realism audit 2026-10-01: stem trimmed (dropped the q_0-on-top gloss, which hinted the answer); difficulty 2->1 even without it (one recalled fact)"
+    "notes": "meta-pattern pass: format tell cleared (distractor B now code-formatted) and absolute tell cleared (distractor B hedges, so distractor C keeps its absolute) | pool wave: +E reverse_bits confused with reverse_ops (time order mirrored) | realism audit 2026-10-01: stem trimmed (dropped the q_0-on-top gloss, which hinted the answer); difficulty 2->1 even without it (one recalled fact) | adversarial A3 2026-10-16: citations: visualization index (no reverse_bits) -> circuit_drawer API ('reverse the bit order inside registers for the output visualization'); guide kept (reverse_bits example); + QuantumCircuit API (reverse_ops 'reversing the order of instructions', distractor E); options re-executed (q_1 on top, cx roles unchanged)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +69,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

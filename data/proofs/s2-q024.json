@@ -5,17 +5,18 @@
       "D"
     ],
     "evidence": {
-      "A": "option claims P(0)=0.933, P(1)=0.067; executed P(0)=0.25, P(1)=0.75 -> match=False",
-      "B": "option claims P(0)=0.75, P(1)=0.25; executed P(0)=0.25, P(1)=0.75 -> match=False",
-      "C": "option claims P(0)=0.5, P(1)=0.5; executed P(0)=0.25, P(1)=0.75 -> match=False",
-      "D": "option claims P(0)=0.25, P(1)=0.75; executed P(0)=0.25, P(1)=0.75 -> match=True",
-      "E": "option claims P(0)=0.5, P(1)=0.866; executed P(0)=0.25, P(1)=0.75 -> match=False  (0.5 and 0.866 are the amplitudes cos(theta/2), sin(theta/2); squaring them gives the printed 0.25 and 0.75)"
+      "A": "option claims P(0)=0.5, P(1)=0.5; executed P(0)=0.854, P(1)=0.146 -> match=False; misconception model gives (0.5, 0.5) (= option: True)",
+      "B": "option claims P(0)=0.146, P(1)=0.854; executed P(0)=0.854, P(1)=0.146 -> match=False; misconception model gives (0.146, 0.854) (= option: True)",
+      "C": "option claims P(0)=0.75, P(1)=0.25; executed P(0)=0.854, P(1)=0.146 -> match=False; misconception model gives (0.75, 0.25) (= option: True)",
+      "D": "option claims P(0)=0.854, P(1)=0.146; executed P(0)=0.854, P(1)=0.146 -> match=True",
+      "E": "option claims P(0)=0.924, P(1)=0.383; executed P(0)=0.854, P(1)=0.146 -> match=False; misconception model gives (0.924, 0.383) (= option: True)"
     },
     "observed": {
       "probabilities": {
-        "0": 0.25,
-        "1": 0.75
-      }
+        "0": 0.854,
+        "1": 0.146
+      },
+      "printed": "{np.str_('0'): np.float64(0.854), np.str_('1'): np.float64(0.146)}"
     }
   },
   "versions": {
@@ -24,9 +25,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 8.43,
+  "wall_seconds": 1.48,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"option claims P(0)=0.933, P(1)=0.067; executed P(0)=0.25, P(1)=0.75 -> match=False\", \"B\": \"option claims P(0)=0.75, P(1)=0.25; executed P(0)=0.25, P(1)=0.75 -> match=False\", \"C\": \"option claims P(0)=0.5, P(1)=0.5; executed P(0)=0.25, P(1)=0.75 -> match=False\", \"D\": \"option claims P(0)=0.25, P(1)=0.75; executed P(0)=0.25, P(1)=0.75 -> match=True\", \"E\": \"option claims P(0)=0.5, P(1)=0.866; executed P(0)=0.25, P(1)=0.75 -> match=False  (0.5 and 0.866 are the amplitudes cos(theta/2), sin(theta/2); squaring them gives the printed 0.25 and 0.75)\"}, \"observed\": {\"probabilities\": {\"0\": 0.25, \"1\": 0.75}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"option claims P(0)=0.5, P(1)=0.5; executed P(0)=0.854, P(1)=0.146 -> match=False; misconception model gives (0.5, 0.5) (= option: True)\", \"B\": \"option claims P(0)=0.146, P(1)=0.854; executed P(0)=0.854, P(1)=0.146 -> match=False; misconception model gives (0.146, 0.854) (= option: True)\", \"C\": \"option claims P(0)=0.75, P(1)=0.25; executed P(0)=0.854, P(1)=0.146 -> match=False; misconception model gives (0.75, 0.25) (= option: True)\", \"D\": \"option claims P(0)=0.854, P(1)=0.146; executed P(0)=0.854, P(1)=0.146 -> match=True\", \"E\": \"option claims P(0)=0.924, P(1)=0.383; executed P(0)=0.854, P(1)=0.146 -> match=False; misconception model gives (0.924, 0.383) (= option: True)\"}, \"observed\": {\"probabilities\": {\"0\": 0.854, \"1\": 0.146}, \"printed\": \"{np.str_('0'): np.float64(0.854), np.str_('1'): np.float64(0.146)}\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

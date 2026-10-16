@@ -42,8 +42,8 @@
       "E": "`plot_distribution` derives the probabilities from the counts it is given — there is no `shots` parameter in its signature at all, and passing one raises `TypeError`."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-results",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_distribution",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_histogram"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern pass: high length tell cleared (correct option trimmed); shot count made explicit in the stem so no answer rests on an unstated default | pool wave: +E V1-style shots= kwarg believed to drive plot_distribution normalization | realism audit 2026-10-01: stem trimmed (shots=1024 aside dropped; option E is self-contained); difficulty 2->1 (one recalled fact)"
+    "notes": "meta-pattern pass: high length tell cleared (correct option trimmed); shot count made explicit in the stem so no answer rests on an unstated default | pool wave: +E V1-style shots= kwarg believed to drive plot_distribution normalization | realism audit 2026-10-01: stem trimmed (shots=1024 aside dropped; option E is self-contained); difficulty 2->1 (one recalled fact) | adversarial A3 2026-10-16: citations: visualize-results (no plot_distribution) + visualization index -> plot_distribution API ('Plot a distribution from input sampled data', dict input, no shots parameter) + plot_histogram API ('Plot a histogram of input counts data'); docs-only gap: no page states the normalization, execution carries it (ylabels 'Count' vs 'Quasi-probability', heights sum 1024 vs 1.0); B re-checked under -W error (no deprecation)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

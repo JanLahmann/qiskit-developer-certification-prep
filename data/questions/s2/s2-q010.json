@@ -38,17 +38,17 @@
     "B"
   ],
   "explanation": {
-    "correct": "With no `output` argument, `QuantumCircuit.draw()` defaults to the text renderer and returns a `TextDrawing` object (its `__str__` produces the ASCII art). `draw(\"mpl\")` returns a full `matplotlib.figure.Figure` — the object you can `savefig()` or embed — so the two printed class names are `TextDrawing` and `Figure`.",
+    "correct": "With no `output` argument, `QuantumCircuit.draw()` defaults to the text renderer and returns a `TextDrawing` object (its `__str__` produces the ASCII art; the visualize-circuits guide's prose calls it a \"TextDrawer\", but the class name printed is `TextDrawing`). `draw(\"mpl\")` returns a full `matplotlib.figure.Figure` — the object you can `savefig()` or embed — so the two printed class names are `TextDrawing` and `Figure`.",
     "distractors": {
       "A": "Confuses the printable object with a bare string: `draw()` returns a `TextDrawing`, not `str`; only `str(qc.draw())` or `draw('latex_source')` yields a plain string.",
       "C": "The mpl renderer returns the whole `Figure`, not a single `Axes`; returning the Figure is what lets you save or further style the drawing.",
       "D": "Both halves are wrong: the default is `TextDrawing` (not `str`) and `mpl` returns a `Figure` (not an `AxesImage`, which is an image-plot artist).",
       "E": "Mixes up the renderers: the `latex` output is the one that returns a PIL `Image` (and needs a LaTeX toolchain); `mpl` hands back a `matplotlib` `Figure`.",
-      "F": "Assumes `draw()` only prints the diagram as a side effect and returns nothing. It returns a `TextDrawing`; notebooks merely display its `__repr__` automatically."
+      "F": "Assumes `draw()` only prints the diagram as a side effect and returns nothing. It returns a `TextDrawing`; notebooks merely display that returned object automatically."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.circuit_drawer",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E latex-Image vs mpl-Figure renderer mix-up, +F draw() assumed to return None | realism audit 2026-10-01: stem kept; difficulty 1 confirmed"
+    "notes": "pool wave: +E latex-Image vs mpl-Figure renderer mix-up, +F draw() assumed to return None | realism audit 2026-10-01: stem kept; difficulty 1 confirmed | adversarial A3 2026-10-16: citations: visualization index (no return types) -> circuit_drawer API (Returns: TextDrawing for text, matplotlib.figure.Figure for mpl); guide kept (latex returns PIL.Image); correct notes guide's 'TextDrawer' wording trap; F no longer claims notebooks show __repr__ (TextDrawing has _repr_html_)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

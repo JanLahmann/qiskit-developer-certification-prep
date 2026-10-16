@@ -39,11 +39,11 @@
       "B": "The text renderer produces monochrome ASCII intended for terminals and logs; it cannot make colored boxes or a savable raster image.",
       "C": "`latex_source` returns a LaTeX string you would still have to compile yourself; it is not a ready-to-save high-resolution image and offers no Matplotlib styling.",
       "D": "With no argument `draw()` defaults to the text (ASCII) renderer — the opposite of the styleable, high-resolution figure you want.",
-      "E": "The `latex` renderer needs an external LaTeX toolchain and gives back a PIL `Image`, not a Matplotlib `Figure` — there is no `savefig` method on it and no Matplotlib style hook for tuning the drawing."
+      "E": "The docs do call `latex` output \"high-quality images\", but that renderer needs an external LaTeX toolchain and returns a PIL `Image`, not a Matplotlib `Figure`: it has `save`, no `savefig`, and no Matplotlib style hook for tuning the drawing."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.circuit_drawer",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits"
     ]
   },
   "proof": {
@@ -56,9 +56,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern pass: stem-echo tell cleared (distractor C now shares the high-resolution vocabulary; correct option no longer echoes 'save') | pool wave: +E latex renderer (PIL Image, no savefig) mistaken for the publication path | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed; citations re-opened (visualize-circuits, visualization API) and support key + distractors"
+    "notes": "meta-pattern pass: stem-echo tell cleared (distractor C now shares the high-resolution vocabulary; correct option no longer echoes 'save') | pool wave: +E latex renderer (PIL Image, no savefig) mistaken for the publication path | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed; citations re-opened (visualize-circuits, visualization API) and support key + distractors | adversarial A3 2026-10-16: citations: visualization index -> circuit_drawer API (text 'ASCII art TextDrawing', mpl 'Images with color ... matplotlib', latex_source str, Returns Figure for mpl / PIL.Image for latex); guide kept (mpl style kwarg 'changes the colors', latex returns PIL.Image); E rationale now answers the docs' 'High-quality images compiled via LaTeX' trap (executed: PIL Image has save, no savefig; latex_source returns str)"
   },
   "display_count": 4
 }

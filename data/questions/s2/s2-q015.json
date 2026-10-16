@@ -38,12 +38,12 @@
     "distractors": {
       "B": "`\"figure\"` is also not a recognized output type — the same `VisualizationError` is raised. The Matplotlib output is spelled `\"mpl\"`.",
       "C": "Adding a flag does not fix an invalid output name; the `VisualizationError` about the unrecognized `\"matplotlib\"` value is raised before any rendering happens.",
-      "D": "`pylatexenc` is a dependency of the LaTeX renderer, not `mpl`. The failure here is purely the invalid output string, so installing it changes nothing.",
-      "E": "The method and the function share one renderer registry, so the standalone `circuit_drawer` rejects `\"matplotlib\"` with the same `VisualizationError`; the valid choices are text, latex, latex_source and mpl."
+      "D": "Blames a missing dependency. `pylatexenc` is in fact required by the mpl drawer too, but a missing optional library raises `MissingOptionalLibraryError`; this `VisualizationError` is the invalid `\"matplotlib\"` string being rejected before any renderer loads.",
+      "E": "`QuantumCircuit.draw()` simply delegates to `circuit_drawer`, so the standalone function rejects `\"matplotlib\"` with the same `VisualizationError`; the valid choices are text, latex, latex_source and mpl."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.circuit_drawer",
+      "https://quantum.cloud.ibm.com/docs/guides/visualize-circuits"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E standalone circuit_drawer believed to accept the long 'matplotlib' name | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (recall the 'mpl' output string)"
+    "notes": "pool wave: +E standalone circuit_drawer believed to accept the long 'matplotlib' name | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (recall the 'mpl' output string) | adversarial A3 2026-10-16: D rationale false ('pylatexenc is a dependency of the LaTeX renderer, not mpl'; source: MatplotlibDrawer is decorated HAS_PYLATEX.require_in_instance) -> rewritten (missing lib = MissingOptionalLibraryError, here VisualizationError from the string); E reworded (draw() delegates to circuit_drawer); citations: visualization index -> circuit_drawer API ('Valid choices are text, mpl, latex, latex_source'; Raises VisualizationError on invalid output)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

@@ -5,326 +5,347 @@
       "C"
     ],
     "evidence": {
-      "A": "pass-manager output draws 3 wires carrying h[0], t[1], h[2], cx[1, 2], cx[0, 2] (5 gates) -> match=False",
-      "B": "pass-manager output draws 3 wires carrying h[0], cx[0, 1], cx[0, 1], t[1], h[2], cx[1, 2], cx[0, 2] (7 gates) -> match=False",
-      "C": "pass-manager output draws 3 wires carrying h[0], cx[0, 1], cx[0, 1], t[1], h[2], z[2], z[2], cx[1, 2], cx[0, 2] (9 gates) -> match=True",
-      "D": "pass-manager output draws 3 wires carrying h[0], t[1], h[2], z[2], z[2], cx[1, 2], cx[0, 2] (7 gates) -> match=False",
-      "E": "pass-manager output draws 3 wires carrying h[0], cx[0, 1], t[1], h[2], z[2], cx[1, 2], cx[0, 2] (7 gates) -> match=False"
+      "A": "pass-manager output draws 5 gates: h[0], t[1], h[2], cx[1, 2], cx[0, 2]; stem output has 9; mpl SVG byte-identical to the stem code's rendering -> False; match=False",
+      "B": "pass-manager output draws 7 gates: h[0], cx[0, 1], cx[0, 1], t[1], h[2], cx[1, 2], cx[0, 2]; stem output has 9; mpl SVG byte-identical to the stem code's rendering -> False; match=False",
+      "C": "pass-manager output draws 9 gates: h[0], cx[0, 1], cx[0, 1], t[1], h[2], z[2], z[2], cx[1, 2], cx[0, 2]; stem output has 9; mpl SVG byte-identical to the stem code's rendering -> True; match=True",
+      "D": "pass-manager output draws 13 gates: rz[0], sx[0], rz[0], cx[0, 1], cx[0, 1], rz[1], rz[2], sx[2], rz[2], rz[2], rz[2], cx[1, 2], cx[0, 2]; stem output has 9; mpl SVG byte-identical to the stem code's rendering -> False; match=False",
+      "E": "pass-manager output draws 7 gates: h[0], cx[0, 1], t[1], h[2], z[2], cx[1, 2], cx[0, 2]; stem output has 9; mpl SVG byte-identical to the stem code's rendering -> False; match=False"
     },
     "observed": {
-      "A": {
-        "num_qubits": 3,
-        "ops": [
+      "stem_output": [
+        [
+          "h",
           [
-            "h",
-            [
-              0
-            ]
-          ],
+            0
+          ]
+        ],
+        [
+          "cx",
           [
-            "t",
-            [
-              1
-            ]
-          ],
+            0,
+            1
+          ]
+        ],
+        [
+          "cx",
           [
-            "h",
-            [
-              2
-            ]
-          ],
+            0,
+            1
+          ]
+        ],
+        [
+          "t",
           [
-            "cx",
-            [
-              1,
-              2
-            ]
-          ],
+            1
+          ]
+        ],
+        [
+          "h",
           [
-            "cx",
-            [
-              0,
-              2
-            ]
+            2
+          ]
+        ],
+        [
+          "z",
+          [
+            2
+          ]
+        ],
+        [
+          "z",
+          [
+            2
+          ]
+        ],
+        [
+          "cx",
+          [
+            1,
+            2
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            2
           ]
         ]
-      },
-      "B": {
-        "num_qubits": 3,
-        "ops": [
+      ],
+      "stem_gate_count": 9,
+      "A": [
+        [
+          "h",
           [
-            "h",
-            [
-              0
-            ]
-          ],
+            0
+          ]
+        ],
+        [
+          "t",
           [
-            "cx",
-            [
-              0,
-              1
-            ]
-          ],
+            1
+          ]
+        ],
+        [
+          "h",
           [
-            "cx",
-            [
-              0,
-              1
-            ]
-          ],
+            2
+          ]
+        ],
+        [
+          "cx",
           [
-            "t",
-            [
-              1
-            ]
-          ],
+            1,
+            2
+          ]
+        ],
+        [
+          "cx",
           [
-            "h",
-            [
-              2
-            ]
-          ],
-          [
-            "cx",
-            [
-              1,
-              2
-            ]
-          ],
-          [
-            "cx",
-            [
-              0,
-              2
-            ]
+            0,
+            2
           ]
         ]
-      },
-      "C": {
-        "num_qubits": 3,
-        "ops": [
+      ],
+      "B": [
+        [
+          "h",
           [
-            "h",
-            [
-              0
-            ]
-          ],
+            0
+          ]
+        ],
+        [
+          "cx",
           [
-            "cx",
-            [
-              0,
-              1
-            ]
-          ],
+            0,
+            1
+          ]
+        ],
+        [
+          "cx",
           [
-            "cx",
-            [
-              0,
-              1
-            ]
-          ],
+            0,
+            1
+          ]
+        ],
+        [
+          "t",
           [
-            "t",
-            [
-              1
-            ]
-          ],
+            1
+          ]
+        ],
+        [
+          "h",
           [
-            "h",
-            [
-              2
-            ]
-          ],
+            2
+          ]
+        ],
+        [
+          "cx",
           [
-            "z",
-            [
-              2
-            ]
-          ],
+            1,
+            2
+          ]
+        ],
+        [
+          "cx",
           [
-            "z",
-            [
-              2
-            ]
-          ],
-          [
-            "cx",
-            [
-              1,
-              2
-            ]
-          ],
-          [
-            "cx",
-            [
-              0,
-              2
-            ]
+            0,
+            2
           ]
         ]
-      },
-      "D": {
-        "num_qubits": 3,
-        "ops": [
+      ],
+      "C": [
+        [
+          "h",
           [
-            "h",
-            [
-              0
-            ]
-          ],
+            0
+          ]
+        ],
+        [
+          "cx",
           [
-            "t",
-            [
-              1
-            ]
-          ],
+            0,
+            1
+          ]
+        ],
+        [
+          "cx",
           [
-            "h",
-            [
-              2
-            ]
-          ],
+            0,
+            1
+          ]
+        ],
+        [
+          "t",
           [
-            "z",
-            [
-              2
-            ]
-          ],
+            1
+          ]
+        ],
+        [
+          "h",
           [
-            "z",
-            [
-              2
-            ]
-          ],
+            2
+          ]
+        ],
+        [
+          "z",
           [
-            "cx",
-            [
-              1,
-              2
-            ]
-          ],
+            2
+          ]
+        ],
+        [
+          "z",
           [
-            "cx",
-            [
-              0,
-              2
-            ]
+            2
+          ]
+        ],
+        [
+          "cx",
+          [
+            1,
+            2
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            2
           ]
         ]
-      },
-      "E": {
-        "num_qubits": 3,
-        "ops": [
+      ],
+      "D": [
+        [
+          "rz",
           [
-            "h",
-            [
-              0
-            ]
-          ],
+            0
+          ]
+        ],
+        [
+          "sx",
           [
-            "cx",
-            [
-              0,
-              1
-            ]
-          ],
+            0
+          ]
+        ],
+        [
+          "rz",
           [
-            "t",
-            [
-              1
-            ]
-          ],
+            0
+          ]
+        ],
+        [
+          "cx",
           [
-            "h",
-            [
-              2
-            ]
-          ],
+            0,
+            1
+          ]
+        ],
+        [
+          "cx",
           [
-            "z",
-            [
-              2
-            ]
-          ],
+            0,
+            1
+          ]
+        ],
+        [
+          "rz",
           [
-            "cx",
-            [
-              1,
-              2
-            ]
-          ],
+            1
+          ]
+        ],
+        [
+          "rz",
           [
-            "cx",
-            [
-              0,
-              2
-            ]
+            2
+          ]
+        ],
+        [
+          "sx",
+          [
+            2
+          ]
+        ],
+        [
+          "rz",
+          [
+            2
+          ]
+        ],
+        [
+          "rz",
+          [
+            2
+          ]
+        ],
+        [
+          "rz",
+          [
+            2
+          ]
+        ],
+        [
+          "cx",
+          [
+            1,
+            2
+          ]
+        ],
+        [
+          "cx",
+          [
+            0,
+            2
           ]
         ]
-      },
-      "stem": {
-        "num_qubits": 3,
-        "ops": [
+      ],
+      "E": [
+        [
+          "h",
           [
-            "h",
-            [
-              0
-            ]
-          ],
+            0
+          ]
+        ],
+        [
+          "cx",
           [
-            "cx",
-            [
-              0,
-              1
-            ]
-          ],
+            0,
+            1
+          ]
+        ],
+        [
+          "t",
           [
-            "cx",
-            [
-              0,
-              1
-            ]
-          ],
+            1
+          ]
+        ],
+        [
+          "h",
           [
-            "t",
-            [
-              1
-            ]
-          ],
+            2
+          ]
+        ],
+        [
+          "z",
           [
-            "h",
-            [
-              2
-            ]
-          ],
+            2
+          ]
+        ],
+        [
+          "cx",
           [
-            "z",
-            [
-              2
-            ]
-          ],
+            1,
+            2
+          ]
+        ],
+        [
+          "cx",
           [
-            "z",
-            [
-              2
-            ]
-          ],
-          [
-            "cx",
-            [
-              1,
-              2
-            ]
-          ],
-          [
-            "cx",
-            [
-              0,
-              2
-            ]
+            0,
+            2
           ]
         ]
-      }
+      ]
     }
   },
   "versions": {
@@ -333,9 +354,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.25,
+  "wall_seconds": 1.89,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"pass-manager output draws 3 wires carrying h[0], t[1], h[2], cx[1, 2], cx[0, 2] (5 gates) -> match=False\", \"B\": \"pass-manager output draws 3 wires carrying h[0], cx[0, 1], cx[0, 1], t[1], h[2], cx[1, 2], cx[0, 2] (7 gates) -> match=False\", \"C\": \"pass-manager output draws 3 wires carrying h[0], cx[0, 1], cx[0, 1], t[1], h[2], z[2], z[2], cx[1, 2], cx[0, 2] (9 gates) -> match=True\", \"D\": \"pass-manager output draws 3 wires carrying h[0], t[1], h[2], z[2], z[2], cx[1, 2], cx[0, 2] (7 gates) -> match=False\", \"E\": \"pass-manager output draws 3 wires carrying h[0], cx[0, 1], t[1], h[2], z[2], cx[1, 2], cx[0, 2] (7 gates) -> match=False\"}, \"observed\": {\"A\": {\"num_qubits\": 3, \"ops\": [[\"h\", [0]], [\"t\", [1]], [\"h\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]]}, \"B\": {\"num_qubits\": 3, \"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"cx\", [0, 1]], [\"t\", [1]], [\"h\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]]}, \"C\": {\"num_qubits\": 3, \"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"cx\", [0, 1]], [\"t\", [1]], [\"h\", [2]], [\"z\", [2]], [\"z\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]]}, \"D\": {\"num_qubits\": 3, \"ops\": [[\"h\", [0]], [\"t\", [1]], [\"h\", [2]], [\"z\", [2]], [\"z\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]]}, \"E\": {\"num_qubits\": 3, \"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"t\", [1]], [\"h\", [2]], [\"z\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]]}, \"stem\": {\"num_qubits\": 3, \"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"cx\", [0, 1]], [\"t\", [1]], [\"h\", [2]], [\"z\", [2]], [\"z\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]]}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"pass-manager output draws 5 gates: h[0], t[1], h[2], cx[1, 2], cx[0, 2]; stem output has 9; mpl SVG byte-identical to the stem code's rendering -> False; match=False\", \"B\": \"pass-manager output draws 7 gates: h[0], cx[0, 1], cx[0, 1], t[1], h[2], cx[1, 2], cx[0, 2]; stem output has 9; mpl SVG byte-identical to the stem code's rendering -> False; match=False\", \"C\": \"pass-manager output draws 9 gates: h[0], cx[0, 1], cx[0, 1], t[1], h[2], z[2], z[2], cx[1, 2], cx[0, 2]; stem output has 9; mpl SVG byte-identical to the stem code's rendering -> True; match=True\", \"D\": \"pass-manager output draws 13 gates: rz[0], sx[0], rz[0], cx[0, 1], cx[0, 1], rz[1], rz[2], sx[2], rz[2], rz[2], rz[2], cx[1, 2], cx[0, 2]; stem output has 9; mpl SVG byte-identical to the stem code's rendering -> False; match=False\", \"E\": \"pass-manager output draws 7 gates: h[0], cx[0, 1], t[1], h[2], z[2], cx[1, 2], cx[0, 2]; stem output has 9; mpl SVG byte-identical to the stem code's rendering -> False; match=False\"}, \"observed\": {\"stem_output\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"cx\", [0, 1]], [\"t\", [1]], [\"h\", [2]], [\"z\", [2]], [\"z\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]], \"stem_gate_count\": 9, \"A\": [[\"h\", [0]], [\"t\", [1]], [\"h\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]], \"B\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"cx\", [0, 1]], [\"t\", [1]], [\"h\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]], \"C\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"cx\", [0, 1]], [\"t\", [1]], [\"h\", [2]], [\"z\", [2]], [\"z\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]], \"D\": [[\"rz\", [0]], [\"sx\", [0]], [\"rz\", [0]], [\"cx\", [0, 1]], [\"cx\", [0, 1]], [\"rz\", [1]], [\"rz\", [2]], [\"sx\", [2]], [\"rz\", [2]], [\"rz\", [2]], [\"rz\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]], \"E\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"t\", [1]], [\"h\", [2]], [\"z\", [2]], [\"cx\", [1, 2]], [\"cx\", [0, 2]]]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

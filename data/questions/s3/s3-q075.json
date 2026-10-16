@@ -75,9 +75,9 @@
   "provenance": {
     "generated": "2026-10-02",
     "model": "claude-opus (figure wave, s1/s3/s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "figure wave add (option images, d2): a ONE-wire barrier at optimization level 1 — it fences the H pair on its wire while the X pair on the other wire cancels. Distractors: barrier ignored, barrier freezing every wire, lone H gates re-synthesised as U. Proof runs the stem pass manager and requires structural + SVG byte-identity of each variant with the real output's rendering (only A)."
+    "notes": "figure wave add (option images, d2): a ONE-wire barrier at optimization level 1 — it fences the H pair on its wire while the X pair on the other wire cancels. Distractors: barrier ignored, barrier freezing every wire, lone H gates re-synthesised as U. Proof runs the stem pass manager and requires structural + SVG byte-identity of each variant with the real output's rendering (only A). | adversarial A3 2026-10-16: survived, no change (re-executed: level-1 output h, barrier(0), h, cx; X pair removed in init; with no target a merged 1q run becomes u2 so D's rationale holds; figures inspected; citations verified: api/qiskit/circuit 'blocks any optimizations from crossing the barrier', InverseCancellation, set-optimization level-1 table)"
   },
   "freshness": {
     "verified_against": {

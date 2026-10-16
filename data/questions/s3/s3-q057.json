@@ -30,7 +30,6 @@
       "text": ""
     }
   ],
-  "display_count": 4,
   "answer": [
     "C"
   ],
@@ -52,7 +51,7 @@
       },
       "D": {
         "file": "figures/s3-q057/s3-q057-D.svg",
-        "alt": "Circuit diagram with three wires q_0, q_1, q_2 from top to bottom: an H box on q_0, a T box on q_1 and an H box on q_2 in the first column, then two Z boxes in a row on q_2, then a CX controlled by q_1 with its target on q_2 and a CX controlled by q_0 with its target on q_2. Seven gates in total; the q_0-to-q_1 CX gates are absent."
+        "alt": "Circuit diagram with three wires q_0, q_1, q_2 from top to bottom and a global-phase note: an Rz, square-root-X, Rz chain on q_0 and the same chain on q_2, then two CX gates in a row controlled by q_0 with their targets on q_1, an Rz box on q_1 and two Rz boxes in a row on q_2, then a CX controlled by q_1 with its target on q_2 and a CX controlled by q_0 with its target on q_2. Thirteen gates in total."
       },
       "E": {
         "file": "figures/s3-q057/s3-q057-E.svg",
@@ -61,16 +60,16 @@
     }
   },
   "explanation": {
-    "correct": "`optimization_level=0` builds a pass manager that runs no optimization stage at all: it lays out, routes and translates for whatever target it is given, and here it is given none, so the circuit comes back exactly as it was written. Both redundant pairs — the two CX(0, 1) gates and the two Z gates — are still drawn, because removing them is the job of the optimization passes that only levels 1 and above schedule.",
+    "correct": "`optimization_level=0` builds a pass manager with no optimization stage at all: it lays out, routes and translates for whatever target it is given, and here it is given none, so the circuit comes back exactly as it was written. Both redundant pairs — the two CX(0, 1) gates and the two Z gates — are still drawn, because removing them is the job of the optimization passes that only levels 1 and above schedule.",
     "distractors": {
-      "A": "Level confusion: this is the level-2 output. Inverse-pair cancellation is an optimization pass, and level 0 schedules none, so both repeated pairs survive the run shown in the stem.",
+      "A": "Level confusion: this is what levels 1-3 return. Inverse-pair cancellation is an optimization pass, and level 0 schedules none, so both repeated pairs survive the run shown in the stem.",
       "B": "Selective cancellation: nothing suggests single-qubit repeats are treated differently from two-qubit ones. Either the optimization stage runs and removes both pairs, or it does not run and removes neither.",
-      "D": "The mirror-image of the same error: the CX pair is no more removable at level 0 than the Z pair. This drawing is what a run that cancelled only the two-qubit repeat would produce.",
+      "D": "Translation without a target: with no backend, `target` or `basis_gates`, the translation stage has no gate set to rewrite into, so H, T and Z are drawn as written. This Rz/√X picture is what the same level-0 pass manager returns only when `basis_gates=['rz', 'sx', 'cx']` is passed.",
       "E": "Deduplication instead of cancellation: repeated gates are not collapsed into a single copy. Two identical self-inverse gates multiply to the identity, so a pass that acts on them deletes both — it never leaves one behind."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
-      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.transpiler.generate_preset_pass_manager"
     ]
   },
   "proof": {
@@ -79,14 +78,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\n\n# The five pass-manager runs MUST mirror data/figures/s3-q057/generate.py —\n# the rendered figures are mpl drawings of exactly these outputs.\n\n\ndef build(z_pair=True, cx_pair=True, once=False):\n    qc = QuantumCircuit(3)\n    qc.h(0)\n    if cx_pair or once:\n        qc.cx(0, 1)\n    if cx_pair and not once:\n        qc.cx(0, 1)\n    qc.t(1)\n    qc.h(2)\n    if z_pair or once:\n        qc.z(2)\n    if z_pair and not once:\n        qc.z(2)\n    qc.cx(1, 2)\n    qc.cx(0, 2)\n    return qc\n\n\ndef run(circ, level):\n    pm = generate_preset_pass_manager(optimization_level=level,\n                                      seed_transpiler=42)\n    return pm.run(circ)\n\n\nVARIANTS = {\n    \"A\": run(build(), 2),\n    \"B\": run(build(z_pair=False), 0),\n    \"C\": run(build(), 0),\n    \"D\": run(build(cx_pair=False), 0),\n    \"E\": run(build(once=True), 0),\n}\n\n\ndef sig(circ):\n    \"\"\"What the drawer receives: the wire count and the gate sequence\n    addressed by qubit index (no layout is set, so the wires are q_0..q_2).\"\"\"\n    return circ.num_qubits, tuple(\n        (inst.operation.name, tuple(circ.find_bit(b).index for b in inst.qubits))\n        for inst in circ.data\n    )\n\n\ntarget = sig(run(build(), 0))\nproven, evidence, observed = [], {}, {}\nfor key, circ in sorted(VARIANTS.items()):\n    s = sig(circ)\n    match = s == target\n    observed[key] = {\"num_qubits\": s[0],\n                     \"ops\": [[n, list(q)] for n, q in s[1]]}\n    evidence[key] = (\n        f\"pass-manager output draws {s[0]} wires carrying \"\n        + \", \".join(f\"{n}{list(q)}\" for n, q in s[1])\n        + f\" ({len(s[1])} gates) -> match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nobserved[\"stem\"] = {\"num_qubits\": target[0],\n                    \"ops\": [[n, list(q)] for n, q in target[1]]}\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})"
+    "proof_script": "import io\n\nimport matplotlib\n\nmatplotlib.rcParams[\"svg.hashsalt\"] = \"proof\"  # deterministic SVG ids\nimport matplotlib.pyplot as plt\n\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler import generate_preset_pass_manager\n\n\ndef drawing(circ):\n    \"\"\"The actual mpl rendering, as SVG text (what the option image shows).\"\"\"\n    fig = circ.draw(output=\"mpl\")\n    buf = io.StringIO()\n    fig.savefig(buf, format=\"svg\", metadata={\"Date\": None})\n    plt.close(fig)\n    return buf.getvalue()\n\n\n# Block MUST mirror data/figures/s3-q057/generate.py (build / run / VARIANTS).\ndef build(z_pair=True, cx_pair=True, once=False):\n    \"\"\"The stem circuit (defaults) and the edited versions whose level-0\n    output is what each misconception expects to see.\"\"\"\n    qc = QuantumCircuit(3)\n    qc.h(0)\n    if cx_pair or once:\n        qc.cx(0, 1)\n    if cx_pair and not once:\n        qc.cx(0, 1)\n    qc.t(1)\n    qc.h(2)\n    if z_pair or once:\n        qc.z(2)\n    if z_pair and not once:\n        qc.z(2)\n    qc.cx(1, 2)\n    qc.cx(0, 2)\n    return qc\n\n\ndef run(circ, level, **kwargs):\n    pm = generate_preset_pass_manager(optimization_level=level,\n                                      seed_transpiler=42, **kwargs)\n    return pm.run(circ)\n\n\nVARIANTS = {\n    # A — both repeated pairs cancelled (what levels 1-3 really produce).\n    \"A\": lambda: run(build(), 2),\n    # B — only the Z pair removed.\n    \"B\": lambda: run(build(z_pair=False), 0),\n    # C — the stem's pass manager.\n    \"C\": lambda: run(build(), 0),\n    # D — level 0 assumed to translate into a hardware basis without a target.\n    \"D\": lambda: run(build(), 0, basis_gates=[\"rz\", \"sx\", \"cx\"]),\n    # E — each repeated gate kept once instead of cancelling in pairs.\n    \"E\": lambda: run(build(once=True), 0),\n}\n\n\n# The DISPLAYED stem code, verbatim (independent of build()/run() above).\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.cx(0, 1)\nqc.t(1)\nqc.h(2)\nqc.z(2)\nqc.z(2)\nqc.cx(1, 2)\nqc.cx(0, 2)\n\npm = generate_preset_pass_manager(optimization_level=0, seed_transpiler=42)\nout = pm.run(qc)\nout_svg = drawing(out)\n\n\ndef sig(circ):\n    return [(i.operation.name, [circ.find_bit(b).index for b in i.qubits]) for i in circ.data]\n\n\nout_sig = sig(out)\n# Level 0 with no target: no optimization stage, no layout, no translation.\nassert pm.optimization is None and out.layout is None, (pm.optimization, out.layout)\nproven, evidence = [], {}\nobserved = {\"stem_output\": out_sig, \"stem_gate_count\": len(out_sig)}\nfor key, make in sorted(VARIANTS.items()):\n    circ = make()\n    s = sig(circ)\n    same_render = drawing(circ) == out_svg\n    match = (s == out_sig) and same_render\n    observed[key] = s\n    evidence[key] = (\n        f\"pass-manager output draws {len(s)} gates: \" + \", \".join(f\"{n}{q}\" for n, q in s)\n        + f\"; stem output has {len(out_sig)}; mpl SVG byte-identical to the stem code's rendering -> {same_render}; match={match}\"\n    )\n    if match:\n        proven.append(key)\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
   },
   "provenance": {
     "generated": "2026-07-27",
     "model": "claude-opus (figure wave 2, task #28)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "Figure question on optimization levels. All five option images are genuine generate_preset_pass_manager outputs (own circuit, seed_transpiler pinned, no coupling map so no layout labels appear anywhere), so no drawer convention distinguishes the keyed figure. The proof re-runs the same five pass managers and compares the gate sequence each drawer receives. | realism audit 2026-10-01: stem already exam-length; difficulty 2 confirmed"
+    "notes": "Figure question on optimization levels. All five option images are genuine generate_preset_pass_manager outputs (own circuit, seed_transpiler pinned, no coupling map so no layout labels appear anywhere), so no drawer convention distinguishes the keyed figure. The proof re-runs the same five pass managers and compares the gate sequence each drawer receives. | realism audit 2026-10-01: stem already exam-length; difficulty 2 confirmed | adversarial A3 2026-10-16: image-size tell: keyed 'nothing removed' figure was the strictly largest SVG in every sample (16012 B); D (mirror of B) replaced by the level-0 run with basis_gates=['rz','sx','cx'] (31111 B, 'translation without a target'), all 5 shown (display_count dropped); proof now runs the displayed stem code and requires SVG byte-identity; circuit checked against cached docs guides, not a docs example (kept)"
   },
   "freshness": {
     "verified_against": {

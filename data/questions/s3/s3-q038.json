@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E (scheduling mistaken for routing) +F (init stage mistaken for routing) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (recall); citations re-checked"
+    "notes": "pool wave: +E (scheduling mistaken for routing) +F (init stage mistaken for routing) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (recall); citations re-checked | adversarial A3 2026-10-16: survived, no change"
   },
   "display_count": 4
 }

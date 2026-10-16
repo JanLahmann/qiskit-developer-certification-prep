@@ -141,7 +141,7 @@
     {
       "objective": "s2o2",
       "group": "trap",
-      "fact_md": "Flipping qubits 0 and 2 of a 3-qubit register puts the single histogram bar at `'101'`, not `'011'`.",
+      "fact_md": "Flipping qubits 0 and 2 of a 4-qubit register puts the single histogram bar at `'0101'`, not `'1010'` — qubit 0 is the rightmost character.",
       "source": {
         "type": "proof",
         "ref": "s2-q019"

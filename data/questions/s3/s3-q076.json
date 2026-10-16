@@ -59,8 +59,7 @@
       "C": "Roles swapped: reversing the instruction order does not reverse a CX — its control stays on q_0 and its target on q_1."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
     ]
   },
   "proof": {
@@ -74,9 +73,9 @@
   "provenance": {
     "generated": "2026-10-02",
     "model": "claude-opus (figure wave, s1/s3/s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "figure wave add (option images, d1): QuantumCircuit.reverse_ops() reverses instruction order only — no adjoints (inverse), no wire flip (reverse_bits), CX roles kept. Proof renders every variant and qc.reverse_ops() to SVG in-process and requires byte-identity (only D); it also asserts that the A variant is exactly qc.inverse() and that B renders identically to qc.reverse_bits()."
+    "notes": "figure wave add (option images, d1): QuantumCircuit.reverse_ops() reverses instruction order only — no adjoints (inverse), no wire flip (reverse_bits), CX roles kept. Proof renders every variant and qc.reverse_ops() to SVG in-process and requires byte-identity (only D); it also asserts that the A variant is exactly qc.inverse() and that B renders identically to qc.reverse_bits(). | adversarial A3 2026-10-16: citation: construct-circuits (no reverse_ops/inverse/reverse_bits) dropped; QuantumCircuit API kept ('It does not invert (adjoint) any gate'; reverse_bits 'opposite order of wires'; inverse 'take adjoint'); figures inspected, alts match"
   },
   "freshness": {
     "verified_against": {

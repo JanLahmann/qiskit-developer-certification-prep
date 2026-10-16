@@ -1,10 +1,13 @@
 # Figures for s3-q057: mpl renderings of five genuine preset-pass-manager
 # outputs. Every option is a real `generate_preset_pass_manager(...).run(...)`
 # result (no hand-built circuits), so the drawings share the same drawer
-# conventions and nothing but the optimization behaviour distinguishes them.
-# The proof script builds THE SAME five pass-manager runs and compares the gate
-# sequence each drawer receives — keep the two definitions in sync
-# (ledger rule: figure variants == proof variants).
+# conventions and nothing but the pass manager's behaviour distinguishes them.
+# The proof script builds THE SAME five pass-manager runs, runs the DISPLAYED
+# stem code verbatim, and requires SVG byte-identity with the stem's rendering —
+# keep the two definitions in sync (ledger rule: figure variants == proof variants).
+# A3 2026-10-16: D (only the CX pair removed, a mirror of B) replaced by a
+# level-0 run that also translates to an rz/sx/cx basis, so the keyed
+# "everything kept" drawing is no longer the busiest figure.
 # Runs under pipeline/render_figures.py's deterministic prelude (Agg backend,
 # fixed svg.hashsalt, no Date metadata); writes bare filenames into cwd.
 # Determinism: seed_transpiler is pinned and no coupling map/target is given,
@@ -14,7 +17,7 @@ from qiskit.transpiler import generate_preset_pass_manager
 
 
 def build(z_pair=True, cx_pair=True, once=False):
-    """The stem circuit (defaults) and the three edited versions whose level-0
+    """The stem circuit (defaults) and the edited versions whose level-0
     output is what each misconception expects to see."""
     qc = QuantumCircuit(3)
     qc.h(0)
@@ -33,21 +36,21 @@ def build(z_pair=True, cx_pair=True, once=False):
     return qc
 
 
-def run(circ, level):
+def run(circ, level, **kwargs):
     pm = generate_preset_pass_manager(optimization_level=level,
-                                      seed_transpiler=42)
+                                      seed_transpiler=42, **kwargs)
     return pm.run(circ)
 
 
 VARIANTS = {
-    # A — both repeated pairs cancelled (what level 2 really produces).
+    # A — both repeated pairs cancelled (what levels 1-3 really produce).
     "A": lambda: run(build(), 2),
     # B — only the Z pair removed.
     "B": lambda: run(build(z_pair=False), 0),
-    # C — the stem code, verbatim.
+    # C — the stem's pass manager.
     "C": lambda: run(build(), 0),
-    # D — only the CX(0, 1) pair removed.
-    "D": lambda: run(build(cx_pair=False), 0),
+    # D — level 0 assumed to translate into a hardware basis without a target.
+    "D": lambda: run(build(), 0, basis_gates=["rz", "sx", "cx"]),
     # E — each repeated gate kept once instead of cancelling in pairs.
     "E": lambda: run(build(once=True), 0),
 }

@@ -107,7 +107,7 @@
     {
       "objective": "s1o2",
       "group": "core",
-      "fact_md": "`QFTGate(n)` takes only a qubit count (no `do_swaps`, no `approximation_degree`). One `decompose()` gives n `h`, n(n−1)/2 `cp` and ⌊n/2⌋ `swap` — for n = 4 that is `{'h': 4, 'cp': 6, 'swap': 2}`, never `cx`.",
+      "fact_md": "`QFTGate(n)` takes only a qubit count (no `do_swaps`, no `approximation_degree`). One `decompose()` gives n `h`, n(n−1)/2 `cp` and ⌊n/2⌋ `swap` — for n = 4 `count_ops()` gives `{'cp': 6, 'h': 4, 'swap': 2}` (sorted by count), never `cx`.",
       "source": {
         "type": "proof",
         "ref": "s1-q049"

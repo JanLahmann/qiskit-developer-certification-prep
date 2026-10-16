@@ -43,7 +43,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/measure-qubits",
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+      "https://quantum.cloud.ibm.com/docs/guides/bit-ordering"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E (integer counts key instead of the bitstring) | realism audit 2026-10-01: stem trimmed (cross-mapping is in the code comments); difficulty 2 confirmed (cross-mapping + bit order)"
+    "notes": "pool wave: +E (integer counts key instead of the bitstring) | realism audit 2026-10-01: stem trimmed (cross-mapping is in the code comments); difficulty 2 confirmed (cross-mapping + bit order) | adversarial A3 2026-10-16: executed {'10': 500} (Aer) and Sampler BitArray get_counts {'10'} / get_int_counts {2}; construct-circuits (no bit order) -> bit-ordering ('bit n-1 is the leftmost bit'); measure-qubits kept ('Measure qubit 1 into the classical bit 0')"
   },
   "freshness": {
     "verified_against": {

@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor A now hedges) | pool wave: +E (believes the basis gate cx is rewritten too) +F (expects a universal u gate in the output) | orchestrator pool calibration: E/F trimmed below correct length (keeper set) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (h and t are outside the basis)"
+    "notes": "absolute-wording tell cleared (distractor A now hedges) | pool wave: +E (believes the basis gate cx is rewritten too) +F (expects a universal u gate in the output) | orchestrator pool calibration: E/F trimmed below correct length (keeper set) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (h and t are outside the basis) | adversarial A3 2026-10-16: survived, no change"
   },
   "freshness": {
     "verified_against": {

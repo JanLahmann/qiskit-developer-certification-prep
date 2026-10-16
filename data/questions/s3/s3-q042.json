@@ -41,14 +41,14 @@
     "F"
   ],
   "explanation": {
-    "correct": "The preset pipeline's stages are init, layout, routing, translation, optimization, and scheduling — so `layout`, `routing`, `translation`, and `scheduling` are all real stages of `pm.stages`.",
+    "correct": "The preset pipeline's stages are init, layout, routing, translation, optimization, and scheduling — so `layout`, `routing`, `translation`, and `scheduling` are all real stages of `pm.stages`. `scheduling` is listed even though it only schedules timing when a `scheduling_method` is requested; 'does not run by default' in the docs means the stage does no scheduling, not that it is missing from the tuple.",
     "distractors": {
       "C": "`mitigation` is an error-mitigation concept applied at runtime by the primitives, not a transpiler stage.",
       "E": "`sampling` refers to the Sampler primitive's execution, not a transpilation stage."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
-      "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers"
+      "https://quantum.cloud.ibm.com/docs/guides/transpile",
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "multi-select answer count varied (every s3 multi shipped exactly 3 correct options): added option F `translation`, a real preset stage, making this a 4-of-6 item; re-proved | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (recall of the six stage names)"
+    "notes": "multi-select answer count varied (every s3 multi shipped exactly 3 correct options): added option F `translation`, a real preset stage, making this a 4-of-6 item; re-proved | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (recall of the six stage names) | adversarial A3 2026-10-16: docs-reader trap answered: transpiler-stages says scheduling 'does not run by default', yet pm.stages (executed, level 2) lists it; transpile-with-pass-managers (no stage list) -> guides/transpile ('six fundamental stages: init ... scheduling')"
   },
   "freshness": {
     "verified_against": {

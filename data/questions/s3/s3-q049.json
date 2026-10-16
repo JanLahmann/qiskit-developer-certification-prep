@@ -47,8 +47,8 @@
       "F": "`Parameter` objects are the canonical keys (that is what the code uses, and it works). Name strings are accepted as a convenience — neither form is mandatory."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E (right count, wrong parameter bound) +F (believes dict keys must be name strings) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
+    "notes": "pool wave: +E (right count, wrong parameter bound) +F (believes dict keys must be name strings) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed | adversarial A3 2026-10-16: executed: {q: 1.0} leaves p, r; {'q': 1.0} also works; a 1-value list raises ValueError; Parameter page (no partial-binding statement) -> QuantumCircuit API assign_parameters (string keys 'permissible', list length ValueError)"
   },
   "freshness": {
     "verified_against": {

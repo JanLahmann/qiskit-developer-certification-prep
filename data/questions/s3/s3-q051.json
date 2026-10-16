@@ -42,7 +42,7 @@
       "E": "Parameters are matched by identity, not by name: binding a dict keyed with a different `Parameter('th')` object raises `CircuitError`, even though the names agree."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter"
     ]
   },
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (distractor C now hedges instead of using an absolute) | pool wave: +E (believes Parameters are matched by name rather than identity) | realism audit 2026-10-01: stem trimmed (dropped 'The SAME parameter' emphasis, visible in the code); difficulty 3->1 (one fact: a reused Parameter is one parameter)"
+    "notes": "absolute-wording tell cleared (distractor C now hedges instead of using an absolute) | pool wave: +E (believes Parameters are matched by name rather than identity) | realism audit 2026-10-01: stem trimmed (dropped 'The SAME parameter' emphasis, visible in the code); difficulty 3->1 (one fact: a reused Parameter is one parameter) | adversarial A3 2026-10-16: executed: num_parameters 1, both rx bound to 0.5, a second Parameter('th') key raises CircuitError 'Cannot bind parameters (th) not present in the circuit.'; construct-circuits (no reuse) -> QuantumCircuit API (assign_parameters Raises CircuitError for absent parameters); Parameter page kept (uuid-based equality)"
   },
   "freshness": {
     "verified_against": {

@@ -66,9 +66,9 @@
   "provenance": {
     "generated": "2026-10-02",
     "model": "claude-opus (figure wave, s1/s3/s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "figure wave add (stem figure, d3): read a routed level-0 drawing with two SWAPs (4-line, trivial initial layout) and give TranspileLayout.final_index_layout() — tracking a 3-cycle through two SWAPs plus the method's virtual-indexed semantics (the inverse permutation is a distractor; a 3-cycle makes final != inverse). Proof runs the stem code, asserts the TARGET op literal shared with the generator, captures the print, and derives the answer independently by tracking each virtual qubit through the drawn SWAPs."
+    "notes": "figure wave add (stem figure, d3): read a routed level-0 drawing with two SWAPs (4-line, trivial initial layout) and give TranspileLayout.final_index_layout() — tracking a 3-cycle through two SWAPs plus the method's virtual-indexed semantics (the inverse permutation is a distractor; a 3-cycle makes final != inverse). Proof runs the stem code, asserts the TARGET op literal shared with the generator, captures the print, and derives the answer independently by tracking each virtual qubit through the drawn SWAPs. | adversarial A3 2026-10-16: survived, no change (re-executed: final_index_layout [0, 2, 3, 1]; stem figure re-rendered and inspected, alt matches; TranspileLayout 'array of final positions for each qubit in the input circuit' verified)"
   },
   "freshness": {
     "verified_against": {

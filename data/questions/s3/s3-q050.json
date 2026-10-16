@@ -47,8 +47,8 @@
       "F": "Binding only substitutes numbers into existing gate arguments: the bound ISA circuit keeps the same operations and the same layout, and is ready to run as-is."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "length tell cleared (distractor C names the stage it blames) | pool wave: +F (believes binding invalidates the layout of an ISA circuit) | realism audit 2026-10-01: stem trimmed; difficulty 3->2 (three recalled binding facts, no tracing)"
+    "notes": "length tell cleared (distractor C names the stage it blames) | pool wave: +F (believes binding invalidates the layout of an ISA circuit) | realism audit 2026-10-01: stem trimmed; difficulty 3->2 (three recalled binding facts, no tracing) | adversarial A3 2026-10-16: executed: list binds alphabetically (a, z), ISA keeps parameters and layout after binding, reuse gives 1 parameter; Parameter page -> QuantumCircuit API ('the order of parameters which is sorted alphabetically'); construct-circuits kept ('Create and optimize circuit once' then assign_parameters)"
   },
   "freshness": {
     "verified_against": {

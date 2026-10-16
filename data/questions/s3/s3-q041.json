@@ -38,12 +38,12 @@
     "D"
   ],
   "explanation": {
-    "correct": "`ccx` is neither a basis gate nor a two-qubit gate, so it is decomposed. A Toffoli already needs 6 CX in an all-to-all decomposition, and routing it on a linear coupling map inserts additional CX (via SWAPs), giving well over 6 CX in practice.",
+    "correct": "`ccx` is neither a basis gate nor a two-qubit gate, so it is decomposed. A Toffoli already needs 6 CX in an all-to-all decomposition, and routing it on a linear coupling map adds CX on top (the pair 0-2 is not connected), so the printed count is above six — 9 for this seeded level-1 run.",
     "distractors": {
       "A": "No IBM backend offers a native 3-qubit gate; `ccx` sits outside the basis and has to be decomposed into CX-based gates.",
       "B": "One CX is nowhere near enough to realize a Toffoli — the standard decomposition alone needs 6.",
       "C": "The minimal Toffoli decomposition already uses 6 CX; on a line with routing the count is even higher, so it is not in the 2-5 range.",
-      "E": "Six is the count for an all-to-all decomposition; on a line the router adds more, so the ISA circuit ends up above six.",
+      "E": "Six is the count for an all-to-all decomposition — that is what the transpiler-stages guide means by 'up to six CNOT gates' per Toffoli. On a line the 0-2 pair is not connected, so routing adds more and the ISA circuit ends up above six.",
       "F": "No three-CX Toffoli exists: three two-qubit gates cannot implement a doubly-controlled X, and the transpiled circuit shows far more than three."
     },
     "citations": [
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "high length tell + stem-echo + absolute-wording tells cleared (correct option's gloss trimmed, distractor A given substance and a hedge; the predicted values are unchanged) | pool wave: +E (exactly the textbook 6, ignoring routing) +F (believes a 3-CX Toffoli exists) | realism audit 2026-10-01: stem trimmed (basis/connectivity gloss dropped; both are in the code); difficulty 3->2 (Toffoli = 6 CX, plus line routing)"
+    "notes": "high length tell + stem-echo + absolute-wording tells cleared (correct option's gloss trimmed, distractor A given substance and a hedge; the predicted values are unchanged) | pool wave: +E (exactly the textbook 6, ignoring routing) +F (believes a 3-CX Toffoli exists) | realism audit 2026-10-01: stem trimmed (basis/connectivity gloss dropped; both are in the code); difficulty 3->2 (Toffoli = 6 CX, plus line routing) | adversarial A3 2026-10-16: docs-reader trap answered in E: transpiler-stages says a Toffoli costs 'up to six CNOT gates' (unrouted); executed count on the line is 9 (seeds 0-19 all 9; levels 2/3 give 7); correct explanation now states the printed 9; citations verified (transpiler-stages Toffoli + routing, transpile guide SWAP routing)"
   },
   "freshness": {
     "verified_against": {

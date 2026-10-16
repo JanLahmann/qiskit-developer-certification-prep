@@ -3206,3 +3206,87 @@ grepped. **0 second-answer attacks stuck on the keys as written, 0 key-letter ch
 - Gates: verify_bank s3 62/62 PROVEN + 5 conceptual, exit 0; audit_meta_patterns s3
   0 blockers / 0 warnings, 9 low length flags (same pre-existing set; q024's option lengths
   shifted equally, 44 vs 42 as before); lint_proof_drift 0 findings.
+
+## Adversarial review A3 — s3b (2026-10-16)
+
+Scope: s3-q037..q058, s3-q073..q076 (26; 7 figure items). Every option incl. pool distractors
+re-executed in independent scripts (pinned venv, qiskit 2.5.0 / aer 0.17.2); every cited page
+fetched as text and grepped; all figure items re-rendered, rasterized and inspected.
+**0 second-answer attacks stuck on the keys, 0 key-letter changes, 0 kills.** 20 edited,
+6 survived unchanged (q037, q038, q044, q048, q074, q075).
+
+- **Anti-dup reworks (key letters, objectives, difficulty kept):** s3-q056 used the canonical
+  GHZ fan-out (`h(0); cx(0, 1); cx(0, 2)`, highest token overlap in the bank) -> `cx(1, 2);
+  t(0); cx(2, 0)` on the 3-line, level 0, layout `[0, 1, 2]`, seed 42: router swaps physical
+  0-1, last CX drawn control q_2 -> physical 1 (key B). Variants regenerated (A full map, C
+  layout `[2, 1, 0]`, D + basis_gates (T -> Rz, SWAP -> 3 CX), E `cx(0, 2)` routed on the 1-2
+  edge); the other valid routing (SWAP 1-2) is in no option. s3-q073 matched the
+  `QuantumCircuit.switch` API example (`h`, measure, `case(1, 2): z(1)`, DEFAULT) and the
+  feedforward guide's register switch -> `ry(1.2, 0); sx(1)`, bodies Y on q_0 / S on q_1 (key C).
+  s3-q057 checked against the cached guides: no docs circuit with the CX/Z redundant pairs —
+  circuit kept. Noted, not reworked: s3-q058's `for_loop(range(3))` with `cx(0, 1)` in the body
+  is near the for_loop API example (`range(5)`, `h(0); cx(0, 1)`), body and framing differ.
+- **Image-size tell:** s3-q057's keyed "nothing removed" figure (16012 B) was the strictly
+  busiest SVG in every displayed sample. D (only the CX pair removed, a mirror of B) replaced by
+  the same level-0 run with `basis_gates=['rz', 'sx', 'cx']` (31111 B; "translation without a
+  target"); all five shown (`display_count` dropped).
+- **Drawer facts wrong in text:** s3-q058 explanation/alts said the box reads
+  `For-0 range(0, 3)`; executed SVG text is `For` + `r(0, 3)` (and `r(0, 2)` for E). B's alt said
+  the region spans both wires; its body touches q_1 only and the box is drawn on q_1 only.
+- **False explanations (keys unchanged):** s3-q052 E "DEFAULT may appear anywhere" — executed:
+  DEFAULT before `case(0)` raises `CircuitError: 'cases after the default are unreachable'`
+  (DEFAULT must be last). s3-q055: "SWAPs are inserted downstream" of SabreLayout and
+  "scheduling is present but empty" — executed with a pass callback on a 5-line backend at
+  levels 1-3: SabreLayout inserts all SWAPs and the routing stage's SabreSwap never executes;
+  scheduling holds ContainsInstruction('delay') + TimeUnitConversion. Stem "Which pass does the
+  routing stage run?" -> "is part of"; proof records the observation
+  (`line_run_first_swap_inserted_by: SabreLayout`).
+- **Code not runnable as displayed:** q040 (undefined `backend`, `qc`; `transpile` in option D
+  not imported), q043 (undefined `qc`, `backend`), q054 (no imports), q055 (no import, undefined
+  `backend`) — all now define a `GenericBackendV2(num_qubits=5, seed=42)` / circuit, and the
+  proofs run the displayed code. q040 stem now "Which line sets `isa` to the ISA circuit …"
+  (E `pm.run([qc])` transpiles but assigns a list).
+- **Proof weakness:** "which drawing" items q056/q057/q058 compared gate lists with the key built
+  by the same function as the target -> now run the verbatim stem code and require SVG
+  byte-identity (`svg.hashsalt` fixed, `metadata={"Date": None}`); q073 updated in step.
+  Hard-coded False claims replaced by attempts: q039 C/D (`'4'` and even `'3'` -> ValueError;
+  seed_transpiler + level 4 -> ValueError), q043 A (`optimization_level=[2, 3, 4]` ->
+  ValueError), q046 F, q047 D (measure before the CX still CircuitError), q052 E.
+- **Docs-reader traps answered:** transpiler-stages "the hardware may execute up to six CNOT
+  gates" per Toffoli (unrouted) vs executed 9 on the 3-line -> q041 E; transpiler-stages
+  "Scheduling … does not run by default" vs `pm.stages` listing it -> q042; transpiler-stages
+  "By default, SabreLayout runs both layout and routing" -> q055 A; `QuantumCircuit.if_test`
+  signature lists only the tuple form, the feedforward guide uses `if_test(parity)` -> q053 C.
+  Noted: assign_parameters "keys should be Parameter instances" yet string keys are
+  "permissible" (q049 F already says so).
+- **Citation failures replaced (fetched, quotes grepped):** transpile-with-pass-managers /
+  transpile / set-optimization stated none of q039's range, q043's initial_layout semantics,
+  q040's run return -> generate_preset_pass_manager API ("This can be 0, 1, 2, or 3", "Raises
+  ValueError", "Initial position of virtual qubits on physical qubits"), compiler API
+  (transpile initial_layout), StagedPassManager ("Returns The transformed circuit(s)");
+  construct-circuits (silent on tensor, bit order, measure errors, reverse_ops) -> QuantumCircuit
+  API (tensor "leftmost operation will be at the bottom", measure cbit, assign_parameters "sorted
+  alphabetically" / string keys / CircuitError / ValueError, reverse_ops "does not invert") +
+  bit-ordering on q045/q046/q047/q049/q050/q051/q076; Parameter page ("Bases:
+  ParameterExpression", "atom of ParameterExpression") q054; visualize-circuits (no control flow)
+  -> QuantumCircuit for_loop on q058; transpile guide ("six fundamental stages") on q042;
+  set-optimization (level-0 "inserts SWAPs … using SabreSwap") on q055; generate_preset_pass_manager
+  API on q056/q057. Kept (verified): transpiler-stages (routing SWAPs, translation, Toffoli),
+  transpile (ISA), get-started-with-sampler (ISA), measure-qubits ("Measure qubit 1 into the
+  classical bit 0"), feedforward guide (default case, "There is no fallthrough"),
+  circuit_classical (expr.equal lifting), TranspileLayout (final_index_layout), api/qiskit/circuit
+  (barrier blocks optimizations), InverseCancellation.
+- **Survived attacks (executed):** q037 every level emits rz/sx/cx only; q041 level-1 count 9 for
+  seeds 0-19 (levels 2/3: 7); q045 Aer {'10'}, Sampler get_int_counts {2}; q049 `{'q': 1.0}` binds
+  too, a short list raises ValueError; q051 a fresh `Parameter('th')` key raises CircuitError
+  "Cannot bind parameters (th) not present in the circuit."; q053 {'1 11': all}; q074
+  `final_index_layout()` = routing_permutation = [0, 2, 3, 1]; q075 X pair cancelled in init,
+  a merged 1q run with no target becomes `u2` (D holds); q076 reverse_ops = t, cx(0,1), s, h.
+- **Figures:** q056/q057/q073 regenerated; all seven rendered (`render_figures --only`, 0
+  failures; `--check` 69/0) and inspected as PNG; alts match. Sizes: q056 A 10520 / B (key)
+  11544 / C 11452 / D 25224 / E 11515; q057 A 10806 / B 14841 / C (key) 16012 / D 31111 / E 13535;
+  q073 A 29644 / B 27483 / C (key) 28114 / D 24150.
+- **Difficulty:** all 26 kept.
+- Gates: verify_bank s3 62/62 PROVEN + 5 conceptual, exit 0; audit_meta_patterns s3 0 blockers /
+  0 warnings, 9 low length flags (same pre-existing set; q037/q039/q052 options untouched);
+  lint_proof_drift 0 findings; render_figures --check 69 questions, 0 failures.

@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "high length tell cleared (correct trimmed, distractor B given substance); dead citation guides/get-started-with-primitives (404) replaced with guides/get-started-with-sampler, which states that circuits must be transformed to instruction-set-architecture (ISA) form before a primitive runs them | pool wave: +E (transpilation confused with PUB construction) +F (transpilation confused with error suppression) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (core ISA fact); citations re-checked"
+    "notes": "high length tell cleared (correct trimmed, distractor B given substance); dead citation guides/get-started-with-primitives (404) replaced with guides/get-started-with-sampler, which states that circuits must be transformed to instruction-set-architecture (ISA) form before a primitive runs them | pool wave: +E (transpilation confused with PUB construction) +F (transpilation confused with error suppression) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (core ISA fact); citations re-checked | adversarial A3 2026-10-16: survived, no change (citations verified: transpile guide 'must adhere to the backend's ISA'; get-started-with-sampler ISA transform)"
   },
   "display_count": 4
 }

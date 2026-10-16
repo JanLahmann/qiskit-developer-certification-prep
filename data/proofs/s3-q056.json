@@ -5,13 +5,49 @@
       "B"
     ],
     "evidence": {
-      "A": "transpiled circuit draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying h[0], cx[0, 1], cx[0, 2] -> match=False",
-      "B": "transpiled circuit draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying h[0], cx[0, 1], swap[1, 2], cx[0, 1] -> match=True",
-      "C": "transpiled circuit draws wires ['q_2 -> 0', 'q_1 -> 1', 'q_0 -> 2'] carrying h[2], cx[2, 1], swap[1, 0], cx[2, 1] -> match=False",
-      "D": "transpiled circuit draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying rz[0], sx[0], rz[0], cx[0, 1], cx[1, 2], cx[2, 1], cx[1, 2], cx[0, 1] -> match=False",
-      "E": "transpiled circuit draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying h[0], cx[0, 1], swap[1, 0], cx[2, 1] -> match=False"
+      "A": "variant draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying t[0], cx[1, 2], cx[2, 0]; stem output carries t[0], cx[1, 2], swap[1, 0], cx[2, 1]; mpl SVG byte-identical to the stem code's rendering -> False; match=False",
+      "B": "variant draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying t[0], cx[1, 2], swap[1, 0], cx[2, 1]; stem output carries t[0], cx[1, 2], swap[1, 0], cx[2, 1]; mpl SVG byte-identical to the stem code's rendering -> True; match=True",
+      "C": "variant draws wires ['q_2 -> 0', 'q_1 -> 1', 'q_0 -> 2'] carrying cx[1, 0], t[2], swap[1, 2], cx[0, 1]; stem output carries t[0], cx[1, 2], swap[1, 0], cx[2, 1]; mpl SVG byte-identical to the stem code's rendering -> False; match=False",
+      "D": "variant draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying rz[0], cx[1, 2], cx[1, 0], cx[0, 1], cx[1, 0], cx[2, 1]; stem output carries t[0], cx[1, 2], swap[1, 0], cx[2, 1]; mpl SVG byte-identical to the stem code's rendering -> False; match=False",
+      "E": "variant draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying t[0], cx[1, 2], swap[1, 2], cx[0, 1]; stem output carries t[0], cx[1, 2], swap[1, 0], cx[2, 1]; mpl SVG byte-identical to the stem code's rendering -> False; match=False"
     },
     "observed": {
+      "stem_output": {
+        "wire_labels": [
+          "q_0 -> 0",
+          "q_1 -> 1",
+          "q_2 -> 2"
+        ],
+        "ops": [
+          [
+            "t",
+            [
+              0
+            ]
+          ],
+          [
+            "cx",
+            [
+              1,
+              2
+            ]
+          ],
+          [
+            "swap",
+            [
+              1,
+              0
+            ]
+          ],
+          [
+            "cx",
+            [
+              2,
+              1
+            ]
+          ]
+        ]
+      },
       "A": {
         "wire_labels": [
           "q_0 -> 0",
@@ -20,7 +56,7 @@
         ],
         "ops": [
           [
-            "h",
+            "t",
             [
               0
             ]
@@ -28,15 +64,15 @@
           [
             "cx",
             [
-              0,
-              1
+              1,
+              2
             ]
           ],
           [
             "cx",
             [
-              0,
-              2
+              2,
+              0
             ]
           ]
         ]
@@ -49,7 +85,7 @@
         ],
         "ops": [
           [
-            "h",
+            "t",
             [
               0
             ]
@@ -57,21 +93,21 @@
           [
             "cx",
             [
-              0,
-              1
+              1,
+              2
             ]
           ],
           [
             "swap",
             [
               1,
-              2
+              0
             ]
           ],
           [
             "cx",
             [
-              0,
+              2,
               1
             ]
           ]
@@ -85,29 +121,29 @@
         ],
         "ops": [
           [
-            "h",
-            [
-              2
-            ]
-          ],
-          [
             "cx",
-            [
-              2,
-              1
-            ]
-          ],
-          [
-            "swap",
             [
               1,
               0
             ]
           ],
           [
+            "t",
+            [
+              2
+            ]
+          ],
+          [
+            "swap",
+            [
+              1,
+              2
+            ]
+          ],
+          [
             "cx",
             [
-              2,
+              0,
               1
             ]
           ]
@@ -127,14 +163,16 @@
             ]
           ],
           [
-            "sx",
+            "cx",
             [
-              0
+              1,
+              2
             ]
           ],
           [
-            "rz",
+            "cx",
             [
+              1,
               0
             ]
           ],
@@ -149,27 +187,13 @@
             "cx",
             [
               1,
-              2
+              0
             ]
           ],
           [
             "cx",
             [
               2,
-              1
-            ]
-          ],
-          [
-            "cx",
-            [
-              1,
-              2
-            ]
-          ],
-          [
-            "cx",
-            [
-              0,
               1
             ]
           ]
@@ -183,52 +207,16 @@
         ],
         "ops": [
           [
-            "h",
+            "t",
             [
               0
             ]
           ],
           [
             "cx",
-            [
-              0,
-              1
-            ]
-          ],
-          [
-            "swap",
             [
               1,
-              0
-            ]
-          ],
-          [
-            "cx",
-            [
-              2,
-              1
-            ]
-          ]
-        ]
-      },
-      "stem": {
-        "wire_labels": [
-          "q_0 -> 0",
-          "q_1 -> 1",
-          "q_2 -> 2"
-        ],
-        "ops": [
-          [
-            "h",
-            [
-              0
-            ]
-          ],
-          [
-            "cx",
-            [
-              0,
-              1
+              2
             ]
           ],
           [
@@ -255,9 +243,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.26,
+  "wall_seconds": 1.89,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"transpiled circuit draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying h[0], cx[0, 1], cx[0, 2] -> match=False\", \"B\": \"transpiled circuit draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying h[0], cx[0, 1], swap[1, 2], cx[0, 1] -> match=True\", \"C\": \"transpiled circuit draws wires ['q_2 -> 0', 'q_1 -> 1', 'q_0 -> 2'] carrying h[2], cx[2, 1], swap[1, 0], cx[2, 1] -> match=False\", \"D\": \"transpiled circuit draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying rz[0], sx[0], rz[0], cx[0, 1], cx[1, 2], cx[2, 1], cx[1, 2], cx[0, 1] -> match=False\", \"E\": \"transpiled circuit draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying h[0], cx[0, 1], swap[1, 0], cx[2, 1] -> match=False\"}, \"observed\": {\"A\": {\"wire_labels\": [\"q_0 -> 0\", \"q_1 -> 1\", \"q_2 -> 2\"], \"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"cx\", [0, 2]]]}, \"B\": {\"wire_labels\": [\"q_0 -> 0\", \"q_1 -> 1\", \"q_2 -> 2\"], \"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"swap\", [1, 2]], [\"cx\", [0, 1]]]}, \"C\": {\"wire_labels\": [\"q_2 -> 0\", \"q_1 -> 1\", \"q_0 -> 2\"], \"ops\": [[\"h\", [2]], [\"cx\", [2, 1]], [\"swap\", [1, 0]], [\"cx\", [2, 1]]]}, \"D\": {\"wire_labels\": [\"q_0 -> 0\", \"q_1 -> 1\", \"q_2 -> 2\"], \"ops\": [[\"rz\", [0]], [\"sx\", [0]], [\"rz\", [0]], [\"cx\", [0, 1]], [\"cx\", [1, 2]], [\"cx\", [2, 1]], [\"cx\", [1, 2]], [\"cx\", [0, 1]]]}, \"E\": {\"wire_labels\": [\"q_0 -> 0\", \"q_1 -> 1\", \"q_2 -> 2\"], \"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"swap\", [1, 0]], [\"cx\", [2, 1]]]}, \"stem\": {\"wire_labels\": [\"q_0 -> 0\", \"q_1 -> 1\", \"q_2 -> 2\"], \"ops\": [[\"h\", [0]], [\"cx\", [0, 1]], [\"swap\", [1, 2]], [\"cx\", [0, 1]]]}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"variant draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying t[0], cx[1, 2], cx[2, 0]; stem output carries t[0], cx[1, 2], swap[1, 0], cx[2, 1]; mpl SVG byte-identical to the stem code's rendering -> False; match=False\", \"B\": \"variant draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying t[0], cx[1, 2], swap[1, 0], cx[2, 1]; stem output carries t[0], cx[1, 2], swap[1, 0], cx[2, 1]; mpl SVG byte-identical to the stem code's rendering -> True; match=True\", \"C\": \"variant draws wires ['q_2 -> 0', 'q_1 -> 1', 'q_0 -> 2'] carrying cx[1, 0], t[2], swap[1, 2], cx[0, 1]; stem output carries t[0], cx[1, 2], swap[1, 0], cx[2, 1]; mpl SVG byte-identical to the stem code's rendering -> False; match=False\", \"D\": \"variant draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying rz[0], cx[1, 2], cx[1, 0], cx[0, 1], cx[1, 0], cx[2, 1]; stem output carries t[0], cx[1, 2], swap[1, 0], cx[2, 1]; mpl SVG byte-identical to the stem code's rendering -> False; match=False\", \"E\": \"variant draws wires ['q_0 -> 0', 'q_1 -> 1', 'q_2 -> 2'] carrying t[0], cx[1, 2], swap[1, 2], cx[0, 1]; stem output carries t[0], cx[1, 2], swap[1, 0], cx[2, 1]; mpl SVG byte-identical to the stem code's rendering -> False; match=False\"}, \"observed\": {\"stem_output\": {\"wire_labels\": [\"q_0 -> 0\", \"q_1 -> 1\", \"q_2 -> 2\"], \"ops\": [[\"t\", [0]], [\"cx\", [1, 2]], [\"swap\", [1, 0]], [\"cx\", [2, 1]]]}, \"A\": {\"wire_labels\": [\"q_0 -> 0\", \"q_1 -> 1\", \"q_2 -> 2\"], \"ops\": [[\"t\", [0]], [\"cx\", [1, 2]], [\"cx\", [2, 0]]]}, \"B\": {\"wire_labels\": [\"q_0 -> 0\", \"q_1 -> 1\", \"q_2 -> 2\"], \"ops\": [[\"t\", [0]], [\"cx\", [1, 2]], [\"swap\", [1, 0]], [\"cx\", [2, 1]]]}, \"C\": {\"wire_labels\": [\"q_2 -> 0\", \"q_1 -> 1\", \"q_0 -> 2\"], \"ops\": [[\"cx\", [1, 0]], [\"t\", [2]], [\"swap\", [1, 2]], [\"cx\", [0, 1]]]}, \"D\": {\"wire_labels\": [\"q_0 -> 0\", \"q_1 -> 1\", \"q_2 -> 2\"], \"ops\": [[\"rz\", [0]], [\"cx\", [1, 2]], [\"cx\", [1, 0]], [\"cx\", [0, 1]], [\"cx\", [1, 0]], [\"cx\", [2, 1]]]}, \"E\": {\"wire_labels\": [\"q_0 -> 0\", \"q_1 -> 1\", \"q_2 -> 2\"], \"ops\": [[\"t\", [0]], [\"cx\", [1, 2]], [\"swap\", [1, 2]], [\"cx\", [0, 1]]]}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

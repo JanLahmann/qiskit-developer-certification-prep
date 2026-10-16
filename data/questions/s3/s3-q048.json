@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor D given substance, distractor A now hedges) | pool wave: +E (register names believed to steer the layout) +F (register names believed to survive transpilation) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed; citations re-checked, option F re-executed (ISA circuit has one register 'q')"
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor D given substance, distractor A now hedges) | pool wave: +E (register names believed to steer the layout) +F (register names believed to survive transpilation) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed; citations re-checked, option F re-executed (ISA circuit has one register 'q') | adversarial A3 2026-10-16: survived, no change (executed: ISA circuit has one QuantumRegister(5, 'q'); QuantumCircuit(4) measure_all transpiles; construct-circuits 'Every QuantumRegister and ClassicalRegister can also be named' verified)"
   },
   "display_count": 4
 }

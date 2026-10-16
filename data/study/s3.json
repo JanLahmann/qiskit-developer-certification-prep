@@ -200,7 +200,7 @@
     {
       "objective": "s3o4",
       "group": "core",
-      "fact_md": "`generate_preset_pass_manager` defaults to `optimization_level=2` in Qiskit 2.5 (a signature default, backend-independent) — level 1 was `transpile()`'s default back in 1.x.",
+      "fact_md": "`generate_preset_pass_manager` defaults to `optimization_level=2` in Qiskit 2.5 (a signature default, backend-independent) — level 1 was `transpile()`'s default only in older releases.",
       "source": {
         "type": "proof",
         "ref": "s3-q031"

@@ -2,30 +2,30 @@
 
 *Repo-only quality artifact — not linked from the website.*
 
-Scope: **s3** — 67 questions (61 single-answer, 6 multi-select). Random-guess baseline: **24.0%**. Exam pass line: **69%**.
+Scope: **s3** — 67 questions (61 single-answer, 6 multi-select). Random-guess baseline: **23.9%**. Exam pass line: **69%**.
 
 ## Blind-guesser scores
 
 | Heuristic | EV accuracy (answered) | Coverage | Est. exam score |
 |---|---|---|---|
-| position_A | 30.6% | 80% | 29.3% |
-| position_D | 30.5% | 81% | 29.3% |
+| position_A | 30.4% | 81% | 29.2% |
+| position_D | 30.4% | 81% | 29.1% |
 | position_C | 28.8% | 80% | 27.8% |
-| position_B | 28.6% | 80% | 27.7% |
+| position_B | 28.5% | 81% | 27.6% |
 | avoid_hedged | 29.5% | 38% | 26.1% |
-| similar_twin_member | 27.3% | 51% | 25.7% |
-| most_absolute | 26.8% | 39% | 25.1% |
+| similar_twin_member | 26.5% | 51% | 25.2% |
+| most_absolute | 26.8% | 39% | 25.0% |
 | avoid_longest | 23.9% | 74% | 23.9% |
 | most_hedged | 21.4% | 38% | 23.0% |
-| stem_keyword_overlap | 21.3% | 60% | 22.4% |
+| stem_keyword_overlap | 20.6% | 60% | 21.9% |
 | longest_option | 21.6% | 100% | 21.6% |
 | least_absolute | 15.9% | 39% | 20.8% |
-| odd_one_out | 20.0% | 100% | 20.0% |
-| shortest_option | 18.2% | 100% | 18.2% |
+| odd_one_out | 19.9% | 100% | 19.9% |
+| shortest_option | 18.1% | 100% | 18.1% |
 | code_formatted_only | 24.0% | 17% | – |
 | numeric_middle | 42.0% | 14% | – |
-| largest_image_option | 17.1% | 18% | – |
-| smallest_image_option | 4.5% | 18% | – |
+| largest_image_option | 10.2% | 18% | – |
+| smallest_image_option | 2.3% | 18% | – |
 
 ## Verdicts
 

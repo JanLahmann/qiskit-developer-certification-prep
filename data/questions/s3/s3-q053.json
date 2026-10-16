@@ -37,7 +37,7 @@
     "correct": "`expr.equal(c, 3)` builds a classical expression that is true when the register `c`, interpreted as an integer, equals 3. With both bits set, `c` = binary `11` = 3, so the condition holds and X is applied to qubit 2, making `o` = 1.",
     "distractors": {
       "A": "`expr.equal` compares the whole register's integer value, not bit-by-bit; it matches 3 exactly here.",
-      "C": "`if_test` accepts either a `(resource, value)` tuple OR a classical `expr`; passing `expr.equal(...)` is valid.",
+      "C": "`if_test` accepts either a `(resource, value)` tuple OR a classical `expr`. The API signature lists only the tuple form, but the feedforward guide passes an expression directly (`if_test(parity)`), and this code runs.",
       "D": "Qubit 2 starts in the definite state `|0⟩`; the conditional flips it deterministically, so `o` is not random.",
       "E": "`expr.equal` lifts plain Python values for you and infers the width from the register operand — `expr.equal(c, 3)` is the documented form."
     },
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'always') | pool wave: +E (believes expr operands must be lifted manually) | realism audit 2026-10-01: stem trimmed; difficulty 3->2 (register-valued expr condition, 11 = 3)"
+    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'always') | pool wave: +E (believes expr operands must be lifted manually) | realism audit 2026-10-01: stem trimmed; difficulty 3->2 (register-valued expr condition, 11 = 3) | adversarial A3 2026-10-16: docs-reader trap answered in C (QuantumCircuit.if_test signature lists only the tuple form; feedforward guide uses if_test(parity)); executed counts {'1 11': all}; citations verified (circuit_classical expr.equal 'lifting the values into Value nodes if required', register-vs-integer example)"
   },
   "freshness": {
     "verified_against": {

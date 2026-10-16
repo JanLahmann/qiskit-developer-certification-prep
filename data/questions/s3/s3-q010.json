@@ -42,8 +42,9 @@
       "E": "A 1-bit result is what you would get if `measure_all()` only measured the qubits that carry gates. It measures EVERY qubit in the circuit (that is `measure_active()`'s job), so the key is always 3 bits wide."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
-      "https://quantum.cloud.ibm.com/docs/guides/measure-qubits"
+      "https://quantum.cloud.ibm.com/docs/guides/bit-ordering",
+      "https://quantum.cloud.ibm.com/docs/guides/measure-qubits",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
     ]
   },
   "proof": {
@@ -57,9 +58,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E (measure_all confused with measure_active -> 1-bit key) | realism audit 2026-10-01: stem trimmed (dropped prose restating the code); difficulty 1 confirmed"
+    "notes": "pool wave: +E (measure_all confused with measure_active -> 1-bit key) | realism audit 2026-10-01: stem trimmed (dropped prose restating the code); difficulty 1 confirmed | adversarial A3 2026-10-16: re-executed (two seeds, all 001; measure_active gives 1-bit key for E); citation added: bit-ordering (bit n-1 leftmost) — construct-circuits/measure-qubits only cover measure_all/measure_active"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +69,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

@@ -43,12 +43,12 @@
     "correct": "Level 0 is minimal mapping/translation with no real optimization (A). Level 3 is the most aggressive and usually the slowest (B). Every level produces a circuit valid for the SAME target constraints — the difference is optimization effort, not the constraints (E).",
     "distractors": {
       "C": "Optimization uses heuristics; a higher level USUALLY helps but is NOT guaranteed to beat a lower level on every circuit.",
-      "D": "`generate_preset_pass_manager` defaults to level 2, not level 1. (Level 1 was the legacy `transpile()` default in Qiskit 1.x; in 2.x `transpile()` also resolves to 2.)",
+      "D": "`generate_preset_pass_manager` defaults to level 2, not level 1 (API: \"By default optimization level 2 is used if this is not specified\"). Level 1 was `transpile()`'s default in older Qiskit releases; in 2.x `transpile()` also resolves to 2.",
       "F": "Every level routes — level 0 just uses a trivial layout and then inserts whatever SWAPs that layout forces, which is why it often produces the MOST two-qubit gates."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/set-optimization",
-      "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.transpiler.generate_preset_pass_manager"
     ]
   },
   "proof": {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +F (believes level 0 skips routing) | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed; citations re-checked (set-optimization supports A/B/C/F; D keyed to the 2.5 library default per ledger)"
+    "notes": "pool wave: +F (believes level 0 skips routing) | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed; citations re-checked (set-optimization supports A/B/C/F; D keyed to the 2.5 library default per ledger) | adversarial A3 2026-10-16: distractor D explanation overclaimed ('Level 1 was the legacy transpile() default in Qiskit 1.x') -> 'older releases', now quotes the API default line; citation transpile-with-pass-managers (silent on levels/default) -> generate_preset_pass_manager API; set-optimization kept (table: level 0 TrivialLayout + SabreSwap SWAPs, 'Higher optimization levels ... longer compile times', level 2 'yields the same results as optimization level 1' example). Executed: default pm pass structure == level 2 only (see s3-q031)"
   },
   "display_count": 5
 }

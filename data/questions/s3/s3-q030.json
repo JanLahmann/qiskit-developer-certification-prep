@@ -7,7 +7,7 @@
   "type": "mcq",
   "difficulty": 1,
   "stem": "What does `print(pm.stages)` show?",
-  "code": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n\npm = generate_preset_pass_manager(optimization_level=2, backend=backend)\nprint(pm.stages)",
+  "code": "from qiskit.providers.fake_provider import GenericBackendV2\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n\nbackend = GenericBackendV2(num_qubits=5, seed=42)\npm = generate_preset_pass_manager(optimization_level=2, backend=backend)\nprint(pm.stages)",
   "options": [
     {
       "key": "A",
@@ -43,7 +43,7 @@
       "A": "This omits the `init` and `scheduling` stages; the preset pipeline has six named stages, not four.",
       "B": "`measurement` is not a transpiler stage, and this list drops `translation` and `scheduling`.",
       "C": "`sampling` is a runtime/primitive concept, not a transpiler stage; the pipeline never contains it.",
-      "E": "`scheduling` is always one of the six stage slots of a preset `StagedPassManager`; it simply runs an empty pass set when no scheduling method was asked for.",
+      "E": "`scheduling` is always one of the six stage slots of a preset `StagedPassManager`. Without a `scheduling_method` the stage is still there; it only checks for `delay` instructions and converts their time units instead of scheduling the whole circuit.",
       "F": "The six names are right but the order is not: layout and routing come before translation, because the router works on the abstract two-qubit gates before they are rewritten into the basis."
     },
     "citations": [
@@ -57,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit.providers.fake_provider import GenericBackendV2\n\nbackend = GenericBackendV2(num_qubits=5, seed=42)\npm = generate_preset_pass_manager(optimization_level=2, backend=backend, seed_transpiler=42)\nstages = tuple(pm.stages)\nopts = {\n    \"A\": (\"layout\", \"routing\", \"translation\", \"optimization\"),\n    \"B\": (\"init\", \"layout\", \"routing\", \"optimization\", \"measurement\"),\n    \"C\": (\"sampling\", \"layout\", \"routing\", \"translation\", \"scheduling\"),\n    \"D\": (\"init\", \"layout\", \"routing\", \"translation\", \"optimization\", \"scheduling\"),\n}\nclaims = {k: (v == stages) for k, v in opts.items()}\nevidence = {k: f\"observed pm.stages={stages}; option={opts[k]} -> match={claims[k]}\" for k in opts}\nopts[\"E\"] = (\"init\", \"layout\", \"routing\", \"translation\", \"optimization\")\nopts[\"F\"] = (\"init\", \"translation\", \"layout\", \"routing\", \"optimization\", \"scheduling\")\nclaims[\"E\"] = opts[\"E\"] == stages\nclaims[\"F\"] = opts[\"F\"] == stages\nevidence[\"E\"] = f\"observed pm.stages={stages} (6 slots incl. scheduling); option={opts['E']} -> match={claims['E']}\"\nevidence[\"F\"] = f\"observed pm.stages={stages}; option={opts['F']} reorders translation -> match={claims['F']}\"\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"stages\": list(stages)}})\n"
+    "proof_script": "import contextlib, io\nfrom qiskit.providers.fake_provider import GenericBackendV2\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n\n# verbatim stem code, stdout captured\nbuf = io.StringIO()\nwith contextlib.redirect_stdout(buf):\n    backend = GenericBackendV2(num_qubits=5, seed=42)\n    pm = generate_preset_pass_manager(optimization_level=2, backend=backend)\n    print(pm.stages)\nprinted = buf.getvalue().strip()\nstages = tuple(pm.stages)\nassert printed == repr(stages), printed\nsched_tasks = [type(t).__name__ for t in pm.scheduling.to_flow_controller().tasks]\nopts = {\n    \"A\": (\"layout\", \"routing\", \"translation\", \"optimization\"),\n    \"B\": (\"init\", \"layout\", \"routing\", \"optimization\", \"measurement\"),\n    \"C\": (\"sampling\", \"layout\", \"routing\", \"translation\", \"scheduling\"),\n    \"D\": (\"init\", \"layout\", \"routing\", \"translation\", \"optimization\", \"scheduling\"),\n}\nclaims = {k: (repr(v) == printed) for k, v in opts.items()}\nevidence = {k: f\"observed pm.stages={stages}; option={opts[k]} -> match={claims[k]}\" for k in opts}\nopts[\"E\"] = (\"init\", \"layout\", \"routing\", \"translation\", \"optimization\")\nopts[\"F\"] = (\"init\", \"translation\", \"layout\", \"routing\", \"optimization\", \"scheduling\")\nclaims[\"E\"] = repr(opts[\"E\"]) == printed\nclaims[\"F\"] = repr(opts[\"F\"]) == printed\nevidence[\"E\"] = f\"observed pm.stages={stages} (6 slots incl. scheduling; scheduling stage without scheduling_method runs {sched_tasks}); option={opts['E']} -> match={claims['E']}\"\nevidence[\"F\"] = f\"observed pm.stages={stages}; option={opts['F']} reorders translation -> match={claims['F']}\"\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"stages\": list(stages), \"printed\": printed, \"scheduling_tasks\": sched_tasks}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "wording rebalanced in the meta-pattern pass (correct option now carries the true 'all six'/'by default', distractor A names what it drops) | pool wave: +E (scheduling believed conditional) +F (translation believed to run before layout/routing) | orchestrator pool calibration: E/F trimmed below correct length (keeper set) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
+    "notes": "wording rebalanced in the meta-pattern pass (correct option now carries the true 'all six'/'by default', distractor A names what it drops) | pool wave: +E (scheduling believed conditional) +F (translation believed to run before layout/routing) | orchestrator pool calibration: E/F trimmed below correct length (keeper set) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed | adversarial A3 2026-10-16: code did not run as displayed (undefined `backend`) -> GenericBackendV2(num_qubits=5, seed=42) defined in the stem code; distractor E explanation false ('runs an empty pass set': executed scheduling stage = ContainsInstruction('delay') + conditional TimeUnitConversion) -> reworded; proof captures the literal print output and compares option reprs to it"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 5

@@ -48,6 +48,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
+      "https://quantum.cloud.ibm.com/docs/guides/qiskit-2.0",
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
     ]
   },
@@ -62,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +F (believes if_test conditions must be single bits) | realism audit 2026-10-01: stem reworded; difficulty 2 confirmed"
+    "notes": "pool wave: +F (believes if_test conditions must be single bits) | realism audit 2026-10-01: stem reworded; difficulty 2 confirmed | adversarial A3 2026-10-16: re-executed all six (if_else/for_loop/switch_case each count 1 in count_ops, c_if AttributeError, 3-gate for_loop body ok, if_test((creg, 1)) ok); citation added: Qiskit v2.0 migration guide (c_if 'has been removed in Qiskit v2.0; you should use the if_test method') for B"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 5

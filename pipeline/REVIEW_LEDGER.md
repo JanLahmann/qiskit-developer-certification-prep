@@ -3138,3 +3138,71 @@ All 19 edited (citations / proofs / notes); none survived fully unchanged.
 - Gates: render_figures --only s2-q040 0 failures; verify_bank --only s2-q040 PROVEN;
   --section s2 38/38 proven + 1 conceptual, exit 0; audit_meta_patterns s2 0 blockers /
   0 warnings, no flag on s2-q040; lint_proof_drift 0 findings.
+
+## Adversarial review A3 — s3a (2026-10-16)
+
+Scope: s3-q010..q036 (27). Every option incl. pool distractors re-executed in independent
+scripts (pinned venv, qiskit 2.5.0 / aer 0.17.2); every cited page fetched as text and
+grepped. **0 second-answer attacks stuck on the keys as written, 0 key-letter changes, 0 kills.**
+24 edited, 3 survived unchanged (q012, q013, q032).
+
+- **Anti-dup reworks (canonical `h(0); measure(0, 0); if_test(...)` + X shape, s3-q066 /
+  s2-q040 ban):** q023 (exact canonical) -> `sx(2); measure(2, 1); if_test((cr[1], 1)): x(0);
+  measure(0, 0)` on 3 qubits, key D kept (executed {'00': 2000, '11': 2000}); A rewritten as
+  "body never fires" (executed no-X variant {00,10}), C as "√X read as a full X" (only 11).
+  q026 (h/measure/if_test as else_) -> `sx(1); measure(1, 0); if_test((cr[0], 0)) as else_:
+  x(2) / z(2)`, key B kept ({'10': 2000, '01': 2000}). q024 (same context as comment) ->
+  `ry(0.6, 2); measure(2, 1)`, Z on qubit 0 conditioned on `cr[1]`, same six syntax forms,
+  key C kept; proof now also asserts the if_else condition (clbit 1, 1) and body [z on q0].
+  q025 (c_if legacy, same skeleton) -> `sx(1); measure(1, 0); z(0).c_if(cr, 1)`, key A kept.
+  Not reworked, noted: q028 is close to the feedforward guide's own `for_loop(range(5))` X
+  example (range(3) here); not the banned shape.
+- **False explanations (keys unchanged):** q015 D "the H and the first CX share a layer"
+  (they are sequential; DAG layers show `measure(0, 0)` shares a layer with `cx(1, 2)`).
+  q016 B "|100> would appear if the CX gates did nothing" (H-only state is |000>+|001>; B
+  now names the big-endian misread). q018 E suggested `sorted(qc.parameters, reverse=True)`
+  — raises TypeError (Parameter defines no `<`); now `qc.parameters[::-1]`. q030 E "scheduling
+  runs an empty pass set" — executed stage without scheduling_method = ContainsInstruction
+  ('delay') + conditional TimeUnitConversion. q031/q036 "level 1 was transpile()'s default in
+  Qiskit 1.x" -> "older releases" (2 was already the default before 2.0).
+- **Display-letter references:** q014 correct ("Option D creates"), q027 correct ("Option D
+  is exactly that pattern") — reworded.
+- **Code not runnable as displayed:** q030 and q031 used an undefined `backend` -> stem code
+  now defines `GenericBackendV2(num_qubits=5, seed=42)`; q030 proof captures the literal
+  `print(pm.stages)` output and compares option reprs to it.
+- **Stem underspecification:** q035 "qc ... containing an h gate" admitted an h-only circuit
+  for which F (basis_gates only, no coupling map) is also ISA -> comment now "h and cx gates
+  on arbitrary qubit pairs" (proof circuit already had non-adjacent CX).
+- **Proof weakness:** q018 D was hard-coded False -> runs the stem in 3 processes
+  (PYTHONHASHSEED 0/1/12345), one output. q031 first-match count_ops comparison could tie
+  across levels -> pins the stem pm's full pass structure (stage + pass names) to explicit
+  level 2 only. q033 hand-written ISA checker -> cross-checked with GatesInBasis(target) +
+  CheckMap (+ width); all six agree.
+- **Docs-reader trap:** guides/set-optimization ("one required positional argument,
+  optimization_level") and guides/transpiler-stages ("a positional argument that must be
+  specified") contradict the 2.5 signature (`optimization_level=2`) and the API page ("By
+  default optimization level 2 is used if this is not specified"). Answered in q031 E.
+- **Citation failures replaced (all fetched, quotes grepped):** Parameter page (no ordering
+  statement) -> QuantumCircuit API ("sorted alphabetically"; list "assigned ... in the order
+  of parameters") q017/q018/q019/q020; construct-circuits (silent on the fact) ->
+  QuantumCircuit API / CXGate / Statevector / bit-ordering / api/qiskit/circuit
+  "Compile-time parametrization" / ParameterVector / ZGate / SXGate on q016/q021/q022/q023/
+  q026/q028/q027(dropped); quantum_info index -> Statevector q016; bit-ordering added q010;
+  QuantumCircuit API measure_all (add_bits) added q011; Qiskit v2.0 migration guide ("This
+  legacy method has been removed in Qiskit v2.0; you should use the if_test method") added
+  q024/q025/q029; set-optimization / transpile-with-pass-managers -> generate_preset_pass_manager
+  API + compiler (transpile "If None, level 2 will be chosen") q031/q035/q036; transpile /
+  set-optimization -> transpiler-stages layout ("one-to-one mapping ... is necessary") +
+  Layout API q034; QuantumCircuit decompose ("one level") added q033.
+- **Survived attacks (executed):** q014 A/B/C/F CircuitError, E adds `meas` (4 clbits);
+  q019 ValueError "Mismatching number of values and parameters", bind_parameters
+  AttributeError, ParameterVector {pv:[0.7]} CircuitError; q020 bound/qc distinct data;
+  q024 A AttributeError, B/E TypeError, D CircuitError, F while_loop; q025 D TypeError
+  "unexpected keyword argument 'condition'"; q032 level 0 10 CX / level 1 1 CX for seeds
+  0-4; q034 level 3 "More virtual qubits (4) exist than physical (3).", initial_layout still
+  fails, 4-qubit backend OK; q035 C "'str' object has no attribute 'target'", E list has no
+  build_coupling_map.
+- **Difficulty:** all 27 kept (q023 stays d1 after the rework: one SX fact + one copy).
+- Gates: verify_bank s3 62/62 PROVEN + 5 conceptual, exit 0; audit_meta_patterns s3
+  0 blockers / 0 warnings, 9 low length flags (same pre-existing set; q024's option lengths
+  shifted equally, 44 vs 42 as before); lint_proof_drift 0 findings.

@@ -43,7 +43,7 @@
     "correct": "`num_qubits`=3 and `num_clbits`=2 (A). `size()` counts all 5 operations: 1 H + 2 CX + 2 measures (C). `width()` returns qubits + classical bits = 3 + 2 = 5, so it equals `num_qubits + num_clbits` (E).",
     "distractors": {
       "B": "`width()` returns qubits PLUS classical bits (5 here), not the qubit count. Confusing `width()` with `num_qubits` is a common slip.",
-      "D": "`depth()` is the longest gate path (4 here), while `size()` is the total operation count (5); the H and the first CX do share a layer, so the two metrics differ.",
+      "D": "`depth()` is the longest gate path (4 here), while `size()` is the total operation count (5). `measure(0, 0)` only waits for the first CX, so it runs in the same layer as `cx(1, 2)` and the two metrics differ.",
       "F": "`size()` counts every instruction that is not a directive: the two `measure` operations count, giving 5. Only directives such as `barrier` are skipped."
     },
     "citations": [
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "length tell + stem-echo tell cleared (distractor B given substance and the stem's own vocabulary) | stem-echo tell cleared (distractors B and D given the stem's own vocabulary) | pool wave: +F (believes size() skips measurements) | realism audit 2026-10-01: stem trimmed; removed the in-stem width() definition (it glossed the tested fact, options B/E) - rated with the hint gone; difficulty 2 confirmed"
+    "notes": "length tell + stem-echo tell cleared (distractor B given substance and the stem's own vocabulary) | stem-echo tell cleared (distractors B and D given the stem's own vocabulary) | pool wave: +F (believes size() skips measurements) | realism audit 2026-10-01: stem trimmed; removed the in-stem width() definition (it glossed the tested fact, options B/E) - rated with the hint gone; difficulty 2 confirmed | adversarial A3 2026-10-16: distractor D explanation was false (\"the H and the first CX share a layer\": they are sequential on q0); executed DAG layers show measure(0,0) shares a layer with cx(1,2) -> reworded; size 5, width 5, depth 4 re-executed"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 5

@@ -47,8 +47,8 @@
       "F": "Classical bits are never the constraint: the same 4-qubit circuit fails without any measurements, and the same `measure_all()` circuit transpiles fine on a 4-qubit backend."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/transpile",
-      "https://quantum.cloud.ibm.com/docs/guides/set-optimization"
+      "https://quantum.cloud.ibm.com/docs/guides/transpiler-stages",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.transpiler.Layout"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "format tell cleared (the correct option now names the backend in code formatting, like the distractors do) | stem-echo tell cleared (distractor D given the stem's own API vocabulary) | pool wave: +E (hand-pinned initial_layout believed to fix a width mismatch) +F (blames the classical bits) | orchestrator pool calibration: E/F trimmed below correct length (keeper set) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (4 virtual qubits > 3 physical)"
+    "notes": "format tell cleared (the correct option now names the backend in code formatting, like the distractors do) | stem-echo tell cleared (distractor D given the stem's own API vocabulary) | pool wave: +E (hand-pinned initial_layout believed to fix a width mismatch) +F (blames the classical bits) | orchestrator pool calibration: E/F trimmed below correct length (keeper set) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (4 virtual qubits > 3 physical) | adversarial A3 2026-10-16: re-executed (level 1 'Number of qubits greater than device.', level 3 'More virtual qubits (4) exist than physical (3).', initial_layout=[0,1,2,3] still TranspilerError, no-measure circuit same error, 4-qubit backend OK); citations transpile/set-optimization (neither states the qubit-count constraint) -> transpiler-stages layout stage ('a one-to-one mapping from the virtual qubits to the physical qubits ... is necessary') + Layout API (bijective virtual->physical)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 5

@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E (qubits list read right-to-left) +F (believes the mapping must be adjacent) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one-step read of the qubits= mapping)"
+    "notes": "pool wave: +E (qubits list read right-to-left) +F (believes the mapping must be adjacent) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one-step read of the qubits= mapping) | adversarial A3 2026-10-16: survived, no change"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

@@ -47,7 +47,7 @@
       "F": "`Parameter` overloads the arithmetic operators, so `t + np.pi / 2` builds a `ParameterExpression` by itself — no explicit wrapper and no error."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/circuit",
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter"
     ]
   },
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 4,
+    "adversarial_rounds": 5,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (absolute removed from distractor C; distractor D now hedges) | pool wave: +E (coefficient dropped, constant kept) +F (thinks Parameter arithmetic needs an explicit ParameterExpression) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (substitute and evaluate two expressions) | adversarial review 2026-10-02: drift-lint false positive cleared (evidence quotes the measured angles at 4 dp; those rounded values are now recorded in the proof's observed block); no claim or wording changed."
+    "notes": "absolute-wording tell cleared (absolute removed from distractor C; distractor D now hedges) | pool wave: +E (coefficient dropped, constant kept) +F (thinks Parameter arithmetic needs an explicit ParameterExpression) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (substitute and evaluate two expressions) | adversarial review 2026-10-02: drift-lint false positive cleared (evidence quotes the measured angles at 4 dp; those rounded values are now recorded in the proof's observed block); no claim or wording changed. | adversarial A3 2026-10-16: re-executed (rx 6.2832, rz 4.7124; t + np.pi/2 is a ParameterExpression, no wrapper); citation construct-circuits (no expressions) -> api/qiskit/circuit 'Compile-time parametrization' (ParameterExpression usable anywhere a rotation angle is expected, assigned via assign_parameters); Parameter kept ('is itself an expression')"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

@@ -38,7 +38,7 @@
     "D"
   ],
   "explanation": {
-    "correct": "Dynamic circuits exist precisely for real-time classical feedforward: measure a qubit partway through, then condition subsequent quantum operations on that classical outcome (as in teleportation corrections or error-correction syndrome handling). Option D is exactly that pattern.",
+    "correct": "Dynamic circuits exist precisely for real-time classical feedforward: measure a qubit partway through, then condition subsequent quantum operations on that classical outcome (as in teleportation corrections or error-correction syndrome handling). A mid-circuit ancilla measurement that triggers a correction gate is exactly that pattern.",
     "distractors": {
       "A": "Measuring at the end of a fixed gate sequence is a static circuit — no classical result is fed forward mid-execution.",
       "B": "Parameter sweeps are handled by parameterized circuits and array broadcasting, not by classical feedforward.",
@@ -47,8 +47,7 @@
       "F": "Post-selection is classical filtering of results that already came back; the quantum execution never branched on the measurement, so no dynamic circuit is involved."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+      "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow"
     ]
   },
   "proof": {
@@ -61,9 +60,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "length + stem-echo + absolute-wording tells cleared (distractor A given the stem's vocabulary and the absolutes, distractor C now hedges) | pool wave: +E (between-jobs classical loop) +F (post-selection mistaken for feedforward) | realism audit 2026-10-01: stem trimmed; removed the parenthetical definition of a dynamic circuit (glossed the tested concept and echoed the key) - rated with the hint gone; difficulty 1 confirmed; citations re-checked"
+    "notes": "length + stem-echo + absolute-wording tells cleared (distractor A given the stem's vocabulary and the absolutes, distractor C now hedges) | pool wave: +E (between-jobs classical loop) +F (post-selection mistaken for feedforward) | realism audit 2026-10-01: stem trimmed; removed the parenthetical definition of a dynamic circuit (glossed the tested concept and echoed the key) - rated with the hint gone; difficulty 1 confirmed; citations re-checked | adversarial A3 2026-10-16: explanation.correct referenced a display letter ('Option D') -> reworded; construct-circuits citation dropped (says nothing about dynamic circuits); feedforward guide kept ('measure qubits in the middle of a quantum circuit execution and then perform classical logic operations within the circuit')"
   },
   "display_count": 4
 }

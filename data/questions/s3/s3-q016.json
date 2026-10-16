@@ -40,15 +40,16 @@
   "explanation": {
     "correct": "H on qubit 0 makes (|0⟩+|1⟩)/√2. The two CX gates copy qubit 0's value onto qubits 1 and 2, so the state becomes (|000⟩ + |111⟩)/√2 — a 3-qubit GHZ state with only those two basis states populated.",
     "distractors": {
-      "B": "`|100⟩` would appear only if the CX gates did nothing; they entangle qubits 1 and 2 with qubit 0, flipping them when qubit 0 is 1.",
+      "B": "`|100⟩` is the H-only state written big-endian: without the CX gates the state is (`|000⟩` + `|001⟩`)/√2, and reading qubit 0 as the LEFTMOST character turns `|001⟩` into `|100⟩`. Qiskit labels are little-endian, and the CX gates also flip qubits 1 and 2 whenever qubit 0 is 1.",
       "C": "A uniform superposition over all 8 states needs an H on every qubit; here only qubit 0 gets an H and the CXs create correlation, not full superposition.",
-      "D": "`|011⟩` misplaces the excitation — both CX gates are controlled by qubit 0, so all three qubits share the same value (000 or 111).",
+      "D": "`|011⟩` (qubits 0 and 1 set) is the state after only the first CX. The second CX is also controlled by qubit 0, so it flips qubit 2 as well and all three qubits share the same value (000 or 111).",
       "E": "The populated basis states are right, but 1/2 is the PROBABILITY of each outcome, not the amplitude. Two equally weighted terms carry amplitude 1/√2, whose square 1/2 is the probability.",
       "F": "This assumes the second CX replaces the first, correlating only qubits 0 and 2 and leaving qubit 1 at 0. Both CX gates stay in the circuit, so qubit 1 is flipped as well."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.CXGate",
+      "https://quantum.cloud.ibm.com/docs/guides/bit-ordering",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector"
     ]
   },
   "proof": {
@@ -62,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'only'; the predicted values are unchanged) | pool wave: +E (amplitude/probability confusion) +F (second CX believed to replace the first) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one-step GHZ read)"
+    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'only'; the predicted values are unchanged) | pool wave: +E (amplitude/probability confusion) +F (second CX believed to replace the first) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one-step GHZ read) | adversarial A3 2026-10-16: distractor B explanation was wrong (\"|100> would appear if the CX gates did nothing\" - executed H-only state is |000>+|001>); B now names the big-endian misread of that state; D sharpened (executed first-CX-only state = |011>); citations replaced (construct-circuits + quantum_info index stated nothing tested) with CXGate (flips target if control is |1>), bit-ordering, Statevector (circuit input from all-zero state)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 5

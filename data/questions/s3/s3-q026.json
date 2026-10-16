@@ -7,7 +7,7 @@
   "type": "predict-output",
   "difficulty": 3,
   "stem": "Over many shots, which outcomes appear (bit order `c1 c0`)?",
-  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(2, 'q')\ncr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0)\nqc.measure(0, 0)\nwith qc.if_test((cr[0], 0)) as else_:\n    qc.x(1)\nwith else_:\n    qc.z(1)\nqc.measure(1, 1)",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\nqr = QuantumRegister(3, 'q')\ncr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.sx(1)\nqc.measure(1, 0)\nwith qc.if_test((cr[0], 0)) as else_:\n    qc.x(2)\nwith else_:\n    qc.z(2)\nqc.measure(2, 1)",
   "options": [
     {
       "key": "A",
@@ -38,17 +38,18 @@
     "B"
   ],
   "explanation": {
-    "correct": "When `c0`=0 the X flips qubit 1 to `|1⟩`, so `c1`=1 → `10`. When `c0`=1 the Z acts on `|0⟩` and leaves it unchanged, so `c1`=0 → `01`. The two branches give `10` and `01`, each ~50%.",
+    "correct": "√X makes qubit 1 an equal superposition, so `c0` is 0 or 1 on ~50% of shots. When `c0`=0 the X flips qubit 2 to `|1⟩`, so `c1`=1 → `10`. When `c0`=1 the Z acts on `|0⟩` and leaves it unchanged, so `c1`=0 → `01`. The two branches give `10` and `01`, each ~50%.",
     "distractors": {
-      "A": "`00`/`11` would require the two bits to match; here the X-branch makes them differ and the Z-branch leaves qubit 1 at 0 while `c0`=1, so they always differ.",
-      "C": "`11` never occurs: qubit 1 becomes 1 only in the `c0`=0 branch, which pairs with `c0`=0, giving `10`.",
-      "D": "The outcome of qubit 1 is fully determined by `c0`, so only two of the four combinations occur.",
+      "A": "`00`/`11` would require the two bits to match; here the X-branch makes them differ and the Z-branch leaves qubit 2 at 0 while `c0`=1, so they always differ.",
+      "C": "`11` never occurs: qubit 2 becomes 1 only in the `c0`=0 branch, which pairs with `c0`=0, giving `10`.",
+      "D": "The outcome of qubit 2 is fully determined by `c0`, so only two of the four combinations occur.",
       "E": "This treats the `else` branch's Z as a bit flip. Z leaves `|0⟩` unchanged (it only flips the phase of `|1⟩`), so the `c0`=1 branch still measures `c1`=0.",
       "F": "`with qc.if_test(...) as else_:` yields the else-builder for use AFTER the if-block closes; entering it as a sibling `with` statement is exactly the supported syntax."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.ZGate"
     ]
   },
   "proof": {
@@ -57,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\nqr = QuantumRegister(2, 'q'); cr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.h(0); qc.measure(0, 0)\nwith qc.if_test((cr[0], 0)) as else_:\n    qc.x(1)\nwith else_:\n    qc.z(1)\nqc.measure(1, 1)\nsim = AerSimulator(seed_simulator=42)\ncounts = sim.run(qc, shots=4000).result().get_counts()\ntotal = sum(counts.values())\nseen = set(counts)\n\ndef near(bs, tol=0.06):\n    return abs(counts.get(bs, 0)/total - 0.5) <= tol\n\nclaims = {\n    \"A\": seen == {\"00\", \"11\"},\n    \"B\": seen == {\"10\", \"01\"} and near(\"10\") and near(\"01\"),\n    \"C\": seen == {\"11\", \"01\"},\n    \"D\": seen == {\"00\", \"01\", \"10\", \"11\"},\n}\nevidence = {\n    \"A\": f\"observed={dict(counts)}; claim {{00,11}} -> {claims['A']}\",\n    \"B\": f\"observed={dict(counts)}; only {{10,01}} ~50/50 -> {claims['B']}\",\n    \"C\": f\"observed={dict(counts)}; claim {{11,01}} -> {claims['C']}\",\n    \"D\": f\"observed={dict(counts)}; claim all four -> {claims['D']}\",\n}\nclaims[\"E\"] = seen == {\"10\", \"11\"}\nclaims[\"F\"] = False\nevidence[\"E\"] = f\"observed={dict(counts)}; claim {{10,11}} (Z treated as a bit flip) -> {claims['E']}\"\nevidence[\"F\"] = (f\"the sibling 'with else_:' block built and ran, producing {dict(counts)} without \"\n                 f\"raising -> claim CircuitError is {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": dict(counts)}})\n"
+    "proof_script": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\nfrom qiskit_aer import AerSimulator\n\n# verbatim stem code\nqr = QuantumRegister(3, 'q')\ncr = ClassicalRegister(2, 'c')\nqc = QuantumCircuit(qr, cr)\nqc.sx(1)\nqc.measure(1, 0)\nwith qc.if_test((cr[0], 0)) as else_:\n    qc.x(2)\nwith else_:\n    qc.z(2)\nqc.measure(2, 1)\nsim = AerSimulator(seed_simulator=42)\ncounts = sim.run(qc, shots=4000).result().get_counts()\ntotal = sum(counts.values())\nseen = set(counts)\n\ndef near(bs, tol=0.06):\n    return abs(counts.get(bs, 0)/total - 0.5) <= tol\n\nclaims = {\n    \"A\": seen == {\"00\", \"11\"},\n    \"B\": seen == {\"10\", \"01\"} and near(\"10\") and near(\"01\"),\n    \"C\": seen == {\"11\", \"01\"},\n    \"D\": seen == {\"00\", \"01\", \"10\", \"11\"},\n}\nevidence = {\n    \"A\": f\"observed={dict(counts)}; claim {{00,11}} -> {claims['A']}\",\n    \"B\": f\"observed={dict(counts)}; only {{10,01}} ~50/50 -> {claims['B']}\",\n    \"C\": f\"observed={dict(counts)}; claim {{11,01}} -> {claims['C']}\",\n    \"D\": f\"observed={dict(counts)}; claim all four -> {claims['D']}\",\n}\nclaims[\"E\"] = seen == {\"10\", \"11\"}\nclaims[\"F\"] = False\nevidence[\"E\"] = f\"observed={dict(counts)}; claim {{10,11}} (Z treated as a bit flip) -> {claims['E']}\"\nevidence[\"F\"] = (f\"the sibling 'with else_:' block built and ran, producing {dict(counts)} without \"\n                 f\"raising -> claim CircuitError is {claims['F']}\")\nproven = [k for k, v in claims.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"counts\": dict(counts)}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E (Z mistaken for a bit flip in the else branch) +F (else_ builder scoping believed illegal) | realism audit 2026-10-01: stem trimmed; removed the prose that spelled out the if/else branches (glossed the tested reading of if_test((cr[0], 0)) as else_) - rated with the hint gone; difficulty 3 kept (inverted condition + else branch + Z on |0> + bit order)"
+    "notes": "pool wave: +E (Z mistaken for a bit flip in the else branch) +F (else_ builder scoping believed illegal) | realism audit 2026-10-01: stem trimmed; removed the prose that spelled out the if/else branches (glossed the tested reading of if_test((cr[0], 0)) as else_) - rated with the hint gone; difficulty 3 kept (inverted condition + else branch + Z on |0> + bit order) | adversarial A3 2026-10-16: anti-dup rework: code was the banned canonical skeleton h(0)/measure(0,0)/if_test((cr[0],v)) as else_: X/... on q1 -> sx(1), measure(1, 0), if_test((cr[0], 0)) as else_: x(2) / else z(2), measure(2, 1) on 3 qubits (key B kept: executed {'10': 2000, '01': 2000}); explanations retargeted to qubit 2; citations: construct-circuits (no control flow) -> QuantumCircuit API if_test ('chainable context manager ... else') + ZGate (diag(1,-1)); proof runs the verbatim stem"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

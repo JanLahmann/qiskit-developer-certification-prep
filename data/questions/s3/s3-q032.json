@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor C given substance and the absolute, distractor B now hedges) | pool wave: +E (level-1 gain attributed to gate cancellation) +F (SWAP cost believed distance-independent) | realism audit 2026-10-01: stem trimmed (connectivity gloss dropped; the line map is in the code); difficulty 3->2 (transpile then reason about layout)"
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor C given substance and the absolute, distractor B now hedges) | pool wave: +E (level-1 gain attributed to gate cancellation) +F (SWAP cost believed distance-independent) | realism audit 2026-10-01: stem trimmed (connectivity gloss dropped; the line map is in the code); difficulty 3->2 (transpile then reason about layout) | adversarial A3 2026-10-16: survived, no change (re-executed: level 0 10 CX with trivial layout, level 1 1 CX via layout v4->p1; seeds 0-4 identical)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

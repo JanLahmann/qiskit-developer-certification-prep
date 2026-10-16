@@ -43,7 +43,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/classical-feedforward-and-control-flow",
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E (believes for_loop requires an explicit loop parameter) | orchestrator pool calibration: E/F trimmed below correct length (keeper set) | realism audit 2026-10-01: stem trimmed; removed the gloss 'applying X three times' (spelled out the for_loop semantics) - rated with the hint gone; difficulty 2->1"
+    "notes": "pool wave: +E (believes for_loop requires an explicit loop parameter) | orchestrator pool calibration: E/F trimmed below correct length (keeper set) | realism audit 2026-10-01: stem trimmed; removed the gloss 'applying X three times' (spelled out the for_loop semantics) - rated with the hint gone; difficulty 2->1 | adversarial A3 2026-10-16: re-executed ({'1': 500}; no 'as i' needed); citation construct-circuits (no for_loop) -> QuantumCircuit API for_loop (context-manager form builds a ForLoopOp; indexset Iterable[int]); noted: close to the feedforward guide's own for_loop(range(5)) X example (not the banned if_test shape; kept)"
   },
   "freshness": {
     "verified_against": {
@@ -68,7 +68,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

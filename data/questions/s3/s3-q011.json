@@ -48,6 +48,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
       "https://quantum.cloud.ibm.com/docs/guides/measure-qubits"
     ]
   },
@@ -62,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "high length tell + absolute-wording tell cleared (correct trimmed and now carries the true 'every'/'by default', distractor C given substance) | pool wave: +E (add_bits default reuse) +F (barrier placed after the measurements) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed and now carries the true 'every'/'by default', distractor C given substance) | pool wave: +E (add_bits default reuse) +F (barrier placed after the measurements) | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed | adversarial A3 2026-10-16: re-executed (h,cx,barrier,measure x2 into meas; QuantumCircuit(2,2).measure_all() -> c+meas 4 bits; add_bits=False reuses c); citation added: QuantumCircuit API measure_all (add_bits=False stores into existing bits) for pool E"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

@@ -7,7 +7,7 @@
   "type": "mcq",
   "difficulty": 2,
   "stem": "Knowing only `basis` and the coupling map `cmap`, which call transpiles `qc` into an ISA circuit?",
-  "code": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n# cmap is a CouplingMap; qc is an abstract circuit containing an h gate\nbasis = ['cx', 'rz', 'sx', 'x']",
+  "code": "from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\n# cmap is a CouplingMap; qc is an abstract circuit of h and cx gates on arbitrary qubit pairs\nbasis = ['cx', 'rz', 'sx', 'x']",
   "options": [
     {
       "key": "A",
@@ -47,7 +47,7 @@
       "F": "The basis alone gets the gates translated but leaves routing unconstrained: two-qubit gates survive on non-connected pairs, so the result is not ISA for this coupling map."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/transpile-with-pass-managers",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.transpiler.generate_preset_pass_manager",
       "https://quantum.cloud.ibm.com/docs/guides/transpile"
     ]
   },
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E (basis list passed as target=) +F (coupling map believed inferable from the circuit) | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (basis alone does not route)"
+    "notes": "pool wave: +E (basis list passed as target=) +F (coupling map believed inferable from the circuit) | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed (basis alone does not route) | adversarial A3 2026-10-16: stem underspecified: 'qc ... containing an h gate' allowed an h-only circuit, for which F (basis_gates only) also yields an ISA circuit -> code comment now says h and cx gates on arbitrary qubit pairs (proof circuit already has cx(0,2)/cx(0,3) on a line: F not ISA, D ISA, A/B leave h, C/E AttributeError, re-executed); citation transpile-with-pass-managers (no loose-constraint statement) -> generate_preset_pass_manager API ('via loose constraints (basis_gates, coupling_map, or dt)')"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

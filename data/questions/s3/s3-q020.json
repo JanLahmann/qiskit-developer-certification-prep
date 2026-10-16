@@ -47,7 +47,7 @@
       "F": "Substitution happens immediately — `bound` already carries the numeric angle and reports 0 free parameters, with no transpilation involved."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter"
     ]
   },
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "hedge wording rebalanced in the meta-pattern pass (the correct option now states the `inplace=False` default alongside distractor D) | pool wave: +E (bound believed to share the caller's instruction list) +F (substitution believed deferred to transpile time) | realism audit 2026-10-01: stem reworded; difficulty 1 confirmed"
+    "notes": "hedge wording rebalanced in the meta-pattern pass (the correct option now states the `inplace=False` default alongside distractor D) | pool wave: +E (bound believed to share the caller's instruction list) +F (substitution believed deferred to transpile time) | realism audit 2026-10-01: stem reworded; difficulty 1 confirmed | adversarial A3 2026-10-16: re-executed (qc 1 free / bound 0, distinct objects and data lists, append to bound leaves qc at 1 instruction); citation construct-circuits -> QuantumCircuit API assign_parameters ('If False, a copy of the circuit with the bound parameters is returned'); Parameter kept (assign_parameters({phi: 3.14}) example)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 5

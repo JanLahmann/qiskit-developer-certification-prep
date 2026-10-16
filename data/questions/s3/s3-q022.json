@@ -47,8 +47,8 @@
       "F": "A `ParameterVector` has a fixed length until you call `resize()`; `x[3]` on a length-3 vector raises `IndexError`."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.ParameterVector"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.ParameterVector",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'all three') | pool wave: +F (ParameterVector believed to auto-grow on out-of-range indexing) | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed"
+    "notes": "absolute-wording tell cleared (the correct option now carries the factually true 'all three') | pool wave: +F (ParameterVector believed to auto-grow on out-of-range indexing) | realism audit 2026-10-01: stem trimmed; difficulty 2 confirmed | adversarial A3 2026-10-16: re-executed (3 params x[0..2], distinct objects, {x:[...]} binds all, x[3] IndexError); citation construct-circuits -> QuantumCircuit API assign_parameters (ParameterVector keys take a same-length sequence); ParameterVector kept (v[0], v[1], v[2] names; resize)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 5

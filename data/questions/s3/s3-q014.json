@@ -38,7 +38,7 @@
     "D"
   ],
   "explanation": {
-    "correct": "You must declare classical bits before measuring into them. Option D creates both registers, passes them to `QuantumCircuit`, and calls `measure(qubit, clbit)` in the correct argument order — register-wide, so `q[i]` is read into `c[i]` — so it builds and runs, giving 2-bit outcomes.",
+    "correct": "You must declare classical bits before measuring into them. The working snippet creates both registers, passes them to `QuantumCircuit`, and calls `measure(qubit, clbit)` in the correct argument order — register-wide, so `q[i]` is read into `c[i]` — so it builds and runs, giving 2-bit outcomes.",
     "distractors": {
       "A": "`QuantumCircuit(2)` has NO classical bits, so `measure([0,1],[0,1])` has nowhere to store results and raises a `CircuitError`.",
       "B": "`measure(q, q)` passes qubits as the classical-bit argument; measurement targets must be classical bits, so this raises.",
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "high length tell cleared (correct option D now uses the compact register-wide `measure(q,c)` form, distractor C given a barrier; both re-proved by execution) | pool wave: +E (measure_all on top of an existing creg) +F (add_register onto QuantumCircuit(2,2) name clash) | realism audit 2026-10-01: stem trimmed (dropped irrelevant superposition detail); difficulty 1 confirmed"
+    "notes": "high length tell cleared (correct option D now uses the compact register-wide `measure(q,c)` form, distractor C given a barrier; both re-proved by execution) | pool wave: +E (measure_all on top of an existing creg) +F (add_register onto QuantumCircuit(2,2) name clash) | realism audit 2026-10-01: stem trimmed (dropped irrelevant superposition detail); difficulty 1 confirmed | adversarial A3 2026-10-16: explanation.correct referenced a display letter (\"Option D\") -> reworded; all six snippets re-executed (A/B/C/F CircuitError, D writes q[i]->c[i], E adds meas: 4 clbits)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 5

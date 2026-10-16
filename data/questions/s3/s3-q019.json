@@ -47,8 +47,8 @@
       "F": "A `ParameterVector` is just a convenient way to create related parameters — its elements still bind one value each, so a single-element list raises the same `ValueError`."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Parameter"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
+      "https://quantum.cloud.ibm.com/docs/guides/construct-circuits"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s3)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor A given substance, distractor D now carries the absolute and a hedge) | pool wave: +E (removed bind_parameters as the positional binder) +F (ParameterVector believed to broadcast one value) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one fact: list length must match the parameter count)"
+    "notes": "high length tell + absolute-wording tell cleared (correct trimmed, distractor A given substance, distractor D now carries the absolute and a hedge) | pool wave: +E (removed bind_parameters as the positional binder) +F (ParameterVector believed to broadcast one value) | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one fact: list length must match the parameter count) | adversarial A3 2026-10-16: re-executed (ValueError 'Mismatching number of values and parameters. For partial binding please pass a mapping'; bind_parameters AttributeError; ParameterVector {pv:[0.7]} CircuitError, [0.7] ValueError; RXGate has no assign); citation Parameter -> QuantumCircuit API assign_parameters (list assigned in parameter order; mapping form)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 5

@@ -48,7 +48,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-results"
+      "https://quantum.cloud.ibm.com/docs/guides/bit-ordering"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "official-alignment fix wave 2026-07-26: widened from 2 to 3 qubits so the option set can hold a distractor pool. The 2-qubit version listed ALL four basis states, so no fifth option could be a basis state (REVIEW_LEDGER: 'whole-basis questions cannot be pooled'); on 3 qubits six of the eight basis states are offered, every option stays a legal basis state, and display_count 5 rotates 3 of the 4 distractors. | realism audit 2026-10-01: stem trimmed (dropped the 'node at every nonzero amplitude' gloss, which slightly raises difficulty); difficulty 3->2 even with the gloss gone (state + endianness: two steps)"
+    "notes": "official-alignment fix wave 2026-07-26: widened from 2 to 3 qubits so the option set can hold a distractor pool. The 2-qubit version listed ALL four basis states, so no fifth option could be a basis state (REVIEW_LEDGER: 'whole-basis questions cannot be pooled'); on 3 qubits six of the eight basis states are offered, every option stays a legal basis state, and display_count 5 rotates 3 of the 4 distractors. | realism audit 2026-10-01: stem trimmed (dropped the 'node at every nonzero amplitude' gloss, which slightly raises difficulty); difficulty 3->2 even with the gloss gone (state + endianness: two steps) | adversarial A3 2026-10-16: citation: visualize-results (histograms only; no q-sphere or bit order) -> guides/bit-ordering ('bit n-1 is the leftmost bit'); plot-quantum-states kept (q-sphere plots 'each element in a statevector'). Executed: nonzero {100,110}; H-on-q0 model {100,101}, no-X model {000,010} match rationales. Survived"
   },
   "display_count": 5,
   "freshness": {

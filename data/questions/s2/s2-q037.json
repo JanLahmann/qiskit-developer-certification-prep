@@ -43,12 +43,12 @@
       "A": "This is the measurement plot, not a device plot: its bars are the outcome bitstrings and its x axis is labelled with them. It says nothing about which qubits are physically connected.",
       "B": "The right function, the wrong input. A counts mapping carries outcome labels, not hardware topology, so the call fails with an `AttributeError` about a missing qubit count.",
       "C": "The histogram plotter expects a mapping of outcomes to frequencies and immediately asks the argument for its values, so a backend raises an `AttributeError`. Swapping in a backend does not turn it into a device drawer.",
-      "D": "A `CouplingMap` alone does not carry the qubit count or the plane coordinates the drawer needs, so it raises. The function that accepts raw connectivity is `plot_coupling_map`, whose first argument is the number of qubits.",
+      "D": "A `CouplingMap` is not a backend: the drawer asks its argument for `num_qubits`, which a `CouplingMap` does not expose, so it raises an `AttributeError`. The function that accepts raw connectivity is `plot_coupling_map`, whose first argument is the number of qubits.",
       "E": "A `Target` describes which instructions run on which qubits, but the gate-map drawer looks for a coupling map on its argument and a `Target` does not expose one under that name."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/qpu-information",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_gate_map"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (s1/s2 official-alignment fix wave)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "plot_gate_map coverage gap from data/audits/official_alignment.md (task 2.2). Graphviz binary absent in the pinned env: the proof stubs the leaf renderer plot_coupling_map and asserts on what the real code forwards to it. | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
+    "notes": "plot_gate_map coverage gap from data/audits/official_alignment.md (task 2.2). Graphviz binary absent in the pinned env: the proof stubs the leaf renderer plot_coupling_map and asserts on what the real code forwards to it. | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed | adversarial A3 2026-10-16: rationale D said a CouplingMap 'does not carry the qubit count' (it does, via size()); executed error is 'CouplingMap' object has no attribute 'num_qubits', rationale now says that. Citation: visualization index -> plot_gate_map API ('backend (Backend) - The backend instance that will be used to plot the device gate map'); qpu-information kept (quoted). Executed: only plot_gate_map(backend) draws the device; B/D AttributeError num_qubits, C 'values', E 'coupling_map'"
   },
   "display_count": 5,
   "freshness": {

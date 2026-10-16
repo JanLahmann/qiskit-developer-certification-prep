@@ -48,7 +48,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector",
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-results"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (s1/s2 official-alignment fix wave)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "Statevector.sample_counts coverage gap from data/audits/official_alignment.md (0 prior hits). Determinism via Statevector.seed. | realism audit 2026-10-01: stem trimmed (dropped the 'sampled straight from the statevector' gloss); difficulty 1 confirmed"
+    "notes": "Statevector.sample_counts coverage gap from data/audits/official_alignment.md (0 prior hits). Determinism via Statevector.seed. | realism audit 2026-10-01: stem trimmed (dropped the 'sampled straight from the statevector' gloss); difficulty 1 confirmed | adversarial A3 2026-10-16: citation: visualize-results (no sample_counts) -> BitArray API (get_int_counts 'bitstrings are stored as ints', for rationale F); Statevector API kept (sample_counts 'Return type Counts', sample_memory 'np.array', seed()). Executed: Counts {'00': 999, '11': 1049} sum 2048, sample_memory ndarray, measured circuit -> from_instruction QiskitError. Survived"
   },
   "display_count": 5,
   "freshness": {

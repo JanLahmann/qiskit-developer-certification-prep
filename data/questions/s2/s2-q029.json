@@ -43,7 +43,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E near-miss method name sv.plot() instead of sv.draw() | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
+    "notes": "pool wave: +E near-miss method name sv.plot() instead of sv.draw() | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed | adversarial A3 2026-10-16: citation: visualization index (one-line listing, no draw tokens) -> Statevector API (draw 'Valid choices are repr, text, latex, latex_source, qsphere, hinton, bloch, city, or paulivec'); plot-quantum-states kept ('psi.draw(\"qsphere\")'). Options re-executed: only draw('qsphere') returns Figure; q_sphere ValueError, qsphere/plot AttributeError, plot_qsphere ImportError"
   },
   "freshness": {
     "verified_against": {

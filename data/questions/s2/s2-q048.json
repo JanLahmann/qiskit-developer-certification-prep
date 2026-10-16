@@ -61,7 +61,8 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_state_city",
-      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states"
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/quantum_info"
     ]
   },
   "proof": {
@@ -75,9 +76,9 @@
   "provenance": {
     "generated": "2026-10-02",
     "model": "claude-opus (figure wave, s2/s5-s8)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Figure wave add: plot_state_city of a reduced (mixed) one-qubit state — populations on the diagonal, coherences gone after entangling. Proof renders each variant and the stem's own call to SVG in-process (fixed hashsalt, no Date) and requires byte-identity plus an exact density-matrix match. 3D render -> platform_sensitive."
+    "notes": "Figure wave add: plot_state_city of a reduced (mixed) one-qubit state — populations on the diagonal, coherences gone after entangling. Proof renders each variant and the stem's own call to SVG in-process (fixed hashsalt, no Date) and requires byte-identity plus an exact density-matrix match. 3D render -> platform_sensitive. | adversarial A3 2026-10-16: survived: executed reduced state diag(0.25, 0.75), pure RY off-diagonal 0.433, post-selected |0><0|; proof already pins by SVG byte-identity (only C). Figures rasterized: alts match; A's auto z-axis starts near 0.25 so its bars run below the panel floor (genuine plot_state_city output, distractor only, kept). Citation added: quantum_info partial_trace ('Return reduced density matrix by tracing out part of quantum state'); city API + plot-quantum-states verified"
   },
   "freshness": {
     "verified_against": {

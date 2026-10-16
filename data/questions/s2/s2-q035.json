@@ -48,7 +48,8 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
-      "https://quantum.cloud.ibm.com/docs/guides/visualize-results"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_bloch_multivector",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.SGate"
     ]
   },
   "proof": {
@@ -62,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern pass: absolute wording removed from distractor E by substantive rewording | pool wave: +F rz on |0> assumed to tilt the arrow (it stays at the north pole) | realism audit 2026-10-01: stem trimmed (equator definition ⟨Z⟩ = 0 kept); difficulty 3->2 (evaluate six one/two-gate circuits)"
+    "notes": "meta-pattern pass: absolute wording removed from distractor E by substantive rewording | pool wave: +F rz on |0> assumed to tilt the arrow (it stays at the north pole) | realism audit 2026-10-01: stem trimmed (equator definition ⟨Z⟩ = 0 kept); difficulty 3->2 (evaluate six one/two-gate circuits) | adversarial A3 2026-10-16: citation: visualize-results (histograms only) -> plot_bloch_multivector API (components are Pauli expectation values) + SGate ('Equivalent to a pi/2 radian rotation about the Z axis'); plot-quantum-states kept (Bloch vector = X, Y, Z expectations). Executed drawer vectors A (1,0,0), B (0,0,-1), C (0.866,0,0.5), D (0,1,0), E/F (0,0,1). Survived"
   },
   "freshness": {
     "verified_against": {

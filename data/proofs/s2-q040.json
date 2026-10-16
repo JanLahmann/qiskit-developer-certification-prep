@@ -5,18 +5,33 @@
       "C"
     ],
     "evidence": {
-      "A": "variant draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),), (('z', (1,)),)))) vs stem (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))) -> match=False",
-      "B": "variant draws (('h', (0,)), ('measure', (0,)), ('x', (1,))) vs stem (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))) -> match=False",
-      "C": "variant is structurally identical to the stem code -> match=True",
-      "D": "variant draws (('h', (0,)), ('measure', (0,)), ('if_else', (0,), ((('x', (0,)),),))) vs stem (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))) -> match=False",
-      "E": "variant draws (('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))) vs stem (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))) -> match=False"
+      "A": "variant draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),), (('z', (1,)),)))); stem draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))); rendered mpl SVG byte-identical to the stem's own drawing: False -> match=False",
+      "B": "variant draws (('h', (0,)), ('measure', (0,)), ('x', (1,))); stem draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))); rendered mpl SVG byte-identical to the stem's own drawing: False -> match=False",
+      "C": "variant draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))); stem draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))); rendered mpl SVG byte-identical to the stem's own drawing: True -> match=True",
+      "D": "variant draws (('h', (0,)), ('measure', (0,)), ('if_else', (0,), ((('x', (0,)),),))); stem draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))); rendered mpl SVG byte-identical to the stem's own drawing: False -> match=False",
+      "E": "variant draws (('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))); stem draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))); rendered mpl SVG byte-identical to the stem's own drawing: False -> match=False"
     },
     "observed": {
-      "A": "(('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),), (('z', (1,)),))))",
-      "B": "(('h', (0,)), ('measure', (0,)), ('x', (1,)))",
-      "C": "(('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),)))",
-      "D": "(('h', (0,)), ('measure', (0,)), ('if_else', (0,), ((('x', (0,)),),)))",
-      "E": "(('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),)))"
+      "A": {
+        "signature": "(('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),), (('z', (1,)),))))",
+        "svg_identical": false
+      },
+      "B": {
+        "signature": "(('h', (0,)), ('measure', (0,)), ('x', (1,)))",
+        "svg_identical": false
+      },
+      "C": {
+        "signature": "(('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),)))",
+        "svg_identical": true
+      },
+      "D": {
+        "signature": "(('h', (0,)), ('measure', (0,)), ('if_else', (0,), ((('x', (0,)),),)))",
+        "svg_identical": false
+      },
+      "E": {
+        "signature": "(('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),)))",
+        "svg_identical": false
+      }
     }
   },
   "versions": {
@@ -25,9 +40,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.55,
+  "wall_seconds": 1.74,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"variant draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),), (('z', (1,)),)))) vs stem (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))) -> match=False\", \"B\": \"variant draws (('h', (0,)), ('measure', (0,)), ('x', (1,))) vs stem (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))) -> match=False\", \"C\": \"variant is structurally identical to the stem code -> match=True\", \"D\": \"variant draws (('h', (0,)), ('measure', (0,)), ('if_else', (0,), ((('x', (0,)),),))) vs stem (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))) -> match=False\", \"E\": \"variant draws (('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))) vs stem (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))) -> match=False\"}, \"observed\": {\"A\": \"(('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),), (('z', (1,)),))))\", \"B\": \"(('h', (0,)), ('measure', (0,)), ('x', (1,)))\", \"C\": \"(('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),)))\", \"D\": \"(('h', (0,)), ('measure', (0,)), ('if_else', (0,), ((('x', (0,)),),)))\", \"E\": \"(('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),)))\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"variant draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),), (('z', (1,)),)))); stem draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))); rendered mpl SVG byte-identical to the stem's own drawing: False -> match=False\", \"B\": \"variant draws (('h', (0,)), ('measure', (0,)), ('x', (1,))); stem draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))); rendered mpl SVG byte-identical to the stem's own drawing: False -> match=False\", \"C\": \"variant draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))); stem draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))); rendered mpl SVG byte-identical to the stem's own drawing: True -> match=True\", \"D\": \"variant draws (('h', (0,)), ('measure', (0,)), ('if_else', (0,), ((('x', (0,)),),))); stem draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))); rendered mpl SVG byte-identical to the stem's own drawing: False -> match=False\", \"E\": \"variant draws (('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))); stem draws (('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),))); rendered mpl SVG byte-identical to the stem's own drawing: False -> match=False\"}, \"observed\": {\"A\": {\"signature\": \"(('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),), (('z', (1,)),))))\", \"svg_identical\": false}, \"B\": {\"signature\": \"(('h', (0,)), ('measure', (0,)), ('x', (1,)))\", \"svg_identical\": false}, \"C\": {\"signature\": \"(('h', (0,)), ('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),)))\", \"svg_identical\": true}, \"D\": {\"signature\": \"(('h', (0,)), ('measure', (0,)), ('if_else', (0,), ((('x', (0,)),),)))\", \"svg_identical\": false}, \"E\": {\"signature\": \"(('measure', (0,)), ('if_else', (1,), ((('x', (1,)),),)))\", \"svg_identical\": false}}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

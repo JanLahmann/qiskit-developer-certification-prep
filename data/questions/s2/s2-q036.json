@@ -42,12 +42,13 @@
     "distractors": {
       "A": "The signature is `plot_circuit_layout(circuit, backend)`. Swapping the arguments makes the function look for a layout on the backend object, which fails with an `AttributeError` instead.",
       "B": "Every optimization level records a layout on its output circuit; the level is irrelevant here. What matters is that the layout lives on the circuit `transpile` returns, so re-running it and then plotting `qc` again raises the same error.",
-      "C": "A `CouplingMap` is not a backend: the function needs the full device description to place the nodes. Passing one raises an `AttributeError` about a missing qubit count — and it never gets far enough to matter when the circuit has no layout anyway.",
+      "C": "A `CouplingMap` is not a backend: the function needs the full device description to place the nodes, and asking a `CouplingMap` for its `num_qubits` raises an `AttributeError`.",
       "E": "A `Target` describes the instructions a device supports but is not a backend either, so the plotter cannot pull a coupling map off it and raises an `AttributeError`.",
       "F": "The `view` keyword chooses whether the labels show virtual or physical qubit indices; both settings need a circuit that already carries a layout, so this changes nothing about the failure."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_circuit_layout",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit",
       "https://quantum.cloud.ibm.com/docs/guides/transpile"
     ]
   },
@@ -62,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (s1/s2 official-alignment fix wave)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "plot_circuit_layout coverage gap from data/audits/official_alignment.md (task 2.2). Graphviz binary absent in the pinned env: the proof stubs the leaf renderer plot_coupling_map and asserts on what the real code forwards to it. | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one-step read: qc passed instead of isa)"
+    "notes": "plot_circuit_layout coverage gap from data/audits/official_alignment.md (task 2.2). Graphviz binary absent in the pinned env: the proof stubs the leaf renderer plot_coupling_map and asserts on what the real code forwards to it. | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one-step read: qc passed instead of isa) | adversarial A3 2026-10-16: rationale C dropped a false clause ('never gets far enough ... when the circuit has no layout' - option C passes isa, which has a layout); executed error: 'CouplingMap' object has no attribute 'num_qubits'. Citations: visualization index -> plot_circuit_layout API ('Plot the layout of a circuit transpiled for a given target backend', view options) + QuantumCircuit.layout ('typically set on the output from transpile()'); transpile guide kept (layout stage). Docs trap noted: API lists VisualizationError for 'no layout', executed raise is QiskitError 'Circuit has no layout. Perhaps it has not been transpiled.' as the explanation says. Every level 0-3 records isa.layout, qc.layout stays None"
   },
   "display_count": 5,
   "freshness": {

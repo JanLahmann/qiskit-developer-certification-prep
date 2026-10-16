@@ -42,8 +42,8 @@
       "E": "Tracing out qubit 1 by hand leaves a one-qubit density matrix, so the figure holds a single sphere; the multivector drawer already performs that reduction for every qubit."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_bloch_multivector",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_bloch_vector"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E manual partial_trace before drawing (yields one sphere, not one per qubit) | realism audit 2026-10-01: stem trimmed (dropped the gloss that plot_bloch_vector takes a raw [x, y, z]; rated with it gone); difficulty 2->1 (one recalled fact)"
+    "notes": "pool wave: +E manual partial_trace before drawing (yields one sphere, not one per qubit) | realism audit 2026-10-01: stem trimmed (dropped the gloss that plot_bloch_vector takes a raw [x, y, z]; rated with it gone); difficulty 2->1 (one recalled fact) | adversarial A3 2026-10-16: citations: plot-quantum-states + visualization index -> plot_bloch_multivector API ('Plot a Bloch sphere for each qubit') + plot_bloch_vector API (three-element bloch, coord_type). Executed sphere counts: A ValueError (unpack), B 1, C VisualizationError, D 2, E 1. Survived"
   },
   "freshness": {
     "verified_against": {

@@ -15,7 +15,7 @@
     },
     {
       "key": "B",
-      "text": "The relative phase of the amplitude — the |01> branch carries phase π while |10> has phase 0."
+      "text": "The relative phase of the amplitude — the |01> and |10> branches differ in phase by π."
     },
     {
       "key": "C",
@@ -34,7 +34,7 @@
     "B"
   ],
   "explanation": {
-    "correct": "On a q-sphere a node's SIZE encodes the amplitude magnitude and its COLOR encodes the amplitude's complex phase. Here |01> and |10> have equal magnitude (same size) but the Z gate multiplies the |01> branch by −1, giving it phase π versus phase 0 for |10> — so the colors differ.",
+    "correct": "On a q-sphere a node's SIZE encodes the amplitude magnitude and its COLOR encodes the amplitude's complex phase. Here |01> and |10> have equal magnitude (same size), but the Z gate multiplies the |01> branch by −1, so the two branches differ in phase by π and the colors differ. The drawer removes a global phase by setting the largest amplitude (here the first of the tied pair, |01>) to phase 0, so with `show_state_phases=True` it labels |01> as 0 and |10> as π; only the difference is physical.",
     "distractors": {
       "A": "The two amplitudes have equal magnitude (the nodes are the same size), and magnitude is shown by node size, not by color.",
       "C": "|01> and |10> have the same Hamming weight (one 1-bit each), so a color difference cannot be encoding Hamming weight — it is the phase that differs.",
@@ -42,8 +42,8 @@
       "E": "Both amplitudes here are real (±1/√2, imaginary part 0) yet the nodes differ in colour: the colour wheel tracks the full phase angle, and a real negative amplitude is phase π."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_state_qsphere",
+      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states"
     ]
   },
   "proof": {
@@ -52,14 +52,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.x(0)\nqc.z(0)\nsv = Statevector.from_instruction(qc)\nampl = {str(k): v for k, v in sv.to_dict().items() if abs(v) > 1e-9}\n\na01 = ampl.get(\"01\", 0)\na10 = ampl.get(\"10\", 0)\nm01 = round(abs(a01), 4)\nm10 = round(abs(a10), 4)\np01 = round(float(np.angle(a01)), 4)\np10 = round(float(np.angle(a10)), 4)\nhw01 = \"01\".count(\"1\")\nhw10 = \"10\".count(\"1\")\n\nmag_equal = abs(m01 - m10) < 1e-6\nphase_diff_pi = abs(abs(p01 - p10) - np.pi) < 1e-3\n\nevidence = {}\nproven = []\nmA = m01 > m10\nevidence[\"A\"] = f\"|amp(01)|={m01}, |amp(10)|={m10}; magnitudes equal={mag_equal}; '01 larger magnitude' match={mA}\"\nif mA:\n    proven.append(\"A\")\nmB = mag_equal and phase_diff_pi\nevidence[\"B\"] = f\"phase(01)={p01} rad vs phase(10)={p10} rad (differ by pi={phase_diff_pi}); magnitudes equal={mag_equal} -> color encodes relative phase, match={mB}\"\nif mB:\n    proven.append(\"B\")\nmC = hw01 != hw10\nevidence[\"C\"] = f\"Hamming weights 01->{hw01}, 10->{hw10} (equal); a color difference cannot encode Hamming weight, match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = (not phase_diff_pi) and mag_equal and (p01 == p10)\nevidence[\"D\"] = f\"amplitudes differ in phase ({p01} vs {p10}); nodes are not identical, so not an artifact, match={mD}\"\nif mD:\n    proven.append(\"D\")\n\nim01 = round(float(np.imag(a01)), 4)\nim10 = round(float(np.imag(a10)), 4)\nmE = (im01 != 0) or (im10 != 0)\nevidence[\"E\"] = (\n    f\"imaginary parts: Im(amp(01))={im01}, Im(amp(10))={im10} (both real) yet the phases differ ({p01} vs {p10}) -> imaginary-part claim match={mE}\"\n)\nif mE:\n    proven.append(\"E\")\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"amp_01\": str(np.round(a01, 4)), \"amp_10\": str(np.round(a10, 4))},\n})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.x(0)\nqc.z(0)\nsv = Statevector.from_instruction(qc)\nampl = {str(k): v for k, v in sv.to_dict().items() if abs(v) > 1e-9}\n\na01 = ampl.get(\"01\", 0)\na10 = ampl.get(\"10\", 0)\nm01 = round(abs(a01), 4)\nm10 = round(abs(a10), 4)\np01 = round(float(np.angle(a01)), 4)\np10 = round(float(np.angle(a10)), 4)\nhw01 = \"01\".count(\"1\")\nhw10 = \"10\".count(\"1\")\n\nmag_equal = abs(m01 - m10) < 1e-6\nphase_diff_pi = abs(abs(p01 - p10) - np.pi) < 1e-3\n\nevidence = {}\nproven = []\nmA = m01 > m10\nevidence[\"A\"] = f\"|amp(01)|={m01}, |amp(10)|={m10}; magnitudes equal={mag_equal}; '01 larger magnitude' match={mA}\"\nif mA:\n    proven.append(\"A\")\nmB = mag_equal and phase_diff_pi\nevidence[\"B\"] = f\"phase(01)={p01} rad vs phase(10)={p10} rad (differ by pi={phase_diff_pi}); magnitudes equal={mag_equal} -> color encodes relative phase, match={mB}\"\nif mB:\n    proven.append(\"B\")\nmC = hw01 != hw10\nevidence[\"C\"] = f\"Hamming weights 01->{hw01}, 10->{hw10} (equal); a color difference cannot encode Hamming weight, match={mC}\"\nif mC:\n    proven.append(\"C\")\nmD = (not phase_diff_pi) and mag_equal and (p01 == p10)\nevidence[\"D\"] = f\"amplitudes differ in phase ({p01} vs {p10}); nodes are not identical, so not an artifact, match={mD}\"\nif mD:\n    proven.append(\"D\")\n\nim01 = round(float(np.imag(a01)), 4)\nim10 = round(float(np.imag(a10)), 4)\nmE = (im01 != 0) or (im10 != 0)\nevidence[\"E\"] = (\n    f\"imaginary parts: Im(amp(01))={im01}, Im(amp(10))={im10} (both real) yet the phases differ ({p01} vs {p10}) -> imaginary-part claim match={mE}\"\n)\nif mE:\n    proven.append(\"E\")\n\n# What the drawer actually draws: marker sizes/colours and its own phase labels.\nimport matplotlib\nmatplotlib.use(\"Agg\")\nfrom qiskit.visualization import plot_state_qsphere\nfig = plot_state_qsphere(sv)\ndef basis_markers(ax):\n    # one \"o\" marker per basis state on the sphere surface; skip the grey centre dot and zero-size markers\n    out = []\n    for l in ax.lines:\n        if l.get_marker() != \"o\" or l.get_markersize() <= 0:\n            continue\n        x, y, z = (np.asarray(a, dtype=float) for a in l.get_data_3d())\n        if len(x) == 1 and abs(x[0]) + abs(y[0]) + abs(z[0]) > 0.5:\n            out.append(l)\n    return out\nmarkers = basis_markers(fig.axes[0])\nsizes = sorted(round(float(l.get_markersize()), 4) for l in markers)\ncolours = {tuple(round(float(c), 4) for c in l.get_markerfacecolor()[:3]) for l in markers}\ndrawn_equal_size = len(markers) == 2 and sizes[0] == sizes[1]\ndrawn_diff_colour = len(colours) == 2\nfigp = plot_state_qsphere(sv, show_state_phases=True)\nlabels = sorted(t.get_text().replace(\"\\n\", \" \") for t in figp.axes[0].texts)\nassert drawn_equal_size and drawn_diff_colour, (sizes, colours)\nif \"B\" in proven and not (drawn_equal_size and drawn_diff_colour):\n    proven.remove(\"B\")\nevidence[\"B\"] += f\"; drawn: {len(markers)} markers, sizes {sizes}, {len(colours)} distinct colours; drawer phase labels {labels}\"\nevidence[\"D\"] += f\"; drawn markers use {len(colours)} distinct colours\"\n\nemit_verdict({\n    \"answer\": proven,\n    \"evidence\": evidence,\n    \"observed\": {\"drawn_marker_sizes\": sizes, \"drawn_phase_labels\": labels, \"amp_01\": str(np.round(a01, 4)), \"amp_10\": str(np.round(a10, 4))},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern pass: absolute tell cleared by hedging distractor A instead of moving an absolute into the correct option | pool wave: +E colour read as an imaginary-part flag rather than the phase angle | realism audit 2026-10-01: stem trimmed (kept the equal-size/different-color detail the options rely on); difficulty 3->2 (color=phase plus a phase trace)"
+    "notes": "meta-pattern pass: absolute tell cleared by hedging distractor A instead of moving an absolute into the correct option | pool wave: +E colour read as an imaginary-part flag rather than the phase angle | realism audit 2026-10-01: stem trimmed (kept the equal-size/different-color detail the options rely on); difficulty 3->2 (color=phase plus a phase trace) | adversarial A3 2026-10-16: option B's 'the |01> branch carries phase π while |10> has phase 0' contradicted the drawing: plot_state_qsphere zeroes the phase of the largest amplitude (argmax picks |01> of the tied pair), and show_state_phases=True labels |01> 0, |10> π (executed). B now states the π difference only; correct explanation teaches the normalisation; proof now reads marker sizes/colours and the drawer's phase labels. Citations: visualization index -> plot_state_qsphere API ('the color represents the phase'), plot-quantum-states kept ('the color represents the phase'). Key unchanged"
   },
   "freshness": {
     "verified_against": {

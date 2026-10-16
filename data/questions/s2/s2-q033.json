@@ -42,8 +42,8 @@
       "E": "The name suggests many vectors, but the multivector drawer takes one quantum state and derives each qubit's reduced Bloch vector itself; a list of [x, y, z] vectors is read as a state and rejected with a `QiskitError`."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/plot-quantum-states",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/visualization"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_bloch_vector",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.visualization.plot_bloch_multivector"
     ]
   },
   "proof": {
@@ -57,9 +57,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s2)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern pass: length tell cleared (correct option trimmed) and absolute tell cleared by hedging distractor D, leaving distractor A's absolute in place | pool wave: +E multivector misread as taking a list of Bloch vectors | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed"
+    "notes": "meta-pattern pass: length tell cleared (correct option trimmed) and absolute tell cleared by hedging distractor D, leaving distractor A's absolute in place | pool wave: +E multivector misread as taking a list of Bloch vectors | realism audit 2026-10-01: stem trimmed; difficulty 1 confirmed | adversarial A3 2026-10-16: citations: plot-quantum-states (no plot_bloch_vector) + visualization index -> plot_bloch_vector API ('bloch (tuple[float, float, float]) - tuple of three elements') + plot_bloch_multivector API ('state (Statevector or DensityMatrix or ndarray) - an N-qubit quantum state'). Executed: bmv([0,0,1]) VisualizationError 'Input is not a multi-qubit quantum state.', bmv(list of vectors) QiskitError 'not a square matrix', bv(1q state) QiskitError. Survived"
   },
   "freshness": {
     "verified_against": {

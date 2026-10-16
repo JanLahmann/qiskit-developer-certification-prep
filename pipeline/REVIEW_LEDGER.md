@@ -3032,3 +3032,75 @@ page fetched as text and grepped; drawer/plot source read where docs were silent
 - Gates: verify_bank s2 38/38 PROVEN + 1 conceptual, exit 0; audit_meta_patterns s2
   0 blockers / 0 warnings, 7 low flags (pre-existing q010/q018/q022/q023 among them; q024's
   pre-existing low flag cleared; none new); lint_proof_drift 0 findings.
+
+## Adversarial review A3 — s2b (2026-10-16)
+
+Scope: s2-q029..q046, s2-q048 (19; s2-q047 was an R2 add). Every option including pool
+distractors re-executed in independent scripts (pinned venv, qiskit 2.5.0); every cited page
+fetched as text and grepped; drawer source read where docs were silent; all eight figure items
+re-rendered (`render_figures --only`, 0 failures), rasterized (generator re-run with PNG
+savefig) and inspected. **0 second-answer attacks stuck, 0 key-letter changes, 0 kills.**
+All 19 edited (citations / proofs / notes); none survived fully unchanged.
+
+- **Option text contradicted the drawing (key letter kept):** s2-q032 B claimed "the |01>
+  branch carries phase π while |10> has phase 0". `plot_state_qsphere` removes a global phase
+  by zeroing the phase of the largest amplitude (`argmax` after rounding picks |01> of the tied
+  pair), so the drawn figure is the reverse: `show_state_phases=True` labels |01> `0`, |10> `π`
+  (executed). B now states only the π difference; explanation teaches the normalisation; proof
+  reads marker sizes/colours and the drawer's own phase labels.
+- **False explanations (keys unchanged):** s2-q038 correct said qubits are shaded by "readout
+  and single-qubit gate errors" — source: `q_colors` come from the max single-qubit gate error
+  only; readout error is the side bar chart. s2-q037 D "a CouplingMap does not carry the qubit
+  count" — executed error is `'CouplingMap' object has no attribute 'num_qubits'`. s2-q036 C had
+  a false clause ("never gets far enough … when the circuit has no layout") although option C
+  passes `isa`. s2-q043 E said phase π is "the opposite side of the colour wheel from the
+  quarter turn shown" (π is a quarter turn from π/2; it is opposite phase 0).
+- **Figure alt texts:** s2-q040 C/D/E described an "'If-1' region"; the mpl box is labelled
+  `If` and the tested value appears as `0x1` under the condition dot — all five alts rewritten
+  at equal specificity (D's "the qubit that was measured" gloss dropped). s2-q046 B–E quoted
+  marker magnitudes (0.5/0.87/0.25/0.43/0.75) the drawing never prints (A had none) — dropped.
+  Noted, kept: s2-q048 A (pure RY state) renders with an auto z-axis starting near 0.25, so its
+  bars run below the panel floor — genuine `plot_state_city` output, distractor only.
+  s2-q043 T (π/4, purple) vs S (π/2, magenta) is distinguishable but close; the stem alt states
+  π/2 (color_essential).
+- **Proof weakness ("which drawing" items):** q040, q041, q042, q044, q045, q046 compared
+  circuits / bar tuples / Bloch vectors / markers, and each took the keyed variant from the same
+  function as its target (C/B/D/A/D/E compared with themselves). All six now run the DISPLAYED
+  stem code verbatim, render it and the generator's variants in-process (`svg.hashsalt` fixed,
+  `metadata={"Date": None}`) and require SVG byte-identity plus the structural match; q043
+  (image-to-code) renders the stem code with each option's sequence against the figure render.
+  q042 also asserts `_bloch_multivector_data`; q030 now cross-checks its (0,0,0) pair against
+  `_bloch_multivector_data` and counts 2 sphere axes. q048 already pinned (kept).
+- **Citation failure (18 of 19):** `api/qiskit/visualization` (index) on 13 items,
+  `api/qiskit/quantum_info` on q030, `guides/visualize-results` on q031/q035/q039/q041/q045 and
+  `guides/visualize-circuits` on q040/q044 stated none of the tested facts. Replaced with pages
+  verified to state each fact: Statevector (draw "Valid choices … qsphere …", sample_counts
+  "Return type Counts", sample_memory, seed) q029/q039; plot_bloch_multivector ("Plot a Bloch
+  sphere for each qubit", Pauli expectations, `state` parameter) q030/q033/q034/q035/q042;
+  plot_bloch_vector (three-element `bloch`, coord_type) q033/q034; plot_state_qsphere ("the
+  color represents the phase") q032/q043/q046; bit-ordering ("bit n−1 is the leftmost bit")
+  q031/q041; SGate / RYGate matrices q035/q042/q043/q046; plot_circuit_layout + QuantumCircuit
+  `layout` ("typically set on the output from transpile()") q036; plot_gate_map q037/q038;
+  BitArray `get_int_counts` q039; QuantumCircuit `if_test` ("chainable context manager … else
+  blocks") q040; circuit_drawer `reverse_bits` q044; plot_histogram (number_to_keep "single bar
+  called 'rest'", sort "Defaults to asc", bar_labels) q041/q045; quantum_info `partial_trace`
+  q048. Kept (verified): plot-quantum-states ("psi.draw("qsphere")", "the color represents the
+  phase", "can't show correlations"), qpu-information (quoted), plot_error_map, transpile guide,
+  classical-feedforward guide, plot_state_city.
+- **Docs-reader traps noted:** plot_circuit_layout API lists `VisualizationError` for a missing
+  layout; the executed raise is `QiskitError: 'Circuit has no layout. Perhaps it has not been
+  transpiled.'` (q036's explanation already says QiskitError). plot_state_qsphere API says point
+  size is "proportional to the probability", plot-quantum-states says "thickness … represents
+  the amplitude"; source: `markersize = sqrt(prob)·30` (diameter ∝ |amplitude|) — q046's
+  "sized by magnitude" stands. Docs gap: no page states that plot_error_map shades by
+  calibration; q038 rests on the executed colour arrays.
+- **Survived attacks (executed):** q029 only `draw("qsphere")` returns a Figure (q_sphere
+  ValueError, plot_qsphere ImportError). q033/q034 bmv([0,0,1]) VisualizationError, list of
+  vectors QiskitError "not a square matrix", bv(2-qubit state) silently draws one sphere,
+  spherical ValueError, ptrace → 1 sphere. q035 drawer vectors A (1,0,0), D (0,1,0), C z=0.5,
+  F north. q036 every level 0-3 sets `isa.layout`, `qc.layout` stays None; A/C/E
+  AttributeError. q039 Counts {'00': 999, '11': 1049}. q048 reduced diag(0.25, 0.75).
+- **Difficulty:** all 19 kept.
+- Gates: verify_bank s2 38/38 PROVEN + 1 conceptual, exit 0; audit_meta_patterns s2
+  0 blockers / 0 warnings, 7 low length flags (q030/q036/q037 pre-existing, options untouched;
+  none new); lint_proof_drift 0 findings; render_figures OK for all eight figure qids.

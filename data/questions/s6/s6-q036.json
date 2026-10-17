@@ -47,9 +47,8 @@
       "F": "Commuting-set grouping is an internal detail of how the primitive measures an observable; it happens regardless of layout and is not what `apply_layout` does."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp",
+      "https://quantum.cloud.ibm.com/docs/tutorials/quantum-approximate-optimization-algorithm"
     ]
   },
   "proof": {
@@ -62,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6: options relengthened (was a high-severity length tell, ratio 1.75) | pool wave: +E apply_layout-rescales-coefficients, +F apply_layout-groups-commuting-terms | realism audit 2026-10-01: stem trimmed; added SparsePauliOp API citation (the guides only show the call, never what it does); difficulty 1 kept"
+    "notes": "adversarial s6: options relengthened (was a high-severity length tell, ratio 1.75) | pool wave: +E apply_layout-rescales-coefficients, +F apply_layout-groups-commuting-terms | realism audit 2026-10-01: stem trimmed; added SparsePauliOp API citation (the guides only show the call, never what it does); difficulty 1 kept | adversarial A3 2026-10-16: specify-observables-pauli (no apply_layout) and primitive-input-output (call only) -> QAOA tutorial ('transform the observable defined on virtual qubits to an observable defined on all physical qubits'), SparsePauliOp API kept; executed: ['ZI','XX'] with layout [3,4] on FakeManilaV2 -> 5-wide ['ZIIII','XXIII'], coeffs unchanged (refutes E), no measurement added (D)"
   },
   "display_count": 4
 }

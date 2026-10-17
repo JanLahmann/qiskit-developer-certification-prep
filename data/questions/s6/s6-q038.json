@@ -47,22 +47,35 @@
       "F": "The resolution order runs the other way: the PUB's own precision wins, then the `run()` keyword, and `default_precision` is only the fallback when neither supplies one."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/options-estimator-options",
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-options",
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-input-output"
     ]
   },
   "proof": {
-    "status": "conceptual",
-    "artifact": null
+    "status": "executed",
+    "artifact": "proofs/s6-q038.json"
   },
   "verification": {
-    "mode": "none"
+    "mode": "script",
+    "proof_script": "import inspect, warnings\nimport numpy as np\nfrom qiskit import QuantumCircuit, transpile\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nwarnings.filterwarnings(\"ignore\")\n# Local mode honours default_precision / precision / seed_simulator (local_service keeps exactly these),\n# so precision resolution and the shot count it implies are observable offline.\nbackend = FakeManilaV2()\nqc = QuantumCircuit(1); qc.h(0)                      # |+>: <Z> = 0, single-shot std dev of Z = 1\nisa = transpile(qc, backend, seed_transpiler=1)\nobs = SparsePauliOp(\"Z\").apply_layout(isa.layout)\n\nest = EstimatorV2(mode=backend, options={\"default_precision\": 0.05, \"simulator\": {\"seed_simulator\": 11}})\nres = est.run([(isa, obs, None, 0.02), (isa, obs)], precision=0.03).result()\npub_meta, run_meta = res[0].metadata, res[1].metadata\nfallback = est.run([(isa, obs)]).result()[0]\nfb_meta = fallback.metadata\nstds = {m[\"target_precision\"]: float(np.asarray(r.data.stds)) for m, r in\n        [(pub_meta, res[0]), (run_meta, res[1]), (fb_meta, fallback)]}\n\nevidence, proven = {}, []\n# A: precision is the target standard error -> the reported standard error lands on it\na_ok = all(abs(s - p) / p < 0.1 for p, s in stds.items())\nevidence[\"A\"] = (f\"single-shot std of Z on |+> is 1; reported stds per target precision: \"\n                 f\"{ {p: round(s, 4) for p, s in stds.items()} } (each within 10% of its target: {a_ok})\")\nif a_ok:\n    proven.append(\"A\")\n# B: a larger value requests a more accurate result?\nb_ok = fb_meta[\"shots\"] > pub_meta[\"shots\"]\nevidence[\"B\"] = (f\"precision 0.05 used {fb_meta['shots']} shots, 0.02 used {pub_meta['shots']}: the larger value is the \"\n                 f\"looser, cheaper request\")\nif b_ok:\n    proven.append(\"B\")\n# C: shots scale as 1/precision^2\nc_ok = all(abs(m[\"shots\"] - 1 / m[\"target_precision\"] ** 2) <= 1 for m in (pub_meta, run_meta, fb_meta))\nevidence[\"C\"] = (f\"shots per target precision: 0.02 -> {pub_meta['shots']}, 0.03 -> {run_meta['shots']}, \"\n                 f\"0.05 -> {fb_meta['shots']} (= ceil(1/precision^2): {c_ok})\")\nif c_ok:\n    proven.append(\"C\")\n# D: keyword `shots` on run()\ntry:\n    est.run([(isa, obs)], shots=100)\n    evidence[\"D\"] = \"run(..., shots=100) was accepted\"\n    proven.append(\"D\")\nexcept TypeError as e:\n    evidence[\"D\"] = f\"TypeError: {e}; installed signature run{inspect.signature(EstimatorV2.run)}\"\n# E: no PUB / run() precision -> falls back to default_precision\ne_ok = fb_meta[\"target_precision\"] == 0.05\nevidence[\"E\"] = (f\"PUB without precision, run() without precision -> target_precision {fb_meta['target_precision']} \"\n                 f\"(options.default_precision = 0.05)\")\nif e_ok:\n    proven.append(\"E\")\n# F: does default_precision override a PUB's own precision?\nf_ok = pub_meta[\"target_precision\"] == 0.05\nevidence[\"F\"] = (f\"PUB precision 0.02 with run(precision=0.03) and default_precision 0.05 -> target_precision \"\n                 f\"{pub_meta['target_precision']}; the PUB without one got {run_meta['target_precision']} from run(): \"\n                 f\"PUB beats run() beats default_precision\")\nif f_ok:\n    proven.append(\"F\")\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence,\n              \"observed\": {\"pub\": pub_meta[\"target_precision\"], \"run\": run_meta[\"target_precision\"],\n                           \"fallback\": fb_meta[\"target_precision\"],\n                           \"shots\": [pub_meta[\"shots\"], run_meta[\"shots\"], fb_meta[\"shots\"]]}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6: hedge added to B and D extended (hedge + length tells) | pool wave: +F default_precision-overrides-the-PUB | realism audit 2026-10-01: stem unchanged (10 words); difficulty 3->2 (three recalled facts, easy refutations)"
+    "notes": "adversarial s6: hedge added to B and D extended (hedge + length tells) | pool wave: +F default_precision-overrides-the-PUB | realism audit 2026-10-01: stem unchanged (10 words); difficulty 3->2 (three recalled facts, easy refutations) | adversarial A3 2026-10-16: conceptual -> executed: runtime EstimatorV2 local mode (precision/default_precision are honoured there) shows PUB 0.02 > run() 0.03 > default 0.05 resolution, shots = ceil(1/p^2) (2500/1112/400), reported stds on |+> Z equal to the target (A), run(shots=) TypeError; + EstimatorOptions API ('used for all PUBs in the run() call that do not specify their own') and estimator-input-output (sigma/sqrt(N)) citations"
   },
-  "display_count": 5
+  "display_count": 5,
+  "freshness": {
+    "verified_against": {
+      "qiskit": "2.5.0",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.48.0",
+      "numpy": "2.5.1"
+    },
+    "verified_on": "2026-10-17",
+    "stale": false
+  }
 }

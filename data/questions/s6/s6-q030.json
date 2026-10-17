@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E [[o]] per-observable nesting, +F single-row [[o1,o2,o3]] nesting | realism audit 2026-10-01: stem trimmed ('list of three observables' gloss removed, code shows it); difficulty 2->1"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E [[o]] per-observable nesting, +F single-row [[o1,o2,o3]] nesting | realism audit 2026-10-01: stem trimmed ('list of three observables' gloss removed, code shows it); difficulty 2->1 | adversarial A3 2026-10-16: survived, no change"
   },
   "freshness": {
     "verified_against": {

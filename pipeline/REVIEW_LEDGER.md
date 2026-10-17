@@ -3651,3 +3651,74 @@ predict-output block executed verbatim, every cited page fetched as text and gre
 - Gates: verify_bank s6 32/32 PROVEN + 13 conceptual, 0 failures; audit_meta_patterns s6 0 blockers /
   0 warnings (low length_tell on q013/q020/q021 pre-existing, options untouched); lint_proof_drift 0
   findings.
+
+## Adversarial review A3 — s6b (2026-10-16)
+
+Scope: s6-q028..q042, s6-q052..q054 (18; now 12 executed, 6 conceptual: q028/q029/q032/q034/q036/
+q039 -- q038 moved from conceptual to executed; 6 figure items: q040 option images,
+q041/q042/q052/q053/q054 stem figures). Every option re-run in independent scratch scripts (pinned venv, qiskit 2.5.0 / runtime
+0.48.0; runtime claims on `EstimatorV2(mode=FakeManilaV2())` local mode), every displayed block run,
+every cited page fetched as text and grepped, all figure items rendered, rasterized and inspected.
+**0 key changes, 0 kills.** 14 edited, 4 survived unchanged (q028, q029, q030, q039).
+
+- **Second answer closed (s6-q042):** A ("a single `SparsePauliOp("Z")` with a (2, 3) parameter
+  array") reproduces the drawn numbers exactly with a second row (pi/3, 0, pi/3): executed (2, 3)
+  `[[0.866, 0, -0.866], [0.5, 1, 0.5]]`; the proof had only tried a strawman row `[0, pi/4, pi/2]`.
+  A is now the tiled-angles zip (`[Z, X]` with the angles repeated per observable: `ValueError ...
+  shapes (2,) and (2, 3) are not broadcastable`). D re-run: `[[Z, X]]` with (3, 1) rejected
+  ((1, 2) vs (3,)); the only (3, 2) route is a (3, 1, 1) array, not an option.
+- **Distractor values no misconception produces (s6-q033):** E's rationale said a 1-based reading of
+  `[2, 0]` gives Z on qubits {0, 3}; it gives {1, 3} (= B, `ZIZI`); F's "span" reading cannot give
+  {1, 2}. With a symmetric `ZZ` all six two-Z labels were in play, so E/F are now the two real
+  layout-list misconceptions ("one entry per target qubit", "index 2 does not exist on the 2-qubit
+  observable"), executed as non-raising with the true boundaries recorded (`[2]` -> `QiskitError
+  Number of qargs does not match (1 != 2)`; `[4, 0]` -> `indices outside the number of qubits`).
+  B/C rationales now name big-endian position reading / right-padding.
+- **Partly-true distractor (s6-q034):** E "typically noisier" is partly true of mitigated
+  estimators (and DE's claim that the service still meets the requested precision is unverifiable)
+  -> E "typically less accurate", contradicted verbatim by estimator-noise-management ("Higher levels
+  generate more accurate results, at the expense of longer processing times").
+- **Displayed code vs figure (s6-q041):** the stem code drew no axis labels while the figure had
+  them; code gains `plt.xlabel/ylabel`, the generator now renders the DISPLAYED code verbatim with
+  the keyed line inserted (asserting TARGET), and the proof runs the displayed program with each
+  option line and reads marker heights and error-bar half-lengths back off the drawn figure. Local
+  mode honours `default_precision` + `simulator.seed_simulator`: 0.1 -> 100 shots/point, stds
+  0.039-0.095 (match); 0.01 -> 10000 shots, stds 0.002-0.009 (DC now quotes these).
+- **Figure proofs off the displayed code:** s6-q040 compared the generator's own series with
+  itself -> now execs the displayed sweep and requires SVG byte-identity (fixed hashsalt, no Date)
+  plus point match; only B. s6-q052 now substitutes each option line into the displayed code and
+  reads the plotted markers back (only XX; YY = -sin, IZ = cos, ZZ = 1, IX = 0). Visual tells: q040
+  keyed U-curve is not the odd one out (D is its mirror, E shares both endpoints); all alts match.
+- **Proofs on the wrong object / false evidence:** s6-q031 proof validated a bare
+  `EstimatorOptions` -> now the displayed lines on `EstimatorV2(mode=...)`, F via the real
+  constructor `options=`, plus the installed validator line
+  `make_constraint_validator("default_precision", gt=0)`; DB notes 1000 is accepted (stored 1000.0,
+  a std error, not shots). s6-q037 F evidence called precision 0.01 "tighter" than the 0.0 default
+  -> now 0.1 -> 0.01, stds 0.0 both (installed source: `stds = np.zeros_like(...)`, precision only
+  perturbs `evs`).
+- **Conceptual -> executed (s6-q038):** local mode shows PUB 0.02 > run() 0.03 > default 0.05
+  resolution, shots = ceil(1/p^2) (2500/1112/400), reported stds on |+> Z equal to the target (A),
+  `run(shots=)` TypeError.
+- **Docs-reader traps answered:** s6-q032 DE (PEA also learns a layer noise model, so "PEC needs a
+  learned noise model" is not the difference); s6-q035 DE (SparsePauliOp API "Raises QiskitError - If
+  the number of qubits is incompatible with the indices"); s6-q040 DC (RY matrix's cos(theta/2) entry
+  is the amplitude, not <Z>).
+- **Citation failures replaced (fetched, quotes grepped):** specify-observables-pauli was cited for
+  apply_layout / label order / broadcasting it never states (q033, q036, q040, q042, q052, q053) ->
+  SparsePauliOp API, Pauli API ("qubit-0 corresponds to the right-most Pauli character"), QAOA
+  tutorial (q036: "transform the observable defined on virtual qubits to an observable defined on all
+  physical qubits"), RYGate API (q040, q052), primitive-input-output; q037 + StatevectorEstimator API
+  ("the error is 0 for this StatevectorEstimator"); q031/q038/q041 + EstimatorOptions API; q038 +
+  estimator-input-output (sigma/sqrt(N)); q054 + variational-algorithms course ("Average value of a
+  measurement ... weighted by the probability of the outcome"); q035 + SparsePauliOp API.
+- **Code not runnable as displayed:** q031 comment defines `backend`; q042 comment marks
+  `observables`/`values` as the blanks.
+- **Survived attacks (executed):** q028 level 3 -> `ValidationError ... must be <=2`, explicit
+  `measure_mitigation=False` at level 1 kept; q029 installed docstrings (DD enable default False,
+  measure_mitigation True at levels 1/2); q030 shapes `()`, `(1,)`, `(3, 1)`, `(1, 3)` for the
+  distractor nestings; q039 `enabled` -> `no_such_attribute`, `sequence_type` leaves `enable` Unset;
+  q053 prints `IZXII`; q054 0.616 (0.808 / 0.106 / 0.380 models).
+- **Difficulty:** all 18 kept.
+- Gates: verify_bank s6 33/33 PROVEN + 12 conceptual, 0 failures, exit 0; audit_meta_patterns s6
+  0 blockers / 0 warnings (low length_tell on q031/q032/q034/q037 are variant-level and pre-existing;
+  q034's edit lengthened a distractor, so it eased); lint_proof_drift 0 findings.

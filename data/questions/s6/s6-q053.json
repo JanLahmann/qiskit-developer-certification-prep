@@ -46,7 +46,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp",
-      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Pauli"
     ]
   },
   "proof": {
@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-10-02",
     "model": "claude-opus (figure wave, s2/s5-s8)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Figure wave add (stem figure): reading the layout off a transpiled drawing's wire labels and mapping an observable with apply_layout. Generator and proof build isa with the same pass manager and assert the LAYOUT literal; the proof executes the displayed code and each misconception model (swapped label, apply_layout(None, 5), reversed output)."
+    "notes": "Figure wave add (stem figure): reading the layout off a transpiled drawing's wire labels and mapping an observable with apply_layout. Generator and proof build isa with the same pass manager and assert the LAYOUT literal; the proof executes the displayed code and each misconception model (swapped label, apply_layout(None, 5), reversed output). | adversarial A3 2026-10-16: re-run: prints IZXII (layout [2, 3] seeded, no routing on Manila's 2-3 edge); A/B/C misconception models executed; rendered + rasterized, alt matches wire labels; specify-observables-pauli (no apply_layout, no label order) -> Pauli API ('qubit-0 corresponds to the right-most Pauli character'); SparsePauliOp API kept (TranspileLayout -> output-circuit width)"
   },
   "freshness": {
     "verified_against": {

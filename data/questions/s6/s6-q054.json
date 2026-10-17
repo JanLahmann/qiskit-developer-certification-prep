@@ -46,6 +46,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design/variational-algorithms",
       "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
     ]
   },
@@ -60,9 +61,9 @@
   "provenance": {
     "generated": "2026-10-02",
     "model": "claude-opus (figure wave, s2/s5-s8)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Figure wave add (stem figure): Estimator theory — <ZZ> as the parity-weighted mean of measured outcomes. Counts from a seeded StatevectorSampler run, asserted in generator and proof; the proof reads the bars back off plot_histogram, computes the parity mean, cross-checks BitArray.expectation_values('ZZ'), and evaluates each misconception model."
+    "notes": "Figure wave add (stem figure): Estimator theory — <ZZ> as the parity-weighted mean of measured outcomes. Counts from a seeded StatevectorSampler run, asserted in generator and proof; the proof reads the bars back off plot_histogram, computes the parity mean, cross-checks BitArray.expectation_values('ZZ'), and evaluates each misconception model. | adversarial A3 2026-10-16: arithmetic re-checked (616/1000; 0.808, 0.28 x 0.38 = 0.106, <IZ> 690-310 = 0.380), seeded counts re-asserted, rendered + rasterized (Count axis, 569/71/121/239 as the alt says); + variational-algorithms course citation (expectation value = 'Average value of a measurement ... weighted by the probability of the outcome') since specify-observables-pauli only states that Z-type Paulis are diagonal in the measured basis"
   },
   "freshness": {
     "verified_against": {

@@ -5,77 +5,92 @@
       "B"
     ],
     "evidence": {
-      "A": "curve starts at +0.00, passes +1.00 and +0.00, ends at -0.00 (min -1.00, max +1.00); the stem code plots a curve that starts at +1.00, passes +0.00 and -1.00, ends at +1.00 (min -1.00, max +1.00) -> match=False",
-      "B": "curve starts at +1.00, passes +0.00 and -1.00, ends at +1.00 (min -1.00, max +1.00); the stem code plots a curve that starts at +1.00, passes +0.00 and -1.00, ends at +1.00 (min -1.00, max +1.00) -> match=True",
-      "C": "curve starts at +1.00, passes +0.71 and +0.00, ends at -1.00 (min -1.00, max +1.00); the stem code plots a curve that starts at +1.00, passes +0.00 and -1.00, ends at +1.00 (min -1.00, max +1.00) -> match=False",
-      "D": "curve starts at -1.00, passes -0.00 and +1.00, ends at -1.00 (min -1.00, max +1.00); the stem code plots a curve that starts at +1.00, passes +0.00 and -1.00, ends at +1.00 (min -1.00, max +1.00) -> match=False",
-      "E": "curve starts at +1.00, passes -1.00 and +1.00, ends at +1.00 (min -1.00, max +1.00); the stem code plots a curve that starts at +1.00, passes +0.00 and -1.00, ends at +1.00 (min -1.00, max +1.00) -> match=False"
+      "A": "figure curve starts +0.00, middle +0.00, ends -0.00, min -1.00, max +1.00; the displayed code draws a curve that starts +1.00, middle -1.00, ends +1.00, min -1.00, max +1.00; rendered SVG byte-identical: False -> match=False",
+      "B": "figure curve starts +1.00, middle -1.00, ends +1.00, min -1.00, max +1.00; the displayed code draws a curve that starts +1.00, middle -1.00, ends +1.00, min -1.00, max +1.00; rendered SVG byte-identical: True -> match=True",
+      "C": "figure curve starts +1.00, middle +0.00, ends -1.00, min -1.00, max +1.00; the displayed code draws a curve that starts +1.00, middle -1.00, ends +1.00, min -1.00, max +1.00; rendered SVG byte-identical: False -> match=False",
+      "D": "figure curve starts -1.00, middle +1.00, ends -1.00, min -1.00, max +1.00; the displayed code draws a curve that starts +1.00, middle -1.00, ends +1.00, min -1.00, max +1.00; rendered SVG byte-identical: False -> match=False",
+      "E": "figure curve starts +1.00, middle +1.00, ends +1.00, min -1.00, max +1.00; the displayed code draws a curve that starts +1.00, middle -1.00, ends +1.00, min -1.00, max +1.00; rendered SVG byte-identical: False -> match=False"
     },
     "observed": {
-      "A": [
-        0.0,
-        0.707107,
-        1.0,
-        0.707107,
-        0.0,
-        -0.707107,
-        -1.0,
-        -0.707107,
-        -0.0
-      ],
-      "B": [
-        1.0,
-        0.707107,
-        0.0,
-        -0.707107,
-        -1.0,
-        -0.707107,
-        -0.0,
-        0.707107,
-        1.0
-      ],
-      "C": [
-        1.0,
-        0.92388,
-        0.707107,
-        0.382683,
-        0.0,
-        -0.382683,
-        -0.707107,
-        -0.92388,
-        -1.0
-      ],
-      "D": [
-        -1.0,
-        -0.707107,
-        -0.0,
-        0.707107,
-        1.0,
-        0.707107,
-        0.0,
-        -0.707107,
-        -1.0
-      ],
-      "E": [
-        1.0,
-        0.0,
-        -1.0,
-        -0.0,
-        1.0,
-        0.0,
-        -1.0,
-        -0.0,
-        1.0
-      ],
+      "A": {
+        "points": [
+          0.0,
+          0.71,
+          1.0,
+          0.71,
+          0.0,
+          -0.71,
+          -1.0,
+          -0.71,
+          -0.0
+        ],
+        "svg_identical": false
+      },
+      "B": {
+        "points": [
+          1.0,
+          0.71,
+          0.0,
+          -0.71,
+          -1.0,
+          -0.71,
+          -0.0,
+          0.71,
+          1.0
+        ],
+        "svg_identical": true
+      },
+      "C": {
+        "points": [
+          1.0,
+          0.92,
+          0.71,
+          0.38,
+          0.0,
+          -0.38,
+          -0.71,
+          -0.92,
+          -1.0
+        ],
+        "svg_identical": false
+      },
+      "D": {
+        "points": [
+          -1.0,
+          -0.71,
+          -0.0,
+          0.71,
+          1.0,
+          0.71,
+          0.0,
+          -0.71,
+          -1.0
+        ],
+        "svg_identical": false
+      },
+      "E": {
+        "points": [
+          1.0,
+          0.0,
+          -1.0,
+          -0.0,
+          1.0,
+          0.0,
+          -1.0,
+          -0.0,
+          1.0
+        ],
+        "svg_identical": false
+      },
       "stem": [
         1.0,
-        0.707107,
+        0.71,
         0.0,
-        -0.707107,
+        -0.71,
         -1.0,
-        -0.707107,
+        -0.71,
         -0.0,
-        0.707107,
+        0.71,
         1.0
       ]
     }
@@ -86,9 +101,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.17,
+  "wall_seconds": 1.71,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"curve starts at +0.00, passes +1.00 and +0.00, ends at -0.00 (min -1.00, max +1.00); the stem code plots a curve that starts at +1.00, passes +0.00 and -1.00, ends at +1.00 (min -1.00, max +1.00) -> match=False\", \"B\": \"curve starts at +1.00, passes +0.00 and -1.00, ends at +1.00 (min -1.00, max +1.00); the stem code plots a curve that starts at +1.00, passes +0.00 and -1.00, ends at +1.00 (min -1.00, max +1.00) -> match=True\", \"C\": \"curve starts at +1.00, passes +0.71 and +0.00, ends at -1.00 (min -1.00, max +1.00); the stem code plots a curve that starts at +1.00, passes +0.00 and -1.00, ends at +1.00 (min -1.00, max +1.00) -> match=False\", \"D\": \"curve starts at -1.00, passes -0.00 and +1.00, ends at -1.00 (min -1.00, max +1.00); the stem code plots a curve that starts at +1.00, passes +0.00 and -1.00, ends at +1.00 (min -1.00, max +1.00) -> match=False\", \"E\": \"curve starts at +1.00, passes -1.00 and +1.00, ends at +1.00 (min -1.00, max +1.00); the stem code plots a curve that starts at +1.00, passes +0.00 and -1.00, ends at +1.00 (min -1.00, max +1.00) -> match=False\"}, \"observed\": {\"A\": [0.0, 0.707107, 1.0, 0.707107, 0.0, -0.707107, -1.0, -0.707107, -0.0], \"B\": [1.0, 0.707107, 0.0, -0.707107, -1.0, -0.707107, -0.0, 0.707107, 1.0], \"C\": [1.0, 0.92388, 0.707107, 0.382683, 0.0, -0.382683, -0.707107, -0.92388, -1.0], \"D\": [-1.0, -0.707107, -0.0, 0.707107, 1.0, 0.707107, 0.0, -0.707107, -1.0], \"E\": [1.0, 0.0, -1.0, -0.0, 1.0, 0.0, -1.0, -0.0, 1.0], \"stem\": [1.0, 0.707107, 0.0, -0.707107, -1.0, -0.707107, -0.0, 0.707107, 1.0]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"figure curve starts +0.00, middle +0.00, ends -0.00, min -1.00, max +1.00; the displayed code draws a curve that starts +1.00, middle -1.00, ends +1.00, min -1.00, max +1.00; rendered SVG byte-identical: False -> match=False\", \"B\": \"figure curve starts +1.00, middle -1.00, ends +1.00, min -1.00, max +1.00; the displayed code draws a curve that starts +1.00, middle -1.00, ends +1.00, min -1.00, max +1.00; rendered SVG byte-identical: True -> match=True\", \"C\": \"figure curve starts +1.00, middle +0.00, ends -1.00, min -1.00, max +1.00; the displayed code draws a curve that starts +1.00, middle -1.00, ends +1.00, min -1.00, max +1.00; rendered SVG byte-identical: False -> match=False\", \"D\": \"figure curve starts -1.00, middle +1.00, ends -1.00, min -1.00, max +1.00; the displayed code draws a curve that starts +1.00, middle -1.00, ends +1.00, min -1.00, max +1.00; rendered SVG byte-identical: False -> match=False\", \"E\": \"figure curve starts +1.00, middle +1.00, ends +1.00, min -1.00, max +1.00; the displayed code draws a curve that starts +1.00, middle -1.00, ends +1.00, min -1.00, max +1.00; rendered SVG byte-identical: False -> match=False\"}, \"observed\": {\"A\": {\"points\": [0.0, 0.71, 1.0, 0.71, 0.0, -0.71, -1.0, -0.71, -0.0], \"svg_identical\": false}, \"B\": {\"points\": [1.0, 0.71, 0.0, -0.71, -1.0, -0.71, -0.0, 0.71, 1.0], \"svg_identical\": true}, \"C\": {\"points\": [1.0, 0.92, 0.71, 0.38, 0.0, -0.38, -0.71, -0.92, -1.0], \"svg_identical\": false}, \"D\": {\"points\": [-1.0, -0.71, -0.0, 0.71, 1.0, 0.71, 0.0, -0.71, -1.0], \"svg_identical\": false}, \"E\": {\"points\": [1.0, 0.0, -1.0, -0.0, 1.0, 0.0, -1.0, -0.0, 1.0], \"svg_identical\": false}, \"stem\": [1.0, 0.71, 0.0, -0.71, -1.0, -0.71, -0.0, 0.71, 1.0]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

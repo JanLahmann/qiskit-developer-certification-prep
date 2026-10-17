@@ -33,7 +33,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.38,
+  "wall_seconds": 1.79,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"result[0].data.evs = 0.879883; ideal <ZZ> = 1.0 -> the expectation value\", \"B\": \"result[0].data.stds = 0.007425; ideal <ZZ> = 1.0 -> not the expectation value (an uncertainty, not the estimate)\", \"C\": \"result[0].data.meas.get_counts() raises AttributeError: 'DataBin' object has no attribute 'meas'\", \"D\": \"result[0].quasi_dists raises AttributeError: 'PubResult' object has no attribute 'quasi_dists'\", \"E\": \"result[0].data.expectation_values raises AttributeError: 'DataBin' object has no attribute 'expectation_values'\", \"F\": \"result[0].metadata[\\\"evs\\\"] raises KeyError: 'evs'\"}, \"observed\": {\"ideal_ZZ\": 0.9999999999999998, \"databin_fields\": [\"evs\", \"stds\"], \"pub_metadata_keys\": [\"circuit_metadata\", \"shots\", \"target_precision\"], \"A\": 0.8798828125, \"B\": 0.007424855261292639}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

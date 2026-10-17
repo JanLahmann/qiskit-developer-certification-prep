@@ -27,28 +27,28 @@
     },
     {
       "key": "E",
-      "text": "`ZIIZ`"
+      "text": "It raises an error, because the layout list needs one entry for each of the 4 target qubits."
     },
     {
       "key": "F",
-      "text": "`IZZI`"
+      "text": "It raises an error, because index 2 does not exist on the 2-qubit `ZZ` observable."
     }
   ],
   "answer": [
     "A"
   ],
   "explanation": {
-    "correct": "`apply_layout([2, 0], num_qubits=4)` places the observable's logical qubit 0 on physical qubit 2 and logical qubit 1 on physical qubit 0, padding to 4 qubits. In little-endian labels (right-most char = qubit 0), Z sits at positions 2 and 0, giving 'IZIZ'.",
+    "correct": "`apply_layout([2, 0], num_qubits=4)` sends the observable's qubit 0 to qubit 2 and its qubit 1 to qubit 0, padding with identities to 4 qubits. In Qiskit labels the right-most character is qubit 0, so Z on qubits 2 and 0 prints as 'IZIZ'.",
     "distractors": {
-      "B": "'ZIZI' puts the Z operators at physical qubits 3 and 1 — shifted by one from the requested [2, 0].",
-      "C": "'ZZII' keeps the two Z's adjacent on the highest qubits (3 and 2), ignoring the layout list entirely.",
+      "B": "'ZIZI' puts the Z operators on qubits 3 and 1: it reads 2 and 0 as character positions counted from the left of the label (big-endian), but qubit 0 is the right-most character.",
+      "C": "'ZZII' ignores the layout and pads by appending I characters on the right of the label, which would make the two Z's the highest qubits (3 and 2).",
       "D": "'IIZZ' is the observable padded to 4 qubits WITHOUT relocation (Z's still on qubits 1 and 0) — this is what you get if apply_layout is skipped.",
-      "E": "This places the operators on physical qubits 3 and 0, which is what you get by reading the layout list as 1-based. `apply_layout` indices are 0-based.",
-      "F": "This places the operators on qubits 1 and 2, as if the list `[2, 0]` described a span of qubits rather than an explicit destination for each observable qubit."
+      "E": "The layout list has one entry per qubit of the OBSERVABLE (here 2), giving each one's destination; `num_qubits` sets the target width. A one-entry list is what raises ('Number of qargs does not match').",
+      "F": "Layout indices are destinations in the expanded 4-qubit register, so 2 is valid; only an index of 4 or more is rejected ('indices outside the number of qubits')."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli",
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Pauli"
     ]
   },
   "proof": {
@@ -57,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit.quantum_info import SparsePauliOp\n\n# Map the 2-qubit observable ZZ onto physical qubits [2, 0] of a 4-qubit register.\nresult = SparsePauliOp(\"ZZ\").apply_layout([2, 0], num_qubits=4)\nobserved = str(result.paulis[0])\n\ncandidates = {\"A\": \"IZIZ\", \"B\": \"ZIZI\", \"C\": \"ZZII\", \"D\": \"IIZZ\", \"E\": \"ZIIZ\", \"F\": \"IZZI\"}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = (observed == val)\n    evidence[k] = f\"SparsePauliOp('ZZ').apply_layout([2,0], num_qubits=4) -> '{observed}'; option claims '{val}' -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"label\": observed}})\n"
+    "proof_script": "import contextlib, io\nfrom qiskit.quantum_info import SparsePauliOp\n\n# Run the DISPLAYED code verbatim and capture what it prints.\nDISPLAYED = '''from qiskit.quantum_info import SparsePauliOp\n\nobs = SparsePauliOp(\"ZZ\").apply_layout([2, 0], num_qubits=4)\nprint(obs.paulis[0])\n'''\nbuf = io.StringIO()\nraised = None\ntry:\n    with contextlib.redirect_stdout(buf):\n        exec(DISPLAYED, {})\nexcept Exception as e:\n    raised = f\"{type(e).__name__}: {e}\"\nprinted = buf.getvalue().strip()\n\n# Direction of the mapping (ZZ is symmetric, so pin it with an asymmetric observable):\n# 'ZX' has X on qubit 0, Z on qubit 1; layout [2, 0] sends qubit 0 -> 2 and qubit 1 -> 0.\ndirection = str(SparsePauliOp(\"ZX\").apply_layout([2, 0], num_qubits=4).paulis[0])\n\n# Where the real error boundaries are (for the two \"it raises\" distractors)\ndef err(fn):\n    try:\n        return f\"no error: {fn().paulis[0]}\"\n    except Exception as e:\n        return f\"{type(e).__name__}: {e}\"\nshort_layout = err(lambda: SparsePauliOp(\"ZZ\").apply_layout([2], num_qubits=4))\nout_of_range = err(lambda: SparsePauliOp(\"ZZ\").apply_layout([4, 0], num_qubits=4))\n\nlabels = {\"A\": \"IZIZ\", \"B\": \"ZIZI\", \"C\": \"ZZII\", \"D\": \"IIZZ\"}\nevidence, proven = {}, []\nfor k, val in labels.items():\n    m = (raised is None and printed == val)\n    evidence[k] = f\"displayed code prints '{printed}'; option claims '{val}' -> match={m}\"\n    if m:\n        proven.append(k)\n\n# E: claims the 2-entry layout list must have one entry per qubit of the 4-qubit target\nif raised is not None:\n    proven.append(\"E\")\nevidence[\"E\"] = (f\"false: the 2-entry layout ran without error (printed '{printed}'); the list needs one entry per \"\n                 f\"OBSERVABLE qubit -- a 1-entry list raises {short_layout}\")\n# F: claims index 2 is out of range for the 2-qubit observable\nif raised is not None:\n    proven.append(\"F\")\nevidence[\"F\"] = (f\"false: index 2 was accepted (printed '{printed}'); indices are checked against num_qubits=4 -- \"\n                 f\"[4, 0] raises {out_of_range}\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"printed\": printed, \"raised\": raised, \"ZX_layout_2_0\": direction,\n                           \"one_entry_layout\": short_layout, \"index_4_layout\": out_of_range}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E 1-based layout indices, +F layout read as a span | realism audit 2026-10-01: stem trimmed; difficulty 2 kept (layout mapping + little-endian label)"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E 1-based layout indices, +F layout read as a span | realism audit 2026-10-01: stem trimmed; difficulty 2 kept (layout mapping + little-endian label) | adversarial A3 2026-10-16: E/F rationales were false (a 1-based reading of [2, 0] gives qubits {1,3} = B, not {0,3}; 'span' cannot give {1,2}) -> E/F now the two real layout-list misconceptions (one entry per target qubit; index bounded by the observable), both executed as non-raising with the true error boundaries recorded; B/C rationales name big-endian / right-padding; proof runs the displayed code verbatim; specify-observables-pauli (no apply_layout) + primitive-input-output -> SparsePauliOp API + Pauli API"
   },
   "freshness": {
     "verified_against": {

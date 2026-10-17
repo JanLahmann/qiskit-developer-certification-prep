@@ -22,7 +22,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.24,
+  "wall_seconds": 1.19,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"estimator.options.resilience_level = 3 raises ValidationError: Value error, EstimatorOptions.resilience_level must be <=2, but is ==3. [type=value_error, input_value=3, input_type=int\", \"B\": \"estimator.options.resilience_level = 5 raises ValidationError: Value error, EstimatorOptions.resilience_level must be <=2, but is ==5. [type=value_error, input_value=5, input_type=int\", \"C\": \"estimator.options.resilience_level = -1 raises ValidationError: Value error, EstimatorOptions.resilience_level must be >=0, but is ==-1. [type=value_error, input_value=-1, input_type=i\", \"D\": \"estimator.options.resilience_level = 2 accepted (stored 2)\", \"E\": \"estimator.options.resilience_level = 4 raises ValidationError: Value error, EstimatorOptions.resilience_level must be <=2, but is ==4. [type=value_error, input_value=4, input_type=int\", \"F\": \"estimator.options.resilience_level = 1.5 raises ValidationError: Input should be an instance of UnsetType [type=is_instance_of, input_value=1.5, input_type=float]\"}, \"observed\": {\"D\": 2}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

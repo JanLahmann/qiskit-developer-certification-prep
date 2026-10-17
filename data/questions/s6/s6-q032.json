@@ -43,7 +43,7 @@
       "A": "This reverses the guarantees: PEC (not ZNE) is the unbiased method, and PEC is generally more expensive, not cheaper.",
       "B": "They do not have the same cost, and ZNE is not guaranteed unbiased — only PEC provides an unbiased estimate.",
       "C": "Both PEC and ZNE are error-mitigation techniques that post-process an ensemble of executed circuits; neither is a pre-execution suppression method like dynamical decoupling.",
-      "E": "PEC does require a learned noise model, but that is not the distinguishing guarantee: ZNE's extrapolation is a fit whose residual bias depends on the model chosen, so it is not unbiased.",
+      "E": "PEC does require a learned noise model, but so does ZNE when it uses the PEA amplifier (the guide's PEA starts by learning the twirled noise model of each layer), so that is not the distinguishing point. The real difference is the guarantee: ZNE's extrapolation 'is not guaranteed to produce an unbiased result', PEC's estimate is unbiased.",
       "F": "The overhead comparison is backwards. PEC buys its unbiasedness with a sampling overhead that grows with circuit size, while ZNE's amplified runs are the cheaper option."
     },
     "citations": [
@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6: options relengthened (was a high-severity length tell, ratio 1.59) | pool wave: +E noise-model-is-the-difference, +F inverted overhead comparison | realism audit 2026-10-01: stem trimmed (acronym expansions dropped, options use the acronyms); difficulty 3->2 (two recalled facts: bias guarantee + overhead)"
+    "notes": "adversarial s6: options relengthened (was a high-severity length tell, ratio 1.59) | pool wave: +E noise-model-is-the-difference, +F inverted overhead comparison | realism audit 2026-10-01: stem trimmed (acronym expansions dropped, options use the acronyms); difficulty 3->2 (two recalled facts: bias guarantee + overhead) | adversarial A3 2026-10-16: DE answers the docs-reader trap (noise learning is shared with ZNE's PEA amplifier, quoted from the cited guide); key and citations verified (ZNE 'not guaranteed to produce an unbiased result', PEC 'unbiased ... greater overhead')"
   },
   "display_count": 4
 }

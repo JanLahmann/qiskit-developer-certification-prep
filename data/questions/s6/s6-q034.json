@@ -27,7 +27,7 @@
     },
     {
       "key": "E",
-      "text": "Expectation values that are typically noisier, because mitigation averages over fewer shots."
+      "text": "Expectation values that are typically less accurate, because mitigation averages over fewer shots."
     },
     {
       "key": "F",
@@ -43,7 +43,7 @@
       "A": "Mitigation adds overhead (extra circuits and shots), so higher levels are slower, not faster.",
       "B": "Resilience level controls error mitigation, not qubit selection, and it clearly changes runtime.",
       "D": "Gate-count reduction is the transpiler's job (optimization_level); resilience level does not simplify the circuit.",
-      "E": "This confuses bias with variance: mitigation adds circuits rather than taking shots away, and the estimator still meets the requested precision — it just spends more QPU time doing so.",
+      "E": "Mitigation does not take shots away; it adds circuits (for example ZNE's noise-amplified copies), and its purpose is lower bias: the guide states that higher levels 'generate more accurate results, at the expense of longer processing times'.",
       "F": "Nothing is rejected: the resilience level configures how the estimator spends its budget, and the Estimator sizes its sampling from `precision`, not from a shot count you must raise by hand."
     },
     "citations": [
@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6: hedge added to distractor A (absolute-wording tell) | pool wave: +E mitigation-adds-noise (bias vs variance), +F level-2-requires-manual-shots | realism audit 2026-10-01: stem trimmed; difficulty 3->1 (the documented cost/accuracy trade-off is one recalled fact)"
+    "notes": "adversarial s6: hedge added to distractor A (absolute-wording tell) | pool wave: +E mitigation-adds-noise (bias vs variance), +F level-2-requires-manual-shots | realism audit 2026-10-01: stem trimmed; difficulty 3->1 (the documented cost/accuracy trade-off is one recalled fact) | adversarial A3 2026-10-16: E 'typically noisier' was partly true (mitigated estimators do carry extra statistical spread, and DE's claim that the service still meets the requested precision is unverifiable) -> E now 'less accurate', which the cited guide contradicts verbatim; DE rewritten with the quote"
   },
   "display_count": 4
 }

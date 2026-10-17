@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6: distractors A/C reworded to carry the same 'error mitigation'/'default' vocabulary as the key (stem-echo tell) | pool wave: +E DD-on-by-default, +F mitigation-requires-a-session | realism audit 2026-10-01: stem trimmed; difficulty 1 kept"
+    "notes": "adversarial s6: distractors A/C reworded to carry the same 'error mitigation'/'default' vocabulary as the key (stem-echo tell) | pool wave: +E DD-on-by-default, +F mitigation-requires-a-session | realism audit 2026-10-01: stem trimmed; difficulty 1 kept | adversarial A3 2026-10-16: survived, no change"
   },
   "display_count": 4
 }

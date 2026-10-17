@@ -1,0 +1,39 @@
+{
+  "question": "s6-q038",
+  "verdict": {
+    "answer": [
+      "A",
+      "C",
+      "E"
+    ],
+    "evidence": {
+      "A": "single-shot std of Z on |+> is 1; reported stds per target precision: {0.02: 0.02, 0.03: 0.03, 0.05: 0.0499} (each within 10% of its target: True)",
+      "B": "precision 0.05 used 400 shots, 0.02 used 2500: the larger value is the looser, cheaper request",
+      "C": "shots per target precision: 0.02 -> 2500, 0.03 -> 1112, 0.05 -> 400 (= ceil(1/precision^2): True)",
+      "D": "TypeError: EstimatorV2.run() got an unexpected keyword argument 'shots'; installed signature run(self, pubs: 'Iterable[EstimatorPubLike]', *, precision: 'float | None' = None) -> 'RuntimeJobV2'",
+      "E": "PUB without precision, run() without precision -> target_precision 0.05 (options.default_precision = 0.05)",
+      "F": "PUB precision 0.02 with run(precision=0.03) and default_precision 0.05 -> target_precision 0.02; the PUB without one got 0.03 from run(): PUB beats run() beats default_precision"
+    },
+    "observed": {
+      "pub": 0.02,
+      "run": 0.03,
+      "fallback": 0.05,
+      "shots": [
+        2500,
+        1112,
+        400
+      ]
+    }
+  },
+  "versions": {
+    "qiskit": "2.5.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.48.0",
+    "numpy": "2.5.1"
+  },
+  "wall_seconds": 1.4,
+  "returncode": 0,
+  "stdout_tail": "###VERDICT###{\"answer\": [\"A\", \"C\", \"E\"], \"evidence\": {\"A\": \"single-shot std of Z on |+> is 1; reported stds per target precision: {0.02: 0.02, 0.03: 0.03, 0.05: 0.0499} (each within 10% of its target: True)\", \"B\": \"precision 0.05 used 400 shots, 0.02 used 2500: the larger value is the looser, cheaper request\", \"C\": \"shots per target precision: 0.02 -> 2500, 0.03 -> 1112, 0.05 -> 400 (= ceil(1/precision^2): True)\", \"D\": \"TypeError: EstimatorV2.run() got an unexpected keyword argument 'shots'; installed signature run(self, pubs: 'Iterable[EstimatorPubLike]', *, precision: 'float | None' = None) -> 'RuntimeJobV2'\", \"E\": \"PUB without precision, run() without precision -> target_precision 0.05 (options.default_precision = 0.05)\", \"F\": \"PUB precision 0.02 with run(precision=0.03) and default_precision 0.05 -> target_precision 0.02; the PUB without one got 0.03 from run(): PUB beats run() beats default_precision\"}, \"observed\": {\"pub\": 0.02, \"run\": 0.03, \"fallback\": 0.05, \"shots\": [2500, 1112, 400]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stderr_tail": "",
+  "python": "3.12.2"
+}

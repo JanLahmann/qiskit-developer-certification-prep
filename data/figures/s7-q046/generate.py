@@ -1,6 +1,6 @@
 # Figures for s7-q046: histograms of different slices of a (2, 3)-shaped
-# BitArray from a parameter-grid Sampler job (rebuilt offline with a seeded
-# StatevectorSampler). MUST mirror the proof script's variant definitions
+# BitArray from the stem's parameter-grid StatevectorSampler job (seeded here;
+# angles 0/pi make it deterministic). MUST mirror the proof script's variant definitions
 # (ledger rule: figure variants == proof variants).
 # Runs under pipeline/render_figures.py's deterministic prelude.
 import numpy as np

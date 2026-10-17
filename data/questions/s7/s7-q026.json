@@ -7,7 +7,7 @@
   "type": "mcq",
   "difficulty": 1,
   "stem": "After a kernel restart, how do you fetch the results of the job whose ID you saved?",
-  "code": "from qiskit_ibm_runtime import QiskitRuntimeService\n\nservice = QiskitRuntimeService()\njob_id = \"d762omnq1anc738d2cj0\"   # saved earlier\n# retrieve the results ...",
+  "code": "from qiskit_ibm_runtime import QiskitRuntimeService\n\nservice = QiskitRuntimeService()\njob_id = \"d1k7x0q3s2bc73a9f4e0\"   # saved earlier\n# retrieve the results ...",
   "options": [
     {
       "key": "A",
@@ -39,13 +39,13 @@
   ],
   "display_count": 4,
   "explanation": {
-    "correct": "IBM Quantum stores every job's results server-side. `service.job(job_id)` re-hydrates the RuntimeJobV2; calling `.result()` returns its stored PrimitiveResult, so work survives a kernel restart.",
+    "correct": "IBM Quantum stores every job's results server-side. `service.job(job_id)` re-hydrates the RuntimeJobV2 (installed 0.48 signature: `job(self, job_id: str) -> RuntimeJobV2`); calling `.result()` returns its stored PrimitiveResult, so work survives a kernel restart.",
     "distractors": {
       "A": "There is no `service.result()` method.",
       "B": "There is no `get_result()` classmethod on the service.",
-      "C": "`service.jobs()` (plural) takes filters and returns a LIST of jobs, not a single job; use singular `service.job(id)`.",
+      "C": "`service.jobs()` (plural) is the filtered LIST lookup: its first positional parameter is `limit`, so the ID lands there, and the method returns a `list[RuntimeJobV2]`, which has no `.result()`. Use singular `service.job(id)`.",
       "E": "`retrieve_job` was the V1 `IBMQBackend`/provider spelling. `QiskitRuntimeService` exposes `job(id)` (singular) and `jobs(...)` (filtered list) instead.",
-      "F": "`job()` is an instance method: called on the class it is missing its `self`, and no account/channel has been resolved. Use the `service` object you already constructed."
+      "F": "`job()` is an instance method: called on the class, the ID binds to `self` and Python raises `TypeError: QiskitRuntimeService.job() missing 1 required positional argument: 'job_id'`. No account is resolved that way either; use the `service` object you already constructed."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/save-jobs",
@@ -62,8 +62,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E V1 service.retrieve_job; +F job() called on the class instead of the instance | realism audit 2026-10-01: stem trimmed; difficulty unchanged"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E V1 service.retrieve_job; +F job() called on the class instead of the instance | realism audit 2026-10-01: stem trimmed; difficulty unchanged | adversarial A3 2026-10-16: job_id literal no longer the save-jobs docs example ID; C/F rationales made exact from 0.48 source (jobs' first positional is limit, returns list[RuntimeJobV2]; class call raises TypeError missing 'job_id'); hasattr confirms no result/get_result/retrieve_job on QiskitRuntimeService; citations verified (save-jobs: 'use the QiskitRuntimeService.job method to retrieve it'; monitor-job: 'use service.job(<job_id>) to retrieve it later')"
   }
 }

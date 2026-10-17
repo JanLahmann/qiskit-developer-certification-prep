@@ -37,9 +37,13 @@ pub_result = estimator.run([(isa, obs, ANGLES)]).result()[0]
 evs = np.asarray(pub_result.data.evs)
 assert tuple(np.round(evs, 3)) == TARGET, tuple(np.round(evs, 3))
 
-fig, ax = plt.subplots(figsize=(6, 4))
-ax.plot(ANGLES.ravel(), evs, marker="o")
-ax.set_xlabel("theta")
-ax.set_ylabel("expectation value")
-ax.axhline(0.0, color="black", linewidth=0.8)
-fig.savefig("s7-q038-stem.svg")
+# Drawn with the same pyplot calls the stem code shows (angles = np.linspace(0, np.pi, 4)
+# equals ANGLES.ravel()). No y-axis label: the curve's values, not a caption, must
+# separate the expectation values from their standard errors.
+angles = np.linspace(0, np.pi, 4)
+assert np.allclose(angles, ANGLES.ravel())
+plt.figure(figsize=(6, 4))
+plt.plot(angles, evs, marker="o")
+plt.axhline(0, color="black", linewidth=0.8)
+plt.xlabel("theta")
+plt.savefig("s7-q038-stem.svg")

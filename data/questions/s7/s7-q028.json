@@ -39,13 +39,13 @@
   ],
   "display_count": 5,
   "explanation": {
-    "correct": "Cancellation is requested through the job handle: `job.cancel()` tells the Runtime service to drop the job, after which `job.status()` reports the terminal state `\"CANCELLED\"` (the same action is available from the Workloads page). Because the job lives server-side, the handle -- not your Python process -- is what controls it.",
+    "correct": "Cancellation is requested through the job handle: `job.cancel()` tells the Runtime service to drop the job (the monitor-job guide: \"Cancel a job that is queued or running. Once a job is canceled, it cannot be resumed.\"). In qiskit-ibm-runtime 0.48 `cancel()` then records the terminal state on the handle itself, so `job.status()` reports `\"CANCELLED\"` from then on (the same action is available from the Workloads page). Because the job lives server-side, the handle -- not your Python process -- is what controls it.",
     "distractors": {
       "B": "There is no `QiskitRuntimeService.cancel`. The service is for finding jobs (`service.job`, `service.jobs`); the job object owns the lifecycle calls.",
       "C": "`RuntimeJobV2` has no `stop()`, and a cancelled job yields no partial data: a Sampler result exists only once the job has finished.",
       "D": "Jobs execute server-side at IBM Quantum and survive kernel restarts -- which is exactly why `service.job(job_id)` can fetch results later. Dropping the client object leaves the job queued and still consuming your instance's time.",
-      "E": "A cancelled job has no result: `result()` on it raises rather than handing back partial data. A job that was still queued had not sampled anything at all.",
-      "F": "Cancellation is a state change, not a deletion: once accepted, `status()` reports the terminal `\"CANCELLED\"` state, and `job.in_final_state()` becomes true."
+      "E": "A cancelled job has no result: in 0.48 `result()` checks the state first and raises `RuntimeInvalidStateError: Unable to retrieve result for job <id>. Job was cancelled.` rather than handing back partial data. A job that was still queued had not sampled anything at all.",
+      "F": "Cancellation is a state change, not a deletion: once the service accepts it, `cancel()` sets the handle's state to `\"CANCELLED\"`, `status()` stops polling because that state is terminal, and `job.in_final_state()` becomes true."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/monitor-job",
@@ -62,8 +62,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s7: REWRITTEN — old 'job.result() blocks' version was a near-duplicate of a community item and of q033; now covers cancelling a queued job and server-side job lifetime (docs-backed by monitor-job) | pool wave: +E cancelled job still yields partial results; +F status() keeps reporting QUEUED after cancel | realism audit 2026-10-01: stem trimmed; 2->1, job.cancel() is one recalled fact"
+    "notes": "adversarial s7: REWRITTEN — old 'job.result() blocks' version was a near-duplicate of a community item and of q033; now covers cancelling a queued job and server-side job lifetime (docs-backed by monitor-job) | pool wave: +E cancelled job still yields partial results; +F status() keeps reporting QUEUED after cancel | realism audit 2026-10-01: stem trimmed; 2->1, job.cancel() is one recalled fact | adversarial A3 2026-10-16: executed against 0.48 RuntimeJobV2 with a stub API client (scratch): QUEUED -> cancel() -> status() 'CANCELLED', in_final_state() True, result() raises RuntimeInvalidStateError 'Job was cancelled.'; no RuntimeJobV2.stop / QiskitRuntimeService.cancel; E/F/correct made exact, monitor-job quote added"
   }
 }

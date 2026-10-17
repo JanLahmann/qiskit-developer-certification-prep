@@ -43,12 +43,12 @@
   "explanation": {
     "correct": "`Session.details()` describes the session itself, not its jobs: `state` (open / active / inactive / closed), `accepting_jobs`, `max_time` (the maximum session length allowed by your plan), the lifecycle timestamps `last_job_started` / `last_job_completed` / `started_at` / `closed_at` / `activated_at`, plus `id`, `backend_name`, `interactive_timeout`, `active_timeout`, `mode` and `usage_time`. Note that the dictionary comes from the server: in local testing mode (a Session built on a fake backend) `details()` returns `None`, because there is no server-side session to describe.",
     "distractors": {
-      "B": "A queue position is a per-job property reported by the job/Workloads view, not part of the session description.",
+      "B": "A queue position belongs to an individual job (the Workloads view), not to the session description; the 0.48 `details()` builds a fixed 14-key dict and `queue_position` is not among them.",
       "F": "Results belong to individual jobs (`job.result()`); a session never carries result data."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/session#details",
-      "https://quantum.cloud.ibm.com/docs/guides/monitor-job"
+      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session"
     ]
   },
   "proof": {
@@ -61,8 +61,8 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s7: stem made honest about where the dict comes from (None in local mode); option D `shots` -> the real key `max_time`, so the answer count varies across the section's multi-selects (3/3/4) | realism audit 2026-10-01: stem trimmed ('live service' kept: details() is None locally); stays 2, four recalled keys"
+    "notes": "adversarial s7: stem made honest about where the dict comes from (None in local mode); option D `shots` -> the real key `max_time`, so the answer count varies across the section's multi-selects (3/3/4) | realism audit 2026-10-01: stem trimmed ('live service' kept: details() is None locally); stays 2, four recalled keys | adversarial A3 2026-10-16: 0.48 Session.details() executed with a stub service: keys = accepting_jobs, activated_at, active_timeout, backend_name, closed_at, id, interactive_timeout, last_job_completed, last_job_started, max_time, mode, started_at, state, usage_time (no queue_position/results); local Session(FakeManilaV2) details() None; monitor-job citation (no details() content) -> run-jobs-session (prints the details dict)"
   }
 }

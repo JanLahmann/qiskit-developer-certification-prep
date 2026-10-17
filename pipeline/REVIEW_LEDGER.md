@@ -3772,3 +3772,79 @@ q025).
 - Gates: verify_bank s7 31/31 PROVEN + 6 conceptual, 0 failures; audit_meta_patterns s7 0 blockers /
   0 warnings (low length_tell on q015/q020/q023/q024 pre-existing; q015's new F is longer than the old
   one); lint_proof_drift 0 findings.
+
+## Adversarial review A3 — s7b (2026-10-16)
+
+Scope: s7-q026 q027 q028 q029 q030 q031 q032 q034 q035 q036 q038 q045 q046 q047 q048 (15; 9 executed,
+6 conceptual, 5 figure items). Executed options re-run in independent scratch scripts (pinned venv,
+qiskit 2.5.0 / runtime 0.48.0); conceptual items checked against the INSTALLED 0.48 source, and where
+possible by executing that source offline (`RuntimeJobV2` / `Session` / `QiskitRuntimeService` objects
+with stub API clients, no network); every cited page fetched as text and grepped; all five figures
+rendered, rasterized and inspected. **0 key changes, 0 kills.** 14 edited, 1 survived unchanged (q036).
+
+- **Half-true distractor + false rationale (s7-q035 E):** "`usage_time` ... keeps growing while the
+  session sits idle between two of its jobs" is TRUE for a session: 0.48 `Session.usage()` defines
+  session usage as "the time from when the first job starts until the session goes inactive, is
+  closed, or when its last job completes, whichever happens last" (`details()["usage_time"]` is the
+  same server field `elapsed_time`), and monitor-job says session usage is elapsed time "regardless
+  of whether jobs are actively running". The old rationale ("an idle session accumulates none of it")
+  was false. E is now the batch-accounting misconception (summed QPU time, idle gap leaves it
+  unchanged) with the quotes. Key B no longer claims a closed four-value state set: 0.48 `status()`
+  also maps `pending_inactive` / `pending_closed` (stub-executed: active+accepting -> "In progress,
+  accepting new jobs", open/inactive -> "Pending", closed -> "Closed").
+- **Local-mode trap (s7-q034):** executed `SamplerV2(mode=FakeManilaV2())` -> `LocalRuntimeJob.status()`
+  returns `JobStatus.DONE` and `== "DONE"` is False, i.e. the answer flips on a fake backend. The code
+  now picks a real QPU explicitly (`least_busy(operational=True, simulator=False)`), A's rationale
+  explains the local-mode habit, the proof records the local contrast. A/C reworded from "ends the
+  polling loop" (the displayed loop exits on `in_final_state()`) to "the check for a successful finish".
+- **Cancel semantics executed (s7-q028):** 0.48 `RuntimeJobV2` with a stub client: QUEUED -> `cancel()`
+  -> `status()` 'CANCELLED' (cancel sets `_status`; terminal states short-circuit polling),
+  `in_final_state()` True, `result()` raises `RuntimeInvalidStateError: Unable to retrieve result for
+  job <id>. Job was cancelled.`; no `RuntimeJobV2.stop`, no `QiskitRuntimeService.cancel`. E/F/correct
+  now state exactly that; monitor-job quoted ("Cancel a job that is queued or running ...").
+- **Free elimination removed:** s7-q032 option A was the displayed failing line verbatim -> default
+  name `c` misconception (executed `'DataBin' object has no attribute 'c'`); s7-q027 E was a statement,
+  not an approach, in a "which approaches" item -> "load the JSON file Runtime saves locally" (0.48
+  grep: the only file writes are account credentials in accounts/storage.py).
+- **Displayed code not runnable / proof off the stem's object:** s7-q031 comment-only `result` ->
+  runnable `QuantumCircuit(2, 2)` circuit (`db.keys()` -> `['c']`, `db.meas` AttributeError asserted).
+  s7-q046 was a QPU retrieval whose noisy counts could not be the exact 200/100 bars -> runnable
+  `StatevectorSampler` sweep (angles 0/pi, deterministic); proof executes the DISPLAYED code verbatim as
+  the SVG byte-identity target (s5-q041 recipe). s7-q047 proof now executes the displayed code with only
+  the three service lines bound to a BitArray whose printed `get_counts()` equals the stem comment
+  (asserted). s7-q045 proof moved from StatevectorSampler to runtime SamplerV2 seeded local mode
+  (ISA circuit keeps cregs `flag`/`out`).
+- **Circular figure proof (s7-q048):** the key "reproduced" the figure only because the figure was
+  made from it with the same seeds. The proof now re-runs every option under three unrelated
+  transpile/simulator seed pairs: B TVD 0.008-0.040, D 0.244-0.274, A/C/E >= 0.451 (scratch sweep of 8
+  pairs: B <= 0.049, D >= 0.222).
+- **Figure drawn by code the stem does not show (s7-q038):** generator added a y label "expectation
+  value" (which by itself rules out `stds`) plus axhline/xlabel absent from the stem code. Generator now
+  uses the stem's pyplot calls (plot, axhline, xlabel; no y label), stem code shows them and defines
+  `angles`; alt updated; re-rendered and inspected.
+- **Rationales made exact:** q026 C (`jobs()`' first positional is `limit`, returns
+  `list[RuntimeJobV2]`) and F (literal `TypeError: QiskitRuntimeService.job() missing 1 required
+  positional argument: 'job_id'`); q029 A names the Hamming-weight misconception that yields 3;
+  q038 A (stds 0.005-0.018, not "two orders of magnitude") and D (metadata keys `shots`,
+  `target_precision`, `circuit_metadata`); q030 B (0.48 `details()` builds a fixed 14-key dict,
+  stub-executed; local Session details() None).
+- **Docs example copied (s7-q026):** job ID literal was the save-jobs example's `d762omnq1anc738d2cj0`
+  -> neutral ID.
+- **Citation failures replaced (fetched, quotes grepped):** q029/q047 primitive-input-output and
+  save-jobs (neither states the int-key rule) -> bit-ordering ("When interpreting bits as a number,
+  bit 0 is the least significant bit"); q030 monitor-job (no `details()` content) -> run-jobs-session
+  (prints the details dict); q035 + monitor-job (session usage quote). Kept and verified: save-jobs
+  ("use the QiskitRuntimeService.job method to retrieve it", Workloads page lists job IDs), monitor-job
+  ("use service.job(<job_id>) to retrieve it later", `job.cancel()`), runtime-job-v2 (`status()` Return
+  type `Literal['INITIALIZING', ..., 'ERROR']`), session API (details key list, status strings),
+  BitArray ("bitstrings are stored as ints"; get_counts loc=None "unioned together"), DataBin ("query
+  the available keys with keys()", keys are ClassicalRegister names), primitive-input-output /
+  api/qiskit/primitives (PrimitiveResult of SamplerPubResults; "Running a sampler returns a
+  BasePrimitiveJob object"), sampler-input-output, visualize-results.
+- **Survived attacks:** q036 prints `True PrimitiveResult SamplerPubResult` (displayed code run;
+  `join_data` only on SamplerPubResult; RuntimeJobV2 subclasses BasePrimitiveJob); q029 displayed code
+  3x unseeded, keys always {0, 7}.
+- **Difficulty:** all 15 kept.
+- Gates: verify_bank s7 31/31 PROVEN + 6 conceptual, 0 failures; audit_meta_patterns s7 0 blockers /
+  0 warnings (new medium absolute_distractor_tell on q027/q035 from the first rewrites fixed; low
+  length_tell on q028/q036 pre-existing, options untouched); lint_proof_drift 0 findings.

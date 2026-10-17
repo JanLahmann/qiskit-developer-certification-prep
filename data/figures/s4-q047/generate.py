@@ -2,7 +2,7 @@
 # (no Qiskit rendering involved) so that the picture shows the PAIRING and not
 # an implementation detail: a column of observables, a row of parameter-value
 # sets, and the grid of expectation values they produce. The proof script runs
-# an Estimator on exactly these shapes ((4, 1) observables x (1, 6) parameter
+# an Estimator on exactly these shapes ((3, 1) observables x (1, 5) parameter
 # values) and reports the resulting evs shape — keep the two in sync
 # (ledger rule: figure variants == proof variants).
 # Runs under pipeline/render_figures.py's deterministic prelude (Agg backend,
@@ -13,7 +13,7 @@ from matplotlib.patches import Rectangle
 
 CELL_W, CELL_H = 1.2, 0.8
 COL_STEP, ROW_STEP = 1.3, 1.0
-N_OBS, N_PAR = 4, 6
+N_OBS, N_PAR = 3, 5
 
 
 def box(ax, x, y, label, fill):
@@ -35,18 +35,18 @@ mid_x = grid_x0 + (COL_STEP * N_PAR - 0.1) / 2
 
 for j in range(N_PAR):
     box(ax, grid_x0 + j * COL_STEP, top, f"$\\theta_{{{j + 1}}}$", "#e8e8e8")
-ax.text(mid_x, top + CELL_H + 0.35, "parameter values (1, 6)",
+ax.text(mid_x, top + CELL_H + 0.35, "parameter values (1, 5)",
         ha="center", va="bottom", fontsize=10)
 
 for i in range(N_OBS):
     box(ax, 1.4, top - (i + 1) * ROW_STEP, f"$O_{{{i + 1}}}$", "#e8e8e8")
-ax.text(1.1, top - ROW_STEP * N_OBS / 2 - 0.1, "observables (4, 1)",
+ax.text(1.1, top - ROW_STEP * N_OBS / 2 - 0.1, "observables (3, 1)",
         ha="center", va="center", rotation=90, fontsize=10)
 
 for i in range(N_OBS):
     for j in range(N_PAR):
         box(ax, grid_x0 + j * COL_STEP, top - (i + 1) * ROW_STEP, "ev", "white")
-ax.text(mid_x, 0.55, "expectation values (4, 6)",
+ax.text(mid_x, 0.55, "expectation values (3, 5)",
         ha="center", va="center", fontsize=10)
 
 fig.savefig("s4-q047-stem.svg")

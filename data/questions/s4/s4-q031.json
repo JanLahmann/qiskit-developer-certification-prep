@@ -39,7 +39,7 @@
     "C"
   ],
   "explanation": {
-    "correct": "Sessions shine for iterative workloads whose inputs are not all ready at the outset (A) and for experiments that need dedicated, exclusive access to the QPU (B). Both justify a session's higher cost.",
+    "correct": "Sessions shine for iterative workloads whose next input is not ready at the outset, such as a variational loop that waits on the classical optimizer, and for experiments that need dedicated, exclusive access to the QPU, with no other users' jobs or calibration jobs during the active window. Both justify a session's higher cost; independent work known upfront belongs in batch, and a single request in job mode.",
     "distractors": {
       "A": "Independent circuits known upfront that you want to run cheaply are the classic case for batch mode, which is generally less expensive than a session.",
       "D": "A single circuit run should use job mode; a session gives no queuing benefit for the first (only) job and costs more.",
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened + hedged distractors (length/absolute-tell fix). | pool wave: +F (a parameter sweep needs a session) | realism audit 2026-10-01: stem trimmed; both keys are the documented session use cases -> 2->1; stem 17 -> 14 words; difficulty 2 -> 1"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened + hedged distractors (length/absolute-tell fix). | pool wave: +F (a parameter sweep needs a session) | realism audit 2026-10-01: stem trimmed; both keys are the documented session use cases -> 2->1; stem 17 -> 14 words; difficulty 2 -> 1 | adversarial A3 2026-10-16: explanation.correct referenced display letters (A)/(B) that pointed at the wrong options (keys are B, C) -> letter-free rewrite; citations verified (choose-execution-mode iterative/dedicated-access bullets, execution-modes no calibration jobs)"
   },
   "display_count": 5
 }

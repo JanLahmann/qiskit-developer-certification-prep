@@ -7,11 +7,11 @@
   "type": "mcq",
   "difficulty": 1,
   "stem": "The diagram shows how the Estimator pairs this PUB's observables and parameter values (`circuit` has one parameter). Which broadcasting pattern is it?",
-  "code": "import numpy as np\nfrom qiskit.quantum_info import SparsePauliOp\n\nobservables = [[SparsePauliOp(\"Z\")], [SparsePauliOp(\"X\")],\n               [SparsePauliOp(\"Y\")], [SparsePauliOp(\"I\")]]\nvalues = np.linspace(0.0, 1.0, 6).reshape(1, 6)\n\nestimator.run([(circuit, observables, values)])",
+  "code": "import numpy as np\nfrom qiskit.quantum_info import SparsePauliOp\n\n# estimator: an EstimatorV2; circuit: a circuit with one Parameter\nobservables = [[SparsePauliOp(\"X\")], [SparsePauliOp(\"Z\")], [SparsePauliOp(\"Y\")]]\nvalues = np.linspace(0.0, 1.0, 5).reshape(1, 5)\n\nestimator.run([(circuit, observables, values)])",
   "options": [
     {
       "key": "A",
-      "text": "Outer/product pairing: each of the 4 observables is combined with each of the 6 parameter sets, giving a 4 x 6 array of expectation values."
+      "text": "Outer/product pairing: each of the 3 observables is combined with each of the 5 parameter sets, giving a 3 x 5 array of expectation values."
     },
     {
       "key": "B",
@@ -39,20 +39,19 @@
     "color_essential": false,
     "stem": {
       "file": "figures/s4-q047/s4-q047-stem.svg",
-      "alt": "Diagram: a row of six shaded boxes labelled theta 1 to theta 6 runs across the top under the caption 'parameter values (1, 6)'; a column of four shaded boxes labelled O1 to O4 runs down the left under the rotated caption 'observables (4, 1)'; between them a four-row by six-column grid of plain cells, each labelled 'ev', is captioned 'expectation values (4, 6)'."
+      "alt": "Diagram: a row of five shaded boxes labelled theta 1 to theta 5 runs across the top under the caption 'parameter values (1, 5)'; a column of three shaded boxes labelled O1 to O3 runs down the left under the rotated caption 'observables (3, 1)'; between them a three-row by five-column grid of plain cells, each labelled 'ev', is captioned 'expectation values (3, 5)'."
     }
   },
   "explanation": {
-    "correct": "The observables array has shape (4, 1) and the parameter-value array has shape (1, 6). NumPy broadcasting stretches each singleton axis against the other array's length, so every observable meets every parameter set and the pub returns a (4, 6) array — 24 expectation values from one PUB. The guide calls this the outer/product pattern; you recognise it from the complementary singleton axes, a column against a row.",
+    "correct": "The observables array has shape (3, 1) and the parameter-value array has shape (1, 5). NumPy broadcasting stretches each singleton axis against the other array's length, so every observable meets every parameter set and the pub returns a (3, 5) array — 15 expectation values from one PUB. The guide calls this the outer/product pattern; you recognise it from the complementary singleton axes, a column against a row.",
     "distractors": {
-      "B": "Zip requires the two arrays to have the SAME shape, so that index i of one meets index i of the other. A (4, 1) column and a (1, 6) row do not match element-wise, and zip would return one value per pair, not a grid.",
-      "C": "Broadcasting a single observable means the observables array is 0-d — one observable stretched over the parameter sets. Here the array holds four observables, so it cannot collapse to one row of results.",
+      "B": "Zip requires the two arrays to have the SAME shape, so that index i of one meets index i of the other. A (3, 1) column and a (1, 5) row do not match element-wise, and zip would return one value per pair, not a grid.",
+      "C": "Broadcasting a single observable means the observables array is 0-d — one observable stretched over the parameter sets. Here the array holds three observables, so it cannot collapse to one row of results.",
       "D": "The standard nd generalization is the case where the two arrays have DIFFERENT ranks and the shorter shape is padded with leading axes. Both arrays here are two-dimensional, so no padding step is involved.",
-      "E": "Singleton axes are exactly what broadcasting stretches: (4, 1) against (1, 6) is legal and yields (4, 6). Shapes are rejected only when two axes disagree with neither of them being 1, such as (3,) against (4,)."
+      "E": "Singleton axes are exactly what broadcasting stretches: (3, 1) against (1, 5) is legal and yields (3, 5). Shapes are rejected only when two axes disagree with neither of them being 1, such as (3,) against (4,)."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
-      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-estimator"
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
     ]
   },
   "proof": {
@@ -61,14 +60,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.primitives.containers.observables_array import ObservablesArray\nfrom qiskit.quantum_info import SparsePauliOp\n\n# The pub below is the one the stem figure draws: a column of 4 observables\n# against a row of 6 parameter sets. Keep it in sync with\n# data/figures/s4-q047/generate.py, which draws exactly these shapes.\n\ntheta = Parameter(\"t\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\n\nobservables = [[SparsePauliOp(\"Z\")], [SparsePauliOp(\"X\")],\n               [SparsePauliOp(\"Y\")], [SparsePauliOp(\"I\")]]\nvalues = np.linspace(0.0, 1.0, 6).reshape(1, 6)\n\nraised = None\ntry:\n    result = StatevectorEstimator().run([(qc, observables, values)]).result()\n    evs = result[0].data.evs\n    out_shape = tuple(evs.shape)\n    n_values = int(evs.size)\nexcept Exception as exc:  # the E option claims this happens\n    raised = type(exc).__name__\n    out_shape, n_values = None, None\n\nobs_shape = tuple(ObservablesArray.coerce(observables).shape)\npar_shape = tuple(values.shape)\nn_obs = int(np.prod(obs_shape))\nn_par = int(np.prod(par_shape))\n\nclaims = {\n    # Outer/product: no shared axis — each observable meets each parameter set.\n    \"A\": (out_shape == (n_obs, n_par) and n_values == n_obs * n_par\n          and len(obs_shape) == len(par_shape)),\n    # Zip: element-wise pairing, which needs equal shapes.\n    \"B\": obs_shape == par_shape,\n    # Broadcast single observable: the observables array is 0-d.\n    \"C\": obs_shape == (),\n    # Standard nd generalization: ranks differ and get padded.\n    \"D\": len(obs_shape) != len(par_shape),\n    # Not broadcastable at all.\n    \"E\": raised is not None,\n}\n\ndetail = (\n    f\"observables array shape {obs_shape} ({n_obs} observables), parameter\"\n    f\" values shape {par_shape} ({n_par} sets), estimator returned evs shape\"\n    f\" {out_shape} holding {n_values} values, exception {raised}\"\n)\nevidence = {k: f\"{detail} -> claim holds={v}\" for k, v in claims.items()}\nobserved = {\"observables_shape\": list(obs_shape), \"values_shape\": list(par_shape),\n            \"evs_shape\": list(out_shape), \"n_values\": n_values,\n            \"exception\": raised}\nemit_verdict({\"answer\": sorted(k for k, v in claims.items() if v),\n              \"evidence\": evidence, \"observed\": observed})"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.primitives import StatevectorEstimator\nfrom qiskit.primitives.containers.observables_array import ObservablesArray\nfrom qiskit.quantum_info import SparsePauliOp\n\n# The pub below is the one the stem figure draws: a column of 3 observables\n# against a row of 5 parameter sets. Keep it in sync with\n# data/figures/s4-q047/generate.py, which draws exactly these shapes.\n\ntheta = Parameter(\"t\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\n\nobservables = [[SparsePauliOp(\"X\")], [SparsePauliOp(\"Z\")], [SparsePauliOp(\"Y\")]]\nvalues = np.linspace(0.0, 1.0, 5).reshape(1, 5)\n\nraised = None\ntry:\n    result = StatevectorEstimator().run([(qc, observables, values)]).result()\n    evs = result[0].data.evs\n    out_shape = tuple(evs.shape)\n    n_values = int(evs.size)\nexcept Exception as exc:  # the E option claims this happens\n    raised = type(exc).__name__\n    out_shape, n_values = None, None\n\nobs_shape = tuple(ObservablesArray.coerce(observables).shape)\n# parameter-SET shape as the primitive coerces it (one parameter -> no axis consumed)\nfrom qiskit.primitives.containers import BindingsArray\npar_shape = tuple(int(i) for i in BindingsArray.coerce({tuple(qc.parameters): values}).shape)\n# The figure's captions, drawn by generate.py from N_OBS, N_PAR = 3, 5 (keep in sync).\nFIGURE_CAPTIONS = {\"observables\": (3, 1), \"parameter values\": (1, 5), \"expectation values\": (3, 5)}\nassert obs_shape == FIGURE_CAPTIONS[\"observables\"] and par_shape == FIGURE_CAPTIONS[\"parameter values\"]\nn_obs = int(np.prod(obs_shape))\nn_par = int(np.prod(par_shape))\n\nclaims = {\n    # Outer/product: no shared axis — each observable meets each parameter set.\n    \"A\": (out_shape == (n_obs, n_par) == FIGURE_CAPTIONS[\"expectation values\"] and n_values == n_obs * n_par\n          and len(obs_shape) == len(par_shape)),\n    # Zip: element-wise pairing, which needs equal shapes.\n    \"B\": obs_shape == par_shape,\n    # Broadcast single observable: the observables array is 0-d.\n    \"C\": obs_shape == (),\n    # Standard nd generalization: ranks differ and get padded.\n    \"D\": len(obs_shape) != len(par_shape),\n    # Not broadcastable at all.\n    \"E\": raised is not None,\n}\n\ndetail = (\n    f\"observables array shape {obs_shape} ({n_obs} observables), parameter\"\n    f\" values shape {par_shape} ({n_par} sets), estimator returned evs shape\"\n    f\" {out_shape} holding {n_values} values, exception {raised}\"\n)\nevidence = {k: f\"{detail} -> claim holds={v}\" for k, v in claims.items()}\nobserved = {\"observables_shape\": list(obs_shape), \"values_shape\": list(par_shape),\n            \"evs_shape\": list(out_shape), \"n_values\": n_values,\n            \"exception\": raised}\nemit_verdict({\"answer\": sorted(k for k, v in claims.items() if v),\n              \"evidence\": evidence, \"observed\": observed})"
   },
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus (figure wave, task #27)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "Figure-in-the-stem question with text options. The diagram is drawn from scratch with matplotlib primitives in figures/s4-q047/generate.py; the proof runs a StatevectorEstimator on the same (4, 1) x (1, 6) pub and scores each named pattern's defining condition against the measured shapes. Pattern names are the four the primitive input/output guide uses verbatim (ledger, 2026-07-26). | realism audit 2026-10-01: stem trimmed; added that `circuit` has one parameter (value-array shape coercion depends on it); figure read is one step -> 2->1; no re-render (stem-only); stem 28 -> 22 words; difficulty 2 -> 1"
+    "notes": "Figure-in-the-stem question with text options. The diagram is drawn from scratch with matplotlib primitives in figures/s4-q047/generate.py; the proof runs a StatevectorEstimator on the same (4, 1) x (1, 6) pub and scores each named pattern's defining condition against the measured shapes. Pattern names are the four the primitive input/output guide uses verbatim (ledger, 2026-07-26). | realism audit 2026-10-01: stem trimmed; added that `circuit` has one parameter (value-array shape coercion depends on it); figure read is one step -> 2->1; no re-render (stem-only); stem 28 -> 22 words; difficulty 2 -> 1 | adversarial A3 2026-10-16: shapes were the primitive-input-output guide's own outer/product example verbatim ((4, 1) x (1, 6), four single Paulis) -> reworked to (3, 1) x (1, 5) in code, generator, options, alt and proof (evs (3, 5)); code says what estimator/circuit are; proof now scores the coerced BindingsArray shape and asserts the figure captions; get-started-with-estimator citation (no broadcasting content) dropped"
   },
   "freshness": {
     "verified_against": {
@@ -77,7 +76,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-16",
+    "verified_on": "2026-10-17",
     "stale": false
   }
 }

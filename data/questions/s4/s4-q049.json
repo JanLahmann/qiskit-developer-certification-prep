@@ -65,8 +65,8 @@
   "provenance": {
     "generated": "2026-07-27",
     "model": "claude-opus (figure wave 2, task #28)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "Conceptual figure item on queueing semantics (guide section 5 allows mode none for plan/queueing questions: nothing local can execute a scheduler). Every feature of the hand-drawn timeline is stated in prose on guides/execution-modes (one queue entry per workload; dedicated, exclusive active window in which no other job and no calibration job runs; interactive TTL gaps between jobs) and guides/choose-execution-mode (batch is scheduled together but not exclusive, and is cheaper). Both pages were fetched on 2026-07-27 and the diagram was drawn to match their descriptions; no wording is reproduced from them. | realism audit 2026-10-01: stem trimmed; figure read of one defining property -> 2->1; no re-render (stem-only); stem 19 -> 18 words; difficulty 2 -> 1"
+    "notes": "Conceptual figure item on queueing semantics (guide section 5 allows mode none for plan/queueing questions: nothing local can execute a scheduler). Every feature of the hand-drawn timeline is stated in prose on guides/execution-modes (one queue entry per workload; dedicated, exclusive active window in which no other job and no calibration job runs; interactive TTL gaps between jobs) and guides/choose-execution-mode (batch is scheduled together but not exclusive, and is cheaper). Both pages were fetched on 2026-07-27 and the diagram was drawn to match their descriptions; no wording is reproduced from them. | realism audit 2026-10-01: stem trimmed; figure read of one defining property -> 2->1; no re-render (stem-only); stem 19 -> 18 words; difficulty 2 -> 1 | adversarial A3 2026-10-16: survived, no change (figure rasterized, matches alt; batch/session claims checked against execution-modes and choose-execution-mode)"
   }
 }

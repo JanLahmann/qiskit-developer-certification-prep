@@ -47,8 +47,8 @@
       "F": "A fake backend carries its own name, `fake_manila`; it never impersonates the retired hardware it was snapshotted from. The session simply echoes `backend.name`."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
-      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/session",
+      "https://quantum.cloud.ibm.com/docs/guides/local-testing-mode"
     ]
   },
   "proof": {
@@ -57,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit_ibm_runtime import Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nwith Session(backend=backend) as session:\n    returned = session.backend()\n\nis_str = isinstance(returned, str)\nflags = {\n    \"C\": is_str and returned == \"fake_manila\",\n    \"B\": (not is_str),\n    \"A\": returned is None,\n    \"D\": False,\n    \"E\": is_str and returned == type(backend).__name__,\n    \"F\": is_str and returned == \"ibm_manila\",\n}\nlabels = {\"C\": \"returns the backend name string 'fake_manila'\", \"B\": \"returns the backend object\",\n          \"A\": \"returns None\", \"D\": \"raises an error (no service)\",\n          \"E\": \"returns the backend class name\", \"F\": \"returns the mimicked device name\"}\nevidence = {}\nfor k, v in flags.items():\n    evidence[k] = (f\"session.backend() -> type={type(returned).__name__}, value={returned!r}; \"\n                   f\"option {k} predicts '{labels[k]}' -> match={v}\")\nevidence[\"E\"] += f\"; the class is named {type(backend).__name__}, which is not what was returned\"\nevidence[\"F\"] += f\"; backend.name is {backend.name!r} and that is exactly what the session reported\"\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"type\": type(returned).__name__, \"value\": str(returned), \"class_name\": type(backend).__name__}})\n"
+    "proof_script": "import io\nfrom contextlib import redirect_stdout\n\nSTEM_CODE = '''from qiskit_ibm_runtime import Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nwith Session(backend=backend) as session:\n    print(session.backend())'''\n\nbuf = io.StringIO()\nns = {}\ntry:\n    with redirect_stdout(buf):\n        exec(STEM_CODE, ns)\n    raised = None\nexcept Exception as e:\n    raised = f\"{type(e).__name__}: {str(e)[:100]}\"\nprinted = buf.getvalue().strip()\nreturned = ns[\"session\"].backend() if raised is None else None\nclass_name = type(ns[\"backend\"]).__name__ if \"backend\" in ns else None\n\nflags = {\n    \"A\": raised is None and printed == \"None\",\n    \"B\": raised is None and printed.startswith(\"<\"),\n    \"C\": raised is None and printed == \"fake_manila\" and isinstance(returned, str),\n    \"D\": raised is not None,\n    \"E\": raised is None and printed.strip(\"'\") == class_name,\n    \"F\": raised is None and printed == \"ibm_manila\",\n}\nbase = f\"verbatim stem code printed {printed!r} (session.backend() returns {type(returned).__name__}), raised={raised}\"\nevidence = {\n    \"A\": f\"{base}; option A predicts None -> {flags['A']}\",\n    \"B\": f\"{base}; option B predicts a backend object repr -> {flags['B']}\",\n    \"C\": f\"{base}; option C predicts the name string fake_manila -> {flags['C']}\",\n    \"D\": f\"{base}; no QiskitRuntimeService exists in the process and nothing raised -> {flags['D']}\",\n    \"E\": f\"{base}; the class is {class_name}, which was not printed -> {flags['E']}\",\n    \"F\": f\"{base}; option F predicts ibm_manila -> {flags['F']}\",\n}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"printed\": printed, \"type\": type(returned).__name__, \"raised\": raised, \"class_name\": class_name}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the returns-the-object distractor (absolute-tell fix). | pool wave: +E (the class name), +F (the mimicked hardware name) | realism audit 2026-10-01: stem trimmed; one-step read -> 2->1; stem 19 -> 6 words; difficulty 2 -> 1"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged the returns-the-object distractor (absolute-tell fix). | pool wave: +E (the class name), +F (the mimicked hardware name) | realism audit 2026-10-01: stem trimmed; one-step read -> 2->1; stem 19 -> 6 words; difficulty 2 -> 1 | adversarial A3 2026-10-16: D was hard-coded False -> proof now execs the verbatim stem code, captures the literal printed line (fake_manila) and scores D by whether it raised; run-jobs-session/execution-modes citations (silent on the return type) -> Session API (backend() return type str | None) + local-testing-mode (fake backend passed when instantiating a session)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-16",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 5

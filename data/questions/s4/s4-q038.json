@@ -8,7 +8,7 @@
   "type": "mcq",
   "difficulty": 1,
   "stem": "Which construction makes the Estimator submit its jobs inside `session`?",
-  "code": "with Session(backend=backend) as session:\n    estimator = ...  # which one?",
+  "code": "from qiskit_ibm_runtime import EstimatorV2, Session\n# backend: a QPU backend object obtained from your service\n\nwith Session(backend=backend) as session:\n    estimator = ...  # which one?",
   "options": [
     {
       "key": "A",
@@ -42,9 +42,9 @@
     "correct": "As with the Sampler, the execution mode is passed through `mode=`, which accepts a Session object. `EstimatorV2(mode=session)` binds the Estimator to the open session.",
     "distractors": {
       "A": "`session=` is the removed pre-0.24 keyword; on V2 primitives it raises `TypeError`. Use `mode=session`.",
-      "C": "`mode` needs the Session object, not the string `\"session\"`; a string raises `ValueError`.",
+      "C": "`mode` needs the Session object, not the string `\"session\"`. The 0.48 `EstimatorV2` signature even annotates `mode` with `str`, but the constructor's type check accepts only a backend, Session or Batch object (or None), so any string raises `ValueError`.",
       "D": "Both keywords were removed from the V2 constructors (passing a backend and a session together was the V1 idiom); each raises `TypeError`. The target goes through `mode=`.",
-      "E": "A `Session` does not manufacture primitives — it exposes `close`, `cancel`, `status`, `details` and `backend`, and nothing else. This also opens a second session instead of using the one already in scope.",
+      "E": "A `Session` has no primitive factory: its public methods manage the session itself (`close`, `cancel`, `status`, `details`, `usage`, `backend`), so `.estimator()` raises `AttributeError`. It would also open a second session instead of using the one already in scope.",
       "F": "The execution mode is a constructor argument, not a primitive option: `EstimatorOptions` has no `mode` field, so this raises a pydantic `ValidationError` for an unexpected keyword."
     },
     "citations": [
@@ -58,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2, Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nisa = pm.run(qc)\nobs = SparsePauliOp(\"ZZ\").apply_layout(isa.layout)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        evs = float(fn().run([(isa, obs)]).result()[0].data.evs)\n        evidence[key] = f\"constructed and ran in the session: evs={round(evs, 4)}\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nwith Session(backend=backend) as session:\n    attempt(\"B\", lambda: EstimatorV2(mode=session))\n    attempt(\"A\", lambda: EstimatorV2(session=session))\n    attempt(\"C\", lambda: EstimatorV2(mode=\"session\"))\n    attempt(\"D\", lambda: EstimatorV2(backend=backend, session=session))\n    attempt(\"E\", lambda: Session(backend=backend).estimator())\n    attempt(\"F\", lambda: EstimatorV2(options={\"mode\": session}))\n    evidence[\"F\"] = \"mode is a constructor parameter, not an EstimatorOptions field; \" + evidence[\"F\"]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2, Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)\nisa = pm.run(qc)\nobs = SparsePauliOp(\"ZZ\").apply_layout(isa.layout)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        est = fn()\n        bound = est.mode is session\n        evs = float(est.run([(isa, obs)]).result()[0].data.evs)\n        evidence[key] = f\"constructed and ran: evs={round(evs, 4)}; estimator.mode is the open session -> {bound}\"\n        if bound:\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e).splitlines()[0][:120]}\"\n\nwith Session(backend=backend) as session:\n    attempt(\"B\", lambda: EstimatorV2(mode=session))\n    attempt(\"A\", lambda: EstimatorV2(session=session))\n    attempt(\"C\", lambda: EstimatorV2(mode=\"session\"))\n    attempt(\"D\", lambda: EstimatorV2(backend=backend, session=session))\n    attempt(\"E\", lambda: Session(backend=backend).estimator())\n    attempt(\"F\", lambda: EstimatorV2(options={\"mode\": session}))\n    evidence[\"C\"] = \"EstimatorV2 annotates mode with str, but \" + evidence[\"C\"]\n    evidence[\"F\"] = \"mode is a constructor parameter, not an EstimatorOptions field; \" + evidence[\"F\"]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — broke the two-way longest tie by widening the V1-idiom distractor. | pool wave: +E (session.estimator() factory), +F (mode passed inside options=) | realism audit 2026-10-01: stem trimmed; one recalled API fact -> 2->1; stem 20 -> 10 words; difficulty 2 -> 1"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — broke the two-way longest tie by widening the V1-idiom distractor. | pool wave: +E (session.estimator() factory), +F (mode passed inside options=) | realism audit 2026-10-01: stem trimmed; one recalled API fact -> 2->1; stem 20 -> 10 words; difficulty 2 -> 1 | adversarial A3 2026-10-16: DE claimed Session exposes close/cancel/status/details/backend \"and nothing else\" (0.48 also has usage, session_id, service, from_id) -> corrected; DC answers the docs/signature trap (EstimatorV2 mode annotated \"| str\") with the executed ValueError; code fragment now imports EstimatorV2/Session and says where backend comes from; proof now requires estimator.mode is session for the key, not just a successful run"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-16",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

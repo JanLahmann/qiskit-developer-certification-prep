@@ -7,7 +7,7 @@
   "type": "mcq",
   "difficulty": 1,
   "stem": "Which call runs both `isa1` and `isa2` in one Sampler job?",
-  "code": "sampler = SamplerV2(mode=backend)\njob = ...  # run both isa1 and isa2 in one job",
+  "code": "# backend: a QPU backend; isa1, isa2: ISA circuits for it\nsampler = SamplerV2(mode=backend)\njob = ...  # run both isa1 and isa2 in one job",
   "options": [
     {
       "key": "A",
@@ -40,15 +40,15 @@
   "explanation": {
     "correct": "`run` takes one iterable of PUBs. Two circuits are two PUBs, so they go in one list: `run([isa1, isa2])`. The result then has one pub-result per circuit.",
     "distractors": {
-      "A": "`[[isa1, isa2]]` is a single PUB whose first element is a list of circuits — an invalid pub-like — so it raises rather than running the two circuits.",
+      "A": "The inner list `[isa1, isa2]` is read as ONE pub-like tuple: `isa1` as its circuit and `isa2` in the parameter-values slot. A circuit is not parameter data, so coercion raises `ValueError` instead of running two circuits.",
       "B": "`run(isa1, isa2)` passes two positional arguments; `run` accepts a single `pubs` iterable, so this raises `TypeError`.",
-      "C": "`run([isa1], [isa2])` again supplies two positionals (the second is interpreted as `shots`), raising an error rather than running two circuits.",
+      "C": "`run` has one positional parameter, `pubs`; `shots` is keyword-only. The second list is an extra positional, so this raises `TypeError` (\"takes 2 positional arguments but 3 were given\") rather than running two circuits.",
       "E": "`run` returns a job, not another primitive, and a job has no `run` of its own. Chaining like this raises `AttributeError` — and even if it worked it would be two jobs, not one.",
       "F": "The PUB list is right, but `shots` is a single integer applied to the whole job; a list raises `TypeError`. Per-PUB shot counts belong inside the PUB tuple instead."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
-      "https://quantum.cloud.ibm.com/docs/guides/hello-world"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
     ]
   },
   "proof": {
@@ -57,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc1 = QuantumCircuit(2); qc1.h(0); qc1.cx(0, 1); qc1.measure_all()\nqc2 = QuantumCircuit(2); qc2.x(0); qc2.measure_all()\nisa1 = pm.run(qc1); isa2 = pm.run(qc2)\nsampler = SamplerV2(mode=backend)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        res = fn()\n        evidence[key] = f\"ran, returned {len(res)} pub result(s) in one job\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nattempt(\"D\", lambda: sampler.run([isa1, isa2]).result())\nattempt(\"B\", lambda: sampler.run(isa1, isa2).result())\nattempt(\"C\", lambda: sampler.run([isa1], [isa2]).result())\nattempt(\"A\", lambda: sampler.run([[isa1, isa2]]).result())\nattempt(\"E\", lambda: sampler.run([isa1]).run([isa2]).result())\nattempt(\"F\", lambda: sampler.run([isa1, isa2], shots=[1024, 1024]).result())\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc1 = QuantumCircuit(2); qc1.h(0); qc1.cx(0, 1); qc1.measure_all()\nqc2 = QuantumCircuit(2); qc2.x(0); qc2.measure_all()\nisa1 = pm.run(qc1); isa2 = pm.run(qc2)\nsampler = SamplerV2(mode=backend)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        res = fn()\n        n = len(res)\n        evidence[key] = f\"ran as one job, returned {n} pub result(s)\"\n        if n == 2:  # both isa1 and isa2 executed\n            proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\nattempt(\"D\", lambda: sampler.run([isa1, isa2]).result())\nattempt(\"B\", lambda: sampler.run(isa1, isa2).result())\nattempt(\"C\", lambda: sampler.run([isa1], [isa2]).result())\nevidence[\"C\"] = \"shots is keyword-only in run(pubs, *, shots=None); \" + evidence[\"C\"]\nattempt(\"A\", lambda: sampler.run([[isa1, isa2]]).result())\nevidence[\"A\"] = \"the inner list is ONE pub (circuit isa1, parameter values isa2); \" + evidence[\"A\"]\nattempt(\"E\", lambda: sampler.run([isa1]).run([isa2]).result())\nattempt(\"F\", lambda: sampler.run([isa1, isa2], shots=[1024, 1024]).result())\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E (chaining run on the job), +F (a per-PUB shots list) | realism audit 2026-10-01: stem trimmed; stem 25 -> 11 words; difficulty 1 -> 1"
+    "notes": "pool wave: +E (chaining run on the job), +F (a per-PUB shots list) | realism audit 2026-10-01: stem trimmed; stem 25 -> 11 words; difficulty 1 -> 1 | adversarial A3 2026-10-16: DC said the second list \"is interpreted as shots\" (false: 0.48 run(pubs, *, shots=None), TypeError on the extra positional) and DA said the pub's first element is a list of circuits (false: [isa1, isa2] is the pub, isa2 lands in the parameter-values slot -> ValueError) -> both rewritten from execution; proof requires 2 pub results for the key; code says where backend/isa1/isa2 come from; execution-modes/hello-world citations (silent on run signature) -> SamplerV2 API (\"pubs - An iterable of pub-like objects. For example, a list of circuits\", shots per job) + primitive-input-output (one PubResult per PUB)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-16",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

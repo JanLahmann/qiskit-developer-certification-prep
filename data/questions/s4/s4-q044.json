@@ -7,7 +7,7 @@
   "type": "predict-output",
   "difficulty": 2,
   "stem": "Which best describes the `<ZZ>` value this Bell circuit returns on the noisy fake backend?",
-  "code": "backend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)     # Bell state\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa = pm.run(qc)\nmapped = obs.apply_layout(isa.layout)\nevs = EstimatorV2(mode=backend).run([(isa, mapped)]).result()[0].data.evs\nprint(evs)",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)     # Bell state\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa = pm.run(qc)\nmapped = obs.apply_layout(isa.layout)\nevs = EstimatorV2(mode=backend).run([(isa, mapped)]).result()[0].data.evs\nprint(evs)",
   "options": [
     {
       "key": "A",
@@ -43,12 +43,12 @@
       "A": "`apply_layout` only re-indexes the observable to match the transpiled circuit; it does nothing about noise, so the measured value stays below +1.",
       "B": "`<ZZ>` near 0 would mean the qubits are uncorrelated in Z, which is not true for a Bell state.",
       "C": "`<ZZ>` near -1 would mean anti-correlation (outcomes like 01/10 dominating); the Bell state gives 00/11, i.e. positive correlation.",
-      "E": "Nothing is mitigated in this snippet: `EstimatorV2`'s default resilience does not inflate a `ZZ` correlation past its ideal value, and the measured number sits below `+1`, not above it.",
+      "E": "Nothing is mitigated here. With a fake backend, the 0.48 `EstimatorV2` runs in local testing mode, where resilience options have no effect (requesting `resilience_level=1` only raises a warning). The current guide's locally implemented mitigation belongs to the 0.50 client-side primitives. The measured value sits below +1, not above it.",
       "F": "Depolarizing noise scales a correlation by a factor set by the actual gate and readout errors, which on this device are small. The observed value is close to `+0.9`, nowhere near a clean halving."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/hello-world",
-      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+      "https://quantum.cloud.ibm.com/docs/guides/local-testing-mode"
     ]
   },
   "proof": {
@@ -57,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)     # Bell state\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa = pm.run(qc)\nmapped = obs.apply_layout(isa.layout)\nevs = float(EstimatorV2(mode=backend).run([(isa, mapped)]).result()[0].data.evs)\n\nflags = {\n    \"D\": 0.7 < evs < 1.0,\n    \"B\": abs(evs) < 0.2,\n    \"C\": evs < -0.7,\n    \"A\": evs == 1.0,\n    \"E\": evs > 1.0,\n    \"F\": abs(evs - 0.5) < 0.05,\n}\nlabels = {\"D\": \"close to +1 but below 1 (noisy)\", \"B\": \"close to 0\", \"C\": \"close to -1\",\n          \"A\": \"exactly +1.0\", \"E\": \"above +1 (over-corrected)\", \"F\": \"exactly +0.5 (halved)\"}\nevidence = {k: f\"measured <ZZ>={round(evs, 4)} on the noisy backend; option {k} predicts '{labels[k]}' -> match={v}\"\n            for k, v in flags.items()}\nevidence[\"E\"] += \"; no mitigation is switched on here, and the measured value stays below the ideal\"\nevidence[\"F\"] += \"; the noise trims the correlation slightly rather than halving it\"\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": evs}})\n"
+    "proof_script": "import io\nimport warnings\nfrom contextlib import redirect_stdout\n\nSTEM_CODE = '''from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.transpiler import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)     # Bell state\nobs = SparsePauliOp(\"ZZ\")\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nisa = pm.run(qc)\nmapped = obs.apply_layout(isa.layout)\nevs = EstimatorV2(mode=backend).run([(isa, mapped)]).result()[0].data.evs\nprint(evs)'''\n\n# 1) The displayed code, verbatim (unseeded: only a band check is used from it).\nns = {}\nbuf = io.StringIO()\nwith redirect_stdout(buf):\n    exec(STEM_CODE, ns)\nverbatim = float(ns[\"evs\"])\nverbatim_in_band = 0.7 < verbatim < 1.0\n\n# 2) The same ISA circuit and mapped observable, seeded, for a reproducible value.\nEstimatorV2 = ns[\"EstimatorV2\"]\nbackend, isa, mapped = ns[\"backend\"], ns[\"isa\"], ns[\"mapped\"]\nseeded = float(EstimatorV2(mode=backend, options={\"simulator\": {\"seed_simulator\": 42}})\n               .run([(isa, mapped)]).result()[0].data.evs)\n\n# 3) Option E: does asking for readout mitigation change anything on a fake backend?\nwith warnings.catch_warnings(record=True) as caught:\n    warnings.simplefilter(\"always\")\n    mitigated = float(EstimatorV2(mode=backend, options={\"resilience_level\": 1,\n                                                          \"simulator\": {\"seed_simulator\": 42}})\n                      .run([(isa, mapped)]).result()[0].data.evs)\nres_warn = [str(w.message) for w in caught if \"resilience_level\" in str(w.message)]\n\nflags = {\n    \"A\": seeded == 1.0,\n    \"B\": abs(seeded) < 0.2,\n    \"C\": seeded < -0.7,\n    \"D\": 0.7 < seeded < 1.0 and verbatim_in_band,\n    \"E\": seeded > 1.0 or mitigated > 1.0,\n    \"F\": abs(seeded - 0.5) < 0.05,\n}\nv = round(seeded, 4)\nevidence = {\n    \"A\": f\"seeded <ZZ> = {v} (seed_simulator=42), not exactly 1.0; apply_layout only re-indexes the observable -> {flags['A']}\",\n    \"B\": f\"seeded <ZZ> = {v}, far from 0 -> {flags['B']}\",\n    \"C\": f\"seeded <ZZ> = {v}, positive, not near -1 -> {flags['C']}\",\n    \"D\": f\"seeded <ZZ> = {v}; the verbatim (unseeded) stem code also lands in (0.7, 1.0): {verbatim_in_band} -> {flags['D']}\",\n    \"E\": (f\"default run {v}; with resilience_level=1 requested: {round(mitigated, 4)}, and local mode warns \"\n          f\"{res_warn[0][:70] if res_warn else 'nothing'!r}; nothing exceeds +1 -> {flags['E']}\"),\n    \"F\": f\"seeded <ZZ> = {v}, not 0.5 -> {flags['F']}\",\n}\nproven = [k for k, val in flags.items() if val]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"seeded_evs\": seeded, \"mitigated_request_evs\": mitigated,\n                           \"verbatim_in_band\": verbatim_in_band, \"resilience_warning\": res_warn[:1]}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+stem-echoed the noise-free distractor (length-tell fix). Also: stem-echo calibration. | pool wave: +E (mitigation pushes <ZZ> above +1), +F (noise halves the correlation) | realism audit 2026-10-01: stem trimmed; removed the 'ideally +1' gloss — rated with it gone; ideal value + noise = two steps -> 3->2; stem 33 -> 15 words; difficulty 3 -> 2"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+stem-echoed the noise-free distractor (length-tell fix). Also: stem-echo calibration. | pool wave: +E (mitigation pushes <ZZ> above +1), +F (noise halves the correlation) | realism audit 2026-10-01: stem trimmed; removed the 'ideally +1' gloss — rated with it gone; ideal value + noise = two steps -> 3->2; stem 33 -> 15 words; difficulty 3 -> 2 | adversarial A3 2026-10-16: displayed code had no imports -> added; proof execs the verbatim stem code (band check only, unseeded) and scores options on a seed_simulator=42 run (0.8765), so no raw unseeded value reaches the evidence; E now attempted (resilience_level=1 on the fake backend: local mode warns \"no effect\", value unchanged); DE rebuilt from the executed resilience warning and answers the local-testing-mode trap (\"error suppression and mitigation options are implemented locally\" is the 0.50 client-side primitives); execution-modes citation (silent) -> local-testing-mode (\"noise model from the snapshot is automatically applied\"); hello-world kept (Bell ZZ correlation 1)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-16",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

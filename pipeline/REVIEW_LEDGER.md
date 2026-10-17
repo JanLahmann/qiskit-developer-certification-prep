@@ -3373,3 +3373,79 @@ fetched as text and grepped. **0 key changes, 0 kills.** 18 edited, 4 survived u
 - Gates: verify_bank s4 30/30 PROVEN + 25 conceptual, exit 0; audit_meta_patterns s4 0 blockers /
   0 warnings, 10 low length flags (q015's only option change lengthened a distractor, so no new
   variant); lint_proof_drift 0 findings.
+
+## Adversarial review A3 — s4b (2026-10-16)
+
+Scope: s4-q031..q049, s4-q061..q063 (22; 13 executed, 9 conceptual; figure items q047, q048,
+q049, q061, q062, q063 rendered, rasterized and read). Every executable option, pool distractors
+included, re-run in independent scripts (pinned venv, qiskit 2.5.0 / runtime 0.48.0); runtime
+behavior read from the INSTALLED 0.48 source; every cited page fetched as text and grepped.
+**0 key changes, 0 kills.** 17 edited, 5 survived unchanged (q033, q041, q049, q062, q063).
+
+- **Second-answer / loose-reading fixes (keys unchanged):** s4-q039 E ("session mode is
+  available to Open Plan users") was true under local testing mode (s4-q015 precedent) -> "can
+  submit session jobs to a QPU". s4-q035 F ("local testing ... then submitted with
+  `mode=backend`") ended in job mode, i.e. the key -> F now claims local testing is a fourth
+  execution mode that replaces the QPU run. s4-q061 left CX direction open (CouplingMap API:
+  "directed edges correspond to permitted CNOT gates"; a one-way coupling rejects `cx(1, 0)` even
+  on the keyed map) -> code comment: every drawn coupling supports cx both ways (FakeLimaV2's
+  target has cx on (0,1) and (1,0); the proof's GenericBackendV2 is bidirectional).
+- **False rationales, rebuilt from execution/source:** s4-q043 DC said the second list "is
+  interpreted as shots" (0.48 `run(pubs, *, shots=None)`: TypeError "takes 2 positional arguments
+  but 3 were given"); DA said the PUB's first element is a list of circuits (the inner list IS the
+  pub: `isa2` lands in the parameter-values slot -> ValueError). s4-q038 DE "Session exposes close,
+  cancel, status, details and backend, and nothing else" (0.48 also has usage, session_id,
+  service, from_id). s4-q035 DE "a primitive never picks a mode by itself" (`get_mode_service_backend`
+  adopts `get_cm_session()` when `mode` is None). s4-q037 DF "a single job has no service-side
+  classical processing" -> rewritten; DE "opening one costs nothing" trimmed. s4-q046 correct:
+  dropped "the one pattern where adding observables does not multiply the work".
+- **Display letters:** s4-q031 correct cited "(A)"/"(B)" for keys B/C (wrong letters too);
+  s4-q039 correct cited "(A)(B)(C)" -> letter-free.
+- **Code not runnable as displayed:** q036, q044, q045 had no imports -> added; their proofs now
+  exec the verbatim stem code (q036 also each option as a literal edit of it; q036 A now says `pm`
+  is a preset pass manager for `backend`). q038/q043/q047/q048 fragments now say where
+  `backend`/`isa1`/`estimator`/`circuit` come from.
+- **Proof weakness:** hard-coded / never-attempted flags now attempted: q032 A (a
+  `QiskitRuntimeLocalService` initialized first, string still ValueError; resolver takes only
+  `mode`), q042 D (verbatim code, scored by whether it raised; printed literal `fake_manila`),
+  q044 E (`resilience_level=1` on the fake backend: "The resilience_level option has no effect in
+  local testing mode.", value unchanged). Keys now check the property asked, not just success:
+  q034 `sampler.mode is None` (job mode), q038 `estimator.mode is session`, q043 two pub results.
+  q036 D was attempted with the ISA circuit -> literal `run([(qc, obs)], backend)` (TypeError).
+  q044 (shot noise): options scored on a `seed_simulator=42` run (0.8765); the verbatim unseeded
+  stem run is used only as a (0.7, 1.0) band check, no raw unseeded value in evidence.
+  q047 proof scores the coerced BindingsArray shape and asserts the figure captions.
+- **Docs-example duplication:** s4-q047 used the primitive-input-output guide's own outer/product
+  example shapes ((4, 1) observables x (1, 6) values, four single Paulis) -> reworked to (3, 1) x
+  (1, 5) in code, generator, options, alt and proof; re-rendered and read. s4-q048 kept at 5 rows:
+  its `reshape(5, 1)` one-parameter coercion twist is not the guide's zip example.
+- **Docs-reader traps answered:** EstimatorV2 API/0.48 signature annotate `mode` with `| str`
+  (q038 DC: any string -> ValueError); run-jobs-batch caution "If you set backend=backend ... run
+  in job mode" (q034 DB: deprecated keyword, TypeError in 0.48); initialize-account "free plans
+  are prioritized by default" (q040 DC: instance choice, not saved-account choice);
+  choose-execution-mode "classical computation, such as compilation, is run in parallel" (q037
+  DF: service-side, across several jobs); local-testing-mode "mitigation options are implemented
+  locally" (q044 DE: 0.50 client-side primitives; 0.48 warns no effect).
+- **s4-q040 executed although conceptual:** temp account file, 0.48 `save_account` +
+  `AccountManager.get`, both save orders -> `premium_acct` (file written sort_keys; last matching
+  channel wins). Confirms D, refutes B/E.
+- **Citation failures replaced (fetched, quotes grepped):** hello-world -> SamplerV2 API on q032
+  (`mode (BackendV2 | Session | Batch | None)`) and q034 ("A Backend if you are using job mode");
+  execution-modes -> get-started-with-estimator on q036 ("circuit and observable need to be
+  transformed", apply_layout); run-jobs-batch -> execution-modes-faq on q037 ("other jobs in that
+  batch essentially jump to the front of the queue"); run-jobs-session/execution-modes -> Session
+  API (`backend()` returns `str | None`) + local-testing-mode on q042; execution-modes/hello-world
+  -> SamplerV2 API + primitive-input-output on q043; execution-modes -> local-testing-mode on q044
+  ("noise model from the snapshot is automatically applied"); estimator-v2 API /
+  get-started-with-estimator (no broadcasting content) dropped on q045-q048, primitive-input-output
+  carries the pattern table.
+- **Survived attacks (executed):** q033/q041 TTL definitions vs execution-modes ("When the first
+  job starts running, the maximum TTL timer starts"); q045 evs (3, 4); q046 six pairings (only E
+  equal non-scalar shapes; D ValueError); q048 (5,) x (5,) -> evs (5,); q061 only A runs, B/C/D
+  IBMInputValueError; q062 only [1, 0, 2, 3] 0 SWAPs / 3 CX; q063 '110' (noiseless 200/200), each
+  distractor reproduced by its misreading. Figures: all renders match alt texts.
+- **Difficulty:** all 22 kept.
+- Gates: verify_bank s4 30/30 PROVEN + 25 conceptual, exit 0; audit_meta_patterns s4 0 blockers /
+  0 warnings, 10 low length flags, all pre-existing (the q035 format tell and q036 length tell my
+  rewrites introduced were fixed); lint_proof_drift 0 findings (q038 F evidence trimmed to the
+  exception's first line); render_figures OK for q047.

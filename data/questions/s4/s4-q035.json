@@ -31,7 +31,7 @@
     },
     {
       "key": "F",
-      "text": "Local testing mode — a single small experiment should be run against a fake backend first, then submitted with `mode=backend`."
+      "text": "Local testing mode, the fourth execution mode: pass a fake backend as `mode` and the lone experiment never has to queue for a QPU."
     }
   ],
   "answer": [
@@ -43,8 +43,8 @@
       "B": "A session does not give a single job priority over other users, and it costs more; its benefits appear only across multiple jobs.",
       "C": "The queuing time does not decrease for the first job submitted in a batch, so batching a single request gives no benefit.",
       "D": "It does make a difference: sessions and batches add overhead/cost without helping a single job, whereas job mode is the recommended, lightest choice.",
-      "E": "There is no surrounding context in the scenario, and a primitive never picks a mode by itself: with nothing passed and no open session or batch, you must give it a backend, which is precisely job mode.",
-      "F": "Local testing mode is not one of the execution modes; it is a way to exercise the same code without credentials. The modes you choose between are job, session and batch, and for one request the answer is job mode."
+      "E": "The scenario has no session or batch open. A primitive constructed inside a `with Session(...)` or `with Batch(...)` block does adopt that context when `mode` is omitted, but that only inherits a choice already made; it is not a mode recommendation. For one request on its own, the guidance is job mode.",
+      "F": "Local testing mode is not one of the execution modes; it is a way to exercise the same code on a fake backend without credentials, and its results come from a simulator, not the QPU. The modes you choose between are job, session and batch, and for one request the answer is job mode."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — code-formatted + hedged the batch distractor (format/absolute-tell fix). Also: correct option now carries the stem vocabulary (stem-echo calibration). Also: levelled stem vocabulary across the options (stem-echo fix). | pool wave: +E (a lone request inherits a mode), +F (local testing mode is an execution mode) | realism audit 2026-10-01: stem trimmed; stem 21 -> 12 words (reworded to avoid a stem-echo of the keyed option's 'single primitive request'); difficulty 1 -> 1"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — code-formatted + hedged the batch distractor (format/absolute-tell fix). Also: correct option now carries the stem vocabulary (stem-echo calibration). Also: levelled stem vocabulary across the options (stem-echo fix). | pool wave: +E (a lone request inherits a mode), +F (local testing mode is an execution mode) | realism audit 2026-10-01: stem trimmed; stem 21 -> 12 words (reworded to avoid a stem-echo of the keyed option's 'single primitive request'); difficulty 1 -> 1 | adversarial A3 2026-10-16: F had a defensible reading (test locally, then submit with mode=backend = job mode, i.e. the key) -> F now claims local testing is a fourth execution mode replacing the QPU run; DE said a primitive never picks a mode by itself, false in 0.48 (get_mode_service_backend adopts get_cm_session() when mode is None) -> reworded; citations verified (choose-execution-mode \"Always use job mode to submit a single primitive request\"); F carries code formatting again (audit format_tell after the rewrite)"
   },
   "display_count": 5
 }

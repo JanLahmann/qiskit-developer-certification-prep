@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-10-02",
     "model": "claude-opus (figure wave, s1/s3/s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "figure wave add (stem figure, d2): choose an initial_layout from a hand-drawn H-shaped gate map (FakeNairobiV2, no Graphviz) so a star of three CX gates needs no routing — the hub must be a physical qubit coupled to all three chosen partners. Distractors: the visually central qubit, the identity layout, a degree-3 hub with a wrong leaf. Proof asserts the drawn edge literal against the backend and re-renders the map from the backend's own coupling map (byte-identical), then per layout counts routing SWAPs (coupling-map-only level 0) and level-1 CX gates (only C: 0 SWAPs, 3 CX)."
+    "notes": "figure wave add (stem figure, d2): choose an initial_layout from a hand-drawn H-shaped gate map (FakeNairobiV2, no Graphviz) so a star of three CX gates needs no routing — the hub must be a physical qubit coupled to all three chosen partners. Distractors: the visually central qubit, the identity layout, a degree-3 hub with a wrong leaf. Proof asserts the drawn edge literal against the backend and re-renders the map from the backend's own coupling map (byte-identical), then per layout counts routing SWAPs (coupling-map-only level 0) and level-1 CX gates (only C: 0 SWAPs, 3 CX). | adversarial A3 2026-10-16: survived, no change (figure rasterized = FakeNairobiV2 H map, alt matches; each layout re-derived by hand and by the proof: only [1, 0, 2, 3] has all three hub pairs coupled)"
   },
   "freshness": {
     "verified_against": {
@@ -71,7 +71,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-16",
+    "verified_on": "2026-10-17",
     "stale": false
   }
 }

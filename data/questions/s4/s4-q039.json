@@ -27,7 +27,7 @@
     },
     {
       "key": "E",
-      "text": "Session mode is available to Open Plan users, just like batch mode."
+      "text": "Open Plan users can submit session jobs to a QPU, just like batch jobs."
     },
     {
       "key": "F",
@@ -40,10 +40,10 @@
     "C"
   ],
   "explanation": {
-    "correct": "Job mode is a single request without a context manager (A). A session grants exclusive access with no other users' or calibration jobs during the active window (B). Batch parallelizes the classical processing to pack quantum execution tightly (C).",
+    "correct": "Job mode is a single primitive request made without a context manager. A session grants exclusive access to the QPU during its active window, so no other users' jobs and no calibration jobs run then. Batch mode parallelizes the jobs' classical pre-processing so their quantum execution can be packed tightly together.",
     "distractors": {
       "D": "Batch mode does NOT give exclusive access; batched jobs share the QPU with others. Exclusivity is a session feature.",
-      "E": "Open Plan users cannot use sessions; only job and batch mode are available to them.",
+      "E": "Open Plan users cannot submit session jobs; on a QPU they can use only job and batch mode. (Local testing mode can open a `Session` on a fake backend for anyone, but that never reaches a QPU.)",
       "F": "Sessions are generally MORE expensive than batches, not cheaper; batch is preferred when dedicated access is not needed."
     },
     "citations": [
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: display_count=5 rotation only — 6 options already (schema cap), so no new distractor can be added | realism audit 2026-10-01: stem trimmed; three recalled facts, no interaction -> 3->2; stem 15 -> 12 words; difficulty 3 -> 2"
+    "notes": "pool wave: display_count=5 rotation only — 6 options already (schema cap), so no new distractor can be added | realism audit 2026-10-01: stem trimmed; three recalled facts, no interaction -> 3->2; stem 15 -> 12 words; difficulty 3 -> 2 | adversarial A3 2026-10-16: explanation.correct referenced display letters (A)/(B)/(C) -> letter-free; E (\"session mode is available to Open Plan users\") was true under local testing mode (Session on a fake backend, s4-q015 precedent) -> scoped to submitting session jobs to a QPU"
   },
   "display_count": 5
 }

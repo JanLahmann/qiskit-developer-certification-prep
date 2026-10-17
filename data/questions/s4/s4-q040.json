@@ -42,7 +42,7 @@
     "distractors": {
       "A": "It does not raise — the alphabetical-last account is selected as the fallback.",
       "B": "Save order is not the tiebreaker; alphabetical name order is.",
-      "C": "There is no automatic preference for free (Open) plans when choosing among SAVED named accounts; the alphabetical rule applies.",
+      "C": "The guide's \"free plans are prioritized by default\" (v0.42+) is about choosing an instance inside one account when several can reach the QPU, not about which saved account loads. Among saved named accounts with no default, the alphabetical rule applies.",
       "E": "The rule is real but runs the other way: the account whose name sorts LAST is the one loaded. Half-remembering the direction is the whole trap in this question.",
       "F": "Nothing inspects plans or entitlements when a default is missing. The selection is purely lexicographic over the saved account names."
     },
@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — removed hedge pile-up from the distractors (avoid-hedged calibration). | pool wave: +E (alphabetically first wins), +F (broadest access wins) | realism audit 2026-10-01: stem trimmed; one obscure documented rule -> 3->2; stem 30 -> 14 words; difficulty 3 -> 2"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — removed hedge pile-up from the distractors (avoid-hedged calibration). | pool wave: +E (alphabetically first wins), +F (broadest access wins) | realism audit 2026-10-01: stem trimmed; one obscure documented rule -> 3->2; stem 30 -> 14 words; difficulty 3 -> 2 | adversarial A3 2026-10-16: executed in a temp account file (0.48 save_account + AccountManager.get, both save orders): premium_acct loads either way (file written sort_keys, last matching channel wins), confirming D and refuting B/E; DC now answers the initialize-account trap \"free plans are prioritized by default\" (instance selection, not saved-account choice); citation verified (\"the one whose name comes last alphabetically is used\")"
   },
   "display_count": 5
 }

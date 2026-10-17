@@ -5,18 +5,38 @@
       "A"
     ],
     "evidence": {
-      "A": "buggy run([(qc, obs)]) -> IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do not match the target hardware ; fix transpiled + apply_layout -> evs=0.8828 -> True",
-      "B": "raising default_shots then run([(qc, obs)]) -> IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do  (shots do not fix a non-ISA circuit) -> False",
-      "C": "run([[qc, obs]]) with the un-transpiled circuit -> IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do  -> False",
-      "D": "run([(isa, mapped)], backend) extra positional -> TypeError: EstimatorV2.run() takes 2 positional arguments but 3 were given -> False",
-      "E": "SparsePauliOp('ZZ', target=backend.target) -> TypeError: SparsePauliOp.__init__() got an unexpected keyword argument 'target' (there is no such parameter) -> False",
-      "F": "the same abstract circuit handed to SamplerV2 -> IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do  (the Sampler enforces the ISA too) -> False"
+      "A": "displayed code -> ('raised', 'IBMInputValueError') ('The instruction h on qubits (0,) is not supported by the ta...); with pm (preset, FakeManilaV2) + apply_layout -> ('ran', 0.8794) -> True",
+      "B": "default_shots = 8000, same abstract circuit -> ('raised', 'IBMInputValueError') -> False",
+      "C": "run([[qc, obs]]) -> ('raised', 'IBMInputValueError') -> False",
+      "D": "run([(qc, obs)], backend) -> ('raised', 'TypeError', 'EstimatorV2.run() takes 2 positional arguments but 3 were given') -> False",
+      "E": "SparsePauliOp('ZZ', target=backend.target) -> ('raised', 'TypeError', \"SparsePauliOp.__init__() got an unexpected keyword argument 'target'\") -> False",
+      "F": "same abstract circuit + measure_all to SamplerV2(mode=backend) -> ('raised', 'IBMInputValueError') -> False"
     },
     "observed": {
-      "buggy": "IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do not match the target hardware ",
-      "a_note": "transpiled + apply_layout -> evs=0.8828",
-      "e_note": "TypeError: SparsePauliOp.__init__() got an unexpected keyword argument 'target'",
-      "f_note": "IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do "
+      "buggy": [
+        "raised",
+        "IBMInputValueError",
+        "'The instruction h on qubits (0,) is not supported by the target system. Circuits that do not match the target"
+      ],
+      "A": [
+        "ran",
+        0.8794
+      ],
+      "D": [
+        "raised",
+        "TypeError",
+        "EstimatorV2.run() takes 2 positional arguments but 3 were given"
+      ],
+      "E": [
+        "raised",
+        "TypeError",
+        "SparsePauliOp.__init__() got an unexpected keyword argument 'target'"
+      ],
+      "F": [
+        "raised",
+        "IBMInputValueError",
+        "'The instruction h on qubits (0,) is not supported by the target system. Circuits that do not match the target"
+      ]
     }
   },
   "versions": {
@@ -25,9 +45,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.36,
+  "wall_seconds": 1.87,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"buggy run([(qc, obs)]) -> IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do not match the target hardware ; fix transpiled + apply_layout -> evs=0.8828 -> True\", \"B\": \"raising default_shots then run([(qc, obs)]) -> IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do  (shots do not fix a non-ISA circuit) -> False\", \"C\": \"run([[qc, obs]]) with the un-transpiled circuit -> IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do  -> False\", \"D\": \"run([(isa, mapped)], backend) extra positional -> TypeError: EstimatorV2.run() takes 2 positional arguments but 3 were given -> False\", \"E\": \"SparsePauliOp('ZZ', target=backend.target) -> TypeError: SparsePauliOp.__init__() got an unexpected keyword argument 'target' (there is no such parameter) -> False\", \"F\": \"the same abstract circuit handed to SamplerV2 -> IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do  (the Sampler enforces the ISA too) -> False\"}, \"observed\": {\"buggy\": \"IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do not match the target hardware \", \"a_note\": \"transpiled + apply_layout -> evs=0.8828\", \"e_note\": \"TypeError: SparsePauliOp.__init__() got an unexpected keyword argument 'target'\", \"f_note\": \"IBMInputValueError: 'The instruction h on qubits (0,) is not supported by the target system. Circuits that do \"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "0.87939453125\n###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"displayed code -> ('raised', 'IBMInputValueError') ('The instruction h on qubits (0,) is not supported by the ta...); with pm (preset, FakeManilaV2) + apply_layout -> ('ran', 0.8794) -> True\", \"B\": \"default_shots = 8000, same abstract circuit -> ('raised', 'IBMInputValueError') -> False\", \"C\": \"run([[qc, obs]]) -> ('raised', 'IBMInputValueError') -> False\", \"D\": \"run([(qc, obs)], backend) -> ('raised', 'TypeError', 'EstimatorV2.run() takes 2 positional arguments but 3 were given') -> False\", \"E\": \"SparsePauliOp('ZZ', target=backend.target) -> ('raised', 'TypeError', \\\"SparsePauliOp.__init__() got an unexpected keyword argument 'target'\\\") -> False\", \"F\": \"same abstract circuit + measure_all to SamplerV2(mode=backend) -> ('raised', 'IBMInputValueError') -> False\"}, \"observed\": {\"buggy\": [\"raised\", \"IBMInputValueError\", \"'The instruction h on qubits (0,) is not supported by the target system. Circuits that do not match the target\"], \"A\": [\"ran\", 0.8794], \"D\": [\"raised\", \"TypeError\", \"EstimatorV2.run() takes 2 positional arguments but 3 were given\"], \"E\": [\"raised\", \"TypeError\", \"SparsePauliOp.__init__() got an unexpected keyword argument 'target'\"], \"F\": [\"raised\", \"IBMInputValueError\", \"'The instruction h on qubits (0,) is not supported by the target system. Circuits that do not match the target\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

@@ -38,7 +38,7 @@
     "E"
   ],
   "explanation": {
-    "correct": "*Zip* is the pattern where the two arrays already agree: identically shaped parameter and observables arrays are matched element by element, so the nth observable is estimated at the nth parameter value and the result keeps that same shape — three estimates from `(3,)` and `(3,)`, not nine. It is the one pattern where adding observables does not multiply the amount of work.",
+    "correct": "*Zip* is the pattern where the two arrays already agree: identically shaped parameter and observables arrays are matched element by element, so the nth observable is estimated at the nth parameter value and the result keeps that same shape — three estimates from `(3,)` and `(3,)`, not nine.",
     "distractors": {
       "A": "A scalar observables array is the guide's *broadcast single observable* row: the one observable is reused at every parameter value. The result shape is the same `(3,)`, which is why this pairing is the easiest one to mistake for zip.",
       "B": "A `(1, 3)` parameter array against a `(2, 1)` observables array broadcasts to `(2, 3)` — every observable at every parameter value. That is *outer/product*.",
@@ -47,8 +47,7 @@
       "F": "The trailing axes agree but the shapes differ: the `(3,)` observables array is stretched across the leading axis of the `(2, 3)` parameter array, so `evs` has shape `(2, 3)` — the same three observables reused in each row, not an element-by-element pairing of two equal shapes."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/estimator-v2"
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
     ]
   },
   "proof": {
@@ -62,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "official-alignment gap task 4.2 (pattern NAMES). Companion to s4-q045, asked in the reverse direction. Every pairing is executed: the proof reports the coerced observables-array shape, the parameter-array shape and the resulting evs shape, and scores zip as 'two equally shaped non-scalar arrays, result keeps that shape'. | realism audit 2026-10-01: CORRECTNESS FIX — old pool distractor F ((3, 1) params x (3,) observables) is ALSO zip on a one-parameter circuit (the trailing size-1 axis is the parameter axis -> sets (3,), evs (3,)); the proof scored the raw array shape and missed it. F now (2, 3) x (3,) -> evs (2, 3); proof now scores the coerced BindingsArray shape. Stem names the one-parameter circuit; stem 27 -> 13 words; difficulty 1 -> 1."
+    "notes": "official-alignment gap task 4.2 (pattern NAMES). Companion to s4-q045, asked in the reverse direction. Every pairing is executed: the proof reports the coerced observables-array shape, the parameter-array shape and the resulting evs shape, and scores zip as 'two equally shaped non-scalar arrays, result keeps that shape'. | realism audit 2026-10-01: CORRECTNESS FIX — old pool distractor F ((3, 1) params x (3,) observables) is ALSO zip on a one-parameter circuit (the trailing size-1 axis is the parameter axis -> sets (3,), evs (3,)); the proof scored the raw array shape and missed it. F now (2, 3) x (3,) -> evs (2, 3); proof now scores the coerced BindingsArray shape. Stem names the one-parameter circuit; stem 27 -> 13 words; difficulty 1 -> 1. | adversarial A3 2026-10-16: all six pairings re-run (coerced BindingsArray/ObservablesArray shapes; only E is two equal non-scalar shapes); dropped an unsupported claim from explanation.correct (zip as \"the one pattern where adding observables does not multiply the work\"); estimator-v2 API citation (no broadcasting content) dropped"
   },
   "display_count": 5,
   "freshness": {
@@ -74,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-16",
+    "verified_on": "2026-10-17",
     "stale": false
   }
 }

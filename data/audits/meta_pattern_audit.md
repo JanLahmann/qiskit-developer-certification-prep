@@ -15,11 +15,11 @@ Scope: **s4** — 55 questions (50 single-answer, 5 multi-select). Random-guess 
 | similar_twin_member | 33.5% | 28% | 26.2% |
 | avoid_longest | 25.7% | 92% | 25.5% |
 | position_D | 25.4% | 79% | 24.9% |
-| most_absolute | 26.6% | 49% | 24.9% |
+| most_absolute | 26.4% | 49% | 24.8% |
 | avoid_hedged | 24.0% | 38% | 23.5% |
 | most_hedged | 20.8% | 38% | 22.4% |
 | stem_keyword_overlap | 21.7% | 91% | 21.9% |
-| least_absolute | 16.6% | 49% | 20.0% |
+| least_absolute | 16.8% | 49% | 20.1% |
 | longest_option | 18.9% | 100% | 18.9% |
 | odd_one_out | 12.5% | 100% | 12.5% |
 | code_formatted_only | 21.7% | 22% | – |

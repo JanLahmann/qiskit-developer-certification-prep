@@ -40,15 +40,15 @@
   "explanation": {
     "correct": "SamplerV2's `mode` accepts a Backend, Session, or Batch object (or None). A string is rejected at construction with `ValueError: mode must be of type Backend, Session, Batch or None`. You must pass the resolved backend object (for example from `service.backend(\"ibm_manila\")` or `service.least_busy(...)`).",
     "distractors": {
-      "A": "The type check on `mode` runs at construction regardless of whether a service exists, so a string always raises — a service does not make it valid.",
+      "A": "The type check on `mode` runs at construction and never consults a service: the mode resolver receives only `mode`, so a string raises `ValueError` with or without an initialized service. A service is how you obtain the backend object, not a way to make a name valid.",
       "B": "The primitive does not resolve backend names; that is the service's job. A string is never a valid `mode`.",
       "D": "No name lookup is attempted, so there is no `KeyError`; the type check rejects the string first with `ValueError`.",
       "E": "There is no silent fallback: construction fails outright, so no primitive object exists to run anything. Local execution is opted into deliberately, by passing a fake backend or an Aer backend as the mode.",
       "F": "Annotations are not enforced at runtime. The constructor performs its own `isinstance` guard and reports the violation as a `ValueError` that spells out the accepted types."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
-      "https://quantum.cloud.ibm.com/docs/guides/hello-world"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
     ]
   },
   "proof": {
@@ -57,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit_ibm_runtime import SamplerV2\n\ntry:\n    sampler = SamplerV2(mode=\"ibm_manila\")\n    outcome = (\"success\",)\n    resolved = repr(getattr(sampler, \"mode\", None))[:80]\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n    resolved = \"nothing was constructed\"\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nflags = {\n    \"C\": is_exc and name == \"ValueError\",\n    \"B\": outcome[0] == \"success\",\n    \"A\": outcome[0] == \"success\",\n    \"D\": is_exc and name == \"KeyError\",\n    \"E\": outcome[0] == \"success\",\n    \"F\": is_exc and name == \"TypeError\",\n}\nlabels = {\"C\": \"ValueError: mode must be Backend/Session/Batch or None\", \"B\": \"works, looks up by name\",\n          \"A\": \"works only if a service exists\", \"D\": \"KeyError: no such backend\",\n          \"E\": \"works, falling back to a local simulator\",\n          \"F\": \"TypeError from an annotation-driven type check\"}\nevidence = {k: f\"observed={outcome}; option {k} predicts '{labels[k]}' -> match={v}\" for k, v in flags.items()}\nevidence[\"E\"] += f\"; construction produced no primitive at all ({resolved}), so there was nothing to fall back to\"\nevidence[\"F\"] += f\"; the raised type is {name} — the check is an explicit isinstance guard that raises ValueError\"\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"outcome\": list(outcome)}})\n"
+    "proof_script": "import inspect\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.base_primitive import get_mode_service_backend\nfrom qiskit_ibm_runtime.fake_provider.local_service import QiskitRuntimeLocalService\n\n\ndef attempt():\n    try:\n        sampler = SamplerV2(mode=\"ibm_manila\")\n        return (\"success\", repr(getattr(sampler, \"mode\", None))[:80])\n    except Exception as e:\n        return (\"exception\", type(e).__name__, str(e)[:200])\n\n\n# Displayed code, verbatim, with no service anywhere in the process.\noutcome = attempt()\n\n# Option A: initialize a runtime service first, then retry the same string.\nservice = QiskitRuntimeLocalService()\noutcome_with_service = attempt()\nresolver_params = list(inspect.signature(get_mode_service_backend).parameters)\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nflags = {\n    \"A\": outcome_with_service[0] == \"success\" and outcome[0] == \"exception\",\n    \"B\": outcome[0] == \"success\",\n    \"C\": is_exc and name == \"ValueError\",\n    \"D\": is_exc and name == \"KeyError\",\n    \"E\": outcome[0] == \"success\",\n    \"F\": is_exc and name == \"TypeError\",\n}\nevidence = {\n    \"A\": (f\"with a QiskitRuntimeLocalService initialized first: {outcome_with_service[:2]}; the mode resolver \"\n          f\"get_mode_service_backend takes only {resolver_params} and consults no service -> match={flags['A']}\"),\n    \"B\": f\"SamplerV2(mode='ibm_manila') -> {outcome[:2]}; no name lookup happens -> match={flags['B']}\",\n    \"C\": f\"SamplerV2(mode='ibm_manila') -> {outcome} -> match={flags['C']}\",\n    \"D\": f\"raised type is {name}, not KeyError; the string is rejected before any lookup -> match={flags['D']}\",\n    \"E\": f\"construction raised {name}, so no primitive exists to fall back to a simulator -> match={flags['E']}\",\n    \"F\": f\"raised type is {name}; the explicit isinstance chain ends in 'raise ValueError', annotations are not enforced -> match={flags['F']}\",\n}\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"outcome\": list(outcome), \"outcome_with_service\": list(outcome_with_service),\n                           \"resolver_params\": resolver_params}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E (silent local-simulator fallback), +F (TypeError from the annotation) | realism audit 2026-10-01: stem trimmed; one recalled fact -> 2->1; stem 22 -> 10 words; difficulty 2 -> 1"
+    "notes": "pool wave: +E (silent local-simulator fallback), +F (TypeError from the annotation) | realism audit 2026-10-01: stem trimmed; one recalled fact -> 2->1; stem 22 -> 10 words; difficulty 2 -> 1 | adversarial A3 2026-10-16: A was a hard-coded flag never attempted -> proof now initializes a QiskitRuntimeLocalService and retries (still ValueError; resolver takes only mode); hello-world citation (silent on mode types) -> SamplerV2 API (mode: BackendV2 | Session | Batch | None)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-16",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 5

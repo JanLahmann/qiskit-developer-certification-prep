@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-10-02",
     "model": "claude-opus (figure wave, s1/s3/s4)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "figure wave add (stem figure, d2): read an ISA drawing (layout labels q_i ↦ p, idle wires hidden) and predict the dominant Sampler key — measurement arrows into the 3-bit meas register, little-endian key printing, CX control/target. The source circuit is hidden: the figure IS the circuit. Proof rebuilds isa with the same pass manager, asserts the TARGET op/qubit/clbit literal shared with the generator, runs SamplerV2 on FakeManilaV2 (seed_simulator 11: '110' 905/1000) and a noiseless StatevectorSampler run (always '110')."
+    "notes": "figure wave add (stem figure, d2): read an ISA drawing (layout labels q_i ↦ p, idle wires hidden) and predict the dominant Sampler key — measurement arrows into the 3-bit meas register, little-endian key printing, CX control/target. The source circuit is hidden: the figure IS the circuit. Proof rebuilds isa with the same pass manager, asserts the TARGET op/qubit/clbit literal shared with the generator, runs SamplerV2 on FakeManilaV2 (seed_simulator 11: '110' 905/1000) and a noiseless StatevectorSampler run (always '110'). | adversarial A3 2026-10-16: survived, no change (figure rasterized, alt matches TARGET; every distractor reproduced by its misreading: reversed bits 011, physical-width key 00011, flipped CX 100)"
   },
   "freshness": {
     "verified_against": {
@@ -71,7 +71,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-16",
+    "verified_on": "2026-10-17",
     "stale": false
   }
 }

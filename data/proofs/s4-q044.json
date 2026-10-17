@@ -5,15 +5,20 @@
       "D"
     ],
     "evidence": {
-      "D": "measured <ZZ>=0.8867 on the noisy backend; option D predicts 'close to +1 but below 1 (noisy)' -> match=True",
-      "B": "measured <ZZ>=0.8867 on the noisy backend; option B predicts 'close to 0' -> match=False",
-      "C": "measured <ZZ>=0.8867 on the noisy backend; option C predicts 'close to -1' -> match=False",
-      "A": "measured <ZZ>=0.8867 on the noisy backend; option A predicts 'exactly +1.0' -> match=False",
-      "E": "measured <ZZ>=0.8867 on the noisy backend; option E predicts 'above +1 (over-corrected)' -> match=False; no mitigation is switched on here, and the measured value stays below the ideal",
-      "F": "measured <ZZ>=0.8867 on the noisy backend; option F predicts 'exactly +0.5 (halved)' -> match=False; the noise trims the correlation slightly rather than halving it"
+      "A": "seeded <ZZ> = 0.8765 (seed_simulator=42), not exactly 1.0; apply_layout only re-indexes the observable -> False",
+      "B": "seeded <ZZ> = 0.8765, far from 0 -> False",
+      "C": "seeded <ZZ> = 0.8765, positive, not near -1 -> False",
+      "D": "seeded <ZZ> = 0.8765; the verbatim (unseeded) stem code also lands in (0.7, 1.0): True -> True",
+      "E": "default run 0.8765; with resilience_level=1 requested: 0.8765, and local mode warns 'The resilience_level option has no effect in local testing mode.'; nothing exceeds +1 -> False",
+      "F": "seeded <ZZ> = 0.8765, not 0.5 -> False"
     },
     "observed": {
-      "evs": 0.88671875
+      "seeded_evs": 0.87646484375,
+      "mitigated_request_evs": 0.87646484375,
+      "verbatim_in_band": true,
+      "resilience_warning": [
+        "The resilience_level option has no effect in local testing mode."
+      ]
     }
   },
   "versions": {
@@ -22,9 +27,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.41,
+  "wall_seconds": 2.19,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"D\": \"measured <ZZ>=0.8867 on the noisy backend; option D predicts 'close to +1 but below 1 (noisy)' -> match=True\", \"B\": \"measured <ZZ>=0.8867 on the noisy backend; option B predicts 'close to 0' -> match=False\", \"C\": \"measured <ZZ>=0.8867 on the noisy backend; option C predicts 'close to -1' -> match=False\", \"A\": \"measured <ZZ>=0.8867 on the noisy backend; option A predicts 'exactly +1.0' -> match=False\", \"E\": \"measured <ZZ>=0.8867 on the noisy backend; option E predicts 'above +1 (over-corrected)' -> match=False; no mitigation is switched on here, and the measured value stays below the ideal\", \"F\": \"measured <ZZ>=0.8867 on the noisy backend; option F predicts 'exactly +0.5 (halved)' -> match=False; the noise trims the correlation slightly rather than halving it\"}, \"observed\": {\"evs\": 0.88671875}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"seeded <ZZ> = 0.8765 (seed_simulator=42), not exactly 1.0; apply_layout only re-indexes the observable -> False\", \"B\": \"seeded <ZZ> = 0.8765, far from 0 -> False\", \"C\": \"seeded <ZZ> = 0.8765, positive, not near -1 -> False\", \"D\": \"seeded <ZZ> = 0.8765; the verbatim (unseeded) stem code also lands in (0.7, 1.0): True -> True\", \"E\": \"default run 0.8765; with resilience_level=1 requested: 0.8765, and local mode warns 'The resilience_level option has no effect in local testing mode.'; nothing exceeds +1 -> False\", \"F\": \"seeded <ZZ> = 0.8765, not 0.5 -> False\"}, \"observed\": {\"seeded_evs\": 0.87646484375, \"mitigated_request_evs\": 0.87646484375, \"verbatim_in_band\": true, \"resilience_warning\": [\"The resilience_level option has no effect in local testing mode.\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

@@ -120,7 +120,7 @@
     {
       "objective": "s4o2",
       "group": "core",
-      "fact_md": "Device noise trims the signal rather than destroying it: a Bell state's ⟨ZZ⟩ through the Estimator on a noisy fake backend comes back at 0.874 — close to `+1`, never above it.",
+      "fact_md": "Device noise trims the signal rather than destroying it: a Bell state's ⟨ZZ⟩ through the Estimator on a noisy fake backend comes back at about 0.87 — close to `+1`, never above it.",
       "source": {
         "type": "proof",
         "ref": "s4-q044"

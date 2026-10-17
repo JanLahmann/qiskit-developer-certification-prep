@@ -7,7 +7,7 @@
   "type": "mcq",
   "difficulty": 2,
   "stem": "Which broadcasting pattern does this PUB use, and what comes back?",
-  "code": "theta = Parameter(\"theta\")\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.ry(theta, 0)\n\nparams = np.linspace(0.0, 1.0, 4).reshape(1, 4)                 # shape (1, 4)\nobs = [[SparsePauliOp(\"ZI\")], [SparsePauliOp(\"IZ\")], [SparsePauliOp(\"ZZ\")]]  # shape (3, 1)\n\nevs = StatevectorEstimator().run([(qc, obs, params)]).result()[0].data.evs",
+  "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.ry(theta, 0)\n\nparams = np.linspace(0.0, 1.0, 4).reshape(1, 4)                 # shape (1, 4)\nobs = [[SparsePauliOp(\"ZI\")], [SparsePauliOp(\"IZ\")], [SparsePauliOp(\"ZZ\")]]  # shape (3, 1)\n\nevs = StatevectorEstimator().run([(qc, obs, params)]).result()[0].data.evs",
   "options": [
     {
       "key": "A",
@@ -47,8 +47,7 @@
       "F": "Broadcasting only fails when two corresponding axes disagree and neither is 1. Here every pair of axes has a 1 on one side, which is precisely the compatible case."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/estimator-v2"
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
     ]
   },
   "proof": {
@@ -57,14 +56,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.ry(theta, 0)\nparams = np.linspace(0.0, 1.0, 4).reshape(1, 4)\nobs = [[SparsePauliOp(\"ZI\")], [SparsePauliOp(\"IZ\")], [SparsePauliOp(\"ZZ\")]]\n\nraised, shape, size = None, None, None\ntry:\n    evs = StatevectorEstimator().run([(qc, obs, params)]).result()[0].data.evs\n    shape = tuple(int(x) for x in evs.shape)\n    size = int(evs.size)\nexcept ValueError as exc:\n    raised = f\"{type(exc).__name__}: {exc}\"\n\nclaims = {\n    \"A\": (\"zip\", (4,)),\n    \"B\": (\"broadcast single observable\", (1, 4)),\n    \"C\": (\"standard nd generalization\", (1, 3, 4)),\n    \"D\": (\"outer/product\", (3, 4)),\n    \"E\": (\"outer/product\", (4, 3)),\n}\nflags = {k: (shape == v[1]) for k, v in claims.items()}\nflags[\"F\"] = raised is not None\nevidence = {}\nfor k, (name, want) in claims.items():\n    evidence[k] = (\n        f\"parameter set (1, 4) with observables (3, 1) -> observed evs.shape {shape}, \"\n        f\"{size} estimates; this option claims '{name}' with shape {want} -> match={flags[k]}\"\n    )\nevidence[\"D\"] += \"; every observable is estimated at every parameter value, the guide's outer/product row\"\nevidence[\"E\"] += \"; the pattern name fits but the observable axis is observed first, not last\"\nevidence[\"F\"] = f\"the run completed and returned an array of shape {shape} (raised={raised}) -> match={flags['F']}\"\nemit_verdict({\n    \"answer\": sorted(k for k, v in flags.items() if v),\n    \"evidence\": evidence,\n    \"observed\": {\"evs_shape\": shape, \"evs_size\": size, \"raised\": raised},\n})\n"
+    "proof_script": "STEM_CODE = '''import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.ry(theta, 0)\n\nparams = np.linspace(0.0, 1.0, 4).reshape(1, 4)                 # shape (1, 4)\nobs = [[SparsePauliOp(\"ZI\")], [SparsePauliOp(\"IZ\")], [SparsePauliOp(\"ZZ\")]]  # shape (3, 1)\n\nevs = StatevectorEstimator().run([(qc, obs, params)]).result()[0].data.evs'''\n\nraised, shape, size = None, None, None\ntry:\n    ns = {}\n    exec(STEM_CODE, ns)  # the displayed code, verbatim\n    evs = ns[\"evs\"]\n    shape = tuple(int(x) for x in evs.shape)\n    size = int(evs.size)\nexcept ValueError as exc:\n    raised = f\"{type(exc).__name__}: {exc}\"\n\nclaims = {\n    \"A\": (\"zip\", (4,)),\n    \"B\": (\"broadcast single observable\", (1, 4)),\n    \"C\": (\"standard nd generalization\", (1, 3, 4)),\n    \"D\": (\"outer/product\", (3, 4)),\n    \"E\": (\"outer/product\", (4, 3)),\n}\nflags = {k: (shape == v[1]) for k, v in claims.items()}\nflags[\"F\"] = raised is not None\nevidence = {}\nfor k, (name, want) in claims.items():\n    evidence[k] = (\n        f\"parameter set (1, 4) with observables (3, 1) -> observed evs.shape {shape}, \"\n        f\"{size} estimates; this option claims '{name}' with shape {want} -> match={flags[k]}\"\n    )\nevidence[\"D\"] += \"; every observable is estimated at every parameter value, the guide's outer/product row\"\nevidence[\"E\"] += \"; the pattern name fits but the observable axis is observed first, not last\"\nevidence[\"F\"] = f\"the run completed and returned an array of shape {shape} (raised={raised}) -> match={flags['F']}\"\nemit_verdict({\n    \"answer\": sorted(k for k, v in flags.items() if v),\n    \"evidence\": evidence,\n    \"observed\": {\"evs_shape\": shape, \"evs_size\": size, \"raised\": raised},\n})\n"
   },
   "provenance": {
     "generated": "2026-07-26",
     "model": "claude-opus-5 (official-alignment fix wave, s3/s4/s7/s8)",
-    "adversarial_rounds": 1,
+    "adversarial_rounds": 2,
     "reviewed": false,
-    "notes": "official-alignment gap task 4.2: the guide's NAMED broadcasting patterns (broadcast single observable / zip / outer-product / standard nd generalization) were never tested, only the shape mechanics. Shapes chosen differently from the guide's own example figures; proof executes the pairing and reads evs.shape. | realism audit 2026-10-01: stem trimmed (shapes are in the code comments); stem 54 -> 11 words; difficulty 2 -> 2"
+    "notes": "official-alignment gap task 4.2: the guide's NAMED broadcasting patterns (broadcast single observable / zip / outer-product / standard nd generalization) were never tested, only the shape mechanics. Shapes chosen differently from the guide's own example figures; proof executes the pairing and reads evs.shape. | realism audit 2026-10-01: stem trimmed (shapes are in the code comments); stem 54 -> 11 words; difficulty 2 -> 2 | adversarial A3 2026-10-16: displayed code had no imports (np, Parameter, QuantumCircuit, SparsePauliOp, StatevectorEstimator undefined) -> added, proof now execs it verbatim (evs.shape (3, 4)); estimator-v2 API citation (no broadcasting content) dropped, primitive-input-output carries the pattern table"
   },
   "display_count": 5,
   "freshness": {
@@ -74,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-16",
+    "verified_on": "2026-10-17",
     "stale": false
   }
 }

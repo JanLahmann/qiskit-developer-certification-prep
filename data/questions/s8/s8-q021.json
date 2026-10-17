@@ -40,15 +40,16 @@
   "explanation": {
     "correct": "The OpenQASM 3 exporter is written in Qiskit itself, so `qasm3.dump`/`dumps` work with nothing more than `qiskit` installed. The importer is not: `qasm3.load`/`loads` delegate to the separately distributed `qiskit-qasm3-import` package and are guarded by a lazy dependency check, so without it they raise `MissingOptionalLibraryError: \"The \\'qiskit_qasm3_import\\' library is required to use \\'loading from OpenQASM 3\\'\"`. This asymmetry is specific to OpenQASM 3 -- `qiskit.qasm2` implements both directions natively.",
     "distractors": {
-      "A": "Assumes symmetry with `qiskit.qasm2`, which does ship both directions. For OpenQASM 3 the importer genuinely is not part of the `qiskit` package, and the dependency is functional, not a speed-up.",
+      "A": "Assumes symmetry with `qiskit.qasm2`, which does ship both directions. For OpenQASM 3 the parser behind `load`/`loads` genuinely is not part of the `qiskit` package, and the dependency is functional, not a speed-up.",
       "B": "The asymmetry runs the other way. Export is the native side; it is reading OpenQASM 3 that needs the third-party parser.",
       "C": "`qiskit.qasm3` itself is part of Qiskit -- importing the module always works, and so does the whole exporter. Only the two loading entry points are gated.",
-      "E": "There is no warning path because there is no fallback parser: `loads` sits behind a hard dependency check and raises. Nothing inside `qiskit` can parse OpenQASM 3 on its own.",
-      "F": "`QASM3ImporterError` is what `qiskit-qasm3-import` raises when it *is* installed and the program is bad. With the package absent the failure happens earlier, in the optional-dependency guard, as `MissingOptionalLibraryError`."
+      "E": "There is no warning path: `loads` sits behind a hard dependency check and raises. Qiskit does ship an experimental native parser, but only behind the separate `qasm3.loads_experimental` function; `qasm3.loads` never falls back to it.",
+      "F": "`QASM3ImporterError` is what `qasm3.loads` raises when `qiskit-qasm3-import` *is* installed and the program is bad (the experimental native parser, reached only through `qasm3.loads_experimental`, raises it too). With the package absent, `loads` fails earlier, in the optional-dependency guard, as `MissingOptionalLibraryError`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3",
-      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table"
+      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm3"
     ]
   },
   "proof": {
@@ -62,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s8 r1: REWRITTEN — the old item (bit[4] vs int[4] importability) was a near-duplicate of q022, which tests the same feature-table rows; replaced with the qasm3 export/import asymmetry (dumps is native, loads needs qiskit-qasm3-import), a genuine section gap, and upgraded from conceptual to an executed proof that blocks the module so the observation does not depend on whether the verifying machine has it installed. Answer keyed D. | pool wave: +E loads succeeds with a UserWarning instead of raising, +F loads raises QASM3ImporterError rather than MissingOptionalLibraryError | realism audit 2026-10-01: stem trimmed (kept the installed/not-installed premise); difficulty 2->1 (one recalled fact: only the qasm3 import direction needs the extra package)"
+    "notes": "adversarial s8 r1: REWRITTEN — the old item (bit[4] vs int[4] importability) was a near-duplicate of q022, which tests the same feature-table rows; replaced with the qasm3 export/import asymmetry (dumps is native, loads needs qiskit-qasm3-import), a genuine section gap, and upgraded from conceptual to an executed proof that blocks the module so the observation does not depend on whether the verifying machine has it installed. Answer keyed D. | pool wave: +E loads succeeds with a UserWarning instead of raising, +F loads raises QASM3ImporterError rather than MissingOptionalLibraryError | realism audit 2026-10-01: stem trimmed (kept the installed/not-installed premise); difficulty 2->1 (one recalled fact: only the qasm3 import direction needs the extra package) | adversarial A3 2026-10-16: executed in the pinned env (module absent): dumps returns the text, loads raises MissingOptionalLibraryError (key D); E rationale claimed 'Nothing inside qiskit can parse OpenQASM 3 on its own' but qiskit 2.5 ships qasm3.loads_experimental (executed: parses the same text, ExperimentalWarning) -> A/E/F rationales now say loads never falls back to the native parser (docs-reader trap for F); +citation api/qiskit/qasm3 (loads note: 'the package qiskit_qasm3_import must be installed'; loads_experimental section)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 5

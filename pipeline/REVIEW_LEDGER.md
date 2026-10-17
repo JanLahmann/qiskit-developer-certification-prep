@@ -3848,3 +3848,71 @@ rendered, rasterized and inspected. **0 key changes, 0 kills.** 14 edited, 1 sur
 - Gates: verify_bank s7 31/31 PROVEN + 6 conceptual, 0 failures; audit_meta_patterns s7 0 blockers /
   0 warnings (new medium absolute_distractor_tell on q027/q035 from the first rewrites fixed; low
   length_tell on q028/q036 pre-existing, options untouched); lint_proof_drift 0 findings.
+
+## Adversarial review A3 — s8 (2026-10-16)
+
+Scope: s8-q010 q011 q012 q013 q014 q015 q017 q018 q019 q020 q021 q022 q023 q024 q025 q026 q027 q028 q029
+q031 q032 (21; 14 executed, 7 conceptual, 3 figure items). Every displayed snippet and every executable
+option re-run in independent scratch scripts (pinned venv, qiskit 2.5.0 / runtime 0.48.0;
+`qiskit_qasm3_import` re-checked ABSENT, so `qasm3.loads` raises `MissingOptionalLibraryError`). Cited
+pages fetched as text and grepped (qasm2/qasm3 API, both interop guides, feature table, REST setup /
+reference / jobs tag / sampler-rest-api, openqasm.com 3.0 and live types + instructions pages). All three
+figure sets rendered, rasterized and inspected. **0 key changes, 0 kills.** 20 edited, 1 survived (q028).
+
+- **Second answer closed (s8-q027 B):** "a scalar `bit` cannot stand in for a `bool`; an explicit cast
+  is required in either direction" is TRUE under the cited OpenQASM 3.0 page ("Standard and special
+  classical types may only mix in expressions with operators defined for those mixed types, otherwise
+  explicit casts must be provided"; its Boolean example is `bool(my_bit)`). The rationale's
+  interchangeability quote exists only in the live 3.1+ spec. B rebuilt as the C comma-declaration
+  habit (`int[32] x, y, z;`), and both versions say "Comma seperated declaration/initialization
+  (int x, y, z) is NOT allowed for any type". A/C/D/E/F re-checked against both versions.
+- **Circular figure proofs (q029, q032):** both compared the keyed program with a literal copy of
+  itself, not the displayed code (q029's literal even lacked the stem's leading newline). Both proofs
+  now execute the DISPLAYED code verbatim (`ast` split, last expression returns the figure) and require
+  SVG byte-identity (`svg.hashsalt` fixed, no Date) plus the structural match. Only A (q029) and D
+  (q032) match. `from_qasm_str` emits no DeprecationWarning in 2.5.0.
+- **Displayed code not runnable / docs copy:** q012 never bound `qiskit`, `QuantumCircuit` or `io`, so
+  D/E/F raised NameError as written. Imports were added and E is now `qasm3.loads(program)`. Its program
+  was also the qasm2 API parsing example verbatim, so it is now a 3-qubit ry/cx/cx program. q015 used an
+  undefined `program` that only the stem described. The program is now in the code (asserted equal in
+  the proof), and the stem reads "What does the last line of this code do?". q018's circuit was the
+  qasm2 guide/API export example verbatim, so it is now x/ccx/measure on 3 qubits. Keys unchanged in all
+  three, all re-executed.
+- **False "OpenQASM 3 dropped it" claims:** the spec (instructions page) says "For backwards
+  compatibility this is equivalent to measure qubit -> bit; which is also supported", and the types page
+  keeps `qreg`/`creg` "for backwards compatibility". The rationales now say the exporter never EMITS
+  these forms: q010 E, q014 A/E + correct, q031 C. q014 A answers the docs-reader trap, because the
+  qasm3 guide's own import example uses `measure q[0] -> mid[0];`.
+- **"Nothing in qiskit parses OpenQASM 3" (q021 E):** this is false, because 2.5 ships
+  `qasm3.loads_experimental` (executed: it parses the same text with an ExperimentalWarning).
+  A/E/F now say that `loads` never falls back to the native parser. F answers the trap ("parser
+  ships with Qiskit").
+- **Other rationale/option fixes (each executed or quoted):**
+  - q010 D: a loose Clbit exports as `bit _bit0;`, not `bit c;`. B no longer cites unverified spec prose.
+  - q011 F: `qasm2.dump` (filename_or_stream) and `qasm3.load` also take paths. The old text said `qasm2.load` was "the one call that takes a path".
+  - q015 B/A: non-strict qasm2 accepts an omitted version statement (executed; docs Strict mode). So "requires the exact header" became "accepts no version other than 2.0".
+  - q018 E/F: the exporter declares any gate `stdgates.inc` lacks. `qelib1.inc` is absent because `Exporter(includes=('stdgates.inc',))`; the old claim that it "would not parse" was dropped.
+  - q019 A: `decompose()` is not a transpiler pass.
+  - q020 E: a width-less `float` is legal OpenQASM 3.
+  - q022 correct: the column is now "IBM Quantum Compute Service". The complex claim is backed by `dir(types)` = Bool/Duration/Float/Uint.
+  - q023 D/E: E answers the "API key (also called a token)" trap.
+  - q024 D: answers the "SamplerV2 input" schema-title trap.
+  - q025 E: the docs say "expires after no more than one hour". E was reworded from a fixed 3600 s claim and kept short (no length tell).
+  - q026 A: "no text data at all" overclaimed, because bit-string literals are quoted.
+- **Citations replaced (fetched, quote found):**
+  - q013: guide qasm3 → api/qiskit/qasm2 ("Raises QASM2ExportError – if the circuit cannot be represented by OpenQASM 2").
+  - q014: api/qiskit/qasm3 → openqasm.com/language/insts.html.
+  - q017: guide qasm2 (never mentions phase) → api/qiskit/qasm2 ("OpenQASM 2 does not have a way to specify the global phase of a complete program").
+  - q020: api/qiskit/qasm3 → openqasm.com types ("float[64] would indicate a standard double-precision float"). The feature table is kept; its note 9 says "Unbound Parameter objects ... are exported as input float[64] variables".
+  - q021: + api/qiskit/qasm3.
+  - q022: guide qasm3 → api/qiskit/circuit_classical.
+  - q031: api/qiskit/qasm3 → qasm-feature-table.
+  - Kept and verified: the qasm3 guide's dumps example (classical-first `bit[2] meas;`, `OPENQASM 3.0;`, assignment measure), the REST pages (bearer token "with every call", POST /v1/jobs with `program_id`, "List job results — Return the final result from this job", the only PUT is /v1/jobs/{id}/tags, DELETE "Job must be in a terminal state") and the 3.0 types page ("Casting specifics").
+- **Runtime 0.50 notes:** q012 E keeps "without the optional `qiskit-qasm3-import` extension it raises
+  `MissingOptionalLibraryError`". The q026/q029 "not installed" notes stay accurate for the pinned env,
+  and q021 still blocks the module.
+- **Difficulty:** all 21 kept.
+- Gates:
+  - verify_bank s8: 15/15 PROVEN + 7 conceptual, 0 failures.
+  - audit_meta_patterns s8: 0 blockers / 0 warnings. A low length_tell on q025 came from the first E rewrite and was fixed. The low length_tell on q010/q013/q020/q021 is pre-existing, with those options untouched.
+  - lint_proof_drift: 0 findings.

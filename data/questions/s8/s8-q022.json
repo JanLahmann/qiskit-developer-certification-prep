@@ -41,7 +41,7 @@
     "F"
   ],
   "explanation": {
-    "correct": "Three rows of the table's Qiskit SDK column carry these verdicts. `bit` is marked fully supported and note 3 states that `bit`- and `bit[n]`-typed declarations correspond to `Clbit` and `ClassicalRegister`. `complex` is marked unsupported in both the Qiskit SDK and the Runtime columns -- there is no Qiskit-side representation for it at all. And note 6 says in as many words that the SDK does not support parsing declarations of type `duration` or type `stretch` from OpenQASM 3 files. The wider pattern to remember: Qiskit's OpenQASM 3 *importer* is much narrower than its exporter -- note 4 records that it does not parse classical variable declarations in general, even where Qiskit can represent and export the corresponding value.",
+    "correct": "Three rows of the table's Qiskit SDK column carry these verdicts. `bit` is marked fully supported and note 3 states that `bit`- and `bit[n]`-typed declarations correspond to `Clbit` and `ClassicalRegister`. `complex` is marked unsupported in both the Qiskit SDK and the IBM Quantum Compute Service columns -- there is no Qiskit-side representation for it at all (the classical type system in `qiskit.circuit.classical.types` has `Bool`, `Uint`, `Float` and `Duration`, but no complex type). And note 6 says in as many words that the SDK does not support parsing declarations of type `duration` or type `stretch` from OpenQASM 3 files. The wider pattern to remember: Qiskit's OpenQASM 3 *importer* is much narrower than its exporter -- note 4 records that it does not parse classical variable declarations in general, even where Qiskit can represent and export the corresponding value.",
     "distractors": {
       "A": "`int` carries a cross in the Qiskit SDK column. It is a genuine OpenQASM 3 type that IBM hardware can execute, but the importer will not parse the declaration into anything, Python `int` included.",
       "C": "`angle` is listed with the Qiskit-side feature 'Implicit, as gate parameters' and a cross: angles reach Qiskit only as arguments of gate calls, never as standalone declarations bound to `Parameter`s.",
@@ -49,7 +49,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
-      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/circuit_classical"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s8 r1: carried-forward flag resolved — re-read the live feature table (fetched 200) and confirmed every keyed row (bit ok/ClassicalRegister note 3, complex unsupported, duration+stretch unparseable note 6); stem now scopes the claim explicitly to that table's Qiskit SDK column and its definition of 'supported' rather than asserting timeless language facts; widened to select-THREE of six with answers B/D/F so the two multi-select items no longer share the 'two correct, one is A' shape; new const-vs-pi distractor | pool wave: display_count 5 (rotation only) -- 3-correct multi already at the 6-option schema cap, so no distractor can be added | realism audit 2026-10-01: stem trimmed (kept a compressed definition of the Qiskit SDK column); difficulty 3->2 (three independent table facts, no interaction); explanation display-letter refs '(B)/(D)/(F)' removed"
+    "notes": "adversarial s8 r1: carried-forward flag resolved — re-read the live feature table (fetched 200) and confirmed every keyed row (bit ok/ClassicalRegister note 3, complex unsupported, duration+stretch unparseable note 6); stem now scopes the claim explicitly to that table's Qiskit SDK column and its definition of 'supported' rather than asserting timeless language facts; widened to select-THREE of six with answers B/D/F so the two multi-select items no longer share the 'two correct, one is A' shape; new const-vs-pi distractor | pool wave: display_count 5 (rotation only) -- 3-correct multi already at the 6-option schema cap, so no distractor can be added | realism audit 2026-10-01: stem trimmed (kept a compressed definition of the Qiskit SDK column); difficulty 3->2 (three independent table facts, no interaction); explanation display-letter refs '(B)/(D)/(F)' removed | adversarial A3 2026-10-16: all six rows re-read on the live feature table (int x, bit check + note 3, angle 'Implicit, as gate parameters' x, complex x/x, const x, note 6 'does not support parsing declarations of type duration or type stretch'): key B/D/F holds; correct explanation named a 'Runtime' column that is now 'IBM Quantum Compute Service'; complex claim backed by the installed type system (dir(types): Bool, Duration, Float, Uint) -> citation interoperate-qiskit-qasm3 (no type rows) replaced by api/qiskit/circuit_classical"
   },
   "display_count": 5
 }

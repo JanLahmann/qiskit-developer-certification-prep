@@ -47,8 +47,8 @@
       "F": "There is no `gphase` statement in the emitted text to choke on, so re-importing parses cleanly. The loss is silent at export time, not an error at import time."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
-      "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm2"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm2",
+      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->D (position rebalance); stem rewritten to be self-contained (spells out the dumps-then-loads round trip and names qc2) and no longer writes 'pi/2' where the code uses math.pi/2; absolute-word tell removed; proof now also observes whether the emitted OpenQASM 2 text contains 'gphase' | absolute-word tell cleared (correct option now also carries an absolute) | pool wave: +E the global phase is folded into the gate and emitted as u(...), +F the export writes gphase and the re-import rejects it | realism audit 2026-10-01: stem trimmed; difficulty kept 3 (silent phase drop vs raise + QuantumCircuit equality includes phase)"
+    "notes": "adversarial s8 r1: answer A->D (position rebalance); stem rewritten to be self-contained (spells out the dumps-then-loads round trip and names qc2) and no longer writes 'pi/2' where the code uses math.pi/2; absolute-word tell removed; proof now also observes whether the emitted OpenQASM 2 text contains 'gphase' | absolute-word tell cleared (correct option now also carries an absolute) | pool wave: +E the global phase is folded into the gate and emitted as u(...), +F the export writes gphase and the re-import rejects it | realism audit 2026-10-01: stem trimmed; difficulty kept 3 (silent phase drop vs raise + QuantumCircuit equality includes phase) | adversarial A3 2026-10-16: displayed code run: dumps -> 'OPENQASM 2.0;\\ninclude \"qelib1.inc\";\\nqreg q[1];\\nh q[0];', qc2.global_phase 0.0, qc2 != qc, h survives as HGate (key D); citation interoperate-qiskit-qasm2 (never mentions phase) -> api/qiskit/qasm2 ('As a language, OpenQASM 2 does not have a way to specify the global phase of a complete program'); feature table kept (gphase is an OpenQASM 3 feature mapped to QuantumCircuit.global_phase)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

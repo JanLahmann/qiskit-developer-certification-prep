@@ -42,11 +42,11 @@
     "correct": "The drawing's If box hangs off a single classical bit, c_0, with the open circle and the annotation `c_0=0x0`: the X runs when that bit reads 0. The OpenQASM 3 exporter writes a measurement as an assignment, `c[0] = measure q[0];`, and a condition on one bit equal to 0 as a negated boolean, `if (!c[0]) { ... }`, with the body in braces.",
     "distractors": {
       "B": "Condition value misread: the open circle and `0x0` mean the body runs when c_0 is 0. `if (c[0])` is what the exporter writes for `if_test((clbit, 1))`.",
-      "C": "OpenQASM 2 measurement syntax: the arrow form `measure q[0] -> c[0];` is the version-2 statement. Qiskit's OpenQASM 3 exporter emits the assignment form `c[0] = measure q[0];`.",
+      "C": "OpenQASM 2 measurement syntax: the arrow form `measure q[0] -> c[0];` is the version-2 statement. The OpenQASM 3 specification still accepts it for backwards compatibility, but Qiskit's exporter always emits the assignment form `c[0] = measure q[0];`.",
       "D": "Condition widened to the register: `if (c == 0)` compares the whole 2-bit register and is the export of `if_test((creg, 0))`. The drawing conditions on the single bit c_0, not on c."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm3",
+      "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
       "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3"
     ]
   },
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-10-02",
     "model": "claude-opus (figure wave, s2/s5-s8)",
-    "adversarial_rounds": 0,
+    "adversarial_rounds": 1,
     "reviewed": false,
-    "notes": "Figure wave add (stem figure): reading a single-bit, value-0 condition off an mpl drawing and predicting the OpenQASM 3 export (assignment-form measure, negated boolean condition). Generator and proof assert the same GATES literal; the proof searches the real qasm3.dumps output for each excerpt and exports the value-1 and register-wide variants to show where distractors B and D come from."
+    "notes": "Figure wave add (stem figure): reading a single-bit, value-0 condition off an mpl drawing and predicting the OpenQASM 3 export (assignment-form measure, negated boolean condition). Generator and proof assert the same GATES literal; the proof searches the real qasm3.dumps output for each excerpt and exports the value-1 and register-wide variants to show where distractors B and D come from. | adversarial A3 2026-10-16: generator circuit exported: `c[0] = measure q[0];` / `if (!c[0]) {` / `  x q[1];` / `}` contiguous (key A); stem figure re-rendered, rasterized and inspected (open circle, c_0=0x0, If box on q1; alt text faithful); C rationale now notes the arrow is still legal OpenQASM 3 (spec backwards compatibility) but never emitted; citation api/qiskit/qasm3 (no control-flow export) -> qasm-feature-table ('if -> QuantumCircuit.if_test' supported; 'Qiskit SDK can represent structured control flow and export this to OpenQASM 3')"
   },
   "freshness": {
     "verified_against": {
@@ -72,7 +72,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   }
 }

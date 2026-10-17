@@ -40,7 +40,7 @@
   "explanation": {
     "correct": "OpenQASM 3 has first-class user gate definitions, and Qiskit's exporter uses them: it emits a `gate mygate _gate_q_0 { rz(0.5) _gate_q_0; h _gate_q_0; }` block before the register declarations and then calls `mygate q[0];` in the body. The abstraction is preserved rather than flattened, which is why an exported program stays as readable as the circuit that produced it.",
     "distractors": {
-      "A": "Inlining is what a transpiler pass such as `decompose()` would do. The exporter does not flatten the instruction; the `rz`/`h` pair appears inside the `gate` block, not in the circuit body.",
+      "A": "Inlining is what calling `qc.decompose()` before exporting would do. The exporter does not flatten the instruction; the `rz`/`h` pair appears inside the `gate` block, not in the circuit body.",
       "C": "Custom `gate` declarations are ordinary OpenQASM 3, so nothing raises. (Hardware execution is a separate matter -- the circuit must still be transpiled to the backend ISA first.)",
       "D": "`mygate` is not in `stdgates.inc`; nothing would define it for a reader of the program, which is exactly why the exporter has to write the declaration out.",
       "E": "The declaration keeps the name the sub-circuit was given -- the emitted line is `gate mygate _gate_q_0 { ... }`. It is the gate's *parameters* that get generated names (`_gate_q_0`), not the gate itself.",
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->B (position rebalance); absolute-word tell and length tell removed; proof now ignores gate-block interiors when testing the 'inlined' claim | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E the custom gate is renamed/mangled in the declaration, +F custom gates become OpenQASM 2 style opaque declarations | realism audit 2026-10-01: stem trimmed (sub-circuit/to_gate gloss is visible in the code); difficulty 3->2"
+    "notes": "adversarial s8 r1: answer A->B (position rebalance); absolute-word tell and length tell removed; proof now ignores gate-block interiors when testing the 'inlined' claim | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E the custom gate is renamed/mangled in the declaration, +F custom gates become OpenQASM 2 style opaque declarations | realism audit 2026-10-01: stem trimmed (sub-circuit/to_gate gloss is visible in the code); difficulty 3->2 | adversarial A3 2026-10-16: displayed code run: emits `gate mygate _gate_q_0 { rz(0.5) _gate_q_0; h _gate_q_0; }` above `qubit[1] q;` and `mygate q[0];` (key B; name kept, not mangled; no opaque, no error); A rationale no longer calls decompose() a transpiler pass; citations verified (qasm3 API Exporter note: other gates get 'a separate gate definition'; feature table gate row)"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

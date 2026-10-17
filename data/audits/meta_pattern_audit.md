@@ -16,12 +16,12 @@ Scope: **all sections** — 365 questions (335 single-answer, 30 multi-select). 
 | avoid_longest | 25.7% | 82% | 25.4% |
 | shortest_option | 23.6% | 100% | 23.6% |
 | stem_keyword_overlap | 22.0% | 65% | 22.8% |
-| longest_option | 19.8% | 100% | 19.8% |
+| longest_option | 19.9% | 100% | 19.9% |
 | odd_one_out | 14.4% | 100% | 14.4% |
 | most_hedged | 17.8% | 20% | – |
-| avoid_hedged | 27.5% | 20% | – |
+| avoid_hedged | 27.6% | 20% | – |
 | least_absolute | 15.0% | 24% | – |
-| most_absolute | 31.8% | 24% | – |
+| most_absolute | 32.0% | 24% | – |
 | code_formatted_only | 21.1% | 14% | – |
 | numeric_middle | 35.2% | 17% | – |
 | largest_image_option | 17.8% | 12% | – |

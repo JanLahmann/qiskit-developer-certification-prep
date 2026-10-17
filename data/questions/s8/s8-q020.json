@@ -44,12 +44,12 @@
       "B": "Omitting the `input` modifier would declare an ordinary (uninitialized) local variable, not a run-time input. The exporter marks unbound parameters as `input`.",
       "C": "Although gate rotation angles are conceptually angles, Qiskit exports unbound parameters as `float[64]`, not the `angle` type.",
       "D": "`parameter` is not an OpenQASM 3 keyword; run-time-supplied values use the `input` modifier.",
-      "E": "OpenQASM 3's `float` is a sized type and Qiskit emits the width explicitly, so a bare `float` never appears in the program text.",
+      "E": "A width-less `float` is legal OpenQASM 3 (its precision is then left to the implementation), but Qiskit's exporter always writes the width explicitly, so the declaration it prints is `float[64]`.",
       "F": "`double` is a C type, not an OpenQASM 3 one. Widths are written on the type in brackets, so the double-precision scalar is spelled `float[64]`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/qasm-feature-table",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm3"
+      "https://openqasm.com/language/types.html"
     ]
   },
   "proof": {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s8 round 1: survived unchanged (citations re-fetched 200 and re-read, proof evidence discriminates every option, no second defensible answer, no meta-pattern flag); correct option is deliberately left as the longest here (ratio 1.20) -- the section needs a few such items so that 'longest option wins' scores at chance rather than below it | pool wave: +E unsized bare float, +F the C spelling double for the double-precision type | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one recalled fact: unbound Parameter -> input float[64])"
+    "notes": "adversarial s8 round 1: survived unchanged (citations re-fetched 200 and re-read, proof evidence discriminates every option, no second defensible answer, no meta-pattern flag); correct option is deliberately left as the longest here (ratio 1.20) -- the section needs a few such items so that 'longest option wins' scores at chance rather than below it | pool wave: +E unsized bare float, +F the C spelling double for the double-precision type | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one recalled fact: unbound Parameter -> input float[64]) | adversarial A3 2026-10-16: displayed code run: prints `input float[64] theta;` (key A); E rationale said float 'is a sized type' but the spec allows an unspecified-size float -> now says the exporter always writes the width; citation api/qiskit/qasm3 (no Parameter mapping) -> OpenQASM types spec ('float[64] would indicate a standard double-precision float', unspecified size allowed); feature table kept and verified (note 9: 'Unbound Parameter objects ... are exported as input float[64] variables')"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 5

@@ -44,7 +44,7 @@
       "C": "`dump` requires a stream argument, so `qasm3.dump(qc)` alone raises `TypeError` (missing 'stream'); `dump` also returns `None`, so it never yields text to hand to `f.write`.",
       "D": "The argument order is reversed. `dump(circuit, stream)` expects the circuit first; passing the file object as the circuit raises `AttributeError` because the stream has no `.qubits`.",
       "E": "`dumps` has no `file` parameter. Its keyword arguments are forwarded to the exporter object, so an unknown one raises `TypeError: Exporter.__init__() got an unexpected keyword argument 'file'` -- and `dumps` returns the text rather than writing it anywhere.",
-      "F": "`dump`'s second argument is the open stream itself, not a path: handed a string it calls `.write` on it and raises `AttributeError: 'str' object has no attribute 'write'`. The file-name habit comes from `qasm2.load`, the one call in this family that really does take a path."
+      "F": "`dump`'s second argument is the open stream itself, not a path: handed a string it calls `.write` on it and raises `AttributeError: 'str' object has no attribute 'write'`. The path habit comes from `qasm2.dump`, whose second argument may be either a path or an open stream; `qasm3.dump` accepts only the stream."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3",
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->B (position rebalance); option texts swapped, proof remapped | pool wave: +E dumps takes a file= keyword, +F dump's second argument is a path rather than the open stream | realism audit 2026-10-01: stem trimmed; difficulty kept 1"
+    "notes": "adversarial s8 r1: answer A->B (position rebalance); option texts swapped, proof remapped | pool wave: +E dumps takes a file= keyword, +F dump's second argument is a path rather than the open stream | realism audit 2026-10-01: stem trimmed; difficulty kept 1 | adversarial A3 2026-10-16: all six options executed (A/C/E TypeError, D/F AttributeError literals match rationales, B writes the program and returns None); F rationale fixed: it called qasm2.load 'the one call that takes a path', but qasm2.dump (filename_or_stream) and qasm3.load also take paths -- now answers that docs-reader trap; citations verified (API: dump 'to file-like object')"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

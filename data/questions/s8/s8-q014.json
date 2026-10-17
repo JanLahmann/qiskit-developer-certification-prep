@@ -38,17 +38,17 @@
     "C"
   ],
   "explanation": {
-    "correct": "In OpenQASM 3, `measure` is an expression whose result is assigned to a classical bit: `c[0] = measure q[0];`. This assignment form replaces the OpenQASM 2 arrow syntax.",
+    "correct": "In OpenQASM 3, `measure` is an expression whose result is assigned to a classical bit, and Qiskit's exporter always writes that assignment form: `c[0] = measure q[0];`.",
     "distractors": {
-      "A": "`measure q[0] -> c[0];` is the OpenQASM 2 arrow syntax. OpenQASM 3 replaced it with an assignment.",
+      "A": "`measure q[0] -> c[0];` is the OpenQASM 2 arrow syntax. The OpenQASM 3 specification still accepts it for backwards compatibility (the qasm3 guide's own import example uses it), but Qiskit's exporter never emits it, so it is not a line this code prints.",
       "B": "`measure` is a quantum instruction keyword applied to a qubit operand, not a function call; there are no parentheses around the qubit.",
       "D": "OpenQASM 3 does not pair qubit and clbit with a comma; the target bit is written on the left of an assignment.",
-      "E": "This keeps the OpenQASM 2 arrow token but points it the other way. OpenQASM 3 drops `->` for measurement altogether; the target bit is joined to the `measure` expression with a plain `=`.",
+      "E": "This keeps the arrow token but points it the wrong way. Where the arrow survives in OpenQASM 3 (as backwards-compatible syntax) it runs from qubit to bit, `measure q[0] -> c[0];`; a bit-to-`measure` arrow is valid in neither version, and the exporter writes the assignment `c[0] = measure q[0];`.",
       "F": "The type name belongs to the declaration (`bit[2] c;`), not to the measurement statement. Re-stating `bit` here is C-style thinking; the assignment simply names the already-declared bit."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/interoperate-qiskit-qasm3",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/qasm3"
+      "https://openqasm.com/language/insts.html"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->C (position rebalance) | pool wave: +E the -> arrow survives into OpenQASM 3 with the operands swapped, +F the measurement statement restates the bit type | realism audit 2026-10-01: stem trimmed; difficulty kept 1"
+    "notes": "adversarial s8 r1: answer A->C (position rebalance) | pool wave: +E the -> arrow survives into OpenQASM 3 with the operands swapped, +F the measurement statement restates the bit type | realism audit 2026-10-01: stem trimmed; difficulty kept 1 | adversarial A3 2026-10-16: displayed code run, prints `c[0] = measure q[0];` (key C); A/E/correct rationales claimed OpenQASM 3 dropped the measure arrow, but the spec (insts.html) says 'For backwards compatibility this is equivalent to measure qubit -> bit; which is also supported' -- rationales now say the exporter never emits it (docs-reader trap: the qasm3 guide's import example uses the arrow); citation api/qiskit/qasm3 (no measurement syntax) -> OpenQASM spec instructions page"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

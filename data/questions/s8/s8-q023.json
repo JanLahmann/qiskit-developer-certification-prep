@@ -42,8 +42,8 @@
     "distractors": {
       "A": "`X-API-Key` is a common convention elsewhere, but not here. The raw key never travels on Runtime API calls; it is exchanged for a short-lived bearer token first.",
       "C": "Basic authentication carries a user name and password pair. The Runtime REST API is IAM-based and expects the `Bearer` scheme instead.",
-      "D": "Credentials belong in headers. Query strings are logged by proxies and server access logs, and the API does not read a credential from the URL in any case.",
-      "E": "Right header, wrong credential. The API key is what you present *to IAM*; the `Bearer` value is the short-lived access token IAM hands back in exchange for it.",
+      "D": "Credentials belong in headers: query strings are logged by proxies and server access logs, and the API reference documents the credential only as the `Authorization: Bearer` header sent \"with every call\".",
+      "E": "Right header, wrong credential. The setup guide calls the dashboard API key \"also called a token\", which invites this, but that key is what you present *to IAM*; the `Bearer` value is the short-lived access token IAM hands back in exchange for it.",
       "F": "`Service-CRN` does travel with every Runtime REST call, but it identifies which instance to run and bill on -- it is not a secret and it authenticates nothing. The credential rides in `Authorization`."
     },
     "citations": [
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s8 r1: answer A->B (position rebalance); length tell removed (1.31 -> correct no longer longest); both citations re-fetched 200 and re-read — cloud-setup-rest-api shows the 'authorization: Bearer <BEARER_TOKEN>' + 'Service-CRN' curl call and the API reference states the IAM bearer token is required on every call | length rank rebalanced (correct option no longer longest) | pool wave: +E the API key sent verbatim as the bearer token, +F the Service-CRN header treated as the credential | realism audit 2026-10-01: stem trimmed; difficulty kept 1"
+    "notes": "adversarial s8 r1: answer A->B (position rebalance); length tell removed (1.31 -> correct no longer longest); both citations re-fetched 200 and re-read — cloud-setup-rest-api shows the 'authorization: Bearer <BEARER_TOKEN>' + 'Service-CRN' curl call and the API reference states the IAM bearer token is required on every call | length rank rebalanced (correct option no longer longest) | pool wave: +E the API key sent verbatim as the bearer token, +F the Service-CRN header treated as the credential | realism audit 2026-10-01: stem trimmed; difficulty kept 1 | adversarial A3 2026-10-16: conceptual; both citations re-fetched and grepped: API reference 'You must provide an IBM Cloud Identity and Access Management (IAM) bearer token with every call as an http header' + 'Authorization: Bearer <YOUR_BEARER_TOKEN>', setup guide exchanges the API key at iam.cloud.ibm.com/identity/token; key B holds; E now answers the docs-reader trap (setup guide: 'Create an API key (also called a token)'); D rationale's unsupported 'does not read a credential from the URL in any case' replaced by the documented header rule"
   },
   "display_count": 4
 }

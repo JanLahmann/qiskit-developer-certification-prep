@@ -27,7 +27,7 @@
     },
     {
       "key": "E",
-      "text": "It is short-lived: the token response reports `expires_in` of 3600 seconds, after which you request a fresh one."
+      "text": "It is short-lived: it expires within an hour (the documented response shows `expires_in` 3600), then you mint a new one."
     },
     {
       "key": "F",
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s8)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s8 r1: carried-forward flag checked — citations were NOT swapped here; both pages re-fetched 200 and re-read, and both show the IAM token POST with the apikey grant type and the expires_in=3600 response, so the keyed claims are directly supported. Answers moved A,C -> C,E so the section's two multi-select items differ in both answer count and answer letters; length tell removed. | pool wave: +F the IAM token is scoped to a single Runtime instance (options cap 6 reached, one distractor added) | realism audit 2026-10-01: stem trimmed; difficulty kept 2; explanation display-letter refs '(C)/(E)' removed"
+    "notes": "adversarial s8 r1: carried-forward flag checked — citations were NOT swapped here; both pages re-fetched 200 and re-read, and both show the IAM token POST with the apikey grant type and the expires_in=3600 response, so the keyed claims are directly supported. Answers moved A,C -> C,E so the section's two multi-select items differ in both answer count and answer letters; length tell removed. | pool wave: +F the IAM token is scoped to a single Runtime instance (options cap 6 reached, one distractor added) | realism audit 2026-10-01: stem trimmed; difficulty kept 2; explanation display-letter refs '(C)/(E)' removed | adversarial A3 2026-10-16: conceptual; citations re-fetched and grepped: setup guide POSTs to iam.cloud.ibm.com/identity/token with grant_type=urn:ibm:params:oauth:grant-type:apikey, response 'expires_in': 3600; API reference 'A bearer token is a temporary credential that expires after no more than one hour' and 'Use the response property expires_in ... to identify the length of time that your specific access token is valid' -> E reworded from a fixed 3600 s claim to 'expires within an hour (documented response shows 3600)'; F refuted by the reference ('allowed by your level of assigned access within all accounts'; instance chosen by Service-CRN); key C/E holds"
   },
   "display_count": 5
 }

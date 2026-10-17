@@ -3916,3 +3916,16 @@ figure sets rendered, rasterized and inspected. **0 key changes, 0 kills.** 20 e
   - verify_bank s8: 15/15 PROVEN + 7 conceptual, 0 failures.
   - audit_meta_patterns s8: 0 blockers / 0 warnings. A low length_tell on q025 came from the first E rewrite and was fixed. The low length_tell on q010/q013/q020/q021 is pre-existing, with those options untouched.
   - lint_proof_drift: 0 findings.
+
+## Adversarial review A3 — close-out (2026-10-17)
+
+All 15 batches done: 303 questions (every pre-October question plus the 21 figure-wave items; the 62 R2 adds were covered on 2026-10-02). Result: 0 key-letter changes, 0 kill-candidates. Every orchestrator check per batch: invariant diff vs HEAD (key, display_count, options), section verify, meta-audit gate, drift lint, and token-Jaccard rescan against the official sample (bank max 0.426, s3-q056; nothing near the 0.5 line).
+
+Final gates (2026-10-17): `verify_bank.py` 303/303 proven + 62 conceptual, 0 failures (only `verified_on` refreshed on untouched items); `audit_meta_patterns.py --gate` 0 blockers / 0 warnings; `lint_proof_drift.py` 0 findings; `check_links.py` 154/154 ok; `build_site_data` / `build_anki` / `build_study` / `build_epub` / `npm run build` clean.
+
+Study-layer sync: 44 study facts are sourced to questions whose stem, code, key text or correct-explanation changed in A3. Each was re-read against the current question and, where the claim is executable, re-run on the pinned stack. Four drifted and were fixed:
+- s3 (s3-q058): the qiskit 2.5 drawer labels a `for_loop` box `For` with the short range `r(0, 3)`, not `For-0 range(0, 3)` (executed for range(3), range(5) and with a loop parameter). The same wrong label in `site/docs/visual-guide.mdx` is fixed.
+- s4 (s4-q036): `evs ≈ 0.878` → `≈ 0.88` (the reworked proof observes 0.8813).
+- s7 (s7-q034): `status()` returns a plain `str` on a QPU job; local testing mode returns a `JobStatus` enum (the s7b finding). The fact now says so.
+- s8 (s8-q015): "accepts only the `OPENQASM 2.0;` header" overclaimed (a missing version statement parses); it now says the parser rejects any header version other than 2.0.
+- The s5 fact sourced to s5-q052 (StatevectorSampler rejects `if_test` / mid-circuit measurement) is not exercised by that proof, before or after A3. It was re-executed here and holds verbatim (`'StatevectorSampler cannot handle ControlFlowOp'`, `'... cannot handle mid-circuit measurements'`).

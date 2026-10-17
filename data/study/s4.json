@@ -111,7 +111,7 @@
     {
       "objective": "s4o2",
       "group": "core",
-      "fact_md": "With `mapped = obs.apply_layout(isa.layout)` the same Estimator run returns `evs ≈ 0.878`; `SparsePauliOp(\"ZZ\", target=...)` is a `TypeError`, not a shortcut.",
+      "fact_md": "With `mapped = obs.apply_layout(isa.layout)` the same Estimator run returns `evs ≈ 0.88`; `SparsePauliOp(\"ZZ\", target=...)` is a `TypeError`, not a shortcut.",
       "source": {
         "type": "proof",
         "ref": "s4-q036"

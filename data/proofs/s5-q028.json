@@ -27,7 +27,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.51,
+  "wall_seconds": 1.55,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"B\": \"raw counts had 5.9% odd-parity shots; keeping only 00/11 and renormalizing gives a distribution over 00/11 summing to 1 -> user-coded post-selection works = True\", \"A\": \"resilience_level=2 raised ValidationError (SamplerOptions has no resilience_level)\", \"C\": \"gates are noiseless and only readout is noisy: Bell pair with an idle window, PadDynamicalDecoupling inserted 4 X pulses; odd-parity outcomes are still 13.6% of shots (no DD: 13.6%) -> DD removed them = False\", \"D\": \"the parity filter is a working correction (kept 94.1% of the shots); the counts came back with 5.9% odd-parity shots, so they were not pre-corrected\", \"E\": \"16 twirled-measurement randomizations under readout-only noise: odd-parity outcomes still 16.7% of shots (untwirled 13.6%); twirling symmetrizes the readout error but does not remove 01/10 -> removed = False\", \"F\": \"the counts dict was filtered in plain Python, keeping 2 of 4 distinct outcomes -> the claim that counts cannot be filtered afterwards is false\"}, \"observed\": {\"raw_odd_parity_frac\": 0.0592, \"kept_shots\": 3763, \"readout_only_odd_frac\": 0.1355, \"dd_odd_frac\": 0.1355, \"dd_x_gates_inserted\": 4, \"twirled_odd_frac\": 0.1668}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

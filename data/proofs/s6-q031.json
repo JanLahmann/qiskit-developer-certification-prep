@@ -26,7 +26,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.75,
+  "wall_seconds": 1.12,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"displayed line raised ValidationError: Value error, EstimatorOptions.default_precision must be >0, but is ==0.; -0.01 also rejected; 0.01 accepted (value 0.01); installed EstimatorOptions validator constrains default_precision gt=0: True\", \"B\": \"false: 0.01 (not an integer) is accepted; 1000 is stored as 1000.0 (a float target standard error, not a shot count), so the value is not a shot number\", \"C\": \"false: estimator.options has default_precision (hasattr=True) and accepted 0.01 above\", \"D\": \"false: estimator.options.default_precision = 0.01 succeeded (True); no run() call involved\", \"E\": \"options.execution.default_precision = 0.01 -> rejected: ValidationError: Object has no attribute 'default_precision'\", \"F\": \"EstimatorV2(mode=backend, options={'default_precision': 0}) -> rejected with the same ValidationError: Value error, EstimatorOptions.default_precision must be >0, but is ==0.\"}, \"observed\": {\"buggy_error\": \"ValidationError: Value error, EstimatorOptions.default_precision must be >0, but is ==0.\", \"validator_gt0\": true, \"stored_1000\": 1000.0, \"execution_error\": \"ValidationError: Object has no attribute 'default_precision'\", \"constructor_error\": \"ValidationError: Value error, EstimatorOptions.default_precision must be >0, but is ==0.\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

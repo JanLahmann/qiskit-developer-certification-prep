@@ -26,7 +26,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.24,
+  "wall_seconds": 1.11,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"displayed code prints 'IZIZ'; option claims 'IZIZ' -> match=True\", \"B\": \"displayed code prints 'IZIZ'; option claims 'ZIZI' -> match=False\", \"C\": \"displayed code prints 'IZIZ'; option claims 'ZZII' -> match=False\", \"D\": \"displayed code prints 'IZIZ'; option claims 'IIZZ' -> match=False\", \"E\": \"false: the 2-entry layout ran without error (printed 'IZIZ'); the list needs one entry per OBSERVABLE qubit -- a 1-entry list raises QiskitError: 'Number of qargs does not match (1 != 2)'\", \"F\": \"false: index 2 was accepted (printed 'IZIZ'); indices are checked against num_qubits=4 -- [4, 0] raises QiskitError: 'Provided layout contains indices outside the number of qubits.'\"}, \"observed\": {\"printed\": \"IZIZ\", \"raised\": null, \"ZX_layout_2_0\": \"IXIZ\", \"one_entry_layout\": \"QiskitError: 'Number of qargs does not match (1 != 2)'\", \"index_4_layout\": \"QiskitError: 'Provided layout contains indices outside the number of qubits.'\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

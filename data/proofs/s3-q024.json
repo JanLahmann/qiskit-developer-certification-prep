@@ -24,7 +24,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 1.24,
+  "wall_seconds": 1.18,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"C\"], \"evidence\": {\"A\": \"raised AttributeError: 'InstructionSet' object has no attribute 'c_if'\", \"B\": \"raised TypeError: 'qiskit.circuit.Clbit' object is not subscriptable\", \"C\": \"built successfully; ops={'ry': 1, 'measure': 1, 'if_else': 1}; condition=(clbit 1, 1), body=[('z', [0])]; if_else on cr[1]==1 with z(0)=True\", \"D\": \"raised CircuitError: \\\"When using 'if_test' with a body, you must pass qubits and clbits.\\\"\", \"E\": \"raised TypeError: 'bool' object is not subscriptable\", \"F\": \"built successfully; ops={'ry': 1, 'measure': 1, 'while_loop': 1}; no if_else; if_else on cr[1]==1 with z(0)=False\"}, \"observed\": {\"proven\": [\"C\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

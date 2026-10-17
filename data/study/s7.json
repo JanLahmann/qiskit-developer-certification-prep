@@ -171,7 +171,7 @@
     {
       "objective": "s7o2",
       "group": "trap",
-      "fact_md": "`status()` returns a plain `str`, so `status() == JobStatus.DONE` is False and `status().name` raises `AttributeError`. `done()` is True only for `DONE`; `in_final_state()` also covers `CANCELLED` and `ERROR`; there is no `FAILED` state.",
+      "fact_md": "On a QPU job, `status()` returns a plain `str` (local testing mode returns a `JobStatus` enum instead), so `status() == JobStatus.DONE` is False and `status().name` raises `AttributeError`. `done()` is True only for `DONE`; `in_final_state()` also covers `CANCELLED` and `ERROR`; there is no `FAILED` state.",
       "source": {
         "type": "proof",
         "ref": "s7-q034"

@@ -28,7 +28,7 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.46,
+  "wall_seconds": 1.35,
   "returncode": 0,
   "stdout_tail": "###VERDICT###{\"answer\": [\"A\"], \"evidence\": {\"A\": \"displayed code -> ('exception', 'AttributeError', \\\"'DataBin' object has no attribute 'meas'\\\"); result data fields=[]; same code with qc.measure_all() before pm.run -> 1024 shots (True)\", \"B\": \"fixed job: job.result().counts -> AttributeError: 'PrimitiveResult' object has no attribute 'counts'; data.meas.get_counts() works (False)\", \"C\": \"the fixed run used the same shots=1024 and returned 1024 shots (False)\", \"D\": \"fixed Bell circuit returned counts over ['00', '01', '10', '11'] with more than 80% in 00/11: True -> the Sampler returns counts for the entangled state (False)\", \"E\": \"result data fields=[]; data.c -> AttributeError: 'DataBin' object has no attribute 'c' (False)\", \"F\": \"transpiling the measured circuit kept 2 measure instruction(s) (False)\"}, \"observed\": {\"stem_outcome\": [\"exception\", \"AttributeError\"], \"fields\": [], \"fixed_shots\": 1024, \"measures_after_transpile\": 2}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",

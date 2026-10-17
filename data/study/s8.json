@@ -135,7 +135,7 @@
     {
       "objective": "s8o3",
       "group": "trap",
-      "fact_md": "`qasm2.loads` accepts only the `OPENQASM 2.0;` header — feeding it a v3 program raises `QASM2ParseError` immediately.",
+      "fact_md": "`qasm2.loads` rejects any header version other than `2.0` — feeding it a v3 program raises `QASM2ParseError` immediately.",
       "source": {
         "type": "proof",
         "ref": "s8-q015"

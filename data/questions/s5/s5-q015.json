@@ -40,15 +40,15 @@
   "explanation": {
     "correct": "Qiskit uses little-endian bit ordering: in the printed bitstring the classical bit with the highest index is on the left and bit 0 is on the right. Only qubit 0 is excited, and it is measured into classical bit 0, so the rightmost character is 1 and the rest are 0 -> '001'.",
     "distractors": {
-      "B": "This assumes big-endian ordering (qubit 0 leftmost). Qiskit is little-endian, so qubit 0 lands in the rightmost position, giving '001', not '100'.",
+      "B": "This assumes classical bit 0 is the leftmost character. In a counts key bit n-1 is leftmost and bit 0 rightmost, giving '001', not '100'. The bit-ordering guide's remark that the Sampler 'return[s] big-endian results' refers to the BitArray's stored layout (`to_bool_array()` defaults to `order='big'`, most significant bit at index 0); the BitArray reference still states index 0 is 'the right-most bitstring entry as returned by get_counts()'.",
       "C": "X acts only on the qubit it targets, and each measure writes one classical bit; qubits 1 and 2 stay in |0>, so the register does not collectively flip.",
       "D": "Transpilation preserves the circuit's semantics — it re-expresses X in the backend basis rather than removing it — so the measured bit is 1, not 0.",
       "E": "`get_counts()` keys are bitstrings (`str`); the integer view is a separate call, `get_int_counts()`. The executed run shows string keys.",
       "F": "Spaces separate classical *registers*, not bits. `QuantumCircuit(3, 3)` owns one register, so the key is a single 3-character string."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
+      "https://quantum.cloud.ibm.com/docs/guides/bit-ordering",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray"
     ]
   },
   "proof": {
@@ -57,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(3, 3)\nqc.x(0)                      # flip qubit 0 only\nqc.measure(0, 0); qc.measure(1, 1); qc.measure(2, 2)\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)\nsampler.options.simulator.seed_simulator = 123\ncounts = sampler.run([isa], shots=2000).result()[0].data.c.get_counts()\ntop = max(counts, key=counts.get)\n\ncandidates = {\"A\": \"001\", \"B\": \"100\", \"C\": \"111\", \"D\": \"000\"}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == top)\n    evidence[k] = f\"option claims dominant bitstring {v!r}; observed argmax={top!r} (counts[{v!r}]={counts.get(v,0)}) -> match={match}\"\n    if match:\n        proven.append(k)\n\nkeys_are_str = all(isinstance(k, str) for k in counts)\nE_ok = (not keys_are_str)\nevidence[\"E\"] = f\"option E claims integer keys; get_counts() keys are str = {keys_are_str} (observed keys {sorted(counts)[:3]}) -> claim holds={E_ok}\"\nif E_ok:\n    proven.append(\"E\")\nF_ok = (\"0 0 1\" == top)\nevidence[\"F\"] = f\"option F claims a space-separated key '0 0 1'; the single classical register gave argmax={top!r} -> match={F_ok}\"\nif F_ok:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"counts\": counts, \"dominant\": top}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(3, 3)\nqc.x(0)                      # flip qubit 0 only\nqc.measure(0, 0); qc.measure(1, 1); qc.measure(2, 2)\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)\nsampler.options.simulator.seed_simulator = 123\ncounts = sampler.run([isa], shots=2000).result()[0].data.c.get_counts()\ntop = max(counts, key=counts.get)\n\ncandidates = {\"A\": \"001\", \"B\": \"100\", \"C\": \"111\", \"D\": \"000\"}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == top)\n    evidence[k] = f\"claimed dominant bitstring {v!r}; observed argmax={top!r} (counts[{v!r}]={counts.get(v,0)}) -> match={match}\"\n    if match:\n        proven.append(k)\n\nkeys_are_str = all(isinstance(k, str) for k in counts)\nE_ok = (not keys_are_str)\nevidence[\"E\"] = f\"claim: integer keys; get_counts() keys are str = {keys_are_str} (observed keys {sorted(counts)[:3]}) -> claim holds={E_ok}\"\nif E_ok:\n    proven.append(\"E\")\nF_ok = (\"0 0 1\" == top)\nevidence[\"F\"] = f\"claim: a space-separated key '0 0 1'; the single classical register gave argmax={top!r} -> match={F_ok}\"\nif F_ok:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"counts\": counts, \"dominant\": top}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; distractor D rewritten to a real misconception (transpilation removes gates) instead of a bare negation; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | pool wave: +E integer counts keys, +F space-separated register key | realism audit 2026-10-01: stem trimmed (measurement mapping is in the code); re-rated 2->1 (one-step endianness read)"
+    "notes": "s5 adversarial review: high-severity length tell fixed; distractor D rewritten to a real misconception (transpilation removes gates) instead of a bare negation; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | pool wave: +E integer counts keys, +F space-separated register key | realism audit 2026-10-01: stem trimmed (measurement mapping is in the code); re-rated 2->1 (one-step endianness read) | adversarial A3 2026-10-16: docs-reader trap answered in DB (bit-ordering guide: Sampler 'return big-endian results' = BitArray layout, to_bool_array default order='big'; get_counts keys keep bit 0 rightmost, executed: bool row [F,F,T] for key '001'); citations -> bit-ordering + BitArray API (sampler-input-output/SamplerV2 API silent on ordering); proof evidence letter-free"
   },
   "display_count": 4
 }

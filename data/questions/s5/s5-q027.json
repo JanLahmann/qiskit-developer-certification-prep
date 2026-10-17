@@ -47,8 +47,8 @@
       "F": "Near-miss name: the real field is `shots_per_randomization`. Assigning `shots_per_twirl` is rejected by the options validator."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/options-twirling-options",
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-options"
     ]
   },
   "proof": {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: distractor E renamed to a more plausible fake field; proof updated to match; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B/C/D/E -> answer now B+C+E (option texts swapped, keys/proof remapped) | pool wave: +F shots_per_twirl near-miss name | realism audit 2026-10-01: stem unchanged; difficulty 2 kept (multi-select with near-miss field names); explanation now names the actual pool distractors"
+    "notes": "s5 adversarial review: distractor E renamed to a more plausible fake field; proof updated to match; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B/C/D/E -> answer now B+C+E (option texts swapped, keys/proof remapped) | pool wave: +F shots_per_twirl near-miss name | realism audit 2026-10-01: stem unchanged; difficulty 2 kept (multi-select with near-miss field names); explanation now names the actual pool distractors | adversarial A3 2026-10-16: 6 assignments re-run (B/C/E accepted; A/D/F ValidationError); installed 0.48 TwirlingOptions fields = enable_gates, enable_measure, num_randomizations, shots_per_randomization, strategy; citations -> TwirlingOptions API (constructor signature) + sampler-options table, options-overview/SamplerV2 API dropped (no twirling fields)"
   },
   "display_count": 5
 }

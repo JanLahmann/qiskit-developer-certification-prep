@@ -42,14 +42,14 @@
   "explanation": {
     "correct": "SamplerOptions defines `default_shots`, `dynamical_decoupling`, `twirling`, `execution` and `experimental`, and inherits `simulator`, `environment` and `max_execution_time`. So `default_shots`, `dynamical_decoupling.enable` and `twirling.enable_gates` all assign cleanly. `resilience_level` belongs to EstimatorV2 and `optimization_level` is a transpiler argument; the options model forbids extra attributes, so both raise a validation error.",
     "distractors": {
-      "B": "`resilience_level` selects EstimatorV2 mitigation strategies for expectation values. The Sampler returns raw samples and its options model has no such attribute.",
+      "B": "`resilience_level` selects EstimatorV2 mitigation strategies for expectation values. The Sampler returns raw samples and its options model has no such attribute. The options-overview sentence 'Commonly-used options, such as resilience_level, are at the first level' is illustrated with EstimatorOptions; the SamplerOptions field list has no resilience entry.",
       "E": "`optimization_level` is a transpiler argument (e.g. to `generate_preset_pass_manager`), not a primitive option — transpilation happens before the job is submitted.",
       "F": "The `execution` group holds `init_qubits`, `rep_delay` and `meas_type` — there is no `shots` field there. Shot counts live in `default_shots` or in the PUB."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
-      "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-options",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/options-sampler-options",
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management"
     ]
   },
   "proof": {
@@ -67,15 +67,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: hedge tell fixed (glosses give correct and wrong options the same register); resilience ruling: resilience_level kept as a proven-invalid Sampler option; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved B/C/D -> answer now A+C+D (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +F shots-in-the-execution-group | realism audit 2026-10-01: stem unchanged (already short); difficulty 2 kept (multi-select over several option fields)"
+    "notes": "s5 adversarial review: hedge tell fixed (glosses give correct and wrong options the same register); resilience ruling: resilience_level kept as a proven-invalid Sampler option; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved B/C/D -> answer now A+C+D (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +F shots-in-the-execution-group | realism audit 2026-10-01: stem unchanged (already short); difficulty 2 kept (multi-select over several option fields) | adversarial A3 2026-10-16: 6 assignments re-run (A/C/D accepted; B/E ValidationError on SamplerOptions, F on SamplerExecutionOptionsV2 whose fields are init_qubits/rep_delay/meas_type); options-overview resilience_level trap answered in DB; citations -> sampler-options table + SamplerOptions API (+ noise-management), options-overview/SamplerV2 API dropped"
   },
   "display_count": 5
 }

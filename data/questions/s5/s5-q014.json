@@ -42,15 +42,14 @@
     "correct": "`resilience_level` is an EstimatorV2 option: resilience levels drive expectation-value mitigation such as TREX and ZNE. SamplerV2Options exposes only `default_shots`, `dynamical_decoupling`, `twirling`, `execution`, `experimental` (plus the inherited `simulator`/`environment` groups), and the options object validates assignments, so this line raises a pydantic ValidationError ('Object has no attribute resilience_level'). Note the exam objective is worded 'set sampler primitive options such as resilience levels' — in qiskit-ibm-runtime the resilience level is the Estimator's knob; the Sampler's error-handling options are dynamical decoupling and twirling.",
     "distractors": {
       "A": "Nothing is stored silently: the options model forbids extra attributes and validates on assignment, so the line throws immediately instead of being ignored.",
-      "B": "Readout mitigation of expectation values (TREX) is reached through EstimatorV2 resilience settings; the Sampler has no mitigation stage to switch on.",
+      "B": "Readout mitigation of expectation values (TREX) is reached through EstimatorV2 resilience settings; the Sampler has no mitigation stage to switch on. The options-overview line 'Commonly-used options, such as resilience_level, are at the first level' describes EstimatorOptions; SamplerOptions has no such field.",
       "D": "There is no aliasing. Measurement twirling has to be set explicitly via `options.twirling.enable_measure`; `resilience_level` simply does not exist on the Sampler.",
-      "E": "`sampler.options` is writable — setting a real field such as `default_shots` works. And the constructor is no escape hatch: `SamplerV2(mode=backend, options={'resilience_level': 1})` raises the same validation error.",
+      "E": "`sampler.options` is writable — setting a real field such as `default_shots` works. And the constructor is no escape hatch: `SamplerV2(mode=backend, options={'resilience_level': 1})` also raises a ValidationError ('Unexpected keyword argument').",
       "F": "`experimental` is a real field, but it is an opt-in dict you fill yourself — it does not absorb misspelled or foreign option names. The assignment is rejected outright."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
-      "https://quantum.cloud.ibm.com/docs/guides/runtime-options-overview",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/options-sampler-options"
     ]
   },
   "proof": {
@@ -68,15 +67,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: resilience ruling applied: correct answer states library reality and the explanation reconciles it with the exam objective wording; format tell fixed (all options now code-formatted); length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E options-are-read-only, +F experimental-absorbs-unknown-fields | realism audit 2026-10-01: stem trimmed (mitigation-intent framing dropped); re-rated 2->1 (one fact: resilience_level is Estimator-only)"
+    "notes": "s5 adversarial review: resilience ruling applied: correct answer states library reality and the explanation reconciles it with the exam objective wording; format tell fixed (all options now code-formatted); length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E options-are-read-only, +F experimental-absorbs-unknown-fields | realism audit 2026-10-01: stem trimmed (mitigation-intent framing dropped); re-rated 2->1 (one fact: resilience_level is Estimator-only) | adversarial A3 2026-10-16: docs-reader trap answered in DB (runtime-options-overview 'resilience_level, are at the first level' is the Estimator's); DE corrected (constructor raises a ValidationError with a different message, not 'the same'); citations -> sampler-noise-management + SamplerOptions API (field list), options-overview/SamplerV2 API dropped; stem/ctor/update re-run, all ValidationError"
   },
   "display_count": 5
 }

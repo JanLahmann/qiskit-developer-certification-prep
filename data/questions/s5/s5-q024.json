@@ -7,7 +7,7 @@
   "type": "mcq",
   "difficulty": 1,
   "stem": "How do you read the counts of the `alice` register after running the Sampler?",
-  "code": "qr = QuantumRegister(2, 'q')\nalice = ClassicalRegister(1, 'alice')\nbob   = ClassicalRegister(1, 'bob')\nqc = QuantumCircuit(qr, alice, bob)\n# ... measure into alice and bob, transpile, run ...\nresult = sampler.run([isa]).result()",
+  "code": "from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister\n\n# sampler: SamplerV2 on a device\nqr = QuantumRegister(2, 'q')\nalice = ClassicalRegister(1, 'alice')\nbob   = ClassicalRegister(1, 'bob')\nqc = QuantumCircuit(qr, alice, bob)\n# ... measure into alice and bob, transpile, run ...\nresult = sampler.run([isa]).result()",
   "options": [
     {
       "key": "A",
@@ -48,7 +48,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.DataBin"
     ]
   },
   "proof": {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: citations refreshed only (no tells flagged); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped) | pool wave: +E get_counts on the DataBin, +F DataBin.registers mapping | realism audit 2026-10-01: stem trimmed; re-rated 2->1 (one fact: register name = DataBin field)"
+    "notes": "s5 adversarial review: citations refreshed only (no tells flagged); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped) | pool wave: +E get_counts on the DataBin, +F DataBin.registers mapping | realism audit 2026-10-01: stem trimmed; re-rated 2->1 (one fact: register name = DataBin field) | adversarial A3 2026-10-16: code now imports the register classes and says where sampler comes from; all 6 accessors re-run (only result[0].data.alice works; A/B/C/E/F AttributeError, SamplerPubResult exposes only data/join_data/metadata); SamplerV2 API (silent) -> DataBin API ('attributes and keys are the names of the ClassicalRegister objects')"
   },
   "display_count": 4
 }

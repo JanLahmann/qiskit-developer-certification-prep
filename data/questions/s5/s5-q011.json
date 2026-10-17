@@ -7,7 +7,7 @@
   "type": "mcq",
   "difficulty": 1,
   "stem": "The circuit used `measure_all()`. Which statement about `bits` is correct?",
-  "code": "result = sampler.run([isa], shots=256).result()\nbits = result[0].data.meas",
+  "code": "# sampler: SamplerV2 on a device; isa: the transpiled circuit\nresult = sampler.run([isa], shots=256).result()\nbits = result[0].data.meas",
   "options": [
     {
       "key": "A",
@@ -48,7 +48,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray"
     ]
   },
   "proof": {
@@ -57,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nbits = SamplerV2(mode=backend).run([isa], shots=256).result()[0].data.meas\ntname = type(bits).__name__\nis_dict = isinstance(bits, dict)\ngc = bits.get_counts()\ngc_is_dict = isinstance(gc, dict)\n\nevidence, proven = {}, []\n# B: bits is a BitArray of per-shot outcomes; get_counts() returns a summary dict\nB = (tname == \"BitArray\") and gc_is_dict and (not is_dict)\n# A: bits itself is a dict mapping bitstrings->counts\nA = is_dict\n# C: bits is a NumPy array of probabilities\nC = (tname == \"ndarray\")\n# D: bits is a V1-style Counts object\nD = (tname == \"Counts\")\nfor k, val, desc in [(\"B\", B, f\"type(bits).__name__={tname!r}, isinstance(bits,dict)={is_dict}, get_counts() is dict={gc_is_dict}\"),\n                     (\"A\", A, f\"isinstance(bits,dict)={is_dict}\"),\n                     (\"C\", C, f\"type name is {tname!r}, not ndarray\"),\n                     (\"D\", D, f\"type name is {tname!r}, not Counts\")]:\n    evidence[k] = f\"claim holds={val} — {desc}\"\n    if val:\n        proven.append(k)\n\nE_ok = (tname == \"DataBin\")\nevidence[\"E\"] = f\"claim holds={E_ok} — type(bits).__name__={tname!r}; the DataBin is result[0].data and .meas is one field inside it\"\nif E_ok:\n    proven.append(\"E\")\nF_ok = (tname == \"SamplerPubResult\")\nevidence[\"F\"] = f\"claim holds={F_ok} — type(bits).__name__={tname!r}; SamplerPubResult is result[0], one level above .data\"\nif F_ok:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"type\": tname, \"get_counts_type\": type(gc).__name__, \"num_shots\": bits.num_shots}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2)\nqc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nbits = SamplerV2(mode=backend).run([isa], shots=256).result()[0].data.meas\ntname = type(bits).__name__\nis_dict = isinstance(bits, dict)\ngc = bits.get_counts()\ngc_is_dict = isinstance(gc, dict)\n\nevidence, proven = {}, []\n# B: bits is a BitArray of per-shot outcomes; get_counts() returns a summary dict\nper_shot = len(bits.get_bitstrings()) == bits.num_shots == 256\nsummarizes = sum(gc.values()) == bits.num_shots\nB = (tname == \"BitArray\") and gc_is_dict and (not is_dict) and per_shot and summarizes\n# A: bits itself is a dict mapping bitstrings->counts\nA = is_dict\n# C: bits is a NumPy array of probabilities\nC = (tname == \"ndarray\")\n# D: bits is a V1-style Counts object\nD = (tname == \"Counts\")\nfor k, val, desc in [(\"B\", B, f\"type(bits).__name__={tname!r}, isinstance(bits,dict)={is_dict}, get_counts() is dict={gc_is_dict}; one stored bitstring per shot={per_shot}; counts sum to num_shots={summarizes}\"),\n                     (\"A\", A, f\"isinstance(bits,dict)={is_dict}\"),\n                     (\"C\", C, f\"type name is {tname!r}, not ndarray\"),\n                     (\"D\", D, f\"type name is {tname!r}, not Counts\")]:\n    evidence[k] = f\"claim holds={val} — {desc}\"\n    if val:\n        proven.append(k)\n\nE_ok = (tname == \"DataBin\")\nevidence[\"E\"] = f\"claim holds={E_ok} — type(bits).__name__={tname!r}; the DataBin is result[0].data and .meas is one field inside it\"\nif E_ok:\n    proven.append(\"E\")\nF_ok = (tname == \"SamplerPubResult\")\nevidence[\"F\"] = f\"claim holds={F_ok} — type(bits).__name__={tname!r}; SamplerPubResult is result[0], one level above .data\"\nif F_ok:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"type\": tname, \"get_counts_type\": type(gc).__name__, \"num_shots\": bits.num_shots}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed (correct option tightened, distractors given equal weight); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E DataBin level confusion, +F SamplerPubResult level confusion | realism audit 2026-10-01: stem trimmed; difficulty 1 kept"
+    "notes": "s5 adversarial review: high-severity length tell fixed (correct option tightened, distractors given equal weight); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E DataBin level confusion, +F SamplerPubResult level confusion | realism audit 2026-10-01: stem trimmed; difficulty 1 kept | adversarial A3 2026-10-16: code comment now says where sampler/isa come from; proof B now checks per-shot storage (256 bitstrings = num_shots) and that get_counts() sums to num_shots, not just the type name; SamplerV2 API (silent on BitArray) -> BitArray API (get_counts \"Return a counts dictionary\")"
   },
   "display_count": 4
 }

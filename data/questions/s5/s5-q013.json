@@ -42,8 +42,8 @@
     "distractors": {
       "A": "The problem is not list nesting — a single list of PUBs is already the correct structure. Nesting changes nothing about the circuit still being non-ISA.",
       "C": "Shots are optional, not required, and adding them does not make a non-ISA circuit acceptable: the validation error is about gates and connectivity.",
-      "D": "The primitive never transpiles for you. Dropping the mode removes the execution target entirely and the circuit is still non-ISA.",
-      "E": "`decompose()` unrolls one level into `u`/`cx`, which are not the backend's basis and are still unrouted; the same target error is raised. Decomposing is not transpiling.",
+      "D": "The primitive never transpiles for you, and dropping the mode removes the execution target entirely: with no open session or batch, `SamplerV2()` raises `ValueError: A backend or session must be specified.` before anything runs.",
+      "E": "`decompose()` unrolls only one level (here into `h`, `t`, `tdg`, `u` and `cx`), which is still not the backend's basis and still unrouted, so the same target error is raised. Decomposing is not transpiling.",
       "F": "Translation without a coupling map produces basis gates on non-adjacent qubits: the run then fails on `cx` between qubits that are not connected. An ISA circuit needs layout and routing too."
     },
     "citations": [
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; distractor C now encodes the 'shots are mandatory' misconception; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E decompose-is-not-transpile, +F basis-gates translation without routing | realism audit 2026-10-01: stem trimmed; re-rated 2->1 (one recalled fact: primitives need ISA circuits)"
+    "notes": "s5 adversarial review: high-severity length tell fixed; distractor C now encodes the 'shots are mandatory' misconception; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E decompose-is-not-transpile, +F basis-gates translation without routing | realism audit 2026-10-01: stem trimmed; re-rated 2->1 (one recalled fact: primitives need ISA circuits) | adversarial A3 2026-10-16: DE rebuilt from execution (decompose yields h/t/tdg/u/cx, not just u/cx; run rejects 'u'); DD now states the executed constructor ValueError; all 6 options re-run on FakeManilaV2 (only B runs; F fails on cx (0, 2))"
   },
   "display_count": 4
 }

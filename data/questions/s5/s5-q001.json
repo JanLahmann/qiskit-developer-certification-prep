@@ -7,7 +7,7 @@
   "type": "mcq",
   "difficulty": 1,
   "stem": "Which call correctly submits the ISA circuit `isa_qc` with this sampler?",
-  "code": "from qiskit_ibm_runtime import SamplerV2\n\n# isa_qc: circuit already transpiled for `backend`\nsampler = SamplerV2(mode=backend)\njob = ...  # which call?",
+  "code": "from qiskit_ibm_runtime import SamplerV2\n\n# backend: a real or fake device; isa_qc: circuit already transpiled for it\nsampler = SamplerV2(mode=backend)\njob = ...  # which call?",
   "options": [
     {
       "key": "A",
@@ -42,13 +42,13 @@
     "distractors": {
       "B": "V1 primitives accepted a bare circuit, but SamplerV2.run() iterates its argument as a sequence of PUBs, so an unwrapped circuit is rejected.",
       "C": "run() has no positional backend parameter — the execution target is fixed by `mode=` at construction time; a second positional argument raises a TypeError.",
-      "D": "There is no `backend=` keyword on run() either; that is a V1-migration habit. The only keyword run() accepts is `shots`.",
+      "D": "There is no `backend=` keyword on run() either; that is a V1-migration habit. In runtime 0.48 the only keyword run() accepts is `shots` (the `dry_run` flag on the current API page arrived in 0.50), so this raises a TypeError.",
       "E": "V1 habit: `SamplerV1.run` took `circuits=`. `SamplerV2.run` has a single positional `pubs` parameter, so `circuits=` raises a TypeError before anything is submitted.",
       "F": "`shots` is a single integer applied to every PUB that does not carry its own shot count; a list raises `TypeError: shots must be an integer`. Per-PUB shot counts go in the PUB tuple's third slot instead."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-sampler",
-      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2",
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-options"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude (orchestrator seed)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | s5 adversarial review: distractor texts lengthened/labelled so the correct option is not the odd one out; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | drift-lint fix: evidence no longer quotes the local 1024 default as meaningful | pool wave: +E V1 `circuits=` kwarg, +F shots as a per-PUB list | realism audit 2026-10-01: stem trimmed (context already in code)"
+    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | s5 adversarial review: distractor texts lengthened/labelled so the correct option is not the odd one out; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | drift-lint fix: evidence no longer quotes the local 1024 default as meaningful | pool wave: +E V1 `circuits=` kwarg, +F shots as a per-PUB list | realism audit 2026-10-01: stem trimmed (context already in code) | adversarial A3 2026-10-16: backend now defined by comment; D scoped to 0.48 (latest API page lists 0.50 dry_run); citations -> SamplerV2 API ('An iterable of pub-like objects') + sampler-options ('The only values you can pass to run() ... That is, shots'); all 6 calls re-run"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

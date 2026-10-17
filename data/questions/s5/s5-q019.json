@@ -40,7 +40,7 @@
   "explanation": {
     "correct": "Dynamical decoupling is configured through the nested options object: `options.dynamical_decoupling` is an options group whose `.enable` flag turns the feature on. Setting `options.dynamical_decoupling.enable = True` is the supported form.",
     "distractors": {
-      "A": "SamplerV2 has no `resilience` options group (that concept lives on the Estimator). Accessing `options.resilience` fails; DD lives directly under `options.dynamical_decoupling`.",
+      "A": "SamplerV2 has no `resilience` options group (that concept lives on the Estimator), so reading `options.resilience` raises an AttributeError; DD lives directly under `options.dynamical_decoupling`.",
       "B": "`dynamical_decoupling` is an options *group*, not a boolean. Assigning `True` to the whole group fails validation — you must set its `.enable` field.",
       "C": "`run()` does not accept a `dynamical_decoupling` keyword; options are configured on `sampler.options`, not passed to `run()`. This raises a TypeError.",
       "E": "Near-miss attribute name: the flag is `enable`, not `enabled`. The options are pydantic-validated, so assigning to a nonexistent `enabled` field raises a ValidationError instead of silently doing nothing.",
@@ -48,7 +48,6 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
-      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
       "https://quantum.cloud.ibm.com/docs/guides/sampler-options"
     ]
   },
@@ -67,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: citations refreshed only (no tells flagged); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | distractor pool pilot: +E (enabled-vs-enable near-miss), display_count=4 | pool wave: +F sequence_type-does-not-enable | realism audit 2026-10-01: stem trimmed (in-stem DD definition removed; it did not decide the options); re-rated 2->1"
+    "notes": "s5 adversarial review: citations refreshed only (no tells flagged); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | distractor pool pilot: +E (enabled-vs-enable near-miss), display_count=4 | pool wave: +F sequence_type-does-not-enable | realism audit 2026-10-01: stem trimmed (in-stem DD definition removed; it did not decide the options); re-rated 2->1 | adversarial A3 2026-10-16: all 6 statements re-run (A AttributeError, B/E ValidationError, C TypeError, F leaves enable Unset); DA names the executed AttributeError; error-mitigation-and-suppression-techniques dropped (no enable field stated), sampler-noise-management + sampler-options ('dynamical_decoupling.enable ... Default: False') kept"
   },
   "display_count": 4
 }

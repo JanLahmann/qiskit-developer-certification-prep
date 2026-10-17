@@ -7,7 +7,7 @@
   "type": "predict-output",
   "difficulty": 2,
   "stem": "A 1-parameter circuit is broadcast over 4 parameter sets. What does this code print?",
-  "code": "import numpy as np\n\nvals = np.array([[0.0], [np.pi/3], [np.pi/2], [np.pi]])   # 4 parameter sets\nba = sampler.run([(isa, vals)], shots=500).result()[0].data.meas\nprint(sum(ba.get_counts().values()))",
+  "code": "import numpy as np\n\n# sampler: SamplerV2 on a device; isa: 1-qubit ISA circuit with one parameter and measure_all()\n\nvals = np.array([[0.0], [np.pi/3], [np.pi/2], [np.pi]])   # 4 parameter sets\nba = sampler.run([(isa, vals)], shots=500).result()[0].data.meas\nprint(sum(ba.get_counts().values()))",
   "options": [
     {
       "key": "A",
@@ -44,11 +44,11 @@
       "B": "Without an index it does not pick the first set; it aggregates all of them. `get_counts(0)` would be needed to isolate the first set's 500 shots.",
       "D": "Each parameter set runs the full 500 shots independently; shots are not split across the sweep. The aggregate is 4 x 500 = 2000.",
       "E": "The index is optional: with no argument `get_counts()` aggregates the whole array, and `get_counts(i)` picks one parameter set. The executed run calls it with no index and gets a dict back.",
-      "F": "Summing the *values* adds the tallies; the number of distinct bitstrings is `len(...)`. The executed run reports both numbers side by side."
+      "F": "Summing the *values* adds the tallies; the number of distinct bitstrings is `len(...)` (2 for this 1-bit register). The BitArray reference's 'counts from all positions in this array are unioned together' merges the four histograms with their tallies added, so the executed run reports 2 keys holding 2000 shots."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output"
     ]
   },
   "proof": {
@@ -57,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nt = Parameter(\"t\"); qc = QuantumCircuit(1); qc.ry(t, 0); qc.measure_all()\nisa = pm.run(qc)\n\nvals = np.array([[0.0], [np.pi / 3], [np.pi / 2], [np.pi]])   # 4 parameter sets\nba = SamplerV2(mode=backend).run([(isa, vals)], shots=500).result()[0].data.meas\nobserved = sum(ba.get_counts().values())   # no index -> aggregate\n\ncandidates = {\"C\": 2000, \"B\": 500, \"A\": 4, \"D\": 125}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims {v}; ba.get_counts() (no index) totalled {observed} over shape {tuple(ba.shape)} -> match={match}\"\n    if match:\n        proven.append(k)\n\nE_raises = False\ntry:\n    _ = ba.get_counts()\nexcept Exception:\n    E_raises = True\nevidence[\"E\"] = (f\"option E claims get_counts() raises without an index: the no-argument call returned \"\n                 f\"{len(ba.get_counts())} distinct keys totalling {observed}, raised={E_raises}\")\nif E_raises:\n    proven.append(\"E\")\nF_val = len(ba.get_counts())\nevidence[\"F\"] = (f\"option F claims the sum equals the number of distinct bitstrings ({F_val}); \"\n                 f\"the sum of the values is {observed} -> match={F_val == observed}\")\nif F_val == observed:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"shape\": list(ba.shape), \"aggregate_total\": observed}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nt = Parameter(\"t\"); qc = QuantumCircuit(1); qc.ry(t, 0); qc.measure_all()\nisa = pm.run(qc)\n\nvals = np.array([[0.0], [np.pi / 3], [np.pi / 2], [np.pi]])   # 4 parameter sets\nba = SamplerV2(mode=backend).run([(isa, vals)], shots=500).result()[0].data.meas\nobserved = sum(ba.get_counts().values())   # no index -> aggregate\n\ncandidates = {\"C\": 2000, \"B\": 500, \"A\": 4, \"D\": 125}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"claimed {v}; ba.get_counts() (no index) totalled {observed} over shape {tuple(ba.shape)} -> match={match}\"\n    if match:\n        proven.append(k)\n\nE_raises = False\ntry:\n    _ = ba.get_counts()\nexcept Exception:\n    E_raises = True\nevidence[\"E\"] = (f\"claim: get_counts() raises without an index: the no-argument call returned \"\n                 f\"{len(ba.get_counts())} distinct keys totalling {observed}, raised={E_raises}\")\nif E_raises:\n    proven.append(\"E\")\nF_val = len(ba.get_counts())\nevidence[\"F\"] = (f\"claim: the sum equals the number of distinct bitstrings ({F_val}); \"\n                 f\"the sum of the values is {observed} -> match={F_val == observed}\")\nif F_val == observed:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"shape\": list(ba.shape), \"aggregate_total\": observed}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | pool wave: +E index-required-when-broadcast, +F sum-counts-distinct-keys | realism audit 2026-10-01: stem trimmed (kept 'broadcast' so the generic stem does not create a stem-echo tell); the 'no index' gloss removed (the code shows it), so difficulty 2 kept with the hint gone"
+    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | pool wave: +E index-required-when-broadcast, +F sum-counts-distinct-keys | realism audit 2026-10-01: stem trimmed (kept 'broadcast' so the generic stem does not create a stem-echo tell); the 'no index' gloss removed (the code shows it), so difficulty 2 kept with the hint gone | adversarial A3 2026-10-16: code comment defines sampler/isa (1-qubit, so the distinct-key misconception yields 2); 'unioned together' docs wording answered in DF; citations -> BitArray API (get_counts loc=None 'counts from all positions ... are unioned together') + sampler-input-output, SamplerV2 API dropped; proof evidence letter-free; re-run: 2000 total, 2 keys, get_counts(0) 500"
   },
   "display_count": 5
 }

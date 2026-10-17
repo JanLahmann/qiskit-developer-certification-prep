@@ -7,7 +7,7 @@
   "type": "predict-output",
   "difficulty": 2,
   "stem": "What does this code print?",
-  "code": "import numpy as np\n\n# isa has 2 free parameters\nvals = np.zeros((3, 4, 2))   # a 3x4 grid of 2-parameter sets\nresult = sampler.run([(isa, vals)]).result()\nprint(result[0].data.meas.shape)",
+  "code": "import numpy as np\n\n# sampler: SamplerV2 on a device; isa: measure_all() ISA circuit with 2 free parameters\nvals = np.zeros((3, 4, 2))   # a 3x4 grid of 2-parameter sets\nresult = sampler.run([(isa, vals)]).result()\nprint(result[0].data.meas.shape)",
   "options": [
     {
       "key": "A",
@@ -47,8 +47,8 @@
       "F": "A PUB keeps its broadcast shape: a scalar result would happen for a circuit bound to one parameter set, not for a 3x4 grid."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray"
     ]
   },
   "proof": {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped) | pool wave: +E transposed broadcast axes, +F scalar-result-per-PUB | realism audit 2026-10-01: stem trimmed (parameter count stays in the code comment); re-rated 3->2 (same trailing-axis rule on a 2-D grid)"
+    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/D -> answer now D (option texts swapped, keys/proof remapped) | pool wave: +E transposed broadcast axes, +F scalar-result-per-PUB | realism audit 2026-10-01: stem trimmed (parameter count stays in the code comment); re-rated 3->2 (same trailing-axis rule on a 2-D grid) | adversarial A3 2026-10-16: code comment now says where sampler/isa come from; citations -> primitive-input-output ('the last index is over circuit Parameter objects') + BitArray API ('preceding axes correspond to the shape of the pub'), sampler-input-output/SamplerV2 API silent on result shape; shape (3, 4) re-run independently with a 2-qubit circuit"
   },
   "display_count": 4
 }

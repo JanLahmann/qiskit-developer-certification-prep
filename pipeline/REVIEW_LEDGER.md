@@ -3449,3 +3449,74 @@ behavior read from the INSTALLED 0.48 source; every cited page fetched as text a
   0 warnings, 10 low length flags, all pre-existing (the q035 format tell and q036 length tell my
   rewrites introduced were fixed); lint_proof_drift 0 findings (q038 F evidence trimmed to the
   exception's first line); render_figures OK for q047.
+
+## Adversarial review A3 — s5a (2026-10-16)
+
+Scope: s5-q001, s5-q010, q011, q013..q015, q017..q028 (18; 17 executed, 1 conceptual). Every
+option, pool distractors included, re-run in independent scratch scripts (pinned venv, qiskit
+2.5.0 / runtime 0.48.0); local-testing behavior read from the INSTALLED 0.48 source; every cited
+page fetched as text and grepped. **0 key changes, 0 kills.** 18 edited, 0 survived unchanged.
+
+- **Hollow proof (s5-q028):** C (DD) and E (measurement twirling) were "refuted" by enabling the
+  options on `SamplerV2(mode=FakeManilaV2())`, but 0.48 `fake_provider/local_service.py` drops them
+  (`warnings.warn(f"Options {options_copy} have no effect in local testing mode.")`); executed,
+  the counts with DD on, twirling on and neither were byte-identical. Proof now asserts that warning
+  and applies each technique explicitly under a readout-only `NoiseModel` (gates noiseless):
+  Qiskit's `PadDynamicalDecoupling` inserted 4 X pulses into an idle window, odd parity unchanged
+  (13.6%); an emulated 16-randomization measurement twirl (random X before measure, classical flip
+  after) still 16.7% odd parity. Stem "Which do-it-yourself correction" echoed only the key
+  ("post-selection you code yourself") -> "Which approach removes them from the result?".
+- **Second-answer fix (s5-q021, conceptual):** stem asked for "untouched per-shot outcomes ... own
+  readout calibration" while E called `meas_type='kerneled'` "the raw per-shot readout"; per-shot IQ
+  points are rawer than classified bits and are exactly what a custom discriminator calibrates on.
+  Stem now asks for uncorrected outcomes for a readout-error correction; E claims kerneled switches
+  off a default readout correction (none exists; 0.48 `meas_type` is a return-format Literal
+  classified/kerneled/avg_kerneled). Key quote: readout-error-mitigation-sampler tutorial "Unlike the
+  Estimator primitive, the Sampler primitive does not have built-in support for error mitigation."
+- **Key text not literally doable (s5-q018):** "Reshape to (5, 2)" — executed, `vals.reshape(5, 2)`
+  on the (5, 3) array raises `ValueError: cannot reshape array of size 15 into shape (5,2)` -> "Rebuild
+  `vals` as a (5, 2) array"; proof label typo "1-A" -> "1-D".
+- **False rationales rebuilt from execution:** s5-q013 DE said `decompose()` gives `u`/`cx` (it gives
+  h/t/tdg/u/cx; run rejects `u`), DD now names the constructor ValueError ("A backend or session must be
+  specified."); s5-q014 DE "the same validation error" (constructor path is a ValidationError
+  "Unexpected keyword argument", assignment is "Object has no attribute"); s5-q010 DD scoped to the
+  service `default_shots` (local fake fallback is 1024, not 4096); s5-q019 DA names the
+  AttributeError; s5-q026 correct adds the twirling rung of the sampler-options precedence list.
+- **Docs-reader traps answered:** bit-ordering guide "the IBM Quantum Compute Service Sampler and
+  Estimator primitives return big-endian results" (s5-q015 DB: BitArray layout, `to_bool_array()`
+  defaults to `order='big'`; executed key '001' -> bool row [F, F, T]; BitArray reference "index 0 ...
+  right-most bitstring entry as returned by get_counts()"); runtime-options-overview "Commonly-used
+  options, such as resilience_level, are at the first level" (s5-q014 DB, s5-q020 DB: Estimator
+  example, SamplerOptions has no such field); latest SamplerV2 API `run(pubs, *, shots=None,
+  dry_run=False)` (s5-q001 DD: dry_run is 0.50, 0.48 has only `shots`); BitArray `get_counts`
+  "counts from all positions in this array are unioned together" (s5-q023 DF: tallies added, 2 keys
+  holding 2000 shots); error-mitigation TREX "diagonalizing the readout-error transfer matrix"
+  (s5-q028 DE: symmetrizes, rescaling is an Estimator step).
+- **Code not runnable as displayed:** q001/q010/q011/q017/q018/q022/q023/q026 fragments now say where
+  `backend`/`sampler`/`isa` come from (q023 pins a 1-qubit circuit so the distinct-key distractor
+  yields its 2); q022/q024/q025/q026 gained their missing imports.
+- **Proof hygiene:** display letters removed from evidence strings (q010, q015, q023, q026: "option E
+  claims ..."); q010 unseeded raw counts dropped from `observed`; q011 B now checks per-shot storage
+  (256 bitstrings = num_shots) and that `get_counts()` sums to num_shots, not just the type name.
+- **Citation failures replaced (fetched, quotes grepped):** SamplerV2 API page (no BitArray/DataBin/
+  ordering content) replaced on q011/q023 (-> BitArray API), q024/q025 (-> DataBin API "attributes and
+  keys are the names of the ClassicalRegister objects"), q015 (-> bit-ordering + BitArray API), q017
+  (-> primitive-input-output "the last index is over circuit Parameter objects" + BitArray API
+  "preceding axes correspond to the shape of the pub"), q018 (-> primitive-input-output), q014/q020
+  (-> SamplerOptions API field list), q027 (-> TwirlingOptions API signature + sampler-options table);
+  runtime-options-overview dropped on q014/q020/q027; error-mitigation-and-suppression-techniques
+  dropped on q019/q021 (no option fields); q001 -> SamplerV2 API ("An iterable of pub-like objects")
+  + sampler-options ("The only values you can pass to run() ... That is, shots"); q021 -> readout
+  tutorial + sampler-options (meas_type choices).
+- **Survived attacks (executed):** q001 B ValueError (CircuitInstruction pub-like), C/D/E/F TypeError;
+  q010 1000; q013 only the preset-PM ISA run succeeds, F fails on cx (0, 2); q017 (3, 4); q019 A
+  AttributeError, B/E ValidationError, C TypeError, F leaves enable Unset; q020 A/C/D accepted, F
+  rejected by SamplerExecutionOptionsV2 (init_qubits, rep_delay, meas_type); q022 only (isa, vals, 256)
+  runs; q024 only `data.alice` (SamplerPubResult exposes data/join_data/metadata); q025 A/F KeyError,
+  E AttributeError; q026 50 (bare PUB 1000); q027 0.48 TwirlingOptions = enable_gates, enable_measure,
+  num_randomizations, shots_per_randomization, strategy.
+- **Difficulty:** all 18 kept.
+- Gates: verify_bank s5 37/37 PROVEN + 6 conceptual, 0 failures; audit_meta_patterns s5 0 blockers /
+  0 warnings, 4 flagged (q010/q025/q026 low length flags pre-existing, options untouched; the q021
+  stem-echo and q018 length tells my rewrites introduced were fixed); lint_proof_drift 0 findings
+  (q028 D evidence now quotes a kept fraction, not the shot total).

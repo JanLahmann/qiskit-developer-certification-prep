@@ -7,7 +7,7 @@
   "type": "mcq",
   "difficulty": 1,
   "stem": "With `default_shots = 1000`, how many shots does this PUB run?",
-  "code": "sampler = SamplerV2(mode=backend)\nsampler.options.default_shots = 1000\njob = sampler.run([(isa, None, 50)])   # PUB = (circuit, params, shots)\nnum = job.result()[0].data.meas.num_shots",
+  "code": "from qiskit_ibm_runtime import SamplerV2\n\n# backend: a device; isa: measure_all() ISA circuit for it\nsampler = SamplerV2(mode=backend)\nsampler.options.default_shots = 1000\njob = sampler.run([(isa, None, 50)])   # PUB = (circuit, params, shots)\nnum = job.result()[0].data.meas.num_shots",
   "options": [
     {
       "key": "A",
@@ -38,7 +38,7 @@
     "C"
   ],
   "explanation": {
-    "correct": "Shots resolve most-specific-first: a value carried in the PUB (slot 3) wins over the `shots=` keyword on run(), which wins over `options.default_shots`, which wins over the runtime's own fallback. Here the PUB specifies 50, so exactly 50 shots run despite `default_shots = 1000`.",
+    "correct": "Shots resolve most-specific-first: a value carried in the PUB (slot 3) wins over the `shots=` keyword on run(), which wins over `options.default_shots` (with twirling enabled, `num_randomizations` x `shots_per_randomization` sits between those two), which wins over the runtime's own fallback. Here the PUB specifies 50, so exactly 50 shots run despite `default_shots = 1000`.",
     "distractors": {
       "A": "Shot settings are not additive; the more specific PUB value replaces the default rather than summing with it.",
       "B": "The default is only a fallback for PUBs that omit shots. A PUB that carries its own shot count overrides it, so 50 wins, not 1000.",
@@ -57,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(1); qc.h(0); qc.measure_all()\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)\nsampler.options.default_shots = 1000\n# single PUB carrying its own shots in slot 3\nobserved = sampler.run([(isa, None, 50)]).result()[0].data.meas.num_shots\n\ncandidates = {\"C\": 50, \"B\": 1000, \"A\": 1050, \"D\": 500}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims {v} shots; with default_shots=1000 and PUB shots=50, observed num_shots={observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nE_raises = False\ntry:\n    s2 = SamplerV2(mode=backend)\n    s2.options.default_shots = 1000\n    s2.run([(isa, None, 50)]).result()\nexcept Exception:\n    E_raises = True\nevidence[\"E\"] = (f\"option E claims the combination raises: re-running with default_shots=1000 and PUB shots=50 \"\n                 f\"raised={E_raises} (observed num_shots={observed})\")\nif E_raises:\n    proven.append(\"E\")\nevidence[\"F\"] = f\"option F claims a 4096-shot service default is used; observed num_shots={observed} -> match={observed == 4096}\"\nif observed == 4096:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"default_shots\": 1000, \"pub_shots\": 50, \"num_shots\": observed}})\n"
+    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(1); qc.h(0); qc.measure_all()\nisa = pm.run(qc)\n\nsampler = SamplerV2(mode=backend)\nsampler.options.default_shots = 1000\n# single PUB carrying its own shots in slot 3\nobserved = sampler.run([(isa, None, 50)]).result()[0].data.meas.num_shots\n\ncandidates = {\"C\": 50, \"B\": 1000, \"A\": 1050, \"D\": 500}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"claimed {v} shots; with default_shots=1000 and PUB shots=50, observed num_shots={observed} -> match={match}\"\n    if match:\n        proven.append(k)\n\nE_raises = False\ntry:\n    s2 = SamplerV2(mode=backend)\n    s2.options.default_shots = 1000\n    s2.run([(isa, None, 50)]).result()\nexcept Exception:\n    E_raises = True\nevidence[\"E\"] = (f\"claim: the combination raises: re-running with default_shots=1000 and PUB shots=50 \"\n                 f\"raised={E_raises} (observed num_shots={observed})\")\nif E_raises:\n    proven.append(\"E\")\nevidence[\"F\"] = f\"claim: a 4096-shot service default is used; observed num_shots={observed} -> match={observed == 4096}\"\nif observed == 4096:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"default_shots\": 1000, \"pub_shots\": 50, \"num_shots\": observed}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -66,15 +66,15 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; explanation now states the full documented precedence chain; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E PUB-shots-conflict, +F service-default fallback | realism audit 2026-10-01: stem trimmed; re-rated 3->1 (one recalled precedence fact)"
+    "notes": "s5 adversarial review: length rebalanced; explanation now states the full documented precedence chain; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | orchestrator polish: audit-calibration touch-up (length-rank/absolute-word balance), meaning unchanged | pool wave: +E PUB-shots-conflict, +F service-default fallback | realism audit 2026-10-01: stem trimmed; re-rated 3->1 (one recalled precedence fact) | adversarial A3 2026-10-16: code now imports SamplerV2 and says where backend/isa come from; correct explanation adds the twirling rung of the sampler-options precedence list; proof evidence letter-free; re-run: PUB shots 50 -> num_shots 50, bare PUB -> 1000"
   },
   "display_count": 5
 }

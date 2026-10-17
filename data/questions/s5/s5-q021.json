@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "A team needs untouched per-shot outcomes to apply its own readout calibration. Which statement about SamplerV2 is correct?",
+  "stem": "A team plans its own readout-error correction and needs uncorrected outcomes. Which statement about the Sampler primitive is correct?",
   "code": null,
   "options": [
     {
@@ -27,7 +27,7 @@
     },
     {
       "key": "E",
-      "text": "Set `options.execution.meas_type` to `'kerneled'`, usually the raw per-shot readout"
+      "text": "Set `options.execution.meas_type` to `'kerneled'`, which switches off the sampler's default readout correction"
     },
     {
       "key": "F",
@@ -43,14 +43,13 @@
       "B": "T-REx is an EstimatorV2 resilience technique for expectation values. The Sampler never applies it, so raw outcomes are simply what you already get.",
       "C": "SamplerV2 has no `resilience_level` at all — the assignment raises — so there is nothing to set to 0; the returned counts are already raw.",
       "D": "It is the Sampler, not the Estimator, that exposes per-shot samples. The Estimator returns processed expectation values, which is the opposite of raw data.",
-      "E": "`meas_type` chooses the *level* of returned data (classified bits, kerneled IQ points), not whether mitigation runs. Classified sampler output is already unmitigated, and kerneled data is not what a calibration matrix consumes.",
+      "E": "`meas_type` chooses the *form* of the returned data (classified bits, kerneled IQ points, averaged IQ points), not whether mitigation runs, and there is no default readout correction to switch off: classified Sampler output is already unmitigated. Kerneled IQ points are not bitstrings at all.",
       "F": "There is no `raw` parameter on `result()`, and there is nothing to bypass: SamplerV2 counts are already the raw per-shot outcomes."
     },
     "citations": [
+      "https://quantum.cloud.ibm.com/docs/tutorials/readout-error-mitigation-sampler",
       "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
-      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
-      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
-      "https://quantum.cloud.ibm.com/docs/tutorials/readout-error-mitigation-sampler"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-options"
     ]
   },
   "proof": {
@@ -63,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell and hedge tell fixed; resilience ruling: distractor C names resilience_level as the misconception; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E meas_type-controls-mitigation, +F raw=True result flag | realism audit 2026-10-01: stem trimmed; re-rated 2->1; citations re-checked (sampler-noise-management: DD + twirling only) and M3 Sampler tutorial added"
+    "notes": "s5 adversarial review: high-severity length tell and hedge tell fixed; resilience ruling: distractor C names resilience_level as the misconception; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E meas_type-controls-mitigation, +F raw=True result flag | realism audit 2026-10-01: stem trimmed; re-rated 2->1; citations re-checked (sampler-noise-management: DD + twirling only) and M3 Sampler tutorial added | adversarial A3 2026-10-16: second answer closed: stem said 'untouched per-shot outcomes ... own readout calibration' and E called kerneled IQ data 'the raw per-shot readout' (per-shot IQ data is rawer than classified bits and is what a custom discriminator calibrates on) -> stem asks for bitstrings with no mitigation, E now claims kerneled switches off a default readout correction (none exists; 0.48 meas_type Literal classified/kerneled/avg_kerneled is a return-format option); citations -> readout-error-mitigation-sampler ('the Sampler primitive does not have built-in support for error mitigation') + noise-management + sampler-options (meas_type choices), error-mitigation-techniques/sampler-input-output dropped; stem reworded to avoid the stem-echo tell"
   },
   "display_count": 4
 }

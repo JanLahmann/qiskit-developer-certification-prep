@@ -6,12 +6,12 @@
   ],
   "type": "mcq",
   "difficulty": 2,
-  "stem": "Which do-it-yourself technique rigorously corrects readout error in raw SamplerV2 counts?",
+  "stem": "Which do-it-yourself technique corrects readout error in raw SamplerV2 counts?",
   "code": null,
   "options": [
     {
       "key": "A",
-      "text": "Invert an assignment (confusion) matrix measured from calibration circuits (e.g. with M3)"
+      "text": "Solve against an assignment (confusion) matrix measured from calibration circuits, e.g. with M3"
     },
     {
       "key": "B",
@@ -38,19 +38,18 @@
     "A"
   ],
   "explanation": {
-    "correct": "Readout error is a classical relabeling of measured bits, captured by an assignment/confusion matrix that you measure with calibration circuits (prepare each basis state, record what you read back). Inverting — or least-squares inverting — that matrix corrects the counts. The Sampler's raw per-shot data is exactly the input such a method needs, which is why this correction is done by you in post-processing (with your own code or an external package such as mthree/M3), not by a runtime option: the Sampler's own noise-management options are dynamical decoupling and Pauli twirling only.",
+    "correct": "Readout error acts as a classical channel on the measured bits: an assignment (confusion) matrix M, measured with calibration circuits (prepare each basis state, record what is read back), maps the true distribution to the observed one. Solving that linear system for the true distribution corrects the counts (in practice not by explicit inversion; M3 solves a much smaller system restricted to the bitstrings actually observed). The Sampler's raw per-shot data is exactly the input this needs, so you do it in post-processing: the Sampler's own noise-management options are dynamical decoupling and Pauli twirling only.",
     "distractors": {
-      "B": "SamplerV2 has no `resilience_level` — the assignment raises — and a resilience level would not build a readout-calibration matrix in any case.",
+      "B": "SamplerV2 has no `resilience_level` (0.48: assigning it raises a ValidationError), and a resilience level would not build a readout-calibration matrix in any case. The primitives guide's remark that the IBM primitives include error mitigation refers to the Estimator; the Sampler offers no built-in mitigation.",
       "C": "Zero-Noise Extrapolation mitigates *expectation values* by amplifying gate noise and extrapolating; it is not defined on individual sampled bitstrings.",
-      "D": "Twirling randomizes coherent gate/measurement noise into a simpler stochastic form; it neither measures nor inverts the readout confusion matrix.",
+      "D": "Gate twirling randomizes two-qubit gate noise and never touches the readout. Even measurement twirling only diagonalizes the readout-error transfer matrix; the calibration and rescaling built on it (TREX) is an Estimator expectation-value step, not something the Sampler applies to counts.",
       "E": "PEC is an expectation-value technique: it reweights sampled circuits with signed quasi-probabilities, which cannot be applied to individual bitstrings. Readout correction on counts is a confusion-matrix problem.",
-      "F": "Without calibration data there is nothing to tell the fit what the device's readout error looks like; M3-style methods are maximum-likelihood fits *given* a measured assignment matrix."
+      "F": "Without calibration data nothing tells the fit what the device's readout error looks like. Constrained fits of this kind (minimizing ||M p - p_obs|| with p non-negative) still need a measured assignment matrix M."
     },
     "citations": [
+      "https://quantum.cloud.ibm.com/docs/tutorials/readout-error-mitigation-sampler",
       "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
-      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
-      "https://quantum.cloud.ibm.com/docs/guides/primitives",
-      "https://quantum.cloud.ibm.com/docs/tutorials/readout-error-mitigation-sampler"
+      "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques"
     ]
   },
   "proof": {
@@ -63,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; resilience ruling: distractor B names resilience_level as Estimator-only; added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E PEC on bitstrings, +F calibration-free MLE | realism audit 2026-10-01: stem trimmed from 37 words; re-rated 3->2; M3 Sampler tutorial added as citation"
+    "notes": "s5 adversarial review: high-severity length tell fixed; resilience ruling: distractor B names resilience_level as Estimator-only; added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +E PEC on bitstrings, +F calibration-free MLE | realism audit 2026-10-01: stem trimmed from 37 words; re-rated 3->2; M3 Sampler tutorial added as citation | adversarial A3 2026-10-16: DF falsely called M3 a maximum-likelihood fit (readout tutorial: M3 solves p~ = M p on a reduced matrix; 'equation (2) is not solved by inverting M') -> DF/correct/key text say 'solve against' the assignment matrix; 'rigorously' dropped from stem (M3 neglects 3rd-order correlations); docs traps answered: primitives guide 'SamplerV2 ... including error mitigation' (DB), error-mitigation 'measurement twirling ... diagonalizing the readout-error transfer matrix' (DD, TREX is Estimator); primitives citation (no readout content) dropped"
   },
   "display_count": 4
 }

@@ -5,19 +5,34 @@
       "D"
     ],
     "evidence": {
-      "A": "figure draws 0:0.93 1:0.07 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False",
-      "B": "figure draws 0:0.52 1:0.48 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False",
-      "C": "figure draws 0:0.52 1:0.48 over 3 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False",
-      "D": "figure draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=True",
-      "E": "figure draws 0:0.88 1:0.12 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False"
+      "A": "figure draws 0:0.93 1:0.07 of a total worth 1 parameter set(s) of shots; the displayed code draws 0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots; rendered SVG byte-identical: False -> match=False",
+      "B": "figure draws 0:0.52 1:0.48 of a total worth 1 parameter set(s) of shots; the displayed code draws 0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots; rendered SVG byte-identical: False -> match=False",
+      "C": "figure draws 0:0.52 1:0.48 of a total worth 3 parameter set(s) of shots; the displayed code draws 0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots; rendered SVG byte-identical: False -> match=False",
+      "D": "figure draws 0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots; the displayed code draws 0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots; rendered SVG byte-identical: True -> match=True",
+      "E": "figure draws 0:0.88 1:0.12 of a total worth 1 parameter set(s) of shots; the displayed code draws 0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots; rendered SVG byte-identical: False -> match=False"
     },
     "observed": {
-      "A": "0:0.93 1:0.07 over 1 parameter set(s) worth of shots",
-      "B": "0:0.52 1:0.48 over 1 parameter set(s) worth of shots",
-      "C": "0:0.52 1:0.48 over 3 parameter set(s) worth of shots",
-      "D": "0:0.12 1:0.88 over 1 parameter set(s) worth of shots",
-      "E": "0:0.88 1:0.12 over 1 parameter set(s) worth of shots",
-      "stem": "0:0.12 1:0.88 over 1 parameter set(s) worth of shots"
+      "A": {
+        "bars": "0:0.93 1:0.07 of a total worth 1 parameter set(s) of shots",
+        "svg_identical": false
+      },
+      "B": {
+        "bars": "0:0.52 1:0.48 of a total worth 1 parameter set(s) of shots",
+        "svg_identical": false
+      },
+      "C": {
+        "bars": "0:0.52 1:0.48 of a total worth 3 parameter set(s) of shots",
+        "svg_identical": false
+      },
+      "D": {
+        "bars": "0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots",
+        "svg_identical": true
+      },
+      "E": {
+        "bars": "0:0.88 1:0.12 of a total worth 1 parameter set(s) of shots",
+        "svg_identical": false
+      },
+      "stem": "0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots"
     }
   },
   "versions": {
@@ -26,9 +41,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 2.2,
+  "wall_seconds": 2.57,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"figure draws 0:0.93 1:0.07 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False\", \"B\": \"figure draws 0:0.52 1:0.48 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False\", \"C\": \"figure draws 0:0.52 1:0.48 over 3 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False\", \"D\": \"figure draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=True\", \"E\": \"figure draws 0:0.88 1:0.12 over 1 parameter set(s) worth of shots; the stem code draws 0:0.12 1:0.88 over 1 parameter set(s) worth of shots -> match=False\"}, \"observed\": {\"A\": \"0:0.93 1:0.07 over 1 parameter set(s) worth of shots\", \"B\": \"0:0.52 1:0.48 over 1 parameter set(s) worth of shots\", \"C\": \"0:0.52 1:0.48 over 3 parameter set(s) worth of shots\", \"D\": \"0:0.12 1:0.88 over 1 parameter set(s) worth of shots\", \"E\": \"0:0.88 1:0.12 over 1 parameter set(s) worth of shots\", \"stem\": \"0:0.12 1:0.88 over 1 parameter set(s) worth of shots\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"D\"], \"evidence\": {\"A\": \"figure draws 0:0.93 1:0.07 of a total worth 1 parameter set(s) of shots; the displayed code draws 0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots; rendered SVG byte-identical: False -> match=False\", \"B\": \"figure draws 0:0.52 1:0.48 of a total worth 1 parameter set(s) of shots; the displayed code draws 0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots; rendered SVG byte-identical: False -> match=False\", \"C\": \"figure draws 0:0.52 1:0.48 of a total worth 3 parameter set(s) of shots; the displayed code draws 0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots; rendered SVG byte-identical: False -> match=False\", \"D\": \"figure draws 0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots; the displayed code draws 0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots; rendered SVG byte-identical: True -> match=True\", \"E\": \"figure draws 0:0.88 1:0.12 of a total worth 1 parameter set(s) of shots; the displayed code draws 0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots; rendered SVG byte-identical: False -> match=False\"}, \"observed\": {\"A\": {\"bars\": \"0:0.93 1:0.07 of a total worth 1 parameter set(s) of shots\", \"svg_identical\": false}, \"B\": {\"bars\": \"0:0.52 1:0.48 of a total worth 1 parameter set(s) of shots\", \"svg_identical\": false}, \"C\": {\"bars\": \"0:0.52 1:0.48 of a total worth 3 parameter set(s) of shots\", \"svg_identical\": false}, \"D\": {\"bars\": \"0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots\", \"svg_identical\": true}, \"E\": {\"bars\": \"0:0.88 1:0.12 of a total worth 1 parameter set(s) of shots\", \"svg_identical\": false}, \"stem\": \"0:0.12 1:0.88 of a total worth 1 parameter set(s) of shots\"}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

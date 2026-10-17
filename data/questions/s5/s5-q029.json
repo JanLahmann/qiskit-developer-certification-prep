@@ -7,7 +7,7 @@
   "type": "predict-output",
   "difficulty": 1,
   "stem": "For a 2-qubit circuit, what does this code print?",
-  "code": "ba = sampler.run([isa], shots=777).result()[0].data.meas\nprint(len(ba.get_bitstrings()))",
+  "code": "# sampler = SamplerV2(mode=backend); isa = the transpiled circuit, ending in measure_all()\nba = sampler.run([isa], shots=777).result()[0].data.meas\nprint(len(ba.get_bitstrings()))",
   "options": [
     {
       "key": "A",
@@ -44,11 +44,11 @@
       "C": "4 is the number of *possible* outcomes; `get_bitstrings()` lists actual shots (with repeats), so its length is the shot count.",
       "D": "It returns a list of separate bitstrings (one per shot), not one giant concatenated string.",
       "E": "`get_bitstrings()` returns one string per shot, and each string already holds every measured bit; the qubit count is the string width, not a multiplier.",
-      "F": "The call takes no shot index (the optional argument selects a broadcast location); with no argument it returns the whole per-shot list."
+      "F": "The call takes no shot index (its optional `loc` argument selects a broadcast position of the PUB); with no argument it returns the whole per-shot list."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray"
     ]
   },
   "proof": {
@@ -57,7 +57,7 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nba = SamplerV2(mode=backend).run([isa], shots=777).result()[0].data.meas\nobserved = len(ba.get_bitstrings())\n\ncandidates = {\"A\": 777, \"B\": 2, \"C\": 4, \"D\": 1}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (v == observed)\n    evidence[k] = f\"option claims len={v}; len(get_bitstrings())={observed} (num_shots={ba.num_shots}) -> match={match}\"\n    if match:\n        proven.append(k)\n\nevidence[\"E\"] = (f\"option E claims len=1554 (777 shots x 2 measured qubits); len(get_bitstrings())={observed} \"\n                 f\"with num_bits={ba.num_bits} -> match={observed == 1554}\")\nif observed == 1554:\n    proven.append(\"E\")\nF_raises = False\ntry:\n    _ = ba.get_bitstrings()\nexcept Exception:\n    F_raises = True\nevidence[\"F\"] = (f\"option F claims the no-argument call raises: it returned {observed} bitstrings, raised={F_raises}\")\nif F_raises:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"len_bitstrings\": observed, \"num_shots\": ba.num_shots}})\n"
+    "proof_script": "\nimport contextlib, io\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\nsampler = SamplerV2(mode=backend)\nsampler.options.simulator.seed_simulator = 29   # evidence must not depend on unseeded shots\n\n# The displayed code, verbatim; stdout captured.\nbuf = io.StringIO()\nwith contextlib.redirect_stdout(buf):\n    ba = sampler.run([isa], shots=777).result()[0].data.meas\n    print(len(ba.get_bitstrings()))\nprinted = buf.getvalue().strip()\nobserved = int(printed)\nbs = ba.get_bitstrings()\n\ncandidates = {\"A\": 777, \"B\": 2, \"C\": 4, \"D\": 1, \"E\": 1554}\nevidence, proven = {}, []\nfor k, v in candidates.items():\n    match = (str(v) == printed)\n    evidence[k] = (f\"claims {v}; the displayed code printed {printed} (num_shots={ba.num_shots}, \"\n                   f\"num_bits={ba.num_bits}, every entry a {len(bs[0])}-char string, distinct outcomes \"\n                   f\"{len(set(bs))}) -> match={match}\")\n    if match:\n        proven.append(k)\n# A also claims shot order: entries are the shot axis in order (compare with the raw array rows).\nassert [format(int(r[-1]), \"02b\") for r in ba.array] == bs\n\nF_raises = False\ntry:\n    ba.get_bitstrings()\nexcept Exception:\n    F_raises = True\nevidence[\"F\"] = f\"claims the no-argument call raises: it returned a list of {len(bs)} strings, raised={F_raises}\"\nif F_raises:\n    proven.append(\"F\")\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"printed\": printed, \"num_shots\": ba.num_shots, \"num_bits\": ba.num_bits}})\n"
   },
   "freshness": {
     "verified_against": {
@@ -72,9 +72,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | pool wave: +E per-qubit multiplier, +F shot index required | realism audit 2026-10-01: stem trimmed (qubit count kept: refutations depend on it)"
+    "notes": "s5 adversarial review: length rebalanced; absolute-wording tell removed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | pool wave: +E per-qubit multiplier, +F shot index required | realism audit 2026-10-01: stem trimmed (qubit count kept: refutations depend on it) | adversarial A3 2026-10-16: code now says where sampler/isa come from; proof runs the displayed code verbatim (stdout captured, 777) and checks shot order against BitArray.array rows; evidence strings drop 'option E/F claims'; SamplerV2 API citation (no get_bitstrings) -> BitArray API (get_bitstrings 'Return a list of bitstrings', loc = which entry); DF names the loc argument; proof sampler seeded (seed_simulator 29) so the distinct-outcome count in the evidence is reproducible"
   },
   "display_count": 4
 }

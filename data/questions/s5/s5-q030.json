@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "What does the Sampler primitive return for a circuit ending in measurements?",
+  "stem": "What does `SamplerV2` return for a circuit ending in measurements?",
   "code": null,
   "options": [
     {
@@ -43,7 +43,7 @@
       "A": "Expectation values of observables are EstimatorV2's job; a Sampler PUB carries no observable at all.",
       "B": "Amplitudes are hidden by measurement — sampling only sees classical outcomes with probabilities |amplitude|^2. Statevectors come from simulators (`qiskit.quantum_info`), not from a Sampler.",
       "D": "The Sampler returns the whole collection of shot outcomes, not a single winner; the distribution over many shots is the entire point.",
-      "E": "Quasi-distributions were the V1 output (and could carry negative weights after mitigation). SamplerV2 returns raw per-shot bitstrings in a `BitArray`.",
+      "E": "Quasi-distributions were the V1 output (and could carry negative weights after mitigation). The primitives guide says the V1 primitives are 'still usable', but `SamplerV2` (in runtime 0.48 the name `Sampler` is an alias of it) returns raw per-shot bitstrings in a `BitArray`.",
       "F": "Reconstructing a density matrix is state tomography, a separate experiment. The Sampler just reports what the measurements produced, shot by shot."
     },
     "citations": [
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | pool wave: +E V1 quasi-distributions, +F density-matrix output | realism audit 2026-10-01: stem trimmed; citation guides/primitives re-checked (Sampler samples the output register)"
+    "notes": "s5 adversarial review: high-severity length tell fixed; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/C -> answer now C (option texts swapped, keys/proof remapped) | pool wave: +E V1 quasi-distributions, +F density-matrix output | realism audit 2026-10-01: stem trimmed; citation guides/primitives re-checked (Sampler samples the output register) | adversarial A3 2026-10-16: second-answer under a loose reading: unqualified 'the Sampler primitive' let E (V1 quasi-distributions) be right, and guides/primitives says V1 primitives 'are still usable' -> stem names SamplerV2; DE answers that trap (installed 0.48: qiskit_ibm_runtime.Sampler is SamplerV2 -> True); citations verified (primitives 'Sampler samples the output register'; sampler-input-output BitArray 'container for ordered shot data')"
   },
   "display_count": 4
 }

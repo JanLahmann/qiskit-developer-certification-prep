@@ -38,7 +38,7 @@
     "B"
   ],
   "explanation": {
-    "correct": "Counting outcomes is a Monte-Carlo estimate of a probability. The standard error of a frequency is sqrt(p(1-p)/N), i.e. it shrinks like 1/sqrt(N). Quadrupling the shots (1000 -> 4000) multiplies the error by 1/sqrt(4) = 1/2. This is why halving the error costs 4x the shots — the same shots<->precision trade-off that underlies the primitives.",
+    "correct": "Counting outcomes is a Monte-Carlo estimate of a probability: each shot is a 0/1 draw and the estimated probability is their mean. The standard error of that mean is sqrt(p(1-p)/N), i.e. it shrinks like 1/sqrt(N), the same sigma/sqrt(N_shots) law the Estimator guide uses for its error bars. Quadrupling the shots (1000 -> 4000) multiplies the error by 1/sqrt(4) = 1/2, which is why halving the error costs 4x the shots.",
     "distractors": {
       "A": "Sampling error scales like 1/sqrt(N), not 1/N. You would need 16x the shots (not 4x) to quarter the error.",
       "C": "Shot noise is a property of finite sampling and clearly decreases with more shots; it is not fixed by the hardware.",
@@ -47,9 +47,8 @@
       "F": "The number of PUBs only says how many separate results come back; the sampling error of each estimate is governed by that PUB's shots."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/primitives",
-      "https://quantum.cloud.ibm.com/docs/guides/sampler-input-output",
-      "https://quantum.cloud.ibm.com/docs/guides/estimator-options"
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/options-estimator-options"
     ]
   },
   "proof": {
@@ -62,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E 1/N^2 variance scaling, +F error set by PUB count | realism audit 2026-10-01: stem trimmed; re-rated 3->2; guides/estimator-options added (default precision 1/sqrt(4096)), the old citations did not state the 1/sqrt(N) scaling"
+    "notes": "s5 adversarial review: length rebalanced; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B -> answer now B (option texts swapped, keys/proof remapped) | pool wave: +E 1/N^2 variance scaling, +F error set by PUB count | realism audit 2026-10-01: stem trimmed; re-rated 3->2; guides/estimator-options added (default precision 1/sqrt(4096)), the old citations did not state the 1/sqrt(N) scaling | adversarial A3 2026-10-16: none of the three citations stated the 1/sqrt(N) law (primitives, sampler-input-output, estimator-options guide grepped: no sqrt/standard error) -> estimator-input-output ('sigma_O / sqrt(N_shots), which treats all shots as part of a single ensemble') + EstimatorOptions API ('Default: 0.015625 (1 / sqrt(4096))'); correct ties the sampled frequency to a mean of 0/1 shots; options and key unchanged"
   },
   "display_count": 4
 }

@@ -7,7 +7,7 @@
   "type": "mcq",
   "difficulty": 1,
   "stem": "Which construction makes every run of this sampler default to 4096 shots?",
-  "code": "from qiskit_ibm_runtime import SamplerV2\n# want default_shots = 4096 for all runs",
+  "code": "from qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\n# want default_shots = 4096 for all runs",
   "options": [
     {
       "key": "A",
@@ -72,9 +72,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: length rebalanced; explanation no longer asserts a 1024 fallback (that number is a local BackendSamplerV2 artifact, not the Runtime default); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | drift-lint fix: evidence names the local default explicitly instead of implying a runtime default | pool wave: +E shots key in the options dict, +F V1 set_options | realism audit 2026-10-01: stem trimmed"
+    "notes": "s5 adversarial review: length rebalanced; explanation no longer asserts a 1024 fallback (that number is a local BackendSamplerV2 artifact, not the Runtime default); dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages) | drift-lint fix: evidence names the local default explicitly instead of implying a runtime default | pool wave: +E shots key in the options dict, +F V1 set_options | realism audit 2026-10-01: stem trimmed | adversarial A3 2026-10-16: options re-executed (A 4096-shot no-shots run; B/C TypeError unexpected keyword; E ValidationError; F AttributeError no set_options; D accepted but a no-shots run used the local 1024); code now defines backend; citations verified (sampler-options shows Sampler(mode=backend, options={'default_shots': 4096}); SamplerV2 API signature SamplerV2(mode=None, options=None))"
   },
   "display_count": 4
 }

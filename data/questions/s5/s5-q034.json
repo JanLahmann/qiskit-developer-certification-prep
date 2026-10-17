@@ -42,15 +42,15 @@
   "explanation": {
     "correct": "SamplerV2 returns raw samples with no automatic readout mitigation, and its error-handling knobs are error *suppression* (dynamical decoupling) and twirling — DD is enabled through `options.dynamical_decoupling.enable`. Everything downstream (readout calibration, post-selection) is left to you.",
     "distractors": {
-      "A": "`resilience_level` is an EstimatorV2 option for expectation-value mitigation; SamplerOptions has no such attribute, so the assignment raises and no built-in strategy is selected.",
+      "A": "`resilience_level` is an EstimatorV2 option for expectation-value mitigation; SamplerOptions has no such attribute (0.48: `ValidationError ... Object has no attribute 'resilience_level'`), so no built-in strategy is selected.",
       "B": "Twirling inserts randomized Pauli/measurement operations to tailor noise into a stochastic form; it changes neither how many qubits are measured nor the register width.",
       "D": "The opposite is true: the sampler returns un-mitigated per-shot data precisely so that you can apply your own mitigation afterward.",
       "F": "Swapped semantics: `num_randomizations` is how many random twirls are drawn; the shots each one gets is `shots_per_randomization`."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/sampler-noise-management",
+      "https://quantum.cloud.ibm.com/docs/tutorials/readout-error-mitigation-sampler",
       "https://quantum.cloud.ibm.com/docs/guides/error-mitigation-and-suppression-techniques",
-      "https://quantum.cloud.ibm.com/docs/guides/primitives"
+      "https://quantum.cloud.ibm.com/docs/guides/sampler-options"
     ]
   },
   "proof": {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s5)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "s5 adversarial review: length, hedge and absolute-wording tells fixed; resilience ruling: option C stays a distractor and names the Estimator-only option; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B/C/D/E -> answer now C+E (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +F num_randomizations vs shots_per_randomization | realism audit 2026-10-01: stem unchanged; explanation no longer cites display letters (A)/(B); citations re-checked"
+    "notes": "s5 adversarial review: length, hedge and absolute-wording tells fixed; resilience ruling: option C stays a distractor and names the Estimator-only option; dead/weak citations replaced (get-started-with-primitives and specify-runtime-options are 404; swapped to sampler-specific live pages); answer position moved A/B/C/D/E -> answer now C+E (option texts swapped, keys/proof remapped); added the Sampler noise-management guide as the authoritative citation for the DD/twirling-only option set | pool wave: +F num_randomizations vs shots_per_randomization | realism audit 2026-10-01: stem unchanged; explanation no longer cites display letters (A)/(B); citations re-checked | adversarial A3 2026-10-16: executed in 0.48: options.resilience_level=1 -> ValidationError no_such_attribute, dynamical_decoupling.enable=True accepted; citations: guides/primitives (no sampler error-handling content) dropped, readout tutorial added ('the Sampler primitive does not have built-in support for error mitigation', C) and sampler-options (dynamical_decoupling.enable, twirling num_randomizations vs shots_per_randomization, F); sampler-noise-management dropped (its example now imports the 0.50 executor_sampler.Sampler); error-mitigation page kept ('the physical presence of the pulses has the effect of suppressing errors', E)"
   },
   "display_count": 5
 }

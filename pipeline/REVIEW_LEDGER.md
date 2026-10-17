@@ -3520,3 +3520,72 @@ page fetched as text and grepped. **0 key changes, 0 kills.** 18 edited, 0 survi
   0 warnings, 4 flagged (q010/q025/q026 low length flags pre-existing, options untouched; the q021
   stem-echo and q018 length tells my rewrites introduced were fixed); lint_proof_drift 0 findings
   (q028 D evidence now quotes a kept fraction, not the shot total).
+
+## Adversarial review A3 — s5b (2026-10-16)
+
+Scope: s5-q029..q043, s5-q052, s5-q053 (17; 13 executed, 4 conceptual: q030/q034/q037/q038;
+6 figure items). Run in two sittings: q029..q036 were edited by an
+interrupted first run and re-checked here (verify_bank per id, displayed code, notes vs change; A3
+notes amended, rounds not re-incremented); q037..q043/q052/q053 fully reviewed. Every option re-run
+in independent scratch scripts (pinned venv, qiskit 2.5.0 / runtime 0.48.0); every cited page fetched
+as text and grepped; all six figure items rendered, rasterized and inspected.
+**0 key changes, 0 kills.** 17 edited, 0 survived unchanged.
+
+- **Second answers closed (first sitting, re-checked):** s5-q036 E `0b11` IS the int 3 (`0b11 == 3`
+  -> True) -> E is now the string `'0b11'`; s5-q030 unqualified "the Sampler primitive" let E (V1
+  quasi-distributions; primitives guide "V1 primitives are still usable") be right -> stem names
+  SamplerV2; s5-q035 "circuit executions" let C (6 bound circuits) be right -> stem counts every
+  shot as one execution (executed: shape (6,), 200 per set, 1200).
+- **Visual odd-one-out tell (s5-q052):** rasterized, all four distractor histograms put the 195 bar
+  on the left and only the key put 205 there (structural: with c[0] the mid-circuit bit, the key
+  alone files the c[0]=1 shots under the lexicographically smaller key). Reworked: qubit 0 measured
+  into c[1], qubit 1 into c[0], condition on c[1]==0. Executed (AerSimulator, seed 21, 400 shots):
+  key `{'01': 195, '10': 205}`; A/B/C circuits executed -> `00/11`, `01/11`, `00/10` with 195 left;
+  only the bit-order distractor D swaps sides. Key letter E kept; generator, alts, rationales redone.
+- **False rationales:** s5-q037 DF called M3 "a maximum-likelihood fit" (readout tutorial: M3 solves
+  `p~ = M p` on a reduced matrix; "equation (2) is not solved by inverting M") -> key text "Solve
+  against an assignment matrix ... e.g. with M3", "rigorously" dropped from the stem (M3 ignores
+  3rd-order correlations); s5-q042 DA said a count-from-one reading of `get_counts(2)` lands on the
+  FIRST angle (it lands on the second, pi/2 = the B drawing) -> DB names the count-from-one slip, DA a
+  reversed-sweep reading; s5-q032 DD used the "little-endian" label the key avoids (docs-reader trap).
+- **Alt text vs render:** s5-q041 D alt said "Count axis", the render's y label is
+  "Quasi-probability" (plot_histogram on float values); s5-q042 E alt singled out "one tally being a
+  three-digit number" though A's 146 is three-digit too -> all five alts now give the same detail
+  (share of the tall bar, total).
+- **Figure proofs compared the key with itself:** q040 (C), q041 (A), q042 (D), q043 (B), q052 (E)
+  took the target from the generator's own function/call. All five now execute the DISPLAYED stem
+  code verbatim (AST: exec the body, eval the last line to capture the figure), render it and every
+  variant to SVG in-process (`svg.hashsalt` fixed, `metadata={"Date": None}`) and require
+  byte-identity plus a tick-slot bar/axis match; only the key matches. q043 also asserts the stem's
+  counts literal equals the seeded FakeManilaV2 run its comment claims; q041 asserts the premise
+  ('10' never sampled); q042 no longer pairs bars with ticks by patch order. s5-q053 (stem figure,
+  GATES-pinned) now also runs the displayed code unseeded 3x: same printed key list.
+- **Code not runnable as displayed / proof hygiene:** q029/q031/q033/q035/q039 fragments say where
+  `sampler`/`isa`/`backend` come from or gained imports; q029/q039 proofs run the displayed code with
+  stdout captured; display letters dropped from evidence (q029, q035, q039 "option E/F claims");
+  unseeded raw counts dropped from q039 `observed`, q029 seeded.
+- **Docs-reader traps answered:** primitives guide "SamplerV2 ... including error mitigation" and
+  error-mitigation guide "measurement twirling ... diagonalizing the readout-error transfer matrix"
+  (s5-q037 DB/DD: TREX is the Estimator's step); bit-ordering "Sampler and Estimator primitives
+  return big-endian results" (s5-q032 key + DD); SamplerV2 API `shots` "total number of shots ... for
+  each sampler pub" (s5-q035 DB); plot_histogram "The number of terms to plot" (s5-q043 DD: `rest` is
+  extra, "more bars than number_to_keep + 1").
+- **Citation failures replaced (fetched, quotes grepped):** s5-q038 none of three pages stated
+  1/sqrt(N) -> estimator-input-output ("sigma_O / sqrt(N_shots)") + EstimatorOptions API ("Default:
+  0.015625 (1 / sqrt(4096))"); s5-q043 visualization index + primitive-input-output -> plot_histogram
+  API ("The rest is made into a single bar called 'rest'"); s5-q039 SamplerV2 API -> PrimitiveResult
+  API ("A container for multiple pub results"); s5-q040 primitive-input-output -> bit-ordering;
+  s5-q053 measure-qubits (no reset content) -> QuantumCircuit API ("Reset the quantum bit(s) to their
+  default state") + bit-ordering; s5-q037 primitives guide dropped; q029/q031/q032/q034/q035/q036
+  replacements per their notes (SamplerV2 API page carries no BitArray/seed/ordering content).
+- **Survived attacks (executed):** q029 777 (entries = shot rows in order); q031 only
+  `simulator.seed_simulator` (A/D/E ValidationError, C/F TypeError); q033 only the options dict
+  (D accepted but ignored: 1024); q034 `resilience_level` ValidationError, Sampler twirling defaults
+  False (installed TwirlingOptions docstring); q039 `len(result)` 3, PrimitiveResult indexable; q040
+  noisy 8-bar key, D 7 bars; q043 rest=42.
+- **Anti-tell:** s5-q032 medium absolute_distractor_tell (tokenizer reads `measure_all` as "all", plus
+  F "cannot") -> F reworded, key gains a true "always"; s5-q036 low length tell cleared.
+- **Difficulty:** all 17 kept.
+- Gates: verify_bank s5 37/37 PROVEN + 6 conceptual, 0 failures; audit_meta_patterns s5 0 blockers /
+  0 warnings, 3 flagged (q010/q025/q026 low length, pre-existing, outside this batch); lint_proof_drift
+  0 findings.

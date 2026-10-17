@@ -13,10 +13,10 @@ Scope: **all sections** — 365 questions (335 single-answer, 30 multi-select). 
 | position_D | 29.2% | 79% | 28.1% |
 | position_B | 28.9% | 80% | 27.9% |
 | position_A | 28.6% | 79% | 27.7% |
-| avoid_longest | 25.6% | 82% | 25.3% |
+| avoid_longest | 25.7% | 82% | 25.4% |
 | shortest_option | 23.6% | 100% | 23.6% |
-| stem_keyword_overlap | 21.8% | 65% | 22.6% |
-| longest_option | 20.1% | 100% | 20.1% |
+| stem_keyword_overlap | 21.9% | 65% | 22.7% |
+| longest_option | 19.8% | 100% | 19.8% |
 | odd_one_out | 14.3% | 100% | 14.3% |
 | most_hedged | 17.8% | 20% | – |
 | avoid_hedged | 27.5% | 20% | – |

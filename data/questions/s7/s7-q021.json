@@ -42,13 +42,13 @@
     "correct": "The PUB broadcasts over the parameter array's leading shape. Four parameter sets against one observable give four expectation values, shape `(4,)`. The trailing parameter axis (size 1) is consumed by binding and does not appear in the evs shape.",
     "distractors": {
       "A": "The trailing parameter axis is bound away; it is not kept in the result shape.",
-      "C": "There are four parameter sets, not one; the result is not length 1.",
-      "D": "A scalar would be the single-PUB, single-parameter case; here four values broadcast.",
+      "C": "`(1,)` would come from ONE parameter set wrapped as `[[0.0]]` (shape `(1, 1)`); there are four sets here, not one.",
+      "D": "A scalar needs a single parameter set: values `[0.0]` (shape `(1,)`) give `evs.shape == ()`. Here the leading axis holds four sets, so four values come back.",
       "E": "Broadcasting puts the PUB's own leading shape first; the single observable contributes no axis at all. The proof prints the shape and it is one-dimensional.",
       "F": "`evs` is a NumPy array, so `.shape` is defined. The proof reads it without an exception."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/primitives",
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-input-output",
       "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
     ]
   },
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E observable axis leads the broadcast shape; +F evs is a list so .shape raises | realism audit 2026-10-01: stem trimmed ('one-parameter' kept: the (4,1) coercion depends on it); stays 3, broadcasting edge case"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E observable axis leads the broadcast shape; +F evs is a list so .shape raises | realism audit 2026-10-01: stem trimmed ('one-parameter' kept: the (4,1) coercion depends on it); stays 3, broadcasting edge case | adversarial A3 2026-10-16: D rationale ('single-PUB, single-parameter case') reworded to the executed fact (values shape (1,) -> evs (); C: (1, 1) -> (1,)); (1, 4, 1) -> (1, 4) for E confirmed; api/qiskit/primitives (no shape rule) -> estimator-input-output ('parameter binding sets having shape (100, 2), where 2 is the number of parameters in the circuit')"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   }
 }

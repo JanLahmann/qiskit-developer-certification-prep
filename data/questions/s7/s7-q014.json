@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E get_counts returns normalised probabilities (V1 quasi_dists habit); +F integer bitstring keys | realism audit 2026-10-01: stem trimmed, in-stem gloss of X on qubit 0 removed; 2->1, one endianness fact"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E get_counts returns normalised probabilities (V1 quasi_dists habit); +F integer bitstring keys | realism audit 2026-10-01: stem trimmed, in-stem gloss of X on qubit 0 removed; 2->1, one endianness fact | adversarial A3 2026-10-16: survived, no change"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   }
 }

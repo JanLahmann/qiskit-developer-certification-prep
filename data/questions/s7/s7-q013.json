@@ -7,7 +7,7 @@
   "type": "mcq",
   "difficulty": 2,
   "stem": "With `default_precision=0.02` on a noisy backend, which expression gives the standard error `pub` actually achieved?",
-  "code": "# estimator.options.default_precision = 0.02\n# result = estimator.run([(isa_circuit, observable)]).result()\npub = result[0]",
+  "code": "# estimator: EstimatorV2 on a noisy backend; isa_circuit, observable built earlier\nestimator.options.default_precision = 0.02\nresult = estimator.run([(isa_circuit, observable)]).result()\npub = result[0]",
   "options": [
     {
       "key": "A",
@@ -49,7 +49,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
-      "https://quantum.cloud.ibm.com/docs/api/qiskit/primitives"
+      "https://quantum.cloud.ibm.com/docs/guides/estimator-input-output"
     ]
   },
   "proof": {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s7: REWRITTEN — old version duplicated q032 (named-register access) and a community item; now tests EstimatorV2 stds vs requested precision, with a non-circular proof (stds reproduced from evs+shots) | pool wave: +E standard error is 1/sqrt(shots) alone; +F DataBin exposes a variance field | realism audit 2026-10-01: stem trimmed ('actually achieved' kept: option C refutation); 3->2"
+    "notes": "adversarial s7: REWRITTEN — old version duplicated q032 (named-register access) and a community item; now tests EstimatorV2 stds vs requested precision, with a non-circular proof (stds reproduced from evs+shots) | pool wave: +E standard error is 1/sqrt(shots) alone; +F DataBin exposes a variance field | realism audit 2026-10-01: stem trimmed ('actually achieved' kept: option C refutation); 3->2 | adversarial A3 2026-10-16: code was only comments (result undefined) -> live lines on a stated estimator; api/qiskit/primitives (no stds statement) -> estimator-input-output ('populate the stds field with a quantity like the standard error of the mean'); options re-run on runtime EstimatorV2 local mode: only D (stds 0.0096 vs target 0.02, shots 2500)"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   }
 }

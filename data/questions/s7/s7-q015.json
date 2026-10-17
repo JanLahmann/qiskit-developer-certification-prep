@@ -31,7 +31,7 @@
     },
     {
       "key": "F",
-      "text": "`{'111': n}`, but `n` is now a fraction of the shots"
+      "text": "`{'111': 1.0}` -- the survivors are renormalised to probabilities"
     }
   ],
   "answer": [
@@ -45,7 +45,7 @@
       "B": "Postselection filters shots; it does not leave the counts unchanged.",
       "D": "The GHZ state produces `111` about half the time, so those shots remain.",
       "E": "That is what `slice_bits` would do. `postselect` filters SHOTS and preserves the register width, so the proof reports `num_bits` unchanged and 3-character keys.",
-      "F": "Postselection discards shots; it does not renormalise the survivors. The proof shows the surviving counts are plain integer shot counts, not fractions."
+      "F": "Postselection discards shots; it does not renormalise the survivors into probabilities. `get_counts()` still returns integer shot tallies, so the proof sees `{'111': n}` with `n` near half of the 1000 shots, not `1.0`."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
@@ -58,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3); qc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\nbits = StatevectorSampler(seed=11).run([qc], shots=1000).result()[0].data.meas\nkept = bits.postselect([0, 1, 2], [1, 1, 1])\nobs = set(kept.get_counts().keys())\ncand = {\"A\": {\"000\"}, \"B\": {\"000\", \"111\"}, \"C\": {\"111\"}, \"D\": set()}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = (f\"postselected keys={sorted(obs)} (num_bits stayed {kept.num_bits} of {bits.num_bits}, {kept.num_shots} of {bits.num_shots} shots kept); option claims keys={sorted(v)} -> match={m}\")\n    if m: proven.append(k)\nE_ok = (obs == {\"1\"} and kept.num_bits == 1)\nevidence[\"E\"] = (f\"kept keys={sorted(obs)} with num_bits={kept.num_bits} (unchanged from \"\n                 f\"{bits.num_bits}); option claims postselect narrowed the register to one bit \"\n                 f\"-> {E_ok}\")\nif E_ok: proven.append(\"E\")\nkept_values = list(kept.get_counts().values())\nF_ok = all(isinstance(v, float) and v <= 1.0 for v in kept_values)\nevidence[\"F\"] = (f\"surviving counts have types {[type(v).__name__ for v in kept_values]}: raw shot \"\n                 f\"tallies, not renormalised fractions -> {F_ok}\")\nif F_ok: proven.append(\"F\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"kept_counts\": kept.get_counts(), \"num_bits\": kept.num_bits}})\n"
+    "proof_script": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(3); qc.h(0); qc.cx(0, 1); qc.cx(1, 2); qc.measure_all()\nbits = StatevectorSampler(seed=11).run([qc], shots=1000).result()[0].data.meas\nkept = bits.postselect([0, 1, 2], [1, 1, 1])\nobs = set(kept.get_counts().keys())\ncand = {\"A\": {\"000\"}, \"B\": {\"000\", \"111\"}, \"C\": {\"111\"}, \"D\": set()}\nevidence = {}; proven = []\nfor k, v in cand.items():\n    m = (obs == v)\n    evidence[k] = (f\"postselected keys={sorted(obs)} (num_bits stayed {kept.num_bits} of {bits.num_bits}, {kept.num_shots} of {bits.num_shots} shots kept); option claims keys={sorted(v)} -> match={m}\")\n    if m: proven.append(k)\nE_ok = (obs == {\"1\"} and kept.num_bits == 1)\nevidence[\"E\"] = (f\"kept keys={sorted(obs)} with num_bits={kept.num_bits} (unchanged from \"\n                 f\"{bits.num_bits}); option claims postselect narrowed the register to one bit \"\n                 f\"-> {E_ok}\")\nif E_ok: proven.append(\"E\")\nkept_counts = kept.get_counts()\nF_ok = (kept_counts == {\"111\": 1.0})\nevidence[\"F\"] = (f\"kept.get_counts()={kept_counts} (value types \"\n                 f\"{[type(v).__name__ for v in kept_counts.values()]}): raw shot tallies, not \"\n                 f\"renormalised to {{'111': 1.0}} -> {F_ok}\")\nif F_ok: proven.append(\"F\")\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"kept_counts\": kept.get_counts(), \"num_bits\": kept.num_bits}})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E postselect narrows the register like slice_bits; +F survivors are renormalised to fractions | realism audit 2026-10-01: stem trimmed ('outcomes only 000/111' gloss removed); 2->1, postselect keeps width and raw counts"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E postselect narrows the register like slice_bits; +F survivors are renormalised to fractions | realism audit 2026-10-01: stem trimmed ('outcomes only 000/111' gloss removed); 2->1, postselect keeps width and raw counts | adversarial A3 2026-10-16: F 'n is now a fraction of the shots' was also true under the plain reading (about half the shots survive) -> F now claims renormalised `{'111': 1.0}`; proof compares the observed dict to it (unseeded displayed code re-run 3x: {'111': 519/488/498})"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   }
 }

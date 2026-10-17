@@ -3722,3 +3722,53 @@ every cited page fetched as text and grepped, all figure items rendered, rasteri
 - Gates: verify_bank s6 33/33 PROVEN + 12 conceptual, 0 failures, exit 0; audit_meta_patterns s6
   0 blockers / 0 warnings (low length_tell on q031/q032/q034/q037 are variant-level and pre-existing;
   q034's edit lengthened a distractor, so it eased); lint_proof_drift 0 findings.
+
+## Adversarial review A3 — s7a (2026-10-16)
+
+Scope: s7-q010..q025 (16; all executed, no conceptual, no figure items). Every option re-run in
+independent scratch scripts (pinned venv, qiskit 2.5.0 / runtime 0.48.0; runtime claims on
+`SamplerV2`/`EstimatorV2(mode=FakeManilaV2())` local mode), every runnable displayed block executed
+three times unseeded and compared to the literal output, every cited page fetched as text and grepped.
+**0 key changes, 0 kills.** 8 edited, 8 survived unchanged (q011, q012, q014, q016, q019, q023, q024,
+q025).
+
+- **Second answer closed (s7-q015):** pool F "`{'111': n}`, but `n` is now a fraction of the shots" is
+  literally true (about half the 1000 shots survive; displayed code re-run: 519/488/498). F now claims
+  the renormalised `{'111': 1.0}`; proof compares the observed dict (`{'111': 480}`, int values).
+- **Literal-print mismatch (s7-q020):** `print(result[0].data.evs)` gives `0.9999999999999998`; stem
+  now "Up to floating-point rounding, ..." (s6a precedent), proof records the printed string.
+- **Displayed code not runnable:** s7-q018 option F calls `np.concatenate` but the code never imported
+  numpy (NameError as shown) -> `import numpy as np` added. s7-q013 and s7-q022 were comment-only
+  (`result` undefined) -> live lines on a stated `estimator`.
+- **Proofs off the stem's object:** s7-q010 (stem: runtime `sampler.run([isa_circuit])`) and s7-q022
+  (stem: Estimator `result`) ran StatevectorSampler/StatevectorEstimator -> now runtime SamplerV2 /
+  EstimatorV2 local mode, seeded via `simulator.seed_simulator` (honoured by local_service). q010: A
+  only (B `not JSON serializable`, C `unexpected keyword argument 'skipkeys'`, D no `to_json`, E
+  `KeyError: 0`, F `dumps() takes 1 positional argument`). q022: DataBin fields `['evs', 'stds']`,
+  metadata keys `circuit_metadata/shots/target_precision` (DF now names `shots`).
+- **Rationales made exact:** s7-q018 E "far fewer shots" -> executed 200 vs 400 (both GHZ jobs share
+  `000`/`111`), evidence prints both; s7-q021 D "single-PUB, single-parameter case" -> values `(1,)`
+  give `()`, C: `(1, 1)` give `(1,)` (both executed; E's `(1, 4)` needs `(1, 4, 1)`).
+- **Docs-reader trap answered (s7-q017 F):** the BitArray API lists `IndexError` for `slice_bits`;
+  DF now quotes the real boundary (`[3]` -> `index 3 is out of bounds for the number of bits 3`,
+  `[2]` -> `{'0': 300}`).
+- **Citation failures replaced (fetched, quotes grepped):** api/qiskit/primitives states only
+  `job.result()[0].data.evs` (kept for q022) -> estimator-input-output in q013 ("populate the stds
+  field with a quantity like the standard error of the mean"), q020 ("contains at least an array of
+  expectation values (PubResult.data.evs) and associated standard deviations"), q021 ("parameter
+  binding sets having shape (100, 2), where 2 is the number of parameters in the circuit"). Kept and
+  verified: save-jobs (`json.dump(..., cls=RuntimeEncoder)` / `json.load(file, cls=RuntimeDecoder)`),
+  PrimitiveResult API ("does not contain any actual data ... primitive_result[0].data, which is a
+  DataBin"), BitArray API ("last axis is over packed bits, the second last axis is over shots";
+  postselect returns "num_bits=data.num_bits, num_shots<=data.num_shots"; slice_bits "index 0
+  corresponds to the least-significant bit ... right-most bitstring entry"; concatenate_shots "Join a
+  sequence of bit arrays along the shots axis"), primitive-input-output ("a single observable
+  represented as a 0-d array").
+- **Survived attacks (executed):** q011 `2000 3`; q012 `(1024, 2)`; q014 `{'001': 500}`; q016 only
+  postselect (E `TypeError ... unexpected keyword argument 'num_bits'`, F width 1); q019 A/B/D
+  (shape `(256, 1)`, dtype uint8); q023 len 2, `result.data` / `.get_counts()` paths AttributeError;
+  q024 only C; q025 prints `1.0` deterministically (0-d), `ZI` gives ~0.
+- **Difficulty:** all 16 kept.
+- Gates: verify_bank s7 31/31 PROVEN + 6 conceptual, 0 failures; audit_meta_patterns s7 0 blockers /
+  0 warnings (low length_tell on q015/q020/q023/q024 pre-existing; q015's new F is longer than the old
+  one); lint_proof_drift 0 findings.

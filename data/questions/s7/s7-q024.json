@@ -64,9 +64,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E V1 result.results[0] container; +F register field hangs off PrimitiveResult | realism audit 2026-10-01: stem trimmed; 2->1, index the PUB first"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E V1 result.results[0] container; +F register field hangs off PrimitiveResult | realism audit 2026-10-01: stem trimmed; 2->1, index the PUB first | adversarial A3 2026-10-16: survived, no change"
   },
   "freshness": {
     "verified_against": {
@@ -75,7 +75,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   }
 }

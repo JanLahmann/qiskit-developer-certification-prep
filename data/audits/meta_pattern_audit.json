@@ -7,10 +7,10 @@
   "pass_line": 0.69,
   "heuristics": {
     "longest_option": {
-      "expected_accuracy": 0.2008,
+      "expected_accuracy": 0.1984,
       "questions_answered": 335.0,
       "coverage": 1.0,
-      "exam_score_estimate": 0.2008
+      "exam_score_estimate": 0.1984
     },
     "shortest_option": {
       "expected_accuracy": 0.2359,
@@ -19,10 +19,10 @@
       "exam_score_estimate": 0.2359
     },
     "avoid_longest": {
-      "expected_accuracy": 0.2559,
+      "expected_accuracy": 0.2566,
       "questions_answered": 274.65,
       "coverage": 0.82,
-      "exam_score_estimate": 0.2533
+      "exam_score_estimate": 0.2538
     },
     "position_A": {
       "expected_accuracy": 0.286,
@@ -49,10 +49,10 @@
       "exam_score_estimate": 0.2809
     },
     "stem_keyword_overlap": {
-      "expected_accuracy": 0.2183,
+      "expected_accuracy": 0.2192,
       "questions_answered": 216.95,
       "coverage": 0.648,
-      "exam_score_estimate": 0.2264
+      "exam_score_estimate": 0.227
     },
     "most_hedged": {
       "expected_accuracy": 0.1784,

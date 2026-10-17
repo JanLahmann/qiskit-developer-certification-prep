@@ -45,7 +45,7 @@
       "B": "`slice_bits` reduces the width to the selected bit(s); it does not keep all three bits.",
       "C": "This both keeps full width and mis-reads endianness.",
       "E": "The argument is a LIST of bit indices, not an upper bound: `[2]` keeps exactly one bit. The proof prints the single-character keys the call actually produces.",
-      "F": "Bit indices run `0..num_bits-1`, so index 2 is the third (and last) bit of a 3-bit register. The proof calls it and observes counts, not an exception."
+      "F": "Bit indices run `0..num_bits-1`, so index 2 is the third (and last) bit of a 3-bit register. The BitArray API does list `IndexError` for slice_bits, but only for invalid indices: `slice_bits([3])` raises `index 3 is out of bounds for the number of bits 3`, while `[2]` returns counts."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BitArray",
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s7)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E slice_bits([2]) reads as an upper bound; +F bit index 2 is out of range | realism audit 2026-10-01: stem trimmed, gloss 'qubits 1 and 2 stay |0>' removed (rated with hint gone); 3->2"
+    "notes": "adversarial s7 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E slice_bits([2]) reads as an upper bound; +F bit index 2 is out of range | realism audit 2026-10-01: stem trimmed, gloss 'qubits 1 and 2 stay |0>' removed (rated with hint gone); 3->2 | adversarial A3 2026-10-16: F rationale now answers the docs-reader trap (API lists IndexError for slice_bits): executed [3] -> IndexError 'index 3 is out of bounds for the number of bits 3', [2] -> {'0': 300}; displayed code re-run 3x prints {'0': 300}"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   }
 }

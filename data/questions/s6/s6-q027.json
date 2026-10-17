@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "What does this code print?",
+  "stem": "Up to floating-point rounding, what does this code print?",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.ry(np.pi/3, 0)\nobs = SparsePauliOp([\"IZ\", \"ZI\"], coeffs=[1.0, 1.0])\nprint(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs)",
   "options": [
     {
@@ -47,7 +47,8 @@
       "F": "This uses sin(pi/3) for the rotated qubit. RY(theta) on |0> leaves <Z> = cos(theta), so the rotated qubit contributes cos(pi/3), not its sine."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+      "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/vqe",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.RYGate"
     ]
   },
   "proof": {
@@ -56,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.ry(np.pi / 3, 0)   # qubit 0 rotated; qubit 1 stays |0>\nobs = SparsePauliOp([\"IZ\", \"ZI\"], coeffs=[1.0, 1.0])   # Z on qubit 0 + Z on qubit 1\nobserved = float(np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs))\n\ncandidates = {\"A\": 0.5, \"B\": 1.0, \"C\": 2.0, \"D\": 1.5, \"E\": 0.75, \"F\": 1.866}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.isclose(observed, val))\n    evidence[k] = f\"exact <Z_q0 + Z_q1> = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.ry(np.pi / 3, 0)   # qubit 0 rotated; qubit 1 stays |0>\nobs = SparsePauliOp([\"IZ\", \"ZI\"], coeffs=[1.0, 1.0])   # Z on qubit 0 + Z on qubit 1\nraw = np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs)\nobserved = float(raw)\nprinted = str(raw)   # the literal print() output of the displayed line\n\ncandidates = {\"A\": 0.5, \"B\": 1.0, \"C\": 2.0, \"D\": 1.5, \"E\": 0.75, \"F\": 1.866}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = bool(np.isclose(observed, val))\n    evidence[k] = f\"exact <Z_q0 + Z_q1> = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed, \"printed\": printed}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E averaging instead of summing terms, +F sin-instead-of-cos | realism audit 2026-10-01: stem trimmed; 'Z on qubit 0 plus Z on qubit 1' gloss removed, difficulty 2 kept with the hint gone"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E averaging instead of summing terms, +F sin-instead-of-cos | realism audit 2026-10-01: stem trimmed; 'Z on qubit 0 plus Z on qubit 1' gloss removed, difficulty 2 kept with the hint gone | adversarial A3 2026-10-16: displayed code literally prints 1.5000000000000002 -> stem says 'Up to floating-point rounding'; proof records the literal string; citation specify-observables-pauli (no linearity statement) -> VQE course ('the weighted sum of expectation values of the constituent terms') + RYGate API (cos/sin matrix); E 0.75 / F 1.866 misconception values recomputed"
   },
   "freshness": {
     "verified_against": {
@@ -72,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

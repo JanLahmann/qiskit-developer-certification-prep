@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "A one-parameter circuit is swept over three angles. What does this code print?",
+  "stem": "A one-parameter circuit is swept over three angles. Rounded to three decimals, which values does the printed `evs` hold?",
   "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\nobs = SparsePauliOp(\"Z\")\nvalues = [[0.0], [np.pi/2], [np.pi]]\nprint(StatevectorEstimator().run([(qc, obs, values)]).result()[0].data.evs)",
   "options": [
     {
@@ -44,10 +44,11 @@
       "C": "[1, -1, 1] jumps straight to +/-1 and ignores that at theta = pi/2 the state is an equal superposition with <Z> = 0.",
       "D": "[-1, 0, 1] is -cos(theta); the sign is inverted, as if RY rotated toward |0> as theta increases.",
       "E": "This is cos(theta/2), the AMPLITUDE that RY writes into the state, not the expectation value. <Z> after RY(theta) on |0> is cos(theta), so pi/2 gives 0 and pi gives -1.",
-      "F": "The parameter array here is a list of single-parameter bindings, and the estimator returns one flat value per binding. A nested shape would require an extra broadcast dimension in the observable."
+      "F": "The value list has shape (3, 1): its last axis is consumed by the single parameter, so the binding shape is (3,) and `evs` is one flat value per binding. A (3, 1) result would need the bindings nested one level deeper, as shape (3, 1, 1)."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.RYGate"
     ]
   },
   "proof": {
@@ -56,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1); qc.ry(theta, 0)\nobs = SparsePauliOp(\"Z\")\nvalues = [[0.0], [np.pi / 2], [np.pi]]\nres = StatevectorEstimator().run([(qc, obs, values)]).result()\nraw = np.asarray(res[0].data.evs)\nobserved = [round(float(v), 4) for v in raw]\n\n\ndef printed_match(claim):\n    # what print() shows is fixed by the array's shape, complex-ness and values\n    c = np.asarray(claim)\n    return bool(raw.shape == c.shape and np.iscomplexobj(raw) == np.iscomplexobj(c)\n                and np.allclose(raw, c, atol=1e-3))\n\n\ncandidates = {\"A\": [1.0, 0.0, -1.0], \"B\": [0.0, 1.0, 0.0], \"C\": [1.0, -1.0, 1.0], \"D\": [-1.0, 0.0, 1.0],\n              \"E\": [1.0, 0.707, 0.0], \"F\": [[1.0], [0.0], [-1.0]]}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = printed_match(val)\n    if k == \"F\":\n        evidence[k] = (f\"evs has shape {raw.shape} — the trailing size-1 axis of the value list is consumed by the \"\n                       f\"one parameter, leaving one flat value per parameter set; the claimed column of single-entry \"\n                       f\"rows has shape {np.shape(val)} -> match={m}\")\n    else:\n        evidence[k] = f\"executed <Z> for RY(theta), theta in [0, pi/2, pi] = {observed}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": observed}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\ntheta = Parameter(\"theta\")\nqc = QuantumCircuit(1); qc.ry(theta, 0)\nobs = SparsePauliOp(\"Z\")\nvalues = [[0.0], [np.pi / 2], [np.pi]]\nres = StatevectorEstimator().run([(qc, obs, values)]).result()\nraw = np.asarray(res[0].data.evs)\nobserved = [round(float(v), 4) for v in raw]\nprinted = str(raw)   # literal print(): numpy scientific notation\nnested = np.asarray(StatevectorEstimator().run([(qc, obs, [[[0.0]], [[np.pi / 2]], [[np.pi]]])]).result()[0].data.evs)\n\n\ndef printed_match(claim):\n    # what print() shows is fixed by the array's shape, complex-ness and values\n    c = np.asarray(claim)\n    return bool(raw.shape == c.shape and np.iscomplexobj(raw) == np.iscomplexobj(c)\n                and np.allclose(raw, c, atol=1e-3))\n\n\ncandidates = {\"A\": [1.0, 0.0, -1.0], \"B\": [0.0, 1.0, 0.0], \"C\": [1.0, -1.0, 1.0], \"D\": [-1.0, 0.0, 1.0],\n              \"E\": [1.0, 0.707, 0.0], \"F\": [[1.0], [0.0], [-1.0]]}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = printed_match(val)\n    if k == \"F\":\n        evidence[k] = (f\"evs has shape {raw.shape} — the trailing size-1 axis of the value list is consumed by the \"\n                       f\"one parameter, leaving one flat value per parameter set; the claimed column of single-entry \"\n                       f\"rows has shape {np.shape(val)} -> match={m}\")\n    else:\n        evidence[k] = f\"executed <Z> for RY(theta), theta in [0, pi/2, pi] = {observed}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": observed, \"printed\": printed, \"evs_shape_with_bindings_(3,1,1)\": list(nested.shape)}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E cos(theta/2) amplitude confusion, +F nested per-binding shape | realism audit 2026-10-01: stem trimmed; parameter count kept (option F's (3, 1) coercion depends on it); difficulty 3->2 (cos + one shape rule)"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E cos(theta/2) amplitude confusion, +F nested per-binding shape | realism audit 2026-10-01: stem trimmed; parameter count kept (option F's (3, 1) coercion depends on it); difficulty 3->2 (cos + one shape rule) | adversarial A3 2026-10-16: literal print is '[ 1.00000000e+00  2.22044605e-16 -1.00000000e+00]' -> stem asks for the values rounded to three decimals; F rationale was false (executed: an extra observable dimension gives (1, 3) for [[obs]] or (3, 3) for a (3,1) observable array, never (3, 1)) -> now bindings nested as (3, 1, 1) give (3, 1), recorded in the proof; citation primitive-input-output verified ('the last index is over circuit Parameter objects'); RYGate API added for <Z> = cos(theta) (matrix cos/sin of theta/2)"
   },
   "freshness": {
     "verified_against": {
@@ -72,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

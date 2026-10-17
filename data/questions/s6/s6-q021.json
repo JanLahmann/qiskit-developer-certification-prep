@@ -60,9 +60,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6: correct option tightened to remove the length tell | pool wave: +E extrapolating in shots, +F averaging instead of extrapolating | realism audit 2026-10-01: stem unchanged (10 words); difficulty 2->1 (one recalled mechanism)"
+    "notes": "adversarial s6: correct option tightened to remove the length tell | pool wave: +E extrapolating in shots, +F averaging instead of extrapolating | realism audit 2026-10-01: stem unchanged (10 words); difficulty 2->1 (one recalled mechanism) | adversarial A3 2026-10-16: survived, no change"
   },
   "display_count": 4
 }

@@ -7,7 +7,7 @@
   "type": "mcq",
   "difficulty": 1,
   "stem": "Which call correctly submits one estimation of `iobs` on `isa`?",
-  "code": "from qiskit_ibm_runtime import EstimatorV2\n\nest = EstimatorV2(mode=backend)\n# isa: transpiled circuit, iobs: observable after apply_layout\njob = ...  # which call?",
+  "code": "from qiskit_ibm_runtime import EstimatorV2\n\n# backend: target backend; isa: transpiled circuit;\n# iobs: observable after apply_layout\nest = EstimatorV2(mode=backend)\njob = ...  # which call?",
   "options": [
     {
       "key": "A",
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6: D rewritten to the V1 keyword signature (kills length tell; proof updated) | pool wave: +E swapped PUB order, +F dict-shaped PUB | realism audit 2026-10-01: stem trimmed (code comments define isa/iobs); difficulty 2->1 (PUB format is one recalled fact)"
+    "notes": "adversarial s6: D rewritten to the V1 keyword signature (kills length tell; proof updated) | pool wave: +E swapped PUB order, +F dict-shaped PUB | realism audit 2026-10-01: stem trimmed (code comments define isa/iobs); difficulty 2->1 (PUB format is one recalled fact) | adversarial A3 2026-10-16: code comment now defines backend too (was undefined as displayed); all six calls re-run on runtime EstimatorV2 local mode: only B returns (evs shape ()), A/C ValueError pub-like, D TypeError 'circuits', E TypeError observable type, F KeyError 0; citations verified (list of tuples; run accepts 'a list of PUBs ... and a precision keyword')"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

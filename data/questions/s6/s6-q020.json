@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6: REWORKED — old resilience_level=0 question was a near-duplicate of a community practice question (jaccard 0.42) and redundant with q028A; replaced with ZNE noise_factors configuration, now an executed attempt-proof | pool wave: +E factors shorthand, +F wrong nesting level for noise_factors | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one recalled option path)"
+    "notes": "adversarial s6: REWORKED — old resilience_level=0 question was a near-duplicate of a community practice question (jaccard 0.42) and redundant with q028A; replaced with ZNE noise_factors configuration, now an executed attempt-proof | pool wave: +E factors shorthand, +F wrong nesting level for noise_factors | realism audit 2026-10-01: stem trimmed; difficulty 2->1 (one recalled option path) | adversarial A3 2026-10-16: survived, no change"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

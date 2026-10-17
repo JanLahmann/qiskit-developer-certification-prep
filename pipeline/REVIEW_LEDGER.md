@@ -3589,3 +3589,65 @@ as text and grepped; all six figure items rendered, rasterized and inspected.
 - Gates: verify_bank s5 37/37 PROVEN + 6 conceptual, 0 failures; audit_meta_patterns s5 0 blockers /
   0 warnings, 3 flagged (q010/q025/q026 low length, pre-existing, outside this batch); lint_proof_drift
   0 findings.
+
+## Adversarial review A3 — s6a (2026-10-16)
+
+Scope: s6-q010..q027 (18; 14 executed, 4 conceptual: q018/q019/q021/q026; no figure items). Every
+option re-run in independent scratch scripts (pinned venv, qiskit 2.5.0 / runtime 0.48.0), runtime
+claims on `qiskit_ibm_runtime.EstimatorV2(mode=FakeManilaV2())` (local mode), every displayed
+predict-output block executed verbatim, every cited page fetched as text and grepped.
+**0 key changes, 0 kills.** 14 edited, 4 survived unchanged (q019, q020, q021, q025).
+
+- **Literal-print mismatch (stem attack):** "What does this code print?" keyed values that are not the
+  literal output: q011 prints `0.9999999999999998`, q022 `2.999999999999999`, q027
+  `1.5000000000000002` (stems now "Up to floating-point rounding, ..."); q015 prints `[ 1. -1.]` and
+  q023 `[ 1.00000000e+00  2.22044605e-16 -1.00000000e+00]` (stems now ask which values the printed
+  `evs` holds, q023 rounded to three decimals; s1-q018 precedent). All five proofs record the literal
+  printed string in `observed`.
+- **Stem false about where it fails (s6-q013):** stem and code comment said `result()` raises;
+  executed, runtime 0.48 `EstimatorV2.run()` itself raises `ValueError: The number of qubits of the
+  circuit (5) does not match ... observable (2)` (job never returned). Stem/comment now say `run()`;
+  proof records `raised_at: run()`. Fixes re-run: only `apply_layout` runs; E's pinned layout still
+  5 wide, F `TypeError` (no `num_qubits` on `SparsePauliOp.__init__`).
+- **False rationales:** s6-q014 E claimed the retired V1 interface used a 0-4 scale (V1 Estimator was
+  0-3) -> now the open-ended-dial misconception, PEC via `resilience.pec_mitigation`; s6-q023 F
+  claimed an extra observable dimension gives the nested `(3, 1)` shape -> executed `[[obs]]` gives
+  `(1, 3)`, a `(3, 1)` observable array `(3, 3)`; only bindings nested as `(3, 1, 1)` give `(3, 1)`
+  (rationale rewritten, shape recorded in the proof); s6-q018 B "not equivalent ... under any
+  circumstances" overclaimed -> the distribution must be weighted with eigenvalues.
+- **Displayed code not runnable / proofs off the displayed API:** s6-q010 `job`/`estimator` were only a
+  comment -> fragment now builds them (names defined earlier stated); proof moved from
+  StatevectorEstimator to runtime EstimatorV2 local mode (seeded via `simulator.seed_simulator`, which
+  local_service passes through) and evaluates each option's literal expression (D was tested as
+  `data.quasi_dists`, displayed is `result[0].quasi_dists`); q012/q016 comments now define `backend`;
+  q014 proof assigns on `EstimatorV2(mode=...).options` as displayed and quotes the validator
+  (`must be <=2`; installed `MAX_RESILIENCE_LEVEL = 2`).
+- **Proof strengthened (s6-q017):** it measured shot noise with StatevectorSampler only; now also runs
+  runtime EstimatorV2 at precision 0.02 and 0.01 and reads PUB metadata shots (2500 -> 10000, ratio 4)
+  — `precision`/`default_precision` are among the few options local mode honors (local_service.py
+  pops `default_shots`, `default_precision`, `seed_simulator`; everything else warns "have no effect
+  in local testing mode"). s6-q016 evidence shows the key actually tightens (target_precision 0.01 vs
+  default 0.015625; shots in `observed`).
+- **Citation failures replaced (fetched, quotes grepped):** specify-observables-pauli was cited for
+  facts it does not state in q011/q013/q015/q022/q027 -> primitive-input-output ("Estimator returns one
+  expectation value estimate for each element of the broadcasted shape"; "a single observable
+  represented as a 0-d array"), VQE course ("the weighted sum of expectation values of the constituent
+  terms"), Pauli API ("qubit-0 corresponds to the right-most Pauli character"), SparsePauliOp API
+  (`apply_layout`: "the number of the transpiler output circuit qubits will be used by default";
+  `from_sparse_list(obj, num_qubits, ...)`, also added to q024), RYGate API (q023, q027);
+  q014 runtime-options-overview (no level range) -> EstimatorOptions API (levels 0/1/2); q017 +
+  estimator-input-output ("sigma_O / sqrt(N_shots)"); q026 error-mitigation-and-suppression (no option
+  path) -> estimator-noise-management ("ZNE How to enable : options.resilience.zne_mitigation = True";
+  level table 1 = TREX, 2 = Level 1 + ZNE and gate twirling).
+- **Survived attacks (executed):** q012 only `[(isa, iobs)]` (A/C ValueError pub-like, D/E TypeError,
+  F KeyError 0); q016 installed signature `run(pubs, *, precision=None)`, F ValidationError; q020 only
+  `zne.noise_factors` (A/B/C ValidationError, E/F no_such_attribute; `>= 1` validator confirmed);
+  q024 only B; q025 displayed error string matches verbatim, raised at `run()`, 0.1 identical error;
+  q026 only B sets `resilience.zne_mitigation` True (F silently sets an attribute on the `Unset`
+  sentinel, no error, flag stays Unset — as DF says); q019/q021 checked against the
+  error-mitigation-and-suppression page (DD "suppressing errors", PEC "unbiased", ZNE "not guaranteed
+  to produce an unbiased result").
+- **Difficulty:** all 18 kept.
+- Gates: verify_bank s6 32/32 PROVEN + 13 conceptual, 0 failures; audit_meta_patterns s6 0 blockers /
+  0 warnings (low length_tell on q013/q020/q021 pre-existing, options untouched); lint_proof_drift 0
+  findings.

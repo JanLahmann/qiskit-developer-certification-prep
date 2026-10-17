@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +F shots-as-mitigation (variance vs bias) | realism audit 2026-10-01: stem trimmed; ensemble-post-processing definition removed, 'bias' kept (refutes the shots option); difficulty 2->1"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +F shots-as-mitigation (variance vs bias) | realism audit 2026-10-01: stem trimmed; ensemble-post-processing definition removed, 'bias' kept (refutes the shots option); difficulty 2->1 | adversarial A3 2026-10-16: survived, no change"
   },
   "display_count": 5
 }

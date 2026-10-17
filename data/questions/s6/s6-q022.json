@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 1,
-  "stem": "What does this code print?",
+  "stem": "Up to floating-point rounding, what does this code print?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(1)\nqc.h(0)\nobs = SparsePauliOp.from_list([(\"X\", 3.0)])\nprint(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs)",
   "options": [
     {
@@ -47,7 +47,8 @@
       "F": "`SparsePauliOp` stores complex coefficients internally, but an expectation value of a Hermitian observable is real and the estimator returns a real float."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output",
+      "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/vqe"
     ]
   },
   "proof": {
@@ -56,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(1); qc.h(0)   # |+>, so <X> = 1\nobs = SparsePauliOp.from_list([(\"X\", 3.0)])\nraw = np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs)\nobserved = float(raw)\n\n\ndef printed_match(claim):\n    # what print() shows is fixed by the array's shape, complex-ness and values\n    c = np.asarray(claim)\n    return bool(raw.shape == c.shape and np.iscomplexobj(raw) == np.iscomplexobj(c)\n                and np.allclose(raw, c, atol=1e-6))\n\n\ncandidates = {\"A\": 1.0, \"B\": 0.0, \"C\": -3.0, \"D\": 3.0, \"E\": [3.0], \"F\": 3 + 0j}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = printed_match(val)\n    if k == \"E\":\n        evidence[k] = (f\"evs is a 0-dimensional array (shape {raw.shape}) holding {observed:.6f}; the claimed \"\n                       f\"length-1 array has shape {np.shape(val)} -> match={m}\")\n    elif k == \"F\":\n        evidence[k] = (f\"evs has dtype {raw.dtype} — a real float; the complex coefficients are contracted away, \"\n                       f\"so the claimed complex value (dtype {np.asarray(val).dtype}) is not what prints -> match={m}\")\n    else:\n        evidence[k] = f\"exact <3*X> on |+> = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(1); qc.h(0)   # |+>, so <X> = 1\nobs = SparsePauliOp.from_list([(\"X\", 3.0)])\nraw = np.asarray(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs)\nobserved = float(raw)\nprinted = str(raw)   # the literal print() output of the displayed line\n\n\ndef printed_match(claim):\n    # what print() shows is fixed by the array's shape, complex-ness and values\n    c = np.asarray(claim)\n    return bool(raw.shape == c.shape and np.iscomplexobj(raw) == np.iscomplexobj(c)\n                and np.allclose(raw, c, atol=1e-6))\n\n\ncandidates = {\"A\": 1.0, \"B\": 0.0, \"C\": -3.0, \"D\": 3.0, \"E\": [3.0], \"F\": 3 + 0j}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = printed_match(val)\n    if k == \"E\":\n        evidence[k] = (f\"evs is a 0-dimensional array (shape {raw.shape}) holding {observed:.6f}; the claimed \"\n                       f\"length-1 array has shape {np.shape(val)} -> match={m}\")\n    elif k == \"F\":\n        evidence[k] = (f\"evs has dtype {raw.dtype} — a real float; the complex coefficients are contracted away, \"\n                       f\"so the claimed complex value (dtype {np.asarray(val).dtype}) is not what prints -> match={m}\")\n    else:\n        evidence[k] = f\"exact <3*X> on |+> = {observed:.6f}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"expectation\": observed, \"printed\": printed}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E length-1 array shape, +F complex-coefficient leakage | realism audit 2026-10-01: stem trimmed; '|+>' gloss removed (code shows h), difficulty 1 kept"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E length-1 array shape, +F complex-coefficient leakage | realism audit 2026-10-01: stem trimmed; '|+>' gloss removed (code shows h), difficulty 1 kept | adversarial A3 2026-10-16: displayed code literally prints 2.999999999999999 -> stem says 'Up to floating-point rounding'; proof records the literal string; citation specify-observables-pauli (no coefficient-scaling or output-shape statement) -> primitive-input-output ('a single observable represented as a 0-d array') + VQE course (weighted sum of term expectation values)"
   },
   "freshness": {
     "verified_against": {
@@ -72,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

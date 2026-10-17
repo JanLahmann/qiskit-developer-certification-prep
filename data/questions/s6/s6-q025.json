@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6: REWORKED — old 'observable width' spot-bug duplicated q013 (same ValueError, same measure_all distractor); replaced with PUB entry ordering (circuit, observables, parameter_values, precision), a scope_note not otherwise covered | pool wave: +E precision-before-observable slot order, +F list-vs-tuple PUB bracketing | realism audit 2026-10-01: stem trimmed ('no parameters' gloss removed, code shows it; 'precision'/'PUB' kept out of the stem: they raised a MEDIUM stem_echo_tell against key C); difficulty 3->2 (PUB slot order recall + reading the error)"
+    "notes": "adversarial s6: REWORKED — old 'observable width' spot-bug duplicated q013 (same ValueError, same measure_all distractor); replaced with PUB entry ordering (circuit, observables, parameter_values, precision), a scope_note not otherwise covered | pool wave: +E precision-before-observable slot order, +F list-vs-tuple PUB bracketing | realism audit 2026-10-01: stem trimmed ('no parameters' gloss removed, code shows it; 'precision'/'PUB' kept out of the stem: they raised a MEDIUM stem_echo_tell against key C); difficulty 3->2 (PUB slot order recall + reading the error) | adversarial A3 2026-10-16: survived, no change"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

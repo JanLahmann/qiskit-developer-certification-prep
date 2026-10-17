@@ -41,7 +41,7 @@
     "correct": "The Estimator primitive is purpose-built to estimate expectation values of observables. You give it (circuit, observable) PUBs and it performs the necessary basis changes and averaging internally, returning the expectation values in `data.evs` (with standard errors in `data.stds`).",
     "distractors": {
       "A": "SamplerV2 returns per-shot bitstring samples (a BitArray), not expectation values; there is no `evs` field on Sampler output.",
-      "B": "`quasi_dists` is a retired V1 Sampler concept, and a probability distribution is not equivalent to an expectation value under any circumstances — you would still have to combine it with the observable's eigenvalues yourself.",
+      "B": "`quasi_dists` is a retired V1 Sampler concept (SamplerV2 returns per-shot bitstrings in a BitArray), and a distribution over bitstrings is not itself an expectation value: you would still have to weight it with the observable's eigenvalues, after the right basis changes, yourself.",
       "D": "The Estimator measures the observable for you; estimator circuits carry no measurement instructions, and you do not average bitstrings manually — that would be re-implementing the Estimator.",
       "E": "Right primitive, wrong output: EstimatorV2 returns the expectation value itself in `evs` (plus `stds`). A distribution over outcomes is the Sampler's product, and no post-processing step is needed.",
       "F": "SamplerV2 has no observable option and no `evs` field — it returns per-shot bitstring data. Attaching an observable to a Sampler is the classic V1-to-V2 mix-up."
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6: dead citation guides/get-started-with-primitives (404) -> guides/get-started-with-estimator; B hedged to kill absolute-wording tell | adversarial s6: B/D tightened so the key is (deliberately) the longest option here — the section's correct-is-longest rate is held near chance, not driven to zero | pool wave: +E right primitive/wrong output, +F observable-on-the-Sampler | realism audit 2026-10-01: stem trimmed; difficulty 1 kept"
+    "notes": "adversarial s6: dead citation guides/get-started-with-primitives (404) -> guides/get-started-with-estimator; B hedged to kill absolute-wording tell | adversarial s6: B/D tightened so the key is (deliberately) the longest option here — the section's correct-is-longest rate is held near chance, not driven to zero | pool wave: +E right primitive/wrong output, +F observable-on-the-Sampler | realism audit 2026-10-01: stem trimmed; difficulty 1 kept | adversarial A3 2026-10-16: B rationale overclaimed ('not equivalent ... under any circumstances') -> says the distribution is not itself <O> and must be weighted with eigenvalues; executed runtime SamplerV2 local mode: DataBin fields ['meas'], no evs, no quasi_dists, options.observable rejected (A/B/F); citations verified (get-started-with-estimator 'computes the expectation values', result[0].data.evs)"
   },
   "display_count": 4
 }

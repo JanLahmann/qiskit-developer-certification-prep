@@ -6,7 +6,7 @@
   ],
   "type": "predict-output",
   "difficulty": 2,
-  "stem": "What does this code print?",
+  "stem": "Which values, in order, does the printed `evs` array hold?",
   "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.x(0)\nobs = [SparsePauliOp(\"ZI\"), SparsePauliOp(\"IZ\")]\nprint(StatevectorEstimator().run([(qc, obs)]).result()[0].data.evs)",
   "options": [
     {
@@ -47,7 +47,8 @@
       "F": "The observable array here is one-dimensional, so `evs` comes back with the same flat shape. The nested shape appears only if you write the observables as `[[obs1], [obs2]]`."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/specify-observables-pauli"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Pauli",
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
     ]
   },
   "proof": {
@@ -56,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.x(0)   # qubit 0 -> |1>, qubit 1 -> |0>\nobs = [SparsePauliOp(\"ZI\"), SparsePauliOp(\"IZ\")]\nres = StatevectorEstimator().run([(qc, obs)]).result()\nraw = np.asarray(res[0].data.evs)\nobserved = [round(float(v), 4) for v in raw]\n\n\ndef printed_match(claim):\n    # what print() shows is fixed by the array's shape, complex-ness and values\n    c = np.asarray(claim)\n    return bool(raw.shape == c.shape and np.iscomplexobj(raw) == np.iscomplexobj(c)\n                and np.allclose(raw, c, atol=1e-6))\n\n\ncandidates = {\"A\": [-1.0, 1.0], \"B\": [1.0, -1.0], \"C\": [1.0, 1.0], \"D\": [-1.0, -1.0],\n              \"E\": 0.0, \"F\": [[1.0], [-1.0]]}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = printed_match(val)\n    if k == \"E\":\n        evidence[k] = (f\"the estimator returns TWO values {observed} (shape {raw.shape}); the observables are broadcast, \"\n                       f\"not summed into one number (claimed scalar has shape {np.shape(val)}) -> match={m}\")\n    elif k == \"F\":\n        evidence[k] = (f\"evs has shape {raw.shape} — a flat pair of values; the claimed one-row-per-observable \"\n                       f\"layout has shape {np.shape(val)} -> match={m}\")\n    else:\n        evidence[k] = f\"executed [<ZI>, <IZ>] = {observed}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": observed}})\n"
+    "proof_script": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2)\nqc.x(0)   # qubit 0 -> |1>, qubit 1 -> |0>\nobs = [SparsePauliOp(\"ZI\"), SparsePauliOp(\"IZ\")]\nres = StatevectorEstimator().run([(qc, obs)]).result()\nraw = np.asarray(res[0].data.evs)\nobserved = [round(float(v), 4) for v in raw]\nprinted = str(raw)   # literal print() output: numpy formatting\n\n\ndef printed_match(claim):\n    # what print() shows is fixed by the array's shape, complex-ness and values\n    c = np.asarray(claim)\n    return bool(raw.shape == c.shape and np.iscomplexobj(raw) == np.iscomplexobj(c)\n                and np.allclose(raw, c, atol=1e-6))\n\n\ncandidates = {\"A\": [-1.0, 1.0], \"B\": [1.0, -1.0], \"C\": [1.0, 1.0], \"D\": [-1.0, -1.0],\n              \"E\": 0.0, \"F\": [[1.0], [-1.0]]}\nevidence = {}\nproven = []\nfor k, val in candidates.items():\n    m = printed_match(val)\n    if k == \"E\":\n        evidence[k] = (f\"the estimator returns TWO values {observed} (shape {raw.shape}); the observables are broadcast, \"\n                       f\"not summed into one number (claimed scalar has shape {np.shape(val)}) -> match={m}\")\n    elif k == \"F\":\n        evidence[k] = (f\"evs has shape {raw.shape} — a flat pair of values; the claimed one-row-per-observable \"\n                       f\"layout has shape {np.shape(val)} -> match={m}\")\n    else:\n        evidence[k] = f\"executed [<ZI>, <IZ>] = {observed}; option claims {val} -> match={m}\"\n    if m:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": observed, \"printed\": printed}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E observables-are-summed, +F nested observable shape | realism audit 2026-10-01: stem trimmed; 'X on qubit 0 only' gloss removed (code shows it), difficulty 2 kept (endianness twist)"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E observables-are-summed, +F nested observable shape | realism audit 2026-10-01: stem trimmed; 'X on qubit 0 only' gloss removed (code shows it), difficulty 2 kept (endianness twist) | adversarial A3 2026-10-16: literal print is numpy '[ 1. -1.]', not the options' '[1.0, -1.0]' -> stem asks which values the printed evs holds (s1-q018 precedent); proof records the literal string; citation specify-observables-pauli (no label-order or broadcast statement) -> Pauli API ('qubit-0 corresponds to the right-most Pauli character') + primitive-input-output (one estimate per broadcast element); F nested shape executed: [[ZI],[IZ]] -> shape (2,1)"
   },
   "freshness": {
     "verified_against": {
@@ -72,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

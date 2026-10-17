@@ -7,7 +7,7 @@
   "type": "mcq",
   "difficulty": 1,
   "stem": "Which expression returns the expectation values of the first PUB?",
-  "code": "from qiskit_ibm_runtime import EstimatorV2\n# job = estimator.run([(isa_circuit, isa_observable)])\nresult = job.result()\nvalue = ...  # which expression?",
+  "code": "from qiskit_ibm_runtime import EstimatorV2 as Estimator\n\n# backend, isa_circuit and isa_observable are defined earlier\nestimator = Estimator(mode=backend)\njob = estimator.run([(isa_circuit, isa_observable)])\nresult = job.result()\nvalue = ...  # which expression?",
   "options": [
     {
       "key": "A",
@@ -56,14 +56,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp\nfrom qiskit.primitives import StatevectorEstimator\n\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)   # Bell state\nobs = SparsePauliOp(\"ZZ\")\ntrue_ev = 1.0  # <ZZ> on the Bell state\nresult = StatevectorEstimator().run([(qc, obs)]).result()\ndata = result[0].data\n\nevidence = {}\nproven = []\nevs = float(np.asarray(data.evs))\nmatchA = bool(np.isclose(evs, true_ev))\nevidence[\"A\"] = f\"result[0].data.evs = {evs:.6f}; equals the true <ZZ> = {true_ev} -> holds the expectation value (match={matchA})\"\nif matchA:\n    proven.append(\"A\")\nstds = float(np.asarray(data.stds))\nevidence[\"B\"] = f\"result[0].data.stds = {stds:.6f} is the standard error of the estimate, NOT the expectation value ({true_ev})\"\ntry:\n    _ = data.meas.get_counts()\n    evidence[\"C\"] = \"data.meas exists (unexpected for Estimator)\"\n    proven.append(\"C\")\nexcept Exception as e:\n    evidence[\"C\"] = f\"result[0].data.meas raises {type(e).__name__}: an Estimator DataBin has no bitstring counts (that is Sampler output)\"\ntry:\n    _ = data.quasi_dists\n    evidence[\"D\"] = \"data.quasi_dists exists (unexpected)\"\n    proven.append(\"D\")\nexcept Exception as e:\n    evidence[\"D\"] = f\"result[0].data.quasi_dists raises {type(e).__name__}: quasi_dists was a retired V1 Sampler field, never on EstimatorV2\"\n\ntry:\n    _ = data.expectation_values\n    evidence[\"E\"] = \"data.expectation_values exists (unexpected)\"\n    proven.append(\"E\")\nexcept Exception as e:\n    evidence[\"E\"] = f\"result[0].data.expectation_values raises {type(e).__name__}: the DataBin field is named evs, not expectation_values\"\ntry:\n    _ = result[0].metadata[\"evs\"]\n    evidence[\"F\"] = \"result[0].metadata['evs'] exists (unexpected)\"\n    proven.append(\"F\")\nexcept Exception as e:\n    evidence[\"F\"] = f\"result[0].metadata['evs'] raises {type(e).__name__}: PUB metadata carries run bookkeeping, not the estimates\"\n\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"evs\": evs, \"stds\": stds}})\n"
+    "proof_script": "\nimport numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import SparsePauliOp, Statevector\nfrom qiskit.transpiler import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import EstimatorV2 as Estimator\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\n# The stem's fragment, with its three named inputs built on a fake backend (runtime local mode)\nbackend = FakeManilaV2()\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1)            # Bell state: <ZZ> = +1 ideally\npm = generate_preset_pass_manager(optimization_level=1, backend=backend, seed_transpiler=7)\nisa_circuit = pm.run(qc)\nisa_observable = SparsePauliOp(\"ZZ\").apply_layout(isa_circuit.layout)\nestimator = Estimator(mode=backend)\nestimator.options.simulator.seed_simulator = 11   # honored in local mode (local_service pops seed_simulator)\njob = estimator.run([(isa_circuit, isa_observable)])\nresult = job.result()\n\nideal = float(Statevector(qc).expectation_value(SparsePauliOp(\"ZZ\")).real)\nexprs = {\n    \"A\": 'result[0].data.evs',\n    \"B\": 'result[0].data.stds',\n    \"C\": 'result[0].data.meas.get_counts()',\n    \"D\": 'result[0].quasi_dists',\n    \"E\": 'result[0].data.expectation_values',\n    \"F\": 'result[0].metadata[\"evs\"]',\n}\nevidence, proven, observed = {}, [], {\"ideal_ZZ\": ideal, \"databin_fields\": list(result[0].data.keys()),\n                                       \"pub_metadata_keys\": sorted(result[0].metadata)}\nfor k, ex in exprs.items():\n    try:\n        val = eval(ex)\n    except Exception as e:\n        evidence[k] = f\"{ex} raises {type(e).__name__}: {e}\"\n        continue\n    v = float(np.asarray(val))\n    observed[k] = v\n    # an expectation value of ZZ on the noisy Bell state sits near +1; a standard error sits near 0\n    is_ev = abs(v - ideal) < 0.25\n    evidence[k] = f\"{ex} = {v:.6f}; ideal <ZZ> = {ideal:.1f} -> {'the expectation value' if is_ev else 'not the expectation value (an uncertainty, not the estimate)'}\"\n    if is_ev:\n        proven.append(k)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": observed})\n"
   },
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude-opus (generation agent, section s6)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": true,
-    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E expectation_values near-miss field name, +F estimates-live-in-metadata | realism audit 2026-10-01: stem trimmed (code already shows `result`); difficulty 1 kept"
+    "notes": "adversarial s6 round 1: survived unchanged (citations re-fetched 200, proof evidence discriminates, no second defensible answer, no meta-pattern flag) | pool wave: +E expectation_values near-miss field name, +F estimates-live-in-metadata | realism audit 2026-10-01: stem trimmed (code already shows `result`); difficulty 1 kept | adversarial A3 2026-10-16: displayed code made runnable (job/estimator were only a comment); proof now runs runtime EstimatorV2 in local mode (FakeManilaV2, seeded) and evaluates each option's literal expression (D was tested as data.quasi_dists, displayed is result[0].quasi_dists); citation primitive-input-output verified (DataBin evs/stds tree)"
   },
   "freshness": {
     "verified_against": {
@@ -72,7 +72,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-17",
     "stale": false
   },
   "display_count": 4

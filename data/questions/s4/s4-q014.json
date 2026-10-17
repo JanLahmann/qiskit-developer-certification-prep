@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened exclusivity distractor (length-tell fix). | pool wave: +F (max TTL pauses while other users run) | realism audit 2026-10-01: stem trimmed; stem 12 -> 10 words; difficulty 2 -> 2"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct A, lengthened exclusivity distractor (length-tell fix). | pool wave: +F (max TTL pauses while other users run) | realism audit 2026-10-01: stem trimmed; stem 12 -> 10 words; difficulty 2 -> 2 | adversarial A3 2026-10-16: survived, no change"
   },
   "display_count": 5
 }

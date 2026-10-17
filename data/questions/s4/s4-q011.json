@@ -48,8 +48,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
-      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
-      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch"
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
     ]
   },
   "proof": {
@@ -62,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged + lengthened the session distractor (absolute-tell fix). | pool wave: +E (options are per-PUB), +F (parallel submission substitutes for batching) | realism audit 2026-10-01: stem trimmed; kept 'separate results' (option E's refutation uses it); stem 59 -> 26 words; difficulty 1 -> 1"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged + lengthened the session distractor (absolute-tell fix). | pool wave: +E (options are per-PUB), +F (parallel submission substitutes for batching) | realism audit 2026-10-01: stem trimmed; kept 'separate results' (option E's refutation uses it); stem 59 -> 26 words; difficulty 1 -> 1 | adversarial A3 2026-10-16: citation run-jobs-batch dropped (no statement of the tested recommendation); choose-execution-mode 'Compare error mitigation settings' example (\"batch would be a good choice\") carries it; options/key survived"
   },
   "display_count": 5
 }

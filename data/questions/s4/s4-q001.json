@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "You must run 30 independent circuits on a busy QPU with minimal total queue waiting. Which execution mode fits best?",
+  "stem": "You must run 30 independent jobs on a busy QPU with minimal total queue waiting. Which execution mode fits best?",
   "code": null,
   "options": [
     {
@@ -23,7 +23,7 @@
     },
     {
       "key": "D",
-      "text": "One session per circuit — open 30 sessions, one job each"
+      "text": "One session per job — open 30 sessions, one job each"
     },
     {
       "key": "E",
@@ -41,15 +41,14 @@
     "correct": "Batch mode is designed exactly for collections of independent jobs: the jobs are scheduled as a group, can run back-to-back with parallelized classical processing, and the whole collection clears the queue faster than individually queued jobs — without reserving the device between jobs the way a session does.",
     "distractors": {
       "B": "Sessions give you dedicated, iterative access — useful when later jobs depend on earlier results (e.g. variational loops). For independent circuits the dedicated window buys nothing and typically costs more device time than batching.",
-      "C": "Individually queued jobs each wait in the fair-share queue separately — this maximizes, not minimizes, total queuing overhead.",
-      "D": "Opening a session per circuit multiplies session overhead thirty-fold and is the most wasteful option of all.",
+      "C": "Each individually queued job waits in the queue on its own, so 30 jobs pay 30 queue waits. The guide's remark that job mode \"might run sooner than batch mode\" is about one small experiment; a batch is scheduled together, with no additional queuing time for each job.",
+      "D": "Every session's first job enters the normal queue, so 30 one-job sessions pay 30 queue waits plus 30 sessions' overhead, and a session gives a single job no benefit.",
       "E": "Shrinking `max_time` doesn't change what a session is: dedicated, exclusive access intended for dependent, iterative jobs. Independent circuits gain nothing from exclusivity at any window length — batch mode schedules them together without reserving the device.",
-      "F": "Nesting does not compose the two modes. A primitive runs in exactly the execution mode its `mode=` argument names; wrapping a batch in a session simply pays the session's higher cost on top, and the batch never inherits or extends a session's reserved window."
+      "F": "Execution modes do not stack. The runtime tracks one open context, so a primitive created in the inner block joins only the batch; the outer session receives no jobs, and on leaving the inner block no context is open at all."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
       "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
-      "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch"
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
     ]
   },
   "proof": {
@@ -62,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-19",
     "model": "claude (orchestrator seed)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | distractor pool pilot: +E (session max_time misuse), display_count=4 | pool wave: +F (nesting Batch inside Session to 'get both') | realism audit 2026-10-01: stem trimmed; stem 42 -> 20 words; difficulty 1 -> 1"
+    "notes": "Hand-seeded to validate the harness end-to-end; enters the normal adversarial pipeline with the rest of the bank. | distractor pool pilot: +E (session max_time misuse), display_count=4 | pool wave: +F (nesting Batch inside Session to 'get both') | realism audit 2026-10-01: stem trimmed; stem 42 -> 20 words; difficulty 1 -> 1 | adversarial A3 2026-10-16: stem 'circuits' -> 'jobs' (the FAQ's combine-into-one-job advice made 30 circuits answerable by a single job outside the options); C answers the 'job might run sooner than batch' docs trap; D/F rationales rebuilt (executed: nested Session>Batch, SamplerV2() binds the Batch; after the inner exit SamplerV2() raises 'A backend or session must be specified.'); run-jobs-batch citation dropped (states no queue fact)"
   },
   "display_count": 4
 }

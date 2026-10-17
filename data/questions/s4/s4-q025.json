@@ -6,7 +6,7 @@
   ],
   "type": "mcq",
   "difficulty": 1,
-  "stem": "With no `channel` argument, which channel does `QiskitRuntimeService()` use?",
+  "stem": "Which channel does `QiskitRuntimeService` use by default when no `channel` argument is given?",
   "code": null,
   "options": [
     {
@@ -27,7 +27,7 @@
     },
     {
       "key": "E",
-      "text": "There is no default: `QiskitRuntimeService()` raises unless a saved account or a `channel=` argument supplies one."
+      "text": "There is no default: the channel must come from a saved account or from an explicit `channel=` argument."
     },
     {
       "key": "F",
@@ -40,15 +40,15 @@
   "explanation": {
     "correct": "The default channel is `ibm_quantum_platform`. Because this is almost always the appropriate channel, the docs omit it from the examples; you only pass `channel=` to override it.",
     "distractors": {
-      "A": "`ibm_cloud` is a separate channel value, not the default.",
-      "C": "`ibm_quantum` was the legacy channel used by the older platform; it is not the current default and this is a common out-of-date assumption.",
+      "A": "`ibm_cloud` is a legacy channel value; the API reference notes it points to the same path as `ibm_quantum_platform`, but it is not the default value, and `ibm_quantum_platform` is the recommended one.",
+      "C": "`ibm_quantum` was the channel of the retired legacy platform. It is not the default, and qiskit-ibm-runtime 0.48 rejects it outright (`ValueError: 'channel' can only be 'ibm_cloud', or 'ibm_quantum_platform`).",
       "D": "`local` is a real channel for local testing (`QiskitRuntimeService(channel=\"local\")`), but it is not the default; the default is `ibm_quantum_platform`. You get the local channel only by requesting it explicitly, so `local` is never the default.",
-      "E": "There is a documented default. A bare `QiskitRuntimeService()` is the ordinary way to construct the service precisely because `channel` falls back to `ibm_quantum_platform`.",
+      "E": "There is a documented default. The constructor and `save_account` both fall back to `ibm_quantum_platform`: an account saved without `channel=` is stored with that channel, and a bare `QiskitRuntimeService()` is the ordinary way to load it.",
       "F": "`local` is never a fallback — it is an explicit opt-in for local testing mode. The same default applies whether you are saving an account or constructing the service."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/initialize-account",
-      "https://quantum.cloud.ibm.com/docs/guides/hello-world"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/qiskit-runtime-service"
     ]
   },
   "proof": {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — gave every channel option a descriptor so the correct one is no longer the longest. | pool wave: +E (channel has no default), +F (bare constructor falls back to the local channel) | realism audit 2026-10-01: stem trimmed; stem 14 -> 9 words; difficulty 1 -> 1"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — gave every channel option a descriptor so the correct one is no longer the longest. | pool wave: +E (channel has no default), +F (bare constructor falls back to the local channel) | realism audit 2026-10-01: stem trimmed; stem 14 -> 9 words; difficulty 1 -> 1 | adversarial A3 2026-10-16: stem 'which channel does QiskitRuntimeService() use' had a saved-account reading (a saved ibm_cloud default account is loaded) -> 'use by default'; E's 'raises unless a saved account or channel= supplies one' was half true (a bare call with nothing saved does raise AccountNotFoundError) -> clean 'no default channel' claim; executed in an isolated HOME: save_account(token, instance) wrote 'default-ibm-quantum-platform' with channel ibm_quantum_platform, channel='ibm_quantum' -> ValueError; A answers the API-page 'ibm_cloud ... points to the same path' trap; hello-world citation (no channel statement) -> QiskitRuntimeService API ('set to ibm_quantum_platform by default')"
   },
   "display_count": 4
 }

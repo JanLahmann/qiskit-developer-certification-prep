@@ -48,8 +48,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/hello-world",
-      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
-      "https://quantum.cloud.ibm.com/docs/guides/transpile"
+      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-estimator"
     ]
   },
   "proof": {
@@ -63,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct B, lengthened+stem-echoed wrong-exception distractor (length/stem-echo fix). | pool wave: +E (Estimator pads the observable with identities), +F (SparsePauliOp raises the layout error) | realism audit 2026-10-01: stem trimmed; removed the 'pads it to the device's qubit count' gloss that handed over the tested fact — rated 2 with the hint gone; stem 34 -> 12 words; difficulty 2 -> 2"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct B, lengthened+stem-echoed wrong-exception distractor (length/stem-echo fix). | pool wave: +E (Estimator pads the observable with identities), +F (SparsePauliOp raises the layout error) | realism audit 2026-10-01: stem trimmed; removed the 'pads it to the device's qubit count' gloss that handed over the tested fact — rated 2 with the hint gone; stem 34 -> 12 words; difficulty 2 -> 2 | adversarial A3 2026-10-16: displayed code re-run: plain ValueError 'The number of qubits of the circuit (5) does not match the number of qubits of the ()-th observable (2).' (IBMInputValueError subclasses ValueError, but the raised type is the builtin, so D stays false); citations execution-modes/transpile (silent on observables) -> get-started-with-estimator (isa_observable = observable.apply_layout(isa_circuit.layout))"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

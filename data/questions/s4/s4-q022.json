@@ -48,7 +48,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
-      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes-faq"
     ]
   },
   "proof": {
@@ -61,9 +61,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — true absolute added to a correct option (absolute-tell fix). | pool wave: +F (results must be fetched inside the with block) | realism audit 2026-10-01: stem trimmed; stem 23 -> 16 words; difficulty 2 -> 2"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — true absolute added to a correct option (absolute-tell fix). | pool wave: +F (results must be fetched inside the with block) | realism audit 2026-10-01: stem trimmed; stem 23 -> 16 words; difficulty 2 -> 2 | adversarial A3 2026-10-16: options/key survived (run-jobs-session: 'stops accepting new jobs but continues to run queued jobs', 'results can be retrieved'); citation execution-modes (silent on closing) -> execution-modes-faq ('Session.close() ... existing jobs run to completion. Session.cancel() cancels all pending session jobs')"
   },
   "display_count": 4
 }

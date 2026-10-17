@@ -8,7 +8,7 @@
   "type": "mcq",
   "difficulty": 1,
   "stem": "Which construction makes the sampler submit its jobs inside `batch`?",
-  "code": "from qiskit_ibm_runtime import SamplerV2, Batch\n\nbatch = Batch(backend=backend)\nsampler = ...  # which one?",
+  "code": "from qiskit_ibm_runtime import SamplerV2, Batch\n\n# backend: a backend object, e.g. from service.least_busy(...)\nbatch = Batch(backend=backend)\nsampler = ...  # which one?",
   "options": [
     {
       "key": "A",
@@ -42,14 +42,15 @@
     "correct": "In V2, the execution mode is passed through the single `mode=` parameter, which accepts a Backend, Session, or Batch object. `SamplerV2(mode=batch)` binds the primitive to the batch so its jobs are scheduled together.",
     "distractors": {
       "A": "`session=` was the pre-0.24 keyword and no longer exists on V2 primitives (raises `TypeError`); you also would not pass a Batch to a `session` argument.",
-      "B": "There is no `batch=` keyword on the V2 primitives; it raises `TypeError`. The execution mode always goes through `mode=`.",
+      "B": "There is no `batch=` keyword on the V2 primitives in 0.48; it raises `TypeError`. The batch guide's code comment about changing `mode=` to `batch=` concerns releases older than 0.24. Today the execution mode always goes through `mode=`.",
       "D": "`mode=` needs the actual Batch object, not the string `\"batch\"`; a string raises `ValueError: mode must be of type Backend, Session, Batch or None`.",
       "E": "`backend=` is the V1 keyword and was removed from the V2 constructors altogether, so this raises `TypeError` no matter what object you hand it — a batch included.",
       "F": "`Batch.backend()` returns the backend's *name* as a string, not the backend object, and `mode=` rejects strings — this raises `ValueError`. It also would not put the jobs in the batch even if it worked, since the mode would then be a plain backend."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/run-jobs-batch",
-      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2"
     ]
   },
   "proof": {
@@ -63,9 +64,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E (backend= kwarg with a Batch), +F (mode=batch.backend() returns a name string) | realism audit 2026-10-01: stem trimmed; single API recall -> 2->1; stem 26 -> 10 words; difficulty 2 -> 1"
+    "notes": "pool wave: +E (backend= kwarg with a Batch), +F (mode=batch.backend() returns a name string) | realism audit 2026-10-01: stem trimmed; single API recall -> 2->1; stem 26 -> 10 words; difficulty 2 -> 1 | adversarial A3 2026-10-16: code now names where backend comes from (was undefined); B answers the run-jobs-batch comment trap ('earlier than 0.24.0, change mode= to batch='); re-executed: session=/batch=/backend= TypeError, mode='batch' ValueError, batch.backend() -> 'fake_manila' -> ValueError; + SamplerV2 API citation (mode: Backend/Session/Batch)"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +75,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

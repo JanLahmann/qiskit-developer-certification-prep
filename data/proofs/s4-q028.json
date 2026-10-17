@@ -5,12 +5,12 @@
       "B"
     ],
     "evidence": {
-      "B": "ran successfully: 1024 shots over 4 bitstrings",
-      "A": "raised ValueError: An invalid Sampler pub-like was given (<class 'qiskit._accelerate.circuit.CircuitInstruction'>). If you want to run a si",
-      "C": "raised TypeError: Session.__init__() got an unexpected keyword argument 'mode'",
-      "D": "raised ValueError: An invalid Sampler pub-like was given (<class 'qiskit._accelerate.circuit.CircuitInstruction'>). If you want to run a si",
-      "E": "raised AttributeError: 'DataBin' object has no attribute 'get_counts'",
-      "F": "raised AttributeError: 'Session' object has no attribute 'run'"
+      "A": "executed verbatim: raised ValueError: An invalid Sampler pub-like was given (<class 'qiskit._accelerate.circuit.CircuitInstruction'>). If you want t",
+      "B": "executed verbatim: ran, 1024 shots over 4 bitstrings",
+      "C": "executed verbatim: raised TypeError: Session.__init__() got an unexpected keyword argument 'mode'",
+      "D": "executed verbatim: raised ValueError: An invalid Sampler pub-like was given (<class 'qiskit._accelerate.circuit.CircuitInstruction'>). If you want t",
+      "E": "executed verbatim: raised AttributeError: 'DataBin' object has no attribute 'get_counts'",
+      "F": "executed verbatim: raised AttributeError: 'Session' object has no attribute 'run'; Session public attributes: ['backend', 'cancel', 'close', 'details', 'from_id', 'service', 'session_id', 'status', 'usage']"
     },
     "observed": {
       "proven": [
@@ -24,9 +24,9 @@
     "qiskit-ibm-runtime": "0.48.0",
     "numpy": "2.5.1"
   },
-  "wall_seconds": 5.4,
+  "wall_seconds": 1.43,
   "returncode": 0,
-  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"B\": \"ran successfully: 1024 shots over 4 bitstrings\", \"A\": \"raised ValueError: An invalid Sampler pub-like was given (<class 'qiskit._accelerate.circuit.CircuitInstruction'>). If you want to run a si\", \"C\": \"raised TypeError: Session.__init__() got an unexpected keyword argument 'mode'\", \"D\": \"raised ValueError: An invalid Sampler pub-like was given (<class 'qiskit._accelerate.circuit.CircuitInstruction'>). If you want to run a si\", \"E\": \"raised AttributeError: 'DataBin' object has no attribute 'get_counts'\", \"F\": \"raised AttributeError: 'Session' object has no attribute 'run'\"}, \"observed\": {\"proven\": [\"B\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
+  "stdout_tail": "###VERDICT###{\"answer\": [\"B\"], \"evidence\": {\"A\": \"executed verbatim: raised ValueError: An invalid Sampler pub-like was given (<class 'qiskit._accelerate.circuit.CircuitInstruction'>). If you want t\", \"B\": \"executed verbatim: ran, 1024 shots over 4 bitstrings\", \"C\": \"executed verbatim: raised TypeError: Session.__init__() got an unexpected keyword argument 'mode'\", \"D\": \"executed verbatim: raised ValueError: An invalid Sampler pub-like was given (<class 'qiskit._accelerate.circuit.CircuitInstruction'>). If you want t\", \"E\": \"executed verbatim: raised AttributeError: 'DataBin' object has no attribute 'get_counts'\", \"F\": \"executed verbatim: raised AttributeError: 'Session' object has no attribute 'run'; Session public attributes: ['backend', 'cancel', 'close', 'details', 'from_id', 'service', 'session_id', 'status', 'usage']\"}, \"observed\": {\"proven\": [\"B\"]}}\n###VERSIONS###{\"qiskit\": \"2.5.0\", \"qiskit-aer\": \"0.17.2\", \"qiskit-ibm-runtime\": \"0.48.0\", \"numpy\": \"2.5.1\"}\n",
   "stderr_tail": "",
   "python": "3.12.2"
 }

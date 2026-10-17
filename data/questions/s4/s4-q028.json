@@ -8,7 +8,7 @@
   "type": "mcq",
   "difficulty": 2,
   "stem": "Which snippet runs `isa` with a Sampler inside a session on `backend` and retrieves the counts?",
-  "code": "# backend is a real-device (fake) backend; isa is transpiled for it",
+  "code": "# backend: a fake backend; isa: a measure_all() circuit transpiled for it",
   "options": [
     {
       "key": "A",
@@ -49,7 +49,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/run-jobs-session",
-      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+      "https://quantum.cloud.ibm.com/docs/guides/primitive-input-output"
     ]
   },
   "proof": {
@@ -58,14 +58,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2, Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\nevidence = {}\nproven = []\n\ndef attempt(key, fn):\n    try:\n        counts = fn()\n        evidence[key] = f\"ran successfully: {sum(counts.values())} shots over {len(counts)} bitstrings\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"raised {type(e).__name__}: {str(e)[:120]}\"\n\ndef opt_A():\n    with Session(backend=backend) as session:\n        job = SamplerV2(mode=session).run([isa])\n    return job.result()[0].data.meas.get_counts()\n\ndef opt_B():\n    with Session(backend=backend) as session:\n        job = SamplerV2(mode=session).run(isa)          # not wrapped in a list\n    return job.result()[0].data.meas.get_counts()\n\ndef opt_C():\n    session = Session(mode=backend)                     # Session takes backend=, not mode=\n    job = SamplerV2(mode=session).run([isa])\n    return job.result()[0].data.meas.get_counts()\n\ndef opt_D():\n    with Session(backend) as session:\n        job = SamplerV2(session).run(isa)               # unwrapped circuit\n    return job.result()[0].data.meas.get_counts()\n\ndef opt_E():\n    with Session(backend=backend) as session:\n        job = SamplerV2(mode=session).run([isa])\n    return job.result()[0].data.get_counts()            # counts straight off the DataBin\n\ndef opt_F():\n    with Session(backend=backend) as session:\n        job = session.run(SamplerV2(), [isa])           # submit through the session\n    return job.result()[0].data.meas.get_counts()\n\nattempt(\"B\", opt_A)\nattempt(\"A\", opt_B)\nattempt(\"C\", opt_C)\nattempt(\"D\", opt_D)\nattempt(\"E\", opt_E)\nattempt(\"F\", opt_F)\nemit_verdict({\"answer\": proven, \"evidence\": evidence, \"observed\": {\"proven\": proven}})\n"
+    "proof_script": "\nimport warnings\nwarnings.simplefilter(\"ignore\")\nfrom qiskit import QuantumCircuit\nfrom qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager\nfrom qiskit_ibm_runtime import SamplerV2, Session\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\n# the stem comment: backend is a fake backend; isa is a measure_all() circuit transpiled for it\nbackend = FakeManilaV2()\npm = generate_preset_pass_manager(backend=backend, optimization_level=1)\nqc = QuantumCircuit(2); qc.h(0); qc.cx(0, 1); qc.measure_all()\nisa = pm.run(qc)\n\n# The DISPLAYED option snippets, verbatim (keep in sync with the question's options).\nOPTIONS = {'A': 'with Session(backend=backend) as session:\\n    job = SamplerV2(mode=session).run(isa)        # unwrapped\\ncounts = job.result()[0].data.meas.get_counts()', 'B': 'with Session(backend=backend) as session:\\n    job = SamplerV2(mode=session).run([isa])\\ncounts = job.result()[0].data.meas.get_counts()', 'C': 'session = Session(mode=backend)                    # mode=, not backend=\\njob = SamplerV2(mode=session).run([isa])\\ncounts = job.result()[0].data.meas.get_counts()', 'D': 'with Session(backend) as session:\\n    job = SamplerV2(session).run(isa)             # unwrapped\\ncounts = job.result()[0].data.meas.get_counts()', 'E': 'with Session(backend=backend) as session:\\n    job = SamplerV2(mode=session).run([isa])\\ncounts = job.result()[0].data.get_counts()', 'F': 'with Session(backend=backend) as session:\\n    job = session.run(SamplerV2(), [isa])\\ncounts = job.result()[0].data.meas.get_counts()'}\n\nevidence = {}\nproven = []\nfor key, src in OPTIONS.items():\n    ns = {\"SamplerV2\": SamplerV2, \"Session\": Session, \"backend\": backend, \"isa\": isa}\n    try:\n        exec(src, ns)\n        counts = ns[\"counts\"]\n        evidence[key] = f\"executed verbatim: ran, {sum(counts.values())} shots over {len(counts)} bitstrings\"\n        proven.append(key)\n    except Exception as e:\n        evidence[key] = f\"executed verbatim: raised {type(e).__name__}: {str(e)[:110]}\"\npublic = [a for a in dir(Session) if not a.startswith(\"_\")]\nevidence[\"F\"] += f\"; Session public attributes: {public}\"\nemit_verdict({\"answer\": sorted(proven), \"evidence\": evidence, \"observed\": {\"proven\": sorted(proven)}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 2,
+    "adversarial_rounds": 3,
     "reviewed": false,
-    "notes": "pool wave: +E (DataBin.get_counts), +F (submit through session.run) | realism audit 2026-10-01: stem trimmed; stem 22 -> 16 words; difficulty 2 -> 2"
+    "notes": "pool wave: +E (DataBin.get_counts), +F (submit through session.run) | realism audit 2026-10-01: stem trimmed; stem 22 -> 16 words; difficulty 2 -> 2 | adversarial A3 2026-10-16: code comment now states isa is a measure_all() circuit (E's 'data.meas' refutation and the key both depend on the register name); proof execs the six displayed option snippets verbatim (A/D ValueError invalid pub-like, C TypeError 'unexpected keyword argument mode', E AttributeError 'DataBin' has no get_counts, F AttributeError 'Session' has no run; public attrs listed); execution-modes citation (silent) -> primitive-input-output (meas = measure_all's register)"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

@@ -7,7 +7,7 @@
   "type": "predict-output",
   "difficulty": 1,
   "stem": "FakeManilaV2 is a 5-qubit line (0-1-2-3-4). This basis-gate-only circuit is run without routing. What happens?",
-  "code": "backend = FakeManilaV2()          # line topology 0-1-2-3-4\nqc = QuantumCircuit(5)\nqc.sx(0)\nqc.rz(0.7, 0)\nqc.cx(0, 4)                       # 0 and 4 are NOT adjacent\nqc.measure_all()\njob = SamplerV2(mode=backend).run([qc])",
+  "code": "from qiskit import QuantumCircuit\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()          # line topology 0-1-2-3-4\nqc = QuantumCircuit(5)\nqc.sx(0)\nqc.rz(0.7, 0)\nqc.cx(0, 4)                       # 0 and 4 are NOT adjacent\nqc.measure_all()\njob = SamplerV2(mode=backend).run([qc])",
   "options": [
     {
       "key": "A",
@@ -48,8 +48,7 @@
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/transpile",
-      "https://quantum.cloud.ibm.com/docs/guides/hello-world",
-      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+      "https://quantum.cloud.ibm.com/docs/guides/hello-world"
     ]
   },
   "proof": {
@@ -58,14 +57,14 @@
   },
   "verification": {
     "mode": "script",
-    "proof_script": "\nfrom qiskit import QuantumCircuit\nfrom qiskit_ibm_runtime import SamplerV2\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\n\nbackend = FakeManilaV2()   # 5 qubits in a line: 0-1-2-3-4\nqc = QuantumCircuit(5)\nqc.sx(0)\nqc.rz(0.7, 0)\nqc.cx(0, 4)                # 0 and 4 are not directly connected\nqc.measure_all()\ntry:\n    SamplerV2(mode=backend).run([qc]).result()\n    outcome = (\"success\",)\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nmsg = outcome[2] if is_exc else \"\"\nadjacent = (0, 4) in backend.coupling_map.get_edges() or (4, 0) in backend.coupling_map.get_edges()\nflags = {\n    \"D\": is_exc and name == \"IBMInputValueError\" and \"(0, 4)\" in msg,\n    \"B\": outcome[0] == \"success\",\n    \"C\": outcome[0] == \"success\",\n    \"A\": is_exc and name == \"TypeError\",\n    \"E\": outcome[0] == \"success\",\n    \"F\": is_exc and name == \"CouplingError\",\n}\nlabels = {\"D\": \"raises: cx (0,4) not supported (connectivity)\", \"B\": \"runs fine, basis gates suffice\",\n          \"C\": \"runs after auto-inserting SWAPs\", \"A\": \"raises TypeError, circuit too large\",\n          \"E\": \"runs, silently remapping cx onto a connected pair\",\n          \"F\": \"raises CouplingError from the transpiler\"}\nevidence = {k: f\"observed={outcome}; option {k} predicts '{labels[k]}' -> match={v}\" for k, v in flags.items()}\nevidence[\"E\"] += f\"; qubits 0 and 4 adjacent in the coupling map: {adjacent} — the job was rejected rather than remapped\"\nevidence[\"F\"] += f\"; the raised type is {name}, and it comes from the primitive's target check, not from a transpiler pass\"\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"outcome\": list(outcome), \"zero_four_adjacent\": adjacent}})\n"
+    "proof_script": "\n# The DISPLAYED stem code, verbatim (keep in sync with the question's \"code\").\nSTEM = 'from qiskit import QuantumCircuit\\nfrom qiskit_ibm_runtime import SamplerV2\\nfrom qiskit_ibm_runtime.fake_provider import FakeManilaV2\\n\\nbackend = FakeManilaV2()          # line topology 0-1-2-3-4\\nqc = QuantumCircuit(5)\\nqc.sx(0)\\nqc.rz(0.7, 0)\\nqc.cx(0, 4)                       # 0 and 4 are NOT adjacent\\nqc.measure_all()\\njob = SamplerV2(mode=backend).run([qc])'\nns = {}\ntry:\n    exec(STEM, ns)\n    ns[\"job\"].result()\n    outcome = (\"success\",)\nexcept Exception as e:\n    outcome = (\"exception\", type(e).__name__, str(e)[:200])\nbackend = ns[\"backend\"]\n\nis_exc = outcome[0] == \"exception\"\nname = outcome[1] if is_exc else None\nmsg = outcome[2] if is_exc else \"\"\nadjacent = (0, 4) in backend.coupling_map.get_edges() or (4, 0) in backend.coupling_map.get_edges()\nflags = {\n    \"D\": is_exc and name == \"IBMInputValueError\" and \"(0, 4)\" in msg,\n    \"B\": outcome[0] == \"success\",\n    \"C\": outcome[0] == \"success\",\n    \"A\": is_exc and name == \"TypeError\",\n    \"E\": outcome[0] == \"success\",\n    \"F\": is_exc and name == \"CouplingError\",\n}\nlabels = {\"D\": \"raises: cx (0,4) not supported (connectivity)\", \"B\": \"runs fine, basis gates suffice\",\n          \"C\": \"runs after auto-inserting SWAPs\", \"A\": \"raises TypeError, circuit too large\",\n          \"E\": \"runs, silently remapping cx onto a connected pair\",\n          \"F\": \"raises CouplingError from the transpiler\"}\nevidence = {k: f\"observed={outcome}; option {k} predicts '{labels[k]}' -> match={v}\" for k, v in flags.items()}\nevidence[\"E\"] += f\"; qubits 0 and 4 adjacent in the coupling map: {adjacent} — the job was rejected rather than remapped\"\nevidence[\"F\"] += f\"; the raised type is {name}, and it comes from the primitive's target check, not from a transpiler pass\"\nproven = [k for k, v in flags.items() if v]\nemit_verdict({\"answer\": proven, \"evidence\": evidence,\n              \"observed\": {\"outcome\": list(outcome), \"zero_four_adjacent\": adjacent}})\n"
   },
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+stem-echoed the basis-gates-are-enough distractor (length/stem-echo fix). | pool wave: +E (the primitive silently remaps to adjacent qubits), +F (a transpiler CouplingError) | realism audit 2026-10-01: stem trimmed; kept device size (option A's refutation) and line topology; one ISA fact -> 2->1; stem 35 -> 15 words; difficulty 2 -> 1"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct D, lengthened+stem-echoed the basis-gates-are-enough distractor (length/stem-echo fix). | pool wave: +E (the primitive silently remaps to adjacent qubits), +F (a transpiler CouplingError) | realism audit 2026-10-01: stem trimmed; kept device size (option A's refutation) and line topology; one ISA fact -> 2->1; stem 35 -> 15 words; difficulty 2 -> 1 | adversarial A3 2026-10-16: displayed code had no imports -> self-contained; proof now execs the verbatim stem code (IBMInputValueError 'The instruction cx on qubits (0, 4) is not supported by the target system', raised at run()); execution-modes citation dropped (no ISA statement; transpile 'comply with the constraints specified by the connectivity of the hardware' and hello-world 'basis gates and qubit connectivity' carry it)"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

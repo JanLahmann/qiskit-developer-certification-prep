@@ -3290,3 +3290,86 @@ fetched as text and grepped; all figure items re-rendered, rasterized and inspec
 - Gates: verify_bank s3 62/62 PROVEN + 5 conceptual, exit 0; audit_meta_patterns s3 0 blockers /
   0 warnings, 9 low length flags (same pre-existing set; q037/q039/q052 options untouched);
   lint_proof_drift 0 findings; render_figures --check 69 questions, 0 failures.
+
+## Adversarial review A3 — s4a (2026-10-16)
+
+Scope: s4-q001, s4-q010..q030 (22; 8 executed, 14 conceptual). Every executable option incl.
+pool distractors re-run in independent scripts (pinned venv, qiskit 2.5.0 / runtime 0.48.0);
+runtime behavior not runnable offline read from the INSTALLED 0.48 source; every cited page
+fetched as text and grepped. **0 key changes, 0 kills.** 18 edited, 4 survived unchanged
+(q014, q017, q027, q030).
+
+- **Second-answer / premise fixes (keys unchanged):** s4-q015 stem had no "real QPU", so E
+  ("Open Plan users can open a session, but only in local testing mode") was literally true:
+  `Session.__init__` sends any non-IBMBackend `BackendV2` to `QiskitRuntimeLocalService`, for
+  every plan. Stem now "submits jobs to a real QPU"; E rewritten to the batch-TTL confusion
+  (the Open Plan 10-minute max TTL is batch's, run-jobs-batch table). s4-q025 "which channel
+  does `QiskitRuntimeService()` use" had a saved-account reading (`AccountManager.get` loads a
+  saved default of any channel) -> "use by default"; E's "raises unless a saved account or
+  `channel=` supplies one" was half true (a bare call with nothing saved does raise
+  AccountNotFoundError) -> clean "no default channel". Executed in an isolated HOME:
+  `save_account(token=, instance=)` writes `default-ibm-quantum-platform` with channel
+  `ibm_quantum_platform`; `channel="ibm_quantum"` -> ValueError. s4-q001 "30 independent
+  circuits": the FAQ/best practices say to combine sub-minute jobs into one larger job, an
+  answer outside the options -> "30 independent jobs". s4-q029 "Besides shorter queuing ...
+  over one giant job": a single job queues once too; the FAQ credits batch with parallel
+  classical processing -> "Besides parallel classical processing".
+- **False rationales:** s4-q021 A said "construction succeeds; the failure happens at run
+  time", contradicting the key and its own proof (`SamplerV2()` raises `ValueError: A backend or
+  session must be specified.` in the constructor). s4-q019 C/D: 0.48 `backend(self, name, ...)`
+  requires `name`, so `service.backend()` and `backend(least_busy=True)` raise TypeError
+  (signature bind). s4-q010 F: fair-share balances across instances by allocation, not "users
+  and projects" (fair-share-scheduler guide). s4-q024 E said "nothing is cached client-side in
+  the primitive", but the noise-learning guide passes a learned model into `EstimatorV2` via
+  `options.resilience.layer_noise_model` (with `mode=backend`); F ignored the standalone
+  `NoiseLearner(mode=...)` program. s4-q001 F rebuilt from execution: nested
+  `with Session(fake): with Batch(fake):` -> `SamplerV2()._mode is batch`; after the inner block
+  exits, `SamplerV2()` raises "A backend or session must be specified." (one ContextVar, reset
+  to None by `Batch.__exit__`), so modes never stack.
+- **s4-q020 key (F) re-checked against installed code, executed:** `get_mode_service_backend`
+  called with stub `IBMBackend` objects and `set_cm_session(batch)`: the batch's own backend
+  object -> mode is the batch (warning "will run inside this session/batch instead of in job
+  mode"); another `IBMBackend` object -> ValueError "The backend passed in to the primitive is
+  different from the session backend". `IBMBackend`/`BackendV2` define no `__eq__`, so "the
+  backend object the batch was opened on" (F's wording) is exactly identity.
+- **Code not runnable as displayed:** q023 (no imports, undefined `pm`/`backend`) and q026 (no
+  imports) now self-contained; their proofs exec the verbatim stem code. q013/q020/q028
+  fragments now say where `backend`/`isa`/`service` come from; q028's comment states `isa` is a
+  `measure_all()` circuit (the `data.meas` key and option E both depend on the register name).
+- **Proof weakness:** q023 B/C/D and q016 B/C were flags inferred from the key's success
+  (`not fix_works`, `not mode_works`) -> now attempted: `job.result().counts` AttributeError,
+  Bell counts returned, `from qiskit.primitives import SamplerV2` ImportError, `SamplerV2(isa)`
+  ValueError. q028 now execs the six displayed option snippets verbatim (the old proof
+  re-typed them under swapped function names). Install paths and raw shot counts kept out of
+  evidence strings.
+- **Docs-reader traps answered:** choose-execution-mode "Job ... Might run sooner than batch
+  mode" (q001 C, q010 C); run-jobs-batch comment "earlier than 0.24.0, change `mode=` to
+  `batch=`" (q013 B: TypeError in 0.48); execution-modes "To run in job mode, specify
+  mode=backend" (q020 B, assumes no open context); QiskitRuntimeService API "ibm_cloud ... points
+  to the same path as ibm_quantum_platform" (q025 A); current SamplerV2 API lists
+  `run(..., dry_run=False)` (0.50) — q016 E now scoped to 0.48 (`pubs`, `shots`). Noted:
+  execution-modes "Any job currently running won't run to completion if doing so would exceed
+  the instance's cost limit" — q027 D ("running jobs finish") kept, it is the TTL rule.
+- **Citation failures replaced (fetched, quotes grepped):** execution-modes (silent on ISA,
+  observables, close semantics, the missing-mode error) dropped/replaced on q012 (->
+  get-started-with-sampler "transformed to only use instructions supported by the QPU"), q018
+  (-> get-started-with-estimator `apply_layout`), q022 (-> execution-modes-faq "Session.close()
+  ... existing jobs run to completion. Session.cancel() cancels all pending"), q023/q028 (->
+  primitive-input-output "'meas', which is the default name of the classical register when this
+  is added by the measure_all method"), q026; run-jobs-batch -> FAQ on q029 ("If some jobs fail,
+  you still get results"), dropped on q001/q011, added on q015 (TTL table); hello-world ->
+  SamplerV2 API (`mode` Backend/Session/Batch) q016/q021, -> QiskitRuntimeService API on q025
+  ("set to ibm_quantum_platform by default"); run-jobs-session -> QiskitRuntimeService API on
+  q019 ("The backend with the fewest number of pending jobs"); + fair-share-scheduler q010,
+  noise-learning q024, SamplerV2 API q013. Docs-only gap: the `ValueError` for no mode (q021)
+  and the observable-size `ValueError` (q018, builtin type, not the `IBMInputValueError`
+  subclass) are execution-carried.
+- **Survived attacks (executed):** q012 IBMInputValueError naming `h` at `run()`; q013
+  session=/batch=/backend= TypeError, `mode="batch"` and `mode=batch.backend()` ('fake_manila')
+  ValueError; q016 `run([isa], backend)` / `run(..., mode=)` TypeError; q018 evs after
+  apply_layout ~0.87; q026 cx (0, 4) rejected; q028 A/D invalid pub-like, C TypeError, E/F
+  AttributeError; q030 `save_account(api_key=)` TypeError, no `login`/`save`.
+- **Difficulty:** all 22 kept.
+- Gates: verify_bank s4 30/30 PROVEN + 25 conceptual, exit 0; audit_meta_patterns s4 0 blockers /
+  0 warnings, 10 low length flags (q015's only option change lengthened a distractor, so no new
+  variant); lint_proof_drift 0 findings.

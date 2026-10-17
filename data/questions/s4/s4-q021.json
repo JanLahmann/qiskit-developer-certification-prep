@@ -40,15 +40,15 @@
   "explanation": {
     "correct": "A primitive must have an execution target. With no `mode` and no enclosing session or batch, `SamplerV2()` raises `ValueError: A backend or session must be specified.` — and it raises it immediately, in the constructor, so `run` never gets a chance to submit anything.",
     "distractors": {
-      "A": "`mode` is optional (it defaults to `None`), so construction succeeds; the failure happens at `run` time.",
+      "A": "`mode` is optional (it defaults to `None`), so no `TypeError` about a missing argument is raised. The constructor fails instead with a `ValueError`, because neither a mode nor an open session or batch supplies a target.",
       "B": "There is no implicit fallback simulator, local Aer or otherwise; you must supply a backend (for example a fake backend for local testing) as the mode.",
       "D": "The primitive never contacts a service to pick a backend for you; backend selection (for example `least_busy`) is your responsibility.",
       "E": "The failure is not deferred: `SamplerV2()` validates its target in the constructor, so the `ValueError` is raised before `run` — let alone `result()` — is ever reached.",
       "F": "Circuits do not carry an execution target — the primitive does. Nothing about the PUB is wrong here, so the failure is a plain `ValueError` about the missing backend or session, not a PUB-validation error."
     },
     "citations": [
-      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
-      "https://quantum.cloud.ibm.com/docs/guides/hello-world"
+      "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/sampler-v2",
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
     ]
   },
   "proof": {
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C to shortest, lengthened distractors (length-tell fix). Also: hedge-heuristic calibration. | pool wave: +E (the ValueError is deferred to result()), +F (the PUB carries the target) | reality fix: SamplerV2() raises the ValueError in the CONSTRUCTOR, not at run() — explanation corrected | realism audit 2026-10-01: stem trimmed; one recalled fact -> 2->1; stem 24 -> 14 words; difficulty 2 -> 1"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C to shortest, lengthened distractors (length-tell fix). Also: hedge-heuristic calibration. | pool wave: +E (the ValueError is deferred to result()), +F (the PUB carries the target) | reality fix: SamplerV2() raises the ValueError in the CONSTRUCTOR, not at run() — explanation corrected | realism audit 2026-10-01: stem trimmed; one recalled fact -> 2->1; stem 24 -> 14 words; difficulty 2 -> 1 | adversarial A3 2026-10-16: A's rationale said 'construction succeeds; the failure happens at run time', contradicting the key and the proof (executed: SamplerV2() raises ValueError 'A backend or session must be specified.' in the constructor) -> rewritten; hello-world citation (silent) -> SamplerV2 API (mode=None default, Backend/Session/Batch); the error itself is execution-carried"
   },
   "freshness": {
     "verified_against": {
@@ -73,7 +73,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 4

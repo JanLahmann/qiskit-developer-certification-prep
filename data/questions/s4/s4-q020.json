@@ -7,7 +7,7 @@
   "type": "mcq",
   "difficulty": 3,
   "stem": "On a real IBM QPU, a primitive inside an open batch is given `mode=backend`. What happens?",
-  "code": "backend = service.least_busy(operational=True, simulator=False)  # real QPU\nwith Batch(backend=backend):\n    sampler = SamplerV2(mode=backend)   # backend, not the batch\n    job = sampler.run([isa])",
+  "code": "from qiskit_ibm_runtime import QiskitRuntimeService, Batch, SamplerV2\n\nservice = QiskitRuntimeService()\nbackend = service.least_busy(operational=True, simulator=False)  # real QPU\n# isa: a circuit transpiled for backend\nwith Batch(backend=backend):\n    sampler = SamplerV2(mode=backend)   # backend, not the batch\n    job = sampler.run([isa])",
   "options": [
     {
       "key": "A",
@@ -41,7 +41,7 @@
     "correct": "Since qiskit-ibm-runtime 0.34, a backend passed as `mode` while a session or batch context manager is open no longer forces job mode: the primitive joins the open batch (a warning is logged), provided it is the same backend the batch was opened on. A different backend raises `ValueError` (\"The backend passed in to the primitive is different from the session backend\"). The clearest code is still `mode=batch`, or no mode at all inside the block, which inherits the batch.",
     "distractors": {
       "A": "Joining the batch is conditional: if the backend passed as `mode` differs from the one the batch was opened on, the primitive raises `ValueError` instead of redirecting the job.",
-      "B": "This was the behavior before qiskit-ibm-runtime 0.34, and it is what the guide's caution about the deprecated `backend=` keyword still describes. Today a matching `mode=backend` inside an open batch runs inside that batch.",
+      "B": "This was the behavior before qiskit-ibm-runtime 0.34, and it is what the batch guide's caution about the deprecated `backend=` keyword still describes. The execution-modes page's \"specify mode=backend\" for job mode assumes no session or batch is open. Today a matching `mode=backend` inside an open batch runs inside that batch.",
       "C": "A matching backend raises nothing: the runtime logs a warning and routes the job into the open batch. Only a backend different from the batch's raises.",
       "D": "Nothing converts a batch to a session; the primitive simply joins the batch that is already open.",
       "E": "The job does not run in job mode, and exiting a batch block does not raise just because the batch received no jobs: exiting simply closes it."
@@ -62,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged + stem-echoed the lexical-scope distractor (absolute-tell fix). | pool wave: +E (an empty batch raises on exit), +F (same backend object means batch inheritance) | realism audit 2026-10-01: CORRECTNESS FIX — key B -> F. Runtime >= 0.34 (release notes 0.34.0; base_primitive.get_mode_service_backend in 0.48) routes a matching IBMBackend passed as mode= into the open Session/Batch (warning) and raises ValueError for a different backend; old key described pre-0.34 behavior. Stem now states a real IBM QPU (fake BackendV2 objects still take job mode locally); A rewritten to the unconditional-redirect misconception; rationales rewritten; difficulty 2 -> 3; stem 27 -> 16 words."
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — hedged + stem-echoed the lexical-scope distractor (absolute-tell fix). | pool wave: +E (an empty batch raises on exit), +F (same backend object means batch inheritance) | realism audit 2026-10-01: CORRECTNESS FIX — key B -> F. Runtime >= 0.34 (release notes 0.34.0; base_primitive.get_mode_service_backend in 0.48) routes a matching IBMBackend passed as mode= into the open Session/Batch (warning) and raises ValueError for a different backend; old key described pre-0.34 behavior. Stem now states a real IBM QPU (fake BackendV2 objects still take job mode locally); A rewritten to the unconditional-redirect misconception; rationales rewritten; difficulty 2 -> 3; stem 27 -> 16 words. | adversarial A3 2026-10-16: code made self-contained (imports, service, isa comment); B also answers the execution-modes 'To run in job mode, specify mode=backend' trap; key F re-checked against installed 0.48 get_mode_service_backend with stub IBMBackend objects: same object in an open Batch -> mode is the batch (warning logged), a different IBMBackend object -> ValueError 'The backend passed in to the primitive is different from the session backend' (no __eq__ on IBMBackend, so identity)"
   },
   "display_count": 5
 }

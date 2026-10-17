@@ -49,7 +49,7 @@
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/hello-world",
       "https://quantum.cloud.ibm.com/docs/guides/transpile",
-      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+      "https://quantum.cloud.ibm.com/docs/guides/get-started-with-sampler"
     ]
   },
   "proof": {
@@ -63,9 +63,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened + stem-echoed the auto-transpile distractor. | pool wave: +E (local testing mode skips the ISA check), +F (right error, blamed on the meas register) | realism audit 2026-10-01: stem trimmed; dropped the 'abstract gates' gloss; one-step ISA fact -> 2->1; stem 28 -> 12 words; difficulty 2 -> 1"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — lengthened + stem-echoed the auto-transpile distractor. | pool wave: +E (local testing mode skips the ISA check), +F (right error, blamed on the meas register) | realism audit 2026-10-01: stem trimmed; dropped the 'abstract gates' gloss; one-step ISA fact -> 2->1; stem 28 -> 12 words; difficulty 2 -> 1 | adversarial A3 2026-10-16: displayed code re-run: IBMInputValueError 'The instruction h on qubits (0,) is not supported by the target system' at run(); citation execution-modes (no ISA statement) -> get-started-with-sampler (\"need to be transformed to only use instructions supported by the QPU (ISA circuits)\")"
   },
   "freshness": {
     "verified_against": {
@@ -74,7 +74,7 @@
       "qiskit-ibm-runtime": "0.48.0",
       "numpy": "2.5.1"
     },
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-16",
     "stale": false
   },
   "display_count": 5

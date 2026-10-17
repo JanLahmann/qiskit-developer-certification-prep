@@ -43,12 +43,13 @@
       "A": "The advantage is learning the model ONCE and reusing it while it is still accurate, not re-learning it before every job.",
       "B": "Error mitigation options are available in all execution modes; the mode affects scheduling and how long a learned model stays valid, not whether mitigation is allowed.",
       "D": "PEC is a software post-processing technique; it does not recalibrate hardware. The benefit of a session is timing, not physical recalibration.",
-      "E": "Nothing is cached client-side in the primitive: a fresh `EstimatorV2` in a session learns exactly as much as one in a batch. What a session buys is elapsed time — the model stays representative because the device has not drifted.",
-      "F": "Learning is part of the primitive's own execution, not a privileged calibration job, and no mode silently swaps your mitigation technique for another one. PEC is available outside sessions; it is only less economical there."
+      "E": "Execution modes do not manage the noise model. You can store a learned model on the primitive yourself (`options.resilience.layer_noise_model`, which the noise-learning guide does in job mode), and no mode discards it. A session buys elapsed time: the model stays representative because the device has not drifted.",
+      "F": "Noise learning is an ordinary runtime job: the Estimator learns as part of its own run, or you run `NoiseLearner` yourself, which the guide does with `mode=backend`. No mode treats it as a privileged calibration job or swaps PEC for ZNE; PEC outside a session is only less economical."
     },
     "citations": [
       "https://quantum.cloud.ibm.com/docs/guides/choose-execution-mode",
-      "https://quantum.cloud.ibm.com/docs/guides/execution-modes"
+      "https://quantum.cloud.ibm.com/docs/guides/execution-modes",
+      "https://quantum.cloud.ibm.com/docs/guides/noise-learning"
     ]
   },
   "proof": {
@@ -61,9 +62,9 @@
   "provenance": {
     "generated": "2026-07-20",
     "model": "claude-opus (generation agent, section s4)",
-    "adversarial_rounds": 3,
+    "adversarial_rounds": 4,
     "reviewed": false,
-    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C, lengthened+hedged distractors (length/hedge/absolute-tell fix). | pool wave: +E (the session caches the noise model), +F (only sessions may run PEC learning) | realism audit 2026-10-01: stem trimmed; one documented rationale -> 3->2; stem 36 -> 21 words; difficulty 3 -> 2"
+    "notes": "meta-pattern fix pass: length/stem-echo/absolute calibration (s4) — trimmed correct C, lengthened+hedged distractors (length/hedge/absolute-tell fix). | pool wave: +E (the session caches the noise model), +F (only sessions may run PEC learning) | realism audit 2026-10-01: stem trimmed; one documented rationale -> 3->2; stem 36 -> 21 words; difficulty 3 -> 2 | adversarial A3 2026-10-16: docs-reader trap: E's rationale ('nothing is cached client-side in the primitive') contradicted the noise-learning guide, which passes a learned model into EstimatorV2 via options.resilience.layer_noise_model (with mode=backend) -> rewritten; F's 'learning is part of the primitive's own execution' ignored the standalone NoiseLearner(mode=...) program (0.48 signature mode: BackendV2|Session|Batch) -> rewritten; + noise-learning citation"
   },
   "display_count": 5
 }

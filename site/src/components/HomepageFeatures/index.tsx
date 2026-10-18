@@ -37,9 +37,10 @@ const FeatureList: FeatureItem[] = [
     emoji: '🔒',
     description: (
       <>
-        Fully static site — no accounts, no backend, no tracking. Your progress,
-        mastery, and mock-exam history live in your browser and are yours to
-        export. Works offline.
+        Fully static site — no accounts, no backend, no cookies; only anonymous,
+        cookie-free page-view counts. Your progress, mastery, and mock-exam
+        history live in your browser and are yours to export. Anki decks and
+        the e-book work offline.
       </>
     ),
   },

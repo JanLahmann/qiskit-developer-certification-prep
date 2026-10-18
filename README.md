@@ -7,7 +7,7 @@
 ## What makes it different
 
 - **Machine-verified questions**: every code-bearing practice question is executed at build time against a pinned Qiskit 2.x stack — correct answers are *proven*, wrong answers are *disproven*, and the proof ships with the question.
-- **Built by AI, served static**: all intelligence (generation, verification, remediation advice, study sequencing) runs at build time. The site itself is fully static — no accounts, no backend, no runtime AI, works offline. Progress lives in your browser (localStorage).
+- **Built by AI, served static**: all intelligence (generation, verification, remediation advice, study sequencing) runs at build time. The site itself is fully static — no accounts, no backend, no runtime AI; Anki decks and the EPUB work offline. Progress lives in your browser (localStorage).
 - **Guided, not just quizzed**: official syllabus → curated official resources (IBM Quantum docs & Learning) → drills → mock exam (faithful 68 questions / 90 minutes / pass at 47) → per-section remediation.
 - **Community-connected**: directory of advocate-created practice exams (credited & linked), with build-time validation reports; freshness CI re-verifies everything on every Qiskit release.
 

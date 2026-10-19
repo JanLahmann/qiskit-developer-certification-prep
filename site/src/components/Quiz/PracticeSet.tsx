@@ -7,10 +7,11 @@
  * shuffle. All state client-side; SSR renders a skeleton.
  */
 
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import type {BankQuestion, SectionBank, SectionId} from '@site/src/lib/bank';
 import {loadSection, mulberry32, seededShuffle} from '@site/src/lib/bank';
 import {getProgress} from '@site/src/lib/storage';
+import {scoreBucket, track} from '@site/src/lib/analytics';
 import QuizCard from './QuizCard';
 import styles from './styles.module.css';
 
@@ -55,6 +56,7 @@ export default function PracticeSet({
   const [index, setIndex] = useState(0);
   const [results, setResults] = useState<Record<string, boolean>>({});
   const [epoch, setEpoch] = useState(0); // bump to re-shuffle / restart
+  const started = useRef(false); // "quiz start" sent for the current run
 
   useEffect(() => {
     let alive = true;
@@ -91,6 +93,7 @@ export default function PracticeSet({
   useEffect(() => {
     setIndex(0);
     setResults({});
+    started.current = false;
   }, [order, objective, difficulty, epoch, section]);
 
   if (failed) {
@@ -116,6 +119,21 @@ export default function PracticeSet({
   const correct = Object.values(results).filter(Boolean).length;
   const q = questions[Math.min(index, questions.length - 1)];
   const finished = index >= questions.length;
+  const runProps = {mode: 'drill', section, objective};
+
+  const onResult = (qid: string, ok: boolean) => {
+    if (!started.current) {
+      started.current = true;
+      track('quiz start', runProps);
+    }
+    setResults((r) => ({...r, [qid]: ok}));
+  };
+  const onNext = () => {
+    if (index + 1 >= questions.length && started.current) {
+      track('quiz finish', {...runProps, score: scoreBucket(correct, questions.length)});
+    }
+    setIndex((i) => i + 1);
+  };
 
   return (
     <div>
@@ -130,7 +148,12 @@ export default function PracticeSet({
         </label>
         <label>
           Objective{' '}
-          <select value={objective} onChange={(e) => setObjective(e.target.value)}>
+          <select
+            value={objective}
+            onChange={(e) => {
+              setObjective(e.target.value);
+              track('objective filter', {section, objective: e.target.value});
+            }}>
             <option value="all">all</option>
             {bank.section.objectives.map((o) => (
               <option key={o.id} value={o.id}>
@@ -179,8 +202,8 @@ export default function PracticeSet({
         <QuizCard
           key={q.id}
           question={q}
-          onResult={(qid, ok) => setResults((r) => ({...r, [qid]: ok}))}
-          onNext={() => setIndex((i) => i + 1)}
+          onResult={onResult}
+          onNext={onNext}
         />
       ) : (
         <div className={styles.emptyState}>No questions match these filters.</div>

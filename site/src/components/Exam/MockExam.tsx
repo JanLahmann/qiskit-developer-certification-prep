@@ -22,6 +22,7 @@ import {
   shuffledOptions,
   OPTION_LETTERS,
 } from '@site/src/lib/bank';
+import {scoreBucket, track} from '@site/src/lib/analytics';
 import {renderInline} from '@site/src/lib/md';
 import {getMockState, recordMockAttempt, type MockAttempt} from '@site/src/lib/storage';
 import QuizCard from '../Quiz/QuizCard';
@@ -199,6 +200,7 @@ export default function MockExam(): React.ReactElement {
     deadlineRef.current = Date.now() + p.totalSeconds * 1000;
     setRemaining(p.totalSeconds);
     setPhase('running');
+    track('quiz start', {mode: 'mock', section: 'all'});
   }, [sections, seedInput]);
 
   const submit = useCallback(() => {
@@ -230,6 +232,12 @@ export default function MockExam(): React.ReactElement {
       perSection,
     };
     recordMockAttempt(a);
+    track('quiz finish', {
+      mode: 'mock',
+      section: 'all',
+      score: scoreBucket(score, a.total),
+      result: a.passed ? 'pass' : 'fail',
+    });
     setAttempt(a);
     setPhase('report');
   }, [paper, answers]);

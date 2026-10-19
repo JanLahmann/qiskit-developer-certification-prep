@@ -50,15 +50,29 @@ const config: Config = {
   onBrokenLinks: 'throw',
 
   // Umami analytics — shared Fun with Quantum family property (cookie-free, no consent banner).
-  // data-domains keeps local and preview builds out of the numbers.
-  scripts: [
+  // data-domains keeps local and preview builds out of the numbers. The family-standard guard runs
+  // first: it drops headless browsers and crawlers (data-before-send), and ?notrack / ?track turn
+  // tracking off / on again for this browser (localStorage umami.disabled). Custom events:
+  // src/lib/analytics.ts and src/clientModules/linkEvents.ts.
+  headTags: [
     {
-      src: 'https://cloud.umami.is/script.js',
-      defer: true,
-      'data-website-id': '97f347ac-e7ba-4be3-b26f-ab4b328bdbf2',
-      'data-domains': 'certiq.dev',
+      tagName: 'script',
+      attributes: {},
+      innerHTML:
+        "(function(){try{var q=location.search;if(/[?&]notrack\\b/.test(q))localStorage.setItem('umami.disabled','1');if(/[?&]track\\b/.test(q))localStorage.removeItem('umami.disabled')}catch(e){}window.fwqUmamiBeforeSend=function(t,p){var n=navigator;return(n.webdriver||/HeadlessChrome|bot|crawl|spider|Lighthouse|PageSpeed/i.test(n.userAgent))?false:p}})();",
+    },
+    {
+      tagName: 'script',
+      attributes: {
+        defer: true,
+        src: 'https://cloud.umami.is/script.js',
+        'data-website-id': '97f347ac-e7ba-4be3-b26f-ab4b328bdbf2',
+        'data-domains': 'certiq.dev',
+        'data-before-send': 'fwqUmamiBeforeSend',
+      },
     },
   ],
+  clientModules: ['./src/clientModules/linkEvents.ts'],
 
   i18n: {
     defaultLocale: 'en',

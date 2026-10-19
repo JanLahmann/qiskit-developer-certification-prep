@@ -8,7 +8,7 @@ description: A visual-literacy primer for the exam — circuit diagrams, histogr
 
 About one item in five of IBM's official sample test puts a **picture** in front of you: a circuit drawing, a histogram, a Bloch multivector, a q-sphere. Those items are cheap points *if* you can decode the picture at a glance — and expensive guesses if you cannot. This page is the decoder.
 
-:::info Every figure here is an execution artifact
+:::info[Every figure here is an execution artifact]
 Nothing on this page is hand-drawn illustration. Each figure is produced by running the code shown next to it against the pinned stack (Qiskit 2.5.0) and committing the SVG, exactly like the proof artifacts behind the practice questions. The generator lives at `data/figures/guide/generate.py`; it is run twice into separate directories and the two sets of SVGs are compared byte for byte, so anything time-dependent or randomly sampled would fail the check. The four broadcasting diagrams are the one exception: they are schematics drawn with matplotlib primitives, not Qiskit output.
 :::
 
@@ -126,7 +126,7 @@ plot_state_qsphere(Statevector(qc))
 - **Global phase is invisible**: multiplying the whole state by a phase changes nothing in the picture. Only *relative* phases move colours.
 - `show_state_phases=True` prints the phase next to each label; it is **off** by default, which is exactly why a q-sphere item can hinge on colour alone.
 
-:::caution Colour dependence
+:::caution[Colour dependence]
 Phase on a q-sphere is carried by colour and nothing else. Practice questions whose answer depends on it are marked `color_essential` and are dropped from the e-ink/EPUB build, where the alt text states the phases instead.
 :::
 

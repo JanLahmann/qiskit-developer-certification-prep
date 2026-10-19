@@ -397,7 +397,7 @@ Or grab a single section:
 | iPhone / iPad — best experience | [AnkiMobile](https://apps.apple.com/app/ankimobile-flashcards/id373493387) | one-time purchase | The *official* iOS app; the price funds free Anki development |
 | Kindle & e-ink readers | the [EPUB study book](/docs/study-book) | free | No Anki apps run on e-ink; the EPUB rebuilds the question→answer flow |
 
-:::caution Watch out for lookalikes
+:::caution[Watch out for lookalikes]
 App Store searches for "Anki" surface **AnkiApp** and **Anki Pro** — neither is the real Anki. They are unrelated freemium apps with unreliable `.apkg` import and subscription upsells. The genuine ones are exactly those linked above.
 :::
 
@@ -409,7 +409,7 @@ App Store searches for "Anki" surface **AnkiApp** and **Anki Pro** — neither i
 
 To refresh later, re-download and import again — updated cards are matched by identity and overwritten in place, so nothing is duplicated.
 
-:::note Unofficial
+:::note[Unofficial]
 CertiQ is an independent community project. These cards are AI-generated from the public exam objectives and open documentation, then execution-verified against a pinned Qiskit 2.x stack — they are **not** affiliated with, endorsed by, or sponsored by IBM, and never derived from real exam content.
 :::
 """
@@ -462,7 +462,7 @@ Kobo, Boox, PocketBook and Apple Books open the EPUB directly — just download 
 
 The same questions ship as [Anki flashcards](/docs/flashcards) with spaced repetition, and every practice tool on this site draws from the same verified bank.
 
-:::note Unofficial
+:::note[Unofficial]
 CertiQ is an independent community project. This book is AI-generated from the public exam objectives and open documentation, then execution-verified against a pinned Qiskit 2.x stack — it is **not** affiliated with, endorsed by, or sponsored by IBM, and never derived from real exam content.
 :::
 """

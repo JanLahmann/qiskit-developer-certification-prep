@@ -17,13 +17,16 @@ function HomepageHeader() {
           Pass the Qiskit v2.x Developer certification
         </Heading>
         <p className="hero__subtitle">
-          A guided, machine-verified prep platform for IBM exam C1000-179 —
-          68 questions, 90 minutes, 47 to pass. Every practice question is
-          executed and proven against a pinned Qiskit 2.x stack at build time.
+          Free, unofficial prep for IBM exam C1000-179 (68 questions,
+          90 minutes, 47 to pass): a guided study path, 365 machine-verified
+          practice questions and a timed mock exam. No sign-up.
         </p>
         <div className={styles.buttons}>
           <Link className="button button--secondary button--lg" to="/docs/intro">
             Start preparing →
+          </Link>
+          <Link className="button button--secondary button--lg" to="/mock-exam">
+            Take a mock exam
           </Link>
         </div>
       </div>

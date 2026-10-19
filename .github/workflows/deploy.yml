@@ -89,3 +89,13 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # IndexNow (Bing, Yandex & co.): submit the pages whose sitemap <lastmod> is from today or
+  # yesterday. Shared family workflow; the key is public by design (site/static/<key>.txt).
+  indexnow:
+    needs: deploy
+    if: github.ref == 'refs/heads/main'
+    uses: JanLahmann/Fun-with-Quantum/.github/workflows/indexnow.yml@master
+    with:
+      site: https://certiq.dev
+      key: ce1b0978fada8fb976e0cdbf30b3073a

@@ -87,9 +87,12 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           editUrl:
             'https://github.com/JanLahmann/qiskit-developer-certification-prep/tree/main/site/',
+          // git last-commit dates; they also feed the sitemap's <lastmod> (needs full history in CI)
+          showLastUpdateTime: true,
         },
         blog: false,
         sitemap: {
+          lastmod: 'date',
           ignorePatterns: ['/settings'],
         },
         theme: {

@@ -33,7 +33,7 @@ const config: Config = {
   title: 'CertiQ',
   tagline:
     'Machine-verified prep for the IBM Qiskit v2.x Developer certification (C1000-179). Unofficial — not affiliated with IBM.',
-  favicon: 'img/favicon.ico',
+  favicon: 'favicon.ico', // + apple-touch-icon.png; both from pipeline/make_icons.py
 
   future: {
     v4: true,
@@ -55,6 +55,7 @@ const config: Config = {
   // tracking off / on again for this browser (localStorage umami.disabled). Custom events:
   // src/lib/analytics.ts and src/clientModules/linkEvents.ts.
   headTags: [
+    {tagName: 'link', attributes: {rel: 'apple-touch-icon', href: '/apple-touch-icon.png'}},
     {
       tagName: 'script',
       attributes: {},

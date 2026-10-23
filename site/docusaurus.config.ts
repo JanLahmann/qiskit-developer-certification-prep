@@ -85,8 +85,19 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl:
-            'https://github.com/JanLahmann/qiskit-developer-certification-prep/tree/main/site/',
+          // Generated pages have no .mdx in git: cram sheets link to their study data, the other
+          // generated pages (sections, flashcards, study book) get no edit link.
+          editUrl: ({docPath}) => {
+            const repo = 'https://github.com/JanLahmann/qiskit-developer-certification-prep/blob/main';
+            const cram = docPath.match(/^cram\/(s\d)\.mdx$/);
+            if (cram) {
+              return `${repo}/data/study/${cram[1]}.json`;
+            }
+            if (/^(sections\/|flashcards\.mdx$|study-book\.mdx$)/.test(docPath)) {
+              return undefined;
+            }
+            return `${repo}/site/docs/${docPath}`;
+          },
           // git last-commit dates; they also feed the sitemap's <lastmod> (needs full history in CI)
           showLastUpdateTime: true,
         },
